@@ -1,0 +1,170 @@
+@import url(http://fonts.googleapis.com/css?family=Duru+Sans);
+
+body {
+
+background: #000;
+}
+
+ul {
+    height: 490px;
+    margin: 220px auto;
+    perspective: 400px;
+    -webkit-perspective: 500px;
+    -moz-perspective: 500px;
+    -ms-perspective: 500px;
+    -o-perspective: 500px;
+    width: 815px;
+	
+}
+ul li {
+    background-color: #222;
+    display: inline-block;
+    margin-right: -15px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    height: 165px;
+    list-style: none;
+    text-align: center;
+    transform: rotateY(45deg);
+    -webkit-transform: rotateY(45deg);
+    -moz-transform: rotateY(45deg);
+    -o-transform: rotateY(45deg);
+    transition: all ease .5s;
+    -webkit-transition: all ease .5s;
+    -moz-transition: all ease .5s;
+    -o-transition: all ease .5s;
+    padding: 15px;
+    position: relative;
+    width: 165px;
+    z-index: 50;
+	border-radius: 400px;
+-moz-border-radius: 400px;  
+-webkit-border-radius: 400px;  
+} 
+}
+li p {
+    color:#ddd;
+    font-size: .9em;
+    margin: 4px 0 13px;
+}
+ul li a.boton {
+    background-color: #222222;
+    border-radius: 2px 2px 2px 2px;
+    bottom: 5px;
+    color: #FFFFFF;
+    font-size: 1em;
+    padding: 0.5em;
+    right: 5px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 1s ease 0s;
+    -webkit-transition: background-color 1s ease 0s;
+    -moz-transition: background-color 1s ease 0s;
+    -o-transition: background-color 1s ease 0s;
+}
+ul li a.boton:hover {
+   color: #222222;
+}
+ul li img {
+    height: 80px !important;
+    width: 80px !important;
+		border-radius: 400px;
+-moz-border-radius: 400px;  
+-webkit-border-radius: 400px;  
+}
+ul li:nth-child(3) {
+    background-color: #222222;
+    transform: rotateY(0deg) scale(1.22);
+    -webkit-transform: rotateY(0deg) scale(1.22);
+    -moz-transform: rotateY(0deg) scale(1.22);
+    -o-transform: rotateY(0deg) scale(1.22);
+    z-index: 55;
+}
+ ul li:nth-child(3) a.boton {
+    background-color: #0099CC;
+}
+ ul li:nth-child(3) ~ li {
+    transform: rotateY(-45deg);
+    -webkit-transform: rotateY(-45deg);
+    -ms-transform: rotateY(-45deg);
+    -o-transform: rotateY(-45deg);
+    -moz-transform: rotateY(-45deg);
+}
+ ul li:last-child,  ul li:first-child {
+    z-index: 45;
+}
+ ul:hover li:not(:hover) {
+    background-color: #111111;
+    transform: rotateY(45deg);
+    -webkit-transform: rotateY(45deg);
+    -o-transform: rotateY(45deg);
+    -moz-transform: rotateY(45deg);
+    -ms-transform: rotateY(45deg);
+}
+ ul:hover li a.boton {
+    background-color: #222222;
+}
+ ul li:hover,  ul li:first-child:hover,  ul li:nth-child(3) ~ li:hover {
+     background-color: #222;
+     transform: rotateY(0) scale(1.22);
+     -webkit-transform: rotateY(0) scale(1.22);
+     -moz-transform: rotateY(0) scale(1.22);
+     -ms-transform: rotateY(0) scale(1.22);
+     -o-transform: rotateY(0) scale(1.22);
+     z-index: 60;
+}
+ ul:hover li:hover a.boton {
+    background-color: #0099CC;
+}
+ ul:hover li:hover ~ li {
+    transform: rotateY(-45deg);
+    -webkit-transform: rotateY(-45deg);
+    -ms-transform: rotateY(-45deg);
+    -o-transform: rotateY(-45deg);
+    -moz-transform: rotateY(-45deg);
+}
+
+p {
+color: #FFFFFF;
+font-family: 'Duru Sans', sans-serif;
+text-shadow: 2px 2px #000;
+}
+
+
+#search {
+
+}
+
+
+#search input[type="text"] {
+    background: url(../images/search-white.png) no-repeat 10px 6px #444;
+    border: 0 none;
+    font: bold 12px Arial,Helvetica,Sans-serif;
+    color: #d7d7d7;
+    width:150px;
+    padding: 6px 15px 6px 35px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3); 
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    -webkit-transition: all 0.7s ease 0s;
+    -moz-transition: all 0.7s ease 0s;
+    -o-transition: all 0.7s ease 0s;
+    transition: all 0.7s ease 0s;
+    }
+
+#search input[type="text"]:focus {
+    background: url(../images/search-dark.png) no-repeat 10px 6px #fcfcfc;
+    color: #6a6f75;
+    width: 200px;
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
+    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    }
+

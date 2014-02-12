@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+
+<head>
+<html lang="es">
+<meta charset="uft-8">
+<title>¡Bienvenido a Skyfolk!</title>
+<link rel="stylesheet" type="text/css" href="css/widget.css" />
+<script language="javascript">
+function aparecerbola(){
+	document.getElementById("widget").style.opacity = "1";
+	document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
+}
+function cambiopagina(){
+	document.getElementById("widget").style.opacity = "0";
+	document.getElementById("widget").style.webkitTransition = "opacity 0.5s linear";
+	setTimeout('location.href="../columnas.html"', 500);
+}
+function cambiopagina(){
+	document.getElementById("widget").style.opacity = "0";
+	document.getElementById("widget").style.webkitTransition = "opacity 0.5s linear";
+	setTimeout('location.href="../columnas.html"', 500);
+}
+
+
+
+
+</script>
+</head>
+<header>
+</header>
+<aside></aside>
+<nav>
+</nav>
+
+<body onLoad="aparecerbola()">
+<div id="texto"><h2>S<span>kyfolk.</span></h2></div>
+
+<div id="widget" onClick="cambiopagina()">
+<div id="middle"><img src="../../" width="980" height="650"><span class="entypo-user"></span></div>
+<div id="linkedin" class="size left"><span class="entypo-users"></span></div>
+<div id="dribbble" class="size right"><span class="entypo-mail"></span></div>
+<div id="facebook" class="size left"><span class="entypo-calendar"></span></div>
+<div id="twitter" class="size right"><span class="entypo-logout"></span></div>
+</div>
+
+
+
+
+</body>
+</html>

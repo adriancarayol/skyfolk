@@ -1,0 +1,18 @@
+{% extends 'base_user.html' %}
+{% block content %}
+		<section class="main">
+			<div class="block-form block-formregister">
+				<form method='post' class="form-3" action=''>{% csrf_token %}
+
+							{{form}}
+
+						    <!--<p class="clearfix">-->
+						    <div class="block-button1">
+						    	<a href='/' class="link-b" id="linkLogin">Login</a>
+						      	<input type="submit" name="submit" value="Registrarse">
+						     </div>
+					        <!--</p>-->
+				</form>
+			</div>
+		</section>
+{% endblock%}

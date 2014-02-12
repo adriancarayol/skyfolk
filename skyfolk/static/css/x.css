@@ -1,0 +1,14 @@
+pin
+{
+
+transition-property:width;
+transition-duration:5s;
+/* Safari */
+-webkit-transition-property:width;
+-webkit-transition-duration:5s;
+}
+
+div:hover
+{
+width:300px;
+}
