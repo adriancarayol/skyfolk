@@ -37,7 +37,7 @@ class UserCreateForm(UserCreationForm):
         if commit:
             user.save()
         return user
-"""
+
 class AuthForm(AuthenticationForm):
 
     #username = forms.CharField(widget=TextInput(attrs={'class': 'span2','placeholder': 'Email'}))
@@ -45,8 +45,9 @@ class AuthForm(AuthenticationForm):
 
     username = forms.CharField(label="", help_text="",widget=forms.TextInput(attrs={'placeholder' : 'Nick'}))
     password = forms.CharField(label="", help_text="",widget=forms.PasswordInput(attrs={'placeholder' : 'Contraseña'}))
-"""
 
+
+"""
 class AuthForm(AuthenticationForm):
 
     #username = forms.CharField(widget=TextInput(attrs={'class': 'span2','placeholder': 'Email'}))
@@ -61,3 +62,4 @@ class AuthForm(AuthenticationForm):
         self.base_fields['password'].widget.attrs['placeholder'] = 'Contraseña'
         self.base_fields['username'].label = ''
         self.base_fields['password'].label = ''
+"""
