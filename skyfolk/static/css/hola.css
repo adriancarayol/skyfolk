@@ -3,11 +3,6 @@
 [class*="fontawesome-"]:before {
   font-family: 'fontawesome', sans-serif;
 }
-@import url(http://weloveiconfonts.com/api/?family=fontawesome);
-
-[class*="fontawesome-"]:before {
-  font-family: 'fontawesome', sans-serif;
-}
 
 html {
   background: #eee url(http://goo.gl/kqNwg);
@@ -435,3 +430,45 @@ span[class*="thumbs-up"]:hover {
     color: #2698CE;
 }
 
+.fontawesome-cog {
+color:#A4A4A4;
+cursor:pointer;
+text-align: center;
+margin: 1230px;
+top:-1215px;
+font-size: 38px;
+padding: 0px;
+position: absolute;
+text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+}
+.fontawesome-cog:hover {
+color:#2ED8A8
+}
+.fontawesome-comment-alt {
+color:#A4A4A4;
+cursor:pointer;
+text-align: center;
+margin: 1171px;
+top:-1158px;
+font-size: 38px;
+padding: 0px;
+position: absolute;
+text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+}
+.fontawesome-comment-alt:hover {
+color:#5BF578
+}
+.fontawesome-th {
+color:#A4A4A4;
+cursor:pointer;
+text-align: center;
+margin: 1115px;
+top:-1099px;
+font-size: 38px;
+padding: 0px;
+position: absolute;
+text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+}
+.fontawesome-th:hover {
+color:#FFB912
+}
