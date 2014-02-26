@@ -1,5 +1,6 @@
 @import url('font-awesome.css');
 @import url(http://weloveiconfonts.com/api/?family=entypo);
+@import url(http://fonts.googleapis.com/css?family=Gochi+Hand);
 
 /*
 body {
@@ -289,6 +290,7 @@ position: 200px;
 	margin-left:7%;
 	margin-top:0;
 	font-size:20px;
+	font-family: 'Gochi Hand', cursive;
 }
 #texto h2{
 		display:block; 
@@ -298,6 +300,7 @@ position: 200px;
 	text-shadow:#FFF -3px -2px 12px;
 	border-radius:5px; 
 	float:left;
+	font-family: 'Gochi Hand', cursive;
 }
 
 .block-form .msgalert{
