@@ -1026,3 +1026,26 @@ top: 5px;
 #closesession a{
     float: right;
 }
+
+/* editar estado */
+
+.fontawesome-pencil {
+font-size: 14px;
+color: orange;
+margin-left: 310px;
+padding: 20px;
+opacity: 0.6;
+position: absolute;
+margin-top: -34px;
+}
+
+.fontawesome-pencil:hover {
+font-size: 14px;
+color: orange;
+margin-left: 310px;
+padding: 20px;
+opacity: 1;
+position: absolute;
+margin-top: -34px;
+}
+/* fin editar estado */
