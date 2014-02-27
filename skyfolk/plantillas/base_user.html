@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
 	     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-         <link rel="stylesheet" type="text/css" href="static/css/jquery.gritter.css" />
+         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
          <script type="text/javascript" src="http://www.google.com/jsapi"></script>
          <script type="text/javascript">google.load('jquery', '1.7.1');</script>
-         <script type="text/javascript" src="static/js/jquery.gritter.js"></script>
+         <script type="text/javascript" src="{{STATIC_URL}}js/jquery.gritter.js"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
         <title>¡Bienvenido!</title>
@@ -49,7 +49,7 @@
 				// (string | mandatory) the text inside the notification
 				text: '¿Quieres añadirlo a tus contactos? <a href="#" style="color:#66FF80">Aceptar.</a> <a href="#" style="color:#F43E3E">Rechazar</a>',
 				// (string | optional) the image to display on the left
-				image: 'static/images/5.jpg',
+				image: '{{STATIC_URL}}/images/5.jpg',
 				// (bool | optional) if you want it to fade out on its own or just sit there
 				sticky: false,
 				// (int | optional) the time you want it to be alive for before fading out
