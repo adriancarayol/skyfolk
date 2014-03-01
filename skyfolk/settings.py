@@ -123,7 +123,7 @@ STATICFILES_DIRS = (
     os.path.join(RUTA_PROYECTO,'static'),
 )
 
-"""
+
 # heroku
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
