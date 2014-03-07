@@ -33,18 +33,17 @@ def new_user(request):
 
 def inicio(request):
 	if not request.user.is_anonymous():
-		return HttpResponseRedirect('/profile')
+		return HttpResponseRedirect('/profile/' + str(request.user.id))
 	if request.method == 'POST':
 		form = AuthForm(request.POST)
 		if form.is_valid:
 			usuario = request.POST['username']
 			clave = request.POST['password']
-			messages.add_message(request, messages.INFO, 'Hello world.')
 			acceso = authenticate(username=usuario,password=clave)
 			if acceso is not None:
 				if acceso.is_active:
 					login(request, acceso)
-					return HttpResponseRedirect('/profile')
+					return HttpResponseRedirect('/profile/' + str(request.user.id))
 				else:
 					return render_to_response('inactive.html', context_instance=RequestContext(request))
 			else:
@@ -55,8 +54,9 @@ def inicio(request):
 	return render_to_response('inicio.html', {'form':form}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
-def profile(request):
-	return render_to_response('profile.html',context_instance=RequestContext(request))
+def profile_view(request, id):
+	userProfileVisit = User.objects.get(pk=id)
+	return render_to_response('profile.html',{'userProfileVisit':userProfileVisit},context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def out_session(request):
