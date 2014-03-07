@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     #url(r'^$','principal.views.inicio','django.contrib.auth.views.login',{'template_name': 'inicio.html','authentication_form': AuthForm}),
     url(r'^newuser/$','principal.views.new_user'),
     #url(r'^profile/', 'principal.views.profile'),
-    url(r'^profile/(?P<id>\d+)/$', 'principal.views.profile_view', name='profile'),
+    #url(r'^profile/(?P<id>\d+)/$', 'principal.views.profile_view', name='profile'),
+    url(r'^profile/(?P<username>[\w-]+)/$', 'principal.views.profile_view', name='profile'),
     url(r'^outsession/$', 'principal.views.out_session'),
 )
