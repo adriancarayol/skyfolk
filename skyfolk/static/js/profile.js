@@ -22,7 +22,7 @@ $(document).ready(function(){
   });
 });
 
-
+/*
 function aparecerbola(){
 	document.getElementById("widget").style.opacity = "0.9";
 	document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
@@ -38,7 +38,7 @@ function cambiopagina(){
 	setTimeout('location.href="columnas.php"', 500);
 }
 
-
+*/
 
 
 
