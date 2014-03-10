@@ -55,8 +55,14 @@ def inicio(request):
 
 @login_required(login_url='/')
 def profile_view(request, username):
-	userProfileVisit = User.objects.get(username__iexact = username)
-	return render_to_response('profile.html',{'userProfileVisit':userProfileVisit},context_instance=RequestContext(request))
+	userProfile = User.objects.get(username__iexact = username)
+	isProfileUser = False
+	if not request.user.is_anonymous():
+		if request.user.username ==  userProfile.username:
+			#el que ve el perfil es el usuario del perfil
+			isProfileUser = True
+
+	return render_to_response('profile.html',{'userProfile':userProfile,'isProfileUser':isProfileUser},context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def out_session(request):
