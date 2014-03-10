@@ -123,8 +123,6 @@ STATICFILES_DIRS = (
     os.path.join(RUTA_PROYECTO,'static'),
 )
 
-
-
 #...................................................................
 
 # heroku
