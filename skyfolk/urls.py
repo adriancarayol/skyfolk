@@ -18,5 +18,6 @@ urlpatterns = patterns('',
     #url(r'^profile/', 'principal.views.profile'),
     #url(r'^profile/(?P<id>\d+)/$', 'principal.views.profile_view', name='profile'),
     url(r'^profile/(?P<username>[\w-]+)/$', 'principal.views.profile_view', name='profile'),
+    url(r'^profile/(?P<username>[\w-]+)/search/$','principal.views.search'),
     url(r'^outsession/$', 'principal.views.out_session'),
 )

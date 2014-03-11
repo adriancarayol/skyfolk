@@ -9,8 +9,8 @@ from principal.forms import UserCreateForm, AuthForm
 #from principal.forms import UserCreationForm
 from django.core.mail import EmailMessage
 #para la gestion de usuarios y autentificacion
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from principal.forms import SearchForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -57,12 +57,30 @@ def inicio(request):
 def profile_view(request, username):
 	userProfile = User.objects.get(username__iexact = username)
 	isProfileUser = False
+	requestUsername = request.user.username #esto es para que una vez cargada la pagina de perfil, al pulsar buscar hace falta poner el nombre del usuario que visita la pagina
+
 	if not request.user.is_anonymous():
-		if request.user.username ==  userProfile.username:
+		if request.user.username == userProfile.username:
 			#el que ve el perfil es el usuario del perfil
 			isProfileUser = True
 
-	return render_to_response('profile.html',{'userProfile':userProfile,'isProfileUser':isProfileUser},context_instance=RequestContext(request))
+	if request.method == 'POST':
+		searchForm = SearchForm(request.POST)
+		if searchForm.is_valid:
+			searchText = request.POST['searchText']
+			#hacer busqueda mediante consulta a la base de datos y redireccionar a search.html con los datos
+
+	else:
+		searchForm = SearchForm(request.POST)
+
+	return render_to_response('profile.html',{'userProfile':userProfile,'isProfileUser':isProfileUser,'searchForm':searchForm,'requestUsername':requestUsername},context_instance=RequestContext(request))
+
+
+@login_required(login_url='/')
+def search(request, username):
+
+	#return render_to_response('profile.html',{'userProfile':userProfile,'isProfileUser':isProfileUser},context_instance=RequestContext(request))
+	return render_to_response('search.html', context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def out_session(request):

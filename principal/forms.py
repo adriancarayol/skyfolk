@@ -47,19 +47,6 @@ class AuthForm(AuthenticationForm):
     password = forms.CharField(label="", help_text="",widget=forms.PasswordInput(attrs={'placeholder' : 'Contraseña'}))
 
 
-"""
-class AuthForm(AuthenticationForm):
+class SearchForm(forms.Form):
 
-    #username = forms.CharField(widget=TextInput(attrs={'class': 'span2','placeholder': 'Email'}))
-    #password = forms.CharField(widget=PasswordInput(attrs={'class': 'span2','placeholder':'Password'}))
-    def __init__(self, *args, **kwargs):
-        super(AuthForm, self).__init__(*args, **kwargs)
-        
-        #username = forms.CharField(label="", help_text="",widget=forms.TextInput(attrs={'placeholder' : 'Nick'}))
-        #password = forms.CharField(label="", help_text="",widget=forms.PasswordInput(attrs={'placeholder' : 'Contraseña'}))
-
-        self.base_fields['username'].widget.attrs['placeholder'] = 'Nick'
-        self.base_fields['password'].widget.attrs['placeholder'] = 'Contraseña'
-        self.base_fields['username'].label = ''
-        self.base_fields['password'].label = ''
-"""
+    searchText = forms.CharField(label="", help_text="",required=False,widget=forms.TextInput(attrs={'placeholder' : '¿Que es lo que quieres buscar?'}))

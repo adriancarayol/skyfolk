@@ -92,14 +92,22 @@ function cambiopagina(){
 <ul>
 <li><button type="button" id="Menu">Menu</button>
 <li><div class="field" id="searchform">
-  <input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />
-  <button type="submit" class="btn">¡Buscar!</button>   
-  </div></li></li></ul>
-  {% if isProfileUser  %}
-  <span class="fontawesome-cog"></span>
-  <span class="fontawesome-comment-alt"></span>
-  <span class="fontawesome-th"></span>
-  {% endif %}
+  	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
+  	<!--<button type="submit" class="btn">¡Buscar!</button>-->
+	<form method='post' action=''>{% csrf_token %}
+
+		{{searchForm}}
+		<button type="submit" class="btn" onclick="javascript:window.location.href='/{{requestUsername}}/search'">¡Buscar!</button>
+	
+	</form>
+	
+
+  	</div></li></li></ul>
+  	{% if isProfileUser  %}
+  		<span class="fontawesome-cog"></span>
+  		<span class="fontawesome-comment-alt"></span>
+  		<span class="fontawesome-th"></span>
+  	{% endif %}
 </nav>
 
 {% block content %}{% endblock %}
