@@ -97,13 +97,13 @@ function cambiopagina(){
 	<form method='post' action=''>{% csrf_token %}
 
 		{{searchForm}}
-		<button type="submit" class="btn" onclick="javascript:window.location.href='/{{requestUsername}}/search'">¡Buscar!</button>
-	
+		<!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
+		<button type="submit" class="btn">¡Buscar!</button>
 	</form>
 	
 
   	</div></li></li></ul>
-  	{% if isProfileUser  %}
+  	{% if showPerfilButtons  %}
   		<span class="fontawesome-cog"></span>
   		<span class="fontawesome-comment-alt"></span>
   		<span class="fontawesome-th"></span>

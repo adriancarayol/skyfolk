@@ -15,6 +15,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import hashlib
+from django.db.models import Q
 
 # Create your views here.
 """
@@ -56,31 +57,42 @@ def inicio(request):
 @login_required(login_url='/')
 def profile_view(request, username):
 	userProfile = User.objects.get(username__iexact = username)
-	isProfileUser = False
+	showPerfilButtons = False
 	requestUsername = request.user.username #esto es para que una vez cargada la pagina de perfil, al pulsar buscar hace falta poner el nombre del usuario que visita la pagina
+	#para mostarar el cuadro de busqueda en la pagina:
+	searchForm = SearchForm(request.POST)
 
 	if not request.user.is_anonymous():
 		if request.user.username == userProfile.username:
-			#el que ve el perfil es el usuario del perfil
-			isProfileUser = True
+			#mostrar botones de perfil
+			showPerfilButtons = True
 
 	if request.method == 'POST':
-		searchForm = SearchForm(request.POST)
 		if searchForm.is_valid:
-			searchText = request.POST['searchText']
-			#hacer busqueda mediante consulta a la base de datos y redireccionar a search.html con los datos
+			text = request.POST['searchText']
+			#redireccionar a search.html con el texto
+			return HttpResponseRedirect('/search/' + text)
 
-	else:
-		searchForm = SearchForm(request.POST)
 
-	return render_to_response('profile.html',{'userProfile':userProfile,'isProfileUser':isProfileUser,'searchForm':searchForm,'requestUsername':requestUsername},context_instance=RequestContext(request))
+	return render_to_response('profile.html',{'userProfile':userProfile,'showPerfilButtons':showPerfilButtons,'searchForm':searchForm},context_instance=RequestContext(request))
 
 
 @login_required(login_url='/')
-def search(request, username):
+def search(request, text):
+	#para mostarar tambien el cuadro de busqueda en la pagina
+	searchForm = SearchForm(request.POST)
 
-	#return render_to_response('profile.html',{'userProfile':userProfile,'isProfileUser':isProfileUser},context_instance=RequestContext(request))
-	return render_to_response('search.html', context_instance=RequestContext(request))
+	if request.method == 'POST':
+		if searchForm.is_valid:
+			text = request.POST['searchText']
+			#redireccionar a search.html con el texto
+			return HttpResponseRedirect('/search/' + text)
+
+	#hacer busqueda mediante consulta a la base de datos y pasar los datos
+	texto_to_search = text
+	resultSearch = User.objects.filter( Q(first_name__icontains = texto_to_search) | Q(last_name__icontains = texto_to_search) | Q(username__icontains = texto_to_search) )
+
+	return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':resultSearch}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def out_session(request):

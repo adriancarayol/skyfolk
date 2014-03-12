@@ -54,3 +54,113 @@
 .btn{ 
    cursor: pointer;
 }
+.container-search{
+
+	height:30%;
+	width:40%;
+	margin:0 auto 0 auto;
+	margin-top:70px;
+	background-color:white;
+	
+	border:2px solid #a4f4e8;
+	padding:2px;
+
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+
+}
+.container-search ul{
+
+	list-style-type: none;
+	margin-top:0px;
+	/*background-color:green;*/
+	height:100%;
+	width:100%;
+	padding-left:0px;
+
+}
+.container-search li{
+
+	margin-left:0px;
+	font:1.2em 'Montserrat Alternates';
+	/*background-color:red;*/
+	height:100px;
+	width:100%;
+	padding:25px 12px;
+	border-bottom:1px solid #a4f4e8;
+
+}
+.container-search li .container-img{
+
+	/*margin-top: 15px;*/
+	height:54px;
+	width:54px;
+	background-color: #ebf4f2;
+	padding:2px;
+	float:left;
+	margin-left:15px;
+
+
+}
+.container-search li .container-img img{
+
+	/*background-color:yellow;*/
+	height:50px;
+	width:50px;
+
+}
+.container-search li .container-userdata{
+
+	/*background-color:violet;*/
+	height:50px;
+	width:290px;
+	float:left;
+	margin-left:10px;
+	padding:10px 10px;
+
+
+}
+.container-search li .container-fullname{
+
+	/*
+	background-color:orange;
+	height:5px;
+	width:50px;
+	*/
+	text-transform: capitalize;
+
+}
+.container-search li .container-username{
+
+	font-style:italic;
+
+}
+.container-search li .container-actions{
+
+	float:right;	
+	margin-top:0px;
+	margin-right:20px;
+
+	/*background-color:blue;*/
+}
+.container-search li .container-actions .item-action{
+
+
+	padding-left:10px;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
