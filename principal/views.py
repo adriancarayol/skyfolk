@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import hashlib
 from django.db.models import Q
+from django.core.urlresolvers import reverse
 
 # Create your views here.
 """
@@ -71,8 +72,10 @@ def profile_view(request, username):
 		if searchForm.is_valid:
 			text = request.POST['searchText']
 			#redireccionar a search.html con el texto
-			return HttpResponseRedirect('/search/' + text)
-
+			if text:
+				text = text.replace (" ", "%")
+				redirect_url = reverse('search', args=[text])
+				return HttpResponseRedirect(redirect_url)
 
 	return render_to_response('profile.html',{'userProfile':userProfile,'showPerfilButtons':showPerfilButtons,'searchForm':searchForm},context_instance=RequestContext(request))
 
@@ -82,17 +85,21 @@ def search(request, text):
 	#para mostarar tambien el cuadro de busqueda en la pagina
 	searchForm = SearchForm(request.POST)
 
+
 	if request.method == 'POST':
 		if searchForm.is_valid:
-			text = request.POST['searchText']
-			#redireccionar a search.html con el texto
-			return HttpResponseRedirect('/search/' + text)
+			texto_to_search = request.POST['searchText']
+			
+	else:
+		texto_to_search = text.replace ("%", " ")
 
-	#hacer busqueda mediante consulta a la base de datos y pasar los datos
-	texto_to_search = text
-	resultSearch = User.objects.filter( Q(first_name__icontains = texto_to_search) | Q(last_name__icontains = texto_to_search) | Q(username__icontains = texto_to_search) )
 
-	return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':resultSearch}, context_instance=RequestContext(request))
+	#hacer busqueda si hay texto para buscar, mediante consulta a la base de datos y pasar el resultado
+	if texto_to_search:
+		resultSearch = User.objects.filter( Q(first_name__icontains = texto_to_search) | Q(last_name__icontains = texto_to_search) | Q(username__icontains = texto_to_search) )
+		return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':resultSearch}, context_instance=RequestContext(request))
+	else:
+		return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def out_session(request):

@@ -4,6 +4,11 @@
 
 <div class="container-search">
 
+{% if resultSearch|length = 0 %}
+	<div id="search-noelements">Sin resultados</div>
+{% endif %}
+
+
 	<ul>
 	{% for item in resultSearch %}
 	    <li>
