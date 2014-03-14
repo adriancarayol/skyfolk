@@ -96,8 +96,16 @@ def search(request, text):
 
 	#hacer busqueda si hay texto para buscar, mediante consulta a la base de datos y pasar el resultado
 	if texto_to_search:
-		resultSearch = User.objects.filter( Q(first_name__icontains = texto_to_search) | Q(last_name__icontains = texto_to_search) | Q(username__icontains = texto_to_search) )
+		words = texto_to_search.split()
+		if len(words) == 1:
+			resultSearch = User.objects.filter( Q(first_name__icontains = texto_to_search) | Q(last_name__icontains = texto_to_search) | Q(username__icontains = texto_to_search) )
+		elif len(words) == 2:
+			resultSearch = User.objects.filter( first_name__icontains = words[0], last_name__icontains = words[1] )
+		else:
+			resultSearch = User.objects.filter( first_name__icontains = words[0], last_name__icontains = words[1] + ' ' + words[2] )
+
 		return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':resultSearch}, context_instance=RequestContext(request))
+	
 	else:
 		return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
 
