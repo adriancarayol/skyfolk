@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.admindocs',
+    'south',
     'principal',
 )
 
@@ -110,6 +111,7 @@ ADMINS = (
     #('Ionut Remires', ' ... '),     # email?
     #('Pablo Rossiñol', ' ... ' )    # email?
     ('Carlos Canicio', 'canicio7@gmail.com'),
+    ('Lostcitizen', 'lostcitizen@gmail.com'),
 )
 
 TEMPLATE_DIRS = (
@@ -131,20 +133,20 @@ STATICFILES_DIRS = (
 # heroku
 
 # Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
-# Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Allow all host headers
-ALLOWED_HOSTS = ['*']
-# Static asset configuration
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+#import dj_database_url
+#DATABASES['default'] =  dj_database_url.config()
+## Honor the 'X-Forwarded-Proto' header for request.is_secure()
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+## Allow all host headers
+#ALLOWED_HOSTS = ['*']
+## Static asset configuration
+#import os
+#BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+#STATIC_ROOT = 'staticfiles'
+#STATIC_URL = '/static/'
+#
+#STATICFILES_DIRS = (
+#    os.path.join(BASE_DIR, 'static'),
+#)
 
 #..................................................................
