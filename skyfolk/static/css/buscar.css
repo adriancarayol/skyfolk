@@ -113,6 +113,8 @@
 	padding:2px;
 	float:left;
 	margin-left:15px;
+	  border-radius: 98%;
+
 
 
 }
@@ -124,6 +126,8 @@ padding:2px;
 float:left;
 margin-left:15px;
 transform:scale(1.15);
+  border-radius: 98%;
+
 }
 .container-search li .container-img img{
 
