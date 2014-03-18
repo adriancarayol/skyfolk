@@ -107,8 +107,8 @@
 .container-search li .container-img{
 
 	/*margin-top: 15px;*/
-	height:92px;
-	width:92px;
+	height:72px;
+	width:72px;
 	background-color: #ebf4f2;
 	padding:2px;
 	float:left;
@@ -119,8 +119,8 @@
 
 }
 .container-search li .container-img:hover{
-height:92px;
-width:92px;
+height:72px;
+width:72px;
 background-color:#ebf4f2;
 padding:2px;
 float:left;
@@ -132,8 +132,8 @@ transform:scale(1.15);
 .container-search li .container-img img{
 
 	/*background-color:yellow;*/
-	height:91px;
-	width:91px;
+	height:71px;
+	width:71px;
 
 }
 .container-search li .container-userdata{
