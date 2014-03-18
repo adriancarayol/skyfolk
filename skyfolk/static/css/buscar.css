@@ -116,6 +116,15 @@
 
 
 }
+.container-search li .container-img:hover{
+height:54px;
+width:54px;
+background-color:#ebf4f2;
+padding:2px;
+float:left;
+margin-left:15px;
+transform:scale(1.15);
+}
 .container-search li .container-img img{
 
 	/*background-color:yellow;*/
