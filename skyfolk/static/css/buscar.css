@@ -107,20 +107,33 @@
 .container-search li .container-img{
 
 	/*margin-top: 15px;*/
-	height:54px;
-	width:54px;
+	height:72px;
+	width:72px;
 	background-color: #ebf4f2;
 	padding:2px;
 	float:left;
 	margin-left:15px;
+	  border-radius: 98%;
 
+
+
+}
+.container-search li .container-img:hover{
+height:72px;
+width:72px;
+background-color:#ebf4f2;
+padding:2px;
+float:left;
+margin-left:15px;
+transform:scale(1.15);
+  border-radius: 98%;
 
 }
 .container-search li .container-img img{
 
 	/*background-color:yellow;*/
-	height:50px;
-	width:50px;
+	height:71px;
+	width:71px;
 
 }
 .container-search li .container-userdata{
