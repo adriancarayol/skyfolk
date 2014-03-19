@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     url(r'^profile/(?P<username>[\w-]+)/$', 'principal.views.profile_view', name='profile'),
     #url(r'^search/$','principal.views.search'),
     url(r'^search/(?P<text>[%\w-]+)/$','principal.views.search', name='search'),
+    url(r'^friends/$','principal.views.friends'),
     url(r'^outsession/$', 'principal.views.out_session'),
 )

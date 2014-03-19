@@ -109,6 +109,11 @@ def search(request, text):
 	else:
 		return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
 
+
+@login_required(login_url='/')
+def friends(request):
+	return render_to_response('amigos.html', context_instance=RequestContext(request))
+
 @login_required(login_url='/')
 def out_session(request):
 	logout(request)
