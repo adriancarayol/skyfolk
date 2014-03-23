@@ -4,7 +4,7 @@
   font-family: 'entypo', sans-serif;
 }
 
-@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
+@import url(http://fonts.googleapis.com/css?family=Metrophobic);
 
 * {
   -webkit-font-smoothing: antialiased;
@@ -537,7 +537,7 @@ font-family: 'Droid Sans Mono',;
     }
 
 #search input[type="text"]:focus {
-    background: url(/img/search-dark.png) no-repeat 10px 6px #fcfcfc;
+    background: url{{STATIC_URL}}img/search-dark.png, no-repeat 10px 6px #fcfcfc;
     color: #6a6f75;
     width: 200px;
     -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
