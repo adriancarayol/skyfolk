@@ -22,5 +22,5 @@ urlpatterns = patterns('',
     url(r'^search/(?P<text>[%\w-]+)/$','principal.views.search', name='search'),
     url(r'^friends/$','principal.views.friends'),
     url(r'^outsession/$', 'principal.views.out_session'),
-    (r'^accounts/', include('userena.urls')),
+    url(r'^accounts/', include('userena.urls')),
 )
