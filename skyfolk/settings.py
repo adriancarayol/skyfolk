@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
-
+from django.conf import settings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -17,6 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 import os
 RUTA_PROYECTO = os.path.dirname(os.path.realpath(__file__))
 
+gettext = lambda s: s
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -88,7 +89,7 @@ USERENA_ACTIVATION_DAYS = 7											# Días para activar la cuenta
 #USERENA_ACTIVATION_NOTIFY = False									# Define si se enviara o no una notificación de cuando acaba el plazo para activar la cuenta
 #USERENA_ACTIVATION_NOTIFY_DAYS = 2									# Dias antes de enviar la notificación de aviso de expiración de cuenta por la no activación
 USERENA_ACTIVATED = True											# String that defines the value that the activation_key will be set to after a successful signup.
-#USERENA_REMEMBER_ME_DAYS = (gettext('a month'), 30))				# Los días que el usuario puede escoger ser recordado (cuanto tiempo permanecerá abierta la sesión)
+USERENA_REMEMBER_ME_DAYS = (gettext('a month'), 30)					# Los días que el usuario puede escoger ser recordado (cuanto tiempo permanecerá abierta la sesión)
 #USERENA_FORBIDDEN_USERNAMES = ('activate','me')					# Define los nombre de usuarios prohibidos
 #USERENA_MUGSHOT_GRAVATAR = True									# Define si se buscará un avatar en Gravatar si el usuario no sube un avatar
 #USERENA_MUGSHOT_GRAVATAR_SECURE = USERENA_USE_HTTPS				# Define si la conexión a Gravatar será por https
@@ -103,7 +104,7 @@ USERENA_ACTIVATED = True											# String that defines the value that the acti
 #USERENA_DISABLE_SIGNUP = False										# Deshabilita el registro de nuevos usuarios
 #USERENA_USE_MESSAGES = True										# Define si Userena debe utilizar el framework de mensajes de django para notificar al usuario de cualquier cambio
 #USERENA_LANGUAGE_FIELD = 'languaje'								# Define el campo de idioma para perfiles con idioma personalizado
-#USERENA_WITHOUT_USERNAMES = False									# Deshabilita la identificación por nombre de usuario (usa email)
+USERENA_WITHOUT_USERNAMES = False									# Deshabilita la identificación por nombre de usuario (usa email)
 #USERENA_HIDE_EMAIL = True											# Previene que se muestren las direcciones de correo a otras personas
 #USERENA_HTML_EMAIL = False											# Define si los emails serán generados usando un template html
 #USERENA_USE_PLAIN_TEMPLATE = True									# Define si los emails serán generados usando texto plano
@@ -208,7 +209,7 @@ STATICFILES_DIRS = (
 
 
 #...................................................................
-
+"""
 # heroku
 
 # Parse database configuration from $DATABASE_URL
@@ -227,5 +228,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
+"""
 #..................................................................

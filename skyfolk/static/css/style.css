@@ -21,13 +21,14 @@ font-size: 70px;
 
 .block-form{
 
+
     font-family: 'Ubuntu', 'Lato', sans-serif;
     font-weight: 400;
     /* Size and position */
     width: 500px;
     position: relative;
     margin: 300px auto 0px 50px;
-    padding: 20px 50px 50px;
+    padding: 20px 50px 20px;
     overflow: hidden;
     /* Styles */
     background: #111;
@@ -58,8 +59,17 @@ font-size: 70px;
         0 16px 10px -8px rgba(0, 0, 0, 0.6);
 	background-color: #000000;
     */
+  
 
 }
+/*
+.form-3 fieldset{
+     border: 0px;
+     background-color: yellow;
+     border: 0px;
+     padding: 0px;
+}
+*/
 .block-formregister{
     /*top: -120px;*/
     margin-bottom: 0px;
@@ -74,8 +84,8 @@ font-size: 70px;
 .form-3 label {
     /* Size and position */
     width: 50%;
-    float: left;
-    padding-top: 9px;
+    /*float: left;*/
+    /*padding-top: 9px;*/
 
     /* Styles */
     color: #ddd;
@@ -114,6 +124,7 @@ font-size: 70px;
     font-family: 'Ubuntu', 'Lato', sans-serif;
     color: #fff;
 
+
 }
 
 .form-3 input[type=text]:hover,
@@ -149,8 +160,8 @@ font-size: 70px;
 }
 
 .form-3 input[type=checkbox] {
-    margin-left: 10px;
-    vertical-align: middle;
+    /*margin-left: 10px;*/
+    /*vertical-align: middle;*/
 }
 
 .form-3 input[type=submit] {
@@ -393,4 +404,18 @@ position: 200px;
 .myButton:active {
 	position:relative;
 	top:1px;
+}
+
+
+.form-3 a{
+
+    float: left;
+}
+.checkbox{
+    background-color: blue;
+    /*width: 20px;*/
+}
+.checkbox-rembember{
+    width: 100%;
+    float: left;
 }
