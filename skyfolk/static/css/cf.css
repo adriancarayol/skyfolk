@@ -1,0 +1,30 @@
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+@import url(http://fonts.googleapis.com/css?family=Gafata);
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+
+/* entypo */
+[class*="entypo-"]:before {
+  font-family: 'entypo', sans-serif;
+}
+
+/* entypo */
+[class*="entypo-"]:before {
+  font-family: 'entypo', sans-serif;
+}
+
+
+.entypo-cog {
+font-size: 40px;
+color: #5AC3FF;
+position:absolute;
+float:left;
+
+}
+#cf {
+font-size:32px;
+position:absolute;
+margin: 25px;
+margin-top: 5px;	
+font-family: 'Gafata', sans-serif;
+}
+/*Cuerpo*/
