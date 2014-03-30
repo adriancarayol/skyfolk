@@ -14,7 +14,7 @@
 >>>>>>> 4e51631da3d58553e711f24ffe5daad5b50bacd2
     <div id="dribbble" class="size right"><span class="entypo-mail"></span></div>
     <div id="facebook" class="size left"><span class="entypo-calendar"></span></div>
-    <div id="twitter" class="size right"><span class="entypo-logout"></span></div>
+    <div id="twitter" class="size right"><span class="entypo-logout"></span><a href="/outsession"></div>
   </div>
 </div>
 
@@ -32,10 +32,11 @@
  
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="user-card card">
-          <div class="user-avatar"><img src="{{STATIC_URL}}img/bola/11.jpg" class="user-bg">
+          <div class="user-avatar"><img src="{{STATIC_URL}}img/bola/11.jpg" class="user-bg"><span class="entypo-info-circled"></span>
             <input type="checkbox" id="button-menu"  />
             <div class="caja">
              <div class="item">
+                <span class="entypo-info-circled"></span>
                <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">
                <span class="informacion">
                  <span class="entypo-plus" title="Agregar" ></span>
