@@ -5,8 +5,13 @@
 <div id="panel"> 
 
   <div id="widget" onClick="cambiopagina()"> 
+<<<<<<< HEAD
     <div id="middle"><img src="{{STATIC_URL}}img/5.jpg" width="300" height="300"><span class="entypo-user"></span></div>
     <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
+=======
+    <div id="middle"><img src="../../" width="300" height="300"><span class="entypo-user"></span></div>
+    <div id="linkedin" class="size left"><span class="entypo-users"></span><a href="profile.html"></div>
+>>>>>>> 4e51631da3d58553e711f24ffe5daad5b50bacd2
     <div id="dribbble" class="size right"><span class="entypo-mail"></span></div>
     <div id="facebook" class="size left"><span class="entypo-calendar"></span></div>
     <div id="twitter" class="size right"><span class="entypo-logout"></span></div>
@@ -31,6 +36,7 @@
             <input type="checkbox" id="button-menu"  />
             <div class="caja">
              <div class="item">
+                <span class="entypo-info-circled"></span>
                <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">
                <span class="informacion">
                  <span class="entypo-plus" title="Agregar" ></span>
@@ -46,14 +52,19 @@
             <h1>Adrian Subname</h1>
             <p>_Adrianxxxxxxx</p>
             -->
-            
+            <!--
             <h1>{{ user.first_name }} {{ user.last_name }}</h1>
             <p>{{ user.username }}</p>
+            -->
+            
+            <h1>{{ userProfile.first_name }} {{ userProfile.last_name }}</h1>
+            <p>{{ userProfile.username }}</p>
+                     
           </header>
           <div class="status">Play hard.</div><span class="fontawesome-pencil"> </span>
           <ul class="stats">
-            <li><a href="amigos.html"><strong>380</strong><span>Seguidores</span></a></li>
-            <li><a><strong>934</strong><span>Me gusta</span></a></li>
+            <li><a href="/friends"><strong>380</strong><span>Seguidores</span></a></li>
+            <li><a><strong>934</strong><span value="me gusta" onclick="javascript:contador()">Me gusta</span></a></li>
             <li><a class='inline' href="#inline_content"><strong>48</strong><span>Fotos</span></a></li>
           </ul>
         </div>
@@ -314,7 +325,7 @@
 <div style='display:none'>
       <div id='inline_content' style='padding:10px; background:#fff;'>
         <p><strong><form action="" method="get">
-              <span><img src="galym/6.jpg"></span>
+              <span><img src="{{STATIC_URL}}img/2.jpg"></span>
               </form></strong></p>
       
       </div>

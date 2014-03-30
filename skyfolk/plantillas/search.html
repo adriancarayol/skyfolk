@@ -1,0 +1,36 @@
+{% extends 'base_interface.html' %}
+
+{% block content %}
+
+<div class="container-search">
+
+{% if resultSearch|length = 0 %}
+	<div id="search-noelements">Sin resultados</div>
+{% endif %}
+
+
+	<ul>
+	{% for item in resultSearch %}
+	    <li>
+	    	<div class="container-img">
+	    		<img src="{{STATIC_URL}}img/bola/2.jpg">
+	    	</div>
+	    	<div class="container-userdata">
+		    	<div class="container-fullname">
+		    		{{ item.first_name }} {{ item.last_name }}
+		    	</div>
+		    	<div class="container-username">
+		    		{{ item.username }}
+		    	</div>	    		
+	    	</div>
+	    	<span class="container-actions">
+	    		<span class="item-action">Agregar</span>
+	    		<span class="item-action"><a href="/profile/{{ item.username }}">Ver perfil</a></span>
+	    	</span>
+	    	
+	    </li>
+	{% endfor %}
+	</ul>
+</div>
+
+{% endblock %}

@@ -2,6 +2,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from principal.forms import AuthForm
+from userena import views as userena_views
+from principal.forms import AuthenticationForm
 
 admin.autodiscover()
 
@@ -15,6 +17,17 @@ urlpatterns = patterns('',
     url(r'^$','principal.views.inicio'),
     #url(r'^$','principal.views.inicio','django.contrib.auth.views.login',{'template_name': 'inicio.html','authentication_form': AuthForm}),
     url(r'^newuser/$','principal.views.new_user'),
-    url(r'^profile/', 'principal.views.profile'),
+    #url(r'^profile/', 'principal.views.profile'),
+    #url(r'^profile/(?P<id>\d+)/$', 'principal.views.profile_view', name='profile'),
+    url(r'^profile/(?P<username>[\w-]+)/$', 'principal.views.profile_view', name='profile'),
+    #url(r'^search/$','principal.views.search'),
+    url(r'^search/(?P<text>[%\w-]+)/$','principal.views.search', name='search'),
+    url(r'^friends/$','principal.views.friends'),
     url(r'^outsession/$', 'principal.views.out_session'),
+    url(r'^accounts/signin/$', userena_views.signin, {'auth_form': AuthenticationForm}, name='userena_signin'),
+    url(r'^accounts/', include('userena.urls')),
+    
+
+
+
 )

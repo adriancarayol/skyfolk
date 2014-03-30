@@ -82,7 +82,16 @@ function cambiopagina(){
 			});
     */
 		</script>
+<script language="javascript">
+var i = 0;
 
+function contador()
+{
+i = i + 1;
+var btn = document.getElementById("boton");
+btn.value = "me gusta (" + i + ")";
+}
+</script> 
 </head>
 
 
@@ -92,12 +101,31 @@ function cambiopagina(){
 <ul>
 <li><button type="button" id="Menu">Menu</button>
 <li><div class="field" id="searchform">
+<<<<<<< HEAD
   <input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />
   <li><button type="submit" class="btn">¡Buscar!</button></li>   
   </div></li></li></ul>
   <span class="fontawesome-cog"></span>
   <span class="fontawesome-comment-alt"></span>
   <span class="fontawesome-th"></span>
+=======
+  	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
+  	<!--<button type="submit" class="btn">¡Buscar!</button>-->
+	<form method='post' action=''>{% csrf_token %}
+
+		{{searchForm}}
+		<!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
+		<button type="submit" class="btn">¡Buscar!</button>
+	</form>
+	
+
+  	</div></li></li></ul>
+  	{% if showPerfilButtons  %}
+  		<span class="fontawesome-cog"></span>
+  		<span class="fontawesome-comment-alt"></span>
+  		<span class="fontawesome-th"></span>
+  	{% endif %}
+>>>>>>> 4e51631da3d58553e711f24ffe5daad5b50bacd2
 </nav>
 
 {% block content %}{% endblock %}
