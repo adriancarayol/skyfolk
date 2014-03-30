@@ -84,7 +84,7 @@ AUTH_PROFILE_MODULE = 'accounts.MyProfile'						# Módulo/app con modelo de dato
 #
 #USERENA_SIGNIN_AFTER_SIGNUP = False								# Define si es necesario logarse después de registrarse: http://django-userena.readthedocs.org/en/latest/settings.html
 #USERENA_SIGNIN_REDIRECT_URL = '/accounts/%(username)s/'			# Define la url a la que redirigir después de hacer login. Por defecto: '/accounts/%(username)s/'
-USERENA_ACTIVATION_REQUIRED = True									# Define si se requiere activar la cuenta
+USERENA_ACTIVATION_REQUIRED = False									# Define si se requiere activar la cuenta
 USERENA_ACTIVATION_DAYS = 7											# Días para activar la cuenta
 #USERENA_ACTIVATION_NOTIFY = False									# Define si se enviara o no una notificación de cuando acaba el plazo para activar la cuenta
 #USERENA_ACTIVATION_NOTIFY_DAYS = 2									# Dias antes de enviar la notificación de aviso de expiración de cuenta por la no activación

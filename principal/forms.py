@@ -5,8 +5,7 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
-
+from userena import settings as settings
 
 class UserCreateForm(UserCreationForm):
 	
@@ -55,7 +54,7 @@ class SearchForm(forms.Form):
     searchText = forms.CharField(label="", help_text="",required=False,widget=forms.TextInput(attrs={'placeholder' : '¿Que es lo que quieres buscar?'}))
 
 
-attrs_dict = {'class': 'required'}
+
 ##########################################################################
 # Formulario de autenticacion que sobreescribe al de userena
 #   Carlos Canicio                                       
@@ -110,5 +109,7 @@ class AuthenticationForm(forms.Form):
             if user is None:
                 raise forms.ValidationError(_(u"Please enter a correct username or email and password. Note that both fields are case-sensitive."))
         return self.cleaned_data
+
+
 
 
