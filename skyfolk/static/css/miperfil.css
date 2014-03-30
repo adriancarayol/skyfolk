@@ -1049,3 +1049,24 @@ position: absolute;
 margin-top: -34px;
 }
 /* fin editar estado */
+/*Informacion perfil */
+ .entypo-info-circled {
+ cursor:pointer;
+ color: #71FF95;
+ font-size: 25px;
+ position: relative;
+ display: block;
+ margin-left: 350px;
+ text-shadow: grey 1px 1px 1px;
+  }
+ .entypo-info-circled:hover {
+ color: #4BDCFF;
+ font-size: 25px;
+ position: relative;
+ display: block;
+ margin-left: 350px;
+ text-shadow: grey 1px 1px 1px;
+ transform: rotate(15deg);
+ transform: scale (3,3)
+  }
+  /*Fin informacion perfil */
