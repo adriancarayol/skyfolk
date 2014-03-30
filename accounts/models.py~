@@ -10,6 +10,6 @@ class MyProfile(UserenaBaseProfile):
     #lastName = models.CharField(_('apellidos'),max_length=50)
     class Meta:
         permissions = (
-            ('change_profile', 'Change Profile'),
+            ('change_profile', 'Change profile'),
         )
 

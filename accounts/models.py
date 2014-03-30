@@ -8,8 +8,5 @@ class MyProfile(UserenaBaseProfile):
     user = models.OneToOneField(User,unique=True, verbose_name=_('user'),related_name='my_profile')
     #firstName = models.CharField(_('nombre'),max_length=20)
     #lastName = models.CharField(_('apellidos'),max_length=50)
-    class Meta:
-        permissions = (
-            ('change_profile', 'Change profile'),
-        )
+
 
