@@ -40,6 +40,11 @@
 	},
 	"file_history":
 	[
+		"/home/lostcitizen/PROJECTS/skyfolk/accounts/models.py~",
+		"/home/lostcitizen/PROJECTS/skyfolk/skyfolk/plantillas/profile.html~",
+		"/home/lostcitizen/PROJECTS/skyfolk/skyfolk/wsgi.py~",
+		"/home/lostcitizen/PROJECTS/skyfolk/skyfolk/urls.py~",
+		"/home/lostcitizen/PROJECTS/skyfolk/manage.py",
 		"/home/lostcitizen/PROJECTS/skyfolk/skyfolk.sublime-workspace",
 		"/home/lostcitizen/PROJECTS/skyfolk/skyfolk.sublime-project",
 		"/home/lostcitizen/PROJECTS/skyfolk/skyfolk/settings.py"
@@ -118,7 +123,7 @@
 	{
 		"height": 0.0
 	},
-	"project": "skyfolk+.sublime-project",
+	"project": "skyfolk.sublime-project",
 	"replace":
 	{
 		"height": 46.0
@@ -155,7 +160,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 187.0,
+	"side_bar_width": 333.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
