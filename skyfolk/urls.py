@@ -4,8 +4,15 @@ from django.conf import settings
 from principal.forms import AuthForm
 from userena import views as userena_views
 from principal.forms import AuthenticationForm
+from rest_framework import viewsets, routers
+from api import views
 
 admin.autodiscover()
+
+# REST Framework
+router = routers.DefaultRouter()
+router.register(r'api/users', views.UserViewSet)
+router.register(r'api/groups', views.GroupViewSet)
 
 urlpatterns = patterns('',
     # Examples:
@@ -24,10 +31,12 @@ urlpatterns = patterns('',
     url(r'^search/(?P<text>[%\w-]+)/$','principal.views.search', name='search'),
     url(r'^friends/$','principal.views.friends'),
     url(r'^outsession/$', 'principal.views.out_session'),
+    
+    # URLS USERENA
     url(r'^accounts/signin/$', userena_views.signin, {'auth_form': AuthenticationForm}, name='userena_signin'),
     url(r'^accounts/', include('userena.urls')),
-    
 
-
-
+    # URLS REST FRAMEWORK
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )

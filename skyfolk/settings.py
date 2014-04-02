@@ -50,6 +50,7 @@ THIRD_PARTY_APPS = (
 	'userena',		# Gestiona las cuentas de usuario
 	'guardian',		# Dependencia de userena
 	'easy_thumbnails',	# Dependencia de userena
+	'rest_framework',	# REST framework
 )
 
 # Local Applications
@@ -62,7 +63,7 @@ INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 ##########################################################################
 # Userena - módulo de cuentas de usuario
-#	lostcitizen@gmail.com										20140316
+# 20140316 - Instalación
 ##########################################################################
 # Guardian (Userena dependecy)
 #
@@ -113,7 +114,7 @@ USERENA_WITHOUT_USERNAMES = False									# Deshabilita la identificación por n
 
 ##########################################################################
 # Configuración servidor SMTP envio de correos
-#	lostcitizen@gmail.com										20140316
+# 20140316 - Instalación
 ##########################################################################
 #					https://docs.djangoproject.com/en/dev/topics/email/
 #
@@ -135,6 +136,17 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
+##########################################################################
+# REST FRAMEWORK
+# 20140402 - Instalación
+##########################################################################
+#					http://www.django-rest-framework.org/
+#
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGINATE_BY': 10
+}
 
 ROOT_URLCONF = 'skyfolk.urls'
 
