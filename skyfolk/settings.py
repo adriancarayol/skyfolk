@@ -221,7 +221,6 @@ STATICFILES_DIRS = (
 
 # heroku
 
->>>>>>> 4e51631da3d58553e711f24ffe5daad5b50bacd2
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES['default'] =  dj_database_url.config()
