@@ -34,6 +34,7 @@ urlpatterns = patterns('',
     
     # URLS USERENA
     url(r'^accounts/signin/$', userena_views.signin, {'auth_form': AuthenticationForm}, name='userena_signin'),
+    url(r'^accounts/(?P<username>(?!signout|signup|signin)[\.\w-]+)/$', 'principal.views.myprofile_detail', name='userena_profile_detail'),
     url(r'^accounts/', include('userena.urls')),
 
     # URLS REST FRAMEWORK

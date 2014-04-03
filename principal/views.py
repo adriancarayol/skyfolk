@@ -17,6 +17,7 @@ from django.contrib import messages
 import hashlib
 from django.db.models import Q
 from django.core.urlresolvers import reverse
+from userena import views as userena_views
 
 # Create your views here.
 """
@@ -119,3 +120,26 @@ def out_session(request):
 	logout(request)
 	return HttpResponseRedirect('/')
 
+#..........................
+#	usernea views
+#.........................
+
+#.........................
+# Vista de perfil que sobreescribe al de userena
+# Carlos Canicio Almendros
+#..........................
+def myprofile_detail(request,username):
+    # do stuff before userena signup view is called
+    showPerfilButtons = False
+    if not request.user.is_anonymous():
+    	showPerfilButtons = True
+    searchForm = SearchForm(request.POST)
+
+    # call the original view
+    response = userena_views.profile_detail(request,username,extra_context={'showPerfilButtons':showPerfilButtons,'searchForm':searchForm})
+
+    # do stuff after userena signup view is done
+    #response.extra_context['searchForm'] = searchForm
+
+    # return the response
+    return response
