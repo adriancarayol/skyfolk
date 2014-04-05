@@ -101,6 +101,13 @@ btn.value = "me gusta (" + i + ")";
 <ul>
 <li><button type="button" id="Menu">Menu</button>
 <li><div class="field" id="searchform">
+	  <!--
+	  <input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />
+	  <li><button type="submit" class="btn">¡Buscar!</button></li>
+	   -->
+	  </div></li></li></ul>
+
+
   	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
   	<!--<button type="submit" class="btn">¡Buscar!</button>-->
 	<form method='post' action=''>{% csrf_token %}
