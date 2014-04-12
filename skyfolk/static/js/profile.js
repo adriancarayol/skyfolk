@@ -62,4 +62,33 @@ function cambiopagina(){
 					return false;
 				});
 			});
+			
+			
+			
+			
+			
+			
+
+$(document).ready(function(){
+  $("#flip").click(function(){
+    $("#panel1").slideToggle("slow");
+  });
+});
+
+$(document).ready(function(){
+  $(".nameact").mouseover(function(){
+    $("#panel").slideToggle("slow");
+	  });
+});
+
+$(document).ready(function(){
+  $(".nameact").mouseover(function(){
+    $("#panel").animate({
+      left:'250px',
+      opacity:'0.9',
+      height:'80px',
+      width:'80px'
+    });
+  });
+});
 		
