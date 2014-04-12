@@ -1085,5 +1085,5 @@ margin-top: -34px;
   right: 10px;
 }
 .nameact {
-margin-right: 5px;
+float: right; 
 }
