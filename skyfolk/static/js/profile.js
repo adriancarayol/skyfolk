@@ -77,13 +77,13 @@ $(document).ready(function(){
 
 $(document).ready(function(){
   $(".nameact").mouseover(function(){
-    $("#panel").slideToggle("slow");
+    $("#panel1").slideToggle("slow");
 	  });
 });
 
 $(document).ready(function(){
   $(".nameact").mouseover(function(){
-    $("#panel").animate({
+    $("#panel1").animate({
       left:'250px',
       opacity:'0.9',
       height:'80px',
