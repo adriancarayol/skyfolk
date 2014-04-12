@@ -4,7 +4,7 @@
   font-family: 'entypo', sans-serif;
 }
 
-@import url(http://fonts.googleapis.com/css?family=Metrophobic);
+@import url(http://fonts.googleapis.com/css?family=Flamenco);
 
 * {
   -webkit-font-smoothing: antialiased;
@@ -77,7 +77,7 @@ body {
   left: 0;
   right: 0;
   margin: 2.8em auto;
-  font-family: 'Metrophobic', sans-serif;
+  font-family: 'Flamenco', cursive;
   color: #fff;
 }
 
@@ -157,7 +157,7 @@ body {
 }
 .profile_card .perfil {
   background: #fff;
-  font-family: 'Metrophobic', sans-serif;
+  font-family: 'Flamenco', cursive;
   box-shadow: 0 -0.2em 0 0 rgba(255, 255, 255, 0.5);
 }
 .profile_card .perfil .foto_perfil {
@@ -199,7 +199,7 @@ body {
   line-height: 2;
   border-top: 0.1em solid rgba(0, 0, 0, 0.2);
   border-bottom: 0.1em solid rgba(0, 0, 0, 0.2);
-  font-family: 'Metrophobic', sans-serif;
+  font-family: 'Flamenco', cursive;
   font-weight: 400;
   margin: 2.8em auto;
   width: 75%;
@@ -313,7 +313,7 @@ body {
   left: 0;
   right: 0;
   margin: 2.8em auto;
-  font-family: 'Metrophobic', sans-serif;
+  font-family: 'Flamenco', cursive;
   color: #fff;
 }
 
@@ -393,7 +393,7 @@ body {
 }
 .profile_card .perfil {
   background: #fff;
-  font-family: 'Metrophobic', sans-serif;
+  font-family: 'Flamenco', cursive;
   box-shadow: 0 -0.2em 0 0 rgba(255, 255, 255, 0.5);
 }
 .profile_card .perfil .foto_perfil {
@@ -447,7 +447,7 @@ body {
   line-height: 2;
   border-top: 0.1em solid rgba(0, 0, 0, 0.2);
   border-bottom: 0.1em solid rgba(0, 0, 0, 0.2);
-  font-family: 'Metrophobic', sans-serif;
+  font-family: 'Flamenco', cursive;
   font-weight: 400;
   margin: 2.8em auto;
   width: 75%;
@@ -517,11 +517,7 @@ body {
 
 
 #search input[type="text"] {
-<<<<<<< HEAD
-    background: url({{STATIC_URL}}img/search-white.png) no-repeat 10px 6px #444;
-=======
-    background: url(http://i.imgbox.com/tWm9Xb6I.png) no-repeat 10px 6px #444;
->>>>>>> 4e51631da3d58553e711f24ffe5daad5b50bacd2
+    background: url(../images/search-white.png) no-repeat 10px 6px #444;
     border: 0 none;
     font: bold 12px Arial,Helvetica,Sans-serif;
     color: #d7d7d7;
@@ -541,11 +537,7 @@ body {
     }
 
 #search input[type="text"]:focus {
-<<<<<<< HEAD
-    background: url({{STATIC_URL}}img/search-dark.png) no-repeat 10px 6px #fcfcfc;
-=======
-    background: url(http://i.imgbox.com/l0r52R4i.png) no-repeat 10px 6px #fcfcfc;
->>>>>>> 4e51631da3d58553e711f24ffe5daad5b50bacd2
+    background: url(../images/search-dark.png) no-repeat 10px 6px #fcfcfc;
     color: #6a6f75;
     width: 200px;
     -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
@@ -557,7 +549,7 @@ body {
 
 font-size: 10px;
 color: #CECECE;
-font-family: 'Metrophobic', sans-serif;
+font-family: 'Varela Round', sans-serif;
 margin-left: 100px;
 margin-top: 20px;
 }
