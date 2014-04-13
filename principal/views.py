@@ -117,7 +117,11 @@ def config_profile(request):
 @login_required(login_url='/')
 def friends(request):
 	return render_to_response('amigos.html', context_instance=RequestContext(request))
-
+	
+@login_required(login_url='/')
+def novedades(request):
+	return render_to_response('columnas.html', context_instance=RequestContext(request))
+	
 @login_required(login_url='/')
 def out_session(request):
 	logout(request)
