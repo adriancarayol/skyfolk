@@ -29,17 +29,17 @@ function aparecerbola(){
 }
 /*
 function cambiopagina(){
-	document.getElementById("twitter").style.opacity = "0";
-	document.getElementById("twitter").style.webkitTransition = "opacity 0.9s linear";
-	setTimeout('location.href="columnas.php"', 500);
+	document.getElementById("linkedin").style.opacity = "1";
+	document.getElementById("linkedin").style.webkitTransition = "opacity 0.9s linear";
+	setTimeout('location.href="/friends"', 500);
 }
 function cambiopagina(){
-	document.getElementById("twitter").style.opacity = "0";
+	document.getElementById("twitter").style.opacity = "1";
 	document.getElementById("twitter").style.webkitTransition = "opacity 0.9s linear";
-	setTimeout('location.href="columnas.php"', 500);
+	setTimeout('location.href="/outsession"', 500);
 }
-*/
 
+*/
 
 
 
@@ -62,4 +62,33 @@ function cambiopagina(){
 					return false;
 				});
 			});
+			
+			
+			
+			
+			
+			
+
+$(document).ready(function(){
+  $("#flip").click(function(){
+    $("#panel1").slideToggle("slow");
+  });
+});
+
+$(document).ready(function(){
+  $(".nameact").mouseover(function(){
+    $("#panel1").slideToggle("slow");
+	  });
+});
+
+$(document).ready(function(){
+  $(".nameact").mouseover(function(){
+    $("#panel1").animate({
+      left:'250px',
+      opacity:'0.9',
+      height:'80px',
+      width:'80px'
+    });
+  });
+});
 		

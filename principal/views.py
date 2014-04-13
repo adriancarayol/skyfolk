@@ -18,6 +18,7 @@ import hashlib
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from userena import views as userena_views
+from userena.utils import get_user_model
 
 # Create your views here.
 """
@@ -58,16 +59,11 @@ def inicio(request):
 
 @login_required(login_url='/')
 def profile_view(request, username):
-	userProfile = User.objects.get(username__iexact = username)
-	showPerfilButtons = False
-	requestUsername = request.user.username #esto es para que una vez cargada la pagina de perfil, al pulsar buscar hace falta poner el nombre del usuario que visita la pagina
+
+
+	#requestUsername = request.user.username #esto es para que una vez cargada la pagina de perfil, al pulsar buscar hace falta poner el nombre del usuario que visita la pagina
 	#para mostarar el cuadro de busqueda en la pagina:
 	searchForm = SearchForm(request.POST)
-
-	if not request.user.is_anonymous():
-		if request.user.username == userProfile.username:
-			#mostrar botones de perfil
-			showPerfilButtons = True
 
 	if request.method == 'POST':
 		if searchForm.is_valid:
@@ -78,7 +74,9 @@ def profile_view(request, username):
 				redirect_url = reverse('search', args=[text])
 				return HttpResponseRedirect(redirect_url)
 
-	return render_to_response('profile.html',{'userProfile':userProfile,'showPerfilButtons':showPerfilButtons,'searchForm':searchForm},context_instance=RequestContext(request))
+	user = get_object_or_404(get_user_model(), username__iexact=username)
+	profile = user.get_profile()
+	return render_to_response('profile.html',{'profile':profile,'searchForm':searchForm},context_instance=RequestContext(request))
 
 
 @login_required(login_url='/')
@@ -110,11 +108,18 @@ def search(request, text):
 	else:
 		return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
 
-
+@login_required(login_url='/')
+def news_event(request):
+	return render_to_response('columnas.html', context_instance=RequestContext(request))
+		
+@login_required(login_url='/')
+def config_profile(request):
+	return render_to_response('cf.html', context_instance=RequestContext(request))
+	
 @login_required(login_url='/')
 def friends(request):
 	return render_to_response('amigos.html', context_instance=RequestContext(request))
-
+	
 @login_required(login_url='/')
 def out_session(request):
 	logout(request)
