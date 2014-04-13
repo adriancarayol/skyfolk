@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/widget1.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/hola.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
 <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
 
@@ -15,6 +15,9 @@
 <script src="{{STATIC_URL}}js/jquery.min.js"></script>
 <script src="{{STATIC_URL}}js/profile.js"></script>
 <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
+
+{% block include_files %}{% endblock %}
+
 <script>
 /*
 $(document).ready(function(){
@@ -101,13 +104,6 @@ btn.value = "me gusta (" + i + ")";
 <ul>
 <li><button type="button" id="Menu">Menu</button>
 <li><div class="field" id="searchform">
-	  <!--
-	  <input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />
-	  <li><button type="submit" class="btn">¡Buscar!</button></li>
-	   -->
-	  </div></li></li></ul>
-
-
   	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
   	<!--<button type="submit" class="btn">¡Buscar!</button>-->
 	<form method='post' action=''>{% csrf_token %}
@@ -119,10 +115,12 @@ btn.value = "me gusta (" + i + ")";
 	
 
   	</div></li></li></ul>
-  	{% if showPerfilButtons  %}
-  		<span class="fontawesome-cog"></span>
+  	{% if user.username == profile.user.username %}
+  		<!--<span class="fontawesome-cog"></span>-->
+  		<a class="fontawesome-cog" href="/configprofile"></a>
   		<span class="fontawesome-comment-alt"></span>
   		<span class="fontawesome-th"></span>
+
   	{% endif %}
 
 </nav>
