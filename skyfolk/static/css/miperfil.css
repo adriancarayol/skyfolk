@@ -1088,7 +1088,8 @@ margin-top: -34px;
 #nav2 {
     width: 20px;
     margin: 10px auto;
-    right: 20px;
+    right: 50px;
+    float: right;
 }
 .nameact {
     list-style: none;
