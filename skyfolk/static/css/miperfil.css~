@@ -1087,7 +1087,6 @@ margin-top: -34px;
 }
 .nameact {
 float: right; 
-font-size: 16px;
-color: #grey;
+font-size: 10px;
 
 }
