@@ -1083,7 +1083,7 @@ margin-top: -34px;
   position: relative;
   z-index: 3;
   float: right;
-  right: 40px;
+  right: 30px;
 }
 #nav2 {
     width: 20px;
