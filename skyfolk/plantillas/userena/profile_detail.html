@@ -9,10 +9,10 @@
     <div id="middle"><img src="{{STATIC_URL}}img/5.jpg" width="300" height="300"><span class="entypo-user"></span></div>
     <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
 -->
-    <div id="middle"><img src="{{STATIC_URL}}img/bola/5.jpg" width="auto" height="auto"></div>
-    <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
+    <div id="middle"><img src="../../" width="300" height="300"><span class="entypo-user"></span></div>
+    <div id="linkedin" class="size left"><a href="/friends"><span class="entypo-users"></span></a></div>
     <div id="dribbble" class="size right"><span class="entypo-mail"></span></div>
-    <div id="facebook" class="size left"><span class="entypo-calendar"></span></div>
+    <div id="facebook" class="size left"><a href="/newsevent"><span class="entypo-calendar"></span></div></a>
     <div id="twitter" class="size right"><a href="/outsession"><span class="entypo-logout"></span></div></a>
   </div>
 </div>
@@ -20,7 +20,14 @@
 
 
 <div class="container"><wbr>
-  <div id="closesession"><a href="/outsession">Cerrar sesion</a></div>
+<div class="foto_perfil"></div><p class="nameact">Nombre Apellido</p>
+    <!--
+    <div id="panel1">
+      <span class="fontawesome-cog"></span>
+      <span class="fontawesome-comment-alt"></span>
+      <span class="fontawesome-th"></span>
+    </div>
+    -->
 </div>
 
 
@@ -39,7 +46,7 @@
             <input type="checkbox" id="button-menu"  />
             <div class="caja">
              <div class="item">
-     
+                
                <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">
                <span class="informacion">
                  <span class="entypo-plus" title="Agregar" ></span>
@@ -60,8 +67,8 @@
             <p>{{ user.username }}</p>
             -->
             
-            <h1>{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
-            <p>{{ profile.user.username }}</p>
+            <h1>{{ userProfile.first_name }} {{ userProfile.last_name }}</h1>
+            <p>{{ userProfile.username }}</p>
                      
           </header>
           <div class="status">Play hard.</div><span class="fontawesome-pencil"> </span>
@@ -335,7 +342,6 @@
 </div>
 
 {% endblock%}
-
 
 
 

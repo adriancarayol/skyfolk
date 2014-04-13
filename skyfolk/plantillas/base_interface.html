@@ -115,7 +115,7 @@ btn.value = "me gusta (" + i + ")";
 	
 
   	</div></li></li></ul>
-  	{% if showPerfilButtons  %}
+  	{% if user.username == profile.user.username %}
   		<!--<span class="fontawesome-cog"></span>-->
   		<a class="fontawesome-cog" href="/configprofile"></a>
   		<span class="fontawesome-comment-alt"></span>
