@@ -111,16 +111,16 @@ def search(request, text):
 		return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
+def news_event(request):
+	return render_to_response('columnas.html', context_instance=RequestContext(request))
+		
+@login_required(login_url='/')
 def config_profile(request):
 	return render_to_response('cf.html', context_instance=RequestContext(request))
 	
 @login_required(login_url='/')
 def friends(request):
 	return render_to_response('amigos.html', context_instance=RequestContext(request))
-	
-@login_required(login_url='/')
-def news(request):
-	return render_to_response('columnas.html', context_instance=RequestContext(request))
 	
 @login_required(login_url='/')
 def out_session(request):
