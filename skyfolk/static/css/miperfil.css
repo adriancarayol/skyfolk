@@ -1085,17 +1085,17 @@ margin-top: -34px;
   float: right;
   right: 150px;
 }
-#nav {
+#nav2 {
     width: 180px;
     margin: 100px auto;
 }
-ul {
+.nameact {
     list-style: none;
     padding: 0;
     margin: 0;
     width: 180px;
 }
-ul a {
+.nameact a {
     display: block;
     width: 100%;
     height: 44px;
@@ -1108,7 +1108,7 @@ ul a {
     font-size: 1.4em;
     border-bottom: 3px solid #cc4531;
 }
-ul a span {
+.nameact a span {
     float: right;
     display: block;
     margin: 0;
@@ -1118,13 +1118,13 @@ ul a span {
     text-align: center;
     line-height: 1.5;
 }
-ul li {
+.nameact li {
     width: 0;
     height: 0px;
     background: #E7533C;
     clear: both;
 }
-ul li a {
+.nameact li a {
     color: transparent;
     height: 0;
     /*box-shadow*/
@@ -1133,58 +1133,58 @@ ul li a {
     box-shadow: 0 2px  2px rgba(0,0,0,.1);
     padding-left: 0;
 }
-ul li a span {
+.nameact li a span {
     font-size: .9em;
     line-height: 2.4;
 }
-ul:hover li a { padding-left: 10px }
-ul:hover span { background: #cc4531 }
-ul:hover li span { background: transparent }
-ul li:hover > a { background: #cc4531 }
-ul li:hover {
+.nameact:hover li a { padding-left: 10px }
+.nameact:hover span { background: #cc4531 }
+.nameact:hover li span { background: transparent }
+.nameact li:hover > a { background: #cc4531 }
+.nameact li:hover {
     margin-top: 8px;
     margin-bottom: 8px;
 }
-ul li:nth-child(1) {
+.nameact li:nth-child(1) {
     transition: all 0s ease;
 }
-ul li:nth-child(2) {
+.nameact li:nth-child(2) {
 
     transition: all 0s ease;
 }
-ul li:nth-child(3) {
+.nameact li:nth-child(3) {
  
     transition: all 0s ease;
 }
-ul li:nth-child(4) {
+.nameact li:nth-child(4) {
 
     transition: all 0s ease;
 }
-ul a:hover > span { background: #cc4531 }
-ul:hover > li a {
+.nameact a:hover > span { background: #cc4531 }
+.nameact:hover > li a {
     color: #fff;
     height: 44px;
 }
-ul li a:hover { border-bottom: 3px solid #9d3323 }
-ul:hover li:nth-child(2) {
+.nameact li a:hover { border-bottom: 3px solid #9d3323 }
+.nameact:hover li:nth-child(2) {
     width: 100%;
     height: 44px;
   
     transition: all .1s ease;
 }
-ul:hover li:nth-child(3) {
+.nameact:hover li:nth-child(3) {
     width: 100%;
     height: 44px;
    
     transition: all .1s ease .1s;
 }
-ul:hover li:nth-child(4) {
+.nameact:hover li:nth-child(4) {
     width: 100%;
     height: 44px;
    
     transition: all .1s ease .2s;
 }
-ul:hover li:nth-child(5) {
+.nameact:hover li:nth-child(5) {
     width: 100%;
     height: 44px;
   
