@@ -1108,7 +1108,7 @@ margin-top: -34px;
     line-height: 2;
     padding-left: 10px;
     font-size: 1.4em;
-    border-bottom: 1px solid #cc4531;
+    border-bottom: 2px solid #cc4531;
 }
 .nameact a span {
     float: right;
