@@ -71,8 +71,8 @@ border-radius: 100px;
 								0px 0px 0px #000,
 							1px 4px 6px #0e76a8;
 	background:#A194E4;
-	-webkit-border-radius:105px 0px 0px 0px;
-	border-radius:105px 0px 0px 0px;
+	-webkit-border-radius:305px 0px 0px 0px;
+	border-radius:305px 0px 0px 0px;
 }
 
 #dribbble {
@@ -107,15 +107,15 @@ border-radius: 100px;
 }
 #twitter span, #facebook span, #dribbble span, #linkedin span{
 margin-left:60px;
-margin-top:30px;
+margin-top:25px;
 }
 
 .size {
 	padding-top:15%;
 	font-size:2.5em;
 	margin-bottom:2%;
-	width:49.5%;
-	height:49.5%;
+	width:49%;
+		height:55%;
 	overflow:hidden;
 }
 
