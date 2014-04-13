@@ -71,8 +71,8 @@ border-radius: 100px;
 								0px 0px 0px #000,
 							1px 4px 6px #0e76a8;
 	background:#A194E4;
-	-webkit-border-radius:205px 0px 0px 0px;
-	border-radius:205px 0px 0px 0px;
+	-webkit-border-radius:405px 0px 0px 0px;
+	border-radius:405px 0px 0px 0px;
 }
 
 #dribbble {
