@@ -1,0 +1,217 @@
+*, *:after, *:before { 
+
+	-webkit-box-sizing: border-box; 
+	-moz-box-sizing: border-box; 
+	box-sizing: border-box; 
+}
+body, html { 
+	font-size: 100%; 
+	padding: 0; margin: 0;
+}
+
+
+body {
+	font-family: Arial, sans-serif;
+	color: #aaaeb2;
+	background: #f1f1f1;
+}
+
+a {
+	color: #888;
+	text-decoration: none;
+}
+h2 {
+    border-bottom: 1px solid #DDDDDD;
+    color: #666666;
+    font-family: 'Cherry Swash',cursive;
+    font-size: 43px;
+    padding-bottom: 13px;
+    text-align: center;
+    text-shadow: 4px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+/*  Opcion para ser responsive */
+
+@media screen and (max-width: 31.5em) {
+	.contnedor {
+		padding: 10px 10px 50px 10px;
+	}
+	.contnedor li {
+		width: 100%;
+		min-width: 100px;
+	}
+}
+@media screen and (max-width: 25em) {
+
+	.np-icon span {
+		display: none;
+	}
+
+}
+
+
+img {
+width: auto;
+height: auto;
+position: relative;
+
+}
+.contnedor {
+	padding: 20px 20px 140px 20px;
+	max-width: 1800px;
+	margin: 0 auto;
+	list-style: none;
+	text-align: center;
+}
+
+.contnedor li {
+	display: inline-block;
+	width: 393px;
+	margin: 0;
+	padding: 20px;
+	text-align: left;
+	position: relative;
+}
+
+
+.contnedor figure {
+	margin: 0;
+	position: relative;
+}
+
+.contnedor figure img {
+	max-width: 500px;
+	height: 470px;
+	width: 500px;
+	display: block;
+	position: relative;
+}
+
+
+.contnedor figcaption {
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 20px;
+	background: #666666;
+	color: #ed4e6e;
+}
+
+
+figcaption span {
+    color: #DDDDDD;
+    display: block;
+    font-size: 13px;
+    margin: 12px 0;
+}
+
+.contnedor figcaption h3 {
+    border-bottom: 1px solid #777777;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0 0 5px;
+}
+
+
+.contnedor figcaption a {
+	text-align: center;
+	padding: 5px 10px;
+	border-radius: 2px;
+	display: inline-block;
+	background: #31a7c4;
+	color: #fff;
+
+}
+
+
+/* Caption animación*/
+
+
+.caption li {
+	-webkit-perspective: 1800px;
+	-moz-perspective: 1800px;
+	perspective: 1800px;
+	-webkit-perspective-origin: 0 50%;
+	-moz-perspective-origin: 0 0%;
+	perspective-origin: 0 0%;
+}
+
+.caption figure {
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+.caption figure > div {
+	overflow: hidden;
+	max-width: auto;
+	width: 380px;
+}
+
+.caption figure img {
+	-webkit-transition: -webkit-transform 0.3s ease-out;
+	-moz-transition: -moz-transform 0.3s ease-out;
+	transition: transform 0.3s ease-out;
+}
+
+.caption figure:hover img
+{
+	-webkit-transform: translateX(23%);
+	-moz-transform: translateX(23%);
+	-ms-transform: translateX(23%);
+	transform: translateX(23%);
+	cursor: pointer;
+}
+
+
+
+.caption figcaption {
+	height: 100%;
+	width: 60%;
+	opacity: 0;
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform-origin: 0 0;
+	-moz-transform-origin: 0 0;
+	transform-origin: 0 0;
+	-webkit-transform: rotateY(-90deg);
+	-moz-transform: rotateY(-90deg);
+	transform: rotateY(-90deg);
+	-webkit-transition: -webkit-transform 0.4s, opacity 0.1s 0.3s;
+	-moz-transition: -moz-transform 0.4s, opacity 0.1s 0.3s;
+	transition: transform 0.4s, opacity 0.1s 0.3s;
+}
+
+
+.caption figure:hover figcaption{
+	opacity: 1;
+	-webkit-transform: rotateY(0deg);
+	-moz-transform: rotateY(0deg);
+	transform: rotateY(0deg);
+	-webkit-transition: -webkit-transform 0.4s, opacity 0.1s;
+	-moz-transition: -moz-transform 0.4s, opacity 0.1s;
+	transition: transform 0.4s, opacity 0.1s;
+}
+
+
+
+.caption figcaption a {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+}
+
+
+
+.btn_hover:hover {
+	background: #3fc7e8;
+    -webkit-transition: all 0.2s ease-in;
+	-moz-transition: all 0.2s ease-in;
+	-o-transition: all 0.2s ease-in;
+}
+
+.caption:not(:hover)  {
+	opacity: 0.4;
+}
+
+
