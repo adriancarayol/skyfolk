@@ -31,7 +31,8 @@ urlpatterns = patterns('',
     url(r'^search/(?P<text>[%\w-]+)/$','principal.views.search', name='search'),
     url(r'^friends/$','principal.views.friends'),
     url(r'^outsession/$', 'principal.views.out_session'),
-    
+    url(r'^configprofile/$', 'principal.views.config_profile', name='search'),
+
     # URLS USERENA
     url(r'^accounts/signin/$', userena_views.signin, {'auth_form': AuthenticationForm}, name='userena_signin'),
     url(r'^accounts/(?P<username>(?!signout|signup|signin)[\.\w-]+)/$', 'principal.views.myprofile_detail', name='userena_profile_detail'),

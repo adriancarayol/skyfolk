@@ -15,6 +15,9 @@
 <script src="{{STATIC_URL}}js/jquery.min.js"></script>
 <script src="{{STATIC_URL}}js/profile.js"></script>
 <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
+
+{% block include_files %}{% endblock %}
+
 <script>
 /*
 $(document).ready(function(){
@@ -113,9 +116,11 @@ btn.value = "me gusta (" + i + ")";
 
   	</div></li></li></ul>
   	{% if showPerfilButtons  %}
-  		<span class="fontawesome-cog"></span>
+  		<!--<span class="fontawesome-cog"></span>-->
+  		<a class="fontawesome-cog" href="/configprofile"></a>
   		<span class="fontawesome-comment-alt"></span>
   		<span class="fontawesome-th"></span>
+
   	{% endif %}
 
 </nav>
