@@ -119,7 +119,7 @@ def friends(request):
 	return render_to_response('amigos.html', context_instance=RequestContext(request))
 	
 @login_required(login_url='/')
-def novedades(request):
+def news(request):
 	return render_to_response('columnas.html', context_instance=RequestContext(request))
 	
 @login_required(login_url='/')
