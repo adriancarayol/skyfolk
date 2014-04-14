@@ -34,7 +34,7 @@ font-family: 'Gafata', sans-serif;
 /*Cuerpo*/
 #pass {
 right: 520px;
-top: 280px;
+top: 200px;
 position:absolute;
 }
 
@@ -116,30 +116,23 @@ text-decoration:none !important;
 bottom: -2px;
 }
 #contra {
-
-/*top: -10px;*/
-width: 380px;
-height: 150px;
-/*margin-left: 385px;*/
-/*margin-top: -380px;*/
+width: 310px;
+height: 50px;
+margin-left: 385px;
+margin-top: -380px;
 font-family: 'Gafata', sans-serif;
-/*right: 100px;*/
-/*padding-right: 50px;*/
+right: 100px;
+padding-right: 50px;
 background: #FFFFFF;
 border: 50px solid #FFF;
 border-radius: 8px 8px 8px 8px;
 box-shadow: rgb(196,196,196) 5px 5px;
-position: absolute;
-top:90px;
-left:370px;
-
 }
 #cn {
 font-size: 20px;
 text-shadow: grey 0.5px 0.5px 0.5px;
 color: grey;
 margin: 5px;
-
 }
 #ch { 
 font-size: 12px;
