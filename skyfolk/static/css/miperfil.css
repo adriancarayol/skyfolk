@@ -135,7 +135,7 @@ body > .container {
   .col-lg-11:last-child {
     margin-right: 0; }
 
-.col-lg-12 {
+.weather-wrapper {
   display: block;
   float: left;
   margin-right: 1.20482%;
@@ -818,40 +818,7 @@ body > .container {
 
 
 
-.weather .current {
-  text-align: center;
-  background: #ffcf00;
-  padding: 2em 0 0;
-  color: white; }
-  .weather .current .icon {
-    font-size: 9em; }
-  .weather .current .temperature {
-    font-size: 5em;
-    font-weight: 700;
-    margin-top: -0.3em; }
-.weather .info {
-  padding: 1.4rem 1.4rem 0.9rem;
-  font-size: 1.4em;
-  font-weight: 700; }
-  .weather .info .city {
-    text-transform: uppercase;
-    margin-bottom: 0.6rem; }
-  .weather .info .indicators {
-    color: #66696c; }
-    .weather .info .indicators .icon {
-      margin-right: 0.5em; }
-    .weather .info .indicators .wind small {
-      text-transform: uppercase;
-      font-size: 0.6em;
-      margin-left: 0.1em; }
-  .weather .info .refresh {
-    font-size: 1.5em;
-    width: 1.85em;
-    height: 1.85em;
-    background: #dcdddd;
-    border: 0;
-    border-radius: 0.3rem;
-    color: white; }
+
 
 .location {
   background: #5691b1; }
@@ -1120,4 +1087,80 @@ margin-top: -34px;
     text-align: center;
     line-height: 1.5;
 }
+
+line,
+circle {
+  stroke-width: 10px;
+  stroke: #fff;
+  stroke-linecap: round;
+}
+
+line {
+  opacity: 0;
+  animation: draw-rays 1s ease;
+  animation-fill-mode: forwards;
+  animation-delay: 1s;
+}
+
+circle {
+  animation: draw-sun 1s ease;
+  animation-fill-mode: forwards;
+  stroke-width: 15px;
+}
+
+.weather-wrapper {
+  background: #F76939;
+  height: 400px;
+  left: 50%;
+  margin-top: -200px;
+  margin-left: -200px;
+  position: absolute;
+  top: 50%;
+  width: 400px;
+}
+
+.weather__temperature {
+  transition: all .75s ease;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  margin-top: -40px;
+  
+  transform: translateX(-30px);
+    opacity: 0;
+  
+  &.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+h2 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+
+@keyframes draw-rays
+{
+  from{  
+      
+        stroke-dasharray: 0 400;
+    }
+    to{
+        opacity: 1;
+        stroke-dasharray: 41 400;
+    }
+}
+
+@keyframes draw-sun
+{
+  from{
+        stroke-dasharray: 100 400;
+    }
+    to{
+        stroke-dasharray: 460 400;
+    }
+}
+
 
