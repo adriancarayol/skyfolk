@@ -136,13 +136,11 @@ def out_session(request):
 #..........................
 def myprofile_detail(request,username):
     # do stuff before userena signup view is called
-    showPerfilButtons = False
-    if not request.user.is_anonymous():
-    	showPerfilButtons = True
+
     searchForm = SearchForm(request.POST)
 
     # call the original view
-    response = userena_views.profile_detail(request,username,extra_context={'showPerfilButtons':showPerfilButtons,'searchForm':searchForm})
+    response = userena_views.profile_detail(request,username,extra_context={'searchForm':searchForm})
 
     # do stuff after userena signup view is done
     #response.extra_context['searchForm'] = searchForm
