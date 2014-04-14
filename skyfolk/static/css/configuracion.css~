@@ -116,7 +116,7 @@ text-decoration:none !important;
 bottom: -2px;
 }
 #contra {
-
+position: absolute;
 /*top: -10px;*/
 width: 380px;
 height: 150px;
@@ -129,7 +129,6 @@ background: #FFFFFF;
 border: 50px solid #FFF;
 border-radius: 8px 8px 8px 8px;
 box-shadow: rgb(196,196,196) 5px 5px;
-position: absolute;
 top:90px;
 left:370px;
 
