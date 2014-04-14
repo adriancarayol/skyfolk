@@ -135,13 +135,6 @@ body > .container {
   .col-lg-11:last-child {
     margin-right: 0; }
 
-.weather-wrapper {
-  display: block;
-  float: left;
-  margin-right: 1.20482%;
-  width: 100%; }
-  .col-lg-12:last-child {
-    margin-right: 0; }
 
 @media only screen and (min-width: 641px) and (max-width: 959px) {
   .col-md-1 {
