@@ -95,15 +95,31 @@ $(document).ready(function(){
 
 
 
+function closeMessage(el) {
+  el.addClass('is-hidden');
+}
 
+$('.js-messageClose').on('click', function(e) {
+  closeMessage($(this).closest('.Message'));
+});
 
-var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-var date = new Date();
-$('p').html(days[date.getDay()] + ", " + date.getDay() + " " + months[date.getMonth()]);
+$('#js-helpMe').on('click', function(e) {
+  alert('Help you we will, young padawan');
+  closeMessage($(this).closest('.Message'));
+});
 
+$('#js-authMe').on('click', function(e) {
+  alert('Okelidokeli, requesting data transfer.');
+  closeMessage($(this).closest('.Message'));
+});
 
-setTimeout(function() {
-  $('.weather__temperature').addClass('show');
-}, 1000);
-		
+$('#js-showMe').on('click', function(e) {
+  alert("You're off to our help section. See you later!");
+  closeMessage($(this).closest('.Message'));
+});
+
+$(document).ready(function() {
+  setTimeout(function() {
+    closeMessage($('#js-timer'));
+  }, 5000);
+});
