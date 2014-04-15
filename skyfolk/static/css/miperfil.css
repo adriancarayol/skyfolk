@@ -1005,8 +1005,8 @@ width: 100%;
 position: auto;
 display: block;
 box-shadow: 3px 2px 4px 3px;
-background:#C13FE9;
-opacity: 0.7;
+background: rgba(0, 0, 0, 0.7);
+opacity: 0.5;
 top: 5px;
 }
 
