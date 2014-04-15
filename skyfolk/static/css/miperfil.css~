@@ -1140,13 +1140,8 @@ $c-purples: #532E62, #8E44AD, #9B59B6;
   box-sizing: border-box;
 }
 
-body {
-  background-color: #ddd;
-  font-family: 'Source Sans Pro';
-  font-weight: 300;
-}
 
-.Message {
+.Mensaje {
   display: table;
   position: relative;
   margin: 40px auto 0;
@@ -1164,19 +1159,19 @@ body {
     display: block;
   }
 }
-  .Message--orange {
+  .Mensaje--orange {
     background-color: nth($c-yellows, 1);
   }
 
-  .Message--red {
+  .Mensaje--red {
     background-color: nth($c-reds, 2);
   }
 
-  .Message--green {
+  .Mensaje--green {
     background-color: nth($c-greens, 2);
   }
 
-  .Message-icon {
+  .Mensaje-icon {
     display: table-cell;
     vertical-align: middle;
     width: 60px;
@@ -1190,7 +1185,7 @@ body {
     }
   }
   
-  .Message-body {
+  .Mensaje-body {
     display: table-cell;
     vertical-align: middle;
     padding: 30px 20px 30px 10px;
@@ -1201,7 +1196,7 @@ body {
     }
   }
 
-  .Message-button {
+  .Mensaje-button {
     position: relative;
     margin: 15px 5px -10px;
     background-color: rgba(black, 0.25);
@@ -1225,7 +1220,7 @@ body {
     }
   }
 
-  .Message-close {
+  .Mensaje-close {
     position: absolute;
     background-color: rgba(black, 0.3);
     color: #fff;
@@ -1237,7 +1232,7 @@ body {
     opacity: 0;
     cursor: pointer;
     
-    .Message:hover & {
+    .Mensaje:hover & {
       opacity: 1;
     }
     
