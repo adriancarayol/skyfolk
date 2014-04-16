@@ -6,13 +6,13 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-  $("#Menu").mouseover(function(){
+  $("#Menu").click(function(){
     $("#panel").slideToggle("slow");
 	  });
 });
 
 $(document).ready(function(){
-  $("#Menu").mouseover(function(){
+  $("#Menu").click(function(){
     $("#panel").animate({
       left:'250px',
       opacity:'0.9',
@@ -76,13 +76,13 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-  $(".nameact").mouseover(function(){
+  $(".nameact").click(function(){
     $("#panel1").slideToggle("slow");
 	  });
 });
 
 $(document).ready(function(){
-  $(".nameact").mouseover(function(){
+  $(".nameact").click(function(){
     $("#panel1").animate({
       left:'250px',
       opacity:'0.9',
@@ -95,31 +95,4 @@ $(document).ready(function(){
 
 
 
-function closeMessage(el) {
-  el.addClass('is-hidden');
-}
 
-$('.js-mensajeClose').on('click', function(e) {
-  closeMensaje($(this).closest('.Mensaje'));
-});
-
-$('#js-helpMe').on('click', function(e) {
-  alert('Help you we will, young padawan');
-  closeMensaje($(this).closest('.Mensaje'));
-});
-
-$('#js-authMe').on('click', function(e) {
-  alert('Okelidokeli, requesting data transfer.');
-  closeMensaje($(this).closest('.Mensaje'));
-});
-
-$('#js-showMe').on('click', function(e) {
-  alert("You're off to our help section. See you later!");
-  closeMensaje($(this).closest('.Mensaje'));
-});
-
-$(document).ready(function() {
-  setTimeout(function() {
-    closeMensaje($('#js-timer'));
-  }, 5000);
-});
