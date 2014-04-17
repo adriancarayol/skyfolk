@@ -1249,7 +1249,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 /*INFORMACION*/
 
-.entypo-info-circled {
+.infot {
 	position: relative;
 	cursor: pointer;
 	font: normal normal 85% sans-serif;
@@ -1258,7 +1258,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	display: inline-block;
 }
 
-.entypo-info-circled > i {
+.infot > i {
 	text-align: center;
 	font: italic normal 90% Georgia, serif;
 	line-height: 150%;
@@ -1286,7 +1286,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	transition: opacity 0.5s linear;
 }
 
-.entypo-info-circled > i:before, a > i:after {
+.infot > i:before, a > i:after {
 	content: "";
 	position: absolute;
 	border-left: 10px solid transparent;
@@ -1296,19 +1296,19 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	margin-left: -10px;
 }
 
-.entypo-info-circled > i:before {
+.infot > i:before {
 	border-top: 10px solid #111;
 	border-top: 10px solid rgba(0, 0, 0, 0.5);
 	margin-top: 5px;
 }
 
-.entypo-info-circled > i:after{
+.infot > i:after{
 	border-top: 10px solid #DDD;
 	margin-top: -2px;
 	z-index: 1;
 }
 
-.entypo-info-circled:hover > i {
+.infot:hover > i {
 	visibility: visible;
 	opacity: 1;
 }
