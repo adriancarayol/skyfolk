@@ -41,7 +41,7 @@ a, a:visited {
 
 article.articulo {
   float: right;
-  top: -150px;
+  top: -100px;
   position: relative;
   width: 201px;
   border-bottom: 1px solid #eee;
