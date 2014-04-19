@@ -65,15 +65,6 @@ def profile_view(request, username):
 	#para mostarar el cuadro de busqueda en la pagina:
 	searchForm = SearchForm(request.POST)
 
-	if request.method == 'POST':
-		if searchForm.is_valid:
-			text = request.POST['searchText']
-			#redireccionar a search.html con el texto
-			if text:
-				text = text.replace (" ", "%")
-				redirect_url = reverse('search', args=[text])
-				return HttpResponseRedirect(redirect_url)
-
 	user = get_object_or_404(get_user_model(), username__iexact=username)
 	profile = user.get_profile()
 	return render_to_response('profile.html',{'profile':profile,'searchForm':searchForm},context_instance=RequestContext(request))
