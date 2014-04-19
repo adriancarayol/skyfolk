@@ -111,19 +111,21 @@ btn.value = "me gusta (" + i + ")";
 
 		{{searchForm}}
 		<!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
-		<button type="submit" class="btn">¡Buscar!</button>
+		<button type="submit" id="btn-search" class="btn">¡Buscar!</button>
                   
 	</form>
 	
 
   	</div></li></li></ul>
   	{% if showPerfilButtons or user.username == profile.user.username %}
-  		<!--<span class="fontawesome-cog"></span>-->
+
+  		
   		<div id ="box-tool">
 	  		<span class="fontawesome-th"></span>
 	  		<span class="fontawesome-comment-alt"></span>
 	  		<a class="fontawesome-cog" href="/configprofile"></a>
 	  	</div>
+
 
   	{% endif %}
 

@@ -2,12 +2,12 @@
 
 
 
-
+/*caja de busqueda*/
 .field {
 	display: flex;
 	position: absolute;
 	margin: 5em auto;
-	width: 70%;
+	width: 901px;/*70%*/
 	height: 38px;
 	top: -30px;
 	left: 150px;
