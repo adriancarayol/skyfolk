@@ -54,6 +54,11 @@
 .btn{ 
    cursor: pointer;
 }
+#searchform{
+
+	margin-top:45px;
+
+}
 .container-search{
 
 	height:auto;

@@ -33,7 +33,7 @@ font-family: 'Gafata', sans-serif;
 }
 /*Cuerpo*/
 #pass {
-right: 520px;
+right: 535px;
 top: 280px;
 position:absolute;
 }
@@ -116,9 +116,8 @@ text-decoration:none !important;
 bottom: -2px;
 }
 #contra {
-
 /*top: -10px;*/
-width: 380px;
+width: 440px;
 height: 150px;
 /*margin-left: 385px;*/
 /*margin-top: -380px;*/
@@ -132,14 +131,12 @@ box-shadow: rgb(196,196,196) 5px 5px;
 position: absolute;
 top:90px;
 left:370px;
-
 }
 #cn {
 font-size: 20px;
 text-shadow: grey 0.5px 0.5px 0.5px;
 color: grey;
 margin: 5px;
-
 }
 #ch { 
 font-size: 12px;

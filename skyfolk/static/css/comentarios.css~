@@ -41,7 +41,7 @@ a, a:visited {
 
 article.articulo {
   float: right;
-  top: -100px;
+  top: -150px;
   position: relative;
   width: 201px;
   border-bottom: 1px solid #eee;
@@ -429,16 +429,26 @@ span[class*="thumbs-up"]:hover {
 .informacion a:hover {
     color: #2698CE;
 }
+#box-tool{
+	padding:10px;
 
+	background-color:red;
+	width:200px;
+	height:100%;
+	float:right;
+}
 .fontawesome-cog {
 color:#A4A4A4;
 cursor:pointer;
 text-align: center;
-margin: 1230px;
+/*margin: 1230px;
 top:-1215px;
+position: absolute;*/
+top: 50px;
 font-size: 38px;
 padding: 0px;
-position: absolute;
+/*float: right;*/
+margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 }
 .fontawesome-cog:hover {
@@ -448,11 +458,13 @@ color:#2ED8A8
 color:#A4A4A4;
 cursor:pointer;
 text-align: center;
-margin: 1171px;
+/*margin: 1171px;
 top:-1158px;
+position: absolute;*/
 font-size: 38px;
 padding: 0px;
-position: absolute;
+/*float: right;*/
+margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 }
 .fontawesome-comment-alt:hover {
@@ -462,11 +474,13 @@ color:#5BF578
 color:#A4A4A4;
 cursor:pointer;
 text-align: center;
-margin: 1115px;
+/*margin: 1115px;
 top:-1099px;
+position: absolute;*/
 font-size: 38px;
 padding: 0px;
-position: absolute;
+/*float: right;*/
+margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 }
 .fontawesome-th:hover {
