@@ -431,10 +431,10 @@ span[class*="thumbs-up"]:hover {
 }
 #box-tool{
 	padding:10px;
-
-	background-color:red;
 	width:200px;
 	height:100%;
+	float:right;
+	position:absolute;
 	float:right;
 }
 .fontawesome-cog {
