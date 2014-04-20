@@ -68,11 +68,7 @@ function cambiopagina(){
 			
 			
 			
-$(document).ready(function(){
-  $(".nameact").click(function(){
-    $("#panel1").slideToggle("slow");
-	  });
-});
+
 $(document).ready(function(){
   $("#flip").click(function(){
     $("#panel1").slideToggle("slow");
@@ -85,7 +81,7 @@ $(document).ready(function(){
   $(".nameact").click(function(){
     $("#panel1").animate({
       left:'250px',
-      opacity:'0.9',
+      opacity:'1',
       height:'80px',
       width:'80px'
     });
