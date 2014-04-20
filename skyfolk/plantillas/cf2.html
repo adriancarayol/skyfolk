@@ -4,11 +4,11 @@
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  	
- 	<link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
+ 	<link rel="stylesheet" href="{{STATIC_URL}}css/configuracion2.css" type="text/css" media="all">
 	<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet" />
-	
+	{% block include_files2 %}{% endblock %}
 
 	<!--[if IE 7]>
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome-ie7.min.css" rel="stylesheet" />
@@ -152,9 +152,9 @@
 <span class="entypo-cog"> <a id="cf">Configuracion</a> </span>
 <body>
 	<nav>
-	<ul class="form">
+	<ul class="form" id="menu-conf">
 		<li><a class="profile" href="#"><i class="icon-user"></i>Cuenta.</a></li>
-		<li class="selected"><a class="messages" href="cf.html"><i class="entypo-key"></i>Contraseña. </a></li>
+		<li id="change-pass"><a class="messages" href="{% url 'userena_password_change' user.username %}"><i class="entypo-key"></i>Contraseña. </a></li>
 		<li><a class="settings" href="#"><i class="entypo-lock"></i>Seguridad y privacidad.</a></li>
 		<li><a class="logout" href="cf.html"target="cf"><i class="entypo-mobile"></i>Movil y correo electronico.</a></li>
 				<li><a class="logout" href="#"><i class="entypo-sweden"></i>Widgets.</a><em>5</em></li>
@@ -162,44 +162,11 @@
 								<li><a class="logout" href="#"><i class="entypo-vcard"></i>Perfil.</a></li>
 	</ul>
 </nav>
-<section id="contra">
-<form id="levi">
-<h4 id="cn"> Contraseña </h4>
-<h6 id="ch"> Cambia tu contraseña o recupera tu contraseña actual.</h6>
-</form>
-</section>
-<section id="pass">
-<form id="float">
-Contraseña actual <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
-Nueva contraseña <input class="actual" type="password" name="Nueva contraseña." value=""><br>
-Verificar contraseña <input class="actual" type="password" name="Repita su nueva contraseña." value=""><br>
-<input id="btn" type="submit" value="Guardar cambios">
-<p id="lost"><a href="/"> ¿Olvidaste tu contraseña?</a> </p>
-</form>
-</section>
+
 </body>
 </header>
-{% endblock%}	
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+{% block content_conf %}{% endblock %}
 
 </html>
 {% endblock%}

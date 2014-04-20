@@ -104,6 +104,11 @@ def news_event(request):
 def config_profile(request):
 	searchForm = SearchForm(request.POST)
 	return render_to_response('cf.html', {'showPerfilButtons':True,'searchForm':searchForm}, context_instance=RequestContext(request))
+
+@login_required(login_url='/')
+def config_profile2(request):
+	searchForm = SearchForm(request.POST)
+	return render_to_response('cf2.html', {'showPerfilButtons':True,'searchForm':searchForm}, context_instance=RequestContext(request))
 	
 @login_required(login_url='/')
 def friends(request):

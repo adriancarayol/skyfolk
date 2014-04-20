@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     url(r'^friends/$','principal.views.friends'),
     url(r'^outsession/$', 'principal.views.out_session'),
     url(r'^configprofile/$', 'principal.views.config_profile', name='search'),
+    url(r'^configprofile2/$', 'principal.views.config_profile2', name='search'), # <- EN PRUEBAS
     url(r'^newsevent/$','principal.views.news_event'),
     # URLS USERENA
     url(r'^accounts/signin/$', userena_views.signin, {'auth_form': AuthenticationForm}, name='userena_signin'),
