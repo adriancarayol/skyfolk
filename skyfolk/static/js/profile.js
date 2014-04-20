@@ -68,18 +68,18 @@ function cambiopagina(){
 			
 			
 			
-
+$(document).ready(function(){
+  $(".nameact").click(function(){
+    $("#panel1").slideToggle("slow");
+	  });
+});
 $(document).ready(function(){
   $("#flip").click(function(){
     $("#panel1").slideToggle("slow");
   });
 });
 
-$(document).ready(function(){
-  $(".nameact").click(function(){
-    $("#panel1").slideToggle("slow");
-	  });
-});
+
 
 $(document).ready(function(){
   $(".nameact").click(function(){
