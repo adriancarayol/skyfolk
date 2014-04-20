@@ -1135,11 +1135,6 @@ margin-top: -34px;
   box-sizing: border-box;
 }
 
-body {
-  background-color: #ddd;
-  font-family: 'Source Sans Pro';
-  font-weight: 300;
-}
 
 .Mensaje {
   display: table;

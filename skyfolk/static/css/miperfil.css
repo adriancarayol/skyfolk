@@ -1138,13 +1138,14 @@ margin-top: -34px;
 
 .Mensaje {
   display: table;
-  position: relative;
+  position: fixed;
   margin: 40px auto 0;
   width: 500px;
   background-color: #0074d9;
   color: #fff;
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
+z-index:  101;
 }
 .Mensaje.is-hidden {
   opacity: 0;
