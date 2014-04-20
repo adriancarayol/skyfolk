@@ -434,8 +434,6 @@ span[class*="thumbs-up"]:hover {
 	width:200px;
 	height:100%;
 	float:right;
-	position:absolute;
-	float:right;
 }
 .fontawesome-cog {
 color:#A4A4A4;

@@ -39,7 +39,7 @@ a, a:visited {
   
 }
 
-article.articulo {
+.articulo {
   float: right;
   top: -150px;
   position: relative;
@@ -48,13 +48,13 @@ article.articulo {
   
 }
 
-h.h22 {
+.h22 {
   margin: 1px 0 7px;
   font-size: 1.2rem;
   font-weight: bold;
 }
 
-p.parrafo {
+.parrafo {
   font-size: 1.1rem;
   line-height: 1.5rem;
 }
