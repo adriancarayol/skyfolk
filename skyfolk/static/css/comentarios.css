@@ -435,7 +435,7 @@ span[class*="thumbs-up"]:hover {
 	height:100%;
 	float:right;
 }
-.fontawesome-cog {
+.entypo-camera-cog {
 color:#A4A4A4;
 cursor:pointer;
 text-align: center;
@@ -449,7 +449,7 @@ padding: 0px;
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 }
-.fontawesome-cog:hover {
+.entypo-camera:hover {
 color:#2ED8A8
 }
 .fontawesome-comment-alt {

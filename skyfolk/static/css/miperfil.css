@@ -1029,30 +1029,9 @@ top: 5px;
     float: right;
 }
 
-/* editar estado */
 
-.fontawesome-pencil {
-font-size: 14px;
-color: orange;
-margin-left: 310px;
-padding: 20px;
-opacity: 0.6;
-position: absolute;
-margin-top: -34px;
-}
-
-.fontawesome-pencil:hover {
-font-size: 14px;
-color: orange;
-margin-left: 310px;
-padding: 20px;
-opacity: 1;
-position: absolute;
-margin-top: -34px;
-}
-/* fin editar estado */
 /*Informacion perfil */
- .entypo-info-circled {
+ .fontawesome-pencil {
  cursor:pointer;
  color: #71FF95;
  font-size: 25px;
@@ -1061,7 +1040,7 @@ margin-top: -34px;
  margin-left: 350px;
  text-shadow: grey 1px 1px 1px;
   }
- .entypo-info-circled:hover {
+ .fontawesome-pencil:hover {
  color: #4BDCFF;
  font-size: 25px;
  position: relative;
