@@ -1,6 +1,2 @@
 venv
 *.pyc
-staticfiles
-git.clone
-skyfolk.sublime-workspace
-skyfolk.sublime-project

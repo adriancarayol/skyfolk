@@ -1,16 +1,16 @@
 #from django.shortcuts import render
-#from principal.models import Receta , Comentario
-#from principal.forms import RecetaForm, ComentarioForm, ContactoForm
+#from index.models import Receta , Comentario
+#from index.forms import RecetaForm, ComentarioForm, ContactoForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response , get_object_or_404, render
 from django.template import RequestContext
-from principal.forms import UserCreateForm, AuthForm
-#from principal.forms import UserCreationForm
+from index.forms import UserCreateForm, AuthForm
+#from index.forms import UserCreationForm
 from django.core.mail import EmailMessage
 #para la gestion de usuarios y autentificacion
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from principal.forms import SearchForm
+from index.forms import SearchForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
