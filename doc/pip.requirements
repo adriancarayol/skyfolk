@@ -1,0 +1,5 @@
+Para crear el archivo requirements con todos los paquetes que hay que instalar para que funcione la aplicación. hacer en el root del proyecto:
+
+pip freeze --local > requirements.txt
+
+esta operación tenemos que repetirla cada vez que se instale un nuevo modulo a fin de actualizar las dependencias en local y el remoto. Cuando hagamos el push a heroku automaticamente se descargarán los paquetes de requirements.txt a fin de que la app funcione correctamente.

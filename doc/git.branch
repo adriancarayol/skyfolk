@@ -1,0 +1,13 @@
+Para crear una nueva rama para pruebas, solo hacemos:
+
+git checkout -b nombre_de_la_nueva_rama
+
+y ya tenemos una nueva rama creada para hacer pruebas. Si queremos juntarlo con la rama principal "master":
+
+añadimos todos los archivos:
+git add -all .
+git commit -m "mensaje del commit"
+git branch -m nombre_de_la_rama_nueva master
+git push -f heroku master
+
+y ya tenemos ambas ramas fusionadas en local y en remoto.
