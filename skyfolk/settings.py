@@ -72,6 +72,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "allauth.account.context_processors.account",
     "allauth.socialaccount.context_processors.socialaccount",
     "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.static",
 )
 
 AUTHENTICATION_BACKENDS = (
