@@ -1,0 +1,32 @@
+{% extends "account/base_login-signup.html" %}
+
+{% load url from future %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/login-signup.css" />
+<!--<link rel="stylesheet" type="text/css" href=".../static/css/login-signup.css" />-->
+{% endblock %}
+
+{% block content %}
+<h1>{% trans "Sign Up" %}</h1>
+
+<!--<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>-->
+
+<div class="block-form block-formregister">
+	<form class="signup form-3" id="signup_form" method="post" action="{% url 'account_signup' %}">
+	  {% csrf_token %}
+	  {{ form.as_p }}
+	  {% if redirect_field_value %}
+	  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+	  {% endif %}
+	  <button class="myButton" type="submit">{% trans "Sign Up" %} &raquo;</button>
+	 <a id="link-login" href="{{ login_url }}">{% trans "Sign In" %}</a>
+	</form>
+</div>
+
+{% endblock %}
+
+

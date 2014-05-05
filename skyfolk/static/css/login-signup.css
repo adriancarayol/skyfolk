@@ -73,9 +73,8 @@ font-size: 70px;
 .block-formregister{
     /*top: -120px;*/
     margin-bottom: 0px;
-    padding-top: 25px;
     height: 320px; /*320px*/
-    margin-top: 180px;
+    margin-top: 140px;
 }
 
 .links{
@@ -369,6 +368,7 @@ position: 200px;
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px -1px 0px #5b6178;
+	float:right;
 }
 .myButton:hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #019ad2), color-stop(1, #33bdef));
@@ -398,3 +398,12 @@ position: 200px;
     width: 100%;
     float: left;
 }
+
+#link-login{
+
+	
+}
+
+
+
+
