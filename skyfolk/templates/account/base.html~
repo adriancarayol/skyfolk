@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <!-- codigo del modulo allauth -->
- 
+  <!--  
   <head>
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
@@ -40,7 +40,7 @@
     {% block extra_body %}
     {% endblock %}
   </body>
-  
+  -->
 
 
 

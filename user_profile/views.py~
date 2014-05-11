@@ -1,0 +1,10 @@
+from django.shortcuts import render
+from django.views.generic.edit import FormView
+from myapp.forms import MyLoginForm
+
+
+# Create your views here.
+
+
+def loginUser(FormView):
+    form = MyLoginForm

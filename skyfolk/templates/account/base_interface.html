@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="uft-8">
+<meta name="description" content="Mi perfil">
+<meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
+<link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/widget1.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
+<link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+<script src="{{STATIC_URL}}js/jquery.min.js"></script>
+<script src="{{STATIC_URL}}js/profile.js"></script>
+<script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
+<script src="{{STATIC_URL}}js/noti.js"></script>
+
+{% block include_files %}{% endblock %}
+
+<script>
+/*
+$(document).ready(function(){
+  $("#Menu").mouseover(function(){
+    $("#panel").slideToggle("slow");
+	  });
+});
+
+$(document).ready(function(){
+  $("#Menu").mouseover(function(){
+    $("#panel").animate({
+      left:'250px',
+      opacity:'0.9',
+      height:'0px',
+      width:'0px'
+    });
+  });
+});
+*/
+</script> 
+<script language="javascript">
+/*
+function aparecerbola(){
+	document.getElementById("widget").style.opacity = "0.9";
+	document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
+}
+function cambiopagina(){
+	document.getElementById("widget").style.opacity = "0";
+	document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
+	setTimeout('location.href="columnas.php"', 500);
+}
+function cambiopagina(){
+	document.getElementById("widget").style.opacity = "0";
+	document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
+	setTimeout('location.href="columnas.php"', 500);
+}
+*/
+
+
+
+</script>
+
+
+
+		
+		
+		<script>
+    /*
+			$(document).ready(function(){
+				//Examples of how to assign the ColorBox event to elements
+                $(".inline").colorbox({inline:true, width:"78%"});
+				$(".callbacks").colorbox({
+					onOpen:function(){ alert('onOpen: colorbox is about to open'); },
+					onLoad:function(){ alert('onLoad: colorbox has started to load the targeted content'); },
+					onComplete:function(){ alert('onComplete: colorbox has displayed the loaded content'); },
+					onCleanup:function(){ alert('onCleanup: colorbox has begun the close process'); },
+					onClosed:function(){ alert('onClosed: colorbox has completely closed'); }
+				});
+				
+				//Example of preserving a JavaScript event for inline calls.
+				$("#click").click(function(){ 
+					$('#click').css({"background-color":"#f00", "color":"#fff", "cursor":"inherit"}).text("Open this window again and this message will still be here.");
+					return false;
+				});
+			});
+    */
+		</script>
+<script language="javascript">
+var i = 0;
+
+function contador()
+{
+i = i + 1;
+var btn = document.getElementById("boton");
+btn.value = "me gusta (" + i + ")";
+}
+</script> 
+</head>
+
+
+<body onLoad="aparecerbola()">
+<!-- <div id="oHBContainer"> -->
+<nav class="barrah">
+<ul>
+<li><button type="button" id="Menu">Menu</button>
+<li><div class="field" id="searchform">
+  	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
+  	<!--<button type="submit" class="btn">¡Buscar!</button>-->
+	<form method='post' action='/search/'>{% csrf_token %}
+
+		{{searchForm}}
+		<!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
+		<button type="submit" id="btn-search" class="btn">¡Buscar!</button>
+                  
+	</form>
+	
+
+  	</div></li></li></ul>
+  	{% if showPerfilButtons or user.username == profile.user.username %}
+
+  		
+  		<div id ="box-tool">
+	  		<span class="fontawesome-th"></span>
+	  		<span class="fontawesome-comment-alt"></span>
+	  		<a class="entypo-camera" href="#></a>
+	  	</div>
+
+
+  	{% endif %}
+
+</nav>
+
+{% block content %}{% endblock %}
+
+</body>
+
+<footer class="container">
+  
+</footer>
+
+
+
+</html>

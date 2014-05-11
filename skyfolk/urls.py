@@ -19,6 +19,7 @@ urlpatterns = patterns(
     # Importamos las URLS del resto de apps:
     url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
     url(r'^accounts/', include('allauth.urls')),
 
     # Importamos las urls de REST Framework
