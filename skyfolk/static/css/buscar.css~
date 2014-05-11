@@ -9,7 +9,7 @@
 	margin: 5em auto;
 	width: 901px;/*70%*/
 	height: 38px;
-	top: -45px;
+	top: -44px;
 	left: 150px;
 	flex-direction: row;
 	box-shadow: 1px 1px 0 rgb(22, 160, 133),

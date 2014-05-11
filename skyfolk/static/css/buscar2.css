@@ -9,7 +9,7 @@
 	margin: 5em auto;
 	width: 901px;/*70%*/
 	height: 38px;
-	top: -45px;
+	top: -30px;
 	left: 150px;
 	flex-direction: row;
 	box-shadow: 1px 1px 0 rgb(22, 160, 133),
@@ -54,6 +54,11 @@
 .btn{ 
    cursor: pointer;
 }
+#searchform{
+
+	margin-top:45px;
+
+}
 .container-search{
 
 	height:auto;
@@ -80,6 +85,7 @@
 	text-align:center;
 	font:1.6em 'Montserrat Alternates';
 	margin-top:10px;
+	
 
 }
 .container-search ul{
@@ -100,39 +106,42 @@
 	/*background-color:red;*/
 	height:100px;
 	width:100%;
-	padding:18px 12px;
+	padding:25px 12px;
 	border-top:1px solid #a4f4e8;
 
 }
 .container-search li .container-img{
 
-	/*margin-top: 15px;*/
-	height:69px;
-	width:69px;
+	
+	margin-top: 15px;
+	height:72px;
+	width:72px;
 	background-color: #ebf4f2;
 	padding:2px;
 	float:left;
 	margin-left:15px;
+	border-radius: 98%;
+	background-color:red;
 
+
+
+}
+.container-search li .container-img:hover{
+height:72px;
+width:72px;
+background-color:#ebf4f2;
+padding:2px;
+float:left;
+margin-left:15px;
+transform:scale(1.15);
+  border-radius: 98%;
 
 }
 .container-search li .container-img img{
 
 	/*background-color:yellow;*/
-	height:65px;
-	width:65px;
-
-}
-.container-search li .container-img img:hover{
-
-	height:65px;
-	width:65px;
-	background-color:#ebf4f2;
-	/*padding:2px;*/
-	float:left;
-	/*margin-left:15px;*/
-	transform:scale(1.15);
-	  border-radius: 98%;
+	height:71px;
+	width:71px;
 
 }
 .container-search li .container-userdata{

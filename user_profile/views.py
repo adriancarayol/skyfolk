@@ -4,6 +4,8 @@ from django.shortcuts import render_to_response , get_object_or_404, render
 from django.template import RequestContext
 from user_profile.forms import SearchForm
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -40,7 +42,7 @@ def search(request):
 				else:
 					resultSearch = User.objects.filter( first_name__icontains = words[0], last_name__icontains = words[1] + ' ' + words[2] )
 
-				return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':resultSearch}, context_instance=RequestContext(request))
+				return render_to_response('account/search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':resultSearch}, context_instance=RequestContext(request))
 	
 	else:
-		return render_to_response('search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
+		return render_to_response('account/search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
