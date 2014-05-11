@@ -70,12 +70,7 @@ font-size: 70px;
      padding: 0px;
 }
 */
-.block-formregister{
-    /*top: -120px;*/
-    margin-bottom: 0px;
-    height: 320px; /*320px*/
-    margin-top: 140px;
-}
+
 
 .links{
     float: left;
@@ -401,10 +396,16 @@ position: 200px;
 
 #link-login{
 
-	margin-right:50px;
-
+	
 }
-
+.block-formregister{
+    /*top: -120px;*/
+    height: auto; /*320px*/
+    position: absolute;
+    top:-120px;
+    right:70px;
+ 
+}
 
 
 

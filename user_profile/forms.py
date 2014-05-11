@@ -1,9 +1,16 @@
+#encoding:utf-8
 from django.utils.translation import pgettext, ugettext_lazy as _, ugettext
 from allauth.account.forms import LoginForm
 from django import forms
 
 
 
+class SearchForm(forms.Form):
+
+    searchText = forms.CharField(label="", help_text="",required=False,widget=forms.TextInput(attrs={'placeholder' : '¿Que es lo que quieres buscar?'}))
+
+
+"""
 class MyLoginForm(LoginForm):
 
     # Override attributes
@@ -13,15 +20,27 @@ class MyLoginForm(LoginForm):
 
     #password = PasswordField()
     #login_widget = forms.TextInput(attrs={'placeholder':_('Username'),'autofocus': 'autofocus'})
-    login = forms.CharField(label="", help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Username'),'autofocus': 'autofocus'}))
-    login_field = forms.CharField(label="", help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Username'),'autofocus': 'autofocus'}))
-    login_widget = forms.CharField(label="", help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Username'),'autofocus': 'autofocus'}))
+    #login = forms.CharField(label="", help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Username'),'autofocus': 'autofocus'}))
+    #login_field = forms.CharField(label="", help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Username'),'autofocus': 'autofocus'}))
+    #login_widget = forms.CharField(label="", help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Username'),'autofocus': 'autofocus'}))
     #login_field = forms.CharField(label="", help_text="",widget=login_widget,max_length=30)
 
     # Add Custom Attributes
     #new_field = forms.CharField(widget=widgets.CustomWidget())
 
+"""
 
 
+class SignupForm(forms.Form):
+    #first_name = forms.CharField(max_length=30, label='Voornaam')
+    #last_name = forms.CharField(max_length=30, label='Achternaam')
+    first_name = forms.CharField(label=_('Firstname'), help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Firstname')}))
+    last_name = forms.CharField(label=_('Lastname'), help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Lastname')}))
+
+
+    def save(self, user):
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save()
 
 
