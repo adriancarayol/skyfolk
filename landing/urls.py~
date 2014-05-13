@@ -5,5 +5,5 @@ from allauth.account import views as allauth_views
 urlpatterns = patterns(
     '',
     #url(r'^$', views.landing, name='landing'),
-    url(r'^$', allauth_views.login)
+    url(r'^$', allauth_views.LoginForm)
 )

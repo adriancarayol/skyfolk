@@ -2,7 +2,9 @@
 from django.utils.translation import pgettext, ugettext_lazy as _, ugettext
 from allauth.account.forms import LoginForm
 from django import forms
-
+from allauth.account.signals import password_changed
+from django.dispatch import receiver
+from django.contrib import messages
 
 
 class SearchForm(forms.Form):
@@ -44,3 +46,6 @@ class SignupForm(forms.Form):
         user.save()
 
 
+@receiver(password_changed)
+def password_change_callback(sender, request, user, **kwargs):
+    messages.success(request, 'You have Successfully changed your Password!.')
