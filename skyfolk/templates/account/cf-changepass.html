@@ -1,0 +1,24 @@
+{% extends "account/base_cf.html" %}
+
+
+{% block additional_files %}
+	<style>
+		#menucf-changepass {
+			background:#efefef;
+		}
+	</style>
+{% endblock%}
+
+{% block cf-title %}
+	<h4 id="cn"> Contraseña </h4>
+	<h6 id="ch"> Cambia tu contraseña o recupera tu contraseña actual.</h6>
+{% endblock %}
+
+
+{% block cf-form %}
+	Contraseña actual <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
+	Nueva contraseña <input class="actual" type="password" name="Nueva contraseña." value=""><br>
+	Verificar contraseña <input class="actual" type="password" name="Repita su nueva contraseña." value=""><br>
+	<input id="btn" type="submit" value="Guardar cambios">
+	<p id="lost"><a href="/"> ¿Olvidaste tu contraseña?</a> </p>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "account/base_cf.html" %}
+
+{% block additional_files %}
+	<style>
+		#menucf-profile {
+			background:#efefef;
+		}
+	</style>
+{% endblock%}
+
+{% block cf-title %}
+	<h4 id="cn"> Perfil </h4>
+	<h6 id="ch"> Cambia datos de tu perfil</h6>
+{% endblock %}
+
+
+{% block cf-form %}
+	Cambiar imagen <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
+	<input id="btn" type="submit" value="Guardar cambios">
+{% endblock %}

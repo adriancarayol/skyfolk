@@ -46,3 +46,12 @@ def search(request):
 	
 	else:
 		return render_to_response('account/search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
+
+@login_required(login_url='/')
+def config(request, type_form):
+	searchForm = SearchForm(request.POST)
+
+	if type_form == 'cf-changepass':
+		return render_to_response('account/cf-changepass.html', {'showPerfilButtons':True,'searchForm':searchForm}, context_instance=RequestContext(request))
+	elif type_form == 'cf-profile':
+		return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm}, context_instance=RequestContext(request))

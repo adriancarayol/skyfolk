@@ -21,6 +21,7 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
     url(r'^search/$','user_profile.views.search'),
+    url(r'^config/(?P<type_form>[\w-]+)/$', 'user_profile.views.config'),
     url(r'^accounts/', include('allauth.urls')),
 
     # Importamos las urls de REST Framework
