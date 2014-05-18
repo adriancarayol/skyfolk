@@ -5,6 +5,9 @@ from django import forms
 from allauth.account.signals import password_changed
 from django.dispatch import receiver
 from django.contrib import messages
+from django.db import models
+from django.forms import ModelForm
+from user_profile.models import UserProfile
 
 
 class SearchForm(forms.Form):
@@ -46,6 +49,7 @@ class SignupForm(forms.Form):
         user.save()
 
 
-@receiver(password_changed)
-def password_change_callback(sender, request, user, **kwargs):
-    messages.success(request, 'You have Successfully changed your Password!.')
+class UserProfileForm(ModelForm):
+    class Meta:
+        model = UserProfile
+

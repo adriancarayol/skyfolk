@@ -15,6 +15,12 @@
 
 
 {% block cf-form %}
+	<!--
 	Cambiar imagen <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
 	<input id="btn" type="submit" value="Guardar cambios">
+	-->
+	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
+		{{form.as_p}}
+		<input id="btn" type="submit" value="Guardar cambios">
+	</form>
 {% endblock %}

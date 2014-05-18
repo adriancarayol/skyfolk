@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response , get_object_or_404, render
 from django.template import RequestContext
-from user_profile.forms import SearchForm
+from user_profile.forms import SearchForm, UserProfileForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -48,10 +48,20 @@ def search(request):
 		return render_to_response('account/search.html',{'showPerfilButtons':True,'searchForm':searchForm,'resultSearch':()}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
-def config(request, type_form):
+def config_changepass(request):
 	searchForm = SearchForm(request.POST)
+	return render_to_response('account/cf-changepass.html', {'showPerfilButtons':True,'searchForm':searchForm}, context_instance=RequestContext(request))
 
-	if type_form == 'cf-changepass':
-		return render_to_response('account/cf-changepass.html', {'showPerfilButtons':True,'searchForm':searchForm}, context_instance=RequestContext(request))
-	elif type_form == 'cf-profile':
-		return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm}, context_instance=RequestContext(request))
+@login_required(login_url='/')
+def config_profile(request):
+	searchForm = SearchForm(request.POST)
+	if request.method=='POST':
+		#form = UserProfileForm(request.POST, request.FILES)
+		form = User(request.POST, request.FILES)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/config/profile')
+	else:
+		#form = UserProfileForm()
+		form = User(request.POST, request.FILES)
+	return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm,'form':form}, context_instance=RequestContext(request))

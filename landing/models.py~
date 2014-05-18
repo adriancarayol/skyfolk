@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from allauth.account.models import EmailAddress
 
-"""
+
 class UserProfile(models.Model):
     usuario = models.OneToOneField(User, related_name='profile')
 
@@ -24,4 +24,3 @@ class UserProfile(models.Model):
         return False
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
-"""

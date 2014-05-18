@@ -4,7 +4,7 @@ from django.contrib import admin
 #from rest_framework import viewsets, routers
 from rest_framework import routers
 from api import views
-
+from django.conf import settings
 
 admin.autodiscover()
 
@@ -21,7 +21,9 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
     url(r'^search/$','user_profile.views.search'),
-    url(r'^config/(?P<type_form>[\w-]+)/$', 'user_profile.views.config'),
+    url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
+    url(r'^config/profile/$', 'user_profile.views.config_profile'),
+    #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^accounts/', include('allauth.urls')),
 
     # Importamos las urls de REST Framework
