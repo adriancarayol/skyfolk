@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.db import models
 from django.forms import ModelForm
 from user_profile.models import UserProfile
-
+from django.contrib.auth.models import User
 
 class SearchForm(forms.Form):
 
@@ -49,7 +49,16 @@ class SignupForm(forms.Form):
         user.save()
 
 
-class UserProfileForm(ModelForm):
+class UserForm(forms.ModelForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name')
+
+class ProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-
+        #fields = ('user','image')
+        exclude = ('user',)

@@ -43,7 +43,7 @@ color: black;
 border-radius: 8px 8px 8px 8px;
 text-shadow: rgb(150,150,150) 1px 1px 1px;
 margin-bottom: 25px;
-
+display: block;
 
 }
 .actual:hover {

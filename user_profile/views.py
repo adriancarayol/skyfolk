@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response , get_object_or_404, render
-from django.template import RequestContext
-from user_profile.forms import SearchForm, UserProfileForm
+from django.template import RequestContext, loader
+from user_profile.forms import SearchForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import Q
+from forms import ProfileForm, UserForm
 
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -55,6 +56,7 @@ def config_changepass(request):
 @login_required(login_url='/')
 def config_profile(request):
 	searchForm = SearchForm(request.POST)
+	"""
 	if request.method=='POST':
 		#form = UserProfileForm(request.POST, request.FILES)
 		form = User(request.POST, request.FILES)
@@ -64,4 +66,25 @@ def config_profile(request):
 	else:
 		#form = UserProfileForm()
 		form = User(request.POST, request.FILES)
-	return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm,'form':form}, context_instance=RequestContext(request))
+	"""
+
+
+	if request.method == 'POST':
+		# formulario enviado
+		user_form = UserForm(request.POST, instance=request.user)
+		perfil_form = PerfilForm(request.POST, instance=request.user.perfil)
+
+		if user_form.is_valid() and perfil_form.is_valid():
+			# formulario validado correctamente
+			user_form.save()
+			perfil_form.save()
+			return HttpResponseRedirect('/config/profile') #poner mas tarde, que muestre un mensaje de formulario aceptado
+
+	else:
+		# formulario inicial
+		user_form = UserForm(instance=request.user)
+		perfil_form = ProfileForm(instance=request.user.profile)
+
+
+
+	return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm, 'user_form':user_form, 'perfil_form':perfil_form}, context_instance=RequestContext(request))
