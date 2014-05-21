@@ -86,8 +86,8 @@ $(document).ready(function(){
     $("#panel1").animate({
       left:'250px',
       opacity:'1',
-      height:'80px',
-      width:'80px'
+      height:'150px',
+      width:'150px'
     });
   });
 });
