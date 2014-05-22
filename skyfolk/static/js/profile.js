@@ -96,3 +96,8 @@ $(document).ready(function(){
 
 
 
+<script>
+  $(function() {
+    $( "#tabs" ).tabs();
+  });
+  </script>
