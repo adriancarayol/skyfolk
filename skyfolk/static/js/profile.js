@@ -1,7 +1,7 @@
 
 $(document).ready(function(){
   $("#flip").click(function(){
-    $("#panel1").slideToggle("slow");
+    $("#panel").slideToggle("slow");
   });
 });
 
