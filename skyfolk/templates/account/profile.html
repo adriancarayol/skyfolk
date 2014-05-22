@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div id="panel"> 
+<div id="panel">
 
   <div id="widget" onClick="cambiopagina()"> 
 <!--
@@ -246,13 +246,14 @@
       </div>
     </div>
   </div>
-
+<main>
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div class="container">
       <div class="col-lg-12">
         <div class="sidebar card">
           <ul class="unstyled table fullwidth links">
-            <li class="active"><a>Popular</a></li>
+            <input class="active" type="radio" name="tabs" checked> 
+            <label for"tab1">Popular</label>
             <li class="comentarios"><a>Comentarios</a></li>
             <li class="active"><a>Recientes</a></li>
           </ul>
@@ -328,7 +329,7 @@
       </div>
       </div>
       </div>
-      
+      </main>
  
       <div class="col-lg-12">
         <div class="weather card">
