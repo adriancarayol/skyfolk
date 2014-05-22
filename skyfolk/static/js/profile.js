@@ -1,6 +1,6 @@
 
 $(document).ready(function(){
-  $("#Menu").click(function(){
+  $("#flip").click(function(){
     $("#panel").slideToggle("slow");
   });
 });
