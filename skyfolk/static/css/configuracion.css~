@@ -36,6 +36,7 @@ font-family: 'Gafata', sans-serif;
 right: 535px;
 top: 280px;
 position:absolute;
+width:270px;
 }
 
 .actual {
@@ -43,8 +44,10 @@ color: black;
 border-radius: 8px 8px 8px 8px;
 text-shadow: rgb(150,150,150) 1px 1px 1px;
 margin-bottom: 25px;
-display: block;
 
+display:block;
+margin-left:60px;
+margin-top:20px;
 }
 .actual:hover {
 opacity: 0.5;
@@ -84,6 +87,12 @@ width: 170px;
 height: 50px;
 font-family: 'Gafata', sans-serif, bold;
 font-size: 15px;
+
+
+display:block;
+margin:0 auto 0 auto;
+margin-top:20px;
+
 text-decoration:none !important;
 	white-space:nowrap;
 	
