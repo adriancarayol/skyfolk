@@ -1266,3 +1266,60 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 }
 
 
+/* more */
+
+body {
+  font:16px/1.5em "Segoe UI", Arial, Helvetica, sans-serif;
+  background: #bfe8f6;
+}
+
+#menu {
+  margin: 80px auto 0;
+  width: 750px;
+}
+
+#menu > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0;
+}
+
+#menu li {
+  display: inline-block;
+  position: relative;
+}
+
+#menu a {
+  color: #fff;
+  display: block;
+  width: 150px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 16px;
+  text-decoration: none;
+  background: #2ab2df;
+}
+
+#menu * ul {
+  left: -9999px;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#menu li:hover > ul {
+  left: 0;
+}
+
+#menu li li:hover > ul {
+  left: 150px;
+  top: 0;
+}
+
+#menu a:hover {
+    color: #2ab2df;
+    background: #fff;
+}
