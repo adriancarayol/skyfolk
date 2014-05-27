@@ -1272,7 +1272,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 #menu {
   margin: 30px auto 0;
-  margin-right: 200px;
+  margin-left: 20px;
   width: 750px;
   top: -50px;
   position:relative;
