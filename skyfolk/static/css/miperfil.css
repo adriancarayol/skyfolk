@@ -1274,7 +1274,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   margin: 80px auto 0;
   width: 750px;
   top: -50px;
-  float: left;
+  position:relative;
   left: 20px;
 }
 
