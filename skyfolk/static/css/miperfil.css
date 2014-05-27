@@ -1268,14 +1268,12 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 /* more */
 
-body {
-  font:16px/1.5em "Segoe UI", Arial, Helvetica, sans-serif;
-  background: #bfe8f6;
-}
+
 
 #menu {
   margin: 80px auto 0;
   width: 750px;
+  top: 20px;
 }
 
 #menu > ul {
