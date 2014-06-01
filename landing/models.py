@@ -2,14 +2,16 @@ from django.contrib.auth.models import User
 from django.db import models
 from allauth.account.models import EmailAddress
 
-"""
+
 class UserProfile(models.Model):
     usuario = models.OneToOneField(User, related_name='profile')
 
     # Other fields here
-    accepted_eula = models.BooleanField()
-    favorite_animal = models.CharField(max_length=20, default="Dragons.")
+    #accepted_eula = models.BooleanField()
+    #favorite_animal = models.CharField(max_length=20, default="Dragons.")
+    image = models.ImageField(upload_to='userimages', verbose_name='Image')
 
+ 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
 
@@ -23,5 +25,6 @@ class UserProfile(models.Model):
                 return result[0].verified
         return False
 
+
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
-"""
+

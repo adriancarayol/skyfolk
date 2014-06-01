@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.contrib import messages
 from django.db import models
 from django.forms import ModelForm
-from user_profile.models import UserProfile
+from landing.models import UserProfile
 from django.contrib.auth.models import User
 
 class SearchForm(forms.Form):
@@ -61,4 +61,4 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         #fields = ('user','image')
-        exclude = ('user',)
+        exclude = ('usuario',)

@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import Q
 from forms import ProfileForm, UserForm
+from landing.models import UserProfile
 
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -17,10 +18,10 @@ def profile_view(request, username):
 	#para mostarar el cuadro de busqueda en la pagina:
 	searchForm = SearchForm(request.POST)
 
-	userProfile = get_object_or_404(get_user_model(), username__iexact=username)
+	user_profile = get_object_or_404(get_user_model(), username__iexact=username)
 	#profile = user.get_profile()
 	#return render_to_response('profile.html',{'profile':profile,'searchForm':searchForm},context_instance=RequestContext(request))
-	return render_to_response('account/profile.html',{'userProfile':userProfile, 'searchForm':searchForm},context_instance=RequestContext(request))
+	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm},context_instance=RequestContext(request))
 
 
 @login_required(login_url='accounts/login')
@@ -56,23 +57,11 @@ def config_changepass(request):
 @login_required(login_url='/')
 def config_profile(request):
 	searchForm = SearchForm(request.POST)
-	"""
-	if request.method=='POST':
-		#form = UserProfileForm(request.POST, request.FILES)
-		form = User(request.POST, request.FILES)
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect('/config/profile')
-	else:
-		#form = UserProfileForm()
-		form = User(request.POST, request.FILES)
-	"""
-
 
 	if request.method == 'POST':
 		# formulario enviado
 		user_form = UserForm(request.POST, instance=request.user)
-		perfil_form = PerfilForm(request.POST, instance=request.user.perfil)
+		perfil_form = PerfilForm(request.POST, instance=request.user.profile)
 
 		if user_form.is_valid() and perfil_form.is_valid():
 			# formulario validado correctamente
@@ -83,7 +72,7 @@ def config_profile(request):
 	else:
 		# formulario inicial
 		user_form = UserForm(instance=request.user)
-		perfil_form = ProfileForm(instance=request.user.profile)
+		perfil_form = ProfileForm()
 
 
 
