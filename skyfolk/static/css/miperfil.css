@@ -1271,12 +1271,17 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 
 #menu {
+  /*
   margin: 30px auto 0;
   margin-left: 20px;
   width: 750px;
   top: -50px;
   position:relative;
   left: 20px;
+  */
+  float:left;
+  margin-top: 6px;
+  margin-left: 170px;
 }
 
 #menu > ul {
