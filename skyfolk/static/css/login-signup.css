@@ -378,7 +378,7 @@ position: 200px;
 }
 .myButton:active {
 	position:relative;
-	top:10px;
+	top:-50px;
 }
 
 
