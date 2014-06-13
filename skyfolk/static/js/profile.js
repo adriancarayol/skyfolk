@@ -1,6 +1,6 @@
 $(document).ready(function() {
 $('#Menu').click(function(evento) {
-$('#panel').fadeIn(2000);
+$('#widget').fadeIn(2000);
 });
 });
 
