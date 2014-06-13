@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+
+<SCRIPT LANGUAGE="JavaScript">
+fondo = new Array(2);
+fondo[0] = '{{STATIC_URL}}img/6.jpg'
+fondo[1] = '{{STATIC_URL}}img/nueva-york1.jpg'
+fondo[2] = '{{STATIC_URL}}img/bg3.jpg'
+index = Math.floor(Math.random() * fondo.length);
+document.write("<BODY BACKGROUND="+fondo[index]+">");
+</SCRIPT>
+
+
 	     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
          <script type="text/javascript" src="http://www.google.com/jsapi"></script>
@@ -19,7 +30,7 @@
 		<style>
 			@import url(http://fonts.googleapis.com/css?family=Ubuntu:400,700);
 			body {
-				background: #563c55 url({{STATIC_URL}}img/6.jpg) no-repeat center top;
+				/*background: #563c55 url({{STATIC_URL}}img/6.jpg) no-repeat center top;*/
 				-webkit-background-size: cover;
 				-moz-background-size: cover;
 				background-size: cover;
