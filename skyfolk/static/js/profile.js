@@ -68,27 +68,18 @@ function cambiopagina(){
 			
 			
 			
-$(document).ready(function(){
-  $(".nameact").click(function(){
-    $("#panel1").slideToggle("slow");
-	  });
-});
-$(document).ready(function(){
-  $("#flip").click(function(){
-    $("#panel1").slideToggle("slow");
-  });
-});
-
-
-
-$(document).ready(function(){
-  $(".nameact").click(function(){
-    $("#panel1").animate({
-      left:'250px',
-      opacity:'1',
-      height:'150px',
-      width:'150px'
-    });
-  });
-});
+<script type="text/javascript">
+    $(document).ready(function()
+        {
+        $(".nameact").click(function () {     
+            $('#panel1').toggle("slow");
+            });
+        $(".nameact").click(function () {     
+            $('#panel1').toggle("fast");
+            });
+        $(".nameact").click(function () {     
+            $('#panel1').toggle(5000);
+            });
+         });
+</script>
 
