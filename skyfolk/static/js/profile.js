@@ -15,6 +15,23 @@ $(document).ready(function(){
     });
   });
 
+$(document).ready(function(){
+   $(".nameact").click(function () {
+      $("#menu").each(function() {
+        displaying = $(this).css("display");
+        if(displaying == "block") {
+          $(this).fadeOut('slow',function() {
+           $(this).css("display","none");
+          });
+        } else {
+          $(this).fadeIn('slow',function() {
+            $(this).css("display","block");
+          });
+        }
+      });
+    });
+  });
+
 
 
 function aparecerbola(){
@@ -64,7 +81,7 @@ function cambiopagina(){
 			
 $(document).ready(function(){
    $(".nameact").click(function () {
-      $("#nav2").each(function() {
+      $("#panel1").each(function() {
         displaying = $(this).css("display");
         if(displaying == "block") {
           $(this).fadeOut('slow',function() {
