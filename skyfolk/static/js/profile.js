@@ -68,14 +68,27 @@ function cambiopagina(){
 			
 			
 			
-<script>
- $(document).ready(function(){
-  $('.nameact').click(function(){
-   $('#panel1').toggle('fade',1500); 
+$(document).ready(function(){
+  $(".nameact").click(function(){
+    $("#panel1").slideToggle("slow");
+	  });
+});
+$(document).ready(function(){
+  $("#flip").click(function(){
+    $("#panel1").slideToggle("slow");
   });
-  $('.nameact').click(function(){
-   $('#panel1').toggle('explode',1500);
+});
+
+
+
+$(document).ready(function(){
+  $(".nameact").click(function(){
+    $("#panel1").animate({
+      left:'250px',
+      opacity:'1',
+      height:'150px',
+      width:'150px'
+    });
   });
- });
- </script>
+});
 
