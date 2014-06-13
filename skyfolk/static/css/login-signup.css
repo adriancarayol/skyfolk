@@ -203,7 +203,7 @@ font-size: 70px;
 .form-3 msgalert{
     color: white;
     width: 80%;
-    font-family: 'Ubuntu', 'Lato', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size:15px;
 }
 
@@ -291,7 +291,7 @@ position: 200px;
 .block-form .msgalert{
     color: white;/*#E2E2E2*/
     width: 80%;
-    font-family: 'Ubuntu', 'Lato', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size:13px;
     text-align: center;
     margin-left: 30px;
@@ -300,7 +300,7 @@ position: 200px;
 .form-3 .link-a{
     color: #E2E2E2;
     /*width: 100%;*/
-    font-family: 'Ubuntu', 'Lato', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size:13px;
     /*text-align: center;*/
     margin-left: 180px;
@@ -311,7 +311,7 @@ position: 200px;
 .form-3 .link-b{
 
     float: left;
-    font-family: 'Ubuntu', 'Lato', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size:13px;
     color: #E2E2E2;
 
@@ -319,7 +319,7 @@ position: 200px;
 .block-form .link-c{
     
     /*width: 100%;*/
-    font-family: 'Ubuntu', 'Lato', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size:13px;
     /*text-align: center;*/
     margin-left: 180px;
