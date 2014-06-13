@@ -365,6 +365,8 @@ position: 200px;
 	text-decoration:none;
 	text-shadow:0px -1px 0px #5b6178;
 	float:right;
+    position:relative;
+    top:10px;
 }
 .myButton:hover {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #019ad2), color-stop(1, #33bdef));
@@ -378,7 +380,7 @@ position: 200px;
 }
 .myButton:active {
 	position:relative;
-	top:100px;
+	top:10px;
 }
 
 
