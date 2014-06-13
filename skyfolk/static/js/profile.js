@@ -64,7 +64,7 @@ function cambiopagina(){
 			
 $(document).ready(function(){
    $(".nameact").click(function () {
-      $("#panel1").each(function() {
+      $("#nav2").each(function() {
         displaying = $(this).css("display");
         if(displaying == "block") {
           $(this).fadeOut('slow',function() {
