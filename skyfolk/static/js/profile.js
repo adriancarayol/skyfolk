@@ -1,8 +1,19 @@
-$(document).ready(function() {
-$('#Menu').click(function(evento) {
-$('#widget').fadeIn(2000);
-});
-});
+$(document).ready(function(){
+   $("#Menu").click(function () {
+      $("#panel").each(function() {
+        displaying = $(this).css("display");
+        if(displaying == "block") {
+          $(this).fadeOut('slow',function() {
+           $(this).css("display","none");
+          });
+        } else {
+          $(this).fadeIn('slow',function() {
+            $(this).css("display","block");
+          });
+        }
+      });
+    });
+  });
 
 
 
