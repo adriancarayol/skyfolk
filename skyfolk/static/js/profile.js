@@ -1,26 +1,9 @@
-
-$(document).ready(function(){
-  $("#flip").click(function(){
-    $("#panel").slideToggle("slow");
-  });
+$(document).ready(function() {
+$('#Menu').click(function(evento) {
+$('#panel').fadeIn(2000);
+});
 });
 
-$(document).ready(function(){
-  $("#Menu").click(function(){
-    $("#panel").slideToggle("slow");
-	  });
-});
-
-$(document).ready(function(){
-  $("#Menu").click(function(){
-    $("#panel").animate({
-      left:'250px',
-      opacity:'0.9',
-      height:'300px',
-      width:'300px'
-    });
-  });
-});
 
 
 function aparecerbola(){
