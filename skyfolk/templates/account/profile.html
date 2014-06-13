@@ -1,7 +1,43 @@
 {% extends "account/base_interface.html" %}
 
 {% block content %}
-<nav id="menu">
+
+<div id="panel"> 
+
+  <div id="widget" onClick="cambiopagina()"> 
+<!--
+    <div id="middle"><img src="{{STATIC_URL}}img/5.jpg" width="300" height="300"><span class="entypo-user"></span></div>
+    <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
+-->
+    <div id="middle"><img src="../../" width="300" height="300"><span class="entypo-user"></span></div>
+
+    <div id="linkedin" class="size left"><a href="/friends"><span class="entypo-users"></span></a></div>
+    <div id="dribbble" class="size right"><span class="entypo-mail"></span></div>
+    <div id="facebook" class="size left"><a href="/newsevent"><span class="entypo-calendar"></span></div></a>
+    <div id="twitter" class="size right"><a href="{% url 'account_logout' %}"><span class="entypo-logout"></span></div></a>
+
+  </div>
+</div>
+
+ <div class="Mensaje" id="js-timer">
+  <div class="Mensaje-icon">
+    <i class="fa fa-bell-o"></i>
+  </div>
+  <div class="Mensaje-body">
+    <p>¡Bienvenido, nombre apellidos!</p>
+    <p class="u-italic">Acabas de entrar a Skyfolk satisfactoriamente.</p>
+  </div>
+  <button class="Mensaje-close js-messageClose"><i class="fa fa-times"></i></button>
+</div>
+
+<div id="nav2">
+<ul class="nameact">   
+<div class="foto_perfil"></div><a href="#">Nombre Apellido<span class="entypo-right-open-big"></span></a></ul>
+ 
+
+   
+    <div id="panel1">
+      <nav id="menu">
     <ul>
       <li><a href="#">Más visitados.</a></li>
       <li><a href="#">Favoritos.</a>
@@ -44,41 +80,6 @@
       <li><a href="#">Los más gustados.</a></li>
     </ul>
 </nav>
-<div id="panel"> 
-
-  <div id="widget" onClick="cambiopagina()"> 
-<!--
-    <div id="middle"><img src="{{STATIC_URL}}img/5.jpg" width="300" height="300"><span class="entypo-user"></span></div>
-    <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
--->
-    <div id="middle"><img src="../../" width="300" height="300"><span class="entypo-user"></span></div>
-
-    <div id="linkedin" class="size left"><a href="/friends"><span class="entypo-users"></span></a></div>
-    <div id="dribbble" class="size right"><span class="entypo-mail"></span></div>
-    <div id="facebook" class="size left"><a href="/newsevent"><span class="entypo-calendar"></span></div></a>
-    <div id="twitter" class="size right"><a href="{% url 'account_logout' %}"><span class="entypo-logout"></span></div></a>
-
-  </div>
-</div>
-
- <div class="Mensaje" id="js-timer">
-  <div class="Mensaje-icon">
-    <i class="fa fa-bell-o"></i>
-  </div>
-  <div class="Mensaje-body">
-    <p>¡Bienvenido, nombre apellidos!</p>
-    <p class="u-italic">Acabas de entrar a Skyfolk satisfactoriamente.</p>
-  </div>
-  <button class="Mensaje-close js-messageClose"><i class="fa fa-times"></i></button>
-</div>
-
-<div id="nav2">
-<ul class="nameact">   
-<div class="foto_perfil"></div><a href="#">Nombre Apellido<span class="entypo-right-open-big"></span></a></ul>
- 
-
-   
-    <div id="panel1">
      <dropdown>
  
   <ul class="animate">
