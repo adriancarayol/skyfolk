@@ -102,11 +102,11 @@ $(document).ready(function(){
       $("#page-wrapper").each(function() {
         displaying = $(this).css("display");
         if(displaying == "block") {
-          $(this).fadeIn('slow',function() {
+          $(this).fadeOut('slow',function() {
            $(this).css("display","none");
           });
         } else {
-          $(this).fadeOut('slow',function() {
+          $(this).fadeIn('slow',function() {
             $(this).css("display","block");
           });
         }
