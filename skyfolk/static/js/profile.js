@@ -97,27 +97,3 @@ $(document).ready(function(){
   });
 
 /* Mensaje flotante */
-window.onload = function() {
-
-  var form = document.getElementById('message-form');
-  var messageField = document.getElementById('message');
-  var messagesList = document.getElementById('messages');
-  var socketStatus = document.getElementById('status');
-  var closeBtn = document.getElementById('close');
-
-$(document).ready(function(){
-   $(".entypo-mail").click(function () {
-      $("#page-wrapper").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "block") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","block");
-          });
-        }
-      });
-    });
-  });
