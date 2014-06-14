@@ -1337,11 +1337,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   box-sizing: border-box;
 }
 
-html {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 100%;
-  background: #333;
-}
+
 
 #page-wrapper {
   width: 650px;
@@ -1444,3 +1440,4 @@ button:hover {
 #page-wrapper:hover {
   opacity: 1;
 }
+
