@@ -1419,3 +1419,15 @@ button:hover {
 }
 
 
+/*Mensaje de audio */
+@import url(http://weloveiconfonts.com/api/?family=iconicstroke|typicons);
+
+/* iconicstroke */
+[class*="iconicstroke-"]:before {
+  font-family: 'IconicStroke', sans-serif;
+}
+
+/* typicons */
+[class*="typicons-"]:before {
+  font-family: 'Typicons', sans-serif;
+}
