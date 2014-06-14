@@ -1382,7 +1382,7 @@ h1 {
   margin-bottom: 1rem;
 }
 
-button[type="buttonn"] {
+button[type="close"] {
   display: inline-block;
   border-radius: 3px;
   border: none;
