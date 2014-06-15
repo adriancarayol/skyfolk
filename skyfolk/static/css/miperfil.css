@@ -1432,3 +1432,9 @@ button:hover {
 [class*="typicons-"]:before {
   font-family: 'Typicons', sans-serif;
 }
+
+.fontawesome-bullhorn {
+  font-size: 20px;
+  border-radius: 2px 2px 2px 2px;
+  background-color: orange;
+}
