@@ -1468,16 +1468,3 @@ button:hover {
 .fontawesome-camera:hover {
   background-color: white;
 }
-
-.fontawesome-remove-sign {
-  background-color: white;
-  color:black;
-  font-size: 12px;
-  float:right;
-  margin-top: 50px;
-
-}
-.fontawesome-remove-sign:hover {
-  background-color:#FF9292;
-  color:white;
-}
