@@ -4,8 +4,8 @@
 
 /*caja de busqueda*/
 .field {
-	display: flex;
-	position: relative;
+	display: block;
+	position: absolute;
 	margin: 5em auto;
 	width: 901px;/*70%*/
 	height: 38px;
