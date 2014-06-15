@@ -113,3 +113,13 @@ $(document).ready(function(){
       });
     });
   });
+
+
+$('#close').on('click', function(e) {
+
+    e.preventDefault();
+    $('#page-wrapper').fadeOut(300);
+
+  });
+
+}) ();
