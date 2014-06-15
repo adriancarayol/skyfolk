@@ -115,7 +115,7 @@ $(document).ready(function(){
   });
 
 
-$('.close').on('click', function(e) {
+$('.fontawesome-remove-sign').on('click', function(e) {
 
     e.preventDefault();
     $('#page-wrapper').fadeOut(300);
