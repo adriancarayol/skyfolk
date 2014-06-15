@@ -114,12 +114,3 @@ $(document).ready(function(){
     });
   });
 
-
-$('.fontawesome-remove-sign').on('click', function(e) {
-
-    e.preventDefault();
-    $('#page-wrapper').fadeOut(300);
-
-  });
-
-}) ();
