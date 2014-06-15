@@ -1474,7 +1474,7 @@ button:hover {
   color:black;
   font-size: 12px;
   float:right;
-  top: 200px;
+  margin-top: 10px;
 
 }
 .fontawesome-remove-sign:hover {
