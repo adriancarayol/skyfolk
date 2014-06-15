@@ -1445,3 +1445,14 @@ button:hover {
   background-color: #84DFFF;
 
 }
+.fontawesome-camera {
+  font-size: 20px;
+  border-radius: 20px 20px 20px 20px;
+  background-color: #DBDBDB;
+  color: black;
+  text-align: center;
+  float:right;
+
+}
+.fontawesome-camera:hover {
+  background-color: white;
