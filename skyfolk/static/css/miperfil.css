@@ -1003,7 +1003,7 @@ nav.barrah {
 height: 50px;
 margin: 0px;
 width: 100%;
-position: absolute;
+position: auto;
 display: block;
 box-shadow: 3px 2px 4px 3px;
 background: rgba(0, 0, 0, 0.7);
