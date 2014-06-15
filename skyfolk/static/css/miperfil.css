@@ -1438,4 +1438,5 @@ button:hover {
   border-radius: 20px 20px 20px 20px;
   background-color: orange;
   color: white;
+  text-align: center;
 }
