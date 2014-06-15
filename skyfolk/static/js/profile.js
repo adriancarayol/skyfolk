@@ -114,3 +114,15 @@ $(document).ready(function(){
     });
   });
 
+/* Busqueda */
+
+( function() {
+
+  $('#btn-search').on('click', function(e) {
+
+    e.preventDefault();
+    $('.field').animate({width: 'toggle'}).focus();
+
+  });
+
+} () );

@@ -12,7 +12,8 @@
 	top: -50px;
 	left: 450px;
 	flex-direction: row;
-	box-shadow: 1px 1px 0 rgb(22, 160, 133),
+	box-shadow:
+   1px 1px 0 rgb(22, 160, 133),
    2px 2px 0 rgb(22, 160, 133),
    3px 3px 0 rgb(22, 160, 133),
    4px 4px 0 rgb(22, 160, 133),
@@ -20,8 +21,6 @@
    6px 6px 0 rgb(22, 160, 133),
    7px 7px 0 rgb(22, 160, 133)
   ;
-	font-weight: bold;
-
 }
 .field:after {
 	border-color: blue;

@@ -536,3 +536,20 @@ text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 .fontawesome-comment-alt:hover, .fontawesome-comment-alt:focus, .fontawesome-comment-alt:active {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
 }
+
+.fontawesome-search {
+  color:#A1F2FF;
+cursor:pointer;
+text-align: center;
+/*margin: 1171px;
+top:-1158px;
+position: absolute;*/
+font-size: 38px;
+padding: 0px;
+/*float: right;*/
+margin-left:15px;
+text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+}
+
+
+}
