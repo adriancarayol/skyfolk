@@ -29,7 +29,7 @@
 
 .field>form input[type=text],
 .field>form button {
-  *isplay:block;
+  display:block;
  font:1.2em 'Montserrat Alternates';
 }
 
