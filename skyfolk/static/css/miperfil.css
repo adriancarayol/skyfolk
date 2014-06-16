@@ -1468,17 +1468,3 @@ button:hover {
 .fontawesome-camera:hover {
   background-color: white;
 }
-.fontawesome-random {
-color:#99FFE3;
-cursor:pointer;
-text-align: center;
-/*margin: 1115px;
-top:-1099px;
-position: absolute;*/
-font-size: 38px;
-padding: 0px;
-/*float: right;*/
-
-text-shadow: 1px 1px 1px rgba(255,255,255,0.5); 
-}
-}
