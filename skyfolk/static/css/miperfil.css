@@ -1468,6 +1468,6 @@ button:hover {
 .fontawesome-camera:hover {
   background-color: white;
 }
-.fontawesome-random {
+#random {
   position:absolute;
 }
