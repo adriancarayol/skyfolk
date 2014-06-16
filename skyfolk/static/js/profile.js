@@ -116,8 +116,3 @@ $(document).ready(function(){
 
 /* Busqueda */
 
-$( ".fontawesome-search" ).click(function() {
-  $( ".field" ).slideToggle( "slow", function() {
-    // Animation complete.
-  });
-});
