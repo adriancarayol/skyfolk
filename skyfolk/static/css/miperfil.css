@@ -1468,7 +1468,7 @@ button:hover {
 .fontawesome-camera:hover {
   background-color: white;
 }
-.fontawesome-eye-open {
+.fontawesome-eye-open, .fontawesome-star-half, .fontawesome-globe, .fontawesome-heart-empty, .fontawesome-star-empty  {
   font-size: 20px;
   color:white;
 }
