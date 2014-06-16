@@ -537,7 +537,7 @@ text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
 }
 
-.fontawesome-search {
+#fontawesome-search {
 color:#A1F2FF;
 cursor:pointer;
 text-align: center;
