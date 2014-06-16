@@ -1306,7 +1306,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   text-align: center;
   font-size: 16px;
   text-decoration: none;
-  background: #2ab2df;
+  background: rgb(26, 188, 156);
 }
 
 #menu * ul {
@@ -1327,7 +1327,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 }
 
 #menu a:hover {
-    color: #2ab2df;
+    color: rgb(26, 188, 156);
     background: #fff;
 }
 

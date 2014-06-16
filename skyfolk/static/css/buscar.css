@@ -23,7 +23,7 @@
   ;
 }
 .field:after {
-	border-color: blue;
+	border-color: white;
 }
 
 .field>form input[type=text],
