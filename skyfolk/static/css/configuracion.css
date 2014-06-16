@@ -26,14 +26,14 @@ float:left;
 }
 #cf {
 font-size:32px;
-position:absolute;
+position:fixed;
 margin: 25px;
 margin-top: 5px;	
 font-family: 'Gafata', sans-serif;
 }
 /*Cuerpo*/
 #pass {
-right: 435px;
+right: 545px;
 top: 280px;
 position:absolute;
 width:270px;
