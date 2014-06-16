@@ -435,22 +435,15 @@ span[class*="thumbs-up"]:hover {
 	height:100%;
 	float:right;
 }
-.entypo-camera-cog {
-color:#A4A4A4;
-cursor:pointer;
-text-align: center;
-/*margin: 1230px;
-top:-1215px;
-position: absolute;*/
-top: 50px;
-font-size: 38px;
-padding: 0px;
-/*float: right;*/
-margin-left:15px;
-text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
-}
-.entypo-camera:hover {
-color:#2ED8A8
+.fontawesome-random {
+  color:#A4AA4A;
+  cursor:pointer;
+  text-align:center;
+  font-size:38px;
+  padding:0px;
+  margin-left:15px;
+  text-shadow:1px 1px 1px rgba(225,225,225,0.5);
+  opacity: 0.6;
 }
 .fontawesome-comment-alt {
 color:#A4A4A4;
