@@ -464,9 +464,11 @@ padding: 0px;
 /*float: right;*/
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+opacity: 0.6;
 }
 .fontawesome-comment-alt:hover {
-color:#5BF578
+color:#5BF578;
+opacity:1;
 }
 .fontawesome-th {
 color:#A4A4A4;
@@ -480,9 +482,11 @@ padding: 0px;
 /*float: right;*/
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+opacity:0.6;
 }
 .fontawesome-th:hover {
-color:#FFB912
+color:#FFB912;
+opacity: 1;
 }
 .fontawesome-cog{
 color:#A4A4A4;
@@ -496,6 +500,7 @@ padding: 0px;
 /*float: right;*/
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5); 
+opacity: 0.6;
 }
 .fontawesome-cog {
   display: inline-block;
