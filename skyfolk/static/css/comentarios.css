@@ -445,6 +445,9 @@ span[class*="thumbs-up"]:hover {
   text-shadow:1px 1px 1px rgba(225,225,225,0.5);
   opacity: 0.6;
 }
+.fontawesome-random {
+  opacity: 1;
+}
 .fontawesome-comment-alt {
 color:#A4A4A4;
 cursor:pointer;
