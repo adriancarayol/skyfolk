@@ -1468,3 +1468,7 @@ button:hover {
 .fontawesome-camera:hover {
   background-color: white;
 }
+.fontawesome-eye-open {
+  font-size: 20px;
+  color:white;
+}
