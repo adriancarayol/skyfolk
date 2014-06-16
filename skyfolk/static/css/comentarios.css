@@ -436,7 +436,7 @@ span[class*="thumbs-up"]:hover {
 	float:right;
 }
 .fontawesome-random {
-  color:#A4AA4A;
+  color:transparent;
   cursor:pointer;
   text-align:center;
   font-size:38px;
