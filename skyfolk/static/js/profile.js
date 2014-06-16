@@ -116,13 +116,8 @@ $(document).ready(function(){
 
 /* Busqueda */
 
- function() {
-
-  $('#whut').on('click', function(e) {
-
-    e.preventDefault();
-    $('#searchform').animate({width: 'toggle'}).focus();
-
+$( ".fontawesome-search" ).click(function() {
+  $( ".field" ).slideToggle( "slow", function() {
+    // Animation complete.
   });
-
-} () );
+});
