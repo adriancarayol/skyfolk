@@ -116,12 +116,12 @@ $(document).ready(function(){
 
 /* Busqueda */
 
-( function() {
+ function() {
 
   $('#whut').on('click', function(e) {
 
     e.preventDefault();
-    $('.field').animate({width: 'toggle'}).focus();
+    $('#searchform').animate({width: 'toggle'}).focus();
 
   });
 
