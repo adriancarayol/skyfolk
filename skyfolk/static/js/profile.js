@@ -118,7 +118,7 @@ $(document).ready(function(){
 
 ( function() {
 
-  $('#fontawesome-search').on('click', function(e) {
+  $('#whut').on('click', function(e) {
 
     e.preventDefault();
     $('.field').animate({width: 'toggle'}).focus();
