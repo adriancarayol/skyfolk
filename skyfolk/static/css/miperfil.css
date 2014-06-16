@@ -1469,7 +1469,7 @@ button:hover {
   background-color: white;
 }
 .fontawesome-random {
-  color:#99FFE3;
+color:#99FFE3;
 cursor:pointer;
 text-align: center;
 /*margin: 1115px;
@@ -1478,7 +1478,7 @@ position: absolute;*/
 font-size: 38px;
 padding: 0px;
 /*float: right;*/
-margin-left:15px;
+
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5); 
 }
 }
