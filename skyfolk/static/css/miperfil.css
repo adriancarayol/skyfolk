@@ -817,16 +817,14 @@ body > .container {
       color: #e76049; }
     .sidebar .content figure .description a span {
       margin-right: 0.35em; }
-    .user-avatar {
+    .avatarr {
       -webkit-transition: all 1s ease;
      -moz-transition: all 1s ease;
        -o-transition: all 1s ease;
       -ms-transition: all 1s ease;
           transition: all 1s ease;
     }
-    .user-avatar:hover {
-      
-    }
+    
 
 
 
