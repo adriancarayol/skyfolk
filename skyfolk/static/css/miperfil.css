@@ -827,7 +827,7 @@ body > .container {
       -ms-transition: all 1s ease;
           transition: all 1s ease;
       }
-      .user-bg {
+      .user-bg:hover {
         width: 80%;
         height: 80%;
       }
