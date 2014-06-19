@@ -1454,6 +1454,7 @@ button:hover {
   color: #72FF91;
   text-align: center;
   float:right;
+  display:inline-block;
 }
 .fontawesome-bullhorn:hover {
   background-color: white;
@@ -1466,6 +1467,7 @@ button:hover {
   color: black;
   text-align: center;
   float:right;
+  display:inline-block;
 
 }
 .fontawesome-camera:hover {
