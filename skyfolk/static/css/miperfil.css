@@ -1449,7 +1449,7 @@ button:hover {
 
 .fontawesome-bullhorn {
   font-size: 20px;
-  border-radius: 20px 20px 20px 20px;
+  border-radius: none;
   background-color: white;
   color: #72FF91;
   text-align: center;
@@ -1462,7 +1462,7 @@ button:hover {
 }
 .fontawesome-camera {
   font-size: 20px;
-  border-radius: 20px 20px 20px 20px;
+  border-radius: none;
   background-color: #DBDBDB;
   color: black;
   text-align: center;
