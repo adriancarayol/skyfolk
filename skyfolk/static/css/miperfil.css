@@ -1450,8 +1450,8 @@ button:hover {
 .fontawesome-bullhorn {
   font-size: 20px;
   border-radius: none;
-  background-color: white;
-  color: #72FF91;
+  background-color: transparent;
+  color: #71FF95;
   text-align: center;
   float:right;
   display:inline-block;
@@ -1463,8 +1463,8 @@ button:hover {
 .fontawesome-camera {
   font-size: 20px;
   border-radius: none;
-  background-color: #DBDBDB;
-  color: black;
+  background-color: transparent;
+  color: #71FF95;
   text-align: center;
   float:right;
   display:inline-block;
