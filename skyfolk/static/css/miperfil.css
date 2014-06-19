@@ -1430,7 +1430,7 @@ button:hover {
 }
 #page-wrapper:hover {
   opacity: 1;
-  border-radius: 2px solid #98EBFF;
+  border-radius: 4px solid #98EBFF;
 }
 
 
