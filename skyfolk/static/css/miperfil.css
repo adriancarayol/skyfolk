@@ -1474,6 +1474,21 @@ button:hover {
 .fontawesome-camera:hover {
   background-color: white;
 }
+.fontawesome-map-marker {
+   font-size: 20px;
+  border:none;
+  background-color: transparent;
+  color: #71FF95;
+  text-align: center;
+  float:right;
+  display:inline-block;
+  margin-right: 10px;
+
+
+}
+.fontawesome-map-maker {
+  background-color: white;
+}
 .fontawesome-eye-open, .fontawesome-star-half, .fontawesome-globe, .fontawesome-heart-empty, .fontawesome-star-empty  {
   font-size: 20px;
   color:white;
