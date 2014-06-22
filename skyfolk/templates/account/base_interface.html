@@ -62,7 +62,14 @@ function cambiopagina(){
 </script>
 
 
-
+<script>
+$(document).ready(function () {
+  $(".fontawesome-bell-alt").click(function () {
+    $(this).toggleClass("open");
+    $("#notificacionnMenu").toggleClass("open");
+  });
+});
+</script>
 		
 		
 		<script>
@@ -219,99 +226,8 @@ btn.value = "me gusta (" + i + ")";
 	  		<span class="fontawesome-comment-alt"></span>
 	  		<a class="fontawesome-random" href="aleatorio.html"></a>
 	  		<a class="fontawesome-cog" href="/config/changepass"></a>
-	  		<div class="containz">
-    <a href="#" class="button fontawesome-bell-alt"></a>
-  
-    <ul id="notificacionMenu" class="notifications">
-      <li class="titlebar">
-        <span class="title">Notificaciones.</span>
-        <span class="settings"><i class="icon-cog"></i>
-        </span>
-      </li>
-      <div class="notifbox">
-        <li class=" notif unread">
-          <a href="#">
-            <div class="imageblock"> 
-              <img src="https://si0.twimg.com/sticky/default_profile_images/default_profile_2_bigger.png" class="notifimage"  />
-            </div> 
-            <div class="messageblock">
-              <div class="message">This guy <strong>Jonesy</strong> has just built a tower.
-              </div>
-              <div class="messageinfo">
-                <i class="icon-trophy"></i>2 hours ago
-              </div>
-            </div>
-          </a>
-        </li>
-        <li class=" notif unread">
-          <a href="#">
-            <div class="imageblock">
-              <img src="http://fotos.subefotos.com/5e4a31e3600a796b163cd306614617cbo.png" class="notifimage"  />
-            </div> 
-            <div class="messageblock">
-              <div class="message">
-                <strong>Pete Nawara</strong> want's to drink beer with you
-              </div>
-              <div class="messageaction">
-                <a class="button tiny success">accept</a> 
-                <a class="button tiny alert">decline</a>
-              </div>
-              <div class="messageinfo">
-                <i class="icon-flag"></i>3 hour ago
-              </div>
-            </div>
-          </a>
-        </li>
-        <li class=" notif">
-          <a href="#">
-            <div class="imageblock"><img src="http://th02.deviantart.net/fs70/PRE/f/2010/171/4/0/Paint_Splash_PNG_by_AbsurdWordPreferred.png" class="notifimage" />
-            </div> 
-            <div class="messageblock">
-              <div class="message"><strong>Gary LaPlante</strong> has talked some trash: "<em>Buncha bitches.</em>
-              </div>
-              <div class="messageinfo">
-                <i class="icon-comment"></i>4 hours ago
-              </div>
-            </div>
-          </a>
-        </li>
-        <li class=" notif">
-          <a href="#">
-            <div class="imageblock"><img src="http://th02.deviantart.net/fs70/PRE/f/2010/171/4/0/Paint_Splash_PNG_by_AbsurdWordPreferred.png" class="notifimage" /></div> 
-            <div class="messageblock">
-              <div class="message"><strong>Jason Nawara</strong> is probably playing <strong>Smite</strong> right now.
-              </div>
-              <div class="messageinfo"><i class="icon-trophy"></i>Yesterday</div>
-            </div>
-          </a>
-        </li>
-        <li class=" notif">
-          <a href="#">
-            <div class="imageblock"><img src="https://si0.twimg.com/sticky/default_profile_images/default_profile_2_bigger.png" class="notifimage"  />
-            </div> 
-            <div class="messageblock">
-              <div class="message"><strong>Danny DK12</strong> got a sweet fade!</div>
-              
-              <div class="messageinfo"><i class="icon-flag"></i>Yesterday</div>
-            </div>
-          </a>
-        </li>
-        <li class=" notif">
-          <a href="#">
-            <div class="imageblock"><img src="http://www.freegreatdesign.com/files/images/8/3533-crystal-rainbow-apple-icon-png-2.jpg" class="notifimage"  /></div> 
-            <div class="messageblock">
-              <div class="message"><strong>Roidberg</strong> left you a comment: "<em>Hey buddy! Nice toenails!"</em></div>
-              <div class="messageinfo"><i class="icon-comment"></i>2 hours ago</div>
-            </div>
-          </a>
-        </li>
-      </div>
-      <li class="seeall">
-        <a>See All</a>
-      </li>
-    </ul>
-  </div>
 	  		
+	
 	  	</div>
 
 
