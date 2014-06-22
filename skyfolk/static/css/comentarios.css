@@ -539,3 +539,13 @@ opacity: 0.6;
 }
 
 
+.fontawesome-bell-alt {
+  font-size: 20px;
+  color: black;
+  background:transparent;
+  border-color: transparent;
+}
+.fontawesome-bell-alt:hover {
+  /*background: transparent;*/
+  font-color: #44DFFF;
+}
