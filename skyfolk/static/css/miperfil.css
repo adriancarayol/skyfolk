@@ -1502,7 +1502,7 @@ button:hover {
 @first: #83EBFF;
 
 .contain {
-  width: 500px;
+  width: 100px;
   margin: 0 auto;
 }
 
