@@ -1501,7 +1501,7 @@ button:hover {
 @backdwn: #FFF;
 @first: #83EBFF;
 
-.contain {
+.containz {
   width: 500px;
   margin: 0 auto;
   position: relative;
