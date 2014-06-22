@@ -26,3 +26,19 @@ $(document).ready(function() {
     closeMessage($('#js-timer'));
   }, 5000);
 });
+
+
+
+
+
+
+
+
+
+$(document).ready(function () {
+  $(".fontawesome-bell-alt").click(function () {
+    $(this).toggleClass("open");
+    $("#notificacionMenu").toggleClass("open");
+  });
+});
+ */
