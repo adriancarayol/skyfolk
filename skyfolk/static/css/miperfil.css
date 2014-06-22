@@ -1501,9 +1501,11 @@ button:hover {
 @backdwn: #FFF;
 @first: #83EBFF;
 
-.containz {
-  width: 100px;
+.contain {
+  width: 500px;
   margin: 0 auto;
+  position: relative;
+  padding: 20px;
 }
 
 /*.notificationicon {
