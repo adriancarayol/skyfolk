@@ -7,7 +7,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import Q
 from forms import ProfileForm, UserForm
-from landing.models import UserProfile
+from landing.models import UserProfile, LikeProfile
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -19,9 +20,26 @@ def profile_view(request, username):
 	searchForm = SearchForm(request.POST)
 
 	user_profile = get_object_or_404(get_user_model(), username__iexact=username)
-	#profile = user.get_profile()
-	#return render_to_response('profile.html',{'profile':profile,'searchForm':searchForm},context_instance=RequestContext(request))
-	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm},context_instance=RequestContext(request))
+	#profile=UserProfile.objects.get(username=username)
+
+	#saber si el usuario que visita el perfil le gusta
+	print '0. ' + str(request.user.username)
+	print '1. ' + str(username)
+	if request.user.username != username:
+		liked=True
+		print '2. ' + 'es igual'
+		try:
+			LikeProfile.objects.get(from_like=request.user.profile.id, to_like=user_profile.profile)
+		except ObjectDoesNotExist:
+			print '3. ' + 'es falso'
+			liked=False
+	else:
+		liked=False
+
+	#saber el numero de 'gustadores'
+	n_likes = len(LikeProfile.objects.filter(to_like=user_profile.profile))
+	print 'R. ' + str(liked)
+	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes},context_instance=RequestContext(request))
 
 
 @login_required(login_url='accounts/login')

@@ -24,6 +24,7 @@ urlpatterns = patterns(
     url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
     url(r'^config/profile/$', 'user_profile.views.config_profile'),
     #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    url(r'^like_profile/$', 'landing.views.like_profile', name='like_profile'),
     url(r'^accounts/', include('allauth.urls')),
 
     # Importamos las urls de REST Framework

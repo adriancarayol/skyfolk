@@ -99,10 +99,15 @@ class Relationship(models.Model):
     from_person = models.ForeignKey(UserProfile, related_name='from_people')
     to_person = models.ForeignKey(UserProfile, related_name='to_people')
     status = models.IntegerField(choices=RELATIONSHIP_STATUSES)
+    created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('from_person', 'to_person', 'status')
 
 class LikeProfile(models.Model):
     from_like = models.ForeignKey(UserProfile, related_name='from_likeprofile')
     to_like = models.ForeignKey(UserProfile, related_name='to_likeprofile')
     created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('from_like', 'to_like')
