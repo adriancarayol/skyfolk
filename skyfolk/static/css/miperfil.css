@@ -1511,14 +1511,13 @@ button:hover {
  /* width: 500px;
   margin: 0 auto; */
   position: relative;
-  padding: 20px;
   float:right;
 }
 .notificationicon {
   height: 44px;
   position: absolute;
-  top: 20px;
-  left: 170px;
+
+
   &:hover {
     background: rgba(0,0,0,.5);
     i {
