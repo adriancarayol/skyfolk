@@ -1516,7 +1516,7 @@ button:hover {
   display:block;
   position:absolute;
   top:100px;
-  left:-80px;
+  /*left:80px;*/
   width:240px;
   max-height:240px;
 }
