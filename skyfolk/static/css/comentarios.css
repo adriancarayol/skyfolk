@@ -432,7 +432,7 @@ span[class*="thumbs-up"]:hover {
 #box-tool{
 	padding:10px;
 	width:250px;
-	height:100%;
+	height:50%;
 	float:right;
 }
 .fontawesome-random {
