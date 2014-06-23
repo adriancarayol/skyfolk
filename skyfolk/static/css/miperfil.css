@@ -1503,10 +1503,12 @@ button:hover {
 
 .fontawesome-bell {
   color: #FFBE25;
-  font-size: 50px;
+  font-size: 20px;
   font: bold;
-  margin: 10px;
-  top: 10px;
+ text-align: center;
+  float:right;
+  display:inline-block;
+  margin-right: 10px;
   
 }
 
