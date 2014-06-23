@@ -1504,9 +1504,9 @@ button:hover {
 .fontawesome-bell {
   color: #FFBE25;
   font-size: 38px;
-  margin-top: -75px;
+  top: -75px;
   display: inline-block;
-  margin-left:-10px;
+  margin-left:-30px;
   padding:0px;
   text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 }
