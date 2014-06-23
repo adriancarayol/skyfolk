@@ -1528,7 +1528,7 @@ button:hover {
     60% { transform: rotate(0deg) }
     100% { transform: rotate(0deg) }
   }
-  
+
 .fontawesome-bell:hover {
   color: #FFBE25;
 }
@@ -1546,7 +1546,7 @@ button:hover {
   content:'.';
   display:block;
   position:absolute;
-  margin-left:-10px;
+  margin-left:-5px;
   left:50%;
   top:-18px;
   width:0;
