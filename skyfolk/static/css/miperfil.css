@@ -1512,6 +1512,7 @@ button:hover {
   margin: 0 auto;
   position: relative;
   padding: 20px;
+  float:left;
 }
 .notificationicon {
   height: 44px;
