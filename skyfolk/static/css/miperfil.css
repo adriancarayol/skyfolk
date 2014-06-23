@@ -1501,7 +1501,7 @@ button:hover {
 
 
 
-.fontawesome-bell {
+.fontawesome-bell:after, .fontawesome-bell:before {
   color: #FFBE25;
   cursor:pointer;
   text-align:right;
