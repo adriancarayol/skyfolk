@@ -1510,8 +1510,26 @@ button:hover {
   display: inline-block;
   margin-left:-30px;
   text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
+  transform-origin: 70% 1em;
+  animation-name: ring;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
 }
-.fontawesome-bell {
+
+@keyframes ring
+  {
+    0% { transform: rotate(0deg) }
+    5% { transform: rotate(45deg) }
+    15% { transform: rotate(-40deg) }
+    25% { transform: rotate(20deg) }
+    35% { transform: rotate(-15deg) }
+    45% { transform: rotate(10deg) }
+    55% { transform: rotate(-5deg) }
+    60% { transform: rotate(0deg) }
+    100% { transform: rotate(0deg) }
+  }
+  
+.fontawesome-bell:hover {
   color: #FFBE25;
 }
 
