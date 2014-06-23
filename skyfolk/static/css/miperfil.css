@@ -1520,7 +1520,7 @@ button:hover {
   display:block;
   position:absolute;
   top:100px;
-  /*left:80px;*/
+  left:80px;
   width:240px;
   max-height:240px;
 }
@@ -1530,7 +1530,7 @@ button:hover {
   display:block;
   position:absolute;
   margin-left:-10px;
-  left:30%;
+  left:50%;
   top:-18px;
   width:0;
   height:0;
