@@ -1505,10 +1505,8 @@ button:hover {
   color: #FFBE25;
   font-size: 20px;
   font: bold;
- text-align: center;
-  float:right;
-  display:inline-block;
-  margin-right: 10px;
+  display: inline-block;
+  position: absolute;
   
 }
 
