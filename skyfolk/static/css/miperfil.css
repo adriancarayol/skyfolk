@@ -1526,7 +1526,7 @@ button:hover {
 .notifications .messages {
   display:block;
   position:absolute;
-  top:50px;
+  top:70px;
   right:100px;
   width:240px;
   max-height:240px;
