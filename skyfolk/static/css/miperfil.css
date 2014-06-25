@@ -1574,10 +1574,10 @@ button:hover {
 }
 
 .count {
-      background-color: aquamarine;
+      background-color: tomato;
       border: 1px solid lime;
       border-radius: 14px;
-      color: tomato;
+      color: white;
       display: block;
       font-size: 18px;
       line-height: 20px;
