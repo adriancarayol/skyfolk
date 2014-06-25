@@ -604,7 +604,7 @@ body > .container {
       .stock .summary a:hover span {
         color: #1d8cdf; }
 
-/*.messages {
+.messages {
   margin-bottom: 1em; }
 
 .message {
@@ -691,97 +691,8 @@ body > .container {
       content: "\f00d";
       vertical-align: middle;
       display: inline-block; }
-*/
-#contenedor {
-  border: 1px solid #94F6FB;
-  width: 400px;
-  height: 300px;
-  border-radius: 5%;
-  border-top: 4px solid #079FA7;
-}
-.img {
-  border-radius: 100%;
-  box-shadow: 1px 1px 2px 1px;
-  margin: 13px;
- position: relative;
-  display: inline-block;
-}
-.img:hover {
-  color: #9CFBFF;
-  cursor: pointer;
-}
-p {
-  font-size: 11px;
-  color: grey;
-  font-family: 'Open Sans', sans-serif;
-  position: flex;
-  margin-left: 90px;
-  margin-top: -50px;
-}
-p:hover {
-  color: #7AFFC4;
-}
 
- .l, .l2 {
-   border-top: 1px solid #9CFBFF;
- }
-.grup {
-  list-style:none;
-  
-}
-ul {
-  margin-left: -30px;
-  margin-top: -20px;
-  
-}
-li {
-  margin: 40px;
-}
 
-.green {
- color: #10d7af; 
-}
-
-.fontawesome-heart {
-  color: #FFF;
-  font-size: 12px;
-  diplay: block;
-  position: absolute;
-  margin-left: 240px;
-  cursor:pointer;
-
-}
-.fontawesome-share {
-  color: #FFF;
-  font-size: 12px;
-  diplay: block;
-  position: absolute;
-  margin-left: 210px;
-  cursor: pointer;
-  
-}
-.fontawesome-trash {
-  color: #FFF;
-  font-size: 12px;
-  diplay: block;
-  position: absolute;
-  margin-left: 270px;
-  cursor: pointer:
-}
-
-.fontawesome-heart:hover {
-  color: #FF7AFC;
- 
-}
-.fontawesome-share:hover {
-  color: #FF7AFC;
-}
-.fontawesome-trash:hover {
-  color: #FF7AFC;
-}
-ul.controls span {
-  color: #FFF;
-}
 .video-player {
   background: #1d2122; }
   .video-player .vbox {
