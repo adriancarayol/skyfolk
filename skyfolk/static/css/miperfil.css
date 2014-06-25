@@ -1512,8 +1512,8 @@ button:hover {
   cursor:pointer;
   text-align:center;
   font-size: 38px;
-  margin-top: -53px;
-  display: inline-block;
+  margin-top: -55px;
+  display: block;
   margin-left:-30px;
   text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 }
