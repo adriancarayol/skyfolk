@@ -943,7 +943,7 @@ html, body {
   height: 100%;
   padding: 0;
   margin:auto;
-  min-width:100em;
+  min-width: auto;
   max-width:1400px;
 }
 
