@@ -945,8 +945,8 @@ html, body {
   margin: 0; 
   width:100%;
   margin:auto;
-  min-width:80%;
-  max-width:80%;
+  min-width:1240px;
+  max-width:1240px;
 }
 
 a {
