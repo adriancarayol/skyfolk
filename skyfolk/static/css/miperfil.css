@@ -1559,7 +1559,15 @@ button:hover {
 }
 
 
-.fontawesome-heart-empty , .fontawesome-coffee , .fontawesome-user {
+.fontawesome-heart-empty {
   color: pink;
-  font-size: 20px;
+  font-size: 15px;
+}
+.fontawesome-coffee {
+  color: tomato;
+  font-size: 15px;
+}
+.fontawesome-user {
+  color: aquamarine;
+  font-size: 15px;
 }
