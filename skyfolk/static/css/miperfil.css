@@ -1575,7 +1575,7 @@ button:hover {
 
 .count {
       background-color: tomato;
-      border: 1px solid lime;
+      border: 1px solid tomato;
       border-radius: 14px;
       color: white;
       display: block;
