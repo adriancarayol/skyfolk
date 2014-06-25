@@ -926,7 +926,7 @@ body > .container {
     display: table-cell; }
 
 .fullwidth {
-  width: 100%; }
+  width: 80%; }
 
 .middle {
   vertical-align: middle; }
