@@ -604,7 +604,7 @@ body > .container {
       .stock .summary a:hover span {
         color: #1d8cdf; }
 
-.messages {
+/*.messages {
   margin-bottom: 1em; }
 
 .message {
@@ -691,7 +691,7 @@ body > .container {
       content: "\f00d";
       vertical-align: middle;
       display: inline-block; }
-
+*/
 .video-player {
   background: #1d2122; }
   .video-player .vbox {
