@@ -943,10 +943,10 @@ html, body {
   height: 100%;
   padding: 0;
   margin: 0; 
-  width:100%;
+  width:90%;
   margin:auto;
   min-width:1000px;
-  max-width:2000px;
+  max-width:1000px;
 }
 
 a {
