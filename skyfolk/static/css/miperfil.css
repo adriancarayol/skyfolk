@@ -942,7 +942,7 @@ html, body {
   color: #46494c;
   height: 100%;
   padding: 0;
-  margin:auto;
+  margin: 0;
   min-width: 1580px;
   max-width:auto;
 }
@@ -1599,3 +1599,8 @@ button:hover {
         right: -8px;
         top: -20px;
       }
+
+  #cuerpo {
+    width: 100%;
+    height: 100%;
+  }
