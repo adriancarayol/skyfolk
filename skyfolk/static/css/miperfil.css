@@ -830,8 +830,7 @@ body > .container {
   text-align: center;
   background: #ffcf00;
   padding: 2em 0 0;
-  color: white;
-  float:right; }
+  color: white; }
   .weather .current .icon {
     font-size: 9em; }
   .weather .current .temperature {
@@ -943,7 +942,12 @@ html, body {
   color: #46494c;
   height: 100%;
   padding: 0;
-  margin: 0; }
+  margin: 0; 
+  width:90%;
+  margin:auto;
+  min-width:600px;
+  max-width:2000px;
+}
 
 a {
   cursor: pointer;
