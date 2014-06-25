@@ -1519,7 +1519,7 @@ button:hover {
 }
 
 .fontawesome-bell:hover {
-  color: #FFBE25;
+  color: lighten(#9421FF, 45%);
 }
 
 .notifications .messages {
