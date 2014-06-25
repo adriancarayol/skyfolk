@@ -942,11 +942,9 @@ html, body {
   color: #46494c;
   height: 100%;
   padding: 0;
-  margin: 0; 
-  width:20%;
   margin:auto;
   min-width:1640px;
-  max-width:1700px;
+  max-width:1400px;
 }
 
 a {
