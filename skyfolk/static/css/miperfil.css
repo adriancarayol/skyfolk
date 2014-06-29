@@ -1606,6 +1606,7 @@ button:hover {
   color:#fff;
   width:40px;
   height:40px;
+  left: 15px;
   border:2px solid #eee;
   -webkit-border-radius: 200px;
   border-radius: 210px;
@@ -1618,7 +1619,11 @@ button:hover {
   opacity: 1;
   line-height: 1;
   }
-
+#Menu:hover {
+  top: -5px;
+  right: -2px;
+  background: aquamarine;
+}
   #centro {
   padding-top: 0%;
   width: 45%;
