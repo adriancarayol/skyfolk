@@ -1611,7 +1611,6 @@ button:hover {
   border-radius: 210px;
   box-shadow:2px 0px 2px #444;
   position:absolute;
-  left:5%;top:10%;
   float: left;
   /*margin:100px auto;*/
   z-index:2;
