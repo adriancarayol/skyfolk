@@ -1620,9 +1620,10 @@ button:hover {
   line-height: 1;
   }
 #Menu:hover {
-  top: -5px;
+  top: -2px;
   right: -2px;
   background: aquamarine;
+  border: 2px solid aquamarine;
 }
   #centro {
   padding-top: 0%;
