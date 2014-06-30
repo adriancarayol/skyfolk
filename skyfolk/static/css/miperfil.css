@@ -1513,13 +1513,12 @@ button:hover {
   margin-top: -33px;
   display: block;
   position:absolute;
-  margin-left:-30px;
+  margin-left:-33px;
   text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 }
 
 .fontawesome-bell:hover {
   color: #9421FF;
-  background-color: #FFF;
 }
 
 .notifications .messages {
