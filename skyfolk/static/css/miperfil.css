@@ -1621,7 +1621,7 @@ button:hover {
   line-height: 1;
   }
 #Menu:hover {
-  top: -2px;
+  top: -1px;
   right: -2px;
   background: aquamarine;
   border: 2px solid aquamarine;
