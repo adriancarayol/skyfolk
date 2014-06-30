@@ -510,6 +510,7 @@ opacity: 0.6;
 }
 .fontawesome-cog:hover, .fontawesome-cog:focus, .fontawesome-cog:active {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+  background-color: #ACACAC;
 }
 .fontawesome-th {
   display: inline-block;
@@ -523,6 +524,7 @@ opacity: 0.6;
 }
 .fontawesome-th:hover, .fontawesome-th:focus, .fontawesome-th:active {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+  background-color: #FF90C6;
 }
   .fontawesome-comment-alt {
   display: inline-block;
@@ -536,6 +538,7 @@ opacity: 0.6;
 }
 .fontawesome-comment-alt:hover, .fontawesome-comment-alt:focus, .fontawesome-comment-alt:active {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+  background-color: #FE90FF;
 }
 
 

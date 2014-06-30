@@ -1519,6 +1519,7 @@ button:hover {
 
 .fontawesome-bell:hover {
   color: #9421FF;
+  background-color: #FFF;
 }
 
 .notifications .messages {
