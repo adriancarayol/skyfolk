@@ -2,13 +2,13 @@ $(document).ready(function(){
    $("#Menu").click(function () {
       $("#panel").each(function() {
         displaying = $(this).css("display");
-        if(displaying == "block") {
+        if(displaying == "none") {
           $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
+           $(this).css("display","block");
           });
         } else {
           $(this).fadeIn('slow',function() {
-            $(this).css("display","block");
+            $(this).css("display","none");
           });
         }
       });
@@ -114,8 +114,6 @@ $(document).ready(function(){
 
 function aparecerbola(){
   document.getElementById("widget").style.opacity = "1";
-  document.getElementById("widget").style.display = "block";
-  document.getElementById("widget").style.webkitTransition ="display none"
   document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
 }
 /*
