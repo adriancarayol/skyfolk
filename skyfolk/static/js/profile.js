@@ -8,7 +8,7 @@ $(document).ready(function(){
           });
         } else {
           $(this).fadeIn('slow',function() {
-            $(this).css("display","block");
+            $(this).css("display","none");
           });
         }
       });
