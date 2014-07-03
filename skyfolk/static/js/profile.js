@@ -114,8 +114,8 @@ $(document).ready(function(){
 
 function aparecerbola(){
   document.getElementById("widget").style.opacity = "1";
-  document.getElementById("widget").style.display = "none";
-  document.getElementById("widget").style.webkitTransition ="display block"
+  document.getElementById("widget").style.display = "block";
+  document.getElementById("widget").style.webkitTransition ="display none"
   document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
 }
 /*
