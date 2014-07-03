@@ -44,8 +44,7 @@ body{
 	/*margin:100px auto;*/
 	z-index:2;
 	overflow:hidden;
-	opacity: 0;
-	display: none;
+	opacity: 1;
 }
 #middle {
 	padding-top: 0%;
