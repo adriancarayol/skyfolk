@@ -1618,6 +1618,7 @@ button:hover {
   z-index:2;
   overflow:hidden;
   opacity: 1;
+  visibility: hidden;
   top: 7px;
   line-height: 1;
   }
