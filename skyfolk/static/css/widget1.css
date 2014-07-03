@@ -45,7 +45,7 @@ body{
 	z-index:2;
 	overflow:hidden;
 	opacity: 0;
-	visibility: hidden;
+	display: none;
 }
 #middle {
 	padding-top: 0%;
