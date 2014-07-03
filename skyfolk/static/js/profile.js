@@ -4,11 +4,11 @@ $(document).ready(function(){
         displaying = $(this).css("display");
         if(displaying == "none") {
           $(this).fadeOut('slow',function() {
-           $(this).css("display","block");
+           $(this).css("display","none");
           });
         } else {
           $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
+            $(this).css("display","block");
           });
         }
       });
