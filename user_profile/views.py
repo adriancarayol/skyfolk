@@ -15,30 +15,25 @@ from django.core.exceptions import ObjectDoesNotExist
 def profile_view(request, username):
 
 
-	#requestUsername = request.user.username #esto es para que una vez cargada la pagina de perfil, al pulsar buscar hace falta poner el nombre del usuario que visita la pagina
 	#para mostarar el cuadro de busqueda en la pagina:
 	searchForm = SearchForm(request.POST)
 
 	user_profile = get_object_or_404(get_user_model(), username__iexact=username)
-	#profile=UserProfile.objects.get(username=username)
 
 	#saber si el usuario que visita el perfil le gusta
-	print '0. ' + str(request.user.username)
-	print '1. ' + str(username)
 	if request.user.username != username:
 		liked=True
-		print '2. ' + 'es igual'
 		try:
-			LikeProfile.objects.get(from_like=request.user.profile.id, to_like=user_profile.profile)
+			#LikeProfile.objects.get(from_like=request.user.profile.id, to_like=user_profile.profile)
+			request.user.profile.has_like(user_profile.profile)
 		except ObjectDoesNotExist:
-			print '3. ' + 'es falso'
 			liked=False
 	else:
 		liked=False
 
 	#saber el numero de 'gustadores'
-	n_likes = len(LikeProfile.objects.filter(to_like=user_profile.profile))
-	print 'R. ' + str(liked)
+	#n_likes = len(LikeProfile.objects.filter(to_like=user_profile.profile))
+	n_likes = len(user_profile.profile.get_likesToMe())
 	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes},context_instance=RequestContext(request))
 
 

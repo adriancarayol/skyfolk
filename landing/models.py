@@ -40,7 +40,7 @@ class UserProfile(models.Model):
 
 
 
-    #metodos de relaciones entre usuarios
+    #Methods of relationships between users
     def add_relationship(self, person, status, symm=True):
         relationship, created = Relationship.objects.get_or_create(from_person=self, to_person=person, status=status)
         if symm:
@@ -78,16 +78,23 @@ class UserProfile(models.Model):
 
     
     #metodos likes perfil
-    def add_like(self, profile, status):
+    def add_like(self, profile):
         like, created = LikeProfile.objects.get_or_create(from_like=self, to_like=profile)
         return like
 
-    def remove_like(self, profile, status, symm=True):
+    def remove_like(self, profile):
         LikeProfile.objects.filter(from_like=self, to_like=profile).delete()
 
-    def get_likes(self, status):
-        return self.relationships.filter(from_like__to_like=self)
-    
+    def get_likesToMe(self):
+        #return LikeProfile.objects.filter(from_like__to_like=self)
+        return self.like_to.filter(from_likeprofile__to_like=self) # va bien
+    def get_likes(self):
+        return self.likeprofiles.filter(to_likeprofile__from_like=self)
+
+    def has_like(self, profile):
+        return LikeProfile.objects.get(from_like=self, to_like=profile)
+
+
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 

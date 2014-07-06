@@ -25,8 +25,7 @@ def like_profile(request):
         slug = request.POST.get('slug', None)
         profileUserId = slug
         try:
-            #user_liked = LikeProfile.objects.get(from_likeprofile=UserProfile.objects.get(user=user.id), to_likeprofile=UserProfile.objects.get(user=slug))
-            user_liked = LikeProfile.objects.get(from_like=user.profile.id, to_like=profileUserId) #lo hace bien
+            user_liked = user.profile.has_like(profileUserId)
         except ObjectDoesNotExist:
             user_liked = None
 
@@ -34,7 +33,8 @@ def like_profile(request):
             user_liked.delete()
             response="nolike"
         else:
-            created = LikeProfile.objects.create(from_like=UserProfile.objects.get(pk=user.profile.id), to_like=UserProfile.objects.get(pk=slug))
+
+            created = user.profile.add_like(UserProfile.objects.get(pk=slug))
             created.save()
             response="like"
 
