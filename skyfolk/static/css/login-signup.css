@@ -267,24 +267,7 @@ font-size: 70px;
     display: none;
 }
 
-#facebook{
-	color:rgba(59, 89, 152,0.5);
-	text-shadow: 1px 3px 6px #3B5998,
-								0px 0px 0px #000,
-							1px 4px 6px #3B5998;
-	
-	-webkit-border-radius:0px  0px 0px 205px;
-	border-radius:0px  0px 0px 205px;
-	left: 200px;
-}
-.size {
-left: 20px;
-position: 200px 0 200px 10px;
-}
-.left {
-left: 20px;
-position: 200px;
-}
+
 
 
 
