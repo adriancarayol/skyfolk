@@ -1522,6 +1522,10 @@ button:hover {
 
 .fontawesome-bell:hover {
   color: rgb(26, 188, 156);
+  border: 3px solid rgb(26, 188, 156);
+  border-right: none;
+  border-top: none;
+  border-left: none;
 }
 
 .notifications .messages {

@@ -473,9 +473,9 @@ transition: all .3s ease-in-out;
 color: rgb(26, 188, 156);
 opacity:1;
  border: 3px solid rgb(26, 188, 156);
-  border-right: none;
-  border-top: none;
-  border-left: none;
+ border-right: none;
+ border-top: none;
+ border-left: none;
 }
 .fontawesome-th {
 color:transparent;
@@ -496,9 +496,9 @@ transition: all .3s ease-in-out;
 color: rgb(26, 188, 156);
 opacity: 1;
  border: 3px solid rgb(26, 188, 156);
-  border-right: none;
-  border-top: none;
-  border-left: none;
+ border-right: none;
+ border-top: none;
+ border-left: none;
 }
 .fontawesome-cog{
 color: transparent;
@@ -517,7 +517,7 @@ transition: all .3s ease-in-out;
 }
 .fontawesome-cog:hover {
   display: inline-block;
-   border: 3px solid rgb(26, 188, 156);
+  border: 3px solid rgb(26, 188, 156);
   border-right: none;
   border-top: none;
   border-left: none;
@@ -529,6 +529,7 @@ transition: all .3s ease-in-out;
   transform: translateZ(0);
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
   color: rgb(26, 188, 156);
+  opacity: 1;
 }
 .fontawesome-cog:hover, .fontawesome-cog:focus, .fontawesome-cog:active {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
