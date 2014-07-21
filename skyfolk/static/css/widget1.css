@@ -127,9 +127,25 @@ margin-top:25px;
 		float:right;
 	}
 
-#facebook:hover, #linkedin:hover, #dribbble:hover, #twitter:hover {
+#facebook:hover{
 		color:rgba(255,255,255,0.7);
 		cursor:pointer;
 		}
 		
 
+#linkedin:hover {
+	color:rgba(255,255,255,0.7);
+		cursor:pointer;
+}
+
+
+#dribbble:hover {
+	color:rgba(255,255,255,0.7);
+		cursor:pointer;
+}
+
+
+#twitter:hover {
+	color:rgba(255,255,255,0.7);
+		cursor:pointer;
+}
