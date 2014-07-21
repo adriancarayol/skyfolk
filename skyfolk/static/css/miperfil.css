@@ -1718,3 +1718,14 @@ margin-top:25px;
   .right {
     float:right;
   }
+
+
+/* Notificación oculta - Azul */
+&.is-hidden {
+    opacity: 0;
+    height: 0;
+    font-size: 0;
+    padding: 0;
+    margin: 0 auto;
+    display: block;
+  }
