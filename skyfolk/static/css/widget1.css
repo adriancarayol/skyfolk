@@ -66,7 +66,7 @@ border-radius: 100px;
 }
 
 #linkedin {
-	color:rgb(26, 188, 156);
+	color:rgba(14, 118, 168,0.5);
 	text-shadow: 1px 3px 6px #0e76a8,
 								0px 0px 0px #000,
 							1px 4px 6px #0e76a8;
@@ -76,7 +76,7 @@ border-radius: 100px;
 }
 
 #dribbble {
-	color:rgb(26, 188, 156);
+	color:rgba(226, 77, 135,0.5);
 		text-shadow: 1px 3px 6px #E24D87,
 								0px 0px 0px #000,
 							1px 4px 6px #E24D87;
@@ -87,7 +87,7 @@ border-radius: 100px;
 }
 
 #facebook{
-	color:rgb(26, 188, 156);
+	color:rgba(59, 89, 152,0.5);
 	text-shadow: 1px 3px 6px #3B5998,
 								0px 0px 0px #000,
 							1px 4px 6px #3B5998;
@@ -97,7 +97,7 @@ border-radius: 100px;
 }
 
 #twitter {
-	color: rgb(26, 188, 156);
+	color: #0092AC;
 		text-shadow: 1px 3px 6px #00CEFC,
 								0px 0px 0px #000,
 							1px 4px 6px #00CEFC;
