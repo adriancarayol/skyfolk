@@ -1,5 +1,5 @@
 function closeMessage(el) {
-  el.addClass('.is-hidden');
+  el.addClass('is-hidden');
 }
 
 $('.js-messageClose').on('click', function(e) {
