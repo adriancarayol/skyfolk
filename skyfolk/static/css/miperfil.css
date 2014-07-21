@@ -1075,6 +1075,7 @@ top: 5px;
   z-index: 3;
   float: right;
   right: 10px;
+  cursor: pointer;
 }
 #nav2 {
     width: 20px;
@@ -1291,7 +1292,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   */
   float:left;
   margin-top: 6px;
-  margin-left: 500px;
+  margin-left: 10%;
 }
 
 #menu > ul {
