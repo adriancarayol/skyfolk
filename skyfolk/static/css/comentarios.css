@@ -444,12 +444,14 @@ span[class*="thumbs-up"]:hover {
   margin-left:15px;
   text-shadow:1px 1px 1px rgba(225,225,225,0.5);
   opacity: 0.6;
+  transition: all .3s ease-in-out;
 }
-.fontawesome-random {
+.fontawesome-random:hover {
   opacity: 1;
+  color: rgb(26, 188, 156);
 }
 .fontawesome-comment-alt {
-color:#A4A4A4;
+color: transparent;
 cursor:pointer;
 text-align: center;
 /*margin: 1171px;
@@ -461,13 +463,14 @@ padding: 0px;
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 opacity: 0.6;
+transition: all .3s ease-in-out;
 }
 .fontawesome-comment-alt:hover {
-color:#5BF578;
+color: rgb(26, 188, 156);
 opacity:1;
 }
 .fontawesome-th {
-color:#A4A4A4;
+color:transparent;
 cursor:pointer;
 text-align: center;
 /*margin: 1115px;
@@ -479,13 +482,14 @@ padding: 0px;
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
 opacity:0.6;
+transition: all .3s ease-in-out;
 }
 .fontawesome-th:hover {
-color:#FFB912;
+color: rgb(26, 188, 156);
 opacity: 1;
 }
 .fontawesome-cog{
-color:#A4A4A4;
+color: transparent;
 cursor:pointer;
 text-align: center;
 /*margin: 1115px;
@@ -497,8 +501,9 @@ padding: 0px;
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5); 
 opacity: 0.6;
+transition: all .3s ease-in-out;
 }
-.fontawesome-cog {
+.fontawesome-cog:hover {
   display: inline-block;
   -webkit-transition-duration: 0.3s;
   transition-duration: 0.3s;
@@ -507,6 +512,7 @@ opacity: 0.6;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  color: rgb(26, 188, 156);
 }
 .fontawesome-cog:hover, .fontawesome-cog:focus, .fontawesome-cog:active {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
