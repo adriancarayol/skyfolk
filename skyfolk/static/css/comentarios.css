@@ -185,18 +185,18 @@ span[class*="thumbs-up"]:hover {
 
 /*2*/
 
-.wrapper {
+.wrapper2 {
   margin: 30px auto;
   width: 375px;
   height: 125px;
-  background: #fff;
+  background: #71FF71;
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 10px #ddd;
   overflow: hidden;
 }
 
-.box{
+.box2 {
   float: left;
   width: 115px;
   height: 115px;
