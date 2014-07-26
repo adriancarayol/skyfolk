@@ -208,6 +208,7 @@ span[class*="thumbs-up"]:hover {
 article.articulo {
   float: left;
   top: -60%;
+  left: 10%;
   position: relative;
   width: 201px;
   border-bottom: 1px solid #eee;
