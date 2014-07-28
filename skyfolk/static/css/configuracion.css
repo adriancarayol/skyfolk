@@ -18,7 +18,7 @@ background-image:url('http://upload.wikimedia.org/wikipedia/en/7/75/DowntownSF.j
 }
 
 .entypo-cog {
-font-size: 40px;
+font-size: 35px;
 color: #5AC3FF;
 position:absolute;
 float:left;
@@ -59,7 +59,7 @@ box-shadow: rgb(150,150,150) 1px 1px;
 
 font-size: 15px;
 font-family: 'Gafata', sans-serif;
-margin: -60px;
+margin: -30px;
 padding-right: 5px;
 background: #FFFFFF;
 border: 50px solid #FFF;
