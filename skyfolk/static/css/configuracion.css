@@ -34,7 +34,7 @@ font-family: 'Gafata', sans-serif;
 /*Cuerpo*/
 #pass {
 right: 35%;
-top: 35%;
+top: 37%;
 position:absolute;
 width:270px;
 }
@@ -140,7 +140,7 @@ border-radius: 8px 8px 8px 8px;
 box-shadow: rgb(196,196,196) 5px 5px;
 position: absolute;
 top:10%;
-left:50%;
+left:40%;
 }
 #cn {
 font-size: 20px;
