@@ -106,6 +106,7 @@ span[class*="entypo-forward"] {
   -moz-transition:.5s;
   -o-transition:.5s;
   transition:.5s;
+  z-index: 2;
 }
 
 span[class*="entypo-plus"] {
@@ -121,6 +122,7 @@ span[class*="entypo-plus"] {
   -moz-transition:.5s;
   -o-transition:.5s;
   transition:.5s;
+  z-index: 2;
   
 }
 
@@ -137,6 +139,7 @@ span[class*="entypo-thumbs-up"] {
   -moz-transition:.5s;
   -o-transition:.5s;
   transition:.5s;
+  z-index: 2;
 }
 
 #profile:checked ~ span[class*="entypo-forward"] {
@@ -148,6 +151,7 @@ span[class*="entypo-thumbs-up"] {
   -moz-transition:.5s;
   -o-transition:.5s;
   transition:.5s;
+  z-index: -1;
   }
 
   #profile:checked ~ span[class*="entypo-plus"] {
@@ -159,6 +163,7 @@ span[class*="entypo-thumbs-up"] {
   -moz-transition:.5s;
   -o-transition:.5s;
   transition:.5s;
+  z-index: -1;
   }
   
 span[class*="plus"] {background:#97E2FF;}
@@ -175,6 +180,7 @@ span[class*="plus"]:hover {
   -moz-transition:.5s;
   -o-transition:.5s;
   transition:.5s;
+  z-index: -1;
   }
 span[class*="forward"] {background:#2D75D0;}
 span[class*="forward"]:hover {
