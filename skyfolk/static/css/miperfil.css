@@ -1078,6 +1078,7 @@ z-index: 9999;
   right: 10px;
   cursor: pointer;
   position: fixed;
+  top: 10px;
 }
 #nav2 {
     width: 20px;
@@ -1091,6 +1092,7 @@ z-index: 9999;
     margin: 0;
     position: fixed;
     width: 225px;
+    top: 10px;
 }
 .nameact a {
     display: block;
