@@ -144,7 +144,7 @@ span[class*="entypo-thumbs-up"] {
   -o-transition:.5s;
   transition:.5s;
   z-index: 9999;
-  
+  position: relative;
 }
 
 #profile:checked ~ span[class*="entypo-forward"] {
