@@ -112,6 +112,7 @@ span[class*="entypo-forward"] {
 span[class*="entypo-plus"] {
   cursor:pointer;
   float:left;
+  display: block;
   font-size:38px;
   height:100px;
   width:70px;
@@ -129,6 +130,7 @@ span[class*="entypo-plus"] {
 span[class*="entypo-thumbs-up"] {
   cursor:pointer;
   float:left;
+  display: block;
   font-size:38px;
   height:100px;
   width:70px;
