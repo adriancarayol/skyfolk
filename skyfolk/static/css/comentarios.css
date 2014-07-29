@@ -150,8 +150,8 @@ span[class*="entypo-thumbs-up"] {
 #profile:checked ~ span[class*="entypo-forward"] {
   text-align:center;
   opacity:0;
-  width:70px;
-  height:100px;
+  height: 120px;
+  width:80px;
   -webkit-transition:.5s;
   -moz-transition:.5s;
   -o-transition:.5s;
@@ -162,8 +162,8 @@ span[class*="entypo-thumbs-up"] {
   #profile:checked ~ span[class*="entypo-plus"] {
  text-align:center;
   opacity:0;
-  width:70px;
-  height:100px;
+ height: 120px;
+  width:80px;
   -webkit-transition:.5s;
   -moz-transition:.5s;
   -o-transition:.5s;
@@ -179,8 +179,8 @@ span[class*="plus"]:hover {
 #profile:checked ~ span[class*="entypo-thumbs-up"] {
   text-align:center;
   opacity:0;
-  width:70px;
-  height:100px;
+ height: 120px;
+  width:80px;
   -webkit-transition:.5s;
   -moz-transition:.5s;
   -o-transition:.5s;
