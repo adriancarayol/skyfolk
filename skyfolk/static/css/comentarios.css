@@ -107,6 +107,7 @@ span[class*="entypo-forward"] {
   -o-transition:.5s;
   transition:.5s;
   z-index:9999;
+  position: relative;
 }
 
 span[class*="entypo-plus"] {
@@ -124,6 +125,7 @@ span[class*="entypo-plus"] {
   -o-transition:.5s;
   transition:.5s;
   z-index: 9999;
+  position: relative;
   
 }
 
@@ -142,6 +144,7 @@ span[class*="entypo-thumbs-up"] {
   -o-transition:.5s;
   transition:.5s;
   z-index: 9999;
+  position: relative;
 }
 
 #profile:checked ~ span[class*="entypo-forward"] {
