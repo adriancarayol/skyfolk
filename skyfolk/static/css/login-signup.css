@@ -133,8 +133,8 @@ font-size: 70px;
 .form-3 input[type=text]:focus, 
 .form-3 input[type=password]:focus {
     box-shadow: inset 0 0 2px #000;
-    background: #494d54;
-    border-color: #51cbee;
+    background: #fff;
+    border: 3px solid #51cbee;
     outline: none; /* Remove Chrome outline */
 }
 
