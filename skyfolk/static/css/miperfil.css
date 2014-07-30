@@ -1081,7 +1081,7 @@ z-index: 9999;
 }
 #nav2 {
     width: 20px;
-    margin: 10px auto;
+    margin: 40px auto;
     margin-right: 250px;
     top: 3%;
     
@@ -1089,7 +1089,7 @@ z-index: 9999;
 .nameact {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 30;
     width: 225px;
 }
 
