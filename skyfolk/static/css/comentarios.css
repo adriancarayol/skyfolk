@@ -448,7 +448,7 @@ span[class*="thumbs-up"]:hover {
 	float:right;
 }
 .fontawesome-random {
-  color:transparent;
+  color:#FFF;
   cursor:pointer;
   text-align:center;
   font-size:38px;
@@ -467,7 +467,7 @@ span[class*="thumbs-up"]:hover {
   border-left: none;
 }
 .fontawesome-comment-alt {
-color: transparent;
+color: #FFF;
 cursor:pointer;
 text-align: center;
 /*margin: 1171px;
@@ -490,7 +490,7 @@ opacity:1;
  border-left: none;
 }
 .fontawesome-th {
-color:transparent;
+color:#FFF;
 cursor:pointer;
 text-align: center;
 /*margin: 1115px;
@@ -513,7 +513,7 @@ opacity: 1;
  border-left: none;
 }
 .fontawesome-cog{
-color: transparent;
+color: #FFF;
 cursor:pointer;
 text-align: center;
 /*margin: 1115px;
