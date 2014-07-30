@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.contrib import messages
 from django.db import models
 from django.forms import ModelForm
-from landing.models import UserProfile
+from user_profile.models import UserProfile
 from django.contrib.auth.models import User
 
 class SearchForm(forms.Form):
