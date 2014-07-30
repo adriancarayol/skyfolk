@@ -1078,6 +1078,9 @@ z-index: 9999;
   right: 7px;
   cursor: pointer;
   top: 25px;
+  transition: all .3s ease-in-out;
+.foto_perfil:hover {
+  border: 1px solid #71FF95;
 }
 #nav2 {
     width: 20px;
