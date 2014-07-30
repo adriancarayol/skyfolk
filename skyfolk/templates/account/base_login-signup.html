@@ -70,22 +70,16 @@ document.write("<BODY BACKGROUND="+fondo[index]+">");
 				float:left;
 				font-family: 'Gafata', sans-serif;
 			}
-			img.logo {
-				top: 70px;
-			    left: -30%;
-			    float: left;
-				width: 80px;
-				height: 80px;
-			}
+			
 		</style>
 	{% block extra_head %}
 	{% endblock %}
     </head>
     <body>
        
-       <div id="texto"><h2>S<span>kyfolk.</span></h2>
+       <div id="texto"><h2>S<span>kyfolk.<img class="logo" src="{{STATIC_URL}}img/logo.png"></span></h2>
        	</div>
-       	<img class="logo" src="{{STATIC_URL}}img/logo.png">
+       	
        {% block content %}{% endblock %}
 
             

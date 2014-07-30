@@ -135,7 +135,8 @@ font-size: 70px;
     box-shadow: inset 0 0 2px #000;
     background: #fff;
     border: 3px solid #51cbee;
-    outline: none; /* Remove Chrome outline */
+    outline: none;
+    transition: all .3s ease-in-out; /* Remove Chrome outline */
 }
 
 .form-3 p:nth-child(3),
