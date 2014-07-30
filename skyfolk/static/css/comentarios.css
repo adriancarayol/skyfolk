@@ -452,10 +452,10 @@ span[class*="thumbs-up"]:hover {
   cursor:pointer;
   text-align:center;
   font-size:38px;
-  padding:0px;
+  padding:2px;
   margin-left:15px;
   text-shadow:1px 1px 1px rgba(225,225,225,0.5);
-  opacity: 0.6;
+  opacity: 1;
   transition: all .3s ease-in-out;
 }
 .fontawesome-random:hover {
@@ -474,11 +474,11 @@ text-align: center;
 top:-1158px;
 position: absolute;*/
 font-size: 38px;
-padding: 0px;
+padding: 2px;
 /*float: right;*/
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
-opacity: 0.6;
+opacity: 1;
 transition: all .3s ease-in-out;
 }
 .fontawesome-comment-alt:hover {
@@ -497,11 +497,11 @@ text-align: center;
 top:-1099px;
 position: absolute;*/
 font-size: 38px;
-padding: 0px;
+padding: 2px;
 /*float: right;*/
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
-opacity:0.6;
+opacity:1;
 transition: all .3s ease-in-out;
 }
 .fontawesome-th:hover {
@@ -520,11 +520,11 @@ text-align: center;
 top:-1099px;
 position: absolute;*/
 font-size: 38px;
-padding: 0px;
+padding: 2px;
 /*float: right;*/
 margin-left:15px;
 text-shadow: 1px 1px 1px rgba(255,255,255,0.5); 
-opacity: 0.6;
+opacity: 1;
 transition: all .3s ease-in-out;
 }
 .fontawesome-cog:hover {
