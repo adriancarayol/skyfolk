@@ -450,9 +450,9 @@ span[class*="thumbs-up"]:hover {
 .fontawesome-random {
   color:#FFF;
   cursor:pointer;
-  top: 3px;
+  margin-top: 3px;
   text-align:center;
-  font-size:38px;
+  font-size:31px;
   padding:0px;
   margin-left:15px;
   text-shadow:1px 1px 1px rgba(225,225,225,0.5);
@@ -470,12 +470,12 @@ span[class*="thumbs-up"]:hover {
 .fontawesome-comment-alt {
 color: #FFF;
 cursor:pointer;
-top: 3px;
+margin-top: 3px;
 text-align: center;
 /*margin: 1171px;
 top:-1158px;
 position: absolute;*/
-font-size: 38px;
+font-size: 31px;
 padding: 0px;
 /*float: right;*/
 margin-left:15px;
@@ -494,12 +494,12 @@ opacity:1;
 .fontawesome-th {
 color:#FFF;
 cursor:pointer;
-top: 3px;
+margin-top: 3px;
 text-align: center;
 /*margin: 1115px;
 top:-1099px;
 position: absolute;*/
-font-size: 38px;
+font-size: 31px;
 padding: 0px;
 /*float: right;*/
 margin-left:15px;
@@ -517,13 +517,13 @@ opacity: 1;
 }
 .fontawesome-cog{
 color: #FFF;
-top: 3px;
+margin-top: 3px;
 cursor:pointer;
 text-align: center;
 /*margin: 1115px;
 top:-1099px;
 position: absolute;*/
-font-size: 38px;
+font-size: 31px;
 padding: 0px;
 /*float: right;*/
 margin-left:15px;
