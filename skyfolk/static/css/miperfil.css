@@ -1010,14 +1010,14 @@ ul.table > li {
   
 nav.barrah {
 height: 50px;
-margin: 10px;
+margin: 0px;
 width: 100%;
 position: fixed;
 display: block;
 box-shadow: 3px 2px 4px 3px;
 background: rgba(0, 0, 0, 0.7);
 opacity: 0.8;
-top: 5px;
+top: 3px;
 z-index: 9999;
 }
 
