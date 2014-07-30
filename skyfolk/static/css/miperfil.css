@@ -1081,15 +1081,15 @@ z-index: 9999;
 }
 #nav2 {
     width: 20px;
-    margin: 60px auto;
+    margin: 40px auto;
     margin-right: 250px;
     top: 3%;
     
 }
 .nameact {
     list-style: none;
-    padding: 10;
-    margin: 60;
+    padding: 5px;
+    margin: 40px;
     width: 225px;
 }
 
