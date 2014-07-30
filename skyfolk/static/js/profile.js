@@ -1,14 +1,14 @@
 $(document).ready(function(){
    $("#Menu").hover(function () {
       $("#panel").each(function() {
-        displaying = $(this).delay(800).css("display");
+        displaying = $(this).delay(400).css("display");
         if(displaying == "block") {
-          $(this).delay(800).fadeOut('slow',function() {
-           $(this).delay(800).css("display","none");
+          $(this).delay(400).fadeOut('slow',function() {
+           $(this).delay(400).css("display","none");
           });
         } else {
-          $(this).delay(800).fadeIn('slow',function() {
-            $(this).delay(800).css("display","block");
+          $(this).delay(400).fadeIn('slow',function() {
+            $(this).delay(400).css("display","block");
           });
         }
       });
