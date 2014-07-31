@@ -5,7 +5,7 @@
 }
 
 html {
-  background: #eee url(http://goo.gl/kqNwg);
+  background-image: #eee url('{{STATIC_URL}}img/congruent_pentagon.png') ;
   
   color: #555;
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
