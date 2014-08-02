@@ -21,7 +21,7 @@ class UserProfile(models.Model):
     #favorite_animal = models.CharField(max_length=20, default="Dragons.")
     image = models.ImageField(upload_to='userimages', verbose_name='Image',blank=True, null=True)
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to+')
-    likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='like_to')
+    likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
@@ -44,14 +44,14 @@ class UserProfile(models.Model):
     def add_relationship(self, person, status, symm=True):
         relationship, created = Relationship.objects.get_or_create(from_person=self, to_person=person, status=status)
         if symm:
-            # avoid recursion by passing `symm=False`
+            # avoid recursion by passing 'symm=False'
             person.add_relationship(self, status, False)
         return relationship
 
     def remove_relationship(self, person, status, symm=True):
         Relationship.objects.filter(from_person=self, to_person=person, status=status).delete()
         if symm:
-            # avoid recursion by passing `symm=False`
+            # avoid recursion by passing 'symm=False'
             person.remove_relationship(self, status, False)
 
     def get_relationships(self, status):
@@ -85,9 +85,6 @@ class UserProfile(models.Model):
     def remove_like(self, profile):
         LikeProfile.objects.filter(from_like=self, to_like=profile).delete()
 
-    def get_likesToMe(self):
-        #return LikeProfile.objects.filter(from_like__to_like=self)
-        return self.like_to.filter(from_likeprofile__to_like=self) # va bien
     def get_likes(self):
         return self.likeprofiles.filter(to_likeprofile__from_like=self)
 

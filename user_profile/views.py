@@ -36,7 +36,7 @@ def profile_view(request, username):
 
 	#saber el numero de 'gustadores'
 	#n_likes = len(LikeProfile.objects.filter(to_like=user_profile.profile))
-	n_likes = len(user_profile.profile.get_likesToMe())
+	n_likes = len(user_profile.profile.likesToMe.all())
 	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes},context_instance=RequestContext(request))
 
 
