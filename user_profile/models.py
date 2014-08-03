@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from allauth.account.models import EmailAddress
 from django.db.models.signals import post_save
+from django.utils.translation import ugettext as _
+
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
@@ -115,3 +117,8 @@ class LikeProfile(models.Model):
 
     class Meta:
         unique_together = ('from_like', 'to_like')
+
+
+
+
+
