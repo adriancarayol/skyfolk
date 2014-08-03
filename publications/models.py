@@ -10,5 +10,5 @@ class Publication(models.Model):
     writer = models.ForeignKey(UserProfile, related_name='myPublications')
     profile = models.ForeignKey(UserProfile, related_name='publicationsInMyProfile')
     image = models.ImageField(upload_to='publicationimages', verbose_name='Image',blank=True, null=True)
-    is_response_from = models.ForeignKey('self', related_name='responses')
+    is_response_from = models.ForeignKey('self', related_name='responses', null=True)
     created = models.DateTimeField(auto_now_add=True)
