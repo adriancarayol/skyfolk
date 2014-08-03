@@ -43,14 +43,14 @@ class UserProfile(models.Model):
 
 
     #Methods of relationships between users
-    def add_relationship(self, person, status, symm=True):
+    def add_relationship(self, person, status, symm=False):
         relationship, created = Relationship.objects.get_or_create(from_person=self, to_person=person, status=status)
         if symm:
             # avoid recursion by passing 'symm=False'
             person.add_relationship(self, status, False)
         return relationship
 
-    def remove_relationship(self, person, status, symm=True):
+    def remove_relationship(self, person, status, symm=False):
         Relationship.objects.filter(from_person=self, to_person=person, status=status).delete()
         if symm:
             # avoid recursion by passing 'symm=False'
@@ -73,13 +73,13 @@ class UserProfile(models.Model):
         return self.get_related_to(RELATIONSHIP_FOLLOWING)
 
     def get_friends(self):
-        return self.get_relationships(RELATIONSHIP_FRIEND)
+        return self.get_relationships(RELATIONSHIP_FRIEND).order_by('id')
 
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)
 
     
-    #metodos likes perfil
+    #methods likes
     def add_like(self, profile):
         like, created = LikeProfile.objects.get_or_create(from_like=self, to_like=profile)
         return like
@@ -94,6 +94,21 @@ class UserProfile(models.Model):
         return LikeProfile.objects.get(from_like=self, to_like=profile)
 
 
+    #methods friends
+    def add_friend(self, profile):
+        return self.add_relationship(profile, RELATIONSHIP_FRIEND, True) #mas adelante cambiar aqui True por False
+
+    def is_friend(self, profile):
+        return Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND)
+
+    def get_friends_top4(self):
+        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[0:4] 
+
+"""
+    def get_friends_next4(self, next):
+        n = next * 4
+        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[n-4:n]
+"""
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 

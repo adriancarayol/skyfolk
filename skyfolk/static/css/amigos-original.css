@@ -17,20 +17,15 @@
 }
 
 html, body {
-  /*
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-  */
 }
 
 body {
-  
   background: #333333 url(https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ9N2Nws6EKk-ow6IQAiXf4ycMXtpej9rL2HPqEu0LssFGge0Rt) no-repeat center center;
-  
   background-size: cover;
-
 }
 
 .profile_card {
@@ -549,8 +544,7 @@ body {
     -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
     text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-}
-
+    }
 .text {
 
 font-size: 10px;
@@ -558,56 +552,4 @@ color: #CECECE;
 font-family: 'Varela Round', sans-serif;
 margin-left: 100px;
 margin-top: 20px;
-}
-
-#content_profile_cards{
-
-
-  /*centrar siempre al expander*/
-/*
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-top: -270px;
-  margin-left: -540px;
-
-  height: auto;
-*/
-
- width: 1050px;
- margin: 0 auto;
- margin-top: 50px;
-
-
-}
-.profile_card{
-  margin: 0px;
-  top: 0px;
-
-
-}
-
-#button-more-friends{
-/*
-  position: absolute;
-  bottom: 5px;
-  left:48%;
-*/
-/*centrar horizontalmente*/
-  /*margin:43% auto 2% auto;*/
-  margin:30px auto 2% auto;
-  display:block;
-  width: 120px;
-
-
-
-}
-#loader-ajax{
-
-/*centrar horizontalmente*/
-  margin-top: 30px;
-  margin-bottom: 10px;
-  display: none;
-
-
 }

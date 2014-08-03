@@ -34,11 +34,22 @@ def profile_view(request, username):
 	else:
 		liked=False
 
-	#saber el numero de 'gustadores'
-	#n_likes = len(LikeProfile.objects.filter(to_like=user_profile.profile))
-	n_likes = len(user_profile.profile.likesToMe.all())
-	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes},context_instance=RequestContext(request))
+	#saber si el usuario que visita el perfil es amigo
+	if request.user.username != username:
+		isFriend=True
+		try:
+			request.user.profile.is_friend(user_profile.profile)
+		except ObjectDoesNotExist:
+			isFriend=False
+	else:
+		isFriend=False	
 
+
+	#number of likes to him
+	n_likes = len(user_profile.profile.likesToMe.all())
+
+	#response
+	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend},context_instance=RequestContext(request))
 
 @login_required(login_url='accounts/login')
 def search(request):
@@ -116,5 +127,66 @@ def like_profile(request):
             created.save()
             response="like"
 
+    return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+
+
+
+def add_friend(request):
+
+    response = "null"
+    if request.method == 'POST':
+        user = request.user
+        slug = request.POST.get('slug', None)
+        profileUserId = slug
+        try:
+            user_friend = user.profile.is_friend(profileUserId)
+        except ObjectDoesNotExist:
+            user_friend = None
+
+        if user_friend:
+            user_friend.delete()
+            response="nofriend"
+        else:
+
+            created = user.profile.add_friend(UserProfile.objects.get(pk=slug))
+            created.save()
+            response="friend"
+
 
     return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+
+@login_required(login_url='/')
+def friends(request):
+
+	try:
+		#friends_4 = request.user.profile.get_friends_next4(1)
+		friends = request.user.profile.get_friends()
+	except ObjectDoesNotExist:
+		friends = None
+
+	friends_top4 = None
+	if friends != None and len(friends) > 4:
+		request.session['friends_list'] = list(friends)
+		friends_top4 = friends[0:4]
+		print friends_top4
+
+	
+	return render_to_response('account/amigos.html', {'friends_top4':friends_top4}, context_instance=RequestContext(request))
+
+
+def load_friends(request):
+
+
+	friendslist = request.session.get('friends_list', None)
+	if friendslist == None:
+		friends_4 = None
+	else:
+
+		if request.method == 'POST':
+			slug = request.POST.get('slug', None)
+			n = int(slug) * 4
+			friends_4 = request.session['friends_list'][n-4:n] # devolvera None si esta fuera de rango?
+
+
+	return HttpResponse(simplejson.dumps(friends_4), mimetype='application/javascript')
+

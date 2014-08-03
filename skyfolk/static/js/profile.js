@@ -154,7 +154,42 @@ function cambiopagina(){
       
       
       
+/*PETICION AJAX PARA AGREGAR AMIGO*/
+    function AJAX_addfriend(status){
+              //alert($("#likes strong").html());
+              if (status == "noabort"){
+                  $.ajax({
+                        type: "POST",
+                        url: "/add_friend/",
+                        data: {'slug': $("#profileId").html(), 'csrfmiddlewaretoken': csrftoken},
+                        //data: {'slug': $("#profileId").html()},
+                        dataType: "json",
+                        success: function(response) {
+                          
+                           if (response == "friend"){
+
+                                $("#addfriend").css('color', '#29b203');                                                
+                                                            
+                           }else if(response == "nofriend"){
+
+                                $("#addfriend").css('color', '#46494c');                              
+                                                      
+                           }else{
+                                
+                           }
+                        },
+                        error: function(rs, e) {
+                           alert(rs.responseText);
+                        }
+                  });            
+              }else if (status == "anonymous"){
+                  alert("Debe estar registrado");
+              }
+
+
+
       
+    }        
       
       
 $(document).ready(function(){

@@ -1,10 +1,64 @@
+<html>
 <head>
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/amigos.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <header> <form method="get" action="/search" id="search">
   <input name="q" type="text" size="40" placeholder="Buscar..." />
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
+  <script src="{{STATIC_URL}}js/friends.js"></script>
 </form> </header>
+
+
+<div id="content_profile_cards">
+
+
+
+{% for item in friends_top4 %}
+
+<div class="profile_card">
+  <div class="header">
+    <div class="inner_head">
+      <a href="#"><span class="entypo-plus"></span><i>Agregar</i></a>
+      <a href="#"><span class="entypo-chat"></span><i>Chat</i></a>
+      <a href="#"><span class="entypo-star"></span><i>Favorito</i></a>
+      <a href="#"><span class="entypo-heart-empty"></span><i>Me gusta</i></a>
+    </div>
+  </div>
+  <div class="perfil">
+    <div class="foto_perfil"></div>
+    <div class="inner_content">
+      <h2 class="nomb" id="nomb">{{item.user.username}}</h2>
+      <span id="desc">
+        <p class="descripcion" id="desc_one">Profunder</p>
+      <p class="descripcion" id="desc_two">Mensaje de texto de prueba </p></span>
+
+      <div class="social_links">
+        <ul>
+          <li ><a id="Enviar..." href="/" class="button"><span class="entypo-forward"></span></a></li>
+          <li ><a id="Notificar..." href="/"  class="button"><span class="entypo-bell"></span></a></li> 
+          <li ><a id="Bloquear..." href="/"  class="button"><span class="entypo-block"></span></a></li> 
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endfor %}
+
+
+
+</div>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+
+
+<center><img id="loader-ajax" src="{{STATIC_URL}}img/b.gif"><center>
+<button id="button-more-friends" type="button" onclick="AJAX_loadFriends()">More!</button>
+
+
+<!--
 <div class="profile_card">
   <div class="header">
     <div class="inner_head">
@@ -117,7 +171,7 @@
   <div class="perfil">
     <div class="foto_perfil"></div>
     <div class="inner_content">
-      <h2 class="nomb" id="nomb">Pablo Russiñol</h2>
+      <h2 class="nomb" id="nomb">Pablo Rossiñol</h2>
       <span id="desc">
         <p class="descripcion" id="desc_one">Profunder</p>
       <p class="descripcion" id="desc_two">Mensaje de texto de prueba </p></span>
@@ -134,6 +188,7 @@
   </div>
 </div>
 
+-->
 
 
-
+</html>

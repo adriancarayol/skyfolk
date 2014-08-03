@@ -25,6 +25,9 @@ urlpatterns = patterns(
     url(r'^config/profile/$', 'user_profile.views.config_profile'),
     #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^like_profile/$', 'user_profile.views.like_profile', name='like_profile'),
+    url(r'^friends/$', 'user_profile.views.friends'),
+    url(r'^add_friend/$', 'user_profile.views.add_friend', name='add_friend'),
+    url(r'^load_friends/$', 'user_profile.views.load_friends'),
     url(r'^accounts/', include('allauth.urls')),
 
     # Importamos las urls de REST Framework
