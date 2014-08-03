@@ -191,3 +191,11 @@ $(document).ready(function(){
       });
     });
   });
+/* Box tool Ampliar al acercar */
+$(document).ready(function(){
+  $('#box-tool span').resizeOnApproach({
+    elementDefault: 50,
+    elementClosest: 120,
+    triggerDistance: 300
+  });
+});
