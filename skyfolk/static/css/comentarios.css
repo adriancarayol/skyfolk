@@ -63,7 +63,7 @@ a, a:visited {
 input[type="checkbox"]{display:none;}
 .popo{
   float:left;
-  position: 20px 20px;
+  position: 30px 20px;
   border:3px solid #fff;
   cursor:pointer;
   
