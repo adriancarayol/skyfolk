@@ -165,10 +165,12 @@ def friends(request):
 		friends = None
 
 	friends_top4 = None
-	if friends != None and len(friends) > 4:
-		request.session['friends_list'] = list(friends)
-		friends_top4 = friends[0:4]
-		print friends_top4
+	if friends != None:
+		if len(friends) > 4:
+			request.session['friends_list'] = simplejson.dumps(list(friends))
+			friends_top4 = friends[0:4]
+		else:
+			friends_top4 = friends
 
 	
 	return render_to_response('account/amigos.html', {'friends_top4':friends_top4}, context_instance=RequestContext(request))
@@ -181,11 +183,11 @@ def load_friends(request):
 	if friendslist == None:
 		friends_4 = None
 	else:
-
+		friendslist = simplejson.loads(friendslist)
 		if request.method == 'POST':
 			slug = request.POST.get('slug', None)
 			n = int(slug) * 4
-			friends_4 = request.session['friends_list'][n-4:n] # devolvera None si esta fuera de rango?
+			friends_4 = friendslist[n-4:n] # devolvera None si esta fuera de rango?
 
 
 	return HttpResponse(simplejson.dumps(friends_4), mimetype='application/javascript')
