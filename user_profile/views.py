@@ -12,6 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.core import serializers
 
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -167,7 +168,9 @@ def friends(request):
 	friends_top4 = None
 	if friends != None:
 		if len(friends) > 4:
-			request.session['friends_list'] = simplejson.dumps(list(friends))
+			#request.session['friends_list'] = simplejson.dumps(friends.values())
+			#request.session['friends_list'] = list(friends)
+			request.session['friends_list'] = serializers.serialize('json', friends)
 			friends_top4 = friends[0:4]
 		else:
 			friends_top4 = friends
@@ -180,14 +183,19 @@ def load_friends(request):
 
 
 	friendslist = request.session.get('friends_list', None)
+	b = request.session.get('friends_list', None)
 	if friendslist == None:
 		friends_4 = None
 	else:
 		friendslist = simplejson.loads(friendslist)
+		print '>>>>>>> LISTA: '
+		print (friendslist)
 		if request.method == 'POST':
 			slug = request.POST.get('slug', None)
+			print '>>>>>>> LISTA: ' + slug
 			n = int(slug) * 4
-			friends_4 = friendslist[n-4:n] # devolvera None si esta fuera de rango?
+			#friends_4 = friendslist[n-4:n] # devolvera None si esta fuera de rango?
+			friends_4 = friendslist
 
 
 	return HttpResponse(simplejson.dumps(friends_4), mimetype='application/javascript')
