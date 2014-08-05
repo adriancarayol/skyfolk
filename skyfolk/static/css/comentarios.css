@@ -21,7 +21,7 @@ a, a:visited {
 /*1*/
 .wrapper {
   margin: 30px auto;
-  width: 375px;
+  width: 90%;
   height: 125px;
   background: #fff;
   border: 1px solid #ccc;
