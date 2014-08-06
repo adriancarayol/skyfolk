@@ -1703,7 +1703,13 @@ margin-top:25px;
     float:right;
   }
 
+.entypo-users{
+position:absolute;
+left:40px;
 
+
+
+}
 
 
 
