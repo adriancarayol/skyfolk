@@ -31,7 +31,7 @@ body{
 
 
 #widget {
-	background:#eee;
+	background:black;
 	color:#fff;
 	width:300px;
 	height:300px;
@@ -157,12 +157,5 @@ padding-top:1%;
 
 
 }
-/*
-.entypo-user{
 
- height:20px;
- width:20px;
-
-}
-*/
 

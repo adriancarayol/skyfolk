@@ -1067,7 +1067,9 @@ z-index: 9999;
  .foto_perfil {
   width: 45px;
   height: 45px;
-  background: url(http://4.bp.blogspot.com/-OMr8Sy2iEwk/T2DXLgbjXpI/AAAAAAAADKk/RtqLjc2i3J8/s1600/el_padrino_marlon_brando.jpg) no-repeat top right;
+  /*background: url(http://4.bp.blogspot.com/-OMr8Sy2iEwk/T2DXLgbjXpI/AAAAAAAADKk/RtqLjc2i3J8/s1600/el_padrino_marlon_brando.jpg) no-repeat top right;*/
+
+
   background-size: 98%;
   border-radius: 98%;
   margin: auto;
@@ -1079,6 +1081,11 @@ z-index: 9999;
   cursor: pointer;
   top: 25px;
   transition: all .3s ease-in-out;
+ color:white;
+ 
+
+
+
 }
 .foto_perfil:hover {
   border: 1px solid #71FF95;
@@ -1703,13 +1710,7 @@ margin-top:25px;
     float:right;
   }
 
-.entypo-users{
-position:absolute;
-left:40px;
 
-
-
-}
 
 
 
