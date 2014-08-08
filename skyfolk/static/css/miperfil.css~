@@ -1,9 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Kite+One);
 @import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
-@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
 @import url(http://weloveiconfonts.com/api/?family=fontawesome);
-
 
 /* fontawesome */
 [class*="fontawesome-"]:before {
@@ -1069,7 +1067,7 @@ z-index: 9999;
  .foto_perfil {
   width: 45px;
   height: 45px;
-  background: url(http://4.bp.blogspot.com/-OMr8Sy2iEwk/T2DXLgbjXpI/AAAAAAAADKk/RtqLjc2i3J8/s1600/el_padrino_marlon_brando.jpg) no-repeat top right;
+  /*background: url(http://4.bp.blogspot.com/-OMr8Sy2iEwk/T2DXLgbjXpI/AAAAAAAADKk/RtqLjc2i3J8/s1600/el_padrino_marlon_brando.jpg) no-repeat top right;*/
 
 
   background-size: 98%;
@@ -1083,6 +1081,11 @@ z-index: 9999;
   cursor: pointer;
   top: 25px;
   transition: all .3s ease-in-out;
+ color:white;
+ 
+
+
+
 }
 .foto_perfil:hover {
   border: 1px solid #71FF95;
@@ -1590,7 +1593,30 @@ button:hover {
       }
 
 
+#Menu {
+  background:#eee;
+  color:#fff;
+  width:40px;
+  height:40px;
+  left: 15px;
+  border:2px solid #eee;
+  -webkit-border-radius: 200px;
+  border-radius: 210px;
+  box-shadow:2px 0px 2px #444;
+  position:absolute;
+  float: left;
+  /*margin:100px auto;*/
+  z-index:2;
+  overflow:hidden;
+  opacity: 1;
+  top: 7px;
+  line-height: 1;
+  }
+#Menu:hover {
 
+  background: aquamarine;
+  border: 2px solid aquamarine;
+}
   #centro {
   padding-top: 0%;
   width: 45%;
@@ -1683,3 +1709,8 @@ margin-top:25px;
   .right {
     float:right;
   }
+
+
+
+
+

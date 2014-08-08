@@ -85,7 +85,7 @@ document.write("<BODY BACKGROUND="+fondo[0]+">");
     <body>
        
        <!--<div id="texto"><img class="logo" src="{{STATIC_URL}}img/logo.png"><h2>S<span>kyfolk.</span></h2>-->
-	<div id="texto"><h2>S<span>kyfolk.</span></h2>
+	<div id="texto"><img class="logo"><h2>S<span>kyfolk.</span></h2>
        	</div>
        	
        {% block content %}{% endblock %}

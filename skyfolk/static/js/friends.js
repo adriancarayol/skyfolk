@@ -62,11 +62,25 @@ function addProfileCard(username){
                         success: function(response) {
                           
                         	//load friends
-                        	alert(response);
+                        	//alert(response);
+                        	/*
+                        	response = JSON.parse(response)
+                        	for (i=0;i<response.length;x++){
+        						addProfileCard(response[i].user.username);
+
+							}
+							*/
 
                         },
                         error: function(rs, e) {
-                           alert(rs.responseText);
+                           //alert(rs.responseText);
+                           /*
+                         	response = JSON.parse(response)
+                        	for (i=0;i<response.length;x++){
+        						addProfileCard(response[i].user.username);
+
+							}
+							*/                     
                         }
                 });            
 
