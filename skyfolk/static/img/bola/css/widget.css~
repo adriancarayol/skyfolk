@@ -152,7 +152,11 @@ margin-top:25px;
 	/*color:#CCC;*/
 	color:#E2E2E2;
 }
+#middle{
 
+ padding:3px;
+
+}
 
 
 
