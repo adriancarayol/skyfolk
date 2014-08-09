@@ -194,7 +194,7 @@ function cambiopagina(){
       
 $(document).ready(function(){
    $(".nameact").click(function () {
-      $("#panel1").each(function() {
+      $("#menuu").each(function() {
         displaying = $(this).css("display");
         if(displaying == "block") {
           $(this).fadeOut('slow',function() {
