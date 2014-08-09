@@ -1264,7 +1264,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 
 #menu {
-/*
+
   margin: 30px auto 0;
   margin-left: 20px;
   width: 750px;
@@ -1321,7 +1321,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
     color: rgb(26, 188, 156);
     background: #fff;
 }
-*/
+
 .clint{
   border-radius: 10px 10px 10px 10px;
   width: 100px;
