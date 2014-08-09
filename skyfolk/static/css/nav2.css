@@ -6,7 +6,7 @@
   font-family: 'FontAwesome', sans-serif;
 }
 
-#menu {
+#menuu {
   float: left;
   width: 15%;
   height: 100%;
@@ -15,10 +15,10 @@
   background: rgb(26, 188, 156);
   border-radius: 2%;
 }
-ul.boxtool {
+ul.boxxxtool {
    list-style-type: none;
 }
-ul.boxtool li{
+ul.boxxxtool li{
   margin: 15px;
   margin-left: -15px;
   padding: -5px;
@@ -27,7 +27,7 @@ ul.boxtool li{
   transition: all .2s ease-in-out;
   cursor: pointer;
 }
-ul.boxtool li:hover{
+ul.boxxxtool li:hover{
   margin: 15px;
   margin-left: -15px;
   padding: 3px;
