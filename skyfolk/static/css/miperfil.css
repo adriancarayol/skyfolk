@@ -1599,13 +1599,17 @@ button:hover {
   border-radius: 210px;
   box-shadow:2px 0px 2px #444;
   position:fixed;
-  left:2%;top:0%;
+  left:2%;top:2%;
   float: left;
   /*margin:100px auto;*/
   z-index:2;
   overflow:hidden;
   opacity: 1;
   line-height: 1;
+  }
+  #Menu:hover {
+    border: 2px solid #33F0DD;
+    transform: scale(1.2);
   }
 
   #centro {
