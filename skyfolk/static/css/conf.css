@@ -45,7 +45,7 @@ img.profile:hover {
 }
 input[target="million"]  {
   position: absolute;
-  left: 32%;
+  left: 40%;
   text-align: center;
   top: 45%;
     border: 2px solid #9FCCC3;
@@ -107,7 +107,7 @@ input[target="location"] {
     transition: all .4s ease-in-out;
     border-radius: 10%;
 }
-li[target="chat"] {
+ul.mi-nav-list li.fontawesome-comment-alt {
     color: #fff;
     background-color: #00a7ef;
     padding: 7px;
@@ -115,7 +115,7 @@ li[target="chat"] {
     min-height: 60px;
     margin:0;
 }
-li[target="eyep"] {
+ul.mi-nav-list li.fontawesome-eye-open {
     background-color: #ffa200;
     color: #fff;
     min-width: 60px;
