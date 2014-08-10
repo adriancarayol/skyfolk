@@ -1,14 +1,14 @@
 $(document).ready(function(){
    $("#Menu").hover(function () {
       $("#panel").each(function() {
-        displaying = $(this).delay(200).css("display");
+        displaying = $(this).css("display");
         if(displaying == "none") {
           $(this).delay(200).fadeOut('slow',function() {
-           $(this).delay(200).css("display","block");
+           $(this).css("display","block");
           });
         } else {
           $(this).delay(200).fadeIn('slow',function() {
-            $(this).delay(200).css("display","none");
+            $(this).css("display","none");
           });
         }
       });
@@ -196,13 +196,13 @@ $(document).ready(function(){
    $(".nameact").click(function () {
       $("#panel1").each(function() {
         displaying = $(this).css("display");
-        if(displaying == "block") {
+        if(displaying == "none") {
           $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
+           $(this).css("display","block");
           });
         } else {
           $(this).fadeIn('slow',function() {
-            $(this).css("display","block");
+            $(this).css("display","none");
           });
         }
       });
@@ -214,13 +214,13 @@ $(document).ready(function(){
    $(".entypo-mail").click(function () {
       $("#page-wrapper").each(function() {
         displaying = $(this).css("display");
-        if(displaying == "block") {
+        if(displaying == "none") {
           $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
+           $(this).css("display","block");
           });
         } else {
           $(this).fadeIn('slow',function() {
-            $(this).css("display","block");
+            $(this).css("display","none");
           });
         }
       });
