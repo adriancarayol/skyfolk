@@ -2,9 +2,9 @@ $(document).ready(function(){
    $("#Menu").hover(function () {
       $("#panel").each(function() {
         displaying = $(this).delay(200).css("display");
-        if(displaying == "block") {
+        if(displaying == "none") {
           $(this).delay(200).fadeOut('slow',function() {
-           $(this).delay(200).css("display","none");
+           $(this).delay(200).css("display","block");
           });
         } else {
           $(this).delay(200).fadeIn('slow',function() {
