@@ -1545,7 +1545,7 @@ button:hover {
   overflow:hidden;
   opacity: 1;
   line-height: 1;
-  transition: all 1s ease-in-out;
+  transition: all .3s ease-in-out;
   }
   #Menu:hover {
     border: 2px solid #33F0DD;
