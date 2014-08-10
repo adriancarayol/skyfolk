@@ -113,17 +113,21 @@ ul.mi-nav-list li.fontawesome-comment-alt {
     padding: 7px;
     min-width: 60px;
     min-height: 60px;
+    width: 60px;
+    height: 60px;
     margin:0;
 }
 ul.mi-nav-list li.fontawesome-eye-open {
     background-color: #ffa200;
     color: #fff;
+    width: 60px;
+    height: 60px;
     min-width: 60px;
     min-height: 60px;
     padding: 7px;
     margin: 0;
 }
-.fontawesome-calendar {
+li.fontawesome-calendar {
     background-color: #00cb79;
     color: #fff;
     min-width: 60px;
