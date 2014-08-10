@@ -107,7 +107,7 @@ input[target="location"] {
     transition: all .4s ease-in-out;
     border-radius: 10%;
 }
-.mi-nav-list li.fontawesome-comment-alt {
+li.fontawesome-comment {
     color: #fff;
     background-color: #00a7ef;
     padding: 7px;
@@ -115,7 +115,7 @@ input[target="location"] {
     min-height: 60px;
     margin:0;
 }
-.mi-nav-list li.fontawesome-eye-open {
+ li.fontawesome-lock {
     background-color: #ffa200;
     color: #fff;
     min-width: 60px;
