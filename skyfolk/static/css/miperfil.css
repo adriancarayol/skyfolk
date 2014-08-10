@@ -1656,7 +1656,6 @@ ul.informac {
     list-style-type: none;
     display: block;
     position: absolute;
-    top: 90%;
     font-size: 20px;
     left: 23%;
     text-align: center;
@@ -1668,7 +1667,7 @@ div.infx {
   left: 15%;
   width: 30%;
   height: 30%;
-  top: 30%;
+  top: 20%;
   font-family: 'Source Sans Pro';
 }
 div.infx:hover {
