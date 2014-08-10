@@ -19,7 +19,7 @@
   z-index: 9999;
 }
 span.fontawesome-cog {
-  left: 26%;
+  left: 30%;
   top: 5%;
   position: absolute;
   line-height: 30px;
@@ -107,7 +107,7 @@ input[target="location"] {
     transition: all .4s ease-in-out;
     border-radius: 10%;
 }
-ul.mi-nav-list li.fontawesome-comment-alt {
+span.fontawesome-comment-alt {
     color: #fff;
     background-color: #00a7ef;
     padding: 7px;
@@ -117,7 +117,7 @@ ul.mi-nav-list li.fontawesome-comment-alt {
     height: 60px;
     margin:0;
 }
-ul.mi-nav-list li.fontawesome-eye-open {
+span.fontawesome-eye-open {
     background-color: #ffa200;
     color: #fff;
     width: 60px;
