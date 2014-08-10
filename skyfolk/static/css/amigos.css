@@ -38,6 +38,7 @@ body {
   width: 260px;
   float:left;
   margin: 10vh auto;
+  margin-right: 2vw;
   border-radius: 1px;
   box-shadow: 0 0 0 0.22em rgba(255, 255, 255, 0.35);
 }
