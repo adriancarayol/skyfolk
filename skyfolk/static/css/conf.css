@@ -106,22 +106,20 @@ input[target="location"] {
     margin: 0;
     transition: all .4s ease-in-out;
     border-radius: 10%;
+    width: 60px;
+    height: 60px;
 }
-span.fontawesome-comment-alt {
+ul.mi-nav-list li.fontawesome-comment-alt {
     color: #fff;
     background-color: #00a7ef;
     padding: 7px;
     min-width: 60px;
     min-height: 60px;
-    width: 60px;
-    height: 60px;
     margin:0;
 }
-span.fontawesome-eye-open {
+ul.mi-nav-list li.fontawesome-eye-open {
     background-color: #ffa200;
     color: #fff;
-    width: 60px;
-    height: 60px;
     min-width: 60px;
     min-height: 60px;
     padding: 7px;
