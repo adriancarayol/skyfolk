@@ -1,0 +1,164 @@
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+#fastconf {
+  border: 2px solid #BFFFF3;
+  border-top: 5px solid #BFFFF3;
+  width: 40%;
+  height: 95%;
+  left: 30%;
+  position: absolute;
+  display: none;
+}
+span.fontawesome-cog {
+  left: 26%;
+  top: 5%;
+  position: absolute;
+  line-height: 30px;
+  font-size: 25px;
+  font-family: 'Open Sans', sans-serif;
+  color: #9FCCC3;
+  transition: all 0.3s ease-in-out;
+}
+img.profile {
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  left: 38%;
+  display: block;
+  top: 20%;
+  border: 2px solid #9FCCC3;
+  text-align: center;
+  transition: all .3s ease-in-out;
+}
+img.profile:hover {
+  border: 4px solid #9FCCC3;
+ -webkit-filter: blur(1px) sepia(0.5);
+}
+input[target="million"]  {
+  position: absolute;
+  left: 32%;
+  text-align: center;
+  top: 43%;
+    border: 2px solid #9FCCC3;
+    border-radius: 5%;
+    padding: 8px;
+    color: #9fccc3;
+    transition: all .3s ease-in-out;
+}
+input[target="shot"] {
+    position: absolute;
+    left: 15%;
+    width: 70%;
+    text-align:center;
+    top: 50%;
+    border: 2px solid #9fccc3;
+    border-radius: 5%;
+    padding: 8px;
+    color: #9fccc3;
+    transition: all .3s ease-in-out;
+}
+input[target="url"] {
+    position: absolute;
+    left: 32%;
+    text-align: center;
+    top: 57%;
+    border: 2px solid #9FCCC3;
+    border-radius: 5%;
+    padding: 8px;
+    color: #9fccc3;
+    transition: all .3s ease-in-out;
+}
+input[target="location"] {
+    position: absolute;
+    left: 32%;
+    text-align: center;
+    top: 64%;
+    border: 2px solid #9Fccc3;
+   border-radius: 5%;
+    padding: 8px;
+    color: #9fccc3;
+    transition: all .3s ease-in-out;
+}
+
+
+.mi-nav {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 60px;
+  top: 80%;
+    margin: -2%;
+}
+
+.mi-nav-list li{
+  display: inline-block;
+  list-style: none;
+    margin: 0;
+    transition: all .4s ease-in-out;
+    border-radius: 10%;
+}
+li.fontawesome-comment-alt {
+    color: #fff;
+    background-color: #00a7ef;
+    padding: 7px;
+    min-width: 60px;
+    min-height: 60px;
+    margin:0;
+}
+li.fontawesome-eye-open {
+    background-color: #ffa200;
+    color: #fff;
+    min-width: 60px;
+    min-height: 60px;
+    padding: 7px;
+    margin: 0;
+}
+.fontawesome-calendar {
+    background-color: #00cb79;
+    color: #fff;
+    min-width: 60px;
+    min-height: 60px;
+    padding: 7px;
+    margin: 0;
+}
+li.fontawesome-bell-alt {
+    background-color: #ffd600;
+    color: #fff;
+    min-width: 60px;
+    min-height: 60px;
+    padding: 7px;
+    margin: 0;
+}
+li.fontawesome-edit {
+    background-color: #a8218e;
+    color: #fff;
+    min-width: 60px;
+    min-height: 60px;
+    padding: 7px;
+    margin: 0;
+}
+span.fontawesome-remove {
+    font-size: 28px;
+    color: #9fccc3;
+    float: right;
+    margin: 10px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+    span.fontawesome-remove:hover {
+        color:tomato;
+    }
+li:hover {
+    transform: scale(1.2);
+    border: 4px solid #9fccc3;
+    cursor: pointer;
+    color: #9fccc3;
+
