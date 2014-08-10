@@ -1092,7 +1092,7 @@ z-index: 9999;
     margin: 40px auto;
     margin-right: 250px;
     top: 3%;
-    position: absolute;
+    position: relative;
     
 }
 .nameact {
