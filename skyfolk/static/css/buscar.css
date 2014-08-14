@@ -207,8 +207,9 @@ dropdown{
 dropdown label, dropdown ul li{
   display: block;
   width: 200px;
-  background: transparent;
+  background: fff;
   padding: 15px 20px;
+  color: #1ABC9C;
 }
 dropdown label:hover, dropdown ul li:hover{
   background: #1ABC9C;
