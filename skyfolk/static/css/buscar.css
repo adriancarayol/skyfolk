@@ -273,6 +273,9 @@ $colors: #E74C3C, #0072B5, #2C3E50;
   -moz-backface-visibility:hidden; /* Firefox */
   -ms-backface-visibility:hidden; /* Internet Explorer */
 }
+h4.seg {
+	border-bottom: 1px solid #fff;
+	color: tomato;
 */
 
 
