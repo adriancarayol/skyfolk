@@ -217,6 +217,19 @@ dropdown label:hover, dropdown ul li:hover{
   cursor: pointer;
   border-bottom: 1px solid aquamarine;
 }
+dropdown label, dropdown ul li.animatee{
+  display: block;
+  width: 200px;
+  background: #fff;
+  padding: 15px 20px;
+  color: #FF6B6B;
+}
+dropdown label:hover, dropdown ul li.animatee:hover{
+  background: #FF6B6B;
+  color: white;
+  cursor: pointer;
+  border-bottom: 1px solid aquamarine;
+}
 dropdown label{
   color: #1ABC9C;
   border-left: 4px solid #1ABC9C;
@@ -273,9 +286,7 @@ $colors: #E74C3C, #0072B5, #2C3E50;
   -moz-backface-visibility:hidden; /* Firefox */
   -ms-backface-visibility:hidden; /* Internet Explorer */
 }
-h4.seg {
-	border-bottom: 1px solid #fff;
-	color: tomato;
+
 */
 
 
