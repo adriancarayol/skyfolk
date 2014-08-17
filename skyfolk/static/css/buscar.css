@@ -230,6 +230,19 @@ dropdown label:hover, dropdown ul li.animatee:hover{
   cursor: pointer;
   border-bottom: 1px solid aquamarine;
 }
+dropdown label, dropdown ul li.animatex{
+  display: block;
+  width: 200px;
+  background: #fff;
+  padding: 15px 20px;
+  color: #FFCA67;
+}
+dropdown label:hover, dropdown ul li.animatex:hover{
+  background: #FFCA67;
+  color: white;
+  cursor: pointer;
+  border-bottom: 1px solid aquamarine;
+}
 dropdown label{
   color: #1ABC9C;
   border-left: 4px solid #1ABC9C;
