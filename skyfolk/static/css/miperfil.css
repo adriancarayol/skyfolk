@@ -486,9 +486,9 @@ body > .container {
         color: #717a7e; }
       .user-card .stats li a:hover {
         background-color: rgba(166, 220, 93, 0.2);
-        color: #1c84d4; }
+        color: #fff; }
         .user-card .stats li a:hover span {
-          color: #1d8cdf; }
+          color: rgb(26, 188, 156); }
 
 .stock .stock-chart {
   background: #00c5de;
@@ -696,7 +696,7 @@ body > .container {
 
 
 .video-player {
-  background: ##1ABC9C; }
+  background: #1ABC9C; }
   .video-player .vbox {
     position: relative; }
     .video-player .vbox .thumbnail {
@@ -743,8 +743,8 @@ body > .container {
       text-align: center; }
     .video-player .controls > li {
       vertical-align: middle;
-      border-left: 0.1em solid #242728;
-      border-right: 0.1em solid #111315; }
+      border-left: 0.1em solid #FEFEFE;
+      border-right: 0.1em solid #E6E6E6; }
       .video-player .controls > li:first-child {
         border-left: 0; }
       .video-player .controls > li:last-child {
