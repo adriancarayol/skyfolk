@@ -485,10 +485,10 @@ body > .container {
       .user-card .stats li a span {
         color: #717a7e; }
       .user-card .stats li a:hover {
-        background-color: rgb(26, 188, 156, 0.4);
+        background-color: rgba(160, 255, 255, 0.6);
         color: #fff; }
         .user-card .stats li a:hover span {
-          color: #1d8cdf; }
+          color: #fff; }
 
 .stock .stock-chart {
   background: #00c5de;
