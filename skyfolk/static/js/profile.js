@@ -3,11 +3,11 @@ $(document).ready(function(){
       $("#panel").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
-          $(this).delay(200).fadeOut('slow',function() {
+          $(this).delay(300).fadeOut('slow',function() {
            $(this).css("display","block");
           });
         } else {
-          $(this).delay(200).fadeIn('slow',function() {
+          $(this).delay(300).fadeIn('slow',function() {
             $(this).css("display","none");
           });
         }
