@@ -1,5 +1,5 @@
 $(document).ready(function(){
-   $("#Menu").mouseover(function () {
+   $("#Menu").onclick(function () {
       $("#panel").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
