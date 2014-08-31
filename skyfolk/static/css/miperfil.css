@@ -1655,6 +1655,7 @@ ul.informac {
     left: 21%;
     text-align: center;
     color: #fff;
+    margin: auto;
 }
 ul.informac:hover {
   color: #fff;
@@ -1667,6 +1668,7 @@ div.infx {
   max-width: 15%;
   height: auto;
   top: 18%;
+  margin: auto;
   font-family: 'Source Sans Pro';
 }
 div.infx:hover {
