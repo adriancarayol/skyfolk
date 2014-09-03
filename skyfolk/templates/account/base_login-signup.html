@@ -2,19 +2,15 @@
 <html lang="en">
     <head>
 
-<SCRIPT LANGUAGE="JavaScript">
-fondo = new Array(7);
-fondo[0] = '{{STATIC_URL}}img/6.jpg'
-fondo[1] = '{{STATIC_URL}}img/5.jpg'
-fondo[2] = '{{STATIC_URL}}img/bg3.jpg'
-fondo[3] = '{{STATIC_URL}}img/8319280274_808eb31ec1_b.jpg'
-fondo[4] = '{{STATIC_URL}}img/9484523575_f08c124a53_b.jpg'
-fondo[5] = '{{STATIC_URL}}img/10071615715_2814161258_b.jpg'
-fondo[6] = '{{STATIC_URL}}img/14206119158_a72318300c_h.jpg'
-
-index = Math.floor(Math.random() * fondo.length);
-document.write("<BODY BACKGROUND="+fondo[0]+">");
-</SCRIPT>
+<script type="text/javascript"> 
+var totalCount = 8;
+function ChangeIt() 
+{
+var num = Math.ceil( Math.random() * totalCount );
+document.body.background = '{{STATIC_URL}}img/'+num+'.jpg';
+document.body.style.backgroundRepeat = "repeat";// Background repeat
+}
+</script>
 
 
 	     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
