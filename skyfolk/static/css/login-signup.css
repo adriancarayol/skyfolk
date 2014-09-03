@@ -105,12 +105,12 @@ font-size: 70px;
 
     /* Styles */
     background: #1f2124; /* Fallback */
-    background: -moz-linear-gradient(#1f2124, #27292c);
-    background: -ms-linear-gradient(#1f2124, #27292c);
-    background: -o-linear-gradient(#1f2124, #27292c);
-    background: -webkit-gradient(linear, 0 0, 0 100%, from(#1f2124), to(#27292c));
-    background: -webkit-linear-gradient(#1f2124, #27292c);
-    background: linear-gradient(#1f2124, #27292c);    
+    background: -moz-linear-gradient(#1f2124, rgba(39, 41, 44, 0.72);
+    background: -ms-linear-gradient(#1f2124, rgba(39, 41, 44, 0.72);
+    background: -o-linear-gradient(#1f2124, rgba(39, 41, 44, 0.72);
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#1f2124), to(rgba(39, 41, 44, 0.72);
+    background: -webkit-linear-gradient(#1f2124, rgba(39, 41, 44, 0.72));
+    background: linear-gradient(#1f2124, rgba(39, 41, 44, 0.72);    
     border: 1px solid #000;
     box-shadow:
         0 1px 0 rgba(255,255,255,0.1);
