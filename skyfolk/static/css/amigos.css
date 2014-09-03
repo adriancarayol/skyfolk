@@ -32,7 +32,11 @@ body {
   background-size: cover;
 
 }
-
+li {
+  list-style-type: none;
+  display: inline-block;
+  margin: 20px;
+}
 .profile_card {
   height: 460px;
   width: 260px;
