@@ -1,0 +1,300 @@
+@import url(http://weloveiconfonts.com/api/?family=entypo);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400);
+@import "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css";
+@import url(http://fonts.googleapis.com/css?family=Lato);
+[class*="entypo-"]:before {
+  font-family: 'entypo', sans-serif;
+}
+
+}
+
+#panel {
+margin: 2px;
+
+}
+#Menu {
+color:white;
+position: 0;
+border: none;
+background-color:rgb(26, 188, 156);
+border-radius: 20px;
+display:block;
+line-height: 1;
+appearance: none;
+padding: .8em .8em 1em;
+box-shadow:
+   1px 1px 0 rgb(22, 160, 133),
+   2px 2px 0 rgb(22, 160, 133),
+   3px 3px 0 rgb(22, 160, 133),
+   4px 4px 0 rgb(22, 160, 133),
+   5px 5px 0 rgb(22, 160, 133),
+   6px 6px 0 rgb(22, 160, 133),
+   7px 7px 0 rgb(22, 160, 133)
+   ;
+font-family: 'Andika', sans-serif;
+}
+#widget {
+	background:#eee;
+	color:#fff;
+	width:300px;
+	height:300px;
+	border:5px solid #eee;
+	-webkit-border-radius: 200px;
+  border-radius: 210px;
+	box-shadow:10px 0px 15px #444;
+	position:fixed;
+	left:40%;top:30%;
+	/*margin:100px auto;*/
+	z-index:2;
+	overflow:hidden;
+	opacity: 0;
+	}
+	#middle {
+	padding-top: 0%;
+	width: 47%;
+	height: 45%;
+	background:#ccc;
+	border:5px solid #eee;
+	-webkit-border-radius: 30px;
+border-radius: 100px;
+	box-shadow:inset 0px 20px 45px #999;
+	position:absolute;
+	left:0;
+	right:0;
+	margin:75px auto;
+	z-index:2;
+	overflow:hidden;
+	font-size:9em;
+	text-shadow:0px 0px 15px #999;
+}
+
+#linkedin {
+	color:rgba(14, 118, 168,0.5);
+	text-shadow: 1px 3px 6px #0e76a8,
+								0px 0px 0px #000,
+							1px 4px 6px #0e76a8;
+	background:#907AFB;
+	-webkit-border-radius:305px 0px 0px 0px;
+	border-radius:305px 0px 0px 0px;
+}
+
+#dribbble {
+	color:rgba(226, 77, 135,0.5);
+		text-shadow: 1px 3px 6px #E24D87,
+								0px 0px 0px #000,
+							1px 4px 6px #E24D87;
+	background:#72FFB0;
+	-webkit-border-radius:0px 205px 0px 0px;
+	border-radius:0px 205px 0px 0px;
+}
+
+#facebook{
+	color:rgba(59, 89, 152,0.5);
+	text-shadow: 1px 3px 6px #00CEFC,
+								0px 0px 0px #000,
+							1px 4px 6px #0e76a8;
+	background:#F77AFB;
+	-webkit-border-radius:0px  0px 0px 205px;
+	border-radius:0px  0px 0px 205px;
+}
+
+#twitter {
+	color: #0092AC;
+		text-shadow: 1px 3px 6px #00CEFC,
+								0px 0px 0px #000,
+							1px 4px 6px #00CEFC;
+	background:#B9B9B9;
+	-webkit-border-radius:0px  0px 205px 0px ;
+	border-radius:0px  0px 205px 0px ;
+}
+#twitter span, #facebook span, #dribbble span, #linkedin span{
+margin-left:60px;
+margin-top:25px;
+}
+.size {
+	padding-top:15%;
+	font-size:2.5em;
+	margin-bottom:2%;
+	width:49%;
+		height:49%;
+	overflow:hidden;
+}
+
+	.left {
+		float:left;
+	}
+
+	.right {
+		float:right;
+	}
+
+#facebook:hover, #linkedin:hover, #dribbble:hover, #twitter:hover {
+		color:rgba(255,255,255,0.7);
+		cursor:pointer;
+		}
+		
+
+.button {
+    background: #DCE0E0;
+    position: relative;
+    display: block;
+    float: left;
+    height: 40px;
+    margin: 4px;
+    overflow: hidden;
+    width: 186px;
+    border-radius: 3px;
+    -o-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+}
+
+.icon {
+    display: block;
+    float: left;
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    vertical-align: top;
+    width: 38px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 0px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 3px;
+    -webkit-border-radius: 3px 0px 0px 3px;
+    border-radius: 3px 0px 0px 3px;
+    text-align: center;
+}
+
+.icon i {
+    color: #fff;
+    line-height: 52px;
+}
+
+.slide {
+    z-index: 2;
+    display: block;
+    margin: 0;
+    height: 100%;
+    left: 38px;
+    position: absolute;
+    width: 148px;
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-topright: 3px;
+    -moz-border-radius-bottomright: 3px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-radius: 0px 3px 3px 0px;
+    border-radius: 0px 3px 3px 0px;
+}
+
+.slide p {
+    font-family: Open Sans;
+    font-weight: 400;
+    border-left: 1px solid #fff;
+    border-left: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    font-size: 16px;
+    left: 0;
+    margin: 0;
+    position: absolute;
+    text-align: center;
+    top: 10px;
+    width: 100%;
+}
+
+.button .slide {
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.facebook iframe {
+    display: block;
+    position: absolute;
+    right: 23px;
+    top: 10px;
+    z-index: 1;
+}
+
+
+.facebook:hover .slide {
+    left: 180px;
+}
+
+
+.facebook .icon, .facebook .slide {
+    background: #305c99;
+}
+
+.entypo-down-thin {
+color: #00EBFF;
+display: block;
+ border-left: 1px solid #fff;
+    border-left: 1px solid rgba(255,255,255,0.35);
+	cursor:pointer;
+	text-shadow: 1px 3px 6px #0e76a8,
+								0px 0px 0px #000,
+							1px 2px 1px #0e76a8;
+}
+
+.entypo-down-thin:hover {
+color: #FFF
+}
+
+.entypo-thumbs-up {
+color: #0004FF;
+font-size: 30px;
+cursor: pointer;
+}
+.entypo-thumbs-up:hover {
+color: #00B7FF
+}
+
+.entypo-forward {
+color: #000;
+font-size: 30px;
+cursor: pointer
+}
+.entypo-forward:hover {
+color: #FFF
+}
+.entypo-star-empty {
+color: #FFE364;
+font-size: 30px;
+cursor: pointer;
+}
+.entypo-star-empty:hover {
+color: #FFEC92;
+}
+.entypo-tag {
+color: #F40000;
+font-size: 30px;
+cursor: pointer; 
+}
+.entypo-tag:hover {
+color: 9A0909;
+}
+
+
+
+
+
+.entypo-thumbs-up,.entypo-forward,.entypo-star-empty,.entypo-tag {
+margin: 5px;
+float: left;
+margin-top: 220px;
+}
+
+img {
+border-radius: 20px;
+}
+
+.entypo-tools {
+position: absolute;
+width: 200%;
+color: orange;
+display: block;
+}

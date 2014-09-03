@@ -1,0 +1,189 @@
+@import url(http://fonts.googleapis.com/css?family=PT+Sans);    
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+
+body {
+    font-size: 20px;
+    font-weight: normal;
+    font-family: 'PT Sans', sans-serif;
+    background-image: linear-gradient(to right top, #8e44ad 0%, #3498db 100%);
+    width: 1000px;
+    height: auto;
+}
+
+
+
+aside {
+    height: 100%;
+    max-width: 35%;
+    min-width: 30%;
+    background-color: transparent;
+    color: white;
+}
+header {
+    min-width: 50%;
+    max-width: 50%;
+    min-height: auto;
+    top: 0%;
+    position: absolute;
+    left: 20%;
+    background-image: -webkit-gradient(linear, right top, left top, color-stop(0, #FFFFFF), color-stop(1, #DDDDDD));
+    border-radius: 4px;
+    border-bottom-left-radius: 50px;
+}
+input[target="search"] {
+    border-radius: 20px;
+    background: url('http://png-4.findicons.com/files/icons/1389/g5_system/32/toolbar_find.png') 9px 9px no-repeat, linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
+    background-size: 19px;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
+    transition: all 0.2s linear;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    color: #222222;
+    position: relative;
+    height: 36px;
+    width: 250px;
+    padding-left: 30px;
+
+}
+ul li {
+    list-style-type: none;
+    color: rgba(0, 35, 122, 0.5);
+    display: inline-block;
+    padding: 0px 20px;
+    margin-left: 10px;
+    text-align: center;
+    left: 30%;
+    margin-top: -10%;
+    border-right:2px solid transparent ;
+    left: 10%;
+    position: relative;
+    cursor: pointer;    
+}
+ul li:hover{
+    list-style-type: none;
+    display: inline-block;
+    padding: 0px 20px;
+     color: rgba(0, 35, 122, 0.7);
+    margin-left: 10px;
+    text-align: center;
+    left: 30%;
+    margin-top: -10%;
+    border-right:2px solid aquamarine;
+    left: 10%;
+    position: relative;
+    cursor: pointer;
+min-width: auto}
+
+
+div.entrada {
+    max-height: 7%;
+    height: 6%;
+    max-width: 100%;
+    min-width: 70%;
+    top: 5%;
+    position: relative;
+    left: 5%;
+    text-decoration: none;
+    color: white;
+}
+a{
+    text-decoration: none;
+    color: white;
+    border-bottom: 2px solid aquamarine;
+    transition: all .3s ease-in-out;
+    width: auto;
+    position: relative;
+    
+}
+a:hover {
+    text-decoration: none;
+    color: black;
+    border-bottom: 2px solid tomato;
+    
+}
+a[target="name"] {
+    text-decoration: none;
+    color: grey;
+    border-bottom: 1px solid C0FFEF;
+    transition: all .3s ease-in-out;
+    left: 10%;
+}
+section {
+    text-align: center;
+    height: 80%;
+    top: 5%;
+    width: 52%;
+    max-width: 70%; 
+    position: absolute;
+	margin: 50px auto;
+    left:23%;
+    
+}
+div.noti img{
+    min-width: 10%;
+    height: 84px;
+    float: left;
+    position: absolute;
+    border-right: 4px solid aquamarine;
+    cursor: pointer;
+    display: block;
+    border-radius: 10px;
+    max-resolution: res;
+}
+img:hover {
+    opacity: 0.8;
+}
+div.noti {
+    min-width: 75%;
+    max-width: 85%;
+    height: 10%;
+    min-height: 15%;
+    background-color: #E8E8E8; 
+    max-height: 11%;
+    margin: 10px;
+    border: 1px solid rgba(0, 35, 122, 0.5);
+    border-radius: 10px;
+}
+div.noti:hover {
+    background-color: #fff;
+    color: #000;
+}
+.fontawesome-envelope-alt {
+    margin-left: 20px;
+    font-size: 20px;
+    color: white;
+    border-bottom: 3px solid aquamarine;
+    padding: 10px 10px;
+    background-color: transparent;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+span.fontawesome-star {
+    margin: 10px;
+    color: tomato;
+}
+
+p {
+    font-size: 15px;
+    min-width: 60%;
+    max-width: 70%;
+    position: relative;
+    left: 10%;
+    margin-right: auto;
+}
+i {
+    font-size: 9px;
+    float: right;
+    padding: 5px 5px;
+    border-left: 1px solid rgba(0, 35, 122, 0.5);
+    height: 86%;
+    color: grey;
+    background-color: transparent;
+}
