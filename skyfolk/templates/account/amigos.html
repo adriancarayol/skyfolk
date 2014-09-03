@@ -15,8 +15,8 @@
 
 
 {% for item in friends_top4 %}
-
-<div class="profile_card">
+<div class="contenedor">
+<li><div class="profile_card">
   <div class="header">
     <div class="inner_head">
       <a href="#"><span class="entypo-plus"></span><i>Agregar</i></a>
@@ -43,7 +43,7 @@
     </div>
 
   </div>
-</div>
+</div></li>
 {% endfor %}
 
 
@@ -56,7 +56,7 @@
 
 <center><img id="loader-ajax" src="{{STATIC_URL}}img/b.gif"><center>
 <button id="button-more-friends" type="button" onclick="AJAX_loadFriends()">More!</button>
-
+</div>
 
 <!--
 <div class="profile_card">

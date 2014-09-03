@@ -28,11 +28,22 @@ html, body {
 body {
   
   background: #333333 url(https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ9N2Nws6EKk-ow6IQAiXf4ycMXtpej9rL2HPqEu0LssFGge0Rt) no-repeat center center;
-  
+   display: table;
   background-size: cover;
 
 }
-
+div.contenedor {
+  min-width: 70%;
+  max-width: 71%;
+  position: relative;
+  display: table;
+  margin: auto;
+}
+div.contenedor li {
+  list-style-type: none;
+  display: inline-block;
+  margin: 20px;
+}
 .profile_card {
   height: 460px;
   width: 260px;
@@ -41,6 +52,7 @@ body {
   margin-right: 2vw;
   border-radius: 1px;
   box-shadow: 0 0 0 0.22em rgba(255, 255, 255, 0.35);
+  position: relative;
 }
 .profile_card .header, .profile_card .perfil {
   height: 235px;
@@ -532,7 +544,7 @@ body {
     border: 0 none;
     font: bold 12px Arial,Helvetica,Sans-serif;
     color: #d7d7d7;
-    width:150px;
+    width:300px;
     padding: 6px 15px 6px 35px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
@@ -550,7 +562,7 @@ body {
 #search input[type="text"]:focus {
     background: url(http://i.imgbox.com/dyRD89sI.png) no-repeat 10px 6px #fcfcfc;
     color: #6a6f75;
-    width: 200px;
+    width: 400px;
     -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
     -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(0, 0, 0, 0.9) inset;
