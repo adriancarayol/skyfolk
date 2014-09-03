@@ -15,6 +15,11 @@ RELATIONSHIP_STATUSES = (
 )
 
 
+REQUEST_FRIEND = 1
+REQUEST_STATUSES = (
+    (REQUEST_FRIEND, 'Friend'),
+)
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, related_name='profile')
     
@@ -132,6 +137,14 @@ class LikeProfile(models.Model):
 
     class Meta:
         unique_together = ('from_like', 'to_like')
+
+
+class Request(models.Model):
+    emitter = models.ForeignKey(UserProfile, related_name='myRequests')
+    receiver = models.ForeignKey(UserProfile, related_name='requestsToMe')
+    status = models.IntegerField(choices=REQUEST_STATUSES)
+    created = models.DateTimeField(auto_now_add=True)
+
 
 
 
