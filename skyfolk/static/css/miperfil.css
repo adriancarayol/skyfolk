@@ -1688,6 +1688,8 @@ div.love {
   font-family: 'Open Sans', sans-serif;
   border-radius: 7px;
   display: block;
+  z-index: 99;
+  top: 30%;
 }
 div.love h4 {
   position: relative;
