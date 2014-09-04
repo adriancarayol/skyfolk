@@ -1689,25 +1689,25 @@ div.love {
   border-radius: 7px;
   display: block;
 }
-h4 {
+div.love h4 {
   position: relative;
   margin: 10px; 
   text-align: center;
   color: grey;
 }
-a {
+div.love a {
   color: white;
   text-decoration: none;
   font-style: normal;
   transition: all .3s ease-in-out;
 }
-a:hover {
+div.love a:hover {
   color: grey;
 }
-span {
+div.love span {
   text-align: center;
 }
-p {
+div.love p {
   font-size: 15px;
   position: relative;
   color: white;
@@ -1718,7 +1718,7 @@ p {
   padding: 0px 10px;
   display: inline-block;
 }
-i {
+div.love i {
   text-decoration: none;
   font-style: normal;
   position: relative;
@@ -1765,7 +1765,7 @@ i:hover, i:focus, i:active {
     transform: scale(0.9);
   }
 }
-a.fontawesome-remove {
+div.love a.fontawesome-remove {
   position: absolute;
   margin: auto;
   left: 95%;
