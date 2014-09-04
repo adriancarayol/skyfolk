@@ -1689,7 +1689,6 @@ div.love {
   border-radius: 7px;
   display: block;
   z-index: 99999;
-  top: 20%;
 }
 div.love h4 {
   position: relative;
@@ -1741,7 +1740,7 @@ div.love i:hover, i:focus, i:active {
   animation-timing-function: linear;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
-  color: ##DF013A;
+  color: #DF013A;
   cursor: pointer;
 }
 @-webkit-keyframes pulse {
