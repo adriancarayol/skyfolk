@@ -11,5 +11,3 @@ $(document).ready(function() {
     closeMessage($('#js-timer'));
   }, 5000);
 });
-
-

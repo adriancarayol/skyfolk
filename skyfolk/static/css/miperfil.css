@@ -1,5 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Kite+One);
 @import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
 @import url(http://weloveiconfonts.com/api/?family=fontawesome);
@@ -10,7 +11,7 @@
   font-family: 'FontAwesome', sans-serif;
 }
 html {
-	
+	font-family: 'Open Sans', sans-serif;
 	min-height:100%;
 }
 
