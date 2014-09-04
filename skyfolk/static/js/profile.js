@@ -243,9 +243,9 @@ $(document).ready(function(){
    $(".inline").click(function () {
       $(".imagenes").each(function() {
         displaying = $(this).css("display");
-        if(displaying == "block") {
+        if(displaying == "none") {
           $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
+           $(this).css("display","block");
           });
         } else {
           $(this).fadeIn('slow',function() {
