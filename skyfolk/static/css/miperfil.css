@@ -1679,7 +1679,7 @@ div.infx:hover {
 
   /* Notificación me gusta */
 div.love {
-  position: relative;
+  position: absolute;
   min-width: 400px;
   max-width: 420px;
   min-height: 120px;
@@ -1732,7 +1732,7 @@ div.love i {
   color: white;
   transition: all .2s ease-in-out;
 }
-i:hover, i:focus, i:active {
+div.love i:hover, i:focus, i:active {
   -webkit-animation-name: pulse;
   animation-name: pulse;
   -webkit-animation-duration: 1s;
@@ -1741,7 +1741,7 @@ i:hover, i:focus, i:active {
   animation-timing-function: linear;
   -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
-  color: rgba(244, 49, 126, 0.9);
+  color: ##DF013A;
   cursor: pointer;
 }
 @-webkit-keyframes pulse {
