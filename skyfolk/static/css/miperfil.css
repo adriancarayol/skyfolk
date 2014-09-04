@@ -1697,13 +1697,13 @@ div.love h4 {
   text-align: center;
   color: grey;
 }
-div.love a {
+div.love a[target="x"] {
   color: white;
   text-decoration: none;
   font-style: normal;
   transition: all .3s ease-in-out;
 }
-div.love a:hover {
+div.love a[target="x"]:hover {
   color: grey;
 }
 div.love span {
@@ -1767,7 +1767,7 @@ i:hover, i:focus, i:active {
     transform: scale(0.9);
   }
 }
-div.love a.fontawesome-remove {
+div.love a[target="x"] {
   position: absolute;
   margin: auto;
   left: 95%;

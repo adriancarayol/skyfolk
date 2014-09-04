@@ -17,7 +17,7 @@ function closeMessage(el) {
   el.addClass('is-hidden');
 }
 
-$('.fontawesome-remove').on('click', function(e) {
+$('a[target="x"]').on('click', function(e) {
   closeMessage($(this).closest('.love'));
 });
 
