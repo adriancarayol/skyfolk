@@ -191,12 +191,7 @@ div.photo:hover i {
 div.photo:hover a {
   margin-top: 0px;
 }
-i:hover {
-  color:pink;
-}
-a:hover {
-  color: #9AFBFF;
-}
+
 /* Btn */
 fieldset {
   border: transparent;
