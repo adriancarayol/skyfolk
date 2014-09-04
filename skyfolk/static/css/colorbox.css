@@ -126,7 +126,7 @@ section li {
   display: inline-block;
   position: relative;
 }
-span {
+span.text {
   opacity: 0;
   position: absolute;
   z-index: 2;
@@ -137,7 +137,7 @@ span {
   height: 90%;
   border-radius: 7px;
 }
-span p {
+span.text p {
   padding:0;
   position: relative;
   text-align: center;
@@ -149,7 +149,7 @@ span p {
   font-family: 'Open Sans', sans-serif;
   cursor: pointer;
 }
-span i {
+span.text i {
   padding:0;
   margin:auto;
   position:absolute;
@@ -164,7 +164,7 @@ span i {
   font-style: normal;
   cursor:pointer;
 }
-span a {
+span.text a {
   padding:0;
   margin:auto;
   position:absolute;
