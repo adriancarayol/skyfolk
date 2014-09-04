@@ -13,3 +13,17 @@ $(document).ready(function() {
 });
 
 
+function closeMessage(el) {
+  el.addClass('is-hidden');
+}
+
+$('.fontawesome-remove').on('click', function(e) {
+  closeMessage($(this).closest('.love'));
+});
+
+$(document).ready(function() {
+  setTimeout(function() {
+    closeMessage($('.love'));
+  }, 5000);
+});
+
