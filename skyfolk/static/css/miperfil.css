@@ -1678,10 +1678,7 @@ div.infx:hover {
   }
 
   /* Notificación me gusta */
-ul.notificaciones {
-  list-style-type: none;
-  
-}
+
 div.love {
   position: absolute;
   min-width: 400px;
