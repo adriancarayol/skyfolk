@@ -109,11 +109,21 @@ class UserProfile(models.Model):
     def get_friends_top4(self):
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[0:4] 
 
+    def add_friend_request(self, profile):
+        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FRIEND)
+        return obj
+
+    def get_friend_request(self, profile):
+        return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FRIEND)
+
 """
     def get_friends_next4(self, next):
         n = next * 4
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[n-4:n]
 """
+
+
+
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
@@ -145,8 +155,5 @@ class Request(models.Model):
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
 
-
-
-
-
-
+    class Meta:
+        unique_together = ('emitter', 'receiver', 'status')

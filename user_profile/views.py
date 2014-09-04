@@ -132,6 +132,24 @@ def like_profile(request):
 
 
 
+"""
+def request_friend(request):
+
+    response = "null"
+    if request.method == 'POST':
+        user = request.user
+        slug = request.POST.get('slug', None)
+        profileUserId = slug
+        try:
+            friend_request = user.profile.get_friend_request(profileUserId)
+        except ObjectDoesNotExist:
+            friend_request = None
+
+        if friend_request:
+"""
+
+
+
 def add_friend(request):
 
     response = "null"
