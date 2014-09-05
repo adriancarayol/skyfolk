@@ -142,7 +142,7 @@ span.text p {
   position: relative;
   text-align: center;
   top: 0%;
-  font-size: 1.3em;
+  font-size: 1.4em;
   margin-left: -80px;
   -webkit-transition: margin 0.2s;
   color: white;
@@ -156,7 +156,7 @@ span.text i {
   text-align: center;
   top: 85%;
   left: 5%;
-  font-size: 0.8em;
+  font-size: 1em;
   margin-top: 50px;
   -webkit-transition: margin 0.4s;
   color: white;
@@ -171,7 +171,7 @@ span.text a {
   text-align: center;
   top: 85%;
   left: 80%;
-  font-size: 0.8em;
+  font-size: 1em;
   margin-top: 50px;
   -webkit-transition: margin 0.4s;
   color: white;
