@@ -1003,7 +1003,8 @@ font-family: 'Andika', sans-serif;
 .unstyled {
   margin: 0;
   padding: 0;
-  list-style: none; }
+  list-style: none;
+  overflow: scroll; }
 
 ul.table > li {
   display: table-cell; }
@@ -1547,10 +1548,14 @@ button:hover {
   opacity: 1;
   line-height: 1;
   transition: all .3s ease-in-out;
+  outline: none;
+
   }
   #Menu:hover {
-    border: 2px solid #33F0DD;
-    -webkit-transform: scale(1.2);
+    border: 1px solid #33F0DD;
+    -webkit-transform: scale(1.1);
+ 
+
   }
 
   #centro {
@@ -1676,3 +1681,99 @@ div.infx:hover {
   opacity: 1;
   transition: all 1s ease-in-out;
   }
+  /* NOTIFICACION ME GUSTA */
+  #notifi div.love {
+  position: absolute;
+  top: 20%;
+  min-width: 400px;
+  max-width: 420px;
+  min-height: 120px;
+  max-height: 127px;
+  background-color: tomato;
+  font-family: 'Open Sans', sans-serif;
+  border-radius: 7px;
+  display: block;
+}
+#notifi div.love h4 {
+  position: relative;
+  margin: 10px; 
+  text-align: center;
+  color: grey;
+}
+#notifi div.love a {
+  color: white;
+  text-decoration: none;
+  font-style: normal;
+  transition: all .3s ease-in-out;
+}
+#notifi div.love a:hover {
+  color: grey;
+}
+#notifi div.love span {
+  text-align: center;
+}
+#notifi div.love p {
+  font-size: 15px;
+  position: relative;
+  color: white;
+  float: right;
+  height: auto;
+  margin: auto;
+  margin-top: 20px;
+  padding: 0px 10px;
+  display: inline-block;
+}
+#notifi div.love i {
+  text-decoration: none;
+  font-style: normal;
+  position: relative;
+  left:7%;
+  font-size: 40px;
+  padding: 10px 10px;
+  margin: auto;
+  display: inline-block;
+  color: white;
+  transition: all .2s ease-in-out;
+}
+#notifi div.love i:hover, i:focus, i:active {
+  -webkit-animation-name: pulse;
+  animation-name: pulse;
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  color: rgba(244, 49, 126, 0.9);
+  cursor: pointer;
+}
+@-webkit-keyframes pulse {
+  25% {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+
+  75% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+}
+
+@keyframes pulse {
+  25% {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+  }
+
+  75% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+}
+#notifi div.love a.fontawesome-remove {
+  position: absolute;
+  margin: auto;
+  left: 95%;
+  top: 2%;
+  cursor: pointer;
+}
