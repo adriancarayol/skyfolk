@@ -1678,7 +1678,8 @@ div.infx:hover {
   }
   /* NOTIFICACION ME GUSTA */
   #notifi div.love {
-  position: relative;
+  position: absolute;
+  top: 15%;
   min-width: 400px;
   max-width: 420px;
   min-height: 120px;
