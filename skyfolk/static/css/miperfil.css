@@ -1003,7 +1003,8 @@ font-family: 'Andika', sans-serif;
 .unstyled {
   margin: 0;
   padding: 0;
-  list-style: none; }
+  list-style: none;
+  overflow: scroll; }
 
 ul.table > li {
   display: table-cell; }
@@ -1547,10 +1548,12 @@ button:hover {
   opacity: 1;
   line-height: 1;
   transition: all .3s ease-in-out;
+  outline: none;
+
   }
   #Menu:hover {
     border: 2px solid #33F0DD;
-    -webkit-transform: scale(1.2);
+    -webkit-transform: scale(20);
   }
 
   #centro {
