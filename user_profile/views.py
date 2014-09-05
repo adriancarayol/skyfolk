@@ -132,7 +132,7 @@ def like_profile(request):
 
 
 
-"""
+
 def request_friend(request):
 
     response = "null"
@@ -141,12 +141,25 @@ def request_friend(request):
         slug = request.POST.get('slug', None)
         profileUserId = slug
         try:
-            friend_request = user.profile.get_friend_request(profileUserId)
+            user_friend = user.profile.is_friend(profileUserId)
         except ObjectDoesNotExist:
-            friend_request = None
+            user_friend = None
 
-        if friend_request:
-"""
+        if user_friend:
+            response = "isfriend"
+        else:
+        	response="inprogress"
+            try:
+                friend_request = user.profile.get_friend_request(profileUserId)
+            except ObjectDoesNotExist:
+                friend_request = None
+
+            if not friend_request:
+               created = user.profile.add_friend_request(profileUserId)
+               created.save()
+                       	
+
+    return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
 
 
 
