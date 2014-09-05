@@ -24,6 +24,6 @@ $('.js-messageClose').on('click', function(e) {
 
 $(document).ready(function() {
   setTimeout(function() {
-    closeMessage($('#.love'));
+    closeMessage($('.love'));
   }, 5000);
 });
