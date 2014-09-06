@@ -1,18 +1,4 @@
-$(document).ready(function(){
-   $("#Menu").click(function () {
-      $("#panel").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "none") {
-          $(this).delay(400).fadeOut('slow',function() {
-           $(this).css("display","block");
-          });
-        } else {
-          $(this).delay(400).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
+
 /*
 $("#ilike_profile").click(function () {
     alert("ok!");

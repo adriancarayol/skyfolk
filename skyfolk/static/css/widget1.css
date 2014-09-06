@@ -40,11 +40,10 @@ body{
   border-radius: 210px;
 	box-shadow:10px 0px 15px #444;
 	position:fixed;
-	left:40%;top:35%;
+	left:42.3%;
 	/*margin:100px auto;*/
 	z-index:2;
 	overflow:hidden;
-	opacity: 1;
 	top: 82.3%;
 	opacity: 0.4;
 	-webkit-transition: margin 2s;
