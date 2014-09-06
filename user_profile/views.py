@@ -148,7 +148,7 @@ def request_friend(request):
         if user_friend:
             response = "isfriend"
         else:
-        	response="inprogress"
+            response="inprogress"
             try:
                 friend_request = user.profile.get_friend_request(profileUserId)
             except ObjectDoesNotExist:
