@@ -1531,6 +1531,7 @@ button:hover {
         top: -20px;
       }
 
+/* Segundo Menu Bola
 #Menu {
   background:#eee;
   color:#fff;
@@ -1543,7 +1544,7 @@ button:hover {
   position:fixed;
   left:2%;top:1%;
   float: left;
-  /*margin:100px auto;*/
+  margin:100px auto;
   z-index:2;
   overflow:hidden;
   opacity: 1;
@@ -1651,7 +1652,7 @@ margin-top:25px;
   .right {
     float:right;
   }
-
+*/
 
 /* INFORMACIÓN SOBRE IMÁGEN */
 ul.informac {

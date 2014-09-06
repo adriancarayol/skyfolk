@@ -45,6 +45,17 @@ body{
 	z-index:2;
 	overflow:hidden;
 	opacity: 1;
+	top: 82.3%;
+	opacity: 0.4;
+	-webkit-transition: margin 2s;
+	transition: all .3s ease-in-out;
+	-webkit-transition: all .3s ease-in-out;
+
+}
+#widget:hover {
+	margin-top: -7%;
+	opacity: 1;
+	border-color: #B3FFE9;
 }
 #middle {
 	padding-top: 0%;
