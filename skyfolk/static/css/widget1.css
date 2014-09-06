@@ -44,7 +44,7 @@ body{
 	/*margin:100px auto;*/
 	z-index:2;
 	overflow:hidden;
-	top: 82.3%;
+	top: 87.3%;
 	opacity: 0.4;
 	-webkit-transition: margin 2s;
 	transition: all .3s ease-in-out;
@@ -52,7 +52,7 @@ body{
 
 }
 #widget:hover {
-	margin-top: -7%;
+	margin-top: -9.355%;
 	opacity: 1;
 	border-color: #B3FFE9;
 }
