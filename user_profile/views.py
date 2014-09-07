@@ -134,30 +134,37 @@ def like_profile(request):
 
 
 def request_friend(request):
-
+    print '>>>>>>> peticion amistad '
     response = "null"
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
         profileUserId = slug
+        print str(profileUserId)
         try:
+            print 'Paso 0'
             user_friend = user.profile.is_friend(profileUserId)
+            print 'Paso 1'
         except ObjectDoesNotExist:
             user_friend = None
 
+        
         if user_friend:
             response = "isfriend"
         else:
             response="inprogress"
             try:
-                friend_request = user.profile.get_friend_request(profileUserId)
+                print 'Paso 2'
+                friend_request = user.profile.get_friend_request(UserProfile.objects.get(pk=slug))
+                print 'Paso 3'
             except ObjectDoesNotExist:
                 friend_request = None
 
             if not friend_request:
                created = user.profile.add_friend_request(profileUserId)
                created.save()
-                       	
+
+        print response               	
 
     return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
 

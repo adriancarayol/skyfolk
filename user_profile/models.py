@@ -29,6 +29,7 @@ class UserProfile(models.Model):
     image = models.ImageField(upload_to='userimages', verbose_name='Image',blank=True, null=True)
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to+')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
+    requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='RequestsToMe')
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
@@ -150,8 +151,8 @@ class LikeProfile(models.Model):
 
 
 class Request(models.Model):
-    emitter = models.ForeignKey(UserProfile, related_name='myRequests')
-    receiver = models.ForeignKey(UserProfile, related_name='requestsToMe')
+    emitter = models.ForeignKey(UserProfile, related_name='from_request')
+    receiver = models.ForeignKey(UserProfile, related_name='to_request')
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
 

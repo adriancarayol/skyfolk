@@ -118,25 +118,33 @@
  
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="user-card card">
+          
+            
+          
           <div class="user-avatar"><div class="infx"><ul class="informac"><li class="fontawesome-map-marker"> España (Murcia)</li><li class="fontawesome-ok"> 28/01/1966</li><li class="fontawesome-tag"> Ing.Sistemas.</li></ul></div><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fontawesome-pencil" title="Configuración rápida"> </span>
             <input type="checkbox" id="button-menu"  />
+            {% if user.is_authenticated and user.username != user_profile.username %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
+              <img id = "friend_request_progress" src="{{STATIC_URL}}img/friend_request_progress.png">
+            {% endif %}
             <div class="caja">
              <div class="item">
                 
                <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">
+
                <span class="informacion">
                 {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_addfriend('abort')></span>
+                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('abort')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('abort')></span>
                    <span class="entypo-forward" title="Escribir"></span>             
                 {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_addfriend('anonymous')></span>
+                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
-                   <span class="entypo-forward" title="Escribir"></span>             
+                   <span class="entypo-forward" title="Escribir"></span>            
                 {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_addfriend('noabort')></span>
+                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
                    <span class="entypo-forward" title="Escribir"></span>
+
                 {% endif %}
                </span>
               </div>

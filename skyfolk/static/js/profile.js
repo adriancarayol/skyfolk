@@ -5,7 +5,7 @@ $("#ilike_profile").click(function () {
 });
 */
 
-});
+
 
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
     function getCookie(name) {
@@ -141,17 +141,18 @@ function cambiopagina(){
       
       
 /*PETICION AJAX PARA AGREGAR AMIGO*/
-    function AJAX_addfriend(status){
+    function AJAX_requestfriend(status){
               //alert($("#likes strong").html());
+           
               if (status == "noabort"){
                   $.ajax({
                         type: "POST",
-                        url: "/add_friend/",
+                        url: "/request_friend/",
                         data: {'slug': $("#profileId").html(), 'csrfmiddlewaretoken': csrftoken},
                         //data: {'slug': $("#profileId").html()},
                         dataType: "json",
                         success: function(response) {
-                          
+                          /*
                            if (response == "friend"){
 
                                 $("#addfriend").css('color', '#29b203');                                                
@@ -159,6 +160,18 @@ function cambiopagina(){
                            }else if(response == "nofriend"){
 
                                 $("#addfriend").css('color', '#46494c');                              
+                                                      
+                           }else{
+                                
+                           }
+                           */
+                           if (response == "isfriend"){
+
+                                alert("ya es amigo tuyo");                                              
+                                                            
+                           }else if(response == "inprogress"){
+
+                                alert("peticion en curso");                              
                                                       
                            }else{
                                 

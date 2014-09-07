@@ -1779,3 +1779,28 @@ div.infx:hover {
   top: 2%;
   cursor: pointer;
 }
+
+#friend_request_progress{
+/*
+  position: absolute;
+  z-index:5;
+  left:45px;
+  top:405px;
+*/
+
+margin-left:-20px;
+margin-top:40px;
+margin-right:-84px;
+float:left;
+
+
+
+
+
+}
+
+
+
+
+
+
