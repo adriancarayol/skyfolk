@@ -29,7 +29,7 @@ class UserProfile(models.Model):
     image = models.ImageField(upload_to='userimages', verbose_name='Image',blank=True, null=True)
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to+')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
-    requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='RequestsToMe')
+    requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
@@ -108,7 +108,7 @@ class UserProfile(models.Model):
         return Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND)
 
     def get_friends_top4(self):
-        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[0:4] 
+        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[0:4]
 
     def add_friend_request(self, profile):
         obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FRIEND)

@@ -18,7 +18,7 @@ from django.core import serializers
 @login_required(login_url='accounts/login')
 def profile_view(request, username):
 
-
+	user = request.user
 	#para mostarar el cuadro de busqueda en la pagina:
 	searchForm = SearchForm(request.POST)
 
@@ -49,8 +49,22 @@ def profile_view(request, username):
 	#number of likes to him
 	n_likes = len(user_profile.profile.likesToMe.all())
 
+	print user.username
+	print user_profile.username
+	try:
+		friend_request = user.profile.get_friend_request(user_profile.profile)
+	except ObjectDoesNotExist:
+		friend_request = None
+
+	if friend_request:
+		existFriendRequest = True
+		print True
+	else:
+		existFriendRequest = False
+		print False
+
 	#response
-	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend},context_instance=RequestContext(request))
+	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest},context_instance=RequestContext(request))
 
 @login_required(login_url='accounts/login')
 def search(request):
@@ -154,14 +168,12 @@ def request_friend(request):
         else:
             response="inprogress"
             try:
-                print 'Paso 2'
                 friend_request = user.profile.get_friend_request(UserProfile.objects.get(pk=slug))
-                print 'Paso 3'
             except ObjectDoesNotExist:
                 friend_request = None
 
             if not friend_request:
-               created = user.profile.add_friend_request(profileUserId)
+               created = user.profile.add_friend_request(UserProfile.objects.get(pk=slug))
                created.save()
 
         print response               	

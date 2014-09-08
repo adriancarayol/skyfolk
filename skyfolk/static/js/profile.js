@@ -171,7 +171,8 @@ function cambiopagina(){
                                                             
                            }else if(response == "inprogress"){
 
-                                alert("peticion en curso");                              
+                                //alert("peticion en curso");
+                                $( '<img id = "friend_request_progress" src="../../static/img/friend_request_progress.png">' ).insertBefore( ".caja" );                            
                                                       
                            }else{
                                 
