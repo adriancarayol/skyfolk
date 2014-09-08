@@ -46,13 +46,14 @@ body{
 	overflow:hidden;
 	top: 87.3%;
 	opacity: 0.4;
-	-webkit-transition: margin 2s;
+	transition: margin .2s;
+	-webkit-transition: margin .2s;
 	transition: all .3s ease-in-out;
 	-webkit-transition: all .3s ease-in-out;
 
 }
 #widget:hover {
-	margin-top: -11.355%;
+	margin-top: -14.355%;
 	opacity: 1;
 	border-color: #B3FFE9;
 }
