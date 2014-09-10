@@ -4,6 +4,13 @@
 <script src="{{STATIC_URL}}js/amigos.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
+
+<header> <form method="get" action="/search" id="search">
+  <input name="q" type="text" size="40" placeholder="Buscar..." />
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
+  <script src="{{STATIC_URL}}js/friends.js"></script>
+</form> </header>
+
 <fieldset>
 <form method="get" action="/search" id="search">
   <input name="q" type="text" size="40" placeholder="Buscar..." />
@@ -40,13 +47,6 @@
   ></li>
 </ul>
 </section>
-<header> <form method="get" action="/search" id="search">
-  <input name="q" type="text" size="40" placeholder="Buscar..." />
-  <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
-  <script src="{{STATIC_URL}}js/friends.js"></script>
-</form> </header>
-
-
 <div id="content_profile_cards">
 
 
