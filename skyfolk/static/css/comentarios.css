@@ -515,7 +515,7 @@ opacity: 1;
  border-top: none;
  border-left: none;
 }
-.fontawesome-cog{
+a.fontawesome-cog:link{
 color: #FFF;
 margin-top: 3px;
 cursor:pointer;
@@ -529,8 +529,9 @@ padding: 0px;
 margin-left:15px;
 opacity: 1;
 transition: all .3s ease-in-out;
+text-decoration: none;
 }
-.fontawesome-cog:hover {
+a.fontawesome-cog:hover {
   display: inline-block;
   border: 3px solid rgb(26, 188, 156);
   border-right: none;
