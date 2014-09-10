@@ -699,8 +699,8 @@ select {
   position: absolute;
   z-index: 7;
   width: 40%;
-  min-height: 75%;
-  max-height: 75%;
+  min-height: 85%;
+  max-height: 85%;
   margin: auto;
   left: 30%;
   font-family: 'open sans', sans-serif;
