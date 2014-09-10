@@ -1,8 +1,45 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/amigos.css" />
+<script src="{{STATIC_URL}}js/amigos.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
+<fieldset>
+<form method="get" action="/search" id="search">
+  <input name="q" type="text" size="40" placeholder="Buscar..." />
+</form>
+<button class="fontawesome-plus" title="Create new group"></button>
+<button class="All" title="All">All</button>
+<select>
+  <option value="1">Choose...</option>
+  <option value="2">Amigos</option>
+  <option value="3">Trabajo</option>
+</select>
+</fieldset>
+<section id="section" style="display:none;">
+  <span class="fontawesome-remove" title="Cerrar"></span>
+<img class="group" src="http://uxrepo.com/static/icon-sets/elusive/svg/group.svg">
+<ul>
+<li><input type="text" target="group" placeholder="Nombre del grupo"></li>
+<li><input type="text" target="local" placeholder="Lugar"></li>
+<li><select>
+<option value="1" title="Todos pueden enviar invitaciones">Público</option>
+<option value="2" title="Sólo tu puedes enviar invitaciones">Privado</option>
+</select>
+</li>
+<li><input type="search" placeholder="Buscar amigo..."></li>
+<li>
+  <div class="contactos">
+    <ul class="cont">
+      <li><img src="http://piposerrano.files.wordpress.com/2008/12/pipo-perfil.jpg"><a>Nombre Apellido</a></li>
+      <li><img src="http://piposerrano.files.wordpress.com/2008/12/pipo-perfil.jpg"><a>Nombre Apellido</a></li>
+      <li><img src="http://piposerrano.files.wordpress.com/2008/12/pipo-perfil.jpg"><a>Nombre Apellido</a></li>
+      <li><img src="http://piposerrano.files.wordpress.com/2008/12/pipo-perfil.jpg"><a>Nombre Apellido</a></li>
+      <li><img src="http://piposerrano.files.wordpress.com/2008/12/pipo-perfil.jpg"><a>Nombre Apellido</a></li>
+  </div
+  ></li>
+</ul>
+</section>
 <header> <form method="get" action="/search" id="search">
   <input name="q" type="text" size="40" placeholder="Buscar..." />
   <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
