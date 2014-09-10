@@ -20,7 +20,7 @@ $(document).ready(function(){
 /* cerrar */ 
 $(document).ready(function(){
    $(".fontawesome-remove").click(function () {
-      $("#sectiom").each(function() {
+      $("#section").each(function() {
         displaying = $(this).css("display");
         if(displaying == "block") {
           $(this).fadeOut('slow',function() {
