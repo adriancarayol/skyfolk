@@ -649,6 +649,7 @@ button.fontawesome-plus:hover {
   background-color: #71bdf4;
   color: white;
   -webkit-transform: scale(1.1);
+  -webkit-transform: rotate(360deg);
 }
 
 button.all {
@@ -796,7 +797,9 @@ div.contactos {
   overflow-y: scroll;
   overflow-x: hidden;
   right: 14%;
-  box-shadow: 1px 1px  rgba(0, 0, 0, 0.3);;
+  box-shadow: 1px 1px  rgba(0, 0, 0, 0.3);
+  margin: auto;
+  top: -10%;
 }
 div.contactos img {
   width: 60px;
