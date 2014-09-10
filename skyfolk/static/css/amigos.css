@@ -755,6 +755,7 @@ input[type="search"] {
   text-align: center;
   outline: none;
   transition: all .3s ease-in;
+  right: 10px;
 }
 input[type="search"]:focus {
   border: 2px solid tomato;
@@ -799,7 +800,7 @@ div.contactos {
   right: 14%;
   box-shadow: 1px 1px  rgba(0, 0, 0, 0.3);
   margin: auto;
-  top: -40%;
+  margin-top: -30px;
 }
 div.contactos img {
   width: 60px;
