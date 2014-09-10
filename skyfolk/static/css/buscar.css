@@ -7,7 +7,7 @@
 	display: flex;
 	position: absolute;
 	margin: 5em auto;
-	width: 901px;/*70%*/
+	width: 721px;
 	height: 38px;
 	top: -50px;
 	left: 7%;
@@ -40,7 +40,7 @@
   height:34px;
   margin-top:2px;
   margin-left:0px;
-  color: #95E9FF;
+  color: black;
 }
 
 .field>form button {
