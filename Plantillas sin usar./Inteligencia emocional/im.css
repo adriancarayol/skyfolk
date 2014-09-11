@@ -1,6 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Raleway:400,500,200,300);
 @import url(http://fonts.googleapis.com/css?family=Lobster);
-
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 @import url(http://weloveiconfonts.com/api/?family=fontawesome);
 
 /* fontawesome */
@@ -10,27 +10,29 @@
 
 body {
  font-family: Raleway;
-  background-color:#218F79;
+  background-color: #B4EEFF;
   font-weight: 200;
 }
 header {
-  color: rgba(255, 255, 255, 0.6);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.65)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
-  background: opacity 0.5;
+  color: white;
   box-shadow: 0.5px 0.5px;
   min-width: 100%;
   max-width: 100%;
   height: auto;
   border-radius: 7px;
+  font-family: 'Open Sans', sans-serif;
 }
-header:hover {
-  color: rgba(255, 255, 255, 1);
+h2 {
+	font-weight: 100;
+	font-size: 30px;
+}
+h4 {
+	font-weight: 100;
 }
 p {
   font-size: 2em;
   font-family: 'Lobster', cursive;
   position: absolute;
-  top: 40%;
   left: 23%;
   margin: auto;
   padding: 0;
@@ -40,11 +42,11 @@ hgroup {
 }
 section {
   position: absolute;
-  top: 50%;
-  left: 17.123%;
+  top: 40%;
+  left: 12.123%;
   height: 70%;
-  min-width: 30%;
-  max-width: 30%;
+  min-width: 37%;
+  max-width: 37%;
   margin: auto;
   padding: 0;
   border-radius: 7px;
@@ -55,6 +57,10 @@ div.contenedor {
   height: 100%;
   width: 100%;
   box-shadow: 0.5px 1px #fff;
+}
+div.contenedor p {
+	position: absolute;
+	top: -15%;
 }
 div.contactos {
   width: 100%;
@@ -79,6 +85,7 @@ div.contactos ul li {
   text-decoration: none;
   margin-top: 10px;
   margin: auto;
+  display: inline-block;
 }
 span img {
   width: 60px;
@@ -175,8 +182,9 @@ div.contenedor2 {
   border-bottom-right-radius: 7%;
 }
 div.contenedor2 p {
-  top: -27%;
+  top: -30%;
   position: absolute;
+
   
 }
 div.relaciones {
