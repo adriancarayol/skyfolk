@@ -48,8 +48,8 @@ body{
 	opacity: 0.4;
 	transition: margin .2s;
 	-webkit-transition: margin .2s;
-	transition: all .3s ease-in-out;
-	-webkit-transition: all .3s ease-in-out;
+	transition: all .3s ease-in;
+	-webkit-transition: all .3s ease-in;
 
 }
 #widget:hover {
