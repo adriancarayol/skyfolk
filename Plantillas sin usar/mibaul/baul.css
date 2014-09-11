@@ -102,6 +102,7 @@ section{
 	top:20%;
 	position: relative;
 	overflow-y: scroll;
+	overflow-x:hidden;
 }
 
 ul.contenido {
@@ -127,7 +128,7 @@ ul.contenido li img:hover {
 	opacity: 0.8;
 }
 ul.contenido li div {
-	width: 80%;
+	width: 100%;
 	background: rgba(0, 0, 0, 0.05);
 	height: 20s%;
 	position: relative;
