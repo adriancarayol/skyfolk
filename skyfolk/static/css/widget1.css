@@ -170,3 +170,8 @@ padding-top:1%;
 }
 
 
+@media screen and (max-width: 980px) {
+	#widget:hover {
+		margin-top: -9.355%;
+	}
+}
