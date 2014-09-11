@@ -1,0 +1,240 @@
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+/* fonts */ 
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+
+body {
+	min-width: 980px;
+	max-width: 990px;
+	height: auto;
+	margin: auto;
+	font-family: 'Open Sans', sans-serif;
+background: rgba(0, 0, 0, 0.1);
+}
+fieldset {
+	position: absolute;
+	border: none;
+	border-bottom: 2px solid rgba(26, 188, 156, 0.7);
+	padding: 5px 5px;
+	height: auto;
+	width: 70%;
+}
+meter::-webkit-meter-bar {
+  position:relative;
+  left: 100%;
+  top: 20%;
+  margin: auto;
+  width: 300px;
+  height: 25px;
+  -webkit-appearance: none; /* Reset appearance */
+  border-radius: 3px;
+  background-image: linear-gradient(
+    90deg, 
+    #8bcf69 5%, 
+    #e6d450 5%,
+    #e6d450 15%,
+    #f28f68 15%,
+    #f28f68 55%,
+    #cf82bf 55%,
+    #fff 95%,
+    #fff 95%,
+    #fff 100%
+  );
+  background-size: 100% 100%;
+ font-family: 'Open Sans', sans-serif;
+ box-shadow: 0 5px 5px -5px #333 inset;
+ color: tomato;
+}
+meter::-webkit-meter-bar:before {
+  content: 'Total Size';
+  position: absolute;
+  top: -100%;
+}
+meter::-webkit-meter-bar:after {
+  content: '50MB/60MB';
+  position: absolute;
+  top: -100%;
+  right: 0;
+}
+ul.option {
+	list-style-type: none;
+	position: relative;
+	float: right;
+}
+span.fontawesome-briefcase {
+	font-weight: 300;
+	font-size: 50px;
+	margin: auto;
+	padding: 0;
+	position: relative;	
+	color: tomato;
+	font-family: 'Open Sans', sans-serif;
+	left: 5%;
+} 
+ul.option li button {
+	border: none;
+	outline: none;
+	padding: 10px 10px;
+	font-size: 25px;
+	background: #fff;
+	border-radius: 20px;
+	box-shadow: 0.5px 0.5px #fff;
+	color: aquamarine;
+	cursor: pointer;
+	transition: all .3s ease-in;
+}
+ul.option li button:hover {
+	color: tomato;
+	-webkit-transform: scale(1.1);
+	-webkit-transform: rotate(180deg);
+}
+
+
+section{
+	background: #fff;
+	width: 100%;
+	height: 80%;
+	margin: auto;
+	top:20%;
+	position: relative;
+	overflow-y: scroll;
+}
+
+ul.contenido {
+	list-style-type: none;
+	text-decoration: none;
+	margin: auto;
+	padding: 0
+	position: relative;
+}
+ul.contenido li {
+	display: inline;
+	margin: auto;
+}
+ul.contenido li img {
+	width: 80px;
+	height: 80px;
+	border: 2px solid rgba(0, 0, 0, 0.1);
+}
+ul.contenido li img:hover {
+	width: 80px;
+	height: 80px;
+	border: 2px solid tomato;
+	opacity: 0.8;
+}
+ul.contenido li div {
+	width: 80%;
+	background: rgba(0, 0, 0, 0.05);
+	height: 20s%;
+	position: relative;
+	display: block;
+	border-bottom: 3px solid #fff;
+}
+ul.contenido li div a {
+	text-align: center;
+	position: absolute;
+	margin: auto;
+	display: inline;
+	top: 20%;
+	width: 80%;
+	font-size: 20px;
+	color: grey;
+	cursor: pointer;
+}
+ul.contenido li div i {
+	text-align: center;
+	position: absolute;
+	margin: auto;
+	display: inline;
+	top: 70%;
+	width: 80%;
+	font-size: 10px;
+	color: grey;
+	cursor: pointer;
+}
+ul.contenido li div a:hover {
+	text-align: center;
+	position: absolute;
+	margin: auto;
+	display: inline;
+	top: 20%;
+	width: 80%;
+	font-size: 20px;
+	color: tomato;
+	cursor: pointer;
+}
+span.fontawesome-cloud-download {
+	position: absolute;
+	margin: auto;
+	display: inline;
+	top: 70%;
+	width: 80%;
+	font-size: 22px;
+	color: tomato;
+	cursor: pointer;
+	left: 95%;
+	transition: all .3s ease-in;
+}
+span.fontawesome-cloud-download:hover {
+	position: absolute;
+	margin: auto;
+	display: inline;
+	top: 70%;
+	width: 80%;
+	font-size: 22px;
+	color: aquamarine;
+	cursor: pointer;
+	left: 95%;
+}
+span.fontawesome-share {
+	position: absolute;
+	margin: auto;
+	display: inline;
+	top: 70%;
+	width: 80%;
+	font-size: 22px;
+	color: tomato;
+	cursor: pointer;
+	left: 90%;
+	transition: all .3s ease-in;
+}
+	span.fontawesome-share:hover {
+	position: absolute;
+	margin: auto;
+	display: inline;
+	top: 70%;
+	width: 80%;
+	font-size: 22px;
+	color: black;
+	cursor: pointer;
+	left: 90%;
+}
+/* MEDIAS */
+
+@media screen and (max-width: 980px) {
+    body {
+    	width: 990px;
+    }
+    section {
+    	width: 100%;
+    	height: 80%;
+    }
+}
+@media screen and (max-width: 650px) {
+   body {
+   	width: 700px;
+   }
+   section {
+   	width: 680px;
+   	height: auto;
+   }
+}
+@media screen and (max-width: 480px) {
+  body {
+  	width: 500px;
+  }
+}
