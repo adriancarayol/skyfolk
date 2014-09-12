@@ -440,7 +440,7 @@ font-size: 70px;
     /* Size and position */
     width: 250px;
     position: absolute;
-    margin: -140px auto 0px 170px;
+    margin: 0px auto 0px 170px;
     padding: 100px 50px 50px;
     overflow: hidden;
     /* Styles */
