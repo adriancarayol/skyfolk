@@ -504,5 +504,5 @@ img:hover {
 a.entypo-plus {
     font-size: 40px;
     color: white;
-    position: relative;
+    position: absolute;
 }
