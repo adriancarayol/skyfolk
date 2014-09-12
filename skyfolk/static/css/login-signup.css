@@ -434,4 +434,69 @@ font-size: 70px;
 }
 
 
+.form-2 {
+    ont-family: 'Ubuntu', 'Lato', sans-serif;
+    font-weight: 100;
+    /* Size and position */
+    width: 250px;
+    position: absolute;
+    margin: -140px auto 0px 170px;
+    padding: 100px 50px 50px;
+    overflow: hidden;
+    /* Styles */
+    background: #111;
+    border-radius: 0.4em;
+    border: 1px solid #191919;
+    box-shadow: inset 0 0 2px 1px rgba(255,255,255,0.08), 
+        0 16px 10px -8px rgba(0, 0, 0, 0.6);
+    background-color: #000000;
+    height: auto;
+    font-family: 'Open Sans', sans-serif;
+}
+.form-2 ul.mis_cuentas {
+    position: absolute;
+    margin: auto;
+    float: left;
+    list-style-type: none;
+    top: 0%;
+    left: 0%;
+    height: auto;
 
+}
+.form-2 ul.mis_cuentas li {
+    position: relative;
+    display: inline-block;
+    margin: 20px auto;
+    cursor: pointer;
+    border: none;
+}
+.form-2 ul.mis_cuentas li p{
+    display: inline-block
+    position: relative;
+    margin: -40px 70px;
+    color: #56B9B9;
+    text-align: right;
+    font-weight: 100;
+    padding: 0;
+}
+.form-2 img {
+    width: 50px;
+    height: 50px;
+    position: relative;
+    display: inline;
+    padding: 0;
+    margin: auto;
+    border-radius: 100%;
+    border: 2px solid #56B9B9;
+    transition: all .3s ease-in;
+    clear: both;
+}
+span.entypo-right-open {
+    color: white;
+    margin: auto 20px;
+    font-size: 20px;
+}
+img:hover {
+    border: 2px solid tomato;
+    opacity: 0.7;
+}
