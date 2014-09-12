@@ -441,7 +441,7 @@ font-size: 70px;
     width: 250px;
     position: absolute;
     margin: 170px auto 0px 170px;
-    padding: 100px 50px 50px;
+    padding: 130px 50px 50px;
     overflow: hidden;
     /* Styles */
     background: #111;
@@ -449,7 +449,7 @@ font-size: 70px;
     border: 1px solid #191919;
     box-shadow: inset 0 0 2px 1px rgba(255,255,255,0.08), 
         0 16px 10px -8px rgba(0, 0, 0, 0.6);
-    background-color: #FFF;
+    background-color: #000000;
     height: auto;
     font-family: 'Open Sans', sans-serif;
 }
@@ -466,13 +466,14 @@ font-size: 70px;
 .form-2 ul.mis_cuentas li {
     position: relative;
     display: inline-block;
-    margin: 10px auto;
+    margin: 15px auto;
     cursor: pointer;
     border: none;
 }
 .form-2 ul.mis_cuentas li p{
     display: inline-block
     position: relative;
+    left: 20%;
     margin: -40px 40px;
     color: #56B9B9;
     text-align: center;
