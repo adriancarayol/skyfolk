@@ -435,7 +435,7 @@ font-size: 70px;
 
 /* CUENTAS GUARDADAS */
 .form-2 {
-    ont-family: 'Ubuntu', 'Lato', sans-serif;
+    display: none;
     font-weight: 100;
     /* Size and position */
     width: 250px;

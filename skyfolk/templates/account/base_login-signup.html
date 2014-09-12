@@ -7,14 +7,14 @@
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
          <script type="text/javascript" src="http://www.google.com/jsapi"></script>
          <script type="text/javascript">google.load('jquery', '1.7.1');</script>
-         <script type="text/javascript" src="{{STATIC_URL}}js/jquery.gritter.js"></script>
+         <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
         <title>¡Bienvenido!</title>
         <meta name="description" content="Custom Login Form Styling with CSS3" />
         <meta name="keywords" content="skyfolk, social, login, registro, sky, folk," />
         <link rel="shortcut icon" href="{{STATIC_URL}}img/nube.jpg"> 
-	
+	    <script src="{{STATIC_URL}}js/showandhide.js"></script>
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css" />
 		<script src="{{STATIC_URL}}js/modernizr.custom.63321.js"></script>
 		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
@@ -69,6 +69,7 @@
 	{% endblock %}
     </head>
     <body>
+    	<p class="more"></p>
        	<form class="form-2">
 		<ul class="mis_cuentas">
 			<li><img src="http://cdn.pijamasurf.com/wp-content/uploads/2013/07/heisenberg.jpg"><p>Werner Heisenberg.<span class="entypo-right-open"></span></p></li>
