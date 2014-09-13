@@ -469,12 +469,13 @@ font-size: 70px;
     margin: 15px auto;
     cursor: pointer;
     border: none;
+    left: 15%;
 }
 .form-2 ul.mis_cuentas li p{
     display: inline-block
     position: relative;
-    left: 20%;
-    margin: -40px 40px;
+    left: 30%;
+    margin: -40px 70px;
     color: #56B9B9;
     text-align: center;
     font-weight: 100;
