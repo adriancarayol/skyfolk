@@ -110,11 +110,10 @@ div.photo img {
   margin: auto;
   padding: 0;
   position: relative;
-  margin-right: 10px;
-  border: 2px solid rgba(57, 122, 171, 0.44);
-  border-radius: 7px;
+  margin-right: 0px;
   top: 20%;
   overflow: hidden;
+  box-shadow: 0.2px 0.1px 0.1px 0.2px #615959;
 }
 
 section ul {
