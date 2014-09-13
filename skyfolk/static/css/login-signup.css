@@ -509,10 +509,9 @@ a.entypo-plus {
     color: #56B9B9;
     background: #000;
     transition: all .2s ease-in;
-    margin-top: 50%;
-    left: 50%;
+    margin-top: 30%;
+    left: 52%;
 }
 a.entypo-plus:hover {
-    color: #000;
-    background: #56B9B9;
+    color: #fff;
 }
