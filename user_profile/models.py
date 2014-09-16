@@ -117,6 +117,9 @@ class UserProfile(models.Model):
     def get_friend_request(self, profile):
         return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FRIEND)
 
+    def get_received_friends_requests(self):
+        return self.requests.filter(from_request__status=REQUEST_FRIEND, from_request__receiver=self)
+
 """
     def get_friends_next4(self, next):
         n = next * 4

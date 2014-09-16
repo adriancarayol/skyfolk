@@ -111,7 +111,15 @@
 				sticky = params.sticky || false,
 				item_class = params.class_name || $.gritter.options.class_name,
 				position = $.gritter.options.position,
-				time_alive = params.time || '';
+				time_alive = params.time || '',
+				button1 = params.button1 || false,										//modification
+				button2 = params.button2 || false,										//modification
+				button1_text = params.button1_text || 'Accept',							//modification
+				button2_text = params.button2_text || 'Reject',							//modification
+				button1_function = params.button1_function,								//modification
+				button2_function = params.button2_function,								//modification
+				height = params.height,													//modification
+				var1 = params.var1;														//modification
 
 			this._verifyWrapper();
 			
@@ -184,6 +192,54 @@
 				Gritter.removeSpecific(number, {}, null, true);
 				return false;
 			});
+
+
+			if (height){
+				$( '#gritter-item-' + this._item_count  + " .gritter-item").css( "height", height);
+			}
+
+			//modification
+			if ( (button1 == true) && (button2 == false) ){
+
+				$('#gritter-item-' + this._item_count + " .gritter-item").append( '<button id=gritter_button1 type="button">' + button1_text + '</button>' );
+				$( '#gritter-item-' + this._item_count  + " #gritter_button1").css( "margin", "8 auto 0 auto");
+				$( '#gritter-item-' + this._item_count  + " #gritter_button1").css( "float", "none");
+
+
+			}else if ( (button1 == false) && (button2 == true) ){
+
+				$('#gritter-item-' + this._item_count + " .gritter-item").append( '<button id=gritter_button2 type="button">' + button2_text + '</button>' );
+				$( '#gritter-item-' + this._item_count  + " #gritter_button2").css( "margin", "8 auto 0 auto");
+				$( '#gritter-item-' + this._item_count  + " #gritter_button2").css( "float", "none");
+
+			}else if ( (button1 == true) && (button2 == true) ){
+
+				$('#gritter-item-' + this._item_count + " .gritter-item").append( '<button id=gritter_button1 type="button">' + button1_text + '</button>' );
+				$('#gritter-item-' + this._item_count + " .gritter-item").append( '<button id=gritter_button2 type="button">' + button2_text + '</button>' );
+				$( '#gritter-item-' + this._item_count  + " #gritter_button1").css( "margin-left", "20%");
+				$( '#gritter-item-' + this._item_count  + " #gritter_button2").css( "margin-right", "20%");
+			}
+			
+			//modification
+			if ( (button1 == true) && (button1_function) ){
+
+				$('#gritter-item-' + this._item_count + ' #gritter_button1').click(function() {
+
+					button1_function( number );
+				
+				});
+			}
+
+			//modification
+			if ( (button2 == true) && (button2_function) ){
+
+				$('#gritter-item-' + this._item_count + ' #gritter_button2').click(function() {
+
+					button2_function( number );
+				
+				});
+			}				
+
 			
 			return number;
 		
