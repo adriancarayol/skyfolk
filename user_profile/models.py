@@ -27,7 +27,7 @@ class UserProfile(models.Model):
     #accepted_eula = models.BooleanField()
     #favorite_animal = models.CharField(max_length=20, default="Dragons.")
     image = models.ImageField(upload_to='userimages', verbose_name='Image',blank=True, null=True)
-    relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to+')
+    relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
 
@@ -118,7 +118,7 @@ class UserProfile(models.Model):
         return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FRIEND)
 
     def get_received_friends_requests(self):
-        return self.requests.filter(from_request__status=REQUEST_FRIEND, from_request__receiver=self)
+        return self.requestsToMe.filter(from_request__status=1, from_request__receiver=self)
 
 """
     def get_friends_next4(self, next):

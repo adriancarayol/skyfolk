@@ -34,6 +34,9 @@ def profile_view(request, username):
 			liked=False
 	else:
 		liked=False
+		requests = user.profile.get_received_friends_requests()
+		#requests = user.profile.requestsToMe.all()
+		print len(requests)
 
 	#saber si el usuario que visita el perfil es amigo
 	if request.user.username != username:
