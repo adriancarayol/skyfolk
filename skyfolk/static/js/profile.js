@@ -102,6 +102,33 @@ function aparecerbola(){
   document.getElementById("widget").style.opacity = "1";
   document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
 }
+
+function showRequest(id_profile, username){
+
+        var unique_id = $.gritter.add({
+          // (string | mandatory) the heading of the notification
+          title: username + ' wants to be your friend!',
+          // (string | mandatory) the text inside the notification
+          text: '',
+          // (string | optional) the image to display on the left
+          image: '../../static/img/imagesgritter/a.png',
+          // (bool | optional) if you want it to fade out on its own or just sit there
+          sticky: true,
+          // (int | optional) the time you want it to be alive for before fading out
+          time: '',
+          // (string | optional) the class name you want to apply to that specific message
+          class_name: 'gritter-light',
+          
+          //new options
+          button1: true,
+          button2: true,
+          height: "85px",
+
+
+        });  
+
+}
+
 /*
 function cambiopagina(){
   document.getElementById("linkedin").style.opacity = "1";
@@ -260,3 +287,9 @@ $(document).ready(function(){
       });
     });
   });
+
+$(document).ready(function(){
+
+    
+
+});

@@ -1,6 +1,20 @@
 {% extends "account/base_interface.html" %}
 
 {% block include_files %}
+
+<script type="text/javascript"> 
+
+   var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
+   var stopRequests = false;
+   var idRequestsTimer = null;
+
+
+   idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3000);
+
+
+
+</script>    
+
   {% if liked == True %}
 
     <style type="text/css">
@@ -8,6 +22,7 @@
             color: #29b203;
         }
     </style>
+
 
   {% endif %}
 

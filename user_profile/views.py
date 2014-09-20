@@ -13,6 +13,9 @@ from django.http import HttpResponse
 from django.utils import simplejson
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
+from django.utils.safestring import mark_safe
+
 
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -24,6 +27,8 @@ def profile_view(request, username):
 
 	user_profile = get_object_or_404(get_user_model(), username__iexact=username)
 
+	requestsToMe = None
+
 	#saber si el usuario que visita el perfil le gusta
 	if request.user.username != username:
 		liked=True
@@ -34,9 +39,16 @@ def profile_view(request, username):
 			liked=False
 	else:
 		liked=False
-		requests = user.profile.get_received_friends_requests()
-		#requests = user.profile.requestsToMe.all()
-		print len(requests)
+		requestsToMe = user.profile.get_received_friends_requests()
+
+		requestsToMe_result = list()
+		for item in requestsToMe:
+			print item
+			print str(item.pk) + " " + item.user.username + " " + item.user.email
+			#requestsToMe_result = {'id_profile': item.pk,'username': item.user.username,}
+			requestsToMe_result.append({'id_profile': item.pk,'username': item.user.username,})    
+
+		print requestsToMe_result
 
 	#saber si el usuario que visita el perfil es amigo
 	if request.user.username != username:
@@ -52,8 +64,7 @@ def profile_view(request, username):
 	#number of likes to him
 	n_likes = len(user_profile.profile.likesToMe.all())
 
-	print user.username
-	print user_profile.username
+
 	try:
 		friend_request = user.profile.get_friend_request(user_profile.profile)
 	except ObjectDoesNotExist:
@@ -66,8 +77,17 @@ def profile_view(request, username):
 		existFriendRequest = False
 		print False
 
+
+	#json_requestsToMe = simplejson.dumps(requestsToMe)
+	#json_requestsToMe = serializers.serialize('json', requestsToMe_result)
+	json_requestsToMe = simplejson.dumps(requestsToMe_result)
+	#json_requestsToMe = list(requestsToMe)
+	#json_requestsToMe = simplejson.dumps(list(requestsToMe), cls=DjangoJSONEncoder)
+	#json_requestsToMe = simplejson.dumps(serializers.serialize('json', requestsToMe))
+	#json_requestsToMe = simplejson.dumps(list(requestsToMe))
 	#response
-	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest},context_instance=RequestContext(request))
+	#print json_requestsToMe
+	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'requestsToMe':requestsToMe, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
 
 @login_required(login_url='accounts/login')
 def search(request):
