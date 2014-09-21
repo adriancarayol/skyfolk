@@ -5,8 +5,6 @@
 	right:20px;
 	width:301px;
 	z-index:9999;
-	font-size: 20px;
-	color: grey;
 }
 #gritter-notice-wrapper.top-left {
     left: 20px;
@@ -62,6 +60,8 @@
 	padding:0;
 	margin:0;
 	word-wrap:break-word;
+    font-size: 20px;
+	color: grey;
 }
 .gritter-close {
 	display:none;
@@ -114,6 +114,7 @@
 	float:left;
 	display:block;
 	margin-top: 7px;
+	margin-left: 7px;
 	background-color: #2D882D;
 	color: white;
 	padding: 5px 5px 5px 5px;
@@ -151,6 +152,7 @@
 	float:right;
 	display:block;
 	margin-top: 7px;
+	margin-left: 7px;
 	background-color: #FF2525;
 	color: white;
 	padding: 5px 5px 5px 5px;
