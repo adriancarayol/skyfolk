@@ -438,7 +438,7 @@ body > .container {
 	
     border-radius: 0.3rem;
     margin-top: -10em;
-    box-shadow: 0 0 1px rgba(55, 255, 79, 0.5);; } !important /* EMOCIONES */
+    box-shadow: 0 0 1px rgba(55, 255, 79, 0.5); } !important /* EMOCIONES */ }
 .user-card header, .user-card .status {
   text-align: center;
   padding: 0 1.5em; }
