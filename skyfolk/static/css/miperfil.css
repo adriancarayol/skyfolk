@@ -1696,7 +1696,6 @@ div.infx:hover {
   display: block;
 }
 #notifi div.love h4 {
-  position: relative;
   margin: 10px; 
   text-align: center;
   color: grey;
@@ -1715,7 +1714,6 @@ div.infx:hover {
 }
 #notifi div.love p {
   font-size: 15px;
-  position: relative;
   color: white;
   float: right;
   height: auto;
@@ -1727,7 +1725,6 @@ div.infx:hover {
 #notifi div.love i {
   text-decoration: none;
   font-style: normal;
-  position: relative;
   left:7%;
   font-size: 40px;
   padding: 10px 10px;
