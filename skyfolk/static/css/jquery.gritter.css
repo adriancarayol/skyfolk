@@ -122,8 +122,7 @@
     cursor: pointer;
     transition: all .3s ease-in;
     border: none;
-    text-shadow: 0px -2px #2D882D;
-    border-bottom: 5px solid #2D882D;
+    border-bottom: 5px solid #669644;
 
 
 }
@@ -161,8 +160,7 @@
     cursor: pointer;
     transition: all .3s ease-in;
     border: none;
-    text-shadow: 0px -2px #FF2525;
-    border-bottom: 5px solid #FF2525;
+    border-bottom: 5px solid #669644;
 
 }
 #gritter-notice-wrapper .gritter-item #gritter_button2:hover{
