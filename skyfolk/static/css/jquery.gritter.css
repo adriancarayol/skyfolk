@@ -122,7 +122,6 @@
     cursor: pointer;
     transition: all .3s ease-in;
     border: none;
-    border-bottom: 5px solid #669644;
 
 
 }
@@ -160,7 +159,6 @@
     cursor: pointer;
     transition: all .3s ease-in;
     border: none;
-    border-bottom: 5px solid #669644;
 
 }
 #gritter-notice-wrapper .gritter-item #gritter_button2:hover{
