@@ -1,0 +1,127 @@
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+
+
+body {
+	margin: 50px auto 0;
+    max-width: 800px;
+    font-family: 'Open Sans', sans-serif;
+
+}
+header {
+	float: left;
+	left: 3%;
+	position: absolute;
+	border-bottom: 5px solid #FFA732;
+	top: 0%;
+	width: 90%%;
+	font-size: 40px;
+	font-weight: 100;
+	text-decoration: none;
+	font-style: normal;
+	color: grey;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+header span {
+	margin-right: 17px;
+	color: #FF6F00;
+}
+section {
+	margin: 50px auto 0;
+	max-width: 800px;
+	top: 20%;
+	position: absolute;
+	height: auto;
+	left: 5%;
+}
+section ol {
+	float: left;
+	font-size: 30px;
+	position: relative;
+	margin: auto;
+	left: 0%;
+	color: grey;
+	font-weight: 100;
+    padding: 10px 10px;
+    display: table;
+    list-style-type: none;
+
+}
+section ol li {
+	position: relative;
+	margin-top: 20px;
+	display: table;
+}
+section ol li img {
+	width: 70px;
+	height: 70px;
+	border-bottom: 3px solid tomato;
+	border-radius: 5px;
+
+}
+section ol li div.wrapper {
+	background-color: rgba(142, 255, 255, 0.2);
+	height: auto;
+	width: 500px;
+	margin: 0;
+	padding: 0;
+	border-radius: 7px
+
+}
+section ol li p {
+	font-size: 17px;
+	position: absolute;
+	display: inline;
+	margin-left: 20px;
+	text-align: center;
+    margin-top: 2px;
+}
+section ol li progress {
+	-webkit-appareance: progress-bar;
+	position: relative;
+	margin-left: 40px;
+	top: -10px;
+	box-sizing: border-box;
+}
+section ol li progress[value] {
+	  -webkit-appearance: none;
+   appearance: none;
+
+  width: 250px;
+  height: 20px;
+}
+progress[value]::-webkit-progress-value {
+background-image:
+	-webkit-linear-gradient(-45deg, 
+	                           transparent 33%, rgba(0, 0, 0, .1) 33%, 
+	                           rgba(0,0, 0, .1) 66%, transparent 66%),
+	-webkit-linear-gradient(top, 
+	                           rgba(0, 0, 0, .25), 
+	                           rgba(255, 255, 255, .25)),
+	-webkit-linear-gradient(left, #41EEE2, #41EEE2, #8101BC);
+ border-radius: 2px; 
+ background-size: 35px 20px, 100% 100%, 100% 100%;
+
+ -webkit-animation: animate-bar 5s linear infinite;
+        animation: animate-bar 5s linear infinite;
+}
+@-webkit-keyframes animate-bar {
+   100% { background-position: -100px 0px; }
+}
+
+@keyframes animate-bar {
+   100% { background-position: -100px 0px; }
+}
+progress[value]::-webkit-progress-value::before {
+  content: '80%';
+  position: absolute;
+  left: 0;
+  top: -125%;
+  font-size: 14px;
+}
