@@ -1657,7 +1657,7 @@ margin-top:25px;
 ul.informac {
     list-style-type: none;
     display: block;
-    position: absolute;
+    position: relative;
     font-size: 20px;
     left: 0%;
     text-align: center;
@@ -1670,7 +1670,7 @@ ul.informac:hover {
 div.infx {
   opacity: 0;
   position: absolute;
-  left: 0%;
+  left: 15%;
   min-width: 15%;
   max-width: 15%;
   height: auto;
