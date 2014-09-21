@@ -73,7 +73,7 @@
 	text-indent:-9999em;
 }
 .gritter-title {
-	font-family: "Comic Sans MS", cursive, sans-serif;
+	 font-family: 'Open Sans', sans-serif;
 	font-size:12px;
 	font-weight:bold !important;
 	padding:0 0 7px 0;
@@ -112,6 +112,17 @@
 	float:left;
 	display:block;
 	margin-top: 8px;
+	background-color: #2D882D;
+	color: white;
+	padding: 5px 5px 5px 5px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 200;
+    border-radius: 5px;
+    outline: none; 
+    -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+    cursor: pointer;
+    transition: all .3s ease-in;
+
 
 }
 
@@ -121,5 +132,15 @@
 	float:right;
 	display:block;
 	margin-top: 8px;
+	background-color: #FF2525;
+	color: white;
+	padding: 5px 5px 5px 5px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 200;
+    border-radius: 5px;
+    outline: none; 
+    -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+    cursor: pointer;
+    transition: all .3s ease-in;
 
 }
