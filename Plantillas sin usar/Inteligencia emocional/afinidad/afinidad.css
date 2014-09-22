@@ -19,7 +19,7 @@ header {
 	position: absolute;
 	border-bottom: 5px solid #FFA732;
 	top: 0%;
-	width: 90%%;
+	width: 90%;
 	font-size: 40px;
 	font-weight: 100;
 	text-decoration: none;
@@ -27,6 +27,13 @@ header {
 	color: grey;
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
+	text-align: center;
+}
+header h6 {
+	font-weight: 100;
+	font-size: 20px;
+	position: relative;
+	margin: auto;
 }
 header span {
 	margin-right: 17px;
@@ -40,8 +47,7 @@ section {
 	height: auto;
 	left: 5%;
 }
-section ol {
-	float: left;
+section ul {
 	font-size: 30px;
 	position: relative;
 	margin: auto;
@@ -49,32 +55,34 @@ section ol {
 	color: grey;
 	font-weight: 100;
     padding: 10px 10px;
-    display: table;
+    display: inline;
     list-style-type: none;
 
 }
-section ol li {
+section ul li {
 	position: relative;
 	margin-top: 20px;
-	display: table;
+	display: inline;
+	margin: auto 30px;
 }
-section ol li img {
+section ul li img {
 	width: 70px;
 	height: 70px;
 	border-bottom: 3px solid tomato;
 	border-radius: 5px;
 
 }
-section ol li div.wrapper {
+section ul li div.wrapper {
 	background-color: rgba(142, 255, 255, 0.2);
 	height: auto;
 	width: 500px;
 	margin: 0;
 	padding: 0;
 	border-radius: 7px
+	display: inline;
 
 }
-section ol li p {
+section ul li p {
 	font-size: 17px;
 	position: absolute;
 	display: inline;
@@ -82,14 +90,21 @@ section ol li p {
 	text-align: center;
     margin-top: 2px;
 }
-section ol li progress {
+section ul li a {
+	font-size: 20px;
+	margin: 47px 0px 0px 30px;
+	position: absolute;
+	color: tomato;
+	padding: 0;
+}
+section ul li progress {
 	-webkit-appareance: progress-bar;
 	position: relative;
 	margin-left: 40px;
 	top: -10px;
 	box-sizing: border-box;
 }
-section ol li progress[value] {
+section ul li progress[value] {
 	  -webkit-appearance: none;
    appearance: none;
 
