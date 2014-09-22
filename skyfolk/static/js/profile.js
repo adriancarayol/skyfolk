@@ -123,6 +123,7 @@ function showRequest(id_profile, username){
           button1: true,
           button2: true,
           height: "85px",
+          type: "friendrequest"
 
 
         });  

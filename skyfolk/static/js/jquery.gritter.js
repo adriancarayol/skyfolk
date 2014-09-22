@@ -119,6 +119,7 @@
 				button1_function = params.button1_function,								//modification
 				button2_function = params.button2_function,								//modification
 				height = params.height,													//modification
+				type = params.type,														//modification
 				var1 = params.var1;														//modification
 
 			this._verifyWrapper();
@@ -221,24 +222,36 @@
 			}
 			
 			//modification
-			if ( (button1 == true) && (button1_function) ){
+			if (type){
 
-				$('#gritter-item-' + this._item_count + ' #gritter_button1').click(function() {
+				if (type == "friendrequest"){
+						
+						//modification
+						if ( (button1 == true) && (button1_function) ){
 
-					button1_function( number );
-				
-				});
+							$('#gritter-item-' + this._item_count + ' #gritter_button1').click(function() {
+
+								button1_function( number );
+							
+							});
+						}
+
+						//modification
+						if ( (button2 == true) && (button2_function) ){
+
+							$('#gritter-item-' + this._item_count + ' #gritter_button2').click(function() {
+
+								button2_function( number );
+							
+							});
+						}							
+
+				}
+
 			}
 
-			//modification
-			if ( (button2 == true) && (button2_function) ){
 
-				$('#gritter-item-' + this._item_count + ' #gritter_button2').click(function() {
-
-					button2_function( number );
-				
-				});
-			}				
+		
 
 			
 			return number;
