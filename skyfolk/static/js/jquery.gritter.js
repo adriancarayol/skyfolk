@@ -116,11 +116,10 @@
 				button2 = params.button2 || false,										//modification
 				button1_text = params.button1_text || 'Accept',							//modification
 				button2_text = params.button2_text || 'Reject',							//modification
-				button1_function = params.button1_function,								//modification
-				button2_function = params.button2_function,								//modification
+				buttons_function = params.buttons_function,								//modification
 				height = params.height,													//modification
 				type = params.type,														//modification
-				var1 = params.var1;														//modification
+				id_emitter = params.id_emitter;											//modification
 
 			this._verifyWrapper();
 			
@@ -224,24 +223,24 @@
 			//modification
 			if (type){
 
-				if (type == "friendrequest"){
+				if ( (type == "friendrequest") && (id_emitter) ){
 						
 						//modification
-						if ( (button1 == true) && (button1_function) ){
+						if ( (button1 == true) && (buttons_function) ){
 
 							$('#gritter-item-' + this._item_count + ' #gritter_button1').click(function() {
 
-								button1_function( number );
+								buttons_function( id_emitter );
 							
 							});
 						}
 
 						//modification
-						if ( (button2 == true) && (button2_function) ){
+						if ( (button2 == true) && (buttons_function) ){
 
 							$('#gritter-item-' + this._item_count + ' #gritter_button2').click(function() {
 
-								button2_function( number );
+								buttons_function( id_emitter );
 							
 							});
 						}							
