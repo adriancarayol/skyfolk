@@ -81,36 +81,24 @@ $("#ilike_profile").click(function () {
 
 
     function AJAX_respondFriendRequest(status){
-              //alert($("#likes strong").html());
              
+              /*
               if (status == "accept"){
 
               }else if (status == "reject"){
-                   /*
+                   
                   $.ajax({
                      
                         type: "POST",
-                        url: "/respondfriendrequest/",
-                        data: {'slug': $("#profileId").html(), 'csrfmiddlewaretoken': csrftoken},
-                        //data: {'slug': $("#profileId").html()},
+                        url: "/respond_friend_request/",
+                        data: {'slug': $("#profileId").html(), 'status': status, 'csrfmiddlewaretoken': csrftoken},
                         dataType: "json",
                         success: function(response) {
                           
-                           if (response == "like"){
+                           if (response == "added_friend"){
 
-                                $("#ilike_profile").css('color', '#29b203');
-                                                 
-                                //Aumentamos el valor del campo
-                                $("#likes strong").html(parseInt($("#likes strong").html()) + 1);
-                                                            
-                           }else if(response == "nolike"){
-
-                                $("#ilike_profile").css('color', '#46494c');
-
-                                if ($("#likes strong").html() > 0){
-                                      //Decrementar
-                                      $("#likes strong").html(parseInt($("#likes strong").html()) - 1);
-                                }                                
+                              alert("You have added a friend!");
+                                                             
                                                       
                            }else{
                                 
@@ -120,8 +108,9 @@ $("#ilike_profile").click(function () {
                            alert(rs.responseText);
                         }
                   });
-                  */
-                }         
+                  
+                }
+                */       
               
       
     }

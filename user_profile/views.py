@@ -205,29 +205,37 @@ def request_friend(request):
 
 
 
-def add_friend(request):
+def respond_friend_request(request):
 
     response = "null"
     if request.method == 'POST':
         user = request.user
-        slug = request.POST.get('slug', None)
-        profileUserId = slug
-        try:
-            user_friend = user.profile.is_friend(profileUserId)
-        except ObjectDoesNotExist:
-            user_friend = None
+        profileUserId = request.POST.get('slug', None)
+        request_status = request.POST.get('status', None)
 
-        if user_friend:
-            user_friend.delete()
-            response="nofriend"
+
+        user.profile.get_received_friends_requests().delete()
+
+        if request_status == 'accept':
+
+            response="not_added_friend"
+            try:
+                user_friend = user.profile.is_friend(profileUserId)
+            except ObjectDoesNotExist:
+                user_friend = None
+
+            if not user_friend:
+                created = user.profile.add_friend(UserProfile.objects.get(pk=slug))
+                created.save()
+                response="added_friend"
+
         else:
-
-            created = user.profile.add_friend(UserProfile.objects.get(pk=slug))
-            created.save()
-            response="friend"
-
+            response="rejected"
 
     return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+
+
+
 
 @login_required(login_url='/')
 def friends(request):
