@@ -27,7 +27,7 @@ def profile_view(request, username):
 
 	user_profile = get_object_or_404(get_user_model(), username__iexact=username)
 
-	requestsToMe = None
+	json_requestsToMe = None
 
 	#saber si el usuario que visita el perfil le gusta
 	if request.user.username != username:
@@ -41,14 +41,18 @@ def profile_view(request, username):
 		liked=False
 		requestsToMe = user.profile.get_received_friends_requests()
 
-		requestsToMe_result = list()
-		for item in requestsToMe:
-			print item
-			print str(item.pk) + " " + item.user.username + " " + item.user.email
-			#requestsToMe_result = {'id_profile': item.pk,'username': item.user.username,}
-			requestsToMe_result.append({'id_profile': item.pk,'username': item.user.username,})    
+		if requestsToMe:
+			requestsToMe_result = list()
+			for item in requestsToMe:
+				print item
+				print str(item.pk) + " " + item.user.username + " " + item.user.email
+				requestsToMe_result.append({'id_profile': item.pk,'username': item.user.username,})    
 
-		print requestsToMe_result
+			#print requestsToMe_result
+			json_requestsToMe = simplejson.dumps(requestsToMe_result)
+
+
+
 
 	#saber si el usuario que visita el perfil es amigo
 	if request.user.username != username:
@@ -80,14 +84,14 @@ def profile_view(request, username):
 
 	#json_requestsToMe = simplejson.dumps(requestsToMe)
 	#json_requestsToMe = serializers.serialize('json', requestsToMe_result)
-	json_requestsToMe = simplejson.dumps(requestsToMe_result)
+	
 	#json_requestsToMe = list(requestsToMe)
 	#json_requestsToMe = simplejson.dumps(list(requestsToMe), cls=DjangoJSONEncoder)
 	#json_requestsToMe = simplejson.dumps(serializers.serialize('json', requestsToMe))
 	#json_requestsToMe = simplejson.dumps(list(requestsToMe))
 	#response
 	#print json_requestsToMe
-	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'requestsToMe':requestsToMe, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
+	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
 
 @login_required(login_url='accounts/login')
 def search(request):
@@ -160,7 +164,7 @@ def like_profile(request):
             user_liked.delete()
             response="nolike"
         else:
-
+            print str(slug)
             created = user.profile.add_like(UserProfile.objects.get(pk=slug))
             created.save()
             response="like"
@@ -213,24 +217,31 @@ def respond_friend_request(request):
         profileUserId = request.POST.get('slug', None)
         request_status = request.POST.get('status', None)
 
+        
+        try:
+            emitter_profile = UserProfile.objects.get(pk=profileUserId)
+        except ObjectDoesNotExist:
+            emitter_profile = None
 
-        user.profile.get_received_friends_requests().delete()
+        if emitter_profile:
+            #user.profile.get_received_friends_requests().delete()
+            user.profile.remove_received_friend_request(emitter_profile);
 
-        if request_status == 'accept':
+            if request_status == 'accept':
 
-            response="not_added_friend"
-            try:
-                user_friend = user.profile.is_friend(profileUserId)
-            except ObjectDoesNotExist:
-                user_friend = None
+                response="not_added_friend"
+                try:
+                    user_friend = user.profile.is_friend(profileUserId)
+                except ObjectDoesNotExist:
+                    user_friend = None
 
-            if not user_friend:
-                created = user.profile.add_friend(UserProfile.objects.get(pk=slug))
-                created.save()
-                response="added_friend"
+                if not user_friend:
+                    created = user.profile.add_friend(emitter_profile)
+                    created.save()
+                    response="added_friend"
 
-        else:
-            response="rejected"
+            else:
+                response="rejected"
 
     return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
 

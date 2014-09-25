@@ -8,10 +8,10 @@
    var stopRequests = false;
    var idRequestsTimer = null;
 
+   if(requests){
+      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3000);
 
-   idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3000);
-
-
+    }
 
 </script>    
 

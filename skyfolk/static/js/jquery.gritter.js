@@ -230,7 +230,8 @@
 
 							$('#gritter-item-' + this._item_count + ' #gritter_button1').click(function() {
 
-								buttons_function( id_emitter );
+								buttons_function( id_emitter, 'accept' );
+								$(item).find('.gritter-close').click();
 							
 							});
 						}
@@ -240,7 +241,8 @@
 
 							$('#gritter-item-' + this._item_count + ' #gritter_button2').click(function() {
 
-								buttons_function( id_emitter );
+								buttons_function( id_emitter, 'reject' );
+								$(item).find('.gritter-close').click();
 							
 							});
 						}							

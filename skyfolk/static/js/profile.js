@@ -80,18 +80,15 @@ $("#ilike_profile").click(function () {
     }
 
 
-    function AJAX_respondFriendRequest(status){
+    function AJAX_respondFriendRequest(id_emitter, status){
              
-              /*
-              if (status == "accept"){
-
-              }else if (status == "reject"){
+              
                    
                   $.ajax({
                      
                         type: "POST",
                         url: "/respond_friend_request/",
-                        data: {'slug': $("#profileId").html(), 'status': status, 'csrfmiddlewaretoken': csrftoken},
+                        data: {'slug': id_emitter, 'status': status, 'csrfmiddlewaretoken': csrftoken},
                         dataType: "json",
                         success: function(response) {
                           
@@ -108,10 +105,7 @@ $("#ilike_profile").click(function () {
                            alert(rs.responseText);
                         }
                   });
-                  
-                }
-                */       
-              
+                     
       
     }
 

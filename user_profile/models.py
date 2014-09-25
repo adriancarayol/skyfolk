@@ -120,6 +120,9 @@ class UserProfile(models.Model):
     def get_received_friends_requests(self):
         return self.requestsToMe.filter(from_request__status=1, from_request__receiver=self)
 
+    def remove_received_friend_request(self, profile):
+        Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FRIEND).delete()
+
 """
     def get_friends_next4(self, next):
         n = next * 4
