@@ -306,3 +306,40 @@ div.options ul li{
   float: right;
   position: relative;
 }
+a.fontawesome-fire {
+  float: right;
+  position: absolute;
+  right: 3%;
+  top: 5%;
+  color: #FFA732;
+  font-size: 40px;
+  background: #fff;
+  padding: 10px 20px 10px 20px;
+  border-radius: 100%;
+  transition: all .3s ease-in-out;
+  cursor: pointer;
+
+}
+a.fontawesome-fire:hover {
+  color: white;
+  background-color: #FFA732;
+-webkit-animation: backk 5s infinite; /* Chrome, Safari, Opera */
+    animation: backk 5s infinite;
+}
+
+@-webkit-keyframes backk {
+  0% { background-color: #FFA732;}
+  15% {background-color: #7EEF66;}
+  30% {background: tomato;}
+  50% {background-color: #F066A3;}
+  75% {background-color: #7009F8}
+  100% {background-color: #03C1F7}
+}
+@keygrames backk {
+    0% { background-color: #FFA732;}
+  15% {background-color: #7EEF66;}
+  30% {background: tomato;}
+  50% {background-color: #F066A3;}
+  75% {background-color: #7009F8}
+  100% {background-color: #03C1F7}
+}

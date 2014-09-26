@@ -32,7 +32,7 @@ header {
 header h6 {
 	font-weight: 100;
 	font-size: 20px;
-	position: relative;
+	position: static;
 	margin: auto;
 }
 header span {
@@ -41,11 +41,19 @@ header span {
 }
 section {
 	margin: 50px auto 0;
-	max-width: 800px;
+    width: 1000px;
 	top: 20%;
 	position: absolute;
 	height: auto;
-	left: 5%;
+	left: 20%;
+}
+div.contenedor {
+	max-width: 900px;
+	margin: auto;
+	background-color: rgba(142, 255, 255, 0.3);
+	border-bottom: 4px solid tomato;
+	border-bottom-left-radius: 40px;
+	border-bottom-right-radius: 40px;
 }
 section ul {
 	font-size: 30px;
@@ -73,12 +81,11 @@ section ul li img {
 
 }
 section ul li div.wrapper {
-	background-color: rgba(142, 255, 255, 0.2);
 	height: auto;
-	width: 500px;
+    max-width: 500px;
 	margin: 0;
 	padding: 0;
-	border-radius: 7px
+	border-radius: 7px;
 	display: inline;
 
 }
