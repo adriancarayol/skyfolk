@@ -172,7 +172,23 @@ padding-top:1%;
 }
 
 
-@media screen and (max-width: 800px) {
+@media (min-width: 1200px) {
+	#widget:hover {
+		margin-top: -20.355%;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+	#widget:hover {
+		margin-top: -20.355%;
+	}
+}
+@media (max-width: 767px) {
+	#widget:hover {
+		margin-top: -20.355%;
+	}
+}
+@media (max-width: 480px) {
 	#widget:hover {
 		margin-top: -20.355%;
 	}
