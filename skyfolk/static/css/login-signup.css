@@ -1,4 +1,4 @@
-@import url('font-awesome.css');
+    @import url('font-awesome.css');
 @import url(http://weloveiconfonts.com/api/?family=entypo);
 @import url(http://fonts.googleapis.com/css?family=Gafata);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
@@ -20,7 +20,15 @@ body {
 span.cabezal {
 font-size: 70px;
 }
-
+footer {
+    position: absolute;
+    background: white;
+    opacity: 0.8;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    width: auto;
+    height: 20%;
+}
 .block-form{
 
 
