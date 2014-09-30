@@ -21,7 +21,7 @@ span.cabezal {
 font-size: 70px;
 }
 footer {
-    position: absolute;
+    position: relative;
     background: white;
     opacity: 0.8;
     border-top-left-radius: 20px;
