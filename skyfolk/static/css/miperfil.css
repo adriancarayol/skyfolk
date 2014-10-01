@@ -1084,7 +1084,7 @@ z-index: 9999;
   float: right;
   right: 90%;
   cursor: pointer;
-  top: 25px;
+  top: -25px;
   transition: all .3s ease-in-out;
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
@@ -1100,7 +1100,7 @@ z-index: 9999;
 #nav2 {
     width: 20px;
     margin: 40px auto;
-    margin-right: 80%;
+    margin-right: 100%;
     top: 3%;
     position: relative;
     
