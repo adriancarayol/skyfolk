@@ -1082,7 +1082,7 @@ z-index: 9999;
   position: relative;
   z-index: 3;
   float: right;
-  right: -23px;
+  right: -40px;
   cursor: pointer;
   top: 25px;
   transition: all .3s ease-in-out;
@@ -1095,7 +1095,7 @@ z-index: 9999;
 }
 .foto_perfil:hover {
   border: 1px solid #71FF95;
-  right: 17px;
+  right: 7px;
 }
 #nav2 {
     width: 20px;
