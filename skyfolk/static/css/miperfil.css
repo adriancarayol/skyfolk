@@ -1096,6 +1096,7 @@ z-index: 9999;
     margin-right: 250px;
     top: 3%;
     position: relative;
+    float: left;
     
 }
 .nameact {
