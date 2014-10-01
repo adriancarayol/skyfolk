@@ -252,17 +252,17 @@ function cambiopagina(){
       
     }        
       
-      
+ /* MENU AL PULSAR FOTO DE USUARIO */     
 $(document).ready(function(){
    $(".nameact").click(function () {
       $("#panel1").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
-          $(this).delay(200).fadeOut('slow',function() {
+          $(this).fadeOut(250 ,function() {
            $(this).css("display","block");
           });
         } else {
-          $(this).delay(200).fadeIn('slow',function() {
+          $(this).fadeIn(250 ,function() {
             $(this).css("display","none");
           });
         }
