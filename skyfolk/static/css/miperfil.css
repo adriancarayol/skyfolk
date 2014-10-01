@@ -1095,16 +1095,15 @@ z-index: 9999;
     margin: 40px auto;
     margin-right: 250px;
     top: 3%;
-    position: relative;
+    position: absolute;
+    left: 0%;
     
 }
 .nameact {
-    position: relative;
     list-style: none;
     padding: 5px;
     margin: 40px;
     width: 225px;
-    float: left;
 }
 
 * {
