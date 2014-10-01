@@ -27,7 +27,8 @@ footer {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     width: auto;
-    height: 100%;
+    height: auto;
+    margin: auto;
 }
 ul{
   position: relative;
