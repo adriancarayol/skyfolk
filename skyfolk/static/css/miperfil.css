@@ -1099,6 +1099,7 @@ z-index: 9999;
     
 }
 .nameact {
+    position: relative;
     list-style: none;
     padding: 5px;
     margin: 40px;
