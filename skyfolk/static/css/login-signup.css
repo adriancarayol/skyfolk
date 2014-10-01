@@ -32,6 +32,8 @@ footer {
 ul {
   position: relative;
   margin: auto;
+  list-style-type: none;
+  display: inline;
 }
 li {
   color: #000;
