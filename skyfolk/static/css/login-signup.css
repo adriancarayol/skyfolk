@@ -30,8 +30,8 @@ footer {
     border-top-right-radius: 20px;
     width: auto;
     height: auto;
-    margin: auto;
-    padding: 20px;
+    margin: -20px auto;
+    padding: 10px;
 }
 ul{
   position: relative;
