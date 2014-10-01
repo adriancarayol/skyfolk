@@ -20,7 +20,10 @@
 		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
 		<style>
 			@import url(http://fonts.googleapis.com/css?family=Ubuntu:400,700);
-            @import url(http://fonts.googleapis.com/css?family=Roboto);
+                        @import url(http://fonts.googleapis.com/css?family=Roboto);
+
+
+
 			body {
 				background: #563c55 url({{STATIC_URL}}img/7.jpg) no-repeat center top;
 				-webkit-background-size: cover;
@@ -69,20 +72,20 @@
 	{% endblock %}
     </head>
     <body>
-    	<a class="entypo-plus"></a>
-       	<form class="form-2">
-		<ul class="mis_cuentas">
-			<li><img src="http://cdn.pijamasurf.com/wp-content/uploads/2013/07/heisenberg.jpg"><p>Werner Heisenberg.<span class="entypo-right-open"></span></p></li>
-			<li><img src="http://1.bp.blogspot.com/_bdpS0cigi4c/SwTLeOWqbqI/AAAAAAAAAEk/pVIiTew7Wvw/s1600/random+dude.bmp"><p>Random dude.<span class="entypo-right-open"></span></p></li>
-		</ul>
-	</form>
        <!--<div id="texto"><img class="logo" src="{{STATIC_URL}}img/logo.png"><h2>S<span>kyfolk.</span></h2>-->
 	<div id="texto"><h2>S<span>kyfolk.</span></h2>
        	</div>
        	
        {% block content %}{% endblock %}
 
-         <footer><ul><li>Contacto</li></ul></footer>   
+         <footer>
+<ul>
+<li>About Us</li>
+<li>Skyfolk ©</li>
+<li>More</li>
+<li></li>
+</ul>
+</footer>   
     </body>
 
 </html>

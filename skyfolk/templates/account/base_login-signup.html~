@@ -2,41 +2,30 @@
 <html lang="en">
     <head>
 
-<SCRIPT LANGUAGE="JavaScript">
-fondo = new Array(6);
-fondo[0] = '{{STATIC_URL}}img/6.jpg'
-fondo[1] = '{{STATIC_URL}}img/nueva-york1.jpg'
-fondo[2] = '{{STATIC_URL}}img/bg3.jpg'
-fondo[3] = '{{STATIC_URL}}img/8319280274_808eb31ec1_b.jpg'
-fondo[4] = '{{STATIC_URL}}img/9484523575_f08c124a53_b.jpg'
-fondo[5] = '{{STATIC_URL}}img/10071615715_2814161258_b.jpg'
-fondo[6] = '{{STATIC_URL}}img/14206119158_a72318300c_h.jpg'
-
-index = Math.floor(Math.random() * fondo.length);
-document.write("<BODY BACKGROUND="+fondo[0]+">");
-</SCRIPT>
-
 
 	     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
          <script type="text/javascript" src="http://www.google.com/jsapi"></script>
          <script type="text/javascript">google.load('jquery', '1.7.1');</script>
-         <script type="text/javascript" src="{{STATIC_URL}}js/jquery.gritter.js"></script>
+         <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
         <title>¡Bienvenido!</title>
         <meta name="description" content="Custom Login Form Styling with CSS3" />
         <meta name="keywords" content="skyfolk, social, login, registro, sky, folk," />
         <link rel="shortcut icon" href="{{STATIC_URL}}img/nube.jpg"> 
-	
+	    <script src="{{STATIC_URL}}js/showandhide.js"></script>
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css" />
 		<script src="{{STATIC_URL}}js/modernizr.custom.63321.js"></script>
 		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
 		<style>
 			@import url(http://fonts.googleapis.com/css?family=Ubuntu:400,700);
-            @import url(http://fonts.googleapis.com/css?family=Roboto);
+                        @import url(http://fonts.googleapis.com/css?family=Roboto);
+
+
+
 			body {
-				/*background: #563c55 url({{STATIC_URL}}img/6.jpg) no-repeat center top;*/
+				background: #563c55 url({{STATIC_URL}}img/7.jpg) no-repeat center top;
 				-webkit-background-size: cover;
 				-moz-background-size: cover;
 				background-size: cover;
@@ -83,14 +72,13 @@ document.write("<BODY BACKGROUND="+fondo[0]+">");
 	{% endblock %}
     </head>
     <body>
-       
        <!--<div id="texto"><img class="logo" src="{{STATIC_URL}}img/logo.png"><h2>S<span>kyfolk.</span></h2>-->
-	<div id="texto"><img class="logo"><h2>S<span>kyfolk.</span></h2>
+	<div id="texto"><h2>S<span>kyfolk.</span></h2>
        	</div>
        	
        {% block content %}{% endblock %}
 
-            
+         <footer><ul><li>Contacto</li></ul></footer>   
     </body>
 
 </html>
