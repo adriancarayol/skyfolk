@@ -1081,8 +1081,8 @@ z-index: 9999;
   box-shadow: 0 0 0 0.2em rgba(255, 255, 255, 0.85), 0 0 0 0.3em rgba(0, 0, 0, 0.25);
   position: absolute;
   z-index: 3;
-  float: left;
-  left: 7px;
+  float: right;
+  right: 93%; 
   cursor: pointer;
   top: 9px;
   transition: all .3s ease-in-out;
@@ -1096,7 +1096,6 @@ z-index: 9999;
     margin-right: 250px;
     top: 3%;
     position: relative;
-    float: left;
     
 }
 .nameact {
