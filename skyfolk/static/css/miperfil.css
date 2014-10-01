@@ -1092,9 +1092,9 @@ z-index: 9999;
 }
 #nav2 {
     width: 20px;
-    margin: 40px auto;
+    margin: 100px auto;
     margin-right: 250px;
-    top: 3%;
+    top: 10%;
     position: absolute;
     left: 0%;
     
