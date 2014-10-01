@@ -258,11 +258,11 @@ $(document).ready(function(){
       $("#panel1").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
-          $(this).fadeOut(100)('slow',function() {
+          $(this).delay(200).fadeOut('slow',function() {
            $(this).css("display","block");
           });
         } else {
-          $(this).fadeIn(200)('slow',function() {
+          $(this).delay(200).fadeIn('slow',function() {
             $(this).css("display","none");
           });
         }
