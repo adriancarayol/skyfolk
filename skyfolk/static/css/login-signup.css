@@ -27,9 +27,9 @@ footer {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     width: auto;
-    height: 20%;
+    height: 100%;
 }
-ul {
+ul{
   position: relative;
   margin: auto;
   list-style-type: none;
