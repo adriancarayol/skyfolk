@@ -202,7 +202,7 @@
 }
 dropdown{
    display: inline-block;
-   margin: 20px 50px; 
+   margin: 20px 0px; 
 }
 dropdown label, dropdown ul li{
   display: block;
