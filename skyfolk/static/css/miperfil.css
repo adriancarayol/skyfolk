@@ -1084,18 +1084,15 @@ z-index: 9999;
   float: right;
   right: 90%;
   cursor: pointer;
-  top: -25px;
+  top: -50px;
   transition: all .3s ease-in-out;
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
-  transition: margin-right 2s;
-  -webkit-transition: right 2s;
-  -moz-transition: right 2s; 
+  z-index: 9999; 
 
 }
 .foto_perfil:hover {
   border: 1px solid #71FF95;
-  right: 7px;
 }
 #nav2 {
     width: 20px;
@@ -1103,6 +1100,7 @@ z-index: 9999;
     margin-right: 100%;
     top: 3%;
     position: relative;
+    z-index: 9999; 
     
 }
 .nameact {
@@ -1110,6 +1108,7 @@ z-index: 9999;
     padding: 5px;
     margin: 40px;
     width: 225px;
+    z-index: 9999; 
 }
 
 * {
