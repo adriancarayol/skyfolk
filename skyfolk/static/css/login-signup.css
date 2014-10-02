@@ -21,14 +21,15 @@ span.cabezal {
 font-size: 70px;
 }
 header {
-    background-color: #fff;
-    position: relative;
-    height: 20%;
-    max-width: auto;
-    padding: 20px;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    color: grey;
+  position: fixed;
+  width: 100%;
+  text-align: center;
+  font-size: 72px;
+  line-height: 108px;
+  height: 108px;
+  background: #fff;
+  color: grey;
+  font-family: 'PT Sans', sans-serif;
 }
 footer {
     position: relative;
