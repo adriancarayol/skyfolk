@@ -20,6 +20,16 @@ body {
 span.cabezal {
 font-size: 70px;
 }
+header {
+    background-color: #fff;
+    position: relative;
+    height: 20%;
+    max-width: auto;
+    padding: 20px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    color: grey;
+}
 footer {
     position: relative;
     display: block;
