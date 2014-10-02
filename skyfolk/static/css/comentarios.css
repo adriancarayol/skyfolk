@@ -351,10 +351,10 @@ span[class*="thumbs-up"]:hover {
   /* FOTO PERFIL SUBE A HEADER */ 
    .caja.sticky {
   height: 2px;
-  margin-top: -200px;
+  margin-top: -265px;
   position: fixed;
   float: left;
-  left: 2.5%;
+  left: 2%;
   padding-left: 0px;
   width: 50px;
   z-index: 999;
