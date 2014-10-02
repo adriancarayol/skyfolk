@@ -538,18 +538,18 @@ li {
     color:#fff;
     width:40px;
     height:40px;
-    border:2px solid #eee;
+    border:2px solid #7EC6F5;
     -webkit-border-radius: 200px;
-  border-radius: 210px;
+    border-radius: 210px;
     box-shadow:2px 0px 2px #444;
     position:fixed;
-    left:30%;top:5%;
+    left:30%;top:2.5%;
     margin: auto;
     /*margin:100px auto;*/
     z-index:2;
     overflow:hidden;
     opacity: 1;
-  line-height: 1;
+    line-height: 1;
     }
 
     #centro {
@@ -559,7 +559,7 @@ li {
     background:#ccc;
     border:5px solid #eee;
     -webkit-border-radius: 30px;
-border-radius: 100px;
+    border-radius: 100px;
     box-shadow:inset 0px 20px 45px #999;
     position:absolute;
     left:0;
