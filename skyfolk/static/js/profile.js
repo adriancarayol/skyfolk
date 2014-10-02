@@ -333,10 +333,10 @@ $(document).ready(function(){
 /* HEADER PROFILE EFFECTS */
 
 $(window).scroll(function() {
-if ($(this).scrollTop() > 1){  
-    $('nav').addClass("sticky");
+if ($(this).scrollTop() > 250){  
+    $('.caja').addClass("sticky");
   }
   else{
-    $('nav').removeClass("sticky");
+    $('.caja').removeClass("sticky");
   }
 });
