@@ -543,7 +543,7 @@ li {
   border-radius: 210px;
     box-shadow:2px 0px 2px #444;
     position:fixed;
-    left:50%;top:-10%;
+    left:50%;top:0%;
   float: left;
     /*margin:100px auto;*/
     z-index:2;
