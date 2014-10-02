@@ -32,10 +32,11 @@ header {
   font-family: 'PT Sans', sans-serif;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
-  margin: -100px;
+  margin-top: -100px;
+  margin:auto;
 }
 footer {
-    position: relative;
+    position: fixed;
     display: block;
     overflow: hidden;
     background: white;
@@ -44,7 +45,8 @@ footer {
     border-top-right-radius: 20px;
     width: auto;
     height: auto;
-    margin: 20px auto;
+    margin-top: 50px;
+    margin:auto;
     padding: 10px;
 }
 ul{
