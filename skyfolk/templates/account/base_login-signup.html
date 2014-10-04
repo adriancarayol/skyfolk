@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- BACKGROUND CHANGE -->
+       <div id="background_cycler" >
 
+        <script type="text/javascript">
+        $('#background_cycler').hide();//hide the background while the images load, ready to fade in later
+        </script>
+
+        <img class="active" src="{{STATIC_URL}}img/7.jpg" alt=""/>
+        <img src="{{STATIC_URL}}img/1.jpg" alt=""   />
+        <img src="{{STATIC_URL}}img/2.jpg" alt=""  />
+        <img src="{{STATIC_URL}}img/3.jpg" alt=""/>		
+        <img src="{{STATIC_URL}}img/4.jpg" alt=""  />
+        </div>
 
 	     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
@@ -25,14 +37,18 @@
 
 
 			body {
-				background: #563c55 url({{STATIC_URL}}img/7.jpg) no-repeat center top;
+				/*background: #563c55 url({{STATIC_URL}}img/7.jpg) no-repeat center top;*/
 				-webkit-background-size: 100%;
 				-moz-background-size: 100%;
 				background-size: 100%;
 				font-family: 'Roboto', sans-serif;
 				height: auto;
 			}
-			
+			/* FOR BACKGROUND CHANGE */
+			#background_cycler{padding:0;margin:0;width:100%;position:absolute;top:0;left:0;z-index:-1}
+            #background_cycler img{position:absolute;left:0;top:0;width:100%;z-index:1}
+            #background_cycler img.active{z-index:3}
+
 			.container > header h1,
 			.container > header h2 {
 				color: #fff;
