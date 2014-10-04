@@ -20,6 +20,10 @@ body {
 span.cabezal {
 font-size: 70px;
 }
+#container {
+	height: 100%;   
+    position: relative; 
+}
 #header {
   position: fixed;
   width: 95%;
@@ -35,7 +39,8 @@ font-size: 70px;
   margin-top: -50px;
 }
 #footer {
-    position: fixed;
+    position: absolute;
+    bottom: 0;
     font-family: 'PT Sans', sans-serif;
     text-align: center;
     background: white;

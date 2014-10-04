@@ -1,24 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-       
-<script>
-function cycleImages(){
-      var $active = $('#background_cycler .active');
-      var $next = ($('#background_cycler .active').next().length > 0) ? $('#background_cycler .active').next() : $('#background_cycler img:first');
-      $next.css('z-index',2);//move the next image up the pile
-	  $active.fadeOut(1500,function(){//fade out the top image
-	  $active.css('z-index',1).show().removeClass('active');//reset the z-index and unhide the image
-      $next.css('z-index',3).addClass('active');//make the next image the top one
-      });
-    }
 
-    $(window).load(function(){
-		$('#background_cycler').fadeIn(1500);//fade the background back in once all the images are loaded
-		  // run every 7s
-		  setInterval('cycleImages()', 7000);
-    })
-    </script>
+
 	     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
          <script type="text/javascript" src="http://www.google.com/jsapi"></script>
@@ -41,19 +25,14 @@ function cycleImages(){
 
 
 			body {
-				/*background: #563c55 url({{STATIC_URL}}img/7.jpg) no-repeat center top;*/
+				background: #563c55 url({{STATIC_URL}}img/7.jpg) no-repeat center top;
 				-webkit-background-size: 100%;
 				-moz-background-size: 100%;
 				background-size: 100%;
 				font-family: 'Roboto', sans-serif;
 				height: auto;
 			}
-
-			/* FOR BACKGROUND CHANGE */
-			#background_cycler{padding:0;margin:0;width:100%;position:absolute;top:0;left:0;z-index:-1}
-            #background_cycler img{position:absolute;left:0;top:0;width:100%;z-index:1}
-            #background_cycler img.active{z-index:3}
-
+			
 			.container > header h1,
 			.container > header h2 {
 				color: #fff;
@@ -88,6 +67,7 @@ function cycleImages(){
     </head>
     <body>
        <!--<div id="texto"><img class="logo" src="{{STATIC_URL}}img/logo.png"><h2>S<span>kyfolk.</span></h2>-->
+       <div id="container">
        <div id="header">
 	<div id="texto"><h2>S<span>kyfolk.</span></h2>
        	</div>
@@ -100,19 +80,7 @@ function cycleImages(){
 <div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
 </div>
        </div>
-       	<!-- BACKGROUND CHANGE -->
-       <div id="background_cycler" >
-
-        <script type="text/javascript">
-        $('#background_cycler').hide();//hide the background while the images load, ready to fade in later
-        </script>
-
-        <img class="active" src="{{STATIC_URL}}img/7.jpg" alt=""/>
-        <img src="{{STATIC_URL}}img/1.jpg" alt=""   />
-        <img src="{{STATIC_URL}}img/2.jpg" alt=""  />
-        <img src="{{STATIC_URL}}img/3.jpg" alt=""/>		
-        <img src="{{STATIC_URL}}img/4.jpg" alt=""  />
-        </div>
+       	
        {% block content %}{% endblock %}
 
          <div id="footer">
@@ -122,7 +90,8 @@ function cycleImages(){
 <li>More</li>
 <li></li>
 </ul>
-</div>   
+</div>
+</div>
     </body>
 
 </html>
