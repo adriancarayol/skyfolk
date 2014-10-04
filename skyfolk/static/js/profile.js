@@ -327,16 +327,3 @@ $(document).ready(function(){
     
 
 });
-
-
-
-/* HEADER PROFILE EFFECTS */
-
-$(window).scroll(function() {
-if ($(this).scrollTop() > 250){  
-    $('.caja').addClass("sticky");
-  }
-  else{
-    $('.caja').removeClass("sticky");
-  }
-});
