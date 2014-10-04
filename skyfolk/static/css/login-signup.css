@@ -20,7 +20,7 @@ body {
 span.cabezal {
 font-size: 70px;
 }
-header {
+#header {
   position: fixed;
   width: 95%;
   text-align: center;
@@ -34,7 +34,7 @@ header {
   border-bottom-right-radius: 15px;
   margin-top: -50px;
 }
-footer {
+#footer {
     position: fixed;
     font-family: 'PT Sans', sans-serif;
     text-align: center;
