@@ -71,6 +71,7 @@ div.Register {
     left: 10%;
     display: inline-block;
     height: 30px;
+    margin: auto;
 }
 p.Register {
     font-size: 14px;
@@ -88,7 +89,7 @@ button.register {
   font-size: 14px;
   color: #FFE1E1;
   font-width: 400;
-  position: absolute;
+  position: static;
   display: inline-block;
   cursor: pointer;
 }
