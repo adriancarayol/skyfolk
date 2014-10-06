@@ -93,6 +93,11 @@ button.register {
   display: inline-block;
   cursor: pointer;
   margin: auto;
+  transition: all .3s ease-in;
+}
+button.register:hover {
+    color: #EFA91D;
+    background: #FFE1E1;
 }
 .block-form{
 
