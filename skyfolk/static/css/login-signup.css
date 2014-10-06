@@ -3,7 +3,6 @@
 @import url(http://fonts.googleapis.com/css?family=Gafata);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
 @import url(http://fonts.googleapis.com/css?family=Roboto);
-@import url(http://fonts.googleapis.com/css?family=Lato:300);
 
 /*
 body {
@@ -103,7 +102,7 @@ button.register:hover {
 .block-form{
 
 
-    font-family: 'Roboto', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     font-weight: 400;
     /* Size and position */
     width: 500px;
@@ -119,7 +118,7 @@ button.register:hover {
         0 16px 10px -8px rgba(0, 0, 0, 0.6);
     /*background-color: #000000;*/
     height: 10 auto;
-    opacity: 0.72;
+    opacity: 1;
 
 }
 
@@ -423,7 +422,7 @@ button.register:hover {
     position:relative;
     top:23px;
     outline: none;
-    font-family: 'Lato', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     transition: all .2s ease-in;
 }
 .myButton:hover {
@@ -471,7 +470,7 @@ button.register:hover {
     float:left;
     position:relative;
     top:0px;
-    font-family: 'Lato', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     outline: none;
     transition: all .2s ease-in;
 	
