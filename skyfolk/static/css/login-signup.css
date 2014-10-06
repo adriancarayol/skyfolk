@@ -89,9 +89,10 @@ button.register {
   font-size: 14px;
   color: #FFE1E1;
   font-width: 400;
-  position: static;
+  position: absolute;
   display: inline-block;
   cursor: pointer;
+  margin: auto;
 }
 .block-form{
 
