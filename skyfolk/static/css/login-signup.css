@@ -67,10 +67,10 @@ li {
 }
 div.Register {
     position: relative;
-    width: 300px;
+    width: 370px;
     left: 10%;
     display: inline-block;
-    height: 30px;
+    height: 50px;
     margin: auto;
 }
 p.Register {
@@ -90,7 +90,7 @@ button.register {
   color: #FFE1E1;
   font-width: 400;
   position: relative;
-  display: inline;
+  display: inline-block;
   cursor: pointer;
   margin: auto;
 }
