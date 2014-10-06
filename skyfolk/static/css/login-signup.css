@@ -103,7 +103,7 @@ button.register:hover {
 
 
     font-family: 'PT Sans', sans-serif;
-    font-weight: 200;
+    font-weight: 100;
     /* Size and position */
     width: 500px;
     position: relative;
@@ -196,7 +196,7 @@ button.register:hover {
     border-radius: 3px;
 
     /* Font styles */
-    font-family: 'Roboto', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     color: white;
 
 
@@ -257,7 +257,7 @@ button.register:hover {
     cursor:pointer;
   
     /* Font styles */
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     color: white;
     font-weight: 700;
     font-size: 15px;
@@ -285,7 +285,7 @@ button.register:hover {
 .form-3 msgalert{
     color: white;
     width: 80%;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     font-size:15px;
 }
 
@@ -356,7 +356,7 @@ button.register:hover {
 .block-form .msgalert{
     color: white;/*#E2E2E2*/
     width: 80%;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     font-size:13px;
     text-align: center;
     margin-left: 30px;
@@ -365,7 +365,7 @@ button.register:hover {
 .form-3 .link-a{
     color: #E2E2E2;
     /*width: 100%;*/
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     font-size:13px;
     /*text-align: center;*/
     margin-left: 180px;
@@ -376,7 +376,7 @@ button.register:hover {
 .form-3 .link-b{
 
     float: left;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     font-size:13px;
     color: #E2E2E2;
 
@@ -384,7 +384,7 @@ button.register:hover {
 .block-form .link-c{
     
     /*width: 100%;*/
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'PT Sans', sans-serif;
     font-size:13px;
     /*text-align: center;*/
     margin-left: 180px;
