@@ -68,7 +68,7 @@ li {
 div.Register {
     position: relative;
     width: 300px;
-    float: right;
+    left: 60%;
     display: inline-block;
     height: 30px;
 }
@@ -87,6 +87,7 @@ button.register {
   border-radius: 4px;
   font-size: 14px;
   color: #FFE1E1;
+  left: 10%;
   font-width: 400;
   position: relative;
   display: inline-block;
