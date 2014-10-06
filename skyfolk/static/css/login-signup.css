@@ -68,7 +68,7 @@ li {
 div.Register {
     position: relative;
     width: 300px;
-    left: 0%;
+    left: 10%;
     display: inline-block;
     height: 30px;
 }
@@ -87,12 +87,10 @@ button.register {
   border-radius: 4px;
   font-size: 14px;
   color: #FFE1E1;
-  left: 1%;
   font-width: 400;
-  position: relative;
+  position: absolute;
   display: inline-block;
   cursor: pointer;
-  transition: all .3s ease-in;
 }
 .block-form{
 
