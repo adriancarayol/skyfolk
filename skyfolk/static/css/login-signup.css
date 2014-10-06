@@ -80,7 +80,7 @@ p.Register {
     display: inline-block;
 }
 button.register {
-  background-color: #AA8439;
+  background-color: #EFA91D;
   padding: 12px 12px;
   border: 0;
   outline: none;
@@ -89,9 +89,7 @@ button.register {
   color: #FFE1E1;
   font-width: 400;
   position: relative;
-  margin-top: 30px;
   display: inline-block;
-  left: 50%;
   cursor: pointer;
   transition: all .3s ease-in;
 }
