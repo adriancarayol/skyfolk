@@ -1,0 +1,196 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700,600,300,800);
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 300;
+  color: #fff;
+  background: #efefef;
+}
+div.input-group {
+  width: 612px;
+  margin: auto;
+  position: relative;
+  height: auto;
+  box-sizing: border-box;
+  display: table;
+  border-collapse: separate;
+}
+
+div.input-group span.input-group-addon {
+padding: 7px 12px;
+font-size: 15px;
+font-weight: 500;
+line-height: 2;
+color: white;
+background-color: #80C8C8;
+text-align: center;
+border-right: 1px solid #ccc;
+border-radius: 4px;
+height: 23px;
+}
+div.input-group input.form-control {
+  display: inline-block;
+  width: 515px;
+  padding: 10px 0 7px 15px;
+  font-family: "Open Sans", sans;
+  font-weight: 400;
+  color: #377D6A;
+  background-color: #eee;
+  border: 0;
+  border-radius: 3px;
+  outline: 0;
+  text-indent: 10px; // Arbitrary.
+  transition: all .3s ease-in-out;
+  margin-top: 5%;
+}
+div.input-group input.form-control1 {
+  display: inline-block;
+  width: 500px;
+  padding: 10px 0 7px 15px;
+  font-family: "Open Sans", sans;
+  font-weight: 400;
+  color: #377D6A;
+  background-color: #eee;
+  border: 0;
+  border-radius: 3px;
+  outline: 0;
+  text-indent: 10px; // Arbitrary.
+  transition: all 2s ease-in;
+  -webkit-transition: all 2s ease-in;
+  -moz-transition: all 2s ease-in;
+  margin-top: 5%;
+}
+div.input-group input.form-control1:focus, div.input-group input.form-control:focus {
+  background-color: #fff;
+  transition: all .3s ease-in-out;
+}
+.text-area {
+ 
+  position: relative;
+  width: 600px;
+  height: auto;
+  text-align: center;
+  margin: auto;
+  display: block;
+}
+.text-area textarea.text-ar {
+  margin-top: 20px;
+  width: 600px;
+  font-family: "Open Sans", sans-serif;
+  border: 1px solid #B5DBDB;
+  overflow: hidden;
+  font-weight: 300;
+  font-size: 15px;
+  color: grey;
+  text-indent: 5px;
+  resize: none;
+  display: block;
+  transition: all .3s ease-in;
+  
+}
+.text-area textarea.text-ar:hover {
+  border: 2px solid #B5DBDB;
+  
+}
+.col-xs-12 {
+  width: 760px;
+  border-top: 4px solid aquamarine;
+  position: relative;
+  left: 7%;
+  background-color: transparent;
+  height: 70%;
+  margin-top: 10%;
+}
+.col-md-4 {
+  width: 780px;
+  border-top: 4px solid aquamarine;
+  position: relative;
+  background-color: white;
+  left: 20%;
+  height: 70%;
+}
+.fontawesome-calendar {
+  color: #ccc;
+  font-size: 30px;
+  position: absolute;
+  display: inline-block;
+  margin-top: -50px;
+  right: 0%;
+  text-align: right;
+}
+.fontawesome-camera {
+  color: #ccc;
+  font-size: 30px;
+  position: absolute;
+  display: inline-block;
+  margin-top: -50px;
+  right: 7%;
+  text-align: right;
+}
+.fontawesome-folder-open-alt {
+  color: #ccc;
+  font-size: 30px;
+  position: absolute;
+  display: inline-block;
+  margin-top: -50px;
+  right: 14%;
+  text-align: right;
+}
+div.text-area span:hover {
+  color: #B1EEEE;
+  cursor: pointer;
+  transition: all .3s ease-in;
+}
+button.send {
+  background-color: #5cb85c;
+  padding: 12px 12px;
+  border: 0;
+  outline: none;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #FFE1E1;
+  font-width: 400;
+  position: absolute;
+  left: 0%;
+  margin-top: 30px;
+  display: inline-block;
+  transition: all .3s ease-in;
+  cursor: pointer;
+}
+button.close {
+  background-color: #d9534f;
+  padding: 12px 12px;
+  border: 0;
+  outline: none;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #FFE1E1;
+  font-width: 400;
+  position: relative;
+  margin-top: 30px;
+  display: inline-block;
+  left: 50%;
+  cursor: pointer;
+  transition: all .3s ease-in;
+}
+button.send:hover {
+  background-image: url('https://cdn2.iconfinder.com/data/icons/inverticons-fill-vol-2/32/paper_plane_document_send_sent_mail-512.png');
+  background-size: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: transparent;
+}
+button.close:hover {
+   background-image: url('https://cdn0.iconfinder.com/data/icons/thin-gui-elements/57/thin-253_x_remove_delete_close_exit-128.png');
+  background-size: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: transparent;
+}

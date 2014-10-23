@@ -1,0 +1,225 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic);
+@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+body {
+  max-width: 1200px;
+  background: rgba(179,220,237,1);
+  margin: auto;
+  position: static;
+  color: grey;
+}
+section {
+  width: 800px;
+  margin: auto;
+  background: #fff;
+  position: relative;
+  height: 500px:
+}
+div.contenedor {
+  max-width: 700px;
+  height: 1400px;
+  margin: auto;
+  position: relative;
+}
+h2 {
+  text-align: center;
+  text-decoration: none;
+  margin: auto;
+  position: relative;
+  font-family: 'Open Sans', sans-serif;
+  border-bottom: 2px solid rgba(179,220,237,1);
+  top: 50px;
+  font-weight: 200;
+  text-shadow: 0.2px 0.5px #FFF;
+  font-size: 35px;
+}
+article {
+  position: relative;
+  margin: auto;
+  top: 5%;
+  font-size: 22px;
+  font-family: 'Open Sans', sans-serif;
+
+}
+
+h4 {
+  border-bottom: 2px solid tomato;
+}
+div.nav {
+  margin: auto;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  width: 800px;
+  background-color: #FFDBDB;
+}
+nav {
+  position: relative;
+  margin: auto;
+  text-align: center;
+  display: inline-block;
+  padding: 10px 10px;
+}
+nav a {
+  margin: 10px;
+  font-size: 20px;
+  color: #111;
+  font-family: 'PT Sans', sans-serif;
+  text-decoration: none;
+}
+nav a:hover {
+  color: #339E89;
+}
+
+span.fontawesome-heart {
+  color: tomato;
+  font-size: 120px;
+  margin: auto;
+  top: 20px;
+  position: relative;
+  display: inline-block;
+  border-radius: 100%;
+  float: left;
+}
+span.fontawesome-heart:hover {
+  color: #D6457D;
+}
+span.fontawesome-cloud {
+  color: grey;
+  font-size: 120px;
+  margin: auto;
+  top: 20px;
+  position: relative;
+  display: inline-block;
+  border-radius: 100%;
+  float: right;
+}
+span.fontawesome-cogs {
+  color: #2D882D;
+  font-size: 120px;
+  margin: auto;
+  top: 20px;
+  position: relative;
+  display: inline-block;
+  border-radius: 100%;
+  float: left;
+}
+span.fontawesome-dashboard {
+  color: #71266E;
+  font-size: 120px;
+  margin: auto;
+  top: 20px;
+  position: relative;
+  display: inline-block;
+  border-radius: 100%;
+  float: right;
+}
+span.fontawesome-briefcase {
+  color: #FF7B12;
+  font-size: 120px;
+  margin: auto;
+  top: 50px;
+  position: relative;
+  display: inline-block;
+  border-radius: 100%;
+  float: left;
+}
+div.First {
+  width:800px;
+  display: inline-block;
+  position: relative;
+  height: 150px;
+}
+div.sec {
+  width:700px;
+  display: inline-block;
+  position: relative;
+  margin: auto;
+  height: 150px;
+}
+div.First p {
+  position: relative;
+  display: inline-block;
+  font-size: 17px;
+  text-align: center;
+  top: 100px;
+  margin: 10px;
+}
+div.sec p {
+  position: relative;
+  display: inline-block;
+  font-size: 17px;
+  text-align: left;
+  top: 100px;
+  margin: auto -30px;
+}
+div.three {
+  position: relative;
+  display: inline-block;
+  font-size: 17px;
+  text-align: center;
+  top: 100px;
+  margin: auto;
+  height: 120px;
+}
+div.three p {
+  position: relative;
+  display: inline-block;
+  font-size: 17px;
+  text-align: right;
+  margin-left: 110px;
+  
+}
+div.four {
+  position: relative;
+  display: inline-block;
+  font-size: 17px;
+  text-align: center;
+  top: 100px;
+  margin: auto 50px;
+  margin-top: -50px;
+}
+div.four p {
+  position: relative;
+  display: inline-block;
+  font-size: 17px;
+  text-align: left;
+  top: 0px;
+  margin: auto 30px;
+  
+}
+
+div.five {
+  width:720px;
+  display: inline-block;
+  position: relative;
+  margin-top: 50px;
+}
+
+div.five p {
+  position: relative;
+  display: inline-block;
+  font-size: 17px;
+  text-align: right;
+  top: 100px;
+  margin: 20px 20px;
+  width: 500px;
+}
+div.five h5 {
+  color: #000;
+  text-align: right;
+  top: 80px;
+  position: relative;
+  margin-right: 70px;
+}
+h5 {
+  color: #000;
+  text-align: center;
+  top: 100px;
+  position: relative;
+}

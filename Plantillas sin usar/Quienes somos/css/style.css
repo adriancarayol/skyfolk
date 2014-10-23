@@ -1,0 +1,85 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic);
+@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+body {
+  max-width: 1200px;
+  background: rgba(179,220,237,1);
+  margin: auto;
+  position: static;
+  color: grey;
+}
+section {
+  width: 800px;
+  margin: auto;
+  background: #fff;
+  position: relative;
+  height: 500px:
+}
+div.contenedor {
+  max-width: 500px;
+  height: 1200px;
+  margin: auto;
+  position: relative;
+}
+h2 {
+  text-align: center;
+  text-decoration: none;
+  margin: auto;
+  position: relative;
+  font-family: 'Open Sans', sans-serif;
+  border-bottom: 2px solid rgba(179,220,237,1);
+  top: 50px;
+  font-weight: 200;
+}
+article {
+  position: relative;
+  margin: auto;
+  top: 10%;
+  font-size: 22px;
+  font-family: 'Open Sans', sans-serif;
+
+}
+blockquote {
+  font-size: 14px;
+}
+a {
+  font-size: 13px;
+  color: tomato;
+  text-align: right;
+  float: right;
+  display: inline-block;
+  text-decoration: none;
+}
+h4 {
+  border-bottom: 2px solid tomato;
+}
+div.nav {
+  margin: auto;
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  width: 800px;
+  background-color: #ccc;
+}
+nav {
+  position: relative;
+  margin: auto;
+  text-align: center;
+  display: inline-block;
+  padding: 10px 10px;
+}
+nav a {
+  margin: 10px;
+  font-size: 20px;
+  color: #111;
+  font-family: 'PT Sans', sans-serif;
+}
+nav a:hover {
+  color: #339E89;
+  border-bottom: 1px solid #000;
+}
