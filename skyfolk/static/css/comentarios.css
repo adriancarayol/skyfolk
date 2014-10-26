@@ -31,6 +31,28 @@ a, a:visited {
   box-shadow: 0 0 10px #ddd;
   overflow: hidden;
 }
+/* opciones fijas */
+
+li.fontawesome-eye-open {
+  position: relative;
+  color: grey;
+  font-size: 14px;
+  top: 90px;
+  right: 20px;
+}
+li.fontawesome-star {
+  position: relative;
+  color: #FF8D19;
+  font-size: 14px;
+  top: 75px;
+  right: -30px;
+}
+.optionsfixed {
+  position: relative;
+  list-style-type: none;
+  margin: auto;
+  left: -50%;
+}
 
 .box{
   float: left;
