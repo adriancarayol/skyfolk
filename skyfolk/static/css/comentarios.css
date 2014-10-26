@@ -45,14 +45,14 @@ li.fontawesome-star {
   color: #FF8D19;
   font-size: 14px;
   top: 75px;
-  right: -30px;
+  right: 30px;
 }
 .optionsfixed {
   position: relative;
   list-style-type: none;
   margin: auto;
   left: -50%;
-  top: 50px;
+  top: 20px;
 }
 
 .box{
