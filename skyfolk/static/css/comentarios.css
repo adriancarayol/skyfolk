@@ -37,7 +37,7 @@ li.fontawesome-eye-open {
   position: relative;
   color: grey;
   font-size: 14px;
-  top: 90px;
+  top: 70px;
   right: 20px;
 }
 li.fontawesome-star {
@@ -52,6 +52,7 @@ li.fontawesome-star {
   list-style-type: none;
   margin: auto;
   left: -50%;
+  top: 50px;
 }
 
 .box{
