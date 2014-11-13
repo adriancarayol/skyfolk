@@ -1007,6 +1007,24 @@ font-family: 'Andika', sans-serif;
   overflow-y: scroll;
   overflow-x:hidden; }
 
+.unstyled.content{
+	height: 805px;
+}
+
+#div-separator{
+	height: 870px;
+	/*background-color:red;*/
+}
+
+
+#tab-container .tab a {color:#404040;}      /* unvisited link */
+#tab-container .tab a:visited {color:#404040;}  /* visited link */
+
+#tab-container .tab.active { background: #FFFFFF; position: relative; }
+#tab-container .tab:hover:not(.active) { background: #FAFAFA; }
+
+
+
 ul.table > li {
   display: table-cell; }
 
