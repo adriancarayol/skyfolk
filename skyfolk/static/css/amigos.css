@@ -639,7 +639,6 @@ fieldset {
 .controls {
 	position: relative;
 	width: 60px;
-        margin-top: -10%;
         height: 190px;
 	right: 0%;
 	bottom: 50%;
