@@ -820,10 +820,10 @@ top: -1.4em;
   position: relative;
   width: 60px;
   height: 190px;
-  right: 10%;
+  right: 7%;
   float: right;
   bottom: 20%;
-  margin-top: 0%;
+  margin-top: -10%;
 }
 .controls .new-post,
 .controls .live {
