@@ -1,23 +1,35 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/amigos.css" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
+  <script src="{{STATIC_URL}}js/friends.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/amigos.css" />
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">  
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 
 <header> <form method="get" action="/search" id="search">
   <input name="q" type="text" size="40" placeholder="Buscar..." />
-  <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
-  <script src="{{STATIC_URL}}js/friends.js"></script>
-</form> </header>
+  </form> </header>
 <!-- CREAR NUEVO GRUPO DE AMIGOS -->
 <fieldset>
-<button class="fontawesome-plus" title="Create new group"></button>
 <button class="All" title="All">All</button>
 <select>
   <option value="1">Choose...</option>
   <option value="2">Amigos</option>
   <option value="3">Trabajo</option>
 </select>
+<div class="controls">
+  <div class="new-post">
+    <div class="fa fa-plus icon icon-plus"></div>
+    <div class="fa fa-pencil icon icon-pencil"></div>
+  </div>
+
+  <div class="live">
+    <div title="Grupo público" class="fa fa-unlock icon icon-lock"></div>
+  </div>
+  <div class="live2">
+    <div title="Grupo privado" class="fa fa-lock icon icon-lock2"></div>
+  </div>
 </fieldset>
 <section id="section" style="display:none;">
   <span class="fontawesome-remove" title="Cerrar"></span>
