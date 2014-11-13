@@ -637,10 +637,11 @@ fieldset {
   font-family: 'Open Sans', sans-serif;
 }
 .controls {
-	position: fixed;
+	position: relative;
 	width: 60px;
+        margin-top: -10%;
         height: 190px;
-	right: 50%;
+	right: 0%;
 	bottom: 50%;
 
 	.new-post, .live {
