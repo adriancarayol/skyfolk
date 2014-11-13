@@ -1810,7 +1810,23 @@ float:left;
 }
 
 
+/* timeline */
 
+span.fontawesome-bookmark {
+position: relative;
+font-size: 20px;
+overflow: hidden;
+display: block;
+margin: auto;
+text-align: center;
+z-index: 9999;
+letter-spacing: -1px;
+color: #FAFAFA;
+background-color: #246B61;
+opacity: 0.7;
+border-top-left-radius: 7px;
+border-top-right-radius: 7px;
+}
 
 
 
