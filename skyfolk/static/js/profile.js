@@ -14,6 +14,7 @@ $("#ilike_profile").click(function () {
     	  transitionUncollapse: "show",
     	  animationSpeed: 0
     	  */
+    	  defaultTab: "#li-tab-comentarios"
     	  
     	  
 
