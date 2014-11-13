@@ -1007,6 +1007,87 @@ font-family: 'Andika', sans-serif;
   overflow-y: scroll;
   overflow-x:hidden; }
 
+.unstyled.content{
+	height: 805px;
+}
+
+#div-separator{
+	height: 870px;
+	/*background-color:red;*/
+}
+
+
+#tab-container .tab a {color:#404040;}      /* unvisited link */
+#tab-container .tab a:visited {color:#404040;}  /* visited link */
+
+#tab-container .tab.active { background: #FFFFFF; position: relative; }
+#tab-container .tab:hover:not(.active) { background: #FAFAFA; }
+
+
+
+
+#tab-amigos ul.list-friends {
+  position: relative;
+  margin: auto;
+  list-style-type: none;
+}
+#tab-amigos ul.list-friends li {
+  display: table;
+  background-color: #FAFAFA;
+  border-bottom-left-radius: 50px;
+  border-top-left-radius: 50px;
+  margin: 10px;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  width: 95%;
+  color: #62C1BA;
+  border: 1px solid #bad0dd;
+  
+-webkit-box-shadow: 0px 0px 13px 1px rgba(183,182,224,1);
+-moz-box-shadow: 0px 0px 13px 1px rgba(183,182,224,1);
+box-shadow: 0px 0px 13px 1px rgba(183,182,224,1);
+  
+  
+}
+#tab-amigos ul.list-friends li img {
+  width: 72px;
+  height: 72px;
+  border-radius: 100%;
+  float: left;
+  border: 1px solid #bad0dd;
+  cursor: pointer;
+}
+#tab-amigos ul.list-friends li a {
+  text-decoration: none;
+  margin: auto;
+  vertical-align: middle;
+  display: table-cell;
+  cursor: pointer;
+  height: auto;
+  font-family: 'Open Sans', sans-serif;
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+#tab-amigos ul.list-friends li a:hover, img:hover {
+  opacity: 0.5;
+  transition: all .2s ease-in;
+}
+#tab-amigos ul.list-friends li img:hover {
+  border: 1px solid #D2FF78;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 ul.table > li {
   display: table-cell; }
 
@@ -1667,14 +1748,9 @@ margin-top:25px;
 /* INFORMACIÓN SOBRE IMÁGEN */
 ul.informac {
     list-style-type: none;
-    display: block;
-    position: relative;
     font-size: 20px;
-    left: 0%;
-    text-align: center;
-    color: #fff;
-    margin: auto;
-}
+     color: #fff;
+    }
 ul.informac:hover {
   color: #fff;
 }
@@ -1810,7 +1886,23 @@ float:left;
 }
 
 
+/* timeline */
 
+span.fontawesome-bookmark {
+position: relative;
+font-size: 20px;
+overflow: hidden;
+display: block;
+margin: auto;
+text-align: center;
+letter-spacing: -1px;
+color: #FAFAFA;
+background-color: #246B61;
+opacity: 0.7;
+border-top-left-radius: 7px;
+border-top-right-radius: 7px;
+cursor: pointer;
+}
 
 
 

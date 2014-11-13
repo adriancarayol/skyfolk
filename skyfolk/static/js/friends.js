@@ -91,7 +91,7 @@ function addProfileCard(username){
 
 /* abrir */
 $(document).ready(function(){
-   $(".fontawesome-plus").click(function () {
+   $(".live").click(function () {
       $("#section").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
@@ -123,3 +123,27 @@ $(document).ready(function(){
       });
     });
   });
+
+
+/* CREAR */
+
+/* VARIABLES PARA HACER APARECER BOTONES */
+
+jQuery(document).ready(function($) {
+  var iconPencil = $('.controls .new-post .icon-pencil');
+  var iconPlus = $('.controls .new-post .icon-plus');
+  var liveBtn = $('.controls .live') 
+  var liveBtn2 = $('.controls .live2');
+  var newPostBtn = $('.controls .new-post');
+  $('.controls').hover(function() {
+    $(iconPencil).addClass('active');
+    $(iconPlus).addClass('unactive');
+    $(liveBtn).addClass('active');
+    $(liveBtn2).addClass('active');
+  }, function() {
+    $(iconPencil).removeClass('active');
+    $(iconPlus).removeClass('unactive');
+    $(liveBtn).removeClass('active');
+    $(liveBtn2).removeClass('active')
+  });
+});

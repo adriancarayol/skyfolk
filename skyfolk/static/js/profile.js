@@ -5,7 +5,21 @@ $("#ilike_profile").click(function () {
 });
 */
 
+    $(document).ready( function() {
+      $('#tab-container').easytabs({
+    	  /*
+    	  transitionOut: "hide",
+    	  animationSpeed: 0,
+    	  transitionCollapse: "hide",
+    	  transitionUncollapse: "show",
+    	  animationSpeed: 0
+    	  */
+    	  defaultTab: "#li-tab-comentarios"
+    	  
+    	  
 
+      });
+    });
 
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
     function getCookie(name) {

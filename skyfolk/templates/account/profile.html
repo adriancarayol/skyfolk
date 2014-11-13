@@ -43,7 +43,7 @@
 
   <div id="widget" onClick="cambiopagina()"> 
 <!--
-    <div id="middle"><img src="{{STATIC_URL}}img/5.jpg" width="300" height="300"><span class="entypo-user"></span></div>
+    <div id="middle"></div>
     <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
 -->
     <div id="middle"><div class="entypo-user"></div></div>
@@ -133,7 +133,7 @@
  
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="user-card card">
-          
+          <span class="fontawesome-bookmark"> Timeline</span>
             
           
           <div class="user-avatar"><div class="infx"><ul class="informac"><li class="fontawesome-map-marker"> España (Murcia)</li><li class="fontawesome-ok"> 28/01/1966</li><li class="fontawesome-tag"> Ing.Sistemas.</li></ul></div><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fontawesome-pencil" title="Configuración rápida"> </span>
@@ -341,103 +341,121 @@
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div class="container">
       <div class="col-lg-12">
-        <div class="sidebar card">
+      <div id="div-separator">
+        <div class="sidebar card" id="tab-container">
           <ul class="unstyled table fullwidth links">
-            <li class="active"><a>Popular</a></li>
-            <li class="comentarios"><a>Comentarios</a></li>
-            <li class="active"><a>Amigos</a></li>
+            <li class="tab" id="li-tab-popular"><a href="#tab-popular">Popular</a></li>
+            <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
+            <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Amigos</a></li>
           </ul>
-          <ul class="unstyled content">
-            <div class="wrapper">
-  <div id="box">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
-        <span class="entypo-forward" title="Responder"></span>
-    <span class="entypo-plus" title="Añadir a..."></span>
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
-    </p>
-  </article>
-  <!-- OPTIONES FIJAS -->
-  <ul class="optionsfixed">
-  <li class="fontawesome-eye-open"></li>
-  <li class="fontawesome-star"></li>
-  </ul>
-  </div>
-  <div class="wrapper">
-  <div id="box">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
-        <span class="entypo-forward" title="Responder"></span>
-    <span class="entypo-plus" title="Añadir a..."></span>
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
-    </p>
-  </article>
-  </div>
-                           <div class="wrapper">
+          <div class="unstyled content">
+				<div id="tab-popular">
+	
+	
+	         	</div>
+				<div id="tab-comentarios">
+					<div class="wrapper">
+						  <div id="box">
+						        <input id="profile" type="checkbox" checked> 
+						        <label class="popo" for="profile">
+						        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+						        </label>
+						        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
+						        <span class="entypo-forward" title="Responder"></span>
+						    <span class="entypo-plus" title="Añadir a..."></span>
+						  </div>
+						  <article class="articulo">
+						    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+						    <p class="parrafo">
+						      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+						    </p>
+						  </article>
+						  <!-- OPTIONES FIJAS -->
+						  <ul class="optionsfixed">
+						  <li class="fontawesome-eye-open"></li>
+						  <li class="fontawesome-star"></li>
+						  </ul>
+		  			</div>
+					<div class="wrapper">
+						  <div id="box">
+						        <input id="profile" type="checkbox" checked> 
+						        <label class="popo" for="profile">
+						        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+						        </label>
+						        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
+						        <span class="entypo-forward" title="Responder"></span>
+						    <span class="entypo-plus" title="Añadir a..."></span>
+						  </div>
+						  <article class="articulo">
+						    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+						    <p class="parrafo">
+						      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+						    </p>
+						  </article>
+				  	</div>
+		            <div class="wrapper">
+		
+						  <div id="box">
+						        <input id="profile" type="checkbox" checked> 
+						        <label class="popo1" for="profile">
+						        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+						        </label>
+						        <span class="entypo-thumbs-up"></span> 
+						        <span class="entypo-forward"></span>
+						    
+						  </div>
+						  <article class="articulo">
+						    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_diodio</a> mentioned you</h2>
+						    <p class="parrafo">
+						      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> Este mensaje es privado.
+						    </p>
+						  </article>
+		  			</div>
+					 <div class="wrapper2">                  
+							  <div id="box2">
+							        <input id="profile" type="checkbox" checked> 
+							        <label class="popo" for="profile">
+							        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+							        </label>
+							        <span class="entypo-thumbs-up"></span> 
+							        <span class="entypo-forward"></span>
+							  </div>
+							  <article class="articulo">
+							    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+							    <p class="parrafo">
+							      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+							    </p>
+							  </article>
+					  </div>
+		              <div class="wrapper">
+							  <div id="box">
+							        <input id="profile" type="checkbox" checked> 
+							        <label class="popo" for="profile">
+							        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+							        </label>
+							        <span class="entypo-thumbs-up"></span> 
+							        <span class="entypo-forward"></span>
+							  </div>
+							  <article class="articulo">
+							    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+							    <p class="parrafo">
+							      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+							    </p>
+							  </article>
+						</div>
+				</div>
+				<div id="tab-amigos">
 
-  <div id="box">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo1" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up"></span> 
-        <span class="entypo-forward"></span>
-    
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_diodio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> Este mensaje es privado.
-    </p>
-  </article>
-  </div>
-   <div class="wrapper2">                  
-  <div id="box2">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up"></span> 
-        <span class="entypo-forward"></span>
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
-    </p>
-  </article>
-  </div>
-                   <div class="wrapper">
-  <div id="box">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up"></span> 
-        <span class="entypo-forward"></span>
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
-    </p>
-  </article>
-  </div>
-          </ul>
+				    <ul class="list-friends">
+				      
+				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
+				      	      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
+				      	      	      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
+				    </ul>
+
+				</div>
+          </div>
+      </div>
       </div>
       </div>
       </div>
@@ -537,9 +555,9 @@
     <textarea id="message2" placeholder="Escribe tu mensaje aquí..." required></textarea>
     <button type="submit">Enviar</button>
     <button type="close" id="close">Cerrar</button>
-    <button class="fontawesome-bullhorn"</button>
-    <button class="fontawesome-camera"</button>
-    <button class="fontawesome-map-marker"</button>
+    <button class="fontawesome-bullhorn"></button>
+    <button class="fontawesome-camera"></button>
+    <button class="fontawesome-map-marker"></button>
    
     
   </form>
