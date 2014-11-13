@@ -609,6 +609,9 @@ margin-top: 20px;
   position: absolute;
   bottom: 5px;
   left:48%;
+  color: white;
+  background-color: tomato;
+  border-radius: 7px;
 */
 /*centrar horizontalmente*/
   /*margin:43% auto 2% auto;*/
@@ -633,24 +636,128 @@ fieldset {
   border: none;
   font-family: 'Open Sans', sans-serif;
 }
-button.fontawesome-plus {
-  border: none;
-  outline: none;
-  border-radius: 20px;
-  width: 50px;
-  height: 50px;
-  float: right;
-  position: relative;
-  cursor: pointer;
-  font-size: 15px;
-  transition: all .3s ease-in;
+.controls {
+	position: fixed;
+	width: 60px;
+        height: 190px;
+	right: 50%;
+	bottom: 50%;
+
+	.new-post, .live {
+		background: #1ab188;
+		border-radius: 50%;
+		float: right;
+		right: 0;
+		bottom: 0;
+		cursor: pointer;
+		z-index: 2;
+
+		.icon {
+			font-size: 27px;
+			color: #fff;
+			line-height: 60px;
+			transition: all 700ms cubic-bezier(.4,0,.2,1);
+			position: relative;
+
+			&.icon-plus {
+          position: absolute;
+          margin-left: 1px;
+          margin-top: 1px;
+				&.unactive {
+					opacity: 0;
+					transform: rotate(-225deg);
+				}
+			}
+
+			&.icon-pencil {
+				opacity: 0;
+				&.active {
+					opacity: 1;
+					transform: rotate(360deg);
+				}
+			}
+		}
+	}
+
+	.new-post { 
+    width: 60px;
+    height: 60px;
+  }
+
+	.live {
+		width: 40px;
+     position: relative;
+     height: 40px;
+		background: #B5E86F;
+		z-index: 1;
+		bottom: 0;
+     top: 180px;
+     left: -68px;;
+		opacity: 0;
+		right: 10px;
+		transition: all 700ms cubic-bezier(0.68, -0.55, 0.265, 
+1.55);
+
+		.icon-lock { 
+			line-height: 40px;
+			font-size: 15px;
+		}
+
+		&.active {
+			bottom: 80px;
+			opacity: 1;
+		}
+
+		&:hover {
+			width: 60px;
+        height: 60px;
+			right: 0;
+      
+			.icon-lock { 
+				line-height: 60px;
+				font-size: 20px;
+			}
+		}
+	}
 }
-button.fontawesome-plus:hover {
-  background-color: #71bdf4;
-  color: white;
-  -webkit-transform: scale(1.1);
-  -webkit-transform: rotate(360deg);
-}
+
+.live2 {
+		width: 40px;
+     height: 40px;
+     position: relative;
+		background: tomato;
+		z-index: 1;
+     color: white;
+		bottom: 0px;
+		opacity: 0;
+     border-radius: 100%;
+     text-align: center;
+		top: 143px;
+     left: 80px;
+     float: left;
+		transition: all 700ms cubic-bezier(0.68, -0.55, 0.265, 
+1.55);
+
+		.icon-lock2 { 
+			line-height: 40px;
+			font-size: 15px;
+		}
+
+		&.active {
+			bottom: 10px;
+			opacity: 1;
+		}
+
+		&:hover {
+			width: 60px;
+        height: 60px;
+			right: 0;
+			.icon-lock2 { 
+				line-height: 60px;
+				font-size: 20px;
+			}
+		}
+	}
 
 button.all {
   border: none;
