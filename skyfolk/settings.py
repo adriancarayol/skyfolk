@@ -201,10 +201,9 @@ SITE_ID = 1
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),
-    ('Pablo Rossiñol', 'pablorossinol@gmail.com'),
     ('Carlos Canicio', 'canicio7@gmail.com'),
     ('Lostcitizen', 'lostcitizen@gmail.com'),
-    #('Ionut Remires', ' ... '),     # email?
+    
 )
 
 TEMPLATE_DIRS = (

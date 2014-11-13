@@ -1748,14 +1748,9 @@ margin-top:25px;
 /* INFORMACIÓN SOBRE IMÁGEN */
 ul.informac {
     list-style-type: none;
-    display: block;
-    position: relative;
     font-size: 20px;
-    left: 0%;
-    text-align: center;
-    color: #fff;
-    margin: auto;
-}
+     color: #fff;
+    }
 ul.informac:hover {
   color: #fff;
 }
@@ -1900,13 +1895,13 @@ overflow: hidden;
 display: block;
 margin: auto;
 text-align: center;
-z-index: 9999;
 letter-spacing: -1px;
 color: #FAFAFA;
 background-color: #246B61;
 opacity: 0.7;
 border-top-left-radius: 7px;
 border-top-right-radius: 7px;
+cursor: pointer;
 }
 
 
