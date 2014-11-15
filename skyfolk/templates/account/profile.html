@@ -453,7 +453,7 @@
 				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
 				      -->
 				      {% for item in friends_top12 %}
-				      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>{{item.user.first_name}} {{item.user.last_name}} ({{item.user.username}})</a></li>
+				      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user.username }}">{{item.user.first_name}} {{item.user.last_name}} ({{item.user.username}})</a></li>
 				      {% endfor %}
 				    </ul>
 

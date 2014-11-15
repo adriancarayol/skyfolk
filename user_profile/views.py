@@ -84,7 +84,7 @@ def profile_view(request, username):
 
 	try:
 		#friends_4 = request.user.profile.get_friends_next4(1)
-		friends = request.user.profile.get_friends()
+		friends = user_profile.profile.get_friends()
 	except ObjectDoesNotExist:
 		friends = None
 
