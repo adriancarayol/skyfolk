@@ -50,7 +50,7 @@ font-size: 70px;
     margin-top: 70px;
     padding: 10px;
     width: 95%;
-    height: 35px;
+    height: auto;
 }
 ul{
   position: relative;
