@@ -1533,6 +1533,7 @@ button:hover {
 
 .fontawesome-bell {
   color: #FFF;
+  float: right;
   cursor:pointer;
   text-align:center;
   font-size: 31px;

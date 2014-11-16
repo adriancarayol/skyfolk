@@ -494,6 +494,7 @@ span[class*="thumbs-up"]:hover {
 }
 .fontawesome-comment-alt {
 color: #FFF;
+float: right;
 cursor:pointer;
 margin-top: 3px;
 text-align: center;
@@ -503,7 +504,7 @@ position: absolute;*/
 font-size: 31px;
 padding: 0px;
 /*float: right;*/
-margin-left:0px;
+margin-left:15px;
 opacity: 1;
 transition: all .3s ease-in-out;
 }
