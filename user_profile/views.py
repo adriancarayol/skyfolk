@@ -82,16 +82,24 @@ def profile_view(request, username):
 		print False
 
 
-	#json_requestsToMe = simplejson.dumps(requestsToMe)
-	#json_requestsToMe = serializers.serialize('json', requestsToMe_result)
+	try:
+		#friends_4 = request.user.profile.get_friends_next4(1)
+		friends = user_profile.profile.get_friends()
+	except ObjectDoesNotExist:
+		friends = None
+
+	friends_top12 = None
+	if friends != None:
+		if len(friends) > 12:
+			#request.session['friends_list'] = simplejson.dumps(friends.values())
+			#request.session['friends_list'] = list(friends)
+			request.session['friends_list'] = serializers.serialize('json', friends)
+			friends_top12 = friends[0:12]
+		else:
+			friends_top12 = friends
 	
-	#json_requestsToMe = list(requestsToMe)
-	#json_requestsToMe = simplejson.dumps(list(requestsToMe), cls=DjangoJSONEncoder)
-	#json_requestsToMe = simplejson.dumps(serializers.serialize('json', requestsToMe))
-	#json_requestsToMe = simplejson.dumps(list(requestsToMe))
-	#response
-	#print json_requestsToMe
-	return render_to_response('account/profile.html',{'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
+	print friends_top12
+	return render_to_response('account/profile.html',{'friends_top12':friends_top12, 'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
 
 @login_required(login_url='accounts/login')
 def search(request):

@@ -336,6 +336,14 @@ $(document).ready(function(){
     });
   });
 
+
+function addItemToFriendList(name, lastname){
+	
+	$("#tab-amigos ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
+	
+}
+
+
 $(document).ready(function(){
 
     
