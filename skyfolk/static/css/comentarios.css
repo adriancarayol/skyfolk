@@ -471,7 +471,7 @@ span[class*="thumbs-up"]:hover {
 	width:250px;
 	height:50%;
 	float:right;
-    margin-top: 9.5px;
+        margin-top: 9.5px;
 }
 .fontawesome-link {
   color:#FFF;
@@ -503,13 +503,13 @@ position: absolute;*/
 font-size: 31px;
 padding: 0px;
 /*float: right;*/
-margin-left:15px;
+margin-left:0px;
 opacity: 1;
 transition: all .3s ease-in-out;
 }
 .fontawesome-comment-alt:hover {
-color: black;
-opacity:1;
+ color: black;
+ opacity:1;
  border: 3px solid rgb(26, 188, 156);
  border-right: none;
  border-top: none;
