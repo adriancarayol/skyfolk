@@ -478,7 +478,7 @@ span[class*="thumbs-up"]:hover {
   cursor:pointer;
   margin-top: 15px;
   text-align:center;
-  font-size:31px;
+  font-size:16px;
   padding:0px;
   margin-left:15px;
   opacity: 1;
@@ -523,20 +523,12 @@ text-align: center;
 /*margin: 1115px;
 top:-1099px;
 position: absolute;*/
-font-size: 31px;
+font-size: 16px;
 padding: 0px;
 /*float: right;*/
-margin-left:15px;
+/*margin-left:15px;*/
 opacity:1;
 transition: all .3s ease-in-out;
-}
-.fontawesome-th:hover {
-color: black;
-opacity: 1;
- border: 3px solid rgb(26, 188, 156);
- border-right: none;
- border-top: none;
- border-left: none;
 }
 a.fontawesome-cog:link{
 color: #FFF;
@@ -546,7 +538,7 @@ text-align: center;
 /*margin: 1115px;
 top:-1099px;
 position: absolute;*/
-font-size: 31px;
+font-size: 16px;
 padding: 0px;
 /*float: right;*/
 margin-left:15px;

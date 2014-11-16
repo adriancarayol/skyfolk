@@ -125,25 +125,6 @@ $("#ilike_profile").click(function () {
 
 
 
-$(document).ready(function(){
-   $(".nameact").mouseover(function () {
-      $("#menu").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "block") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","block");
-          });
-        }
-      });
-    });
-  });
-
-
-
 function aparecerbola(){
   document.getElementById("widget").style.opacity = "1";
   document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
@@ -268,7 +249,7 @@ function cambiopagina(){
       
  /* MENU AL PULSAR FOTO DE USUARIO */     
 $(document).ready(function(){
-   $(".nameact").click(function () {
+   $(".nameact").mouseover(function () {
       $("#panel1").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
