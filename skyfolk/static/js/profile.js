@@ -249,7 +249,7 @@ function cambiopagina(){
       
  /* MENU AL PULSAR FOTO DE USUARIO */     
 $(document).ready(function(){
-   $(".nameact").mouseleave(function () {
+   $(".nameact").mouseenter(function () {
       $("#panel1").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
@@ -259,6 +259,23 @@ $(document).ready(function(){
         } else {
           $(this).fadeIn(250 ,function() {
             $(this).css("display","none");
+          });
+        }
+      });
+    });
+  });
+
+$(document).ready(function(){
+   $("#panel1").mouseleave(function () {
+      $("#panel1").each(function() {
+        displaying = $(this).css("display");
+        if(displaying == "block") {
+          $(this).fadeOut(250 ,function() {
+           $(this).css("display","none");
+          });
+        } else {
+          $(this).fadeIn(250 ,function() {
+            $(this).css("display","block");
           });
         }
       });
