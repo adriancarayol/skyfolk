@@ -249,7 +249,7 @@ function cambiopagina(){
       
  /* MENU AL PULSAR FOTO DE USUARIO */     
 $(document).ready(function(){
-   $(".nameact").mouseenter(function () {
+   $(".nameact").click(function () {
       $("#panel1").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
