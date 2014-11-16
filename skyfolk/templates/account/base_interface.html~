@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="uft-8">
+<meta charset="UTF-8">
 <meta name="description" content="Mi perfil">
 <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
 <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/widget1.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/conf.css" />
 <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
-
 <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
 <script src="{{STATIC_URL}}js/jquery.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
+<script src="{{STATIC_URL}}js/jquery.gritter.js"></script>
 <script src="{{STATIC_URL}}js/profile.js"></script>
 <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
 <script src="{{STATIC_URL}}js/noti.js"></script>
+<script src="{{STATIC_URL}}js/notia.js"></script>
+
 
 {% block include_files %}{% endblock %}
 
@@ -39,6 +44,7 @@ $(document).ready(function(){
 });
 */
 </script> 
+
 <script language="javascript">
 /*
 function aparecerbola(){
@@ -56,8 +62,23 @@ function cambiopagina(){
 	setTimeout('location.href="columnas.php"', 500);
 }
 */
+</script>
 
+<script language="JavaScript1.2">
+<!--
 
+window.moveTo(0,0);
+if (document.all) {
+top.window.resizeTo(screen.availWidth,screen.availHeight);
+}
+else if (document.layers||document.getElementById) {
+if (top.window.outerHeight<screen.availHeight||top.window.outerWidth<screen.availWidth){
+top.window.outerHeight = screen.availHeight;
+top.window.outerWidth = screen.availWidth;
+}
+}
+//-->
+</script>
 
 </script>
 
@@ -86,24 +107,21 @@ function cambiopagina(){
 			});
     */
 		</script>
-<script language="javascript">
-var i = 0;
-
-function contador()
-{
-i = i + 1;
-var btn = document.getElementById("boton");
-btn.value = "me gusta (" + i + ")";
-}
-</script> 
 </head>
 
-
+<body>
 <body onLoad="aparecerbola()">
 <!-- <div id="oHBContainer"> -->
 <nav class="barrah">
 <ul>
-<li><button type="button" id="Menu">Menu</button>
+<!-- Segundo menu bola <li><button type="button" id="Menu">
+  
+<div id="centro"><img src="" width="300" height="300"><span class="entypo-user"></span></div>
+<div id="llinkedin" class="size left"><span class="entypo-users"></span></div>
+<div id="ddribbble" class="size right"><span class="entypo-mail"></span></div>
+<div id="ffacebook" class="size left"><span class="entypo-calendar"></span></div>
+<div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
+    </button>-->
 <li><div class="field" id="searchform">
   	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
   	<!--<button type="submit" class="btn">¡Buscar!</button>-->
@@ -119,15 +137,21 @@ btn.value = "me gusta (" + i + ")";
 
   	</div></li></li></ul>
 
-  	{% if showPerfilButtons or user.username == userProfile.username %}
+  	{% if showPerfilButtons or user.username == user_profile.username %}
 
 
   		<div id ="box-tool">
-	  		<span class="fontawesome-th"></span>
-	  		<span class="fontawesome-comment-alt"></span>
-			<span class="fontawesome-cog"></span>
-	  		<!--<span><a class="fontawesome-cog" href="/configprofile"></a></span>-->
-	  		
+	  		<span class="fontawesome-th"></span>	  		<span class="fontawesome-comment-alt"></span>
+
+	  		<div class="notifications">
+  <span class="fontawesome-bell"><label class="count">3</label></span>
+  <div class="messages">
+    <a href="#" class="message"><span class="fontawesome-heart-empty">Has recibido 1 me gusta.</span></a>
+    <a href="#" class="message"><span class="fontawesome-user">Fernando ha empezado a seguirte.</span></a>
+    <a href="#" class="message"><span class="fontawesome-coffee">Quiere tomar algo contigo.</span></a>
+  </div>
+</div>
+
 	  	</div>
 
 
@@ -137,6 +161,7 @@ btn.value = "me gusta (" + i + ")";
 
 {% block content %}{% endblock %}
 
+</body>
 </body>
 
 <footer class="container">

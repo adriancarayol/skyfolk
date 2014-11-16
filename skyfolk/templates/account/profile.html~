@@ -1,6 +1,20 @@
 {% extends "account/base_interface.html" %}
 
 {% block include_files %}
+
+<script type="text/javascript"> 
+
+   var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
+   var stopRequests = false;
+   var idRequestsTimer = null;
+
+   if(requests){
+      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3000);
+
+    }
+
+</script>    
+
   {% if liked == True %}
 
     <style type="text/css">
@@ -8,6 +22,7 @@
             color: #29b203;
         }
     </style>
+
 
   {% endif %}
 
@@ -19,59 +34,19 @@
         }
     </style>
   {% endif %}
-  
+
 {% endblock %}
 
 {% block content %}
-<nav id="menu">
-    <ul>
-      <li><a class="fontawesome-eye-open" href="#">Más visitados.</a></li>
-      <li><a class="fontawesome-star-empty" href="#">Favoritos.</a>
-        <ul>
-          <li><a href="#"><img class="clint" src="http://content7.flixster.com/rtactor/40/36/40361_pro.jpg"></a></li>
-        
-    
-        </ul>
-      </li>
-      <li><a class="fontawesome-star-half" href="#">Famosos.</a>
-        <ul>
-          <li><a href="#">Deportes</a>
-            <ul>
-              <li><a href="#">Futbol</a></li>
-              <li><a href="#">Baloncesto</a></li>
-              <li><a href="#">Tenis</a></li>
-            </ul>
-          </li>
-          <li><a href="#">Cine y música</a>
-            <ul>
-              <li><a href="#">Cine</a></li>
-              <li><a href="#">Musica</a></li>
-              <li><a href="#">Premios</a></li>
-              <li><a href="#">Eventos</a></li>
-              <li><a href="#">Sous-menu 5</a></li>
-            </ul>
-          </li>
-          <li><a href="#">Otros</a>
-            <ul>
-              <li><a href="#">Cómicos</a></li>
-              <li><a href="#">Sous-menu 2</a></li>
-              <li><a href="#">Sous-menu 3</a></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-      <li><a class="fontawesome-globe" href="#">Descubre.</a></li>
-      <li><a class="fontawesome-heart-empty" href="#">Los más gustados.</a></li>
-    </ul>
-</nav>
+
 <div id="panel"> 
 
-  <div id="widget" style="display: none;"> 
+  <div id="widget" onClick="cambiopagina()"> 
 <!--
-    <div id="middle"><img src="{{STATIC_URL}}img/5.jpg" width="300" height="300"><span class="entypo-user"></span></div>
+    <div id="middle"></div>
     <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
 -->
-    <div id="middle"><img src="http://cinemarama.files.wordpress.com/2012/03/23.jpg" width="300" height="300"><span class="entypo-user"></span></div>
+    <div id="middle"><div class="entypo-user"></div></div>
 
     <div id="linkedin" class="size left"><a href="/friends"><span class="entypo-users"></span></a></div>
     <div id="dribbble" class="size right"><span class="entypo-mail"></span></div>
@@ -94,19 +69,28 @@
 
 <div id="nav2">
 <ul class="nameact">   
-<div class="foto_perfil" title="{{ user_profile.username }}"></div></ul>
+<div class=" foto_perfil" title="{{ user_profile.username }}"></div></ul>
  
 
    
-    <div id="panel1">
+    <div id="panel1" style="display:none;">
       
      <dropdown>
  
   <ul class="animate">
-    <li class="animate">Perfil <i class="entypo-user"></i></li>
-    <li class="animate">Multimedia<i class="entypo-video"></i></li>
-    <li class="animate">Juegos<i class="entypo-rocket"></i></li>
-    
+    <li class="animate">Mi perfil <i class="fontawesome-user"></i></li>
+    <li class="animate"> Configuracion <i href="/config/changepass" class="fontawesome-cog"></i></li>
+    <li class="animate">Market <i href="#market" class="fontawesome-th"></i></li>
+    <li class="animeate"> Mis lazos <i href="#mislazos" class="fontawesome-link"></i></li>
+    <li class="animate">Multimedia <i class="fontawesome-film"></i></li>
+    <li class="animate">Juegos <i class="fontawesome-play"></i></li>
+    <li class="animatex">+ Visto <i class="fontawesome-eye-open"></i></li>
+    <li class="animatex"> + likes <i class="fontawesome-thumbs-up"></i></li>
+    <li class="animatex"> Famosos <i class="fontawesome-certificate"></i></li>
+    <li class="animatex"> Favoritos <i class="fontawesome-star"></i></li>
+    <li class="animatex"> Descubre <i class="fontawesome-globe"></i></li>
+    <li class="animatee"> Mi baúl <i class="fontawesome-briefcase"></i></li>
+    <li class="animatee"> Comentarios favoritos <i class="fontawesome-star-half"></i></li>
   </ul>
 </dropdown>
 
@@ -115,11 +99,36 @@
     </div>
     
 </div>
-
-
-
-
+<!-- Configuración rápida -->
+<div id="fastconf">
+        <span class="fontawesome-cog">  Configuración rápida.</span>
+        <img class="profile" src="http://data2.whicdn.com/images/18501113/large.jpg"></img>
+        <span id="close" class="fontawesome-remove" title="Cerrar"></span>
+      <input type="text" name="FirstName" target="million" value="{{ user_profile.username }}" placeholder="Username">
+        <input type="text" name="secondname" target="shot" value="Play Hard" placeholder="state">
+        <input type="url" name="paginaweb" target="url" value="skyfolk.com" placeholder="Página web">
+        <input type="location" name="location" target="location" value="España (Murcia)" placeholder="Zona">
+        <nav class="mi-nav">
+        <ul class="mi-nav-list">
+            <li class="fontawesome-comment" title="Ajustes del Chat"></li>
+            <li class="fontawesome-lock" title="Privacidad"></li>
+            <li class="fontawesome-calendar" title="Mi agenda"></li>
+            <li class="fontawesome-bell-alt" title="Notificaciones"></li>
+            <li class="fontawesome-edit" title="Diseño"></li>
+            </ul></nav>
+      </div>
+<!-- Fin de conf rápida -->
+<!-- Notificacion me gusta -->
+<div id="notifi">
+<div class="love">
+  <h4> Has recibido un <a>Me gusta.</a> </h4>
+  <a class="fontawesome-remove"></a>
+  <span><i class="fontawesome-heart"></i><p><a href="#">Homer Simpson</a> le gusta un mensaje tuyo.</p></span>
+</div>
+</div>
+<!-- Fin notificacion me gusta -->
 <div class="container">
+
   
   <div class="col-lg-8 col-md-6 col-sm-12">
 
@@ -127,25 +136,33 @@
  
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="user-card card">
-          <div class="user-avatar"><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fontawesome-pencil"> </span>
+          <span class="fontawesome-bookmark"> Timeline</span>
+            
+          
+          <div class="user-avatar"><div class="infx"><ul class="informac"><li class="fontawesome-map-marker"> España (Murcia)</li><li class="fontawesome-ok"> 28/01/1966</li><li class="fontawesome-tag"> Ing.Sistemas.</li></ul></div><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fontawesome-pencil" title="Configuración rápida"> </span>
             <input type="checkbox" id="button-menu"  />
+            {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
+              <img id = "friend_request_progress" src="{{STATIC_URL}}img/friend_request_progress.png">
+            {% endif %}
             <div class="caja">
              <div class="item">
                 
                <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">
+
                <span class="informacion">
                 {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_addfriend('abort')></span>
+                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('abort')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('abort')></span>
                    <span class="entypo-forward" title="Escribir"></span>             
                 {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_addfriend('anonymous')></span>
+                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
-                   <span class="entypo-forward" title="Escribir"></span>             
+                   <span class="entypo-forward" title="Escribir"></span>            
                 {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_addfriend('noabort')></span>
+                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
                    <span class="entypo-forward" title="Escribir"></span>
+
                 {% endif %}
                </span>
               </div>
@@ -327,81 +344,125 @@
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div class="container">
       <div class="col-lg-12">
-        <div class="sidebar card">
+      <div id="div-separator">
+        <div class="sidebar card" id="tab-container">
           <ul class="unstyled table fullwidth links">
-            <li class="active"><a>Popular</a></li>
-            <li class="comentarios"><a>Comentarios</a></li>
-            <li class="active"><a>Recientes</a></li>
+            <li class="tab" id="li-tab-popular"><a href="#tab-popular">Popular</a></li>
+            <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
+            <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Amigos</a></li>
           </ul>
-          <ul class="unstyled content">
-            <div class="wrapper">
-  <div id="box">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
-        <span class="entypo-forward" title="Responder"></span>
-    <span class="entypo-plus" title="Añadir a..."></span>
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
-    </p>
-  </article>
-  </div>
-                           <div class="wrapper">
+          <div class="unstyled content">
+				<div id="tab-popular">
+	
+	
+	         	</div>
+				<div id="tab-comentarios">
+					<div class="wrapper">
+						  <div id="box">
+						        <input id="profile" type="checkbox" checked> 
+						        <label class="popo" for="profile">
+						        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+						        </label>
+						        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
+						        <span class="entypo-forward" title="Responder"></span>
+						    <span class="entypo-plus" title="Añadir a..."></span>
+						  </div>
+						  <article class="articulo">
+						    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+						    <p class="parrafo">
+						      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+						    </p>
+						  </article>
+						  <!-- OPTIONES FIJAS -->
+						  <ul class="optionsfixed">
+						  <li class="fontawesome-eye-open"></li>
+						  <li class="fontawesome-star"></li>
+						  </ul>
+		  			</div>
+					<div class="wrapper">
+						  <div id="box">
+						        <input id="profile" type="checkbox" checked> 
+						        <label class="popo" for="profile">
+						        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+						        </label>
+						        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
+						        <span class="entypo-forward" title="Responder"></span>
+						    <span class="entypo-plus" title="Añadir a..."></span>
+						  </div>
+						  <article class="articulo">
+						    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+						    <p class="parrafo">
+						      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+						    </p>
+						  </article>
+				  	</div>
+		            <div class="wrapper">
+		
+						  <div id="box">
+						        <input id="profile" type="checkbox" checked> 
+						        <label class="popo1" for="profile">
+						        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+						        </label>
+						        <span class="entypo-thumbs-up"></span> 
+						        <span class="entypo-forward"></span>
+						    
+						  </div>
+						  <article class="articulo">
+						    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_diodio</a> mentioned you</h2>
+						    <p class="parrafo">
+						      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> Este mensaje es privado.
+						    </p>
+						  </article>
+		  			</div>
+					 <div class="wrapper2">                  
+							  <div id="box2">
+							        <input id="profile" type="checkbox" checked> 
+							        <label class="popo" for="profile">
+							        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+							        </label>
+							        <span class="entypo-thumbs-up"></span> 
+							        <span class="entypo-forward"></span>
+							  </div>
+							  <article class="articulo">
+							    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+							    <p class="parrafo">
+							      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+							    </p>
+							  </article>
+					  </div>
+		              <div class="wrapper">
+							  <div id="box">
+							        <input id="profile" type="checkbox" checked> 
+							        <label class="popo" for="profile">
+							        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+							        </label>
+							        <span class="entypo-thumbs-up"></span> 
+							        <span class="entypo-forward"></span>
+							  </div>
+							  <article class="articulo">
+							    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+							    <p class="parrafo">
+							      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+							    </p>
+							  </article>
+						</div>
+				</div>
+				<div id="tab-amigos">
 
-  <div id="box">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo1" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up"></span> 
-        <span class="entypo-forward"></span>
-    
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_diodio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> Este mensaje es privado.
-    </p>
-  </article>
-  </div>
-   <div class="wrapper2">                  
-  <div id="box2">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up"></span> 
-        <span class="entypo-forward"></span>
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
-    </p>
-  </article>
-  </div>
-                   <div class="wrapper">
-  <div id="box">
-        <input id="profile" type="checkbox" checked> 
-        <label class="popo" for="profile">
-        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
-        </label>
-        <span class="entypo-thumbs-up"></span> 
-        <span class="entypo-forward"></span>
-  </div>
-  <article class="articulo">
-    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
-    <p class="parrafo">
-      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
-    </p>
-  </article>
-  </div>
-          </ul>
+				    <ul class="list-friends">
+				      <!--
+				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
+				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
+				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
+				      -->
+				      {% for item in friends_top12 %}
+				      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user.username }}">{{item.user.first_name}} {{item.user.last_name}} ({{item.user.username}})</a></li>
+				      {% endfor %}
+				    </ul>
+
+				</div>
+          </div>
+      </div>
       </div>
       </div>
       </div>
@@ -435,16 +496,63 @@
 <!-- This contains the hidden content for inline calls -->
 <div style='display:none'>
       <div id='inline_content' style='padding:10px; background:#fff;'>
-        <p><strong><form action="" method="get">
-              <span><img src="{{STATIC_URL}}img/2.jpg"></span>
-              </form></strong></p>
+        <section>
+  <fieldset class="controls">
+  <ul class="btn">
+    <li><button class="all">Todas</button></li>
+    <li><select>
+      <option value"choose" selected="selected">Choose...</option>
+      <option value="rec">Recientes</option>
+      <option value="+">Mas Likes</option>
+      <option value="+m">Mas comentadas</option></select></li>
+    <li><select>
+      <option value"choose" selected="selected">Year...</option>
+      <option value="rec">2015</option>
+      <option value="+">2016</option>
+      <option value="+m">2017</option></select></li>
+  </ul>
+  <ul class="layout">
+    <li><button class="fontawesome-reorder"></button></li>
+    <li><button class="fontawesome-table"></button></li>
+</ul>
+  <ul>
+    </fieldset>
+    <li><div class="photo">
+      <span class="text">
+        <p href="#">Vacaciones en Tenerife.</p>
+        <i class="fontawesome-heart"> 1.031</i>
+        <a class="fontawesome-comment"> 432</a>
+      </span><img src="http://media1.onsugar.com/files/2014/04/09/296/n/28443503/addcb937ebb4186e_shutterstock_124808911.xxxlarge/i/Best-Ways-Stick-Your-Diet.jpg" alt="Photo">
+   </div></li>
+  <li><div class="photo"><span class="text">
+        <p>Vacaciones en Tenerife.</p>
+        <i class="fontawesome-heart"> 1.031</i>
+        <a class="fontawesome-comment"> 432</a>
+      </span></span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt"Photo"></div></li>
+    <li><div class="photo"><span class="text">
+        <p href="#">Vacaciones en Tenerife.</p>
+        <i class="fontawesome-heart"> 1.031</i>
+        <a class="fontawesome-comment"> 432</a>
+      </span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt"Photo"></div></li>
+    <li><div class="photo"><span class="text">
+        <p href="#">Vacaciones en Tenerife.</p>
+        <i class="fontawesome-heart"> 1.031</i>
+        <a class="fontawesome-comment"> 432</a>
+      </span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt"Photo"></div></li>
+    <li><div class="photo"><span class="text">
+        <p href="#">Vacaciones en Tenerife.</p>
+        <i class="fontawesome-heart"> 1.031</i>
+        <a class="fontawesome-comment"> 432</a>
+      </span><img src="http://www.wellhappypeaceful.com/wp-content/uploads/2011/12/Dog-Cat-Best-Friend.jpg" alt"Photo"></div></li>
+  </ul>
+</section>
       
       </div>
 </div>
 
 <!-- Mensaje flotante -->
 
-<div id="page-wrapper">
+<div id="page-wrapper" style="display:none;">
   <h1></h1>
   
   <div id="status">Conectando...</div>
@@ -454,9 +562,9 @@
     <textarea id="message2" placeholder="Escribe tu mensaje aquí..." required></textarea>
     <button type="submit">Enviar</button>
     <button type="close" id="close">Cerrar</button>
-    <button class="fontawesome-bullhorn"</button>
-    <button class="fontawesome-camera"</button>
-    <button class="fontawesome-map-marker"</button>
+    <button class="fontawesome-bullhorn"></button>
+    <button class="fontawesome-camera"></button>
+    <button class="fontawesome-map-marker"></button>
    
     
   </form>

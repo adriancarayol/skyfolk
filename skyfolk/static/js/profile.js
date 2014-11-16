@@ -126,7 +126,7 @@ $("#ilike_profile").click(function () {
 
 
 $(document).ready(function(){
-   $(".nameact").click(function () {
+   $(".nameact").mouseover(function () {
       $("#menu").each(function() {
         displaying = $(this).css("display");
         if(displaying == "block") {
