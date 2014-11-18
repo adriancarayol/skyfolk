@@ -166,12 +166,12 @@ div.wrapper {
 
 @media (min-width: 1200px) {
 	#contra {
-		height: 1020px;
+		height: 1320px;
 	}
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
 	#contra {
-		height: 1300px;
+		height: 1500px;
 	}
 }
