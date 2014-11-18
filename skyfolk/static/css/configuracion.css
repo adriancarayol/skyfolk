@@ -133,8 +133,8 @@ bottom: -2px;
 }
 #contra {
 /*top: -10px;*/
-width: 770px;
-height: 800px;
+width: 470px;
+height: auto;
 /*margin-left: 385px;*/
 /*margin-top: -380px;*/
 font-family: 'Gafata', sans-serif;
@@ -161,7 +161,6 @@ color: grey;
 margin: 6px;
 margin-top: 20px;
 }
-
 
 
 
