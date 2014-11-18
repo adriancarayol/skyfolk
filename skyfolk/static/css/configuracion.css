@@ -35,7 +35,7 @@ font-family: 'Gafata', sans-serif;
 #pass {
 right: 35%;
 top: 40%;
-position:absolute;
+position: relative;
 width:270px;
 }
 
@@ -128,7 +128,7 @@ bottom: -2px;
 #contra {
 /*top: -10px;*/
 width: 470px;
-height: 150px;
+height: auto;
 /*margin-left: 385px;*/
 /*margin-top: -380px;*/
 font-family: 'Gafata', sans-serif;
