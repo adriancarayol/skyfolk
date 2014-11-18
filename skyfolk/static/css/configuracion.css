@@ -17,18 +17,17 @@ body {
 background-image:url('http://upload.wikimedia.org/wikipedia/en/7/75/DowntownSF.jpg');
 }
 
-.entypo-cog {
+span.entypo-cog {
 font-size: 35px;
 color: #5AC3FF;
-position:absolute;
+position: relative;
 float:left;
+margin-top: 15px;
+margin: 30px;
 
 }
-#cf {
-font-size:32px;
-position:fixed;
-margin: 25px;
-margin-top: 5px;	
+span.entypo-cog a {
+position:relative;
 font-family: 'Gafata', sans-serif;
 }
 /*Cuerpo*/

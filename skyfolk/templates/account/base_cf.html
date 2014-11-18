@@ -154,7 +154,7 @@
 {% block content %}
 <header>
 
-<span class="entypo-cog"> <a id="cf">Configuracion</a> </span>
+<span class="entypo-cog"> <a>Configuracion</a> </span>
 <body>
 	<nav>
 	<ul class="form">
@@ -167,6 +167,7 @@
 								<li><a id ="menucf-profile" class="logout" href="/config/profile"><i class="entypo-vcard"></i>Perfil.</a></li>
 	</ul>
 </nav>
+<div class="wrapper">
 <section id="contra">
 <form id="levi">
 	{% block cf-title %}{% endblock %}
@@ -187,6 +188,7 @@ Verificar contraseña <input class="actual" type="password" name="Repita su nuev
 
 </form>
 </section>
+</div>
 </body>
 </header>
 </html>
