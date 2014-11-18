@@ -161,7 +161,14 @@ color: grey;
 margin: 6px;
 margin-top: 20px;
 }
-
+div.wrapper {
+	position:relative;
+	display: block;
+	background-color: #FAFAFA;
+	height: auto;
+	width: auto;
+	clear:both;
+}
 
 
 @media (min-width: 1200px) {
