@@ -32,6 +32,12 @@ margin-top: 5px;
 font-family: 'Gafata', sans-serif;
 }
 /*Cuerpo*/
+div.wrappercog {
+	position: relative;
+	margin: auto;
+	width: 800px;
+	
+}
 #pass {
 right: 35%;
 top: 40%;
