@@ -36,12 +36,12 @@ div.wrappercog {
 	position: relative;
 	margin: auto;
 	width: 800px;
-	
+
 }
 #pass {
 right: 35%;
 top: 40%;
-position: relative;
+position: absolute;
 width:270px;
 }
 
