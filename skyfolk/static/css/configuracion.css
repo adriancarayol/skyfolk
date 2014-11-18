@@ -23,7 +23,7 @@ color: #5AC3FF;
 position: relative;
 float:left;
 margin-top: 15px;
-margin: 30px;
+margin: 28px;
 
 }
 span.entypo-cog a {
@@ -31,12 +31,6 @@ position:relative;
 font-family: 'Gafata', sans-serif;
 }
 /*Cuerpo*/
-div.wrappercog {
-	position: relative;
-	margin: auto;
-	width: 800px;
-
-}
 /*#pass {
 right: 35%;
 top: 40%;
