@@ -1,6 +1,7 @@
 @import url(http://weloveiconfonts.com/api/?family=entypo);
 @import url(http://fonts.googleapis.com/css?family=Gafata);
 @import url(http://weloveiconfonts.com/api/?family=entypo);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 @import url(http://fonts.googleapis.com/css?family=Gafata);
 @import url(http://fonts.googleapis.com/css?family=Carrois+Gothic+SC);
 
@@ -48,6 +49,7 @@ margin-bottom: 25px;
 display:block;
 margin-left:60px;
 margin-top:10px;
+font-family: 'Open Sans', sans-serif;
 }
 .actual:focus {
 border-color: blue;
@@ -81,10 +83,10 @@ rgba(89,208,244,1) 0,rgba(89,208,244,0) 100px),
 	transition:background-position 3s;
 
 	
-border-radius: 7px 7px 7px 7px;
+border-radius: 5px;
 width: 170px;
 height: 50px;
-font-family: 'Gafata', sans-serif, bold;
+font-family: 'Open Sans', sans-serif;
 font-size: 15px;
 
 
