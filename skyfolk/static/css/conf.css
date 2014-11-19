@@ -100,6 +100,12 @@ button {
   position: relative;
   float: right;
   font-size: 20px;
-  color: tomato;
+  color: #AA3939;
   right: 10px;
+  transition: all .3s ease-in;
 }
+.fontawesome-remove:hover {
+-webkit-transform: scale(1.1);
+transform: scale(1.1);
+-moz-transform: scale(1.1);
+  ;

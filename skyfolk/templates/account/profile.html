@@ -454,20 +454,33 @@
 							    </p>
 							  </article>
 						</div>
+		              <div class="wrapper">
+							  <div id="box">
+							        <input id="profile" type="checkbox" checked> 
+							        <label class="popo" for="profile">
+							        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+							        </label>
+							        <span class="entypo-thumbs-up"></span> 
+							        <span class="entypo-forward"></span>
+							  </div>
+							  <article class="articulo">
+							    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+							    <p class="parrafo">
+							      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+							    </p>
+							  </article>
+						</div>
 				</div>
 				<div id="tab-amigos">
+				
+					  <ul class="list-friends">
 
-				    <ul class="list-friends">
-				      <!--
-				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
-				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
-				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
-				      -->
-				      {% for item in friends_top12 %}
-				      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user.username }}">{{item.user.first_name}} {{item.user.last_name}} ({{item.user.username}})</a></li>
-				      {% endfor %}
-				    </ul>
-
+					      {% for item in friends_top12 %}
+					      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user.username }}">{{item.user.first_name}} {{item.user.last_name}} ({{item.user.username}})</a></li>
+					      {% endfor %}
+					      
+					  </ul>
+					
 				</div>
           </div>
       </div>
