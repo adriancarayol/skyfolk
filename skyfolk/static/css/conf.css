@@ -1,177 +1,105 @@
 @import url(http://weloveiconfonts.com/api/?family=fontawesome);
-
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 /* fontawesome */
 [class*="fontawesome-"]:before {
   font-family: 'FontAwesome', sans-serif;
 }
-
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
-
-#fastconf {
-  border: 2px solid #BFFFF3;
-  border-top: 5px solid #BFFFF3;
+body {
+  padding: 0;
+  margin: auto;
+  background: #582A72;
+}
+#confr {
+  border: 2px solid #5bc0de;
+  border-top: 10px solid #5bc0de;
   width: 40%;
-  height: 95% auto;
+  height: 700px;
   left: 30%;
   position: absolute;
-  display: none;
-  background-color: #fafafa;
-  z-index: 9999;
-  margin: auto;
+  background-color: #FAFAFA;
+  font-family: 'Open Sans', sans-serif;
 }
 span.fontawesome-cog {
-  left: 30%;
-  top: 5%;
-  position: absolute;
+  left: 26%;
+  top: 7%;
+  position: relative;
   line-height: 30px;
   font-size: 25px;
   font-family: 'Open Sans', sans-serif;
-  color: #9FCCC3;
+  color: #5bc0de;
   transition: all 0.3s ease-in-out;
-  margin: auto;
 }
-img.profile {
-  width: 140px;
-  height: 140px;
-  position: absolute;
-  left: 40%;
+img.img-rounded {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  left: 38%;
   display: block;
-  top: 20%;
+  top: 10%;
   border: 2px solid #9FCCC3;
   text-align: center;
   transition: all .3s ease-in-out;
   cursor: pointer;
 }
-img.profile:hover {
-  border: 4px solid #9FCCC3;
- -webkit-filter: blur(1px) sepia(0.5);
+img.img-rounded:hover {
+  border: 4px solid #FFAF2A;
 }
-input[target="million"]  {
-  position: static;
-  left: 40%;
-  text-align: center;
-  top: 45%;
-    border: 2px solid #9FCCC3;
-    border-radius: 5%;
-    padding: 8px;
-    margin-top: 20px;
-    color: #9fccc3;
-    transition: all .3s ease-in-out;
-}
-input[target="shot"] {
-    position: static;
-    left: 15%;
-    width: 70%;
-    text-align:center;
-    top: 50%;
-        margin-top: 20px;
-
-    border: 2px solid #9fccc3;
-    border-radius: 5%;
-    padding: 8px;
-    color: #9fccc3;
-    transition: all .3s ease-in-out;
-}
-input[target="url"] {
-    position: static;
-    left: 40%;
-    text-align: center;
-    top: 57%;
-        margin-top: 20px;
-
-    border: 2px solid #9FCCC3;
-    border-radius: 5%;
-    padding: 8px;
-    color: #9fccc3;
-    transition: all .3s ease-in-out;
-}
-input[target="location"] {
-    position: static;
-    left: 40%;
-    text-align: center;
-    top: 64%;
-    border: 2px solid #9Fccc3;
-   border-radius: 5%;
-    padding: 8px;
-        margin-top: 20px;
-
-    color: #9fccc3;
-    transition: all .3s ease-in-out;
-}
-
-
-.mi-nav {
+form {
   position: relative;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 60px;
-  top: 80%;
-  margin: -2%;
   margin: auto;
+  top: 15%;
+  
 }
+input {
+  position: relative;
 
-.mi-nav-list li{
+}
+label p {
+  margin: auto;
+  position: relative;
   display: inline-block;
-  list-style: none;
-    margin: 0;
-    transition: all .4s ease-in-out;
-    border-radius: 10%;
+  color: grey;
+  margin-top: 10px;
+  margin-left:15px;
 }
-li.fontawesome-comment {
-    color: #fff;
-    background-color: #00a7ef;
-    padding: 7px;
-    min-width: 60px;
-    min-height: 60px;
-    margin:0;
+input[type="email"] {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  background: url('http://uxrepo.com/static/icon-sets/font-awesome/svg/user.svg');
+  background-repeat: no-repeat;
+  background-size: 20px;
+  background-position: 5px;
 }
- li.fontawesome-lock {
-    background-color: #ffa200;
-    color: #fff;
-    min-width: 60px;
-    min-height: 60px;
-    padding: 7px;
-    margin: 0;
+input[type="password"],input[type="text"] {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  background: url('http://vinilos-stica.es/2439-5086-thickbox/onomatopeya-hugh-motivo.jpg');
+  background-size: 20px;
+  background-position: 5px;
+  background-repeat: no-repeat;
 }
-li.fontawesome-calendar {
-    background-color: #00cb79;
-    color: #fff;
-    min-width: 60px;
-    min-height: 60px;
-    padding: 7px;
-    margin: 0;
+input[type="text"] {
+  background: url('http://www.emdoc.com/img/footer/icon-local.png');
+  background-repeat: no-repeat;
+  background-size: 17px;
+  background-position:5px;
+  text-align: center;
 }
-li.fontawesome-bell-alt {
-    background-color: #ffd600;
-    color: #fff;
-    min-width: 60px;
-    min-height: 60px;
-    padding: 7px;
-    margin: 0;
+button {
+  position: relative;
+  top: 30px;
+  margin: auto;
+  text-align: center;
+  float: right;
+  right: 30px;
 }
-li.fontawesome-edit {
-    background-color: #a8218e;
-    color: #fff;
-    min-width: 60px;
-    min-height: 60px;
-    padding: 7px;
-    margin: 0;
+.fontawesome-remove {
+  position: relative;
+  float: right;
+  font-size: 20px;
+  color: tomato;
+  right: 10px;
 }
-span.fontawesome-remove {
-    font-size: 28px;
-    color: #9fccc3;
-    float: right;
-    margin: 10px;
-    cursor: pointer;
-    transition: all .2s ease-in-out;
-}
-    span.fontawesome-remove:hover {
-        color:tomato;
-    }
-.mi-nav-list li:hover {
-    transform: scale(1.1);
-    border: 4px solid #9fccc3;
-    cursor: pointer;
-    color: #9fccc3;
-
