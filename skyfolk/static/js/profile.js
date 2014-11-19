@@ -5,22 +5,39 @@ $("#ilike_profile").click(function () {
 });
 */
 
+
+
+
     $(document).ready( function() {
+    	
+    	$("#li-tab-amigos").click(function(){
+ 
+    		
+    	});	
+    	
+
+    
       $('#tab-container').easytabs({
-    	  /*
-    	  transitionOut: "hide",
-    	  animationSpeed: 0,
-    	  transitionCollapse: "hide",
-    	  transitionUncollapse: "show",
-    	  animationSpeed: 0
-    	  */
-    	  defaultTab: "#li-tab-comentarios"
-    	  
-    	  
+
+    	  defaultTab: "#li-tab-comentarios",
+    	  animate: false
 
       });
+      
+      
+      
     });
 
+function friendListScrollToDownEnd(){
+	$('#tab-amigos').bind('scroll', function(){
+    	if($(this).scrollTop() + $(this).innerHeight()>=$(this)[0].scrollHeight)
+    	{
+    		//alert('end reached');
+    	}
+	})
+}    
+    
+    
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
     function getCookie(name) {
         var cookieValue = null;

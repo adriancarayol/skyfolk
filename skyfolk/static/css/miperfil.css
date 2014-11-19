@@ -1025,12 +1025,20 @@ font-family: 'Andika', sans-serif;
 #tab-container .tab:hover:not(.active) { background: #FAFAFA; }
 
 
-
-
+#tab-amigos{
+  /*overflow:auto !important;*/
+  /*overflow-y: scroll;*/
+  /*overflow: hidden;*/
+  /*overflow-y: hidden;*/
+}
 #tab-amigos ul.list-friends {
   position: relative;
   margin: auto;
   list-style-type: none;
+  /*overflow:auto !important;*/
+  /*overflow-y: scroll;*/
+  /*overflow: hidden;*/
+  /*overflow-y: hidden;*/
 }
 #tab-amigos ul.list-friends li {
   display: table;
