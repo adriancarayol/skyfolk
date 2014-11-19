@@ -14,7 +14,7 @@
   height: 95% auto;
   left: 30%;
   position: relative;
-  display: block;
+  display: none;
   background-color: #fafafa;
   z-index: 9999;
   margin: auto;
@@ -54,6 +54,7 @@ input[target="million"]  {
     border: 2px solid #9FCCC3;
     border-radius: 5%;
     padding: 8px;
+    margin-top: 20px;
     color: #9fccc3;
     transition: all .3s ease-in-out;
 }
@@ -63,6 +64,8 @@ input[target="shot"] {
     width: 70%;
     text-align:center;
     top: 50%;
+        margin-top: 20px;
+
     border: 2px solid #9fccc3;
     border-radius: 5%;
     padding: 8px;
@@ -74,6 +77,8 @@ input[target="url"] {
     left: 40%;
     text-align: center;
     top: 57%;
+        margin-top: 20px;
+
     border: 2px solid #9FCCC3;
     border-radius: 5%;
     padding: 8px;
@@ -88,6 +93,8 @@ input[target="location"] {
     border: 2px solid #9Fccc3;
    border-radius: 5%;
     padding: 8px;
+        margin-top: 20px;
+
     color: #9fccc3;
     transition: all .3s ease-in-out;
 }
