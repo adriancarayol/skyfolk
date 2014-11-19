@@ -426,6 +426,7 @@ body > .container {
   text-align: center; }
   .user-card .user-avatar .user-bg {
     width: 100%;
+    border-bottom: 2px solid #246B61;
     border-top-left-radius: 0.3rem;
     border-top-right-radius: 0.3rem; }
     .user-card .user-avatar .user-bg:after {
@@ -436,7 +437,7 @@ body > .container {
   .user-card .user-avatar .user-pic {
     background: white;
     padding: 0.25em;
-	
+	  border: 1px solid #246B61;
     border-radius: 0.3rem;
     margin-top: -10em;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.35); }
