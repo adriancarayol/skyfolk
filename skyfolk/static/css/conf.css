@@ -11,12 +11,13 @@
   border: 2px solid #BFFFF3;
   border-top: 5px solid #BFFFF3;
   width: 40%;
-  height: 95%;
+  height: 95% auto;
   left: 30%;
   position: absolute;
   display: none;
-  background-color: #fff;
+  background-color: #fafafa;
   z-index: 9999;
+  margin: auto;
 }
 span.fontawesome-cog {
   left: 30%;
@@ -27,6 +28,7 @@ span.fontawesome-cog {
   font-family: 'Open Sans', sans-serif;
   color: #9FCCC3;
   transition: all 0.3s ease-in-out;
+  margin: auto;
 }
 img.profile {
   width: 140px;
@@ -45,22 +47,25 @@ img.profile:hover {
  -webkit-filter: blur(1px) sepia(0.5);
 }
 input[target="million"]  {
-  position: absolute;
+  position: static;
   left: 40%;
   text-align: center;
   top: 45%;
     border: 2px solid #9FCCC3;
     border-radius: 5%;
     padding: 8px;
+    margin-top: 20px;
     color: #9fccc3;
     transition: all .3s ease-in-out;
 }
 input[target="shot"] {
-    position: absolute;
+    position: static;
     left: 15%;
     width: 70%;
     text-align:center;
     top: 50%;
+        margin-top: 20px;
+
     border: 2px solid #9fccc3;
     border-radius: 5%;
     padding: 8px;
@@ -68,10 +73,12 @@ input[target="shot"] {
     transition: all .3s ease-in-out;
 }
 input[target="url"] {
-    position: absolute;
+    position: static;
     left: 40%;
     text-align: center;
     top: 57%;
+        margin-top: 20px;
+
     border: 2px solid #9FCCC3;
     border-radius: 5%;
     padding: 8px;
@@ -79,26 +86,29 @@ input[target="url"] {
     transition: all .3s ease-in-out;
 }
 input[target="location"] {
-    position: absolute;
+    position: static;
     left: 40%;
     text-align: center;
     top: 64%;
     border: 2px solid #9Fccc3;
    border-radius: 5%;
     padding: 8px;
+        margin-top: 20px;
+
     color: #9fccc3;
     transition: all .3s ease-in-out;
 }
 
 
 .mi-nav {
-  position: absolute;
+  position: relative;
   bottom: 0;
   width: 100%;
   text-align: center;
   font-size: 60px;
   top: 80%;
-    margin: -2%;
+  margin: -2%;
+  margin: auto;
 }
 
 .mi-nav-list li{
@@ -160,7 +170,7 @@ span.fontawesome-remove {
         color:tomato;
     }
 .mi-nav-list li:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
     border: 4px solid #9fccc3;
     cursor: pointer;
     color: #9fccc3;
