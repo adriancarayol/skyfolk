@@ -46,12 +46,12 @@ DEFAULT_APPS = (
 
 # Third Party Applications
 THIRD_PARTY_APPS = (
-    # 'south',       # Gestiona las migraciones de bdd
+    # 'south',                 # Gestiona las migraciones de bdd
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'rest_framework',   # REST framework
-    'django_messages',
+    'rest_framework',          # REST framework
+    'django_messages',         # mensajes entre usuarios
 )
 
 # Local Applications
@@ -220,21 +220,21 @@ STATICFILES_DIRS = (
 #
 # heroku
 
-## Parse database configuration from $DATABASE_URL
-#import dj_database_url
-#DATABASES['default'] = dj_database_url.config()
-## Honor the 'X-Forwarded-Proto' header for request.is_secure()
-#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-## Allow all host headers
-#ALLOWED_HOSTS = ['*']
-## Static asset configuration
-#import os
-#BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-#STATIC_ROOT = 'staticfiles'
-#STATIC_URL = '/static/'
-#
-#STATICFILES_DIRS = (
-#    os.path.join(BASE_DIR, 'static'),
-#)
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES['default'] = dj_database_url.config()
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+# Static asset configuration
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 #..................................................................
