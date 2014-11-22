@@ -42,10 +42,14 @@
   margin-left:0px;
   color: #000;
 }
+.field>form input[type="text"] {
+  border: 0.2 em solid #3E9397;
+  transition: all .3s ease-in;
+}
 
 .field>form button {
 	padding: 0.6em 0.8em;
-	background-color: rgb(26, 188, 156);
+	background-color: #3E9397;
 	color: white;
 	border: none;
 	font-weight: bold;
