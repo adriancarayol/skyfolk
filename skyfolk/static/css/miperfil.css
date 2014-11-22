@@ -1126,8 +1126,7 @@ margin: 0px;
 width: 100%;
 position: fixed;
 display: block;
-box-shadow: 3px 2px 4px 3px rgb(26, 188, 156);
-background: rgb(26, 188, 156);
+background: #3E9397;
 opacity: 0.8;
 top: 3px;
 z-index: 9999;
@@ -1214,9 +1213,10 @@ z-index: 9999;
 .nameact {
     list-style: none;
     padding: 5px;
-    margin: 40px;
+    margin: 38px;
     width: 225px;
-    z-index: 9999; 
+    z-index: 9999;
+    margin-top: -7px;
 }
 #panel1 {
   position: absolute;
@@ -1558,7 +1558,8 @@ button:hover {
   font-size: 31px;
   display: block;
   position:absolute;
-  margin-left:-33px;
+  margin-right:-33px;
+  margin-top: -7px;
 }
 
 .fontawesome-bell:hover {
@@ -1931,4 +1932,19 @@ cursor: pointer;
 }
 
 
-
+/* MEDIAS FOR PAGE WRAPPER - COMPONER MENSAJE */
+@media only screen and (min-width: 641px) and (max-width: 959px) {
+  #page-wrapper {
+    width: 640;
+    top: -850px;
+      } 
+  }
+@media only screen and (max-width: 640px) {
+    #page-wrapper {
+    width: 640px;
+    top: -850px; }  
+  }
+@media only screen and (min-width: 640px) and (max-width: 1390px) {
+    #page-wrapper {
+    top: -890px; }  
+  }
