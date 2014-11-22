@@ -1926,15 +1926,15 @@ cursor: pointer;
 @media only screen and (min-width: 641px) and (max-width: 959px) {
   #page-wrapper {
     width: 640;
-    top: 100px;
+    top: -850px;
       } 
   }
 @media only screen and (max-width: 640px) {
     #page-wrapper {
     width: 640px;
-    top: 110px; }  
+    top: -850px; }  
   }
 @media only screen and (min-width: 640px) and (max-width: 1390px) {
     #page-wrapper {
-    top: 80px; }  
+    top: -890px; }  
   }
