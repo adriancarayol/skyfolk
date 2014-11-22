@@ -1548,7 +1548,8 @@ button:hover {
   font-size: 31px;
   display: block;
   position:absolute;
-  margin-left:-33px;
+  margin-right:-33px;
+  margin-top: -7px;
 }
 
 .fontawesome-bell:hover {
