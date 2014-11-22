@@ -6,8 +6,7 @@
 .field {
 	display: flex;
 	position: absolute;
-	margin: 5em auto;
-  margin-top: -2px;
+	margin: 4.894em auto;
 	width: 901px;/*70%*/
 	height: 38px;
 	top: -50px;
