@@ -1922,4 +1922,15 @@ cursor: pointer;
 }
 
 
-
+/* MEDIAS FOR PAGE WRAPPER - COMPONER MENSAJE */
+@media only screen and (min-width: 641px) and (max-width: 959px) {
+  #page-wrapper {
+    width: 640;
+    margin-top: -100px;
+      } 
+  }
+@media only screen and (max-width: 640px) {
+    #page-wrapper {
+    width: 631px;
+    margin-top: -110px; }  
+  }
