@@ -5,15 +5,53 @@ $("#ilike_profile").click(function () {
 });
 */
 
+	
 
+    
 
-
+		
     $(document).ready( function() {
-    	
-    	$("#li-tab-amigos").click(function(){
- 
-    		
-    	});	
+
+        
+        $('#tab-amigos').bind('scroll', function() {
+            if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                //alert('end reached');
+            	
+                $.ajax({
+                    type: "POST",
+                    url: "/load_friends/",
+                    data: {'slug': 12, 'csrfmiddlewaretoken': csrftoken},
+                    dataType: "json",
+                    success: function(response) {
+                      
+                    	//load friends
+                    	//alert(response.length);
+                    	//response = JSON.parse(response)
+                    	
+                    	for (i=0;i<response.length;x++){
+    						addFriendToHtmlList(response[i]);
+
+						}
+						
+						
+
+                    },
+                    error: function(rs, e) {
+                       alert(rs.responseText);
+                       /*
+                     	response = JSON.parse(response)
+                    	for (i=0;i<response.length;x++){
+    						addProfileCard(response[i].user.username);
+
+						}
+						*/                     
+                    }
+                });
+            	
+            	
+            }
+        });
+        
     	
 
     
@@ -28,11 +66,18 @@ $("#ilike_profile").click(function () {
       
     });
 
+function addFriendToHtmlList(item){
+	alert(item.user.username);
+	$("#tab-amigos ul.list-friends").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user.username }}">' + item.user.first_name + ' ' + item.user.last_name + ' (' + item.user.username + ')</a></li>');
+	
+} 
+    
+    
 function friendListScrollToDownEnd(){
 	$('#tab-amigos').bind('scroll', function(){
     	if($(this).scrollTop() + $(this).innerHeight()>=$(this)[0].scrollHeight)
     	{
-    		//alert('end reached');
+    		alert('end reached');
     	}
 	})
 }    

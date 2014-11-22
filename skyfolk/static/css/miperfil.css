@@ -1031,6 +1031,11 @@ font-family: 'Andika', sans-serif;
   /*overflow-y: scroll;*/
   /*overflow: hidden;*/
   /*overflow-y: hidden;*/
+  
+  overflow: auto;
+  height:100%;
+  
+  
 }
 #tab-amigos ul.list-friends {
   position: relative;
@@ -1040,7 +1045,12 @@ font-family: 'Andika', sans-serif;
   /*overflow-y: scroll;*/
   /*overflow: hidden;*/
   /*overflow-y: hidden;*/
+
 }
+#hood-tabs{ overflow: hidden; -ms-overflow-style: none; }
+#hood-tabs::-webkit-scrollbar { display: none; }
+
+
 #tab-amigos ul.list-friends li {
   display: table;
   background-color: #FAFAFA;
