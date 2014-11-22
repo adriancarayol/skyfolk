@@ -307,3 +307,11 @@ $colors: #E74C3C, #0072B5, #2C3E50;
 */
 
 
+@media only screen and (min-width: 641px) and (max-width: 959px) {
+  .field {
+    width: 831px; } 
+  }
+@media only screen and (max-width: 640px) {
+    .field {
+    width: 631px; }  
+  }
