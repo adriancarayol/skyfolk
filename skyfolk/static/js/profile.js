@@ -223,7 +223,7 @@ function cambiopagina(){
                            */
                            if (response == "isfriend"){
 
-                                alert("ya es amigo tuyo");                                              
+                                alert("Ya es amigo tuyo");                                              
                                                             
                            }else if(response == "inprogress"){
 
