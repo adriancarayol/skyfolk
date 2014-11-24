@@ -8,48 +8,46 @@ $("#ilike_profile").click(function () {
 	
 
     
-
+var countFriendList = 1;
 		
     $(document).ready( function() {
 
         
         $('#tab-amigos').bind('scroll', function() {
             if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-                //alert('end reached');
-            	
+
+            	countFriendList++;
                 $.ajax({
                     type: "POST",
                     url: "/load_friends/",
-                    data: {'slug': 12, 'csrfmiddlewaretoken': csrftoken},
+                    data: {'slug': countFriendList, 'csrfmiddlewaretoken': csrftoken},
                     dataType: "json",
                     success: function(response) {
                       
                     	//load friends
-                    	//alert(response.length);
-                    	//response = JSON.parse(response)
                     	
-                    	for (i=0;i<response.length;x++){
+                    	for (i=0;i<response.length;i++){
     						addFriendToHtmlList(response[i]);
 
 						}
-						
-						
+
 
                     },
+                    
                     error: function(rs, e) {
-                       alert(rs.responseText);
-                       /*
-                     	response = JSON.parse(response)
-                    	for (i=0;i<response.length;x++){
-    						addProfileCard(response[i].user.username);
-
-						}
-						*/                     
+                       alert("ERROR " + rs.responseText);
+						                   
                     }
+                    
+                  
                 });
             	
             	
             }
+        });
+        
+        $("#li-tab-amigos").click(function(){
+            $('#tab-amigos').css({"overflow":"auto"});
         });
         
     	
@@ -67,8 +65,7 @@ $("#ilike_profile").click(function () {
     });
 
 function addFriendToHtmlList(item){
-	alert(item.user.username);
-	$("#tab-amigos ul.list-friends").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user.username }}">' + item.user.first_name + ' ' + item.user.last_name + ' (' + item.user.username + ')</a></li>');
+	$("#tab-amigos ul.list-friends").append('<li><img src="' + STATIC_URL + 'img/generic-avatar.png" class="img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
 	
 } 
     

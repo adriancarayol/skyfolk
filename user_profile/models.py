@@ -79,7 +79,7 @@ class UserProfile(models.Model):
         return self.get_related_to(RELATIONSHIP_FOLLOWING)
 
     def get_friends(self):
-        return self.get_relationships(RELATIONSHIP_FRIEND).order_by('id')
+        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__username', 'user__first_name', 'user__last_name').order_by('id')
 
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)
@@ -107,8 +107,12 @@ class UserProfile(models.Model):
     def is_friend(self, profile):
         return Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND)
 
-    def get_friends_top4(self):
-        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[0:4]
+    def get_friends_top12(self):
+        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values('user__username', 'user__first_name', 'user__last_name').order_by('id')[0:12]
+
+    def get_friends_objectlist(self):
+        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values('user__username', 'user__first_name', 'user__last_name').order_by('id')
+
 
     def add_friend_request(self, profile):
         obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FRIEND)

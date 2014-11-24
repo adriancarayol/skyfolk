@@ -81,10 +81,12 @@ def profile_view(request, username):
 		existFriendRequest = False
 		print False
 
-	#cargar lista de amigos
+	#cargar lista de amigos (12 primeros)
 	try:
 		#friends_4 = request.user.profile.get_friends_next4(1)
 		friends = user_profile.profile.get_friends()
+		print '>>>>>>> LISTA: '
+		print (friends)
 	except ObjectDoesNotExist:
 		friends = None
 
@@ -93,8 +95,10 @@ def profile_view(request, username):
 		if len(friends) > 12:
 			#request.session['friends_list'] = simplejson.dumps(friends.values())
 			#request.session['friends_list'] = list(friends)
-			request.session['friends_list'] = serializers.serialize('json', friends)
+			#request.session['friends_list'] = serializers.serialize('json', list(friends))
+			request.session['friends_list'] = simplejson.dumps(list(friends))
 			friends_top12 = friends[0:12]
+
 		else:
 			friends_top12 = friends
 	
@@ -260,7 +264,6 @@ def respond_friend_request(request):
 def friends(request):
 
 	try:
-		#friends_4 = request.user.profile.get_friends_next4(1)
 		friends = request.user.profile.get_friends()
 	except ObjectDoesNotExist:
 		friends = None
@@ -268,8 +271,6 @@ def friends(request):
 	friends_top4 = None
 	if friends != None:
 		if len(friends) > 4:
-			#request.session['friends_list'] = simplejson.dumps(friends.values())
-			#request.session['friends_list'] = list(friends)
 			request.session['friends_list'] = serializers.serialize('json', friends)
 			friends_top4 = friends[0:4]
 		else:
@@ -281,22 +282,23 @@ def friends(request):
 
 def load_friends(request):
 
-
+	print '>>>>>> PETICION AJAX, CARGAR MAS AMIGOS'
 	friendslist = request.session.get('friends_list', None)
-	b = request.session.get('friends_list', None)
 	if friendslist == None:
 		friends_next = None
 	else:
 		friendslist = simplejson.loads(friendslist)
-		print '>>>>>>> LISTA: '
-		print (friendslist)
 		if request.method == 'POST':
 			slug = request.POST.get('slug', None)
-			print '>>>>>>> LISTA: ' + slug
+			print '>>>>>>> SLUG: ' + slug
 			n = int(slug) * 12
-			#friends_next = friendslist[n-12:n] # devolvera None si esta fuera de rango?
-			friends_next = friendslist
+			friends_next = friendslist[n-12:n] # devolvera None si esta fuera de rango?
+			print '>>>>>>> LISTA: '
+			print (friends_next)
+
+	return HttpResponse(simplejson.dumps(list(friends_next)), content_type='application/json')
 
 
-	return HttpResponse(simplejson.dumps(friends_next), mimetype='application/javascript')
+
+
 

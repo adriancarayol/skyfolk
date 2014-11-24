@@ -4,10 +4,15 @@
 
 <script type="text/javascript"> 
 
+	
+   //first set the value you will be using.
+   var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
+	
+
    var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
    var stopRequests = false;
    var idRequestsTimer = null;
-
+   
    if(requests){
       idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3000);
 
@@ -487,7 +492,7 @@
 					  <ul class="list-friends">
 
 					      {% for item in friends_top12 %}
-					      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user.username }}">{{item.user.first_name}} {{item.user.last_name}} ({{item.user.username}})</a></li>
+					      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a></li>
 					      {% endfor %}
 					      
 					  </ul>
