@@ -5,22 +5,81 @@ $("#ilike_profile").click(function () {
 });
 */
 
+	
+
+    
+var countFriendList = 1;
+		
     $(document).ready( function() {
+
+        
+        $('#tab-amigos').bind('scroll', function() {
+            if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+
+            	countFriendList++;
+                $.ajax({
+                    type: "POST",
+                    url: "/load_friends/",
+                    data: {'slug': countFriendList, 'csrfmiddlewaretoken': csrftoken},
+                    dataType: "json",
+                    success: function(response) {
+                      
+                    	//load friends
+                    	
+                    	for (i=0;i<response.length;i++){
+    						addFriendToHtmlList(response[i]);
+
+						}
+
+
+                    },
+                    
+                    error: function(rs, e) {
+                       alert("ERROR " + rs.responseText);
+						                   
+                    }
+                    
+                  
+                });
+            	
+            	
+            }
+        });
+        
+        $("#li-tab-amigos").click(function(){
+            $('#tab-amigos').css({"overflow":"auto"});
+        });
+        
+    	
+
+    
       $('#tab-container').easytabs({
-    	  /*
-    	  transitionOut: "hide",
-    	  animationSpeed: 0,
-    	  transitionCollapse: "hide",
-    	  transitionUncollapse: "show",
-    	  animationSpeed: 0
-    	  */
-    	  defaultTab: "#li-tab-comentarios"
-    	  
-    	  
+
+    	  defaultTab: "#li-tab-comentarios",
+    	  animate: false
 
       });
+      
+      
+      
     });
 
+function addFriendToHtmlList(item){
+	$("#tab-amigos ul.list-friends").append('<li><img src="' + STATIC_URL + 'img/generic-avatar.png" class="img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
+	
+} 
+    
+    
+function friendListScrollToDownEnd(){
+	$('#tab-amigos').bind('scroll', function(){
+    	if($(this).scrollTop() + $(this).innerHeight()>=$(this)[0].scrollHeight)
+    	{
+    		alert('end reached');
+    	}
+	})
+}    
+    
+    
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
     function getCookie(name) {
         var cookieValue = null;

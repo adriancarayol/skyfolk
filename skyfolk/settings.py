@@ -46,11 +46,12 @@ DEFAULT_APPS = (
 
 # Third Party Applications
 THIRD_PARTY_APPS = (
-    # 'south',       # Gestiona las migraciones de bdd
+    # 'south',                 # Gestiona las migraciones de bdd
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'rest_framework',   # REST framework
+    'rest_framework',          # REST framework
+    'django_messages',         # mensajes entre usuarios
 )
 
 # Local Applications

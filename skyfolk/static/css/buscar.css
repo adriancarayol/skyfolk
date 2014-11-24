@@ -6,20 +6,20 @@
 .field {
 	display: flex;
 	position: absolute;
-	margin: 5em auto;
+	margin: 4.894em auto;
 	width: 901px;/*70%*/
 	height: 38px;
 	top: -50px;
 	left: 7%;
 	flex-direction: row;
 	box-shadow:
-   1px 1px 0 rgb(22, 160, 133),
-   2px 2px 0 rgb(22, 160, 133),
-   3px 3px 0 rgb(22, 160, 133),
-   4px 4px 0 rgb(22, 160, 133),
-   5px 5px 0 rgb(22, 160, 133),
-   6px 6px 0 rgb(22, 160, 133),
-   7px 7px 0 rgb(22, 160, 133)
+   1px 1px 0 #3E9397,
+   2px 2px 0 #3E9397,
+   3px 3px 0 #3E9397,
+   4px 4px 0 #3E9397,
+   5px 5px 0 #3E9397,
+   6px 6px 0 #3E9397,
+   7px 7px 0 #3E9397
   ;
 }
 .field:after {
@@ -35,17 +35,21 @@
 .field>form input[type=text] {
   flex:1;
   padding:0.6em;
-  border:0.2em solid rgb(26, 188, 156);
+  border:0.2em solid #3E9397;
   width:822px;
   height:34px;
   margin-top:2px;
   margin-left:0px;
   color: #000;
 }
+.field>form input[type="text"] {
+  border: 0.2 em solid #3E9397;
+  transition: all .3s ease-in;
+}
 
 .field>form button {
 	padding: 0.6em 0.8em;
-	background-color: rgb(26, 188, 156);
+	background-color: #3E9397;
 	color: white;
 	border: none;
 	font-weight: bold;
@@ -303,3 +307,11 @@ $colors: #E74C3C, #0072B5, #2C3E50;
 */
 
 
+@media only screen and (min-width: 641px) and (max-width: 959px) {
+  .field {
+    width: 831px; } 
+  }
+@media only screen and (max-width: 640px) {
+    .field {
+    width: 631px; }  
+  }

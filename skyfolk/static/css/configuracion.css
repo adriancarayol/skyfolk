@@ -1,6 +1,8 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
 @import url(http://weloveiconfonts.com/api/?family=entypo);
 @import url(http://fonts.googleapis.com/css?family=Gafata);
 @import url(http://weloveiconfonts.com/api/?family=entypo);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 @import url(http://fonts.googleapis.com/css?family=Gafata);
 @import url(http://fonts.googleapis.com/css?family=Carrois+Gothic+SC);
 
@@ -40,18 +42,19 @@ width:270px;
 
 .actual {
 color: black;
-border-radius: 8px 8px 8px 8px;
+min-width: 120px;
+border-radius: 3px;
 text-shadow: rgb(150,150,150) 1px 1px 1px;
 margin-bottom: 25px;
 
 display:block;
 margin-left:60px;
 margin-top:10px;
+font-family: 'Open Sans', sans-serif;
 }
-.actual:hover {
-opacity: 0.5;
+.actual:focus {
 border-color: blue;
-border: 4px solid #6AFA9D;
+border: 2px solid #6AFA9D;
 box-shadow: rgb(150,150,150) 1px 1px;
 }
 #float {
@@ -81,12 +84,13 @@ rgba(89,208,244,1) 0,rgba(89,208,244,0) 100px),
 	transition:background-position 3s;
 
 	
-border-radius: 7px 7px 7px 7px;
+border-radius: 5px;
 width: 170px;
 height: 50px;
-font-family: 'Gafata', sans-serif, bold;
+font-family: 'Open Sans', sans-serif;
 font-size: 15px;
-
+color: white;
+background-color: #303F73;
 
 display:block;
 margin:0 auto 0 auto;
@@ -102,24 +106,12 @@ text-decoration:none !important;
 	padding:10px 20px;
 	
 	background-repeat:no-repeat;
+	transition: all .3s ease-in;
 
 }
 #btn:hover {
-	background-color:#63c7fe;
+	background-color:#265B6A;
 	
-	background-image:	url('button_bg.png'), url('http://cssdeck.com/uploads/media/items/6/6Wl44TI.png'),
-						-moz-radial-gradient(	center bottom, circle,
-												rgba(109,217,250,1) 0,rgba(109,217,250,0) 100px),
-						-moz-linear-gradient(#63c7fe, #58bef7);
-						
-	background-image:	url('button_bg.png'), url('http://cssdeck.com/uploads/media/items/6/6Wl44TI.png'),
-						-webkit-gradient(	radial, 50% 100%, 0, 50% 100%, 100,
-											from(rgba(109,217,250,1)), to(rgba(109,217,250,0))),
-						-webkit-gradient(linear, 0% 0%, 0% 100%, from(#63c7fe), to(#58bef7));
-						background-position:top left;
-	background-position:top left, bottom right, 0 0, 0 0;
-
-
 }
 #btn:active {
 bottom: -2px;

@@ -23,3 +23,4 @@ requests==2.2.1
 requests-oauthlib==0.4.0
 shortuuid==0.4.0
 static==1.0.2
+django-messages==0.5.1

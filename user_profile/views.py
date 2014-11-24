@@ -81,10 +81,12 @@ def profile_view(request, username):
 		existFriendRequest = False
 		print False
 
-
+	#cargar lista de amigos (12 primeros)
 	try:
 		#friends_4 = request.user.profile.get_friends_next4(1)
 		friends = user_profile.profile.get_friends()
+		print '>>>>>>> LISTA: '
+		print (friends)
 	except ObjectDoesNotExist:
 		friends = None
 
@@ -93,8 +95,10 @@ def profile_view(request, username):
 		if len(friends) > 12:
 			#request.session['friends_list'] = simplejson.dumps(friends.values())
 			#request.session['friends_list'] = list(friends)
-			request.session['friends_list'] = serializers.serialize('json', friends)
+			#request.session['friends_list'] = serializers.serialize('json', list(friends))
+			request.session['friends_list'] = simplejson.dumps(list(friends))
 			friends_top12 = friends[0:12]
+
 		else:
 			friends_top12 = friends
 	
@@ -158,100 +162,100 @@ def config_profile(request):
 
 def like_profile(request):
 
-    response = "null"
-    if request.method == 'POST':
-        user = request.user
-        slug = request.POST.get('slug', None)
-        profileUserId = slug
-        try:
-            user_liked = user.profile.has_like(profileUserId)
-        except ObjectDoesNotExist:
-            user_liked = None
+	response = "null"
+	if request.method == 'POST':
+		user = request.user
+		slug = request.POST.get('slug', None)
+		profileUserId = slug
+		try:
+			user_liked = user.profile.has_like(profileUserId)
+		except ObjectDoesNotExist:
+			user_liked = None
 
-        if user_liked:
-            user_liked.delete()
-            response="nolike"
-        else:
-            print str(slug)
-            created = user.profile.add_like(UserProfile.objects.get(pk=slug))
-            created.save()
-            response="like"
+		if user_liked:
+			user_liked.delete()
+			response="nolike"
+		else:
+			print str(slug)
+			created = user.profile.add_like(UserProfile.objects.get(pk=slug))
+			created.save()
+			response="like"
 
-    return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+	return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
 
 
 
 
 def request_friend(request):
-    print '>>>>>>> peticion amistad '
-    response = "null"
-    if request.method == 'POST':
-        user = request.user
-        slug = request.POST.get('slug', None)
-        profileUserId = slug
-        print str(profileUserId)
-        try:
-            print 'Paso 0'
-            user_friend = user.profile.is_friend(profileUserId)
-            print 'Paso 1'
-        except ObjectDoesNotExist:
-            user_friend = None
+	print '>>>>>>> peticion amistad '
+	response = "null"
+	if request.method == 'POST':
+		user = request.user
+		slug = request.POST.get('slug', None)
+		profileUserId = slug
+		print str(profileUserId)
+		try:
+			print 'Paso 0'
+			user_friend = user.profile.is_friend(profileUserId)
+			print 'Paso 1'
+		except ObjectDoesNotExist:
+			user_friend = None
 
-        
-        if user_friend:
-            response = "isfriend"
-        else:
-            response="inprogress"
-            try:
-                friend_request = user.profile.get_friend_request(UserProfile.objects.get(pk=slug))
-            except ObjectDoesNotExist:
-                friend_request = None
 
-            if not friend_request:
-               created = user.profile.add_friend_request(UserProfile.objects.get(pk=slug))
-               created.save()
+		if user_friend:
+			response = "isfriend"
+		else:
+			response="inprogress"
+			try:
+				friend_request = user.profile.get_friend_request(UserProfile.objects.get(pk=slug))
+			except ObjectDoesNotExist:
+				friend_request = None
 
-        print response               	
+			if not friend_request:
+				created = user.profile.add_friend_request(UserProfile.objects.get(pk=slug))
+				created.save()
 
-    return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+		print response               	
+
+	return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
 
 
 
 def respond_friend_request(request):
 
-    response = "null"
-    if request.method == 'POST':
-        user = request.user
-        profileUserId = request.POST.get('slug', None)
-        request_status = request.POST.get('status', None)
+	response = "null"
+	if request.method == 'POST':
+		user = request.user
+		profileUserId = request.POST.get('slug', None)
+		request_status = request.POST.get('status', None)
 
-        
-        try:
-            emitter_profile = UserProfile.objects.get(pk=profileUserId)
-        except ObjectDoesNotExist:
-            emitter_profile = None
 
-        if emitter_profile:
-            #user.profile.get_received_friends_requests().delete()
-            user.profile.remove_received_friend_request(emitter_profile);
+		try:
+			emitter_profile = UserProfile.objects.get(pk=profileUserId)
+		except ObjectDoesNotExist:
+			emitter_profile = None
 
-            if request_status == 'accept':
+		if emitter_profile:
+			#user.profile.get_received_friends_requests().delete()
+			user.profile.remove_received_friend_request(emitter_profile);
 
-                response="not_added_friend"
-                try:
-                    user_friend = user.profile.is_friend(profileUserId)
-                except ObjectDoesNotExist:
-                    user_friend = None
+			if request_status == 'accept':
 
-                if not user_friend:
-                    created = user.profile.add_friend(emitter_profile)
-                    created.save()
-                    response="added_friend"
+				response="not_added_friend"
+				try:
+					user_friend = user.profile.is_friend(profileUserId)
+				except ObjectDoesNotExist:
+					user_friend = None
 
-            else:
-                response="rejected"
+				if not user_friend:
+					created = user.profile.add_friend(emitter_profile)
+					created.save()
+					response="added_friend"
 
-    return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+			else:
+				response="rejected"
+
+	return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
 
 
 
@@ -260,7 +264,6 @@ def respond_friend_request(request):
 def friends(request):
 
 	try:
-		#friends_4 = request.user.profile.get_friends_next4(1)
 		friends = request.user.profile.get_friends()
 	except ObjectDoesNotExist:
 		friends = None
@@ -268,8 +271,6 @@ def friends(request):
 	friends_top4 = None
 	if friends != None:
 		if len(friends) > 4:
-			#request.session['friends_list'] = simplejson.dumps(friends.values())
-			#request.session['friends_list'] = list(friends)
 			request.session['friends_list'] = serializers.serialize('json', friends)
 			friends_top4 = friends[0:4]
 		else:
@@ -281,22 +282,23 @@ def friends(request):
 
 def load_friends(request):
 
-
+	print '>>>>>> PETICION AJAX, CARGAR MAS AMIGOS'
 	friendslist = request.session.get('friends_list', None)
-	b = request.session.get('friends_list', None)
 	if friendslist == None:
-		friends_4 = None
+		friends_next = None
 	else:
 		friendslist = simplejson.loads(friendslist)
-		print '>>>>>>> LISTA: '
-		print (friendslist)
 		if request.method == 'POST':
 			slug = request.POST.get('slug', None)
-			print '>>>>>>> LISTA: ' + slug
-			n = int(slug) * 4
-			#friends_4 = friendslist[n-4:n] # devolvera None si esta fuera de rango?
-			friends_4 = friendslist
+			print '>>>>>>> SLUG: ' + slug
+			n = int(slug) * 12
+			friends_next = friendslist[n-12:n] # devolvera None si esta fuera de rango?
+			print '>>>>>>> LISTA: '
+			print (friends_next)
+
+	return HttpResponse(simplejson.dumps(list(friends_next)), content_type='application/json')
 
 
-	return HttpResponse(simplejson.dumps(friends_4), mimetype='application/javascript')
+
+
 

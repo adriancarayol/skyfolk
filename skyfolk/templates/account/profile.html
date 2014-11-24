@@ -4,10 +4,15 @@
 
 <script type="text/javascript"> 
 
+	
+   //first set the value you will be using.
+   var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
+	
+
    var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
    var stopRequests = false;
    var idRequestsTimer = null;
-
+   
    if(requests){
       idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3000);
 
@@ -100,23 +105,42 @@
     
 </div>
 <!-- Configuración rápida -->
-<div id="fastconf">
+<!--
+      <div id="confr" class="col-xs-6 col-md-4">
         <span class="fontawesome-cog">  Configuración rápida.</span>
-        <img class="profile" src="http://data2.whicdn.com/images/18501113/large.jpg"></img>
-        <span id="close" class="fontawesome-remove" title="Cerrar"></span>
-      <input type="text" name="FirstName" target="million" value="{{ user_profile.username }}" placeholder="Username">
-        <input type="text" name="secondname" target="shot" value="Play Hard" placeholder="state">
-        <input type="url" name="paginaweb" target="url" value="skyfolk.com" placeholder="Página web">
-        <input type="location" name="location" target="location" value="España (Murcia)" placeholder="Zona">
-        <nav class="mi-nav">
-        <ul class="mi-nav-list">
-            <li class="fontawesome-comment" title="Ajustes del Chat"></li>
-            <li class="fontawesome-lock" title="Privacidad"></li>
-            <li class="fontawesome-calendar" title="Mi agenda"></li>
-            <li class="fontawesome-bell-alt" title="Notificaciones"></li>
-            <li class="fontawesome-edit" title="Diseño"></li>
-            </ul></nav>
+        <span class="fontawesome-remove"></span>
+        <img src="http://data2.whicdn.com/images/18501113/large.jpg" class="img-rounded"></img>
+    <form role="form">
+  <div class="form-group">
+    <label for="exampleInputEmail1"><p>Nombre de usuario</p></label>
+    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter new name.">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1"><p>Estado</p></label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Play Hard">
+  </div>
+       <div class="form-group">
+    <label for="exampleInputPassword1"><p>Localizacion</p></label>
+    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Murcia (España)">
+  </div>
+       <div class="form-group">
+    <label for="exampleInputPassword1"><p>Web</p></label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="skyfolk.com">
+  </div>
+
+      <button type="button" class="btn btn-primary">Save Changes</button>
+      </form>
+      <div class="nav">  <nav>
+    <ul>
+      <li title="Recursos" class="fontawesome-cloud"></li>
+      <li title="Mis Trabajos" class="fontawesome-wrench"></li>
+      <a href="index.html"><li title="Inicio" class="fontawesome-dashboard"></li></a>
+      <li title="Aportaciones" class="fontawesome-copy"></li>
+      <a href="novedades.html"><li title="Páginas de interés" class="fontawesome-globe"></li></a>
+    </ul>
+      </nav>
       </div>
+      </div>-->
 <!-- Fin de conf rápida -->
 <!-- Notificacion me gusta -->
 <div id="notifi">
@@ -351,7 +375,7 @@
             <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
             <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Amigos</a></li>
           </ul>
-          <div class="unstyled content">
+          <div class="unstyled content" id="hood-tabs">
 				<div id="tab-popular">
 	
 	
@@ -446,20 +470,33 @@
 							    </p>
 							  </article>
 						</div>
+		              <div class="wrapper">
+							  <div id="box">
+							        <input id="profile" type="checkbox" checked> 
+							        <label class="popo" for="profile">
+							        <img src="http://www.1053kissfm.com/files/kp.jpg"alt="img">
+							        </label>
+							        <span class="entypo-thumbs-up"></span> 
+							        <span class="entypo-forward"></span>
+							  </div>
+							  <article class="articulo">
+							    <h2 class="h22"><a href="http://www.twitter.com/random_studio" target="_blank" >_random_studio</a> mentioned you</h2>
+							    <p class="parrafo">
+							      <a href="file:///C:/Users/Adrian/Desktop/skyfolk/perfil.html" target="_blank">_adriancarayol</a> How would you like to intern with us this summer?
+							    </p>
+							  </article>
+						</div>
 				</div>
 				<div id="tab-amigos">
+				
+					  <ul class="list-friends">
 
-				    <ul class="list-friends">
-				      <!--
-				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
-				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
-				      <li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>Nombre1 Apellidos1</a></li>
-				      -->
-				      {% for item in friends_top12 %}
-				      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user.username }}">{{item.user.first_name}} {{item.user.last_name}} ({{item.user.username}})</a></li>
-				      {% endfor %}
-				    </ul>
-
+					      {% for item in friends_top12 %}
+					      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a></li>
+					      {% endfor %}
+					      
+					  </ul>
+					
 				</div>
           </div>
       </div>

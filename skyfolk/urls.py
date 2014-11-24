@@ -6,6 +6,7 @@ from rest_framework import routers
 from api import views
 from django.conf import settings
 
+
 admin.autodiscover()
 
 # REST Framework
@@ -30,6 +31,9 @@ urlpatterns = patterns(
     url(r'^load_friends/$', 'user_profile.views.load_friends'),
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^accounts/', include('allauth.urls')),
+
+    # url mensajes privados
+    url(r'^messages/', include('django_messages.urls')),
 
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
