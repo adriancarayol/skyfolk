@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response , get_object_or_404, render
 from django.template import RequestContext, loader
 from user_profile.forms import SearchForm
+from publications.forms import PublicationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -103,7 +104,11 @@ def profile_view(request, username):
 			friends_top12 = friends
 	
 	print friends_top12
-	return render_to_response('account/profile.html',{'friends_top12':friends_top12, 'user_profile':user_profile, 'searchForm':searchForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
+	
+	#mostrar formulario para enviar comentarios/publicaciones
+	publicationForm = PublicationForm()
+	
+	return render_to_response('account/profile.html',{'friends_top12':friends_top12, 'user_profile':user_profile, 'searchForm':searchForm, 'publicationForm':publicationForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
 
 @login_required(login_url='accounts/login')
 def search(request):
