@@ -676,143 +676,197 @@ select {
   margin-left: 10px;
 }
 /* section */
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
 
-#section {
-  background-color: white;
-  box-shadow: 0.7px 0.5px grey;
-  border-radius: 10px;
-  position: absolute;
-  z-index: 7;
-  width: 40%;
-  min-height: 85%;
-  max-height: 85%;
-  margin: auto;
-  left: 30%;
-  font-family: 'open sans', sans-serif;
-
+/* fontawesome */
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
 }
-span.fontawesome-remove {
-  position: absolute;
-  float: right;
-  left: 95%;
-  font-size: 1.2em;
-  color: tomato;
+
+.wrapper {
+  position:relative;
+  margin:auto;
+  width: 500px;
+  height: 580px;
+  display: block;
+  top: 50px;
+  -webkit-box-shadow: 2px 2px 9px 0px rgba(50, 50, 50, 0.75);
+-moz-box-shadow:    2px 2px 9px 0px rgba(50, 50, 50, 0.75);
+box-shadow:         2px 2px 9px 0px rgba(50, 50, 50, 0.75);
+}
+.col-md-8 {
+  position:relative;
+  margin:auto;
+  display: inline-block;
+  margin-left: 30px;
+}
+.col-ls-12 {
+  position:relative;
+  margin:auto;
+  left: 100px;
+  top: -66px;
+}
+button[type="submit"] {
+  position:relative;
+  left: 210px;
+  display:inline-block;
+  margin:auto;
+  top: 10px;
+}
+.form-group .name {
+  background-color: #F75262;
+  position:relative;
+  top: 38px;
+  padding: 6px 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 100;
+  color: #fafafa;
+  right: -10px;
+  width: 90px;
+  text-align: center;
+}
+.form-group .lema {
+  background-color: #F75262;
+  position:relative;
+  top: 38px;
+  padding: 6px 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 100;
+  color: #fafafa;
+  right: -10px;
+  width: 90px;
+  text-align: center;
+}
+input[type="email"], input[type="password"] {
+  width: 200px;
+  margin-left: 100px;
+  height: 33px;
+}
+.img-rounded {
+  position: relative;
+  left: -100px;
+  top: 100px;
+  margin:auto;
+  width: 70px;
+  height: 70px;
+  display: inline-block;
+  border: 3px solid grey;
+  transition: all .3s ease-in;
   cursor: pointer;
 }
-section img.group {
-  width: 120px;
-  height: 120px;
-  border: 1px solid rgba(215, 231, 230, 0.6);;
+.img-rounded:hover {
+  border-color: tomato;
+}
+input:focus {
+  color: grey;
+}
+.relaciones {
   position: relative;
-  margin: auto;
-  padding: 0;
   display: inline-block;
-  left: 40%;
-  margin-top: 20px;
-}
-section ul {
-  position: relative;
-  list-style-type: none;
   margin: auto;
-  text-align: center;
-  top: 10%;
-
-}
-section ul li {
-  margin-top: 20px;
-  outline: none;
-}
-section ul li select {
-  position: relative;
-  margin-top: 37%;
-  padding: 0;
-
-}
-input[type="search"] {
-  position: absolute;
-  margin-top: 37%;
-  padding: 2px 2px;
-  background: url('http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon-614x460.png');
-  background-size: 37px;
-  background-repeat: no-repeat;
-  background-position: left;
-  border-radius: 20px;
-  text-align: center;
-  outline: none;
-  transition: all .3s ease-in;
-  right: 10px;
-}
-input[type="search"]:focus {
-  border: 2px solid tomato;
-}
-input[target="local"] { 
-  outline: none;
-  border: none;
-  border-bottom: 2px solid aquamarine;
-  text-align: center;
-  background: url('http://uxrepo.com/static/icon-sets/font-awesome/svg/location.svg');
-  background-size: 15px;
-  background-repeat: no-repeat;
-  padding: 5px -10px;
-  opacity: 0.7;
-  color: grey;
-}
-input[target="group"] {
-  background: url('http://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Group_font_awesome.svg/512px-Group_font_awesome.svg.png');
-  background-size: 15px;
-  background-repeat: no-repeat;
-  outline: none;
-  border: none;
-  border-bottom: 2px solid aquamarine;
-  text-align: center;
-  padding: 5px -10px;
-  opacity: 0.7;
-  color: grey;
-
-}
-input[target="group"]:focus, input[target="local"]:focus{
-  opacity: 0.6;
-  border-bottom: 2px solid tomato;
-
-}
-div.contactos {
-  position: relative;
-  min-width: 65%;
-  max-width: 100%;
+  border-radius: 7px;
+  background-color: #FFF0F5;
+  width: 400px;
   height: 170px;
+  right: 60px;
+  top: 20px;
   overflow-y: scroll;
-  overflow-x: hidden;
-  right: 14%;
-  box-shadow: 1px 1px  rgba(0, 0, 0, 0.3);
-  margin: auto;
-  margin-top: -30px;
 }
-div.contactos img {
+h4 {
+  position: relative;
+  text-align: center;
+  color: black;
+  font-weight: 100;
+  border-bottom: 2px solid tomato;
+}
+.ctc {
+  list-style-type: none;
+}
+.img-circle {
   width: 60px;
   height: 60px;
-}
-div.contactos ul.cont {
-  display: inline;
-  text-align: center;
-  float: left;
   position: relative;
-  margin: auto;
-  color: grey;
+  border: 1px solid #fafafa;
 }
-div.contactos ul.cont img {
-  border-radius: 7px;
-  margin-right: 50px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  display: inline;
-  opacity: 1;
+.ctc li {
+  margin-bottom: 7px;
+  position: relative;
+  display: table;
+}
+.ctc a {
+  margin-left: 27px;
+  font-size: 17px;
+}
+/* for search */
+.search-container {
+  overflow: hidden;
+  margin-top: 20px;
+  margin-left: -70px;
+  height: 4em;
+  width: 4em;
+  border-radius: 2em;
+  box-shadow: 0 0 5px #6A5D4F;
+  -moz-transition: all 0.35s;
+  -webkit-transition: all 0.35s;
+}
+.search-container:hover {
+  width: 25em;
+  border-radius: 5px 2em 2em 5px;
+}
+.search-container:hover input {
+  display: inline-block;
+  width: 19em;
+  padding: 10px;
 }
 
-div.contactos ul.cont li a {
-position: relative;
-padding: 0;
-margin: auto;
-top: -1.4em;
+.search-container input {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  float: left;
+  width: 0em;
+  height: 2em;
+  margin: 1em;
+  margin-right: -4.5em;
+  background: #fff;
+  color: #6A5D4F;
+  font-size: 1em;
+  font-weight: 600;
+  padding: 0px;
+  border: 0;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2) inset;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+  -moz-transition: all 0.25s;
+  -webkit-transition: all 0.25s;
 }
+input:focus {
+  outline: none;
+  box-shadow: 0 -1px 1px rgba(255, 255, 255, 0.25), 0 1px 5px rgba(0, 0, 0, 0.15);
+}
+
+.button {
+  float: right;
+  width: 1.75em;
+  height: 1.75em;
+  margin: 0.125em;
+  background: #2A4F6E;
+  text-align: center;
+  font-size: 2em;
+  color: #FDF6E3;
+  border-radius: 50%;
+  box-shadow: 0 -1px 1px rgba(255, 255, 255, 0.25), 0 1px 1px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 -2px 1px rgba(0, 0, 0, 0.3);
+}
+.button i {
+  margin-top: 0.3em;
+}
+.button:active {
+  border: 0 !important;
+  text-shadow: 0 0 0;
+}
+
 
 /* NUEVO GRUPOS */
 
