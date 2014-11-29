@@ -175,22 +175,22 @@ padding-top:1%;
 
 @media (min-width: 1200px) {
 	#widget:hover {
-		margin-top: -25.355%;
+		margin-top: -24.355%;
 	}
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
 	#widget:hover {
-		margin-top: -25.255%;
+		margin-top: -24.255%;
 	}
 }
 @media (max-width: 767px) {
 	#widget:hover {
-		margin-top: -25.155%;
+		margin-top: -24.155%;
 	}
 }
 @media (max-width: 480px) {
 	#widget:hover {
-		margin-top: -25.055%;
+		margin-top: -24.055%;
 	}
 }
