@@ -6,7 +6,7 @@ from user_profile.models import UserProfile
 
 # Create your models here.
 class Publication(models.Model):
-    content = models.TextField(help_text=_("Content"))
+    content = models.TextField(blank=False)
     writer = models.ForeignKey(UserProfile, related_name='myPublications')
     profile = models.ForeignKey(UserProfile, related_name='publicationsInMyProfile')
     image = models.ImageField(upload_to='publicationimages', verbose_name='Image',blank=True, null=True)

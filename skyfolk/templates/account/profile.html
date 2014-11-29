@@ -588,7 +588,7 @@
 </div>
 
 <!-- Mensaje flotante -->
-
+<!--  
 <div id="page-wrapper" style="display:none;">
   <h1></h1>
   
@@ -606,6 +606,37 @@
     
   </form>
 </div>
+-->
+
+{% if user.is_authenticated %}
+	<div id="page-wrapper" style="display:none;">
+	  	<h1></h1>
+		<div id="status">Conectando...</div>
+		<form id="message-form2" action="" method="post">{% csrf_token %}
+	
+			{{publicationForm.as_p}}
+			<input type="text" name="userprofileid" value="{{ user_profile.profile.id }}" hidden>
+			<input type="text" name="emitterid" value="{{ user.profile.id }}" hidden>
+		    <button type="submit" id="sendformpubli">Enviar</button>
+		    <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
+		    <button type="button" id="close">Cerrar</button>
+		    <button class="fontawesome-bullhorn"></button>
+		    <button class="fontawesome-camera"></button>
+		    <button class="fontawesome-map-marker"></button>
+	                  
+		</form>
+		
+	
+	</div>
+{% endif %}
+
+
+
+
+
+
+
+
 
 </div>
 {% endblock%}

@@ -12,6 +12,13 @@ var countFriendList = 1;
 		
     $(document).ready( function() {
 
+        $('#message-form2').on('submit', function(event){
+        	
+            event.preventDefault();
+            console.log("form submitted!");
+            AJAX_submit_publication();
+            
+        });
         
         $('#tab-amigos').bind('scroll', function() {
             if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
@@ -183,6 +190,37 @@ function friendListScrollToDownEnd(){
     }
 
 
+
+
+    function AJAX_submit_publication(){
+   
+            //event.preventDefault(); //stop submit
+            $.ajax({
+                url: '/publication/',
+                type: 'POST',
+                dataType: 'json',
+                data: $('#page-wrapper #message-form2').serialize(),
+                success: function(data) {
+                  alert(data);
+                },
+                error: function(rs, e) {
+                    alert('ERROR: ' + rs.responseText);
+                 }
+            });
+        
+    	
+    }
+    
+
+
+
+    
+    
+    
+
+
+    
+    
 
 function aparecerbola(){
   document.getElementById("widget").style.opacity = "1";
