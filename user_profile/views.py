@@ -200,9 +200,7 @@ def request_friend(request):
 		profileUserId = slug
 		print str(profileUserId)
 		try:
-			print 'Paso 0'
 			user_friend = user.profile.is_friend(profileUserId)
-			print 'Paso 1'
 		except ObjectDoesNotExist:
 			user_friend = None
 

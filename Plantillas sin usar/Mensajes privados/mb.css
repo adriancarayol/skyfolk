@@ -1,4 +1,5 @@
-@import url(http://fonts.googleapis.com/css?family=PT+Sans);    
+@import url(http://fonts.googleapis.com/css?family=PT+Sans);   
+@import url(http://fonts.googleapis.com/css?family=Open+Sans); 
 @import url(http://weloveiconfonts.com/api/?family=fontawesome);
 
 /* fontawesome */
@@ -11,31 +12,64 @@ body {
     font-size: 20px;
     font-weight: normal;
     font-family: 'PT Sans', sans-serif;
-    background-image: linear-gradient(to right top, #8e44ad 0%, #3498db 100%);
     width: 1000px;
     height: auto;
 }
-
-
+span h3.fontawesome-envelope {
+  margin-left:  20px;
+  padding:  10px 10px;
+  background-color:  #A5DBEB;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  font-size: 30px;
+  color: #F5F5F5;
+  width: 1600px;
+}
 
 aside {
-    height: 100%;
-    max-width: 35%;
-    min-width: 30%;
-    background-color: transparent;
-    color: white;
+  position:  relative;
+  margin-left: 20px;
+  background-color: #FAFAFA;
+  height: 420px;
+  width: 280px;
+  border-radius:  7px;
+  -webkit-box-shadow: 2px 2px 7px 0px #efefef;
+-moz-box-shadow:    2px 2px 7px 0px #efefef;
+box-shadow:         2px 2px 7px 0px #efefef;
 }
-header {
-    min-width: 50%;
-    max-width: 50%;
-    min-height: auto;
-    top: 0%;
-    position: absolute;
-    left: 20%;
-    background-image: -webkit-gradient(linear, right top, left top, color-stop(0, #FFFFFF), color-stop(1, #DDDDDD));
-    border-radius: 4px;
-    border-bottom-left-radius: 50px;
+nav {
+  list-style-type:  none;
+  height: 100%;
+  font-weight: 100;
+  font-family: 'Open Sans', sans-serif;
+
 }
+nav li {
+  color:  #000;
+  margin-top:  20px;
+  padding:  10px 10px;
+  border-bottom:  2px solid #fff;
+  background-color:  #fafafa;
+  border-left: 5px solid #A5DBEB;
+  border-radius:  3px;
+  transition:  all .2s ease-in;
+  cursor:  pointer;
+}
+nav li:hover {
+  color:  #00CED1;
+  background-color:  #E4E4E4;
+}
+nav li i {
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-style: normal;
+  transition:  all .3s ease-in;
+}
+nav li:hover > i {
+  margin-left: 40px;
+}
+
 input[target="search"] {
     border-radius: 20px;
     background: url('http://png-4.findicons.com/files/icons/1389/g5_system/32/toolbar_find.png') 9px 9px no-repeat, linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
@@ -52,47 +86,7 @@ input[target="search"] {
     padding-left: 30px;
 
 }
-ul li {
-    list-style-type: none;
-    color: rgba(0, 35, 122, 0.5);
-    display: inline-block;
-    padding: 0px 20px;
-    margin-left: 10px;
-    text-align: center;
-    left: 30%;
-    margin-top: -10%;
-    border-right:2px solid transparent ;
-    left: 10%;
-    position: relative;
-    cursor: pointer;    
-}
-ul li:hover{
-    list-style-type: none;
-    display: inline-block;
-    padding: 0px 20px;
-     color: rgba(0, 35, 122, 0.7);
-    margin-left: 10px;
-    text-align: center;
-    left: 30%;
-    margin-top: -10%;
-    border-right:2px solid aquamarine;
-    left: 10%;
-    position: relative;
-    cursor: pointer;
-min-width: auto}
 
-
-div.entrada {
-    max-height: 7%;
-    height: 6%;
-    max-width: 100%;
-    min-width: 70%;
-    top: 5%;
-    position: relative;
-    left: 5%;
-    text-decoration: none;
-    color: white;
-}
 a{
     text-decoration: none;
     color: white;
@@ -100,6 +94,8 @@ a{
     transition: all .3s ease-in-out;
     width: auto;
     position: relative;
+    text-align: center;
+    text-decoration: none;
     
 }
 a:hover {
@@ -111,15 +107,15 @@ a:hover {
 a[target="name"] {
     text-decoration: none;
     color: grey;
-    border-bottom: 1px solid C0FFEF;
+    border-bottom: 1px solid #C0FFEF;
     transition: all .3s ease-in-out;
-    left: 10%;
-}
-section {
     text-align: center;
-    height: 80%;
+}
+.wrapper {
+    text-align: center;
+    height: auto;
     top: 5%;
-    width: 52%;
+    width: auto;
     max-width: 70%; 
     position: absolute;
 	margin: 50px auto;
@@ -127,62 +123,44 @@ section {
     
 }
 div.noti img{
-    min-width: 10%;
-    height: 84px;
+    width: 100px;
+    height: 112px;
     float: left;
-    position: absolute;
-    border-right: 4px solid aquamarine;
+    position: relative;
     cursor: pointer;
     display: block;
-    border-radius: 10px;
-    max-resolution: res;
 }
 img:hover {
     opacity: 0.8;
 }
 div.noti {
-    min-width: 75%;
-    max-width: 85%;
-    height: 10%;
-    min-height: 15%;
+    width: 850px;
+    height: 113px;
     background-color: #E8E8E8; 
-    max-height: 11%;
     margin: 10px;
-    border: 1px solid rgba(0, 35, 122, 0.5);
+    border: 1px solid #DDDDDD;
     border-radius: 10px;
+    display: table;
 }
 div.noti:hover {
     background-color: #fff;
     color: #000;
 }
-.fontawesome-envelope-alt {
-    margin-left: 20px;
-    font-size: 20px;
-    color: white;
-    border-bottom: 3px solid aquamarine;
-    padding: 10px 10px;
-    background-color: transparent;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-span.fontawesome-star {
-    margin: 10px;
-    color: tomato;
-}
 
-p {
-    font-size: 15px;
+blockquote {
+    font-size: 20px;
     min-width: 60%;
     max-width: 70%;
     position: relative;
     left: 10%;
     margin-right: auto;
+    text-align: center;
+    top: 20px;
 }
 i {
     font-size: 9px;
     float: right;
     padding: 5px 5px;
-    border-left: 1px solid rgba(0, 35, 122, 0.5);
     height: 86%;
     color: grey;
     background-color: transparent;
