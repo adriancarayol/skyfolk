@@ -12,6 +12,20 @@ var countFriendList = 1;
 		
     $(document).ready( function() {
 
+    	
+        $('#page-wrapper #close').on('click', function(event){
+        	
+        	$('#page-wrapper').hide();
+            
+        });
+    	
+        $('#publish').on('click', function(event){
+        	
+        	$(".entypo-mail").click();
+            
+        });
+    	
+    	
         $('#message-form2').on('submit', function(event){
         	
             event.preventDefault();
@@ -201,7 +215,14 @@ function friendListScrollToDownEnd(){
                 dataType: 'json',
                 data: $('#page-wrapper #message-form2').serialize(),
                 success: function(data) {
-                  alert(data);
+                	if (data == true){
+                		alert("You have successfully posted!");
+                		$('#page-wrapper').hide();
+                	}
+                	else{
+                		alert("Failed to publish");
+                	}
+                	
                 },
                 error: function(rs, e) {
                     alert('ERROR: ' + rs.responseText);
