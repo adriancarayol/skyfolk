@@ -30,6 +30,8 @@ a, a:visited {
   border-radius: 5px;
   box-shadow: 0 0 10px #ddd;
   overflow: hidden;
+  height:auto;
+  
 }
 /* opciones fijas */
 
@@ -63,14 +65,18 @@ li.fontawesome-star {
   
   
 }
+#box{
+	/*background-color:green;*/
+}
 
 .articulo {
   float: right;
-  top: -150px;
+  /*top: -150px;*/
   position: relative;
   width: 201px;
   border-bottom: 1px solid #eee;
-  
+  margin-top:-80px;
+  margin-bottom:12px;
 }
 
 .h22 {
@@ -82,6 +88,7 @@ li.fontawesome-star {
 .parrafo {
   font-size: 1.1rem;
   line-height: 1.5rem;
+  word-wrap: break-word;
 }
 
 

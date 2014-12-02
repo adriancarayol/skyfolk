@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from forms import ProfileForm, UserForm
 from user_profile.models import Relationship, LikeProfile, UserProfile
+from publications.models import Publication
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.utils import simplejson
@@ -103,12 +104,31 @@ def profile_view(request, username):
 		else:
 			friends_top12 = friends
 	
-	print friends_top12
-	
 	#mostrar formulario para enviar comentarios/publicaciones
 	publicationForm = PublicationForm()
 	
-	return render_to_response('account/profile.html',{'friends_top12':friends_top12, 'user_profile':user_profile, 'searchForm':searchForm, 'publicationForm':publicationForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
+	#cargar lisa comentarios
+	try:
+		publications = user_profile.profile.get_publicationsToMe()
+		print '>>>>>>> LISTA PUBLICACIONES: '
+		#print publications
+		print (publications)
+	except ObjectDoesNotExist:
+		publications = None
+
+	publications_top15 = None
+	if publications != None:
+		if len(publications) > 15:
+			request.session['publications_list'] = simplejson.dumps(list(publications), cls=DjangoJSONEncoder)
+			publications_top15 = publications[0:15]
+		else:
+			publications_top15 = publications
+
+
+	
+	#print ">>>>> PERFIL: " + str(user_profile.profile.pk)
+	#print ">>>>> VISITANTE/USUARIO: " + str(user.profile.pk) 
+	return render_to_response('account/profile.html',{'publications_top15':publications_top15, 'friends_top12':friends_top12, 'user_profile':user_profile, 'searchForm':searchForm, 'publicationForm':publicationForm, 'liked':liked, 'n_likes':n_likes, 'isFriend':isFriend, 'existFriendRequest':existFriendRequest, 'json_requestsToMe': json_requestsToMe},context_instance=RequestContext(request))
 
 @login_required(login_url='accounts/login')
 def search(request):

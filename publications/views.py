@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.utils import simplejson
 from django.contrib.auth import get_user_model
 
+
 # Create your views here.
 def publication_form(request):
     print '>>>>>>>> PETICION AJAX PUBLICACION'
@@ -17,18 +18,35 @@ def publication_form(request):
 
         if form.is_valid():
             try:
-
                 publication = form.save(commit=False)
                 publication.writer = emitter.profile
                 publication.profile = userprofile.profile
+                print str(userprofile.profile)
+                print str(emitter.profile)
                 publication.save()
                 response = True
-
             except IntegrityError:
                 pass
 
-
         return HttpResponse(simplejson.dumps(response), content_type='application/json')
+    
+def load_publications(request):
+
+    print '>>>>>> PETICION AJAX, CARGAR MAS PUBLICACIONES'
+    publicationslist = request.session.get('publications_list', None)
+    if publicationslist == None:
+        publications_next = None
+    else:
+        publicationslist = simplejson.loads(publicationslist)
+        if request.method == 'POST':
+            slug = request.POST.get('slug', None)
+            print '>>>>>>> SLUG: ' + slug
+            n = int(slug) * 15
+            publications_next = publicationslist[n-15:n]
+            print '>>>>>>> LISTA: '
+            print (publications_next)
+
+    return HttpResponse(simplejson.dumps(list(publications_next)), content_type='application/json')
 
 
 

@@ -9,9 +9,13 @@ $("#ilike_profile").click(function () {
 
     
 var countFriendList = 1;
+var countPublicationsList = 1;
 		
     $(document).ready( function() {
 
+    	$(".comment").shorten({
+    		"showChars" : 145
+    	});
     	
         $('#page-wrapper #close').on('click', function(event){
         	
@@ -29,10 +33,19 @@ var countFriendList = 1;
         $('#message-form2').on('submit', function(event){
         	
             event.preventDefault();
-            console.log("form submitted!");
             AJAX_submit_publication();
             
         });
+        
+		$('#page-wrapper #message2').keypress(function(event){
+			
+			//tecla ENTER presinada
+		    if(event.keyCode == 13){
+
+			        $('#sendformpubli').click();
+
+		    }
+		});
         
         $('#tab-amigos').bind('scroll', function() {
             if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
@@ -46,29 +59,58 @@ var countFriendList = 1;
                     success: function(response) {
                       
                     	//load friends
-                    	
                     	for (i=0;i<response.length;i++){
     						addFriendToHtmlList(response[i]);
-
 						}
-
-
                     },
-                    
                     error: function(rs, e) {
-                       alert("ERROR " + rs.responseText);
 						                   
                     }
-                    
-                  
                 });
-            	
             	
             }
         });
         
+        $('#tab-comentarios').bind('scroll', function() {
+        	
+            if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight -10) {
+    
+            	countPublicationsList++;
+                $.ajax({
+                    type: "POST",
+                    url: "/load_publications/",
+                    data: {'slug': countPublicationsList, 'csrfmiddlewaretoken': csrftoken},
+                    dataType: "json",
+                    success: function(response) {
+                    	//load publications
+                    	for (i=0;i<response.length;i++){
+                    		addPublicationToHtmlList(response[i]);
+						}
+                    	//refresca plugin shorten
+                    	$(".comment").shorten({
+                    		"showChars" : 145
+                    	});
+                    },
+                    error: function(rs, e) {
+						                   
+                    }
+                });
+            	
+            }
+        });     
+        
+        
         $("#li-tab-amigos").click(function(){
             $('#tab-amigos').css({"overflow":"auto"});
+        });
+        
+        $("#li-tab-comentarios").click(function(){
+            $('#tab-comentarios').css({"overflow":"auto"});
+
+        });
+        
+        $("#li-tab-popular").click(function(){
+            $('#tab-popular').css({"overflow":"auto"});
         });
         
     	
@@ -90,15 +132,31 @@ function addFriendToHtmlList(item){
 	
 } 
     
-    
-function friendListScrollToDownEnd(){
-	$('#tab-amigos').bind('scroll', function(){
-    	if($(this).scrollTop() + $(this).innerHeight()>=$(this)[0].scrollHeight)
-    	{
-    		alert('end reached');
-    	}
-	})
-}    
+function addPublicationToHtmlList(item){
+	
+	$("#tab-comentarios").append('<div class="wrapper">\
+			  <div id="box">\
+		        <input id="profile" type="checkbox" checked>\
+		        <label class="popo" for="profile">\
+		        <img id="avatar-publication" src="' + STATIC_URL + 'img/generic-avatar.png" alt="img" class="img-responsive">\
+		        </label>\
+		        <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
+		        <span class="entypo-forward" title="Responder"></span>\
+		    <span class="entypo-plus" title="Añadir a..."></span>\
+		  </div>\
+		  <article class="articulo">\
+		    <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
+		    <div class="parrafo comment">\
+		      <a target="_blank">' + item.from_publication__created + '</a> ' + item.from_publication__content + '\
+		    </div>\
+		  </article>\
+	</div>');
+	
+}
+
+
+
+
     
     
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
@@ -406,6 +464,7 @@ $(document).ready(function(){
    $(".entypo-mail").click(function () {
       $("#page-wrapper").each(function() {
         displaying = $(this).css("display");
+        $("#page-wrapper #message2").val('');
         if(displaying == "none") {
           $(this).fadeOut('slow',function() {
            $(this).css("display","block");

@@ -1027,14 +1027,16 @@ font-family: 'Andika', sans-serif;
 
 
 #tab-amigos{
-  /*overflow:auto !important;*/
-  /*overflow-y: scroll;*/
-  /*overflow: hidden;*/
-  /*overflow-y: hidden;*/
   
   overflow: auto;
   height:100%;
   
+}
+
+#tab-comentarios{
+  
+  overflow: auto;
+  height:100%;
   
 }
 #tab-amigos ul.list-friends {
@@ -1394,6 +1396,21 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   border: 1px solid rgb(26, 188, 156);
 }
 
+#avatar-publication{
+	background-repeat: no-repeat;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	/*background-image: url("iamge.jpg");*/
+	background-size: cover;
+	/*
+	height: 400px;
+	width: 90%;
+	*/
+	margin: 0 auto;
+	height: 100%;
+	width: 100%;
+}
 
 /** Mensaje flotante */
 *, *:before, *:after {

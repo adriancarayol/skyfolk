@@ -31,6 +31,7 @@ urlpatterns = patterns(
     url(r'^load_friends/$', 'user_profile.views.load_friends'),
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^publication/$', 'publications.views.publication_form'),
+    url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/', include('allauth.urls')),
 
     # url mensajes privados

@@ -3,6 +3,8 @@ from django.db import models
 from allauth.account.models import EmailAddress
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
+import publications
+#from publications.models import Publication
 
 
 RELATIONSHIP_FOLLOWING = 1
@@ -30,6 +32,7 @@ class UserProfile(models.Model):
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
+    publications = models.ManyToManyField('self', through='publications.Publication', symmetrical=False, related_name='publications_to')
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
@@ -71,6 +74,24 @@ class UserProfile(models.Model):
         return self.related_to.filter(
             from_people__status=status, 
             from_people__to_person=self)
+        
+
+    #Methods of publications
+    def remove_publication(self, publicationid):
+        publications.models.Publication.objects.get(pk=publicationid).delete()
+
+    def get_publicationsToMe(self):
+        return self.publications_to.filter(
+            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__content', 'from_publication__created').order_by('from_publication__created').reverse()
+        
+    def get_publicationsToMeTop15(self):
+        return self.publications_to.filter(
+            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__content', 'from_publication__created').order_by('from_publication__created').reverse()[0:15]
+
+    def get_myPublications(self):
+        return self.publications.filter(
+            to_publication__writer=self).values('user__username', 'user__first_name', 'user__last_name', 'to_publication__content', 'to_publication__created').reverse()
+      
 
     def get_following(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWING)
