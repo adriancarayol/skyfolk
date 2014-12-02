@@ -78,6 +78,9 @@ li.fontawesome-star {
   margin-top:-80px;
   margin-bottom:12px;
 }
+x:-o-prefocus {
+margin-top: -24px;
+}
 
 .h22 {
   margin: 1px 0 7px;
@@ -250,7 +253,7 @@ span[class*="thumbs-up"]:hover {
 
 article.articulo {
   float: left;
-  top: -60%;
+  /*top: -60%;*/
   left: 10%;
   position: relative;
   width: 201px;
