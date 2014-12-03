@@ -1439,6 +1439,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	top: 50%;
 	margin-top: -100px;
 	margin-left: -292px; /*150px*/
+	zoom : 1;
   
 }
 
@@ -1957,21 +1958,3 @@ border-top-left-radius: 7px;
 border-top-right-radius: 7px;
 cursor: pointer;
 }
-
-
-/* MEDIAS FOR PAGE WRAPPER - COMPONER MENSAJE */
-@media only screen and (min-width: 641px) and (max-width: 959px) {
-  #page-wrapper {
-    width: 640;
-    top: -850px;
-      } 
-  }
-@media only screen and (max-width: 640px) {
-    #page-wrapper {
-    width: 640px;
-    top: -850px; }  
-  }
-@media only screen and (min-width: 640px) and (max-width: 1390px) {
-    #page-wrapper {
-    top: -890px; }  
-  }
