@@ -459,6 +459,60 @@ $(document).ready(function(){
     });
   });
 
+/* Mensaje flotante */
+$(document).ready(function(){
+   $(".entypo-mail").click(function () {
+      $("#page-wrapper").each(function() {
+        displaying = $(this).css("display");
+        $("#page-wrapper #message2").val('');
+        if(displaying == "none") {
+          $(this).fadeOut('slow',function() {
+           $(this).css("display","block");
+          });
+        } else {
+          $(this).fadeIn('slow',function() {
+            $(this).css("display","none");
+          });
+        }
+      });
+    });
+  });
+/* Configuración rápida */
+$(document).ready(function(){
+   $(".fontawesome-pencil").click(function () {
+      $("#fastconf").each(function() {
+        displaying = $(this).css("display");
+        if(displaying == "none") {
+          $(this).fadeOut('slow',function() {
+           $(this).css("display","block");
+          });
+        } else {
+          $(this).fadeIn('slow',function() {
+            $(this).css("display","none");
+          });
+        }
+      });
+    });
+  });
+
+$(document).ready(function(){
+   $(".fontawesome-remove").click(function () {
+      $("#fastconf").each(function() {
+        displaying = $(this).css("display");
+        if(displaying == "block") {
+          $(this).fadeOut('slow',function() {
+           $(this).css("display","none");
+          });
+        } else {
+          $(this).fadeIn('slow',function() {
+            $(this).css("display","none");
+          });
+        }
+      });
+    });
+  });
+
+
 function addItemToFriendList(name, lastname){
 	
 	$("#tab-amigos ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
