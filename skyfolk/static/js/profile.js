@@ -473,9 +473,7 @@ $(document).ready(function(){
 });
 
 
-/* NEW FLOT */ 
-
-    var items = document.querySelectorAll('.circle a');
+var items = document.querySelectorAll('.circle a');
 
 for(var i = 0, l = items.length; i < l; i++) {
   items[i].style.left = (20 - 30*Math.cos(-0.5 * Math.PI - 2*(1/l)*i*Math.PI)).toFixed(4) + "%";
