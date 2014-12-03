@@ -1,56 +1,55 @@
-
 /*
 $("#ilike_profile").click(function () {
     alert("ok!");
 });
 */
 
-	
+  
 
     
 var countFriendList = 1;
 var countPublicationsList = 1;
-		
+    
     $(document).ready( function() {
 
-    	$(".comment").shorten({
-    		"showChars" : 145
-    	});
-    	
+      $(".comment").shorten({
+        "showChars" : 145
+      });
+      
         $('#page-wrapper #close').on('click', function(event){
-        	
-        	$('#page-wrapper').hide();
+          
+          $('#page-wrapper').hide();
             
         });
-    	
+      
         $('#publish').on('click', function(event){
-        	
-        	$(".entypo-mail").click();
+          
+          $(".entypo-mail").click();
             
         });
-    	
-    	
+      
+      
         $('#message-form2').on('submit', function(event){
-        	
+          
             event.preventDefault();
             AJAX_submit_publication();
             
         });
         
-		$('#page-wrapper #message2').keypress(function(event){
-			
-			//tecla ENTER presinada
-		    if(event.keyCode == 13){
+    $('#page-wrapper #message2').keypress(function(event){
+      
+      //tecla ENTER presinada
+        if(event.keyCode == 13){
 
-			        $('#sendformpubli').click();
+              $('#sendformpubli').click();
 
-		    }
-		});
+        }
+    });
         
         $('#tab-amigos').bind('scroll', function() {
             if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
 
-            	countFriendList++;
+              countFriendList++;
                 $.ajax({
                     type: "POST",
                     url: "/load_friends/",
@@ -58,44 +57,44 @@ var countPublicationsList = 1;
                     dataType: "json",
                     success: function(response) {
                       
-                    	//load friends
-                    	for (i=0;i<response.length;i++){
-    						addFriendToHtmlList(response[i]);
-						}
+                      //load friends
+                      for (i=0;i<response.length;i++){
+                addFriendToHtmlList(response[i]);
+            }
                     },
                     error: function(rs, e) {
-						                   
+                               
                     }
                 });
-            	
+              
             }
         });
         
         $('#tab-comentarios').bind('scroll', function() {
-        	
+          
             if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight -10) {
     
-            	countPublicationsList++;
+              countPublicationsList++;
                 $.ajax({
                     type: "POST",
                     url: "/load_publications/",
                     data: {'slug': countPublicationsList, 'csrfmiddlewaretoken': csrftoken},
                     dataType: "json",
                     success: function(response) {
-                    	//load publications
-                    	for (i=0;i<response.length;i++){
-                    		addPublicationToHtmlList(response[i]);
-						}
-                    	//refresca plugin shorten
-                    	$(".comment").shorten({
-                    		"showChars" : 145
-                    	});
+                      //load publications
+                      for (i=0;i<response.length;i++){
+                        addPublicationToHtmlList(response[i]);
+            }
+                      //refresca plugin shorten
+                      $(".comment").shorten({
+                        "showChars" : 145
+                      });
                     },
                     error: function(rs, e) {
-						                   
+                               
                     }
                 });
-            	
+              
             }
         });     
         
@@ -113,13 +112,13 @@ var countPublicationsList = 1;
             $('#tab-popular').css({"overflow":"auto"});
         });
         
-    	
+      
 
     
       $('#tab-container').easytabs({
 
-    	  defaultTab: "#li-tab-comentarios",
-    	  animate: false
+        defaultTab: "#li-tab-comentarios",
+        animate: false
 
       });
       
@@ -128,30 +127,30 @@ var countPublicationsList = 1;
     });
 
 function addFriendToHtmlList(item){
-	$("#tab-amigos ul.list-friends").append('<li><img src="' + STATIC_URL + 'img/generic-avatar.png" class="img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
-	
+  $("#tab-amigos ul.list-friends").append('<li><img src="' + STATIC_URL + 'img/generic-avatar.png" class="img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
+  
 } 
     
 function addPublicationToHtmlList(item){
-	
-	$("#tab-comentarios").append('<div class="wrapper">\
-			  <div id="box">\
-		        <input id="profile" type="checkbox" checked>\
-		        <label class="popo" for="profile">\
-		        <img id="avatar-publication" src="' + STATIC_URL + 'img/generic-avatar.png" alt="img" class="img-responsive">\
-		        </label>\
-		        <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
-		        <span class="entypo-forward" title="Responder"></span>\
-		    <span class="entypo-plus" title="Añadir a..."></span>\
-		  </div>\
-		  <article class="articulo">\
-		    <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
-		    <div class="parrafo comment">\
-		      <a target="_blank">' + item.from_publication__created + '</a> ' + item.from_publication__content + '\
-		    </div>\
-		  </article>\
-	</div>');
-	
+  
+  $("#tab-comentarios").append('<div class="wrapper">\
+        <div id="box">\
+            <input id="profile" type="checkbox" checked>\
+            <label class="popo" for="profile">\
+            <img id="avatar-publication" src="' + STATIC_URL + 'img/generic-avatar.png" alt="img" class="img-responsive">\
+            </label>\
+            <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
+            <span class="entypo-forward" title="Responder"></span>\
+        <span class="entypo-plus" title="Añadir a..."></span>\
+      </div>\
+      <article class="articulo">\
+        <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
+        <div class="parrafo comment">\
+          <a target="_blank">' + item.from_publication__created + '</a> ' + item.from_publication__content + '\
+        </div>\
+      </article>\
+  </div>');
+  
 }
 
 
@@ -273,21 +272,21 @@ function addPublicationToHtmlList(item){
                 dataType: 'json',
                 data: $('#page-wrapper #message-form2').serialize(),
                 success: function(data) {
-                	if (data == true){
-                		alert("You have successfully posted!");
-                		$('#page-wrapper').hide();
-                	}
-                	else{
-                		alert("Failed to publish");
-                	}
-                	
+                  if (data == true){
+                    alert("You have successfully posted!");
+                    $('#page-wrapper').hide();
+                  }
+                  else{
+                    alert("Failed to publish");
+                  }
+                  
                 },
                 error: function(rs, e) {
                     alert('ERROR: ' + rs.responseText);
                  }
             });
         
-    	
+      
     }
     
 
@@ -477,23 +476,6 @@ $(document).ready(function(){
       });
     });
   });
-/* Mensaje flotante */
-$(document).ready(function(){
-   $(".entypo-mail").click(function () {
-      $("#page-wrapper").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "none") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","block");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
 /* Configuración rápida */
 $(document).ready(function(){
    $(".fontawesome-pencil").click(function () {
@@ -531,9 +513,9 @@ $(document).ready(function(){
 
 
 function addItemToFriendList(name, lastname){
-	
-	$("#tab-amigos ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
-	
+  
+  $("#tab-amigos ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
+  
 }
 
 
