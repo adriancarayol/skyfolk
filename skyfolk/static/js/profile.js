@@ -440,42 +440,6 @@ $(document).ready(function(){
       });
     });
   });
-/* MOSTRAR COMPONER MENSAJE */
-
- /* MENU AL PULSAR FOTO DE USUARIO */     
-$(document).ready(function(){
-   $(".entypo-reply").click(function () {
-      $("#page-wrapper").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "none") {
-          $(this).fadeOut(250 ,function() {
-           $(this).css("display","block");
-          });
-        } else {
-          $(this).fadeIn(250 ,function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
-
-$(document).ready(function(){
-   $(".entypo-mail-envelop").click(function () {
-      $("#page-wrapper").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "none") {
-          $(this).fadeOut(250 ,function() {
-           $(this).css("display","block");
-          });
-        } else {
-          $(this).fadeIn(250 ,function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
 
 /* CERRAR MENU AL QUITAR EL CURSOR DE ENCIMA */
 $(document).ready(function(){
@@ -507,16 +471,3 @@ $(document).ready(function(){
     
 
 });
-
-
-var items = document.querySelectorAll('.circle a');
-
-for(var i = 0, l = items.length; i < l; i++) {
-  items[i].style.left = (20 - 30*Math.cos(-0.5 * Math.PI - 2*(1/l)*i*Math.PI)).toFixed(4) + "%";
-  
-  items[i].style.top = (35 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*i*Math.PI)).toFixed(4) + "%";
-}
-
-document.querySelector('.profile').onclick = function(e) {
-   e.preventDefault(); document.querySelector('.circle').classList.toggle('open');
-}
