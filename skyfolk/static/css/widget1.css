@@ -1,196 +1,88 @@
-@import url(http://weloveiconfonts.com/api/?family=entypo);
+@import "http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css";
 
-[class*="entypo-"]:before {
-  font-family: 'entypo', sans-serif;
+body {
+  background: #39D;
 }
 
-/*body {
-	text-align:center;
-	background:url(http://developer.jmbarcelon.com/Images/blueblurlights.jpg)top center;
+.circular-menu {
+  width: 450px;
+  height: 250px;
+  position: fixed;
+  outline: none;
+  display: block;
+  margin: auto;
+  overflow: hidden;
+  top: 100%;
+  margin-top: -200px;
+  right: -150px;
+  /*margin-top: -90px;*/
+  /*margin-right: -300px;*/
 }
 
-p {
-	margin:0;
-	color:transparent;
-	font-size:5em;
-	text-shadow: 1px 3px 6px #EFFDFE,
-								0px 0px 0px #888,
-							1px 4px 6px #EFFDFE;
-}*/
-body{
-	background:url(../img/bg.jpg);
-}
-#1 {
-	
- display:block;
- 
-    filter: alpha(opacity=100);
-    -webkit-transition: opacity 1s linear;
+.circle {
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+  
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  transform: scale(0);
+
+  -webkit-transition: all 0.4s ease-out;
+  -moz-transition: all 0.4s ease-out;
+  transition: all 0.4s ease-out;
 }
 
+.open.circle {
+  opacity: 1;
 
-
-#widget {
-	background:#eee;
-	color:#fff;
-	width:300px;
-	height:300px;
-	border:5px solid #eee;
-	-webkit-border-radius: 200px;
-  border-radius: 210px;
-	box-shadow:10px 0px 15px #444;
-	position:fixed;
-	left:42.3%;
-	/*margin:100px auto;*/
-	z-index:2;
-	overflow:hidden;
-	top: 98%;
-	opacity: 0.4;
-	-moz-transition: margin .2s;
-	transition: margin .2s;
-	-webkit-transition: margin .2s;
-	transition: all .3s ease-in;
-	-webkit-transition: all .3s ease-in;
-	-moz-transition: all .3s ease-in;
-
-}
-#widget:hover {
-	margin-top: -27.355%;
-	opacity: 1;
-	border-color: #B3FFE9;
-}
-#middle {
-	padding-top: 0%;
-	width: 47%;
-	height: 45%;
-	background:#ccc;
-	border:5px solid #eee;
-	-webkit-border-radius: 30px;
-        border-radius: 100px;
-	box-shadow:inset 0px 20px 45px #999;
-	position:absolute;
-	left:0;
-	right:0;
-	margin:75px auto;
-	z-index:2;
-	overflow:hidden;
-	font-size:9em;
-	text-shadow:0px 0px 15px #999;
-        background: url('http://skyfolk.herokuapp.com/static/img/bola/2.jpg')
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  transform: scale(1);
 }
 
-#linkedin {
-	color:rgba(14, 118, 168,0.5);
-	text-shadow: 1px 3px 6px #0e76a8,
-								0px 0px 0px #000,
-							1px 4px 6px #0e76a8;
-	background:#A194E4;
-	-webkit-border-radius:305px 0px 0px 0px;
-	border-radius:305px 0px 0px 0px;
-}
-
-#dribbble {
-	color:rgba(226, 77, 135,0.5);
-		text-shadow: 1px 3px 6px #E24D87,
-								0px 0px 0px #000,
-							1px 4px 6px #E24D87;
-	background:#72FFB0;
-	-webkit-border-radius:0px 205px 0px 0px;
-	border-radius:0px 205px 0px 0px;
-	list-style:none;
-}
-
-#facebook{
-	color:rgba(59, 89, 152,0.5);
-	text-shadow: 1px 3px 6px #3B5998,
-								0px 0px 0px #000,
-							1px 4px 6px #3B5998;
-	background:#B3E9E5;
-	-webkit-border-radius:0px  0px 0px 205px;
-	border-radius:0px  0px 0px 205px;
-}
-
-#twitter {
-	color: #0092AC;
-		text-shadow: 1px 3px 6px #00CEFC,
-								0px 0px 0px #000,
-							1px 4px 6px #00CEFC;
-	background:#B9B9B9;
-	-webkit-border-radius:0px  0px 205px 0px ;
-	border-radius:0px  0px 205px 0px ;
-}
-#twitter span, #facebook span, #dribbble span, #linkedin span{
-margin-left:60px;
-margin-top:25px;
-}
-
-.size {
-	padding-top:15%;
-	font-size:2.5em;
-	margin-bottom:2%;
-	width:49%;
-		height:55%;
-	overflow:hidden;
-}
-
-	.left {
-		float:left;
-	}
-
-	.right {
-		float:right;
-	}
-
-#facebook:hover{
-		color:rgba(255,255,255,0.7);
-		cursor:pointer;
-		}
-		
-
-#linkedin:hover {
-	color:rgba(255,255,255,0.7);
-		cursor:pointer;
-}
-
-
-#dribbble:hover {
-	color:rgba(255,255,255,0.7);
-		cursor:pointer;
-}
-
-
-#twitter:hover {
-	color:rgba(255,255,255,0.7);
-		cursor:pointer;
-}
-#middle{
-
-
-padding-left:4%;
-padding-top:1%;
-
+.circle a {
+  text-decoration: none;
+  color: white;
+  display: block;
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  margin-left: 40px;
+  margin-top: 0px;
+  position: absolute;
+  text-align: center;
 
 }
 
-
-@media (min-width: 1200px) {
-	#widget:hover {
-		margin-top: -21.155%;
-	}
+.circle a:hover {
+  color: #CCFFFF;
 }
 
-@media (min-width: 768px) and (max-width: 979px) {
-	#widget:hover {
-		margin-top: -20.255%;
-	}
+.profile {
+  position: absolute;
+  top: calc(50% - 20px);
+  left: calc(50% - 30px);
+  text-decoration: none;
+  text-align: center;
+  color: #444;
+  display: block;
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  padding: 10px;
+  background-image: url('https://cdn3.iconfinder.com/data/icons/black-easy/256/535108-user_256x256.png');
+    background-repeat: no-repeat;
+    background-size: 60px;
+    background-position: center;
+    background-color: ;
+    border: none;
+    border-radius: 100px;
+    border-bottom-right-radius: 10px;
 }
-@media (max-width: 767px) {
-	#widget:hover {
-		margin-top: -20.155%;
-	}
-}
-@media (max-width: 480px) {
-	#widget:hover {
-		margin-top: -20.055%;
-	}
+
+.profile:hover {
+  transition: all .3s ease-in;
+  background-color: #eef;
+  border: 2px solid #CCFFFF;
 }

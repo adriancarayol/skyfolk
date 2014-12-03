@@ -459,60 +459,6 @@ $(document).ready(function(){
     });
   });
 
-/* Mensaje flotante */
-$(document).ready(function(){
-   $(".entypo-mail").click(function () {
-      $("#page-wrapper").each(function() {
-        displaying = $(this).css("display");
-        $("#page-wrapper #message2").val('');
-        if(displaying == "none") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","block");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
-/* Configuración rápida */
-$(document).ready(function(){
-   $(".fontawesome-pencil").click(function () {
-      $("#fastconf").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "none") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","block");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
-
-$(document).ready(function(){
-   $(".fontawesome-remove").click(function () {
-      $("#fastconf").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "block") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
-
-
 function addItemToFriendList(name, lastname){
 	
 	$("#tab-amigos ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
@@ -525,3 +471,18 @@ $(document).ready(function(){
     
 
 });
+
+
+/* NEW MENU FLOTANTE */
+
+var items = document.querySelectorAll('.circle a');
+
+for(var i = 0, l = items.length; i < l; i++) {
+  items[i].style.left = (20 - 30*Math.cos(-0.5 * Math.PI - 2*(1/l)*i*Math.PI)).toFixed(4) + "%";
+  
+  items[i].style.top = (35 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*i*Math.PI)).toFixed(4) + "%";
+}
+
+document.querySelector('.profile').onclick = function(e) {
+   e.preventDefault(); document.querySelector('.circle').classList.toggle('open');
+}
