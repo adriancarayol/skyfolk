@@ -440,6 +440,42 @@ $(document).ready(function(){
       });
     });
   });
+/* MOSTRAR COMPONER MENSAJE */
+
+ /* MENU AL PULSAR FOTO DE USUARIO */     
+$(document).ready(function(){
+   $(".entype-reply").click(function () {
+      $("#page-wrapper").each(function() {
+        displaying = $(this).css("display");
+        if(displaying == "none") {
+          $(this).fadeOut(250 ,function() {
+           $(this).css("display","block");
+          });
+        } else {
+          $(this).fadeIn(250 ,function() {
+            $(this).css("display","none");
+          });
+        }
+      });
+    });
+  });
+
+$(document).ready(function(){
+   $(".entype-envelop").click(function () {
+      $("#page-wrapper").each(function() {
+        displaying = $(this).css("display");
+        if(displaying == "none") {
+          $(this).fadeOut(250 ,function() {
+           $(this).css("display","block");
+          });
+        } else {
+          $(this).fadeIn(250 ,function() {
+            $(this).css("display","none");
+          });
+        }
+      });
+    });
+  });
 
 /* CERRAR MENU AL QUITAR EL CURSOR DE ENCIMA */
 $(document).ready(function(){
