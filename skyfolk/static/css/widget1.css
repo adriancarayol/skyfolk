@@ -68,18 +68,18 @@
   text-align: center;
   color: #444;
   display: block;
-  height: 40px;
-  width: 40px;
-  line-height: 40px;
-  padding: 10px;
+  height: 60px;
+  width: 60px;
+  line-height: 30px;
+  padding: 7px;
   background-image: url('http://forums.accuweather.com/uploads/photo-14572.jpg');
-    background-repeat: no-repeat;
-    background-size: 60px;
-    background-position: center;
-    background-color: ;
-    border: none;
-    border-radius: 100px;
-    border-bottom-right-radius: 10px;
+  background-repeat: no-repeat;
+  background-size: 60px;
+  background-position: center;
+  background-color: ;
+  border: none;
+  border-radius: 100px;
+  border-bottom-right-radius: 10px;
 }
 
 .profile:hover {

@@ -444,7 +444,7 @@ $(document).ready(function(){
 
  /* MENU AL PULSAR FOTO DE USUARIO */     
 $(document).ready(function(){
-   $(".entype-reply").click(function () {
+   $(".entypo-reply").click(function () {
       $("#page-wrapper").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
@@ -461,7 +461,7 @@ $(document).ready(function(){
   });
 
 $(document).ready(function(){
-   $(".entype-envelop").click(function () {
+   $(".entypo-mail-envelop").click(function () {
       $("#page-wrapper").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {
