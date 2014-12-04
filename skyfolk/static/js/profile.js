@@ -424,7 +424,7 @@ function cambiopagina(){
       
  /* MENU AL PULSAR FOTO DE USUARIO */     
 $(document).ready(function(){
-   $(".nameact").click(function () {
+   $(".fa-bars").click(function () {
       $("#panel1").each(function() {
         displaying = $(this).css("display");
         if(displaying == "none") {

@@ -111,26 +111,23 @@ top.window.outerWidth = screen.availWidth;
 
 <body>
 <body onLoad="aparecerbola()">
-<!-- <div id="oHBContainer"> -->
-<nav class="barrah">
-<ul>
-<!-- Segundo menu bola <li><button type="button" id="Menu">
+<nav class="box-tool">
   
-<div id="centro"><img src="" width="300" height="300"><span class="entypo-user"></span></div>
-<div id="llinkedin" class="size left"><span class="entypo-users"></span></div>
-<div id="ddribbble" class="size right"><span class="entypo-mail"></span></div>
-<div id="ffacebook" class="size left"><span class="entypo-calendar"></span></div>
-<div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
-    </button>-->
-<li><div class="field" id="searchform">
-  	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
-  	<!--<button type="submit" class="btn">¡Buscar!</button>-->
+  <li><input type="search" placeholder="Busca algo..."></input></li>
+<li class="fa fa-comment fa-lg"></li>
+<div class="notifications"><li class="fa fa-bell fa-lg"><em>2</em></li></div>
+<li class="fa fa-bars fa-lg"></li>
+</nav>
+<!-- <div id="oHBContainer"> -->
+<!--<nav class="barrah"> -->
+<!--<ul>-->
 
-	<form method='post' action='/search/'>{% csrf_token %}
 
-		{{searchForm}}
+	<!--<form method='post' action='/search/'>{% csrf_token %}-->
+
+		<!--{{searchForm}}-->
 		<!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
-		<button type="submit" id="btn-search" class="btn">¡Buscar!</button>
+		<!--<button type="submit" id="btn-search" class="btn">¡Buscar!</button>
                   
 	</form>
 	
@@ -140,26 +137,12 @@ top.window.outerWidth = screen.availWidth;
   	{% if showPerfilButtons or user.username == user_profile.username %}
 
 
-  		<div id ="box-tool">
-	  		<span class="fontawesome-th"></span>	  		<span class="fontawesome-comment-alt"></span>
-
-	  		<div class="notifications">
-  <span class="fontawesome-bell"><label class="count">3</label></span>
-  <div class="messages">
-    <a href="#" class="message"><span class="fontawesome-heart-empty">Has recibido 1 me gusta.</span></a>
-    <a href="#" class="message"><span class="fontawesome-user">Fernando ha empezado a seguirte.</span></a>
-    <a href="#" class="message"><span class="fontawesome-coffee">Quiere tomar algo contigo.</span></a>
-  </div>
-</div>
-
-	  	</div>
-
 
   	{% endif %}
 
 </nav>
 
-{% block content %}{% endblock %}
+{% block content %}{% endblock %}-->
 
 </body>
 </body>
