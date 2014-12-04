@@ -26,7 +26,7 @@
 .profile:hover {
   background-color: tomato;
 }
-li:nth-child(1) {
+.profile li:nth-child(1) {
   list-style-type: none;
   position: absolute;
   opacity: 0;
@@ -37,7 +37,7 @@ li:nth-child(1) {
   right: 110px;
   top: -25px;
 }
-li:nth-child(2) {
+.profile li:nth-child(2) {
   list-style-type: none;
   position: absolute;
   right: 35px;
@@ -48,7 +48,7 @@ li:nth-child(2) {
   cursor:pointer;
   top: -40px;
 }
-li:nth-child(3) {
+.profile li:nth-child(3) {
   list-style-type: none;
   position: absolute;
   right: 130px;
@@ -59,7 +59,7 @@ li:nth-child(3) {
   cursor:pointer;
   top: 25px;
 }
-li:nth-child(4) {
+.profile li:nth-child(4) {
     list-style-type: none;
   position: absolute;
   right: 120px;
@@ -75,6 +75,6 @@ li:nth-child(4) {
   transtition: margin-top;
   margin-top: -7px;
 }
-li:hover {
+.profile li:hover {
   color: #AEC6CF;
 }
