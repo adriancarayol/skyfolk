@@ -31,9 +31,9 @@
   list-style-type: none;
   position: absolute;
   opacity: 0;
-  -webkit-transition: all 0.5s ease-in;
-  -moz-transition: all 0.5s ease-in;
-  transition: all 0.5s ease-in;
+  -webkit-transition: all 0.7s ease-in;
+  -moz-transition: all 0.7s ease-in;
+  transition: all 0.7s ease-in;
   cursor:pointer;
   right: 110px;
   top: -25px;
@@ -43,9 +43,9 @@
   position: absolute;
   right: 35px;
   opacity: 0;
-  -webkit-transition: all 0.5s ease-in;
-  -moz-transition: all 0.5s ease-in;
-  transition: all 0.5s ease-in;
+  -webkit-transition: all 0.7s ease-in;
+  -moz-transition: all 0.7s ease-in;
+  transition: all 0.7s ease-in;
   cursor:pointer;
   top: -40px;
 }
@@ -54,9 +54,9 @@
   position: absolute;
   right: 130px;
   opacity: 0;
-  -webkit-transition: all 0.5s ease-in;
-  -moz-transition: all 0.5s ease-in;
-  transition: all 0.5s ease-in;
+  -webkit-transition: all 0.7s ease-in;
+  -moz-transition: all 0.7s ease-in;
+  transition: all 0.7s ease-in;
   cursor:pointer;
   top: 25px;
 }
@@ -65,9 +65,9 @@
   position: absolute;
   right: 120px;
   opacity: 0;
-  -webkit-transition: all 0.5s ease-in;
-  -moz-transition: all 0.5s ease-in;
-  transition: all 0.5s ease-in;
+  -webkit-transition: all 0.7s ease-in;
+  -moz-transition: all 0.7s ease-in;
+  transition: all 0.7s ease-in;
   cursor:pointer;
   top: 70px;
 }
