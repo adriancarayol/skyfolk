@@ -71,10 +71,17 @@
   cursor:pointer;
   top: 70px;
 }
+.profile li {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
 .profile:hover > li {
   opacity: 1;
   transtition: margin-top;
   margin-top: -7px;
+  display: inline-block;
+
 }
 .profile li:hover {
   color: #AEC6CF;
