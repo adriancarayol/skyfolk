@@ -44,7 +44,7 @@
 
 {% block content %}
 
-<div id="panel"> 
+<!--<div id="panel"> 
 
   <div id="widget"> 
   
@@ -58,7 +58,13 @@
     <div id="twitter" class="size right"><a href="{% url 'account_logout' %}"><span class="entypo-logout"></span></div></a>
 
   </div>
-</div>
+</div> -->
+<nav class="profile">
+      <li class="fa fa-envelope fa-2x"><a href="/friends"></a></li>
+      <li class="fa fa-home fa-2x"></li>
+      <li class="fa fa-users fa-2x"></li>
+      <li class="fa fa-sign-out fa-2x"><a href="{% url 'account_logout' %}"></a></li>
+    </nav>
 
 
  <div class="Mensaje" id="js-timer">
