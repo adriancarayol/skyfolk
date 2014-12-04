@@ -1122,6 +1122,19 @@ ul.table > li {
 .illustration {
   padding: 0.1em 1em; }
   
+nav.barrah {
+height: 50px;
+margin: 0px;
+width: 100%;
+position: fixed;
+display: block;
+background: #3E9397;
+opacity: 0.8;
+top: 3px;
+z-index: 9999;
+}
+
+
 #closesession{
     font-family: 'Ubuntu', 'Lato', sans-serif;
     font-size:13px;
@@ -1561,6 +1574,67 @@ button:hover {
   color:white;
 }
 
+
+
+
+
+.fontawesome-bell {
+  color: #FFF;
+  float: right;
+  cursor:pointer;
+  text-align:center;
+  font-size: 31px;
+  display: block;
+  position:absolute;
+  margin-right:-33px;
+  margin-top: -7px;
+}
+
+.fontawesome-bell:hover {
+  color: black;
+  border: 3px solid rgb(26, 188, 156);
+  border-right: none;
+  border-top: none;
+  border-left: none;
+}
+
+.notifications .messages {
+  display:block;
+  position:absolute;
+  top:70px;
+  right:100px;
+  width:240px;
+  max-height:240px;
+}
+
+.notifications .messages:before {
+  content:'.';
+  display:block;
+  position:absolute;
+  margin-left:-10px;
+  left:50%;
+  top:-18px;
+  width:0;
+  height:0;
+  color:transparent;
+  border:10px solid black;
+  border-color:transparent transparent white;
+}
+
+.notifications .messages .message {
+  display:block;
+  position:relative;
+  padding:10px;
+  background-color:white;
+  color:black;
+  text-decoration:none;
+}
+
+.notifications .messages .message + .message {
+  border-top:1px solid #e0e0e0;
+}
+
+
 .fontawesome-heart-empty {
   color: pink;
   font-size: 17px;
@@ -1884,6 +1958,3 @@ border-top-left-radius: 7px;
 border-top-right-radius: 7px;
 cursor: pointer;
 }
-
-
-
