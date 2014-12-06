@@ -24,6 +24,8 @@
 <script src="{{STATIC_URL}}js/noti.js"></script>
 <script src="{{STATIC_URL}}js/notia.js"></script>
 <script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
 <!-- NEW MENU -->
 
@@ -32,45 +34,12 @@
 
 {% block include_files %}{% endblock %}
 
-<script>
-/*
-$(document).ready(function(){
-  $("#Menu").mouseover(function(){
-    $("#panel").slideToggle("slow");
-	  });
-});
-
-$(document).ready(function(){
-  $("#Menu").mouseover(function(){
-    $("#panel").animate({
-      left:'250px',
-      opacity:'0.9',
-      height:'0px',
-      width:'0px'
-    });
+<script>                     // Para mover "Page-Wrapper" al rededor de la web.
+		$(function() {
+    $( "#page-wrapper" ).draggable();
   });
-});
-*/
-</script> 
+		</script>
 
-<script language="javascript">
-/*
-function aparecerbola(){
-	document.getElementById("widget").style.opacity = "0.9";
-	document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
-}
-function cambiopagina(){
-	document.getElementById("widget").style.opacity = "0";
-	document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
-	setTimeout('location.href="columnas.php"', 500);
-}
-function cambiopagina(){
-	document.getElementById("widget").style.opacity = "0";
-	document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
-	setTimeout('location.href="columnas.php"', 500);
-}
-*/
-</script>
 
 <script language="JavaScript1.2">
 <!--
@@ -90,36 +59,6 @@ top.window.outerWidth = screen.availWidth;
 
 </script>
 
-
-
-		
-		
-		<script>
-    /*
-			$(document).ready(function(){
-				//Examples of how to assign the ColorBox event to elements
-                $(".inline").colorbox({inline:true, width:"78%"});
-				$(".callbacks").colorbox({
-					onOpen:function(){ alert('onOpen: colorbox is about to open'); },
-					onLoad:function(){ alert('onLoad: colorbox has started to load the targeted content'); },
-					onComplete:function(){ alert('onComplete: colorbox has displayed the loaded content'); },
-					onCleanup:function(){ alert('onCleanup: colorbox has begun the close process'); },
-					onClosed:function(){ alert('onClosed: colorbox has completely closed'); }
-				});
-				
-				//Example of preserving a JavaScript event for inline calls.
-				$("#click").click(function(){ 
-					$('#click').css({"background-color":"#f00", "color":"#fff", "cursor":"inherit"}).text("Open this window again and this message will still be here.");
-					return false;
-				});
-			});
-    */
-		</script>
-		<script>
-		$(function() {
-    $( "#page-wrapper" ).draggable();
-  });
-		</script>
 </head>
 
 <body>
