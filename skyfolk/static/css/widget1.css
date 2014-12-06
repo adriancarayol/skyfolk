@@ -5,7 +5,7 @@
 }
 
 .profile {
-  color: tomato;
+  color: #3A80A6;
   width: 100px;
   height: 100px;
   position: fixed;
@@ -13,39 +13,39 @@
   right: 0%;
   top: 82%;
   border-radius: 100%;
-  background-image: url('http://randomuser.me/img/creator_arron.png');
+  background-image: url('http://criticassdotcom.files.wordpress.com/2013/09/jesse-pinkman.jpg');
   background-position:center;
   background-size: 100%;
   background-repeat: no-repeat;
-  border-color: #F7FFFD;
-  -webkit-transition: all .3s ease-in;
-  -moz-transition: all .3s ease-in;
-  transition: all .3s ease-in;
+  border-color: #3A80A6;
+  border: 2px solid;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  transition: all 0.2s linear;
   cursor:pointer;
-  z-index: 9999;
 }
 .profile:hover {
-  background-color: tomato;
+  background-color: #3A80A6;
 }
 .profile li:nth-child(1) {
   list-style-type: none;
   position: absolute;
-  opacity: 0;
-  -webkit-transition: all 0.7s ease-in;
-  -moz-transition: all 0.7s ease-in;
-  transition: all 0.7s ease-in;
+  visibility: hidden;
+  -webkit-transition: all 3s ease-in;
+  -moz-transition: all 3s ease-in;
+  transition: all 3s ease-in;
   cursor:pointer;
   right: 110px;
   top: -25px;
-}
+  }
 .profile li:nth-child(2) {
   list-style-type: none;
   position: absolute;
   right: 35px;
-  opacity: 0;
-  -webkit-transition: all 0.7s ease-in;
-  -moz-transition: all 0.7s ease-in;
-  transition: all 0.7s ease-in;
+  visibility: hidden;;
+  -webkit-transition: all 3s ease-in;
+  -moz-transition: all 3s ease-in;
+  transition: all 3s ease-in;
   cursor:pointer;
   top: -40px;
 }
@@ -53,10 +53,10 @@
   list-style-type: none;
   position: absolute;
   right: 130px;
-  opacity: 0;
-  -webkit-transition: all 0.7s ease-in;
-  -moz-transition: all 0.7s ease-in;
-  transition: all 0.7s ease-in;
+  visibility: hidden;
+  -webkit-transition: all 3s ease-in;
+  -moz-transition: all 3s ease-in;
+  transition: all 3s ease-in;
   cursor:pointer;
   top: 25px;
 }
@@ -64,25 +64,21 @@
     list-style-type: none;
   position: absolute;
   right: 120px;
-  opacity: 0;
-  -webkit-transition: all 0.7s ease-in;
-  -moz-transition: all 0.7s ease-in;
-  transition: all 0.7s ease-in;
+  visibility: hidden;
+  -webkit-transition: all 3s ease-in;
+  -moz-transition: all 3s ease-in;
+  transition: all 3s ease-in;
   cursor:pointer;
   top: 70px;
 }
-.profile li {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.profile:hover > li {
-  opacity: 1;
-  transtition: margin-top;
-  margin-top: -7px;
-  display: inline-block;
 
+.profile:hover li {
+  visibility: visible;
+  margin-top: -10px;
+  transition: all .3s ease-in;
+  -webkit-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
 }
 .profile li:hover {
-  color: #AEC6CF;
+  color: #28546C;
 }
