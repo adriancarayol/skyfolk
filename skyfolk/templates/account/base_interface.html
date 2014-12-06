@@ -29,6 +29,10 @@
 
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
   <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+<!-- DRAG MESSAGE -->
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<!-- END DRAG MESSAGE -->
 
 {% block include_files %}{% endblock %}
 
@@ -114,6 +118,11 @@ top.window.outerWidth = screen.availWidth;
 				});
 			});
     */
+		</script>
+<script>
+		$(function() {
+    $( "#page-wrapper" ).draggable();
+  });
 		</script>
 
 </head>
