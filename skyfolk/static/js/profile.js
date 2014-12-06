@@ -524,10 +524,3 @@ $(document).ready(function(){
     
 
 });
-
-
-/* DRAG MENSAJES */
-
-$(function() {
-    $( "#page-wrapper" ).draggable();
-  });
