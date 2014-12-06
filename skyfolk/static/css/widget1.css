@@ -23,6 +23,7 @@
   -moz-transition: all 0.2s linear;
   transition: all 0.2s linear;
   cursor:pointer;
+  z-index: 9999;
 }
 .profile:hover {
   background-color: #3A80A6;
@@ -81,4 +82,5 @@
 }
 .profile li:hover {
   color: #28546C;
+  z-index: 9999;
 }
