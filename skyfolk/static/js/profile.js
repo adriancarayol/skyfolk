@@ -27,6 +27,12 @@ var countPublicationsList = 1;
           $(".entypo-mail").click();
             
         });
+
+         $('#publish2').on('click', function(event){
+          
+          $(".entypo-mail").click();
+            
+        });
       
       
         $('#message-form2').on('submit', function(event){
