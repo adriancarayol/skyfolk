@@ -306,10 +306,6 @@ function addPublicationToHtmlList(item){
     
     
 
-function aparecerbola(){
-  document.getElementById("widget").style.opacity = "1";
-  document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
-}
 
 function showRequest(id_profile, username){
 
