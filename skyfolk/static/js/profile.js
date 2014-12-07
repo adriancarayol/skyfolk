@@ -24,7 +24,7 @@ var countPublicationsList = 1;
       
         $('#publish').on('click', function(event){
           
-          $(".fa-envelope").click();
+          $(".entypo-mail").click();
             
         });
       
