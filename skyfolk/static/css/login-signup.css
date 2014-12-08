@@ -113,7 +113,7 @@ button.register:hover {
     padding: 20px 50px 20px;
     overflow: hidden;
     /* Styles */
-    background: #111;
+    background: #9C9393;
     border-radius: 0.4em;
     border: 1px solid #191919;
     box-shadow: inset 0 0 2px 1px rgba(255,255,255,0.08), 
@@ -165,7 +165,7 @@ button.register:hover {
     /*padding-top: 9px;*/
 
     /* Styles */
-    color: #ddd;
+    color: #111;
     font-size: 12px;
     /*text-transform: uppercase;*/
     letter-spacing: 1px;
