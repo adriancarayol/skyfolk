@@ -1,6 +1,7 @@
 @import url('font-awesome.css');
 @import url(http://weloveiconfonts.com/api/?family=entypo);
 @import url(http://fonts.googleapis.com/css?family=Gafata);
+@import url(http://fonts.googleapis.com/css?family=Lato:400,300);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
 @import url(http://fonts.googleapis.com/css?family=Roboto);
 
@@ -88,12 +89,13 @@ button.register {
   border-radius: 4px;
   font-size: 14px;
   color: #FFE1E1;
-  font-width: 400;
+  font-width: 200;
   position: relative;
   display: inline-block;
   cursor: pointer;
   margin: auto;
   transition: all .3s ease-in;
+  font-family: 'Lato', sans-serif;
 }
 button.register:hover {
     color: #EFA91D;
@@ -169,8 +171,9 @@ button.register:hover {
     letter-spacing: 1px;
     text-shadow: 0 1px 0 #000;
     text-indent: 10px;
-    font-weight: 700;
+    font-weight: 200;
     cursor: pointer;
+    font-family: 'Lato', sans-serif;
 }
 
 .form-3 input[type=text],
@@ -415,14 +418,13 @@ button.register:hover {
 	cursor:pointer;
 	color:#ffffff;
 	font-size:15px;
-	font-weight:bold;
 	padding:6px 24px;
 	text-decoration:none;
 	float:right;
     position:relative;
     top:23px;
     outline: none;
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Lato', sans-serif;
     transition: all .2s ease-in;
 }
 .myButton:hover {
@@ -464,13 +466,12 @@ button.register:hover {
     cursor:pointer;
     color:#ffffff;
     font-size:15px;
-    font-weight:bold;
     padding:6px 24px;
     text-decoration:none;
     float:left;
     position:relative;
     top:0px;
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Lato', sans-serif;
     outline: none;
     transition: all .2s ease-in;
 	
