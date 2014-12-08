@@ -76,7 +76,7 @@ div.Register {
 }
 p.Register {
     font-size: 14px;
-    color: #ccc;
+    color: #fff;
     line-height: 3px;
     position: relative;
     display: inline-block;
@@ -165,7 +165,7 @@ button.register:hover {
     /*padding-top: 9px;*/
 
     /* Styles */
-    color: #111;
+    color: #fff;
     font-size: 12px;
     /*text-transform: uppercase;*/
     letter-spacing: 1px;
