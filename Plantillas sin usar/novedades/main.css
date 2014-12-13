@@ -123,8 +123,44 @@ figcaption span {
 	color: #fff;
 
 }
-
-
+.comm {
+	position: relative;
+	display: block;
+	margin: auto;
+	width: 400px;
+	height: auto;
+	background-color: #fff;
+	border-radius: 7px;
+	box-shadow: 1px 1px solid grey;
+}
+.comm h4 {
+	text-align: center;
+	position: relative;
+	top: -35px;
+	border-bottom: 1px solid grey;
+	width: auto;
+}
+.comm span {
+	position: relative;
+	top: -30px;
+}
+.comm .img {
+	position: relative;
+	margin: auto;
+}
+.comm img {
+	width: 70px;
+	height: 70px;
+	border-radius: 100%;
+	border: 2px solid tomato;
+	position: relative;
+	top: -20px;
+	margin: auto;
+	left: 15px;
+}
+.comm figcaption {
+	visibility: visible;
+}
 /* Caption animación*/
 
 
