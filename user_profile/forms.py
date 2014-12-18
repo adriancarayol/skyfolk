@@ -51,15 +51,14 @@ class SignupForm(forms.Form):
 
 
 class UserForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name')
+        fields = ('first_name', 'last_name')
 
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        #fields = ('user','image')
-        exclude = ('usuario',)
+        fields = ('image',)
+
