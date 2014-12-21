@@ -1,12 +1,14 @@
 {% extends "account/base_cf.html" %}
 
 {% block additional_files %}
+	
 	<style>
 		#menucf-profile {
 			background:#fafafa;
 		}
 		
 	</style>
+	
 {% endblock%}
 
 {% block cf-title %}
@@ -17,12 +19,13 @@
 
 {% block cf-form %}
 
-	<form id='formulario' method='post' action=''>{% csrf_token %}
+	<form id='formulario' method='post' action='' enctype="multipart/form-data">{% csrf_token %}
 		{{ user_form }}
     	{{ perfil_form }}
+
 		<input id="btn" type="submit" value="Guardar cambios">
+		<img id="croppedimage">
 
 	</form>
-	<form id='formulario2' method='post' action=''>
-	</form>
+
 {% endblock %}

@@ -1489,8 +1489,21 @@ h1 {
   font-family: 'Open Sans', sans-serif;
   display: block;
 }
-
+/*
 button[type="button"] {
+  display: inline-block;
+  border-radius: 3px;
+  border: none;
+  font-size: 0.9rem;
+  padding: 0.6rem 1em;
+  color: white;
+  margin: 0 0.25rem;
+  text-align: center;
+  background: #FF0000;
+  border-bottom: 1px solid #999;
+}
+*/
+.buttonred {
   display: inline-block;
   border-radius: 3px;
   border: none;

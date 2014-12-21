@@ -10,6 +10,7 @@ from django.forms import ModelForm
 from user_profile.models import UserProfile
 from django.contrib.auth.models import User
 
+
 class SearchForm(forms.Form):
 
     searchText = forms.CharField(label="", help_text="",required=False,widget=forms.TextInput(attrs={'placeholder' : '¿Que es lo que quieres buscar?'}))

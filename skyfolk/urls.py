@@ -5,6 +5,9 @@ from django.contrib import admin
 from rest_framework import routers
 from api import views
 from django.conf import settings
+from django.core.management.commands import startproject
+
+
 
 
 admin.autodiscover()

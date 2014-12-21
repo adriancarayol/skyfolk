@@ -167,11 +167,14 @@ def config_profile(request):
 	print '>>>>>>>  PETICION CONFIG'
 	if request.POST:
 		# formulario enviado
+		print '>>>>>>>  paso 1' + str(request.FILES)
 		user_form = UserForm(data=request.POST, instance=request.user)
-		perfil_form = ProfileForm(request.POST, instance=request.user.profile)
+		perfil_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
 
+		print '>>>>>>>  paso 1.1'
 		if user_form.is_valid() and perfil_form.is_valid():
 			# formulario validado correctamente
+			print '>>>>>>  save'
 			user_form.save()
 			perfil_form.save()
 			return HttpResponseRedirect('/config/profile') #poner mas tarde, que muestre un mensaje de formulario aceptado
@@ -182,7 +185,9 @@ def config_profile(request):
 		perfil_form = ProfileForm(instance=request.user.profile)
 		
 
+	print '>>>>>>>  paso x'
 	return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm, 'user_form':user_form, 'perfil_form':perfil_form}, context_instance=RequestContext(request))
+	#return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm, 'user_form':user_form}, context_instance=RequestContext(request))
 
 def like_profile(request):
 

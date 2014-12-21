@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import skyfolk
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Identificando la ruta de la raiz del proyecto
@@ -52,6 +53,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
+
 )
 
 # Local Applications
@@ -140,6 +142,8 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
 
+
+
 ROOT_URLCONF = 'skyfolk.urls'
 
 WSGI_APPLICATION = 'skyfolk.wsgi.application'
@@ -195,7 +199,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Media (uploads, ...)
-MEDIA_ROOT = os.path.join(RAIZ_PROYECTO,'media')
+MEDIA_ROOT = os.path.join(RAIZ_PROYECTO,'upload')
 #MEDIA_URL = '/media/'
 
 # Identificador
