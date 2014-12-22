@@ -15,7 +15,7 @@ body, html {
 body {
 	font-family: 'Open Sans', sans-serif;
 	color: #aaaeb2;
-	background: #f1f1f1;
+	background: #e5ded8;
 }
 
 a {
@@ -253,5 +253,11 @@ figcaption span {
 .caption:not(:hover)  {
 	opacity: 0.4;
 }
-
-
+#video {
+	position: relative;
+	display: inline;
+	width: 240px;
+	height: 260px;
+	top: -47px;
+	outline: none;
+}
