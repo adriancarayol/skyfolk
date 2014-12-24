@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=PT+Sans);    
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400); 
 @import url(http://weloveiconfonts.com/api/?family=fontawesome);
 
 /* fontawesome */
@@ -10,7 +10,63 @@
 body {
     font-size: 20px;
     font-weight: normal;
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    padding: 0;
+}
+
+/* nav */
+.box-tool {
+  width: 100%;
+  height: 40px;
+  background-color: #fff;
+  box-shadow: 1px 1px 1px #f0f0f0;
+  list-style-type: none;
+  position: fixed;
+  margin-top: -20px;
+  z-index: 9999;
+}
+.box-tool li:nth-child(1) {
+  position: relative;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');
+  background-repeat: no-repeat;
+  background-size: 120px;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+    -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  transition: all .3s linear;
+  top: -9px;
+}
+.box-tool .chat {
+  width: 20px;
+  height: 20px;
+  background-image:url('http://s27.postimg.org/mu9viuten/1418959285_357941.png');
+  border: none;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position:center;
+  background-color: transparent;
+  margin: auto;
+  top: -60px;
+  float: right;
+  right: 20px;
+}
+.box-tool li:hover {
+   -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+    transform:scale(1.1);
+  border: none;
+  background-color: transparent;
+}
+.box-tool li img {
+  position: relative;
+  width: 120px;
+  height: 120px;
 }
 footer {
     height: 20%;
@@ -30,23 +86,26 @@ div.message {
     width: 634px;
     max-width: 820px;
     position: relative;
-    border: 2px solid aquamarine;
     height: 80%;
     border-radius: 3px;
     font-size: 17px;
-    color: grey;
+    color: rgba(44,44,44,0.877);
     transition: all .3s ease-in-out;
     text-shadow: 0.2px 0.2px grey;
     text-align: justify;
     padding: 10px 5px;
     padding-top: -10px;
     vertical-align: text-top;
-    -webkit-box-shadow: 0px 0px 5px aquamarine;  
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 100;
+    outline: none;
+    border: 2px solid rgba(44,44,44,0.377);
 }
 #message2:focus {
     border: 2px solid grey;
-    -webkit-box-shadow: 0px 0px 5px aquamarine;  
+    -webkit-box-shadow: 2px 2px 8px 0px rgba(46, 165, 188, 0.75);
+    -moz-box-shadow:    2px 2px 8px 0px rgba(46, 165, 188, 0.75);
+    box-shadow:         2px 2px 8px 0px rgba(46, 165, 188, 0.75); 
 }
 
 ul.control li {
@@ -57,44 +116,16 @@ ul.control li {
     margin-top: -10px;
     cursor: pointer;
     transition: all .3s ease-in-out;
+    color: rgba(44,44,44,0.877);
 }
 ul.control li:hover {
-    color: aquamarine;
+    color: rgba(44,44,44,0.577);
 }
 
-#panel {
-    height: 100%;
-    max-width: 35%;
-    min-width: 30%;
-    width: 30%;
-}
-div.entrada {
-    max-height: 7%;
-    height: 6%;
-    max-width: 100%;
-    width: 70%;
-    top: 5%;
-    position: relative;
-    left: 5%;
-    text-decoration: none;
-}
-a{
-    text-decoration: none;
-    color: grey;
-    border-bottom: 2px solid aquamarine;
-    transition: all .3s ease-in-out;
-    
-}
-a:hover {
-    text-decoration: none;
-    color: black;
-    border-bottom: 2px solid tomato;
-    
-}
 section {
     text-align: center;
     height: 80%;
-    top: 12%;
+    top: 100px;
     width: 42%;
     max-width: 70%; 
     position: absolute;
@@ -106,16 +137,17 @@ div {
 		max-width: 255px;
 		word-wrap: break-word;
 		margin-bottom: 20px;
-    line-height: 24px;
+        line-height: 25px;
 	}
 .clear {clear: both}
 .me {
 	position:relative;
 	padding:10px 20px;
 	color:white; 
-	background:#2BF8D9;
+	background:rgba(44,44,44,0.877);;
 	border-radius:25px;
 	float: right;
+    margin-top: -10px;
 		
 }
 .you {
@@ -123,9 +155,10 @@ div {
 	padding:10px 20px;
 	background:#fff;
 	border-radius:25px;
-    border  : 1px solid #2BF8D9;
-	color: #2BF8D9;
-  float: left;
+    border  : 1px solid rgba(44,44,44,0.877);;
+	color: rgba(44,44,44,0.877);;
+    float: left;
+    margin-top: -10px;
 }
 img[target="me"] {
     position: relative;
@@ -144,60 +177,30 @@ img[target="you"] {
     float: left;
     border-bottom-left-radius: 10px;
 }
-img[target="persona"] {
+.messagewith {
+    text-indent: inherit;
+    display: block;
     position: relative;
-    width: 70px;
-    height: 70px;
-    border-radius: 70%;
-    float: right;
-    left: 0;
-    border-bottom-left-radius: 10px;
     margin: auto;
-    margin-top: -40px;
-
-   
-}
-.fontawesome-angle-left {
-    max-width: 35%;
-    min-width: 30%;
-    position: absolute;
-    top: 5%;
-    left: 30%;
-    text-align: center;
-    font-size: 25px;
-    color: grey;
-    border-bottom: 4px solid aquamarine;
+    top: -370px;
+    border-bottom: 2px solid rgba(44,44,40,0.777);
+    color: rgba(44,44,44,0.877);
+    -webkit-transition: all .3s linear;
+    -moz-transition: all .3s linear;
+    transition: all .3s linear;
     cursor: pointer;
-        transition: all .3s ease-in-out;
-   -webkit-transform: scale(1.06, 1);
 }
-.fontawesome-angle-left:hover {
-    max-width: 35%;
-    width: 30%;
-    position: absolute;
-    top: 5%;
-    left: 30%;
-    text-align: center;
-    font-size: 25px;
-    color: aquamarine;
-    border-bottom: 4px solid grey;
-
+.messagewith:hover {
+    -webkit-transform: scale(1.056);
+    -moz-transform: scale(1.056);
+    transform: scale(1.056);
+    color: rgba(44,44,44,0.577);
 }
     
-i {
+div i {
     font-size: 9px;
     font-weight: normal;
     float:left;
-}
-.fontawesome-envelope-alt {
-    margin-left: 20px;
-    font-size: 20px;
-    color: grey;
-    border-bottom: 3px solid aquamarine;
-    padding: 10px 10px;
-    background-color: #fff;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
 }
 .fontawesome-remove , .fontawesome-ban-circle {
     font-size: 15px;
@@ -208,4 +211,67 @@ i {
     color: tomato;
     display: block;
     position: relative;
+}
+aside {
+  position:  relative;
+  margin-left: 20px;
+  background-color: #FAFAFA;
+  height: 420px;
+  width: 280px;
+  top: 80px;
+  border-radius:  7px;
+  -webkit-box-shadow: 2px 2px 7px 0px #efefef;
+  -moz-box-shadow:    2px 2px 7px 0px #efefef;
+  box-shadow:         2px 2px 7px 0px #efefef;
+}
+nav {
+  list-style-type:  none;
+  height: 100%;
+  font-weight: 100;
+  font-family: 'Open Sans', sans-serif;
+
+}
+nav li {
+  color:  #000;
+  margin-top:  20px;
+  padding:  10px 10px;
+  border-bottom:  2px solid #fff;
+  background-color:  #fafafa;
+  border-left: 5px solid rgba(44,44,44,0.854);
+  border-radius:  3px;
+  transition:  all .2s ease-in;
+  cursor:  pointer;
+  font-size: 14px;
+}
+nav li:hover {
+  color:  #00CED1;
+  background-color:  #E4E4E4;
+  border-left: 7px solid rgba(44,44,44,0.854);
+}
+nav li i {
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-style: normal;
+  transition:  all .3s ease-in;
+}
+nav li:hover > i {
+  margin-left: 40px;
+}
+
+input[target="search"] {
+    border-radius: 20px;
+    background: url('http://png-4.findicons.com/files/icons/1389/g5_system/32/toolbar_find.png') 9px 9px no-repeat, linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
+    background-size: 19px;
+    border: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
+    transition: all 0.2s linear;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: #222222;
+    position: relative;
+    height: 36px;
+    width: 250px;
+    padding-left: 30px;
+
 }
