@@ -127,22 +127,26 @@ figcaption span {
 	position: relative;
 	display: block;
 	margin: auto;
-	width: 400px;
+	width: 390px;
 	height: auto;
 	background-color: #fff;
 	border-radius: 7px;
-	box-shadow: 1px 1px solid grey;
+	-webkit-box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    0px 0px 8px 0px rgba(50, 50, 50, 0.75);
+     box-shadow:         0px 0px 8px 0px rgba(50, 50, 50, 0.75);
 }
-.comm h4 {
+.comm h5 {
 	text-align: center;
 	position: relative;
-	top: -35px;
+	top: -45px;
 	border-bottom: 1px solid grey;
 	width: auto;
+	margin-bottom: 7px;
 }
 .comm span {
 	position: relative;
 	top: -30px;
+	font-size: 13px;
 }
 .comm .img {
 	position: relative;
@@ -152,7 +156,7 @@ figcaption span {
 	width: 70px;
 	height: 70px;
 	border-radius: 100%;
-	border: 2px solid tomato;
+	border: 2px solid rgba(44,44,44,0.777);
 	position: relative;
 	top: -20px;
 	margin: auto;
@@ -317,10 +321,11 @@ figcaption span {
 }
 .opciones {
 	display: block;
-	position: relative;
+	position: absolute;
 	margin: auto;
 	float: right;
-	top: -100px;
+	right: 0;
+	top: 60px;
 }
 .opciones ul {
 	list-style-type: none;
@@ -336,31 +341,40 @@ figcaption span {
 	background-position: center;
 	background-size: 50%;
 	margin-right: 7px;
+	cursor: pointer;
 }
 .actividad {
-    background-image: url("images/user.ico");
+    background-image: url("images/friends.ico");
 	width: 40px;
 	height: 40px;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 50%;
 	margin-right: 7px;
+	cursor: pointer;
 }
 .descubre {
-	 background-image: url("images/user.ico");
+	 background-image: url("images/find.ico");
 	width: 40px;
 	height: 40px;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 50%;
 	margin-right: 7px;
+	cursor: pointer;
 }
 .novedades {
-    background-image: url("images/user.ico");
+    background-image: url("images/new.ico");
 	width: 40px;
 	height: 40px;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 50%;
 	margin-right: 7px;
+	cursor: pointer;
+}
+.opciones li:hover {
+	-webkit-trasnform: scale(1.07);
+	-moz-transform: scale(1.07);
+	transform: scale(1.07);
 }
