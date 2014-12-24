@@ -1,104 +1,61 @@
-@import url(http://weloveiconfonts.com/api/?family=fontawesome);
-
-/* fontawesome */
-[class*="fontawesome-"]:before {
-  font-family: 'FontAwesome', sans-serif;
-}
-
-
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
 
 
 body {
-  background-image: url('http://wonderfulengineering.com/wp-content/uploads/2014/04/3D-Wallpaper-5.jpg')
+  paddding: 0;
+  background: #ececec;
+  font-family: 'Open Sans', sans-serif;
 }
 #contenedor {
-  border: 1px solid #94F6FB;
-  width: 400px;
-  height: 300px;
-  border-radius: 5%;
+  width: 350px;
+  height: 250px;
   border-top: 4px solid #079FA7;
-}
-.img {
-  border-radius: 100%;
-  box-shadow: 1px 1px 2px 1px;
-  margin: 13px;
- position: relative;
-  display: inline-block;
-}
-.img:hover {
-  color: #9CFBFF;
-  cursor: pointer;
-}
-p {
-  font-size: 11px;
-  color: grey;
+  -webkit-box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow:    0px 0px 8px 0px rgba(50, 50, 50, 0.75);
+  box-shadow:         0px 0px 8px 0px rgba(50, 50, 50, 0.75);
+  display: block;
+  position: re
+  ;
+  overflow-y: scroll;
+  overflow-x: hidden;
   font-family: 'Open Sans', sans-serif;
-  position: flex;
-  margin-left: 90px;
-  margin-top: -50px;
+  background-color: #fff;
+  margin: auto;
 }
-p:hover {
-  color: #7AFFC4;
+.grupos {
+  position: relative;
+  display: block;
+  margin: auto;
+  padding: 1px;
 }
-
- .l, .l2 {
-   border-top: 1px solid #9CFBFF;
- }
-.grup {
-  list-style:none;
-  
+.all {
+  position: relative;
+  margin: auto;
+  list-style-type: none;
+  display: block;
+  padding: 2px 2px;
 }
-ul {
-  margin-left: -30px;
-  margin-top: -20px;
-  
-}
-li {
-  margin: 40px;
-}
-
-.green {
- color: #10d7af; 
-}
-
-.fontawesome-heart {
-  color: #FFF;
-  font-size: 12px;
-  diplay: block;
-  position: absolute;
-  margin-left: 240px;
-  cursor:pointer;
-
-}
-.fontawesome-share {
-  color: #FFF;
-  font-size: 12px;
-  diplay: block;
-  position: absolute;
-  margin-left: 210px;
+.all li {
+  margin-bottom: 17px;
+  margin-left: 17px;
+  margin-top: 15px;
+  position: relative;
+  display: table;
+  width: 100%;
   cursor: pointer;
-  
 }
-.fontawesome-trash {
-  color: #FFF;
-  font-size: 12px;
-  diplay: block;
+.all img {
+  widows: 57px;
+  height: 57px;
+  border-radius: 100%;
+  border: 2px solid rgba(44,44,44,0.777);
+}
+.all a {
   position: absolute;
-  margin-left: 270px;
-  cursor: pointer:
-}
-
-.fontawesome-heart:hover {
-  color: #FF7AFC;
- 
-}
-.fontawesome-share:hover {
-  color: #FF7AFC;
-}
-.fontawesome-trash:hover {
-  color: #FF7AFC;
-}
-ul.controls span {
-  color: #FFF;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(44,44,44,0.777);
+  top: 20px;
+  margin-left: 20px;
+  font-weight: 100;
 }
