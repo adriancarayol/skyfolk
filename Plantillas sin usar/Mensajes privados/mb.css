@@ -357,7 +357,7 @@ button:hover {
   font-size: 20px;
   border:none;
   background-color: transparent;
-  color: #94DCFF;
+  color: rgba(44,44,44,0.777);
   text-align: center;
   float:right;
   display:inline-block;
@@ -370,7 +370,7 @@ button:hover {
   font-size: 20px;
   border:none;
   background-color: transparent;
-  color: #94DCFF;
+  color: rgba(44,44,44,0.777);
   text-align: center;
   float:right;
   display:inline-block;
@@ -384,7 +384,7 @@ button:hover {
    font-size: 20px;
   border:none;
   background-color: transparent;
-  color: #94DCFF;
+  color: rgba(44,44,44,0.777);
   text-align: center;
   float:right;
   display:inline-block;
