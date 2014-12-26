@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import skyfolk
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Identificando la ruta de la raiz del proyecto
@@ -53,7 +52,6 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
-
 )
 
 # Local Applications
@@ -142,8 +140,6 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
 
-
-
 ROOT_URLCONF = 'skyfolk.urls'
 
 WSGI_APPLICATION = 'skyfolk.wsgi.application'
@@ -199,7 +195,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Media (uploads, ...)
-MEDIA_ROOT = os.path.join(RAIZ_PROYECTO,'upload')
+MEDIA_ROOT = os.path.join(RAIZ_PROYECTO,'media')
 #MEDIA_URL = '/media/'
 
 # Identificador
@@ -224,14 +220,14 @@ STATICFILES_DIRS = (
 #
 # heroku
 
- Parse database configuration from $DATABASE_URL
+# Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES['default'] = dj_database_url.config()
- Honor the 'X-Forwarded-Proto' header for request.is_secure()
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
- Allow all host headers
+# Allow all host headers
 ALLOWED_HOSTS = ['*']
- Static asset configuration
+# Static asset configuration
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = 'staticfiles'

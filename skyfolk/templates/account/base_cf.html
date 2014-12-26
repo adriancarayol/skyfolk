@@ -4,15 +4,12 @@
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  	
-
+ 	<link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
 	<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
-
-	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet" />
- 	<link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-
-
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet" />
+	
 	
 
 	<!--[if IE 7]>
@@ -180,7 +177,7 @@
 <h6 id="ch"> Cambia tu contraseña o recupera tu contraseña actual.</h6>
 -->
 </form>
-
+<form id="float">
 	{% block cf-form %}{% endblock %}
 <!--
 Contraseña actual <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
@@ -190,7 +187,7 @@ Verificar contraseña <input class="actual" type="password" name="Repita su nuev
 <p id="lost"><a href="/"> ¿Olvidaste tu contraseña?</a> </p>
 -->
 
-
+</form>
 </section>
 </body>
 </header>

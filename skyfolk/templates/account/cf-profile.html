@@ -1,14 +1,12 @@
 {% extends "account/base_cf.html" %}
 
 {% block additional_files %}
-	
 	<style>
 		#menucf-profile {
 			background:#fafafa;
 		}
 		
 	</style>
-	
 {% endblock%}
 
 {% block cf-title %}
@@ -18,14 +16,13 @@
 
 
 {% block cf-form %}
-
-	<form id='formulario' method='post' action='' enctype="multipart/form-data">{% csrf_token %}
+	<!--
+	Cambiar imagen <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
+	<input id="btn" type="submit" value="Guardar cambios">
+	-->
+	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
 		{{ user_form }}
     	{{ perfil_form }}
-
 		<input id="btn" type="submit" value="Guardar cambios">
-		<img id="croppedimage">
-
 	</form>
-
 {% endblock %}
