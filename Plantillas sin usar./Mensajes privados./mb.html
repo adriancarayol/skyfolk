@@ -4,12 +4,57 @@
     <link rel="stylesheet" type="text/css" href="mb.css" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+ <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+<script>
+$(document).ready(function(){
+  $(".compose").click(function(){
+    $("#page-wrapper").toggle("slow	");
+  });
+});
+</script>
+
+ <script>
+$(function() {
+$( "#page-wrapper" ).draggable();
+});
+</script>
 
     </head>
     <body>
+
+<nav class="box-tool">
+  <li><div class="logo"></div></li>
+  <li class="chat"><div></div></li>
+</nav>
+<div class="contenedor">
       <hgroup>
-  <span><h3 class="fontawesome-envelope"> Mensajes privados</h3></span>
+  <span>
+  <li><h3 class="fontawesome-envelope"> Mensajes privados</h3></li>
+  <li><img class="compose" alt="Escribir" title="Escribir..." src="write.png"></li>
+  </span>
   </hgroup>
+  <div id="page-wrapper">
+  <h1></h1>
+  
+  <div id="status">Escribe un mensaje.</div>
+  
+  
+  <form id="message-form2" action="#" method="post">
+    <textarea id="message2" placeholder="Escribe tu mensaje aquí..." required></textarea>
+    <button type="submit"><i class="fa fa-paper-plane"></i> Enviar</button>
+    <button type="button" id="close"><i class="fa fa-remove"></i> Cerrar</button>
+    <button class="fontawesome-bullhorn"></button>
+    <button class="fontawesome-camera"></button>
+    <button class="fontawesome-map-marker"></button>
+   
+    
+  </form>
+</div>
               <aside>
     <nav class="vertical">
       <li class="perfil"><i class="fontawesome-user"></i>Recibidos</li>
@@ -50,6 +95,7 @@
 <blockquote>Lorem ipsum dolor sit amet...</blockquote>
 </div>
 
+</div>
 </div>
     </body>
 </html>
