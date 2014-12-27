@@ -172,7 +172,7 @@ DATABASES = {
         # '127.0.0.1' for localhost through TCP.
         'HOST': 'localhost',
         # Set to empty string for default.
-        'PORT': '5432',
+        'PORT': '',
     }
 }
 
