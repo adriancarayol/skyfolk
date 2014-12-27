@@ -423,43 +423,25 @@ function cambiopagina(){
 
       
     }        
-      
- /* MENU AL PULSAR FOTO DE USUARIO */     
+      /* DISPLAY MENU */
+
 $(document).ready(function(){
-   $(".nameact").click(function () {
-      $("#panel1").each(function() {
+   $(".fa-bars").click(function () {
+      $("#toggle").each(function() {
         displaying = $(this).css("display");
+        $("#toggle").val('');
         if(displaying == "none") {
-          $(this).fadeOut(250 ,function() {
+          $(this).fadeOut(function() {
            $(this).css("display","block");
           });
         } else {
-          $(this).fadeIn(250 ,function() {
+          $(this).fadeIn(function() {
             $(this).css("display","none");
           });
         }
       });
     });
   });
-
-/* CERRAR MENU AL QUITAR EL CURSOR DE ENCIMA */
-$(document).ready(function(){
-   $("#panel1").mouseleave(function () {
-      $("#panel1").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "block") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
-
 /* Mensaje flotante */
 $(document).ready(function(){
    $(".entypo-mail").click(function () {
@@ -478,40 +460,7 @@ $(document).ready(function(){
       });
     });
   });
-/* Configuración rápida */
-$(document).ready(function(){
-   $(".fontawesome-pencil").click(function () {
-      $("#fastconf").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "none") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","block");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
 
-$(document).ready(function(){
-   $(".fontawesome-remove").click(function () {
-      $("#fastconf").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "block") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
 
 
 function addItemToFriendList(name, lastname){

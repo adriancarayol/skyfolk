@@ -43,7 +43,16 @@
 {% endblock %}
 
 {% block content %}
-
+<div id="toggle">
+  <nav class="menup">
+    <li class="profilee"><img src="http://el-cine-en-rosa.blogs.diezminutos.es/files/2014/11/jennifer-lawrence-cine-en-rosa.jpg"><i>{{user_profile.username}}</i></li>
+    <li><i class="fa fa-cog fa-lg"></i> Configuracion</li>
+    <li><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+    <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
+    <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
+  </nav>
+</div>
 <div id="panel" style="display:none;"> 
 
   <div id="widget" style="display:none;"> 
@@ -76,39 +85,6 @@
     <p class="u-italic">Acabas de entrar a Skyfolk satisfactoriamente.</p>
   </div>
   <button class="Mensaje-close js-messageClose"><i class="fa fa-times"></i></button>
-</div>
-
-<div id="nav2">
-<ul class="nameact">   
-<div class=" foto_perfil" title="{{ user_profile.username }}"></div></ul>
- 
-
-   
-    <div id="panel1" style="display:none;">
-      
-     <dropdown>
- 
-  <ul class="animate">
-    <li class="animate"> Mi perfil <a class="fontawesome-user"></a></li>
-    <li class="animate"> Configuracion <a href="/config/changepass" class="fontawesome-cog"></a></li>
-    <li class="animate"> Market <a href="#market" class="fontawesome-th"></a></li>
-    <li class="animeate"> Mis lazos <a href="#mislazos" class="fontawesome-link"></a></li>
-    <li class="animate">Multimedia <i class="fontawesome-film"></i></li>
-    <li class="animate">Juegos <i class="fontawesome-play"></i></li>
-    <li class="animatex">+ Visto <i class="fontawesome-eye-open"></i></li>
-    <li class="animatex"> + likes <i class="fontawesome-thumbs-up"></i></li>
-    <li class="animatex"> Famosos <i class="fontawesome-certificate"></i></li>
-    <li class="animatex"> Favoritos <i class="fontawesome-star"></i></li>
-    <li class="animatex"> Descubre <i class="fontawesome-globe"></i></li>
-    <li class="animatee"> Mi baúl <i class="fontawesome-briefcase"></i></li>
-    <li class="animatee"> Comentarios favoritos <i class="fontawesome-star-half"></i></li>
-  </ul>
-</dropdown>
-
-
-
-    </div>
-    
 </div>
 <!-- Configuración rápida -->
 <!--
