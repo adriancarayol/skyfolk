@@ -17,6 +17,8 @@
          <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
         <title>¡Bienvenido!</title>
         <meta name="description" content="Custom Login Form Styling with CSS3" />
         <meta name="keywords" content="skyfolk, social, login, registro, sky, folk," />
@@ -25,84 +27,28 @@
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css" />
 		<script src="{{STATIC_URL}}js/modernizr.custom.63321.js"></script>
 		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
-		<style>
-			@import url(http://fonts.googleapis.com/css?family=Ubuntu:400,700);
-                        @import url(http://fonts.googleapis.com/css?family=Roboto);
 
-
-
-			body {
-				background: #563c55 url({{STATIC_URL}}img/7.jpg) no-repeat center top;
-				-webkit-background-size: 100%;
-				-moz-background-size: 100%;
-				background-size: 100%;
-				font-family: 'Roboto', sans-serif;
-				height: auto;
-			}
-			
-			.container > header h1,
-			.container > header h2 {
-				color: #fff;
-				text-shadow: 0 1px 1px rgba(0,0,0,0.7);
-			}
-			#texto h2 span{
-				/*color:#CCC;*/
-				color:#E2E2E2;
-			}
-			#texto{
-				width:400px;
-				height:50px;
-				margin-left:7%;
-				margin-top:-37px;
-				font-size:12px;
-				font-family: 'Gafata', sans-serif;
-			}
-			#texto h2{
-				display:block; 
-				font:6.06em "Lucida Console", Monaco, monospace;
-				/*color:#E2E2E2;*/
-				color:#7EC6F5;
-				text-shadow:#FFF -3px -2px 12px;
-				border-radius:5px; 
-				float:left;
-				font-family: 'Gafata', sans-serif;
-			}
-			
-		</style>
 	{% block extra_head %}
 	{% endblock %}
     </head>
     <body>
        <!--<div id="texto"><img class="logo" src="{{STATIC_URL}}img/logo.png"><h2>S<span>kyfolk.</span></h2>-->
-       <div id="container">
-       <div id="header">
-	<div id="texto"><h2>S<span>kyfolk.</span></h2>
-       	</div>
-
-<div id="Menu"> 
-<div id="centro"><img src="" width="300" height="300"><span class="entypo-user"></span></div>
-<div id="llinkedin" class="size left"><span class="entypo-users"></span></div>
-<div id="ddribbble" class="size right"><span class="entypo-mail"></span></div>
-<div id="ffacebook" class="size left"><span class="entypo-calendar"></span></div>
-<div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
-</div>
-<div class="Register">
-	<p class="Register">¿Empresa, grupo o evento? ¡Regístrate!</p>
-    <button class="register" href="{{ signup_url }}">Registrar</button>
-</div>
-       </div>
+<header>
+    <h5> <i>S</i>kyfolk.</h5>
+    <div class="logo">
+      <img src="http://s11.postimg.org/58jltbaqb/logo.png">
+    </div>
+  </header>
        	
        {% block content %}{% endblock %}
 
-         <div id="footer">
-<ul>
-<li>About Us</li>
-<li>Skyfolk ©</li>
-<li>More</li>
-<li></li>
-</ul>
-</div>
-</div>
+         <footer>
+  <ul>
+    <li><a>About us</a></li>
+    <li><a>Our team</a></li>
+    <li><a>Compromise</a></li>
+  </ul>
+  </footer>
     </body>
 
 </html>
