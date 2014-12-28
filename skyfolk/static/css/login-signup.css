@@ -21,12 +21,12 @@ header {
   position: absolute;
   margin: auto;
   vertical-align: middle;
-  top: -40px;
-  left: 150px;
+  top: -37px;
+  left: 0px;
 }
 header h5 {
   position: relative;
-  left: 80px;
+  left: 87px;
   font-size: 25px;
   text-decoration: none;
   color: grey;

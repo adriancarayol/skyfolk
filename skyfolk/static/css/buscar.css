@@ -411,35 +411,73 @@ $colors: #E74C3C, #0072B5, #2C3E50;
   background-color: white;
   color: grey;
 }
-#notification {
-  width: 200px;
+#notificationn {
+  width: 210px;
   height: 200px;
   position: absolute;
-  right: 54px;
+  right: 14px;
   top: 50px;
-  background: rgba(44,44,44,0.377);
-  border-top-left-radius: 60px;
-  border-top-right-radius: 60px;
+  background: rgba(44,44,44,0.877);
   display: none;
+  border-radius: 3px;
+  font-family: 'Open Sans', sans-serif;
 }
-#notification .not {
+#notificationn .not {
   list-style-type: none;
   display: block;
   position: relative;
   margin: auto;
+  top: 4px;
 }
-#notification h4 {
+#notificationn h4 {
   font-weight: 300;
   position: relative;
-  margin-left: -40px;
   font-family: 'Open Sans', sans-serif;
   border-bottom: 2px solid white;
   text-align: center;
+  color: #ccc;
 }
-#notification i {
+#notificationn a {
   font-weight: 100;
   color: white;
   font-size: 13px;
   line-height: 17px;
+  width: 190px;
+  margin-left: 7.3px;
+  top: 20px;
   font-family: 'Open Sans', sans-serif;
+}
+.not li:nth-child(2) {
+  color: 
+  #D93A88;
+}
+.not li:nth-child(3) {
+  color: #3F63B6
+}
+.not li:nth-child(4) {
+  color: #FAE0E0;
+}
+#notificationn li:nth-child(1n+2) {
+  display: table;
+  position: relative;
+  top: 10px;
+  margin-top: 7px;
+  margin-left: 5px;
+}
+#notificationn h5 {
+  position: relative;
+  vertical-align: bottom;
+  text-align: center;
+  cursor: pointer;
+  margin: auto;
+  color: white;
+  margin-top: 35px;
+  margin-left: 50px;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  transition: all .3s linear;
+}
+#notificationn h5:hover {
+  color: tomato;
+
 }

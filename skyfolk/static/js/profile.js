@@ -465,9 +465,9 @@ $(document).ready(function(){
 
 $(document).ready(function(){
    $(".fa-bell").click(function () {
-      $("#notification").each(function() {
+      $("#notificationn").each(function() {
         displaying = $(this).css("display");
-        $("#notification").val('');
+        $("#notificationn").val('');
         if(displaying == "none") {
           $(this).fadeOut(function() {
            $(this).css("display","block");
