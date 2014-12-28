@@ -357,7 +357,14 @@ $colors: #E74C3C, #0072B5, #2C3E50;
     .field {
     width: 631px; }  
   }
-
+@media only screen and (max-width: 640px) {
+  .field {
+    width: 600px;
+  }
+  .fa-bell, .fa-comment {
+    right: -255px;
+  }
+}
   #toggle {
   display: none;
   background-color: #fff;
