@@ -411,3 +411,35 @@ $colors: #E74C3C, #0072B5, #2C3E50;
   background-color: white;
   color: grey;
 }
+#notification {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  right: 54px;
+  top: 50px;
+  background: rgba(44,44,44,0.377);
+  border-top-left-radius: 60px;
+  border-top-right-radius: 60px;
+  display: none;
+}
+#notification .not {
+  list-style-type: none;
+  display: block;
+  position: relative;
+  margin: auto;
+}
+#notification h4 {
+  font-weight: 300;
+  position: relative;
+  margin-left: -40px;
+  font-family: 'Open Sans', sans-serif;
+  border-bottom: 2px solid white;
+  text-align: center;
+}
+#notification i {
+  font-weight: 100;
+  color: white;
+  font-size: 13px;
+  line-height: 17px;
+  font-family: 'Open Sans', sans-serif;
+}

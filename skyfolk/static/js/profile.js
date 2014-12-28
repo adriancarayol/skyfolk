@@ -461,6 +461,25 @@ $(document).ready(function(){
     });
   });
 
+/* DISPLAY MESSAGES */
+
+$(document).ready(function(){
+   $(".fa-bell").click(function () {
+      $("#notification").each(function() {
+        displaying = $(this).css("display");
+        $("#notification").val('');
+        if(displaying == "none") {
+          $(this).fadeOut(function() {
+           $(this).css("display","block");
+          });
+        } else {
+          $(this).fadeIn(function() {
+            $(this).css("display","none");
+          });
+        }
+      });
+    });
+  });;
 
 
 function addItemToFriendList(name, lastname){
