@@ -1183,6 +1183,7 @@ ul.table > li {
  display: block;
  margin-left: 350px;
  text-shadow: grey 1px 1px 1px;
+ margin-top: 7px;
   }
  .fa-paw:hover {
  color: rgba(44,44,7,0.777);
@@ -1816,31 +1817,33 @@ margin-top:25px;
     float:right;
   }
 */
+   /* INFORMACION DEL USUARIO */
 
-/* INFORMACIÓN SOBRE IMÁGEN */
-ul.informac {
-    list-style-type: none;
-    font-size: 20px;
-     color: #fff;
-    }
-ul.informac:hover {
-  color: #fff;
-}
-div.infx {
-  opacity: 0;
-  position: absolute;
-  left: 15%;
-  min-width: 15%;
-  max-width: 15%;
-  height: auto;
-  top: 18%;
-  margin: auto;
-  font-family: 'Source Sans Pro';
-}
-div.infx:hover {
-  opacity: 1;
-  transition: all 1s ease-in-out;
-  }
+   .aboutuser {
+    position: absolute;
+    background: rgba(44,44,44,0.532);
+    width: 120px;
+    height: 120px;
+    display: none;
+    z-index: 9999;
+    left: 348px;
+    top: 235px;
+    border-bottom-right-radius: 10px;
+    font-family: 'Open Sans', sans-serif;
+   }
+   .aboutuser i {
+    position: relative;
+    margin-right: 7px;
+   }
+   .aboutuser li {
+    display: table;
+    color: #ececec;
+    text-align: center;
+    font-size: 12px;
+    position: relative;
+    margin: auto;
+    margin-top: 9px;
+   }
   /* NOTIFICACION ME GUSTA */
   #notifi div.love {
   position: absolute;

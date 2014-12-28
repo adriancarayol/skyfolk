@@ -460,6 +460,25 @@ $(document).ready(function(){
       });
     });
   });
+/* DISPLAY INFORMACION */
+
+$(document).ready(function(){
+   $(".fa-paw").hover(function () {
+      $(".aboutuser").each(function() {
+        displaying = $(this).css("display");
+        $(".aboutuser").val('');
+        if(displaying == "none") {
+          $(this).fadeOut(function() {
+           $(this).css("display","block");
+          });
+        } else {
+          $(this).fadeIn(function() {
+            $(this).css("display","none");
+          });
+        }
+      });
+    });
+  });;
 
 /* DISPLAY MESSAGES */
 
