@@ -1175,17 +1175,17 @@ ul.table > li {
 
 
 /*Informacion perfil */
- .fontawesome-pencil {
+ .fa-paw  {
  cursor:pointer;
- color: #71FF95;
+ color: rgba(44,44,44,0.666);
  font-size: 25px;
  position: relative;
  display: block;
  margin-left: 350px;
  text-shadow: grey 1px 1px 1px;
   }
- .fontawesome-pencil:hover {
- color: #4BDCFF;
+ .fa-paw:hover {
+ color: rgba(44,44,7,0.777);
  font-size: 25px;
  position: relative;
  display: block;
@@ -1360,7 +1360,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 /*INFORMACION*/
 
-@-webkit-keyframes fontawesome-pencil {
+@-webkit-keyframes fa-paw {
   50% {
     -webkit-transform: scale(0.8);
     transform: scale(0.8);
@@ -1372,7 +1372,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   }
 }
 
-@keyframes fontawesome-pencil {
+@keyframes fa-paw {
   50% {
     -webkit-transform: scale(0.8);
     transform: scale(0.8);
@@ -1384,15 +1384,15 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   }
 }
 
-.fontawesome-pencil {
+.fa-paw {
   display: inline-block;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
 }
-.fontawesome-pencil:hover, .fontawesome-pencil:focus, .fontawesome-pencil:active {
-  -webkit-animation-name: fontawesome-pencil;
-  animation-name: fontawesome-pencil;
+.fontawesome-paw:hover, .fontawesome-paw:focus, .fontawesome-paw:active {
+  -webkit-animation-name: fontawesome-paw;
+  animation-name: fontawesome-paw;
   -webkit-animation-duration: 0.3s;
   animation-duration: 0.3s;
   -webkit-animation-timing-function: linear;

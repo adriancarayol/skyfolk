@@ -145,7 +145,7 @@
           <span class="fontawesome-bookmark"> Timeline</span>
             
           
-          <div class="user-avatar"><div class="infx"><ul class="informac"><li class="fontawesome-map-marker"> España (Murcia)</li><li class="fontawesome-ok"> 28/01/1966</li><li class="fontawesome-tag"> Ing.Sistemas.</li></ul></div><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fontawesome-pencil" title="Configuración rápida"> </span>
+          <div class="user-avatar"><div class="infx"><ul class="informac"><li class="fontawesome-map-marker"> España (Murcia)</li><li class="fontawesome-ok"> 28/01/1966</li><li class="fontawesome-tag"> Ing.Sistemas.</li></ul></div><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"> </span>
             <input type="checkbox" id="button-menu"  />
             {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
               <img id = "friend_request_progress" src="{{STATIC_URL}}img/friend_request_progress.png">
