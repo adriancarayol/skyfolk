@@ -11,7 +11,7 @@ from forms import ProfileForm, UserForm
 from user_profile.models import Relationship, LikeProfile, UserProfile
 from publications.models import Publication
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import simplejson
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core import serializers
@@ -162,15 +162,19 @@ def config_changepass(request):
 
 @login_required(login_url='/')
 def config_profile(request):
-	searchForm = SearchForm(request.POST)
 
-	if request.method == 'POST':
+	searchForm = SearchForm()
+	print '>>>>>>>  PETICION CONFIG'
+	if request.POST:
 		# formulario enviado
-		user_form = UserForm(request.POST, instance=request.user)
-		perfil_form = PerfilForm(request.POST, instance=request.user.profile)
+		print '>>>>>>>  paso 1' + str(request.FILES)
+		user_form = UserForm(data=request.POST, instance=request.user)
+		perfil_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
 
+		print '>>>>>>>  paso 1.1'
 		if user_form.is_valid() and perfil_form.is_valid():
 			# formulario validado correctamente
+			print '>>>>>>  save'
 			user_form.save()
 			perfil_form.save()
 			return HttpResponseRedirect('/config/profile') #poner mas tarde, que muestre un mensaje de formulario aceptado
@@ -178,12 +182,12 @@ def config_profile(request):
 	else:
 		# formulario inicial
 		user_form = UserForm(instance=request.user)
-		perfil_form = ProfileForm()
+		perfil_form = ProfileForm(instance=request.user.profile)
+		
 
-
-
+	print '>>>>>>>  paso x'
 	return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm, 'user_form':user_form, 'perfil_form':perfil_form}, context_instance=RequestContext(request))
-
+	#return render_to_response('account/cf-profile.html', {'showPerfilButtons':True,'searchForm':searchForm, 'user_form':user_form}, context_instance=RequestContext(request))
 
 def like_profile(request):
 

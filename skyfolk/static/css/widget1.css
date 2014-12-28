@@ -5,7 +5,7 @@
 }
 
 .profile {
-  color: #3A80A6;
+  color: rgba(44,44,44,0.888);
   width: 100px;
   height: 100px;
   position: fixed;
@@ -26,7 +26,7 @@
   z-index: 9999;
 }
 .profile:hover {
-  background-color: #3A80A6;
+  background-color: rgba(44,44,44,0.777);
 }
 .profile li:nth-child(1) {
   list-style-type: none;
@@ -81,6 +81,17 @@
   -moz-transition: all .3s ease-in;
 }
 .profile li:hover {
-  color: #28546C;
+  color: GREY;
   z-index: 9999;
+}
+
+@media (min-width: 1200px) and (min-height: 900px) {
+  .profile {
+    top: 88%;
+  }
+}
+@media (max-width: 990px) {
+  .profile {
+    top: 88%;
+  }
 }

@@ -3,29 +3,6 @@
 
 
 /*caja de busqueda*/
-.field {
-	display: flex;
-	position: absolute;
-	margin: 4.894em auto;
-	width: 901px;/*70%*/
-	height: 38px;
-	top: -50px;
-	left: 7%;
-	flex-direction: row;
-	box-shadow:
-   1px 1px 0 #3E9397,
-   2px 2px 0 #3E9397,
-   3px 3px 0 #3E9397,
-   4px 4px 0 #3E9397,
-   5px 5px 0 #3E9397,
-   6px 6px 0 #3E9397,
-   7px 7px 0 #3E9397
-  ;
-}
-.field:after {
-	border-color: white;
-}
-
 .field>form input[type=text],
 .field>form button {
  /* display:block;*/
@@ -33,14 +10,37 @@
 }
 
 .field>form input[type=text] {
-  flex:1;
-  padding:0.6em;
-  border:0.2em solid #3E9397;
-  width:822px;
-  height:34px;
-  margin-top:2px;
-  margin-left:0px;
-  color: #000;
+  float: right;
+  right: 200px;
+  position:relative;
+  width: 300px;
+  background-color: #f0f0f0;
+  opacity: 0.6;
+  border: none;
+  height: 25px;
+  top: 7px;
+  text-align: left;
+  display: block;
+  font-family: sans-serif;
+  font-size: 17px;
+  appearance: none;
+  box-shadow: none;
+  outline: none;
+  transition: all .3s ease-in;
+  -webkit-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
+  border-radius: 7px;
+  background-image: url('https://cdn3.iconfinder.com/data/icons/eightyshades/512/11_Search-128.png');
+  background-repeat: no-repeat;
+  background-position: 95%;
+  background-size: 13px;
+  line-height: -1.02px;
+  padding: 0px 20px;
+  color: black;
+}
+.field>form input[type=text]:focus {
+  background-color: #cccccc;
+  background-position: 1%;
 }
 .field>form input[type="text"] {
   border: 0.2 em solid #3E9397;
@@ -56,7 +56,6 @@
 	font-size: 1.2em;
 	height:34px;
 	width:70px;
-	margin-left:2px;
 }
 .btn{ 
    cursor: pointer;
@@ -304,7 +303,50 @@ $colors: #E74C3C, #0072B5, #2C3E50;
   -ms-backface-visibility:hidden; /* Internet Explorer */
 }
 
-*/
+.fa-comment, .fa-bell {
+  float: right;
+  display: inline-block;
+  position: relative;
+  right: -280px;
+  top: 12px;
+  text-decoration: none;
+  margin-left: 50px;
+  cursor: pointer;
+  color: rgba(44,44,44,0.854);
+}
+.fa-bars {
+  color: rgba(44,44,44,0.854);
+  float: left;
+  display: inline-block;
+  position: relative;
+  right: 0px;
+  top: 14px;
+  list-style-type: none;
+  margin-left: 50px;
+  cursor: pointer;
+}
+.fa-bell em {
+  background-color: tomato;
+  font-size: 10px;
+  padding: 5px 5px;
+  border-radius: 100%;
+  text-decoration: none;
+  border-top-left-radius: 10px;
+  color: white;
+}
+.fa-comment:hover, .fa-bell:hover {
+ -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  transform: scale(1.1);
+  color: #556B75;
+}
+.fa-bars:hover {
+  color: grey;
+  transform: rotate(90deg);
+  transition: all .3s ease-in;
+  -webkit-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
+  }
 
 
 @media only screen and (min-width: 641px) and (max-width: 959px) {
@@ -315,3 +357,57 @@ $colors: #E74C3C, #0072B5, #2C3E50;
     .field {
     width: 631px; }  
   }
+
+  #toggle {
+  display: none;
+  background-color: #fff;
+  width: 200px;
+  position: absolute;
+  top: 40px;
+  margin-right: 200px;
+  font-family: 'Open Sans', sans-serif;
+  height: 500px;
+  border-bottom-right-radius: 10px;
+  color: #ccc;
+  z-index: 9999;
+}
+#toggle img {
+  width: 70px;
+  height: 70px;
+  border-radius: 100%;
+  border: 2px solid white;
+  position: relative;
+}
+#toggle .profilee i {
+  text-align: right;
+  position: relative;
+  top: -7px;
+  left: 10px;
+  background-color: rgba(44,44,44,0.554);
+  color: white;
+  padding: 5px 5px;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 5px;
+}
+#toggle img:hover {
+  opacity: 0.6;
+  transition: all .3s ease-in;
+  -webkit-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
+}
+#toggle li {
+  font-size: 13px;
+  margin-top: 20px;
+  margin-left: 10px;
+  list-style-type: none;
+  padding: 10px 10px;
+  color: rgba(44,44,44,0.854);
+  -webkit-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
+  transition: all .3s ease-in;
+  cursor: pointer;
+}
+#toggle li:hover {
+  background-color: white;
+  color: grey;
+}
