@@ -28,6 +28,24 @@
 }
 .profile:hover {
   background-color: rgba(44,44,44,0.777);
+    width: 100px;
+  height: 100px;
+  position: fixed;
+  background-color: white;
+  right: 0%;
+  top: 82%;
+  border-radius: 100%;
+  background-image: url('http://criticassdotcom.files.wordpress.com/2013/09/jesse-pinkman.jpg');
+  background-position:center;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  border-color: #3A80A6;
+  border: 2px solid;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+  cursor:pointer;
+  z-index: 9999;
   opacity: 1;
 }
 .profile li:nth-child(1) {
