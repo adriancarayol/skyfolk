@@ -4,7 +4,7 @@
   font-family: 'entypo', sans-serif;
 }
 
-.profile {
+.profile:not(:hover) {
   color: rgba(44,44,44,0.888);
   width: 100px;
   height: 100px;
@@ -24,9 +24,11 @@
   transition: all 0.2s linear;
   cursor:pointer;
   z-index: 9999;
+  opacity: 0.4;
 }
 .profile:hover {
   background-color: rgba(44,44,44,0.777);
+  opacity: 1;
 }
 .profile li:nth-child(1) {
   list-style-type: none;
