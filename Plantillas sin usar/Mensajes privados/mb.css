@@ -270,18 +270,15 @@ span li {
   
   /*CENTRADO*/
   overflow: hidden;
-<<<<<<< HEAD
   position: absolute;
   left: 60%;
   top: 50%;
   margin-top: -100px;
   margin-left: -292px; /*150px*/
-=======
   position: fixed;
   left: 30%;
   top: 50%;
   margin-top: -100px;
->>>>>>> b3255b998c5de9bdd5273b52d8129e51d44a5a55
   zoom : 1;
   z-index: 9999;
   display: none;
@@ -292,7 +289,6 @@ span li {
 h1 {
   margin-top: 0;
 }
-<<<<<<< HEAD
 
 #status {
   font-size: 13px;
@@ -300,7 +296,6 @@ h1 {
   text-align: center;
 }
 
-=======
 #Asunto {
 	position: relative;
 	display: inline-block;
@@ -348,7 +343,6 @@ label[for="Contactos"] {
 -moz-box-shadow:    -1px -1px 3px 0px rgba(37, 255, 188, 0.75);
 box-shadow:         -1px -1px 3px 0px rgba(37, 255, 188, 0.75);
 }
->>>>>>> b3255b998c5de9bdd5273b52d8129e51d44a5a55
 .open {
   color: green;
 }
@@ -365,11 +359,8 @@ box-shadow:         -1px -1px 3px 0px rgba(37, 255, 188, 0.75);
 #message2 {
   width: 100%;
   padding: 0.5rem;
-<<<<<<< HEAD
   font-size: 1rem;
-=======
   font-size: 1.4rem;
->>>>>>> b3255b998c5de9bdd5273b52d8129e51d44a5a55
   border: 1px solid #D9D9D9;
   border-radius: 3px;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -377,10 +368,10 @@ box-shadow:         -1px -1px 3px 0px rgba(37, 255, 188, 0.75);
   margin-bottom: 1rem;
   font-family: 'Open Sans', sans-serif;
   display: block;
-<<<<<<< HEAD
+
 }
 
-=======
+
   color: rgba(44,44,44,0.777);
 }
 button[type="button"], button[type="submit"] {
@@ -388,7 +379,7 @@ button[type="button"], button[type="submit"] {
 	-moz-transition: all .3s linear;
 	transition: all .3s linear;
 }
->>>>>>> b3255b998c5de9bdd5273b52d8129e51d44a5a55
+
 button[type="button"] {
   display: inline-block;
   border-radius: 3px;
@@ -403,7 +394,7 @@ button[type="button"] {
   border-bottom: 1px solid #999;
 }
 
-=======
+
   font-size:  1.2rem;
   padding: 1rem 1rem;
   color: white;
@@ -421,14 +412,13 @@ button[type="button"]:hover {
     background-size: 20px;
     color: transparent;
 }
->>>>>>> b3255b998c5de9bdd5273b52d8129e51d44a5a55
+
 button[type="submit"] {
   background: #7CE1FF;
   border-bottom: 1px solid #7CE1FF;
   display: inline-block;
   border-radius: 3px;
   border: none;
-<<<<<<< HEAD
   font-size: 0.9rem;
   padding: 0.6rem 1em;
   color: white;
@@ -436,7 +426,7 @@ button[type="submit"] {
   text-align: center;
 }
 
-=======
+
   font-size:  1.2rem;
   padding: 1rem 1rem;
   color: white;
@@ -451,7 +441,7 @@ button[type="submit"]:hover {
   background-repeat: no-repeat;
   color: transparent;
 }
->>>>>>> b3255b998c5de9bdd5273b52d8129e51d44a5a55
+
 button:hover {
   opacity: 0.75;
   cursor: pointer;

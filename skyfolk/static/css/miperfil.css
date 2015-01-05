@@ -784,7 +784,7 @@ body > .container {
   border-left: 0.1em solid #e6e6e6;
   border-bottom: 0.1em solid #e6e6e6; }
   .sidebar .links li.active {
-    background: #white;
+    background: white;
     border-bottom-color: white; }
 	.sidebar .links li.comentarios {
     background: white;
@@ -1671,41 +1671,6 @@ button:hover {
   display: inline-block;
   color: white;
   transition: all .2s ease-in-out;
-}
-#notifi div.love i:hover, i:focus, i:active {
-  -webkit-animation-name: pulse;
-  animation-name: pulse;
-  -webkit-animation-duration: 1s;
-  animation-duration: 1s;
-  -webkit-animation-timing-function: linear;
-  animation-timing-function: linear;
-  -webkit-animation-iteration-count: infinite;
-  animation-iteration-count: infinite;
-  color: rgba(244, 49, 126, 0.9);
-  cursor: pointer;
-}
-@-webkit-keyframes pulse {
-  25% {
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-  }
-
-  75% {
-    -webkit-transform: scale(0.9);
-    transform: scale(0.9);
-  }
-}
-
-@keyframes pulse {
-  25% {
-    -webkit-transform: scale(1.1);
-    transform: scale(1.1);
-  }
-
-  75% {
-    -webkit-transform: scale(0.9);
-    transform: scale(0.9);
-  }
 }
 #notifi div.love a.fontawesome-remove {
   position: absolute;
