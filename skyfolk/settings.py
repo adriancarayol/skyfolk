@@ -217,7 +217,7 @@ STATICFILES_DIRS = (
 )
 
 ##...................................................................
-#
+
 # heroku
 
 # Parse database configuration from $DATABASE_URL
