@@ -96,11 +96,11 @@ class UserProfile(models.Model):
 
     def get_publicationsToMe(self):
         return self.publications_to.filter(
-            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__content', 'from_publication__created').order_by('from_publication__created').reverse()
+            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__content', 'from_publication__created', 'user__profile__image').order_by('from_publication__created').reverse()
         
     def get_publicationsToMeTop15(self):
         return self.publications_to.filter(
-            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__content', 'from_publication__created').order_by('from_publication__created').reverse()[0:15]
+            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__content', 'from_publication__created', 'user__profile__image').order_by('from_publication__created').reverse()[0:15]
 
     def get_myPublications(self):
         return self.publications.filter(
@@ -114,7 +114,7 @@ class UserProfile(models.Model):
         return self.get_related_to(RELATIONSHIP_FOLLOWING)
 
     def get_friends(self):
-        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__username', 'user__first_name', 'user__last_name').order_by('id')
+        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__username', 'user__first_name', 'user__last_name', 'user__profile__image').order_by('id')
 
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)

@@ -7,7 +7,7 @@
 	
    //first set the value you will be using.
    var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
-	
+   var MEDIA_URL = "{{MEDIA_URL}}";
 
    var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
    var stopRequests = false;
@@ -144,7 +144,7 @@
         <div class="user-card card">
           <span class="fontawesome-bookmark"> Timeline</span>
             
-          
+         
           <div class="user-avatar"><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"> </span>
           <div class="aboutuser">
           <div class="infox">
@@ -161,7 +161,13 @@
             <div class="caja">
              <div class="item">
                 
-               <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">
+				{% if user_profile.profile.image %}
+				   <img src="{{user_profile.profile.image.url}}" class="user-pic">
+				{% else %}
+				   <img src="{{STATIC_URL}}img/generic-avatar.png" class="user-pic">
+				{% endif %}
+               
+               <!--  <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">-->
 
                <span class="informacion">
                 {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
@@ -379,7 +385,13 @@
 							  <div id="box">
 							        <input id="profile" type="checkbox" checked> 
 							        <label class="popo" for="profile">
-							        <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">
+							        
+									{% if item.user__profile__image %}
+									   <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="img-responsive">
+									{% else %}
+									   <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="img-responsive">
+									{% endif %}
+							        <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
 							        </label>
 							        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
 							        <span class="entypo-forward" title="Responder"></span>
@@ -511,7 +523,15 @@
 					  <ul class="list-friends">
 
 					      {% for item in friends_top12 %}
-					      	<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a></li>
+					      			<!--<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a></li>-->
+									<li>
+									{% if item.user__profile__image %}
+									   <img src="{{MEDIA_URL}}{{item.user__profile__image}}" class="img-responsive">
+									{% else %}
+									   <img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive">
+									{% endif %}
+									<a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+									</li>
 					      {% endfor %}
 					      
 					  </ul>

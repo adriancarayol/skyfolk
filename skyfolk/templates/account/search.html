@@ -34,18 +34,30 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
   border-bottom: 4px solid rgba(44,44,44,0.777);
 }
 .proffile {
-  width: 80px;
-  height: 80px;
+  width: 74px;
+  height: 74px;
   position: relative;
   margin: auto;
+  
+  /*
   background-color: #000;
-  background-image: url('http://p1.pichost.me/i/66/1908073.jpg');
   background-size: 130px;
   background-position: center;
   background-repeat: no-repeat;
+  */
   top: 60%;
-  border: 2px solid rgba(44,44,44,0.777);
+  /*border: 2px solid rgba(44,44,44,0.777);*/
   cursor: pointer;
+
+  padding:1px;
+}
+.proffile img{
+	
+	width: 74px;
+	height: 74px;
+	border: 4px solid rgba(44,44,44,0.777);
+	
+	
 }
 .relation {
   position: relative;
@@ -146,7 +158,14 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
  <div class="photos">
    <div class="cabeza">
      <span class="relation">Friend<i class="fa fa-user fa-lg"></i></span>
-     <div class="proffile" onclick="location.href='/profile/{{item.username}}'"></div>
+     <div class="proffile" onclick="location.href='/profile/{{item.username}}'">
+
+				{% if item.profile.image %}
+				   <img src="{{item.profile.image.url}}">
+				{% else %}
+				   <img src="{{STATIC_URL}}img/generic-avatar.png">
+				{% endif %}
+     </div>
    </div>
   </div>
   <ul class="informacion">

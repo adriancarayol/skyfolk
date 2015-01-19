@@ -441,6 +441,16 @@ body > .container {
     border-radius: 0.3rem;
     margin-top: -10em;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.35); }
+.user-pic{
+	
+	width: 110px;
+	height: 110px;
+	
+}
+.img-responsive{
+	width: 110px;
+	height: 110px;
+}
 .user-card header, .user-card .status {
   text-align: center;
   padding: 0 1.5em; }

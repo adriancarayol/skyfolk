@@ -75,6 +75,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "allauth.socialaccount.context_processors.socialaccount",
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.static",
+    "django.core.context_processors.media",
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -195,8 +196,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Media (uploads, ...)
-MEDIA_ROOT = os.path.join(RAIZ_PROYECTO,'upload')
-#MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(RAIZ_PROYECTO,'media')
+MEDIA_URL = '/media/'
 
 # Identificador
 SITE_ID = 1

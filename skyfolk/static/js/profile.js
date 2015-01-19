@@ -139,23 +139,46 @@ function addFriendToHtmlList(item){
     
 function addPublicationToHtmlList(item){
   
-  $("#tab-comentarios").append('<div class="wrapper">\
-        <div id="box">\
-            <input id="profile" type="checkbox" checked>\
-            <label class="popo" for="profile">\
-            <img id="avatar-publication" src="' + STATIC_URL + 'img/generic-avatar.png" alt="img" class="img-responsive">\
-            </label>\
-            <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
-            <span class="entypo-forward" title="Responder"></span>\
-        <span class="entypo-plus" title="Añadir a..."></span>\
-      </div>\
-      <article class="articulo">\
-        <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
-        <div class="parrafo comment">\
-          <a target="_blank">' + item.from_publication__created + '</a><br>' + item.from_publication__content + '\
-        </div>\
-      </article>\
-  </div>');
+	if (item.user__profile__image){
+		  $("#tab-comentarios").append('<div class="wrapper">\
+			        <div id="box">\
+			            <input id="profile" type="checkbox" checked>\
+			            <label class="popo" for="profile">\
+			            <img id="avatar-publication" src="' + MEDIA_URL + item.user__profile__image + '" alt="img" class="img-responsive">\
+			            </label>\
+			            <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
+			            <span class="entypo-forward" title="Responder"></span>\
+			        <span class="entypo-plus" title="Añadir a..."></span>\
+			      </div>\
+			      <article class="articulo">\
+			        <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
+			        <div class="parrafo comment">\
+			          <a target="_blank">' + item.from_publication__created + '</a><br>' + item.from_publication__content + '\
+			        </div>\
+			      </article>\
+			  </div>');	
+	}else{
+		  $("#tab-comentarios").append('<div class="wrapper">\
+			        <div id="box">\
+			            <input id="profile" type="checkbox" checked>\
+			            <label class="popo" for="profile">\
+			            <img id="avatar-publication" src="' + STATIC_URL + 'img/generic-avatar.png" alt="img" class="img-responsive">\
+			            </label>\
+			            <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
+			            <span class="entypo-forward" title="Responder"></span>\
+			        <span class="entypo-plus" title="Añadir a..."></span>\
+			      </div>\
+			      <article class="articulo">\
+			        <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
+			        <div class="parrafo comment">\
+			          <a target="_blank">' + item.from_publication__created + '</a><br>' + item.from_publication__content + '\
+			        </div>\
+			      </article>\
+			  </div>');
+		
+	}
+
+
   
 }
 
