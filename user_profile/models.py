@@ -22,13 +22,16 @@ REQUEST_STATUSES = (
     (REQUEST_FRIEND, 'Friend'),
 )
 
+def uploadAvatarPath(instance, filename):
+    return '%s/avatar/%s' % (instance.user.username, filename)
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, related_name='profile')
     
     # Other fields here
     #accepted_eula = models.BooleanField()
     #favorite_animal = models.CharField(max_length=20, default="Dragons.")
-    image = models.ImageField(upload_to='userimages', verbose_name='Image',blank=True, null=True)
+    image = models.ImageField(upload_to=uploadAvatarPath, verbose_name='Image',blank=True, null=True)
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
@@ -48,6 +51,17 @@ class UserProfile(models.Model):
                 return result[0].verified
         return False
     """
+    
+    def save(self, *args, **kwargs):
+        # delete old image when replacing by updating the file
+        try:
+            this = UserProfile.objects.get(id=self.id)
+            if this.image != self.image:
+                this.image.delete(save=False)
+        except: pass # when new photo then we do nothing, normal case          
+        super(UserProfile, self).save(*args, **kwargs)
+    
+    
 
 
 

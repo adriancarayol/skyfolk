@@ -195,7 +195,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Media (uploads, ...)
-MEDIA_ROOT = os.path.join(RAIZ_PROYECTO,'media')
+MEDIA_ROOT = os.path.join(RAIZ_PROYECTO,'upload')
 #MEDIA_URL = '/media/'
 
 # Identificador
