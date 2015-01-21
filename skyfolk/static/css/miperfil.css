@@ -1473,7 +1473,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   
   /*CENTRADO*/
   overflow: hidden;
-  position: absolute;
+  position: relative;
   left: 50%;
   top: 50%;
   margin-top: -100px;
