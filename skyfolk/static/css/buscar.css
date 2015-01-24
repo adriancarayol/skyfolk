@@ -215,7 +215,7 @@
   position: absolute;
   right: 14px;
   top: 50px;
-  background: #fff;
+  background: blue;
   display: none;
   border-radius: 3px;
   font-family: 'Open Sans', sans-serif;
@@ -244,7 +244,7 @@
 #notificationn a {
   font-weight: 100;
   color: #708090;
-  font-size: 13.1px;
+  font-size: 13px;
   line-height: 17px;
   width: 190px;
   margin-left: 7.3px;
