@@ -49,14 +49,14 @@
 }
 
 .field>form button {
-	padding: 0.6em 0.8em;
-	background-color: #3E9397;
-	color: white;
-	border: none;
-	font-weight: bold;
-	font-size: 1.2em;
-	height:34px;
-	width:70px;
+  padding: 0.6em 0.8em;
+  background-color: #3E9397;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 1.2em;
+  height:34px;
+  width:70px;
 }
 .btn{ 
    cursor: pointer;
@@ -68,11 +68,11 @@
 }
 .container-search #search-noelements{
 
-	margin:0 auto 0 auto;
-	width:40%;
-	text-align:center;
-	font:1.6em 'Montserrat Alternates';
-	margin-top:10px;
+  margin:0 auto 0 auto;
+  width:40%;
+  text-align:center;
+  font:1.6em 'Montserrat Alternates';
+  margin-top:10px;
 
 }
 
@@ -215,10 +215,16 @@
   position: absolute;
   right: 14px;
   top: 50px;
-  background: rgba(44,44,44,0.877);
+  background: blue;
   display: none;
   border-radius: 3px;
   font-family: 'Open Sans', sans-serif;
+  transition: all .3s linear;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow:    0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+  box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 }
 #notificationn .not {
   list-style-type: none;
@@ -233,11 +239,11 @@
   font-family: 'Open Sans', sans-serif;
   border-bottom: 2px solid white;
   text-align: center;
-  color: #ccc;
+  color: #000;
 }
 #notificationn a {
   font-weight: 100;
-  color: white;
+  color: #708090;
   font-size: 13px;
   line-height: 17px;
   width: 190px;
@@ -246,8 +252,7 @@
   font-family: 'Open Sans', sans-serif;
 }
 .not li:nth-child(2) {
-  color: 
-  #D93A88;
+  color: #D93A88;
 }
 .not li:nth-child(3) {
   color: #3F63B6
@@ -268,7 +273,7 @@
   text-align: center;
   cursor: pointer;
   margin: auto;
-  color: white;
+  color: #000;
   margin-top: 35px;
   margin-left: 50px;
   -webkit-transition: all .3s linear;
