@@ -1,5 +1,5 @@
 {% extends "account/base_interface.html" %}
-
+{% load app_filters %}
 {% block include_files %}
 
 <script type="text/javascript"> 
@@ -161,7 +161,7 @@
             <div class="caja">
              <div class="item">
                 
-				{% if user_profile.profile.image %}
+				{% if user_profile.profile.image and user_profile.profile.image|file_exists %}
 				   <img src="{{user_profile.profile.image.url}}" class="user-pic">
 				{% else %}
 				   <img src="{{STATIC_URL}}img/generic-avatar.png" class="user-pic">
@@ -386,7 +386,7 @@
 							        <input id="profile" type="checkbox" checked> 
 							        <label class="popo" for="profile">
 							        
-									{% if item.user__profile__image %}
+									{% if item.user__profile__image and item.user__profile__image|file_exists %}
 									   <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="img-responsive">
 									{% else %}
 									   <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="img-responsive">
@@ -525,7 +525,7 @@
 					      {% for item in friends_top12 %}
 					      			<!--<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a></li>-->
 									<li>
-									{% if item.user__profile__image %}
+									{% if item.user__profile__image and item.user__profile__image|file_exists %}
 									   <img src="{{MEDIA_URL}}{{item.user__profile__image}}" class="img-responsive">
 									{% else %}
 									   <img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive">

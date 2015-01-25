@@ -3,3 +3,5 @@ venv
 .project
 .pydevproject
 skyfolk/media/*
+skyfolk.sublime-project
+skyfolk.sublime-workspace
