@@ -5,29 +5,27 @@
 
 	     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
-         <!-- <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.css" />
+         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.css" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.min.css" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap-theme.css" />
          <script src="{{STATIC_URL}}media/bootstrap/js/bootstrap.js"></script>
          <script src="{{STATIC_URL}}media/bootstrap/js/bootstrap.min.js"></script>
-         <script src="{{STATIC_URL}}media/bootstrap/js/npm.js"></script> -->
+         <script src="{{STATIC_URL}}media/bootstrap/js/npm.js"></script>
          
          <script type="text/javascript" src="http://www.google.com/jsapi"></script>
          <script type="text/javascript">google.load('jquery', '1.7.1');</script>
          <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
           <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 		      <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-		  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
         <title>¡Bienvenido!</title>
-        <meta name="description" content="Custom Login Form Styling with CSS3" />
         <meta name="keywords" content="skyfolk, social, login, registro, sky, folk," />
         <link rel="shortcut icon" href="{{STATIC_URL}}img/nube.jpg"> 
 	      <script src="{{STATIC_URL}}js/showandhide.js"></script>
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css" />
 		  <script src="{{STATIC_URL}}js/modernizr.custom.63321.js"></script>
 
-      <script> <!-- backgrounds random -->
+      <script>
 
       function cycleImages(){
         var $active = $('#background_cycler .active');
@@ -52,6 +50,12 @@
 	{% endblock %}
     </head>
     <body>
+    <header>
+        <h5><i>S</i>kyfolk.</h5>
+    <div class="logo">
+      <img src="http://s11.postimg.org/58jltbaqb/logo.png">
+    </div>
+</header>
        <div id="background_cycler" > <!-- Random backgrounds -->
 
       <script type="text/javascript">
@@ -64,14 +68,7 @@
             <img src="{{STATIC_URL}}img/backgrounds/4.jpg" alt=""/>  
               <img src="{{STATIC_URL}}img/backgrounds/5.jpg" alt=""/>
       </div>
-<header>
-        <h5>
-        <i>S</i>kyfolk.
-        </h5>
-    <div class="logo">
-      <img src="http://s11.postimg.org/58jltbaqb/logo.png">
-    </div>
-</header>
+
        	
        {% block content %}{% endblock %}
 

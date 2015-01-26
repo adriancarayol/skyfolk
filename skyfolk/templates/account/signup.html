@@ -17,13 +17,15 @@
 
 <div class="block-form block-formregister">
 	<form class="signup form-3" id="signup_form" method="post" action="{% url 'account_signup' %}">
+	<div class="form-group">
 	  {% csrf_token %}
 	  {{ form.as_p }}
 	  {% if redirect_field_value %}
 	  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
 	  {% endif %}
-	  <button class="myButton" type="submit">{% trans "Sign Up" %} &raquo;</button>
-	  <a id="link-login" href="{{ login_url }}">{% trans "Sign In" %}</a>
+	  </div>
+	  <button class="btn btn-success" type="submit">{% trans "Sign In" %}</button>
+	  <button type="button" class="btn btn-info" onclick="javascript:location.href='{{ signup_url }}'">{% trans "Sign Up" %}</button>
 	</form>
 </div>
 
