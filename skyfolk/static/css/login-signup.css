@@ -1,11 +1,14 @@
 @import url(http://fonts.googleapis.com/css?family=PT+Sans);
-            body {
+body {
                        padding: 0;
                        margin: auto;
-                       background-image: url('http://www.fotosdeciudades.com/Imagenes/noria-london-eye.jpg');
                        background-size: 100%;
                        background-repeat: no-repeat;
 }
+/* Random Background */
+#background_cycler{padding:0;margin:0;width:100%;position:absolute;top:0;left:0;z-index:-1;height:100%;}
+#background_cycler img{position:absolute;left:0;top:0;width:100%;z-index:1;height: 100%;}
+#background_cycler img.active{z-index:3};
 
 header {
   position: absolute;
