@@ -93,6 +93,7 @@ form {
 .links{
     float: left;
 }
+
 .form-3 label {
     position: relative;
     text-align: center;
@@ -103,11 +104,14 @@ form {
     left: 30px;
 }
 
+
 .form-3 input[type=text],
 .form-3 input[type=password] {
-  width: 80%;
+  
+  width: 50%;
   position: relative;
   margin: auto;
+
   background-image: url('https://cdn4.iconfinder.com/data/icons/defaulticon/icons/png/256x256/padlock-closed.png');
   background-repeat: no-repeat;
   background-size: 20px;
@@ -118,12 +122,14 @@ form {
 }
 
 
+/*
 .form-3 p:nth-child(3),
 .form-3 p:nth-child(4) {
     float: left;
     width: 50%;
 }
-
+*/
+/*
 .form-3 label[for="remember"] {
     width: auto;
     float: none;
@@ -135,19 +141,22 @@ form {
     text-indent: 2px;
     position: absolute;
 }
-
+*/
+/*
 .form-3 input[type="checkbox"] {
     position: relative;
     top: 100px;
 }
+*/
 
+/*
 .form-3 input[type=submit] {
-    /* Width and position */
+    
     width: 30%;
     padding: 8px 5px;
   
-    /* Styles */
-    border: 1px solid #0273dd; /* Fallback */
+    
+    border: 1px solid #0273dd; 
     border: 1px solid rgba(0,0,0,0.4);
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.3),
@@ -156,7 +165,7 @@ form {
     background: #38a6f0;
     cursor:pointer;
   
-    /* Font styles */
+    
     font-family: 'PT Sans', sans-serif;
     color: white;
     font-weight: 700;
@@ -165,8 +174,9 @@ form {
     float: right;
     top: 120px;
 }
+*/
 
-
+/*
 .form-3 input[type=submit]:hover { 
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
 }
@@ -174,15 +184,17 @@ form {
 .form-3 input[type=submit]:active { 
     background: #287db5;
     box-shadow: inset 0 0 3px rgba(0,0,0,0.6);
-    border-color: #000; /* Fallback */
+    border-color: #000;
     border-color: rgba(0,0,0,0.9);
 }
 
 .no-boxshadow .form-3 input[type=submit]:hover {
     background: #2a92d8;
 }
+*/
 
 
+/*
 .btn-info {
 
     background-color:#32C0EF;
@@ -204,6 +216,8 @@ form {
     font-family: 'Lato', sans-serif;
     transition: all .2s ease-in;
 }
+*/
+
 .btn-info:hover {
 
     background-image: url('https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/edit.png');
@@ -216,7 +230,10 @@ form {
 
 .form-3 a{
 
-    float: left;
+    /*float: left;*/
+   
+    margin-left: 60px;
+
 }
 .checkbox{
     background-color: blue;
@@ -227,6 +244,7 @@ form {
     float: left;
 }
 
+/*
 .btn-success{
 
     background-color:#5A5550;
@@ -250,6 +268,8 @@ form {
     transition: all .2s ease-in;
 	
 }
+*/
+
 .btn-success:hover {
   background-image: url('https://cdn1.iconfinder.com/data/icons/windows-8-metro-style/512/login.png');
   background-repeat: no-repeat;
@@ -293,4 +313,47 @@ form {
     background-size: 100%;
     background-repeat: repeat;
   }
+}
+
+
+/* DE CARLOS*/
+.form-3 .form-group{
+  height: 56%;
+  width: 100%;
+}
+.form-3{
+  
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+
+}
+
+.form-3 p{
+  /*display: block;*/
+  padding-bottom: 10px;
+  
+}
+
+.form-3 input{
+ 
+  margin: 0 auto;
+  display: block;
+
+}
+.form-3 input[type="checkbox"] {
+    display: inline;
+    margin-left: 50px;
+}
+
+.form-3 .btn-success{
+    float: left;
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+.form-3 .btn-info{
+    float: right;
+    margin-top: 30px;
+    margin-right: 20px;
 }
