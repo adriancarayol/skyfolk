@@ -15,9 +15,9 @@ header {
   height: 40px;
   bottom: 0;
   width: 100%;
-  background-color: rgba(44,44,44,0.854);
   font-family: 'PT Sans', sans-serif;
   z-index: 9999;
+  top: 0;
 }
 .logo img {
   width: 120px;
@@ -44,9 +44,17 @@ header i {
   color: #416D98;
   text-shadow: 0.2px 0.2px 0.5px #fff;
 }
+header .head {
+  width: 100%;
+  position: relative;
+  background-color: rgba(44,44,44,0.154);
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(255,255,255,0.2);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(255,255,255,0.2);
+  box-shadow: 0px 0px 5px 0px rgba(255,255,255,0.2);
+}
 footer {
   width: 100%;
-  background-color: rgba(44,44,44,0.854);
+  background-color: rgba(44,44,44,0.254);
   position: fixed;
   height: 40px;
   bottom: 0;
@@ -84,7 +92,7 @@ footer li {
 
 form {
     position: relative;
-    top: 20px;
+    top: 23px;
     font-family: 'PT Sans', sans-serif;
   
 
@@ -104,23 +112,83 @@ form {
     left: 30px;
 }
 
-
-.form-3 input[type=text],
-.form-3 input[type=password] {
-  
-  width: 50%;
+.form-3 label[for="id_remember"] {
+  position: relative;
+  left: 80px;
+  font-size: 1.01121em;
+  font-weight: 100;
+  top: -4px;
+}
+.form-3 input[type=text] {
+  width: 70%;
   position: relative;
   margin: auto;
-
+  background-image: url('https://www.cs.umd.edu/sites/default/files/default_images/user_icon.png');
+  background-repeat: no-repeat;
+  background-size: 20px;
+  background-position: left;
+  padding: 5.2px 25px;
+  outline: none;
+  border: 1px solid #ececec;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  transition: all .3s linear;
+  border-radius: 5px;
+}
+.form-3 input[type="email"] {
+  width: 70%;
+  position: relative;
+  margin: auto;
+  background-image: url('http://cdn.flaticon.com/png/256/36175.png');
+  background-repeat: no-repeat;
+  background-size: 20px;
+  background-position: left;
+  padding: 5.2px 25px;
+  outline: none;
+  border: 1px solid #ececec;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  transition: all .3s linear;
+  border-radius: 5px;
+}
+.form-3 input[type=password] {
+  
+  width: 70%;
+  position: relative;
+  margin: auto;
   background-image: url('https://cdn4.iconfinder.com/data/icons/defaulticon/icons/png/256x256/padlock-closed.png');
   background-repeat: no-repeat;
   background-size: 20px;
   background-position: left;
-  padding: 0px 25px;
+  padding: 5.2px 25px;
+  outline: none;
+  border: 1px solid #ececec;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  transition: all .3s linear;
+  border-radius: 5px;
+
 
 
 }
-
+.form-3 input:focus {
+  background-position: 5px;
+  -webkit-box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
+  -moz-box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
+  box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
+}
+.block-form h3 {
+  position: absolute;
+  left: 0%;
+  text-align: center;
+  margin: auto;
+  color: #ececec;
+  border-bottom: 1px solid #cccccc;
+  width: 100%;
+  margin-bottom: 10px;
+  font-weight: 100;
+  font-family: 'PT Sans', sans-serif; 
+}
 
 /*
 .form-3 p:nth-child(3),
@@ -233,6 +301,8 @@ form {
     /*float: left;*/
    
     margin-left: 60px;
+    position: relative;
+    top: 13px;
 
 }
 .checkbox{
@@ -242,6 +312,7 @@ form {
 .checkbox-rembember{
     width: 100%;
     float: left;
+    position: absolute;
 }
 
 /*
@@ -280,7 +351,7 @@ form {
 }
 .block-formregister{
     width: 300px;
-    height: 500px;
+    height: 550px;
     background-color: rgba(44,44,44,0.854);
     position: relative;
     top: 0px;
@@ -296,7 +367,11 @@ form {
  
 }
 
-
+.block-formregister .btn-info, .block-formregister .btn-success {
+  top: 120px;
+  position: relative;
+  display: inline-block;
+}
 @media tv and (min-width: 700px) and (orientation: landscape) {
   .register {
     left: 120px;
@@ -343,7 +418,8 @@ form {
 }
 .form-3 input[type="checkbox"] {
     display: inline;
-    margin-left: 50px;
+    float: right;
+    margin-right: 70px;
 }
 
 .form-3 .btn-success{

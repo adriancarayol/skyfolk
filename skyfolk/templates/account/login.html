@@ -40,6 +40,7 @@ for a {{site_name}} account and sign in below:{% endblocktrans %}</p>
 -->
 {% endif %}
 <div class="block-form">
+	<h3>Iniciar sesión</h3>
 	<form class="login form-3" method="POST" action="{% url 'account_login' %}">
 		<div class="form-group">
 	  {% csrf_token %}
