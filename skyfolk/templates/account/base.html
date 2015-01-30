@@ -7,6 +7,8 @@
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/setup.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.css" />
   </head>
   <body>
     {% block body %}
@@ -22,15 +24,15 @@
     </div>
     {% endif %}
 
-    <div>
-      <strong>Menu:</strong>
+    <div class="menu">
+      <strong>¿No necesitas recuperar o restablecer tu contraseña?</strong>
       <ul>
 	{% if user.is_authenticated %}
 	<li><a href="{% url 'account_email' %}">Change E-mail</a></li>
 	<li><a href="{% url 'account_logout' %}">Sign Out</a></li>
 	{% else %}
-	<li><a href="{% url 'account_login' %}">Sign In</a></li>
-	<li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+	<li><button class="btn btn-success" onclick="javascript:location.href='{% url 'account_login' %}'">Iniciar Sesión</button></li>
+	<li><button class="btn btn-info" onclick="javascript:location.href='{% url 'account_signup' %}'">Registrarme</button></li>
 	{% endif %}
       </ul>
     </div>

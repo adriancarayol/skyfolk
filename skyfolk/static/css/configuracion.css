@@ -19,84 +19,138 @@ body {
 background-image:url('http://upload.wikimedia.org/wikipedia/en/7/75/DowntownSF.jpg');
 }
 
-span.entypo-cog {
-font-size: 35px;
-color: #5AC3FF;
-position: relative;
-float:left;
-margin-top: 35px;
-margin: 28px;
+hgroup {
+	  margin-bottom: 70px;
+  position: relative;
+}
+span {
+	position: relative;
+	top: 40px;
+	left: 0px;
+}
+h6 {
+	position:  relative;
+  	margin-left:  70px;
+  	margin-top: 7px;
+  	color:  #3F3A3A;
+  	font-weight: 100;
+  	font-size: 13px;
+}
+.fontawesome-cog {
+ 		margin-left:  20px;
+ 	 	padding:  10px 10px;
+  		font-family: 'Open Sans', sans-serif;
+  		font-weight: 300;
+  		font-size: 30px;
+ 	 	color: grey;
+  		border-bottom: 1px solid rgba(44,44,44,0.854);
+  		width: 20%;
 
 }
-span.entypo-cog a {
-position:relative;
-font-family: 'Gafata', sans-serif;
+
+/* Menu vertical */ 
+aside {
+  position:  relative;
+  margin-left: 20px;
+  background-color: #FAFAFA;
+  height: 420px;
+  width: 240px;
+  border-radius:  7px;
+  	-webkit-box-shadow: 2px 2px 7px 0px #efefef;
+	-moz-box-shadow:    2px 2px 7px 0px #efefef;
+	box-shadow:         2px 2px 7px 0px #efefef;
 }
-/*Cuerpo*/
-/*#pass {
-right: 35%;
-top: 40%;
-position: absolute;
-width:270px;
-}*/
+aside nav {
+  list-style-type:  none;
+  height: 100%;
+  font-weight: 100;
+  font-family: 'Open Sans', sans-serif;
+
+}
+aside nav li {
+  color:  #000;
+  margin-top:  20px;
+  padding:  10px 10px;
+  border-bottom:  2px solid #fff;
+  background-color:  #fafafa;
+  border-left: 5px solid rgba(44,44,44,0.854);
+  border-radius:  3px;
+  transition:  all .2s ease-in;
+  cursor:  pointer;
+}
+aside nav li:hover {
+  color:  #00CED1;
+  background-color:  #E4E4E4;
+  border-left: 7px solid rgba(44,44,44,0.854);
+}
+aside nav li i {
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-style: normal;
+  transition:  all .3s ease-in;
+}
+aside nav li:hover > i {
+  margin-left: 40px;
+}
 
 .actual {
-color: black;
-min-width: 120px;
-border-radius: 3px;
-text-shadow: rgb(150,150,150) 1px 1px 1px;
-margin-bottom: 25px;
+	color: black;
+	min-width: 120px;
+	border-radius: 3px;
+	text-shadow: rgb(150,150,150) 1px 1px 1px;
+	margin-bottom: 25px;
 
-display:block;
-margin-left:60px;
-margin-top:10px;
-font-family: 'Open Sans', sans-serif;
+	display:block;
+	margin-left:60px;
+	margin-top:10px;
+	font-family: 'Open Sans', sans-serif;
 }
 .actual:focus {
-border-color: blue;
-border: 2px solid #6AFA9D;
-box-shadow: rgb(150,150,150) 1px 1px;
+	border-color: blue;
+	border: 2px solid #6AFA9D;
+	box-shadow: rgb(150,150,150) 1px 1px;
 }
 #float {
 
-font-size: 15px;
-font-family: 'Gafata', sans-serif;
-margin: -30px;
-padding-right: 5px;
-background: #FFFFFF;
-border: 50px solid #FFF;
-border-radius: 8px 8px 8px 8px;
-box-shadow: rgb(196,196,196) 5px 5px;
+	font-size: 15px;
+	font-family: 'Gafata', sans-serif;
+	margin: -30px;
+	padding-right: 5px;
+	background: #FFFFFF;
+	border: 50px solid #FFF;
+	border-radius: 8px 8px 8px 8px;
+	box-shadow: rgb(196,196,196) 5px 5px;
 }
 #btn {
-color:#0f4b6d;
-border:1px solid #84acc3;
-background-image:	 url('http://cssdeck.com/uploads/media/items/6/6Wl44TI.png'),
--moz-radial-gradient(	center bottom, circle,
-rgba(89,208,244,1) 0,rgba(89,208,244,0) 100px),
--moz-linear-gradient(#4fbbf7, #3faeeb);
+	color:#0f4b6d;
+	border:1px solid #84acc3;
+	background-image:	 url('http://cssdeck.com/uploads/media/items/6/6Wl44TI.png'),
+	-moz-radial-gradient(	center bottom, circle,
+	rgba(89,208,244,1) 0,rgba(89,208,244,0) 100px),
+	-moz-linear-gradient(#4fbbf7, #3faeeb);
 
--webkit-gradient(	radial, 50% 100%, 0, 50% 100%, 100,from(rgba(89,208,244,1)), to(rgba(89,208,244,0))),
--webkit-gradient(linear, 0% 0%, 0% 100%, from(#4fbbf7), to(#3faeeb));
+		-webkit-gradient(	radial, 50% 100%, 0, 50% 100%, 100,from(rgba(89,208,244,1)), to(rgba(89,208,244,0))),
+		-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4fbbf7), to(#3faeeb));
 	/* Animacion */
 		-webkit-transition:background-position 3s;
-	-moz-transition:background-position 3s;
-	transition:background-position 3s;
+		-moz-transition:background-position 3s;
+		transition:background-position 3s;
 
 	
-border-radius: 5px;
-width: 170px;
-height: 50px;
-font-family: 'Open Sans', sans-serif;
-font-size: 15px;
-color: white;
-background-color: #303F73;
+	border-radius: 5px;
+	width: 170px;
+	height: 50px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 15px;
+	color: white;
+	background-color: #303F73;
 
-display:block;
-margin:0 auto 0 auto;
-margin-top:20px;
+	display:block;
+	margin:0 auto 0 auto;
+	margin-top:20px;
 
-text-decoration:none !important;
+	text-decoration:none !important;
 	white-space:nowrap;
 	
 	display:inline-block;
@@ -146,7 +200,7 @@ color: grey;
 margin: 6px;
 margin-top: 20px;
 }
-div.wrapper {
+.wrapper {
 	position:relative;
 	display: block;
 	background-color: #FAFAFA;
