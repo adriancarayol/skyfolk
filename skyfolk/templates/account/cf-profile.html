@@ -10,8 +10,10 @@
 {% endblock%}
 
 {% block cf-title %}
-	<h4 id="cn"> Perfil </h4>
-	<h6 id="ch"> Cambia datos de tu perfil</h6>
+<hgroup>
+	<h4 class="cn"> Perfil </h4>
+	<h6 class="ch"> Cambia datos de tu perfil</h6>
+</hgroup>
 {% endblock %}
 
 
@@ -21,8 +23,17 @@
 	<input id="btn" type="submit" value="Guardar cambios">
 	-->
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
+	<div class="profilex">
+	{% if user_profile.profile.image %}
+	<img src="{{user_profile.profile.image.url}}" class="img-circle">
+	{% else %}
+	<img src="{{STATIC_URL}}img/generic-avatar.png" class="img-circle">
+	{% endif %}
 		{{ user_form }}
+	</div>
+	<div class="chg">
     	{{ perfil_form }}
-		<input id="btn" type="submit" value="Guardar cambios">
+		<button class="btn btn-info" id="btn" type="submit">Salvar cambios</button>
+		</div>
 	</form>
 {% endblock %}
