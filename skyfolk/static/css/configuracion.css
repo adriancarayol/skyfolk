@@ -18,7 +18,8 @@
 body {
 	padding: 0;
 	margin: 20px 20px;
-	background-color: #cccccc;
+	background-color: #fff;
+  background-repeat: repeat;
 }
 
 hgroup {
@@ -96,7 +97,13 @@ aside nav li i {
 aside nav li:hover > i {
   margin-left: 40px;
 }
-
+.wr {
+  position: relative;
+  margin: auto;
+  width: auto;
+  height: 300px;
+  left: 27%;
+}
 .actual {
   width: 200px;
   position: relative;
@@ -111,6 +118,9 @@ aside nav li:hover > i {
   top: 0px;
   margin-left: 20px;
   margin-right: 0px;
+}
+#recent,#new,#new2 {
+  display: list-item;
 }
 label[for="id_first_name"] {
 	font-family: 'Open Sans', sans-serif;
@@ -127,6 +137,30 @@ label[for="id_last_name"] {
   	font-weight: 100;
   	top: 2px;
   	margin-left: 5px;
+}
+label[for="recent"] {
+    font-family: 'Open Sans', sans-serif;
+    position: relative;
+    color: rgba(44,44,44,0.776);
+    font-weight: 100;
+    top: 0px;
+    margin-left: 5px;
+}
+label[for="new"] {
+    font-family: 'Open Sans', sans-serif;
+    position: relative;
+    color: rgba(44,44,44,0.776);
+    font-weight: 100;
+    top: 0px;
+    margin-left: 5px;
+}
+label[for="new2"] {
+    font-family: 'Open Sans', sans-serif;
+    position: relative;
+    color: rgba(44,44,44,0.776);
+    font-weight: 100;
+    top: 0px;
+    margin-left: 5px;
 }
 .img-circle {
 	  width: 100px;
@@ -158,16 +192,15 @@ label[for="id_last_name"] {
 #contra {
 	position:  relative;
  	margin:  auto;
-  	display:  block;
-  	width:  700px;
-  	height: 600px;
-  	top:  -440px;
-  	left: 0px;
-  	border-radius: 7px;
+  display:  block;
+  width:  680px;
+  height: 600px;
+  top:  -440px;
+  border-radius: 7px;
  	-webkit-box-shadow: 2px 2px 7px 0px #efefef;
 	-moz-box-shadow:    2px 2px 7px 0px #efefef;
 	box-shadow:         2px 2px 7px 0px #efefef;
-  	border: 1px solid #ececec;
+  border: 1px solid #ececec;
 }
 #contra li {
 	  	list-style-type: none;
@@ -176,11 +209,10 @@ label[for="id_last_name"] {
   		margin-top: 30px;
 }
 .btn-info {
-	position: absolute;
-	display: inline-block;
-	top: 230px;
-	float: right;
-	right: 30px;
+	position: relative;
+  display: block;
+	top: 150px;
+  right: -100px;
 	padding: 30px 20px;
 	width: 100px;
 	height: 30px;
