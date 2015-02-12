@@ -1,5 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=PT+Sans);   
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,300);
 @import url(http://weloveiconfonts.com/api/?family=fontawesome);
 
 /* fontawesome */
@@ -96,14 +95,14 @@ aside {
 -moz-box-shadow:    2px 2px 7px 0px #efefef;
 box-shadow:         2px 2px 7px 0px #efefef;
 }
-nav {
+aside nav {
   list-style-type:  none;
   height: 100%;
   font-weight: 100;
   font-family: 'Open Sans', sans-serif;
 
 }
-nav li {
+aside nav li {
   color:  #000;
   margin-top:  20px;
   padding:  10px 10px;
@@ -114,19 +113,19 @@ nav li {
   transition:  all .2s ease-in;
   cursor:  pointer;
 }
-nav li:hover {
+aside nav li:hover {
   color:  #00CED1;
-  background-color:  #E4E4E4;
-  border-left: 7px solid rgba(44,44,44,0.854);
+  background-color:  rgba(44,44,44,0.854);
+  border-left: 5px solid rgba(44,44,44,0.854);
 }
-nav li i {
+aside nav li i {
   float: left;
   margin-left: 10px;
   margin-right: 10px;
   font-style: normal;
   transition:  all .3s ease-in;
 }
-nav li:hover > i {
+aside nav li:hover > i {
   margin-left: 40px;
 }
 
@@ -146,7 +145,6 @@ input[target="search"] {
     padding-left: 30px;
 
 }
-
 a{
     text-decoration: none;
     color: white;
@@ -177,71 +175,120 @@ a[target="name"] {
 a[target="name"]:hover {
 	color: rgba(44,44,44,0.777);
 }
+/* Contiene todos los mensajes */
 .wrapper {
     text-align: center;
     height: auto;
-    top: 5%;
-    width: auto;
-    max-width: 70%; 
+    top: 11.5%;
+    width: 115%;
     position: absolute;
-	margin: 50px auto;
-    left: 337px;
+	 margin: 30px auto;
+    left: 307px;
     font-family: 'Open Sans', sans-serif;
     
 }
-.noti img{
-    width: 100px;
-    height: 112px;
-    float: left;
-    position: relative;
-    cursor: pointer;
-    display: block;
+.wrapper .cnt li {
+  list-style-type: none;
+  margin-left: 10px;
+  margin-top: 20px;
+  float: left;
+  display: inline-block;
 }
-img:hover {
-    opacity: 0.8;
+/* Divs para los mensajes recibidos/enviados... */
+.message {
+	position: relative;
+	width: 350px;
+	height: 300px;
+  margin: auto;
+	background-color: #fafafa;
+	box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5);
+	overflow: inherit;
 }
-.noti {
-    width: 850px;
-    height: 113px;
-    background-color: #fff; 
-    margin: 10px;
-    border-radius: 1px;
-    display: table;
-    -webkit-box-shadow: 2px 2px 8px 0px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow:    2px 2px 8px 0px rgba(50, 50, 50, 0.75);
-    box-shadow:         2px 2px 8px 0px rgba(50, 50, 50, 0.75);
-    -webkit-transition: all .3s linear;
-    -moz-transition: all .3s linear;
-    transition: all .3s linear;
+.message .img_and_name {
+	position: relative;
+	display: block;
+	border-bottom: 2px solid #ccc;
+	height: 30%;
+	width: 100%;
+	background-color: rgb(230,230,230);
 }
-.noti:hover {
-    background-color: #fff;
-    color: #000;
-    -webkit-box-shadow: 2px 2px 8px 0px rgba(46, 165, 188, 0.75);
-    -moz-box-shadow:    2px 2px 8px 0px rgba(46, 165, 188, 0.75);
-    box-shadow:         2px 2px 8px 0px rgba(46, 165, 188, 0.75);
+.message .img_and_name img {
+	position: relative;
+	margin: auto;
+	width: 80px;
+	height: 80px;
+	border-radius: 100%;
+	top: -60px;
+	border: 1px solid #ccc;
+}
+.message .img_and_name a {
+	text-align: center;
+	font-family: 'Open Sans', sans-serif;
+	position: relative;
+	display: block;
+	font-weight: 600;
+	top: 50px;
+	text-decoration: none;
+	font-style: bold;
+	color: #7a7a7a;
+}
+.message .cuerpo {
+	height: 50%;
+	width: 100%;
+	margin-top: 30px;
+}
+.message .cuerpo h5{
+	color: rgb(173,173,173);
+	font-weight: 600;
+}
+.message .cuerpo p{
+	height: 70%;
+	width: 100%;
+	margin-top: 30px;
+	font-weight: 100;
+}
+.messages .cl {
+	position: relative;
+	height: 20%;
+	margin: auto;
+	width: 100%;
+}
+.message .controls_m {
+	position: relative;
+	margin: auto;
+	display: inline-block;
+  bottom: 32px;
+}
+.message .controls_m li {
+	display: inline-block;
+	text-align: center;
+	list-style-type: none;
+	margin-right: 50px;
+	margin-left: 5px;
+	transition: all .3s linear;
+	-webkit-transition: all .3s linear;
+	-moz-transition: all .3s linear;
+  padding: 10px 10px;
+  border-radius: 100%;
+  cursor: pointer;
+  color: rgba(44,44,44,0.777);
+  border: 1px solid transparent;
+}
+.message .controls_m li:hover {
+  -webkit-animation: move 2s; /* Chrome, Safari, Opera */
+  animation: move 2s;
+  color: #8de2a3;
+}
+@-webkit-keyframes move {
+    from {border: 1px solid transparent;}
+    to {border: 1px solid #8de2a3;}
 }
 
-blockquote {
-    font-size: 20px;
-    min-width: 60%;
-    max-width: 70%;
-    position: relative;
-    left: 10%;
-    margin-right: auto;
-    text-align: center;
-    top: 20px;
-}
-i {
-    font-size: 0.75457em;
-    float: right;
-    padding: 5px 5px;
-    height: 86%;
-    color: grey;
-    background-color: transparent;
-}
-span li {
-}
+/* Standard syntax */
+@keyframes move {
+    from {border: 1px solid transparent;}
+    to {border: 1px solid #8de2a3;}
+} 
 .compose {
   position: relative;
   display: inline-block;
@@ -249,7 +296,7 @@ span li {
   top: -60px;
   width: 48px;
   height: 48px;
-  right: -330px;
+  right: -56%;
   cursor: pointer;
   overflow: hidden;
 
@@ -371,8 +418,6 @@ box-shadow:         -1px -1px 3px 0px rgba(37, 255, 188, 0.75);
 
 }
 
-
-  color: rgba(44,44,44,0.777);
 }
 button[type="button"], button[type="submit"] {
 	-webkit-transition: all .3s linear;
@@ -383,8 +428,6 @@ button[type="button"], button[type="submit"] {
 button[type="button"] {
   display: inline-block;
   border-radius: 3px;
-  border: none;
-<<<<<<< HEAD
   font-size: 0.9rem;
   padding: 0.6rem 1em;
   color: white;
@@ -395,22 +438,12 @@ button[type="button"] {
 }
 
 
-  font-size:  1.2rem;
-  padding: 1rem 1rem;
-  color: white;
-  margin: 0 0.25rem;
-  background: #FF0000;
-  border-bottom: 1px solid #999;
-  text-indent: center;
-  font-family: 'Open Sans', sans-serif;
-
-}
 button[type="button"]:hover {
-	  background-image: url("close.png");
-  background-position: center;
-  background-repeat: no-repeat;
-    background-size: 20px;
-    color: transparent;
+	  	background-image: url("close.png");
+  		background-position: center;
+  		background-repeat: no-repeat;
+    	background-size: 20px;
+    	color: transparent;
 }
 
 button[type="submit"] {
@@ -426,15 +459,6 @@ button[type="submit"] {
   text-align: center;
 }
 
-
-  font-size:  1.2rem;
-  padding: 1rem 1rem;
-  color: white;
-  margin: 0 0.25rem;
-  text-align: center;
-  text-indent: center;
-  font-family: 'Open Sans', sans-serif;
-}
 button[type="submit"]:hover {
   background-image: url("send.png");
   background-position: center;
