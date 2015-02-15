@@ -1,23 +1,33 @@
 @import url(http://fonts.googleapis.com/css?family=PT+Sans);
+@import url(http://fonts.googleapis.com/css?family=Pacifico); /* ONLY FOR LOGO */
+
 body {
                        padding: 0;
                        margin: auto;
                        background-size: 100%;
                        background-repeat: no-repeat;
 }
+
 /* Random Background */
 #background_cycler{padding:0;margin:0;width:100%;position:absolute;top:0;left:0;z-index:-1;height:100%;}
 #background_cycler img{position:absolute;left:0;top:0;width:100%;z-index:1;height: 100%;}
 #background_cycler img.active{z-index:3};
-
-header {
-  position: fixed;
-  height: 40px;
-  bottom: 0;
-  width: 100%;
-  font-family: 'PT Sans', sans-serif;
-  z-index: 9999;
-  top: 0;
+/* LOGO */
+.namesn {
+  position: relative;
+  display: block;
+  width: 200px;
+  height: 120px;
+  margin: auto;
+  bottom: 200px;
+}
+.logo {
+  position: relative;
+  margin: auto;
+  left: -120px;
+  top: 120px;
+  width: 150px;
+  height: 100px;
 }
 .logo img {
   width: 120px;
@@ -25,39 +35,41 @@ header {
   position: absolute;
   margin: auto;
   vertical-align: middle;
-  top: -37px;
+  top: -7px;
   left: 0px;
 }
-header h5 {
+.namesn i {
+  color: #0096d7;
+  text-shadow: 1px 1px 1px #ccc;
+}
+.namesn h5 {
   position: relative;
   left: 87px;
-  font-size: 25px;
+  font-size: 5em;
   text-decoration: none;
   color: grey;
   letter-spacing: 0.5px;
   display: inline-block;
+  font-family: 'Pacifico', cursive;
   top: 0px;
+  text-shadow: 1px 1px 1px #0096d7;
 }
-header i {
-  text-decoration: none;
-  font-style: normal;
-  color: #416D98;
-  text-shadow: 0.2px 0.2px 0.5px #fff;
-}
-header .head {
-  width: 100%;
-  position: relative;
-  background-color: rgba(44,44,44,0.154);
-  -webkit-box-shadow: 0px 0px 5px 0px rgba(255,255,255,0.2);
-  -moz-box-shadow: 0px 0px 5px 0px rgba(255,255,255,0.2);
-  box-shadow: 0px 0px 5px 0px rgba(255,255,255,0.2);
-}
+
 footer {
   width: 100%;
   background-color: rgba(44,44,44,0.254);
   position: fixed;
-  height: 40px;
+  height: 20px;
   bottom: 0;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+}
+footer ul {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: auto;
 }
 footer li {
   display: inline-block;
@@ -68,10 +80,29 @@ footer li {
   color: grey;
   font-size: 16px;
   position: relative;
-  left: 30%;
-  margin-left: 60px;
+  left: 40%;
 }
-
+.flex {
+  position: relative;
+  margin: auto;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(44,44,44,0.854);
+  background-image: url('https://cdn2.iconfinder.com/data/icons/antto-basic-1/423/More-512.png');
+  background-position: center;
+  background-size: 80%;
+  background-repeat: no-repeat;
+  top: -20px;
+  -webkit-transform: rotate(45deg);
+  -moz-transition: rotate(45deg);
+  transition: rotate(45deg);
+}
+  footer:hover {
+    height: 100px;
+}
+  footer:hover > .flex {
+    border: 1px solid #7edc1f;
+  }
 .block-form{
 
 
@@ -82,11 +113,10 @@ footer li {
     position: relative;
     top: 100px;
     font-family: 'PT Sans', sans-serif; 
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    -webkit-box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
-    -moz-box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
-    box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
+    border-radius: 5px;
+    -webkit-box-shadow:  0 1px 5px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 
 }
 
@@ -289,10 +319,10 @@ form {
 .btn-info:hover {
 
     background-image: url('https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/edit.png');
-  background-repeat: no-repeat;
-  background-size: 30px;
-  background-position: center;
-  color: transparent;
+    background-repeat: no-repeat;
+    background-size: 30px;
+    background-position: center;
+    color: rgba(0,0,0,0);
 }
 
 
@@ -346,6 +376,7 @@ form {
   background-repeat: no-repeat;
   background-size: 30px;
   background-position: center;
+  color: rgba(0,0,0,0);
 
 
 }

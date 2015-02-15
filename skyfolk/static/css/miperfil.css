@@ -982,30 +982,7 @@ a {
     opacity: 1; }
   #controls-container input {
     display: block; }
-/*#Menu {
-color:white;
-position: absolute;
-border: none;
-background-color:rgb(26, 188, 156);
-border-radius: 20px;
-display: inline;
-line-height: 1;
-padding: .8em .8em 1em;
-box-shadow:
-   1px 1px 0 rgb(22, 160, 133),
-   2px 2px 0 rgb(22, 160, 133),
-   3px 3px 0 rgb(22, 160, 133),
-   4px 4px 0 rgb(22, 160, 133),
-   5px 5px 0 rgb(22, 160, 133),
-   6px 6px 0 rgb(22, 160, 133),
-   7px 7px 0 rgb(22, 160, 133)
-   ;
-font-family: 'Andika', sans-serif;
-}
-#Menu:hover {
-    opacity: 0.8; }
 
-*/
 .fr {
   float: right; }
 
@@ -1603,31 +1580,8 @@ button:hover {
 
    /* INFORMACION DEL USUARIO */
 
-   .aboutuser {
-    position: absolute;
-    background: rgba(44,44,44,0.532);
-    width: 120px;
-    height: 120px;
-    display: none;
-    z-index: 9999;
-    left: 348px;
-    top: 235px;
-    border-bottom-right-radius: 10px;
-    font-family: 'Open Sans', sans-serif;
-   }
-   .aboutuser i {
-    position: relative;
-    margin-right: 7px;
-   }
-   .aboutuser li {
-    display: table;
-    color: #ececec;
-    text-align: center;
-    font-size: 12px;
-    position: relative;
-    margin: auto;
-    margin-top: 9px;
-   }
+
+
   /* NOTIFICACION ME GUSTA */
   #notifi div.love {
   position: absolute;

@@ -168,14 +168,6 @@
             
          
           <div class="user-avatar"><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"> </span>
-          <div class="aboutuser">
-          <div class="infox">
-          <ul><li><i class="fa fa-tag fa-lg"></i>Ingeniero I.T.E</li>
-          <li><i class="fa fa-map-marker fa-lg"></i>Murcia (España)</li>
-          <li><i class="fa fa-smile-o fa-lg"></i>Estado: Feliz</li>
-          <ul>
-          </div>
-          </div>
             <input type="checkbox" id="button-menu"  />
             {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
               <img id = "friend_request_progress" src="{{STATIC_URL}}img/friend_request_progress.png">
