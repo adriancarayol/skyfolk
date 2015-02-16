@@ -102,6 +102,9 @@ footer li {
 }
   footer:hover > .flex {
     border: 1px solid #7edc1f;
+    -webkit-transform: rotate(75deg);
+    -moz-transition: rotate(75deg);
+    transition: rotate(75deg);
   }
 .block-form{
 
