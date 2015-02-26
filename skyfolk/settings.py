@@ -67,6 +67,7 @@ INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # DJANGO ALL AUTH CONFIG
 ####################################################
 
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     # Required by allauth template tags
     "django.core.context_processors.request",
@@ -76,6 +77,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.static",
     "django.core.context_processors.media",
+    "django.contrib.messages.context_processors.messages",
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -206,7 +208,6 @@ ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),
     ('Carlos Canicio', 'canicio7@gmail.com'),
     ('Lostcitizen', 'lostcitizen@gmail.com'),
-    
 )
 
 TEMPLATE_DIRS = (

@@ -1,0 +1,4 @@
+* Modificacion en fichero: venv/local/lib/python2.7/site-packages/allauth/account/views.py (linea 438):
+	class PasswordChangeView
+		def form_valid
+			get_adapter().add_message(self.request, messages.SUCCESS, 'account/messages/password_changed.txt', None, 'PASSCHANGED')
