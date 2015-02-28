@@ -17,7 +17,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.safestring import mark_safe
-
+#allauth
+from allauth.account.views import PasswordChangeView
 
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -326,3 +327,15 @@ def load_friends(request):
             print(friends_next)
 
     return HttpResponse(simplejson.dumps(list(friends_next)), content_type='application/json')
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+
+    @property
+    def success_url(self):
+        return '/accounts/password/change/confirmation/'
+
+custom_password_change = login_required(CustomPasswordChangeView.as_view())
+
+def changepass_confirmation(request):
+    return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))

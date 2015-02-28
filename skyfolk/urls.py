@@ -6,6 +6,8 @@ from rest_framework import routers
 from api import views
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
+from user_profile import views as user_profile_views
+
 
 
 admin.autodiscover()
@@ -33,6 +35,9 @@ urlpatterns = patterns(
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^publication/$', 'publications.views.publication_form'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
+    url(r'^load_publications/$', 'publications.views.load_publications'),
+    url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
+    url(r'^accounts/password/change', user_profile_views.custom_password_change),
     url(r'^accounts/', include('allauth.urls')),
 
     # url mensajes privados
