@@ -159,26 +159,26 @@ DATABASES = {
     }
 }
 """
-#DATABASES = {
-#    'default': {
-#        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        # Or path to database file if using sqlite3.
-#        #'NAME': 'skyfolk_db',
-#        #'USER': 'postgres',
-#        #'PASSWORD': 'Palindromos_720',
-#        # Or path to database file if using sqlite3.
-#        'NAME': 'skyfolkdb',
-#        'USER': 'skyfolk',
-#        'PASSWORD': 'EB6E736224B550A605BD62A72CA47285'
-#                    'D608107FE990362469B1EFF287277648',
-#        # Empty for localhost through domain sockets or
-#        # '127.0.0.1' for localhost through TCP.
-#        'HOST': 'localhost',
-#        # Set to empty string for default.
-#        'PORT': '',
-#    }
-#}
+DATABASES = {
+    'default': {
+        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # Or path to database file if using sqlite3.
+        #'NAME': 'skyfolk_db',
+        #'USER': 'postgres',
+        #'PASSWORD': 'Palindromos_720',
+        # Or path to database file if using sqlite3.
+        'NAME': 'skyfolkdb',
+        'USER': 'skyfolk',
+        'PASSWORD': 'EB6E736224B550A605BD62A72CA47285'
+                    'D608107FE990362469B1EFF287277648',
+        # Empty for localhost through domain sockets or
+        # '127.0.0.1' for localhost through TCP.
+        'HOST': 'localhost',
+        # Set to empty string for default.
+        'PORT': '',
+    }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
