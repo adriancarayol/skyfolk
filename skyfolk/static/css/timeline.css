@@ -1,0 +1,212 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
+
+#section {
+  width: 100%;
+  height: 100%;
+}
+#section .wrapper {
+  position: relative;
+  width: 900px;
+  top: 80px;
+  margin: auto;
+  height: auto;
+  overflow: hidden;
+  background: 0;
+  border: 0;
+  box-shadow: 0;
+}
+
+#section .wrapper .line li {
+  list-style-type: none;
+}
+
+#section .wrapper .line {
+  margin: auto;
+  background-color: rgba(44,44,44,0.777);
+  box-shadow: 0.1px 0.1px grey;
+  width: 10px;
+  height: 2800px;
+}
+
+#section .wrapper .line .first {
+  position: relative;
+  width: 300px;
+  background-color: 0;
+  height: auto;
+  float: left;
+  left: -340px;
+  margin-bottom: 40px;
+  box-shadow: 0.1px 0.1px grey;
+  margin-bottom: 200px;
+  margin-top: 50px;
+}
+
+#section .wrapper .line .first .head {
+  background-color: rgba(44,44,44,1);
+  width: 100%;
+  height: 30px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 20px;
+  padding: 0px 5px;
+  position: absolute;
+  color: white;
+  font-weight: 100;
+  margin: 5px 5px;
+}
+
+#section .wrapper .line .first .head em {
+  float: right;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(44,44,44,1);
+  margin-top: 10px;
+  right: -5px;
+  position: absolute;
+  transform: rotate(45deg);
+}
+
+#section .wrapper .line .first .acontecimiento {
+  width: 40px;
+  height: 40px;
+  background-image: url("https://www.ameritas.com/wps/wcm/connect/corp/aa0baea3-3a84-467b-a710-089ab961326b/get-married-icon.png?MOD=AJPERES&CACHEID=aa0baea3-3a84-467b-a710-089ab961326b");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #fff;
+  border-radius: 100%;
+  border: 1px solid rgba(44,44,44,0.666);;
+  position: absolute;
+  top: 0px;
+  left: 322.5px;
+}
+
+#section .wrapper .line .first p {
+  position: relative;
+  display: inline-block;
+  top: 40px;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 100;
+  color: #000;
+}
+
+/* Second */
+#section .wrapper .line .second {
+  position: relative;
+  width: 300px;
+  background-color: 0;
+  height: auto;
+  float: right;
+  right: -340px;
+  margin-bottom: 40px;
+  box-shadow: 0.1px 0.1px grey;
+}
+
+#section .wrapper .line .second .head {
+  background-color: rgba(44,44,44,1);
+  width: 100%;
+  height: 30px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 20px;
+  padding: 0px 5px;
+  position: absolute;
+  color: white;
+  font-weight: 100;
+}
+
+#section .wrapper .line .second .head em {
+  float: left;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(44,44,44,1);
+  margin-top: 10px;
+  left: -5px;
+  position: absolute;
+  transform: rotate(45deg);
+}
+#section .wrapper .line .head a {
+  position: relative;
+  top: 5px;
+  font-style: normal;
+  text-decoration: none;
+  color: white;
+}
+#section .wrapper .line .second p {
+  position: relative;
+  display: inline-block;
+  top: 40px;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 100;
+  color: #000;
+}
+
+#section .wrapper .line .second .contenidoadicional {
+  width: 100%;
+  height: auto;
+  position: relative;
+  top: 20px;
+  margin-top: 30px;
+  border-top: 1px solid #ccc;
+}
+
+#section .wrapper .line .second .contenidoadicional img {
+  width: 80%;
+  border-radius: 7px;
+  position: relative;
+  margin: auto;
+  left: 10%;
+  margin-top: 30px;
+}
+
+#section .wrapper .line .second .acontecimiento {
+  width: 40px;
+  height: 40px;
+  background-image: url("https://cdn0.iconfinder.com/data/icons/vacation-and-travel/80/Vacation_travel-08-512.png");
+  background-size: 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #fff;
+  border-radius: 100%;
+  border: 1px solid rgba(44,44,44,0.666);
+  position: absolute;
+  display: inline-block;
+  top: -7px;
+  right: 322.5px;
+}
+
+#section .wrapper .line .second .controles {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 40px;
+  margin-top: 10px;
+}
+
+#section .wrapper .line .second .controles ul {
+  display: inline-block;
+  margin: auto;
+  position: relative;
+  width: 100%;
+  height: 30px;
+  left: 55px;
+}
+
+#section .wrapper .line .second .controles ul li {
+  margin-right: 20px;
+  vertical-align: middle;
+  color: #ccc;
+  display: inline-block;
+  transition: all .3s linear;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
+  cursor: pointer;
+  padding: 10px 7px;
+}
+
+#section .wrapper .line .second .controles:hover > ul li {
+  margin-right: 20px;
+  vertical-align: middle;
+}

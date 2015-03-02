@@ -1,7 +1,7 @@
 {% extends "account/base_interface.html" %}
 {% load app_filters %}
 {% block include_files %}
-
+<!-- Mostrar objetos al hacer scroll -->
 <script type="text/javascript"> 
 
 	
@@ -44,6 +44,7 @@
 
 {% block content %}
 {% if user_profile.profile.image %}
+<body>
 <div id="toggle">
   <nav class="menup">
     <li class="profilee"><img src="{{user_profile.profile.image.url}}"><i>{{user_profile.username}}</i></li>
@@ -586,6 +587,87 @@
 
 
 </div>
+<div id="section">
+
+<div class="wrapper">
+    <div class="line">
+   <li>
+        <div data-sr="wait 0.2s then scale up 30%" class="first">
+          <span class="acontecimiento"></span>
+          <span class="head"><a>{{user_profile.username}}</a><em></em></span>
+          <p>Pedro y Rosa te han invitado a su boda, ¡enhorabuena!</p>
+        </div>
+      </li>
+      <li>
+      <div data-sr="wait 0.2s then scale up 30%" class="second">
+        <span class="acontecimiento"></span>
+          <span class="head"><a>{{user_profile.username}}</a><em></em></span>
+          <p>Ha subido una foto con Pepe.</p>
+        <div class="contenidoadicional">
+          <img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">
+        </div>
+        <div class="controles">
+          <ul>
+            <li class="fa fa-heart fa-lg"></li>
+            <li class="fa fa-heart fa-share"></li>
+            <li class="fa fa-heart fa-reply"></li>
+          </ul>
+        </div>
+        </div>
+      </li>
+
+  <li>
+        <div data-sr="wait 0.2s then scale up 30%" class="first">
+          <span class="acontecimiento"></span>
+          <span class="head"><a>{{user_profile.username}}</a><em></em></span>
+          <p>Pedro y Rosa te han invitado a su boda, ¡enhorabuena!</p>
+        </div>
+      </li>
+      <li>
+      <div data-sr="wait 0.2s then scale up 30%" class="second">
+        <span class="acontecimiento"></span>
+          <span class="head"><a>{{user_profile.username}}</a><em></em></span>
+          <p>Ha subido una foto con Pepe.</p>
+        <div class="contenidoadicional">
+          <img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">
+        </div>
+        <div class="controles">
+          <ul>
+            <li class="fa fa-heart fa-lg"></li>
+            <li class="fa fa-heart fa-share"></li>
+            <li class="fa fa-heart fa-reply"></li>
+          </ul>
+        </div>
+        </div>
+      </li>
+
+    </div>
+
+  </div>
+
+</div>
+</body>
+<!-- IGNORAR, SOLO MUESTRA OBJETOS AL HACER SCROLL -->
+    <script>
+
+      window.sr = new scrollReveal(config);
+
+    </script>
+
+     <script>
+
+      var config = {
+
+        easing: 'hustle',
+        reset:  true,
+        delay:  'onload',
+        vFactor: 0.90,
+      }
+
+      window.sr = new scrollReveal( config );
+
+    </script>
+
 {% endblock%}
 
 

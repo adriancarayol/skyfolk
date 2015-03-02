@@ -14,6 +14,8 @@
 {% block cf-form %}
 <div class="wr">
 <div class="chg">
+
+		<!--
 		<label for="recent">Contraseña actual</label> 
 			<input id="recent" class="actual" type="password" name="Contraseña actual." value="actual">
 		<label for="new">Nueva contraseña</label>
@@ -21,8 +23,17 @@
 		<label for="new2">Verificar contraseña</label>
 			<input id="new2" class="actual" type="password" name="Repita su nueva contraseña." value="">
 
-	<button class="btn btn-info" id="btn" type="submit">Salvar cambios</button>
-	<p id="lost"><a href="/"> ¿Olvidaste tu contraseña?</a> </p>
+		<button class="btn btn-info" id="btn" type="submit">Salvar cambios</button>
+		<p id="lost"><a href="/"> ¿Olvidaste tu contraseña?</a> </p>
+		-->
+
+    <form method="POST" action="{% url 'account_change_password' %}" class="password_change">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="action">Salvar cambios</button>
+    </form>		
+
+
 	</div>
 	</div>
 {% endblock %}

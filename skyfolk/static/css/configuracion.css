@@ -104,7 +104,7 @@ aside nav li:hover > i {
   height: 300px;
   left: 27%;
 }
-.actual {
+.actual, #form-changepass input{
   width: 200px;
   position: relative;
   margin: auto;
