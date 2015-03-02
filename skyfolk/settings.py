@@ -178,7 +178,7 @@ DATABASES = {
         # Set to empty string for default.
         'PORT': '',
     }
-
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
