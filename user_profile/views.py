@@ -13,7 +13,7 @@ from publications.models import Publication
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 #from django.utils import simplejson
-from django.utils import json
+from django.utils import simplejson as json
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
