@@ -223,101 +223,6 @@ form {
   font-family: 'PT Sans', sans-serif; 
 }
 
-/*
-.form-3 p:nth-child(3),
-.form-3 p:nth-child(4) {
-    float: left;
-    width: 50%;
-}
-*/
-/*
-.form-3 label[for="remember"] {
-    width: auto;
-    float: none;
-    display: inline-block;
-    text-transform: capitalize;
-    font-size: 18px;
-    font-weight: 400;
-    letter-spacing: 0px;
-    text-indent: 2px;
-    position: absolute;
-}
-*/
-/*
-.form-3 input[type="checkbox"] {
-    position: relative;
-    top: 100px;
-}
-*/
-
-/*
-.form-3 input[type=submit] {
-    
-    width: 30%;
-    padding: 8px 5px;
-  
-    
-    border: 1px solid #0273dd; 
-    border: 1px solid rgba(0,0,0,0.4);
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.3),
-        inset 0 10px 10px rgba(255,255,255,0.1);
-    border-radius: 3px;
-    background: #38a6f0;
-    cursor:pointer;
-  
-    
-    font-family: 'PT Sans', sans-serif;
-    color: white;
-    font-weight: 700;
-    font-size: 15px;
-    text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
-    float: right;
-    top: 120px;
-}
-*/
-
-/*
-.form-3 input[type=submit]:hover { 
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
-}
-
-.form-3 input[type=submit]:active { 
-    background: #287db5;
-    box-shadow: inset 0 0 3px rgba(0,0,0,0.6);
-    border-color: #000;
-    border-color: rgba(0,0,0,0.9);
-}
-
-.no-boxshadow .form-3 input[type=submit]:hover {
-    background: #2a92d8;
-}
-*/
-
-
-/*
-.btn-info {
-
-    background-color:#32C0EF;
-	-moz-border-radius:3px;
-	-webkit-border-radius:3px;
-	border-radius:3px;
-	border:0;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-size:15px;
-	padding:6px 17px;
-	text-decoration:none;
-	float:right;
-    position:relative;
-    top:70px;
-    margin-right: 15px;
-    outline: none;
-    font-family: 'Lato', sans-serif;
-    transition: all .2s ease-in;
-}
-*/
 
 .btn-info:hover {
 
@@ -327,8 +232,11 @@ form {
     background-position: center;
     color: rgba(0,0,0,0);
 }
-
-
+/* Muestra los mensajes de error, por ejemplo -> "Contraseña incorrecta en los forms" */
+.errorlist li {
+  color: white;
+  position: relative;
+}
 .form-3 a{
 
     /*float: left;*/
@@ -348,31 +256,6 @@ form {
     position: absolute;
 }
 
-/*
-.btn-success{
-
-    background-color:#5A5550;
-    -moz-border-radius:3px;
-    -webkit-border-radius:3px;
-    border-radius:3px;
-    border:0;
-    display:inline-block;
-    cursor:pointer;
-    color:#ffffff;
-    font-size:15px;
-    padding:6px 17px;
-    text-decoration:none;
-    float:left;
-    left: -140px;
-    position:relative;
-    top:102px;
-    margin-left: 2px;
-    font-family: 'Lato', sans-serif;
-    outline: none;
-    transition: all .2s ease-in;
-	
-}
-*/
 
 .btn-success:hover {
   background-image: url('https://cdn1.iconfinder.com/data/icons/windows-8-metro-style/512/login.png');
@@ -385,10 +268,10 @@ form {
 }
 .block-formregister{
     width: 300px;
-    height: 550px;
+    height: auto;
     background-color: rgba(44,44,44,0.854);
     position: relative;
-    top: 0px;
+    top: -40px;
     float: right;
     margin-right: 130px;
     font-family: 'PT Sans', sans-serif;
@@ -402,7 +285,7 @@ form {
 }
 
 .block-formregister .btn-info, .block-formregister .btn-success {
-  top: 120px;
+  top: 90%;
   position: relative;
   display: inline-block;
 }
@@ -453,17 +336,19 @@ form {
 .form-3 input[type="checkbox"] {
     display: inline;
     float: right;
-    margin-right: 70px;
+    margin-right: 55px;
 }
 
 .form-3 .btn-success{
     float: left;
-    margin-top: 30px;
-    margin-left: 20px;
+    margin-top: 55px;
+    position: absolute;
+    right: 20px;
 }
 
 .form-3 .btn-info{
     float: right;
-    margin-top: 30px;
-    margin-right: 20px;
+    margin-top: 55px;
+    position: absolute;
+    right: 180px;
 }

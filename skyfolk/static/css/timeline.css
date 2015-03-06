@@ -26,6 +26,7 @@
   box-shadow: 0.1px 0.1px grey;
   width: 10px;
   height: 2800px;
+  display: block;
 }
 
 #section .wrapper .line .first {
