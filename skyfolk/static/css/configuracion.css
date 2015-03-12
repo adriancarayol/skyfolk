@@ -138,30 +138,7 @@ label[for="id_last_name"] {
   	top: 2px;
   	margin-left: 5px;
 }
-label[for="recent"] {
-    font-family: 'Open Sans', sans-serif;
-    position: relative;
-    color: rgba(44,44,44,0.776);
-    font-weight: 100;
-    top: 0px;
-    margin-left: 5px;
-}
-label[for="new"] {
-    font-family: 'Open Sans', sans-serif;
-    position: relative;
-    color: rgba(44,44,44,0.776);
-    font-weight: 100;
-    top: 0px;
-    margin-left: 5px;
-}
-label[for="new2"] {
-    font-family: 'Open Sans', sans-serif;
-    position: relative;
-    color: rgba(44,44,44,0.776);
-    font-weight: 100;
-    top: 0px;
-    margin-left: 5px;
-}
+
 .img-circle {
 	  width: 100px;
   	height: 100px;
@@ -189,6 +166,33 @@ label[for="new2"] {
 	border-radius: 8px 8px 8px 8px;
 	box-shadow: rgb(196,196,196) 5px 5px;
 }
+input[type="password"] {
+  position: relative;
+  display: list-item;
+  border: 1px solid rgb(196,196,196);
+  width: 120px;
+  height: 30px;
+  padding: 10px 5px;
+  left: 220px;
+}
+label[for="id_oldpassword"] {
+  color: grey;
+  font-weight: 100;
+  position: relative;
+  top: 25px;
+}
+label[for="id_password1"] {
+  color: grey;
+  font-weight: 100;
+  position: relative;
+  top: 25px;
+}
+label[for="id_password2"] {
+  color: grey;
+  font-weight: 100;
+  position: relative;
+  top: 25px;
+}
 #contra {
 	position:  relative;
  	margin:  auto;
@@ -208,16 +212,19 @@ label[for="new2"] {
   		display: block;
   		margin-top: 30px;
 }
-.btn-info {
-	position: relative;
+
+/* Boton salvar cambios */
+
+button[type="submit"] {
+  position: absolute;
   display: block;
-	top: 150px;
-  right: -100px;
-	padding: 30px 20px;
-	width: 100px;
-	height: 30px;
-	line-height: 2px;
-	font-size: 2em;
+  top: 90%;
+  right: 15px;
+  padding: 10px 7px;
+  width: 100px;
+  height: 30px;
+  line-height: 2px;
+  font-size: 0.9em;
 }
 #image-clear_id {
 	position: relative;
@@ -266,7 +273,7 @@ hgroup {
 	clear:both;
 }
 .profilex {
-	width: 620px;
+	   width: 620px;
   	border-bottom-left-radius: 70px;
   	border-top-left-radius: 70px;
   	border-bottom-right-radius: 7px;
