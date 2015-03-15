@@ -15,11 +15,10 @@
 [class*="entypo-"]:before {
   font-family: 'entypo', sans-serif;
 }
+
 body {
 	padding: 0;
-	margin: 20px 20px;
 	background-color: #fff;
-  background-repeat: repeat;
 }
 
 hgroup {
@@ -138,7 +137,10 @@ label[for="id_last_name"] {
   	top: 2px;
   	margin-left: 5px;
 }
-
+#form-changepass {
+  position: relative;
+  left: 70px;
+}
 .img-circle {
 	  width: 100px;
   	height: 100px;
@@ -148,7 +150,8 @@ label[for="id_last_name"] {
 .chg {
 	position: relative;
 	display: inline-block;
-	top: 100px;
+	top: 50px;
+  left: 30px;
 	height: auto;
 }
 .actual:focus {
@@ -195,10 +198,10 @@ label[for="id_password2"] {
 }
 #contra {
 	position:  relative;
- 	margin:  auto;
+  margin: auto; 
   display:  block;
   width:  680px;
-  height: 600px;
+  max-height: 400px;
   top:  -440px;
   border-radius: 7px;
  	-webkit-box-shadow: 2px 2px 7px 0px #efefef;
@@ -216,10 +219,23 @@ label[for="id_password2"] {
 /* Boton salvar cambios */
 
 button[type="submit"] {
-  position: absolute;
+  position: relative;
   display: block;
-  top: 90%;
-  right: 15px;
+  top: 80px;
+  right: 100px;
+  float: right;
+  padding: 10px 7px;
+  width: 100px;
+  height: 30px;
+  line-height: 2px;
+  font-size: 0.9em;
+}
+#boton-perfil {
+  position: relative;
+  display: block;
+  top: 70px;
+  right: -110px;
+  float: right;
   padding: 10px 7px;
   width: 100px;
   height: 30px;
@@ -273,7 +289,7 @@ hgroup {
 	clear:both;
 }
 .profilex {
-	   width: 620px;
+	 width: 620px;
   	border-bottom-left-radius: 70px;
   	border-top-left-radius: 70px;
   	border-bottom-right-radius: 7px;
