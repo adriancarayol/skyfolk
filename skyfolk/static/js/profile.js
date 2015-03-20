@@ -552,7 +552,7 @@ $(document).ready(function() {
       displaying = $(this).css("display");
       $("#toggle").val('');
       if (displaying == "none") {
-        $(this).fadeOut(function() {
+        $(this).fadeToggle(function() {
           $(this).css("display", "block");
         });
       } else {
@@ -581,25 +581,6 @@ $(document).ready(function() {
     });
   });
 });
-/* DISPLAY INFORMACION */
-
-$(document).ready(function() {
-  $(".fa-paw").hover(function() {
-    $(".aboutuser").each(function() {
-      displaying = $(this).css("display");
-      $(".aboutuser").val('');
-      if (displaying == "none") {
-        $(this).fadeOut(function() {
-          $(this).css("display", "block");
-        });
-      } else {
-        $(this).fadeIn(function() {
-          $(this).css("display", "none");
-        });
-      }
-    });
-  });
-});;
 
 /* DISPLAY MESSAGES */
 
@@ -609,11 +590,11 @@ $(document).ready(function() {
       displaying = $(this).css("display");
       $("#notificationn").val('');
       if (displaying == "none") {
-        $(this).fadeOut(function() {
+        $(this).delay(100).fadeToggle(function() {
           $(this).css("display", "block");
         });
       } else {
-        $(this).fadeIn(function() {
+        $(this).delay(50).fadeToggle(function() {
           $(this).css("display", "none");
         });
       }

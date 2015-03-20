@@ -231,15 +231,31 @@
   display: block;
   position: relative;
   margin: auto;
-  top: 4px;
+  top: 0px;
 }
-#notificationn h4 {
-  font-weight: 300;
-  position: relative;
-  font-family: 'Open Sans', sans-serif;
-  border-bottom: 2px solid white;
+#notificationn .cabeza {
+  width: 100%;
+  height: 40px;
+  background-color: rgba(44,44,44,0.777);
+}
+#notificationn .cabeza em {
+  background-color: tomato;
+  padding: 10.5px 15px;
+  color: white;
+  border-radius: 100%;
+  width: 40px;
+  height: 40px;
+  float: right;
   text-align: center;
-  color: #000;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  margin-right: 7px;
+  margin-top: 15px;
+  cursor: pointer;
+}
+#notificationn .cabeza em:hover {
+  opacity: 0.7;
 }
 #notificationn a {
   font-weight: 100;
@@ -251,36 +267,49 @@
   top: 20px;
   font-family: 'Open Sans', sans-serif;
 }
-.not li:nth-child(2) {
-  color: #D93A88;
+#notificationn .msg {
+  top: 10px;
+  position: relative;
+  display: block;
+  width: 102%;
 }
-.not li:nth-child(3) {
-  color: #3F63B6
+#notificationn .fa-heart {
+  background-color: #de5252;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  text-align: center;
+  padding: -4px 10px;
+  color: #fffffe;
+  margin-left: 5px;
+  cursor: pointer;
 }
-.not li:nth-child(4) {
-  color: #FAE0E0;
+#notificationn .fa-user {
+  background-color: #4ca0d9;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  text-align: center;
+  padding: 0px 0px;
+  color: #fffffe;
+  margin-left: 0px;
+  cursor: pointer;
+}
+#notificationn .fa-paper-plane-o {
+  background-color: #4cd985;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  text-align: center;
+  padding: 3px 0px;
+  color: #fffffe;
+  margin-left: 0px;ç
+  cursor: pointer;
 }
 #notificationn li:nth-child(1n+2) {
-  display: table;
+  display: list-item;
   position: relative;
   top: 10px;
   margin-top: 7px;
   margin-left: 5px;
-}
-#notificationn h5 {
-  position: relative;
-  vertical-align: bottom;
-  text-align: center;
-  cursor: pointer;
-  margin: auto;
-  color: #000;
-  margin-top: 35px;
-  margin-left: 50px;
-  -webkit-transition: all .3s linear;
-  -moz-transition: all .3s linear;
-  transition: all .3s linear;
-}
-#notificationn h5:hover {
-  color: tomato;
-
 }
