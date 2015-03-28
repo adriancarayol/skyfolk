@@ -794,7 +794,7 @@ h4 {
   overflow: hidden;
   margin-top: 20px;
   margin-left: -70px;
-  height: 4em;
+  height: 0em;
   width: 4em;
   border-radius: 2em;
   box-shadow: 0 0 5px #6A5D4F;

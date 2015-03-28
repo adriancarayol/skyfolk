@@ -52,6 +52,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
+    'emoji',
 )
 
 # Local Applications
@@ -178,6 +179,26 @@ DATABASES = {
     }
 }
 
+#DATABASES = {
+#    'default': {
+#        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        # Or path to database file if using sqlite3.
+#        #'NAME': 'skyfolk_db',
+#        #'USER': 'postgres',
+#        #'PASSWORD': 'Palindromos_720',
+#        # Or path to database file if using sqlite3.
+#        'NAME': 'd27f8if9fbfjgl',
+#        'USER': 'iqzsahhpuvthkp',
+#        'PASSWORD': 'H9UoSdDil39_Z3TRjj_gn7JMja',
+#        # Empty for localhost through domain sockets or
+#        # '127.0.0.1' for localhost through TCP.
+#        'HOST': 'ec2-54-247-107-140.eu-west-1.compute.amazonaws.com',
+#        # Set to empty string for default.
+#        'PORT': '5432',
+#    }
+#}
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
@@ -221,8 +242,8 @@ STATICFILES_DIRS = (
 
 # heroku
 
-'''# Parse database configuration from $DATABASE_URL
-import dj_database_url
+# Parse database configuration from $DATABASE_URL
+'''import dj_database_url
 DATABASES['default'] = dj_database_url.config()
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
