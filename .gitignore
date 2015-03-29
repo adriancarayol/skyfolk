@@ -1,7 +1,10 @@
 venv
 *.pyc
+*.py~
 .project
 .pydevproject
 skyfolk/media/*
 skyfolk.sublime-project
 skyfolk.sublime-workspace
+build/
+.settings/
