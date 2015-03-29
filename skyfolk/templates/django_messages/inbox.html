@@ -3,29 +3,13 @@
 {% load url from future %}
 {% load app_filters %}
 {% block include_files %}
+
 {% block content %}
 <head>
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 <body>
-<!-- nav con logotipo -->
-<nav class="box-tool">
-  <li><div class="logo"></div></li>
-  <li class="chat"><div></div></li>
-</nav>
-<!-- Menu de opciones --> 
 
-  <aside>
-    <nav class="vertical">
-      <li onclick="javascript:location.href='/messages/inbox'"><i class="fa fa-bars fa-lg"></i>Recibidos</li>
-      <li onclick="javascript:location.href='/messages/outbox'"><i class="fa fa-paper-plane fa-lg"></i>Enviados</li>
-      <li onclick="javascript:location.href='/messages/inbox'"><i class="fa fa-user fa-lg"></i>Mis contactos</li>
-      <li onclick="javascript:location.href='/messages/inbox'"><i class="fa fa-users fa-lg"></i>Grupos</li>
-      <li onclick="javascript:location.href='/messages/inbox'"><i class="fa fa-ban fa-lg"></i>Spam</li>
-      <li onclick="javascript:location.href='/messages/trash'"><i class="fa fa-trash fa-lg"></i>Papelera</li>
-      <li><div class="entrada"><input type="search" target="search" placeholder="Busca un mensaje..."></input></div></li>
-    </nav>
-  </aside>
 
 <div><h1 class="titulo_m"><i class="fa fa-envelope-o"></i>Mensajes privados</h1><button onclick="javascript:location.href='/messages/compose'" class="fa fa-send fa-lg"></button></div>
 {% if message_list %} 

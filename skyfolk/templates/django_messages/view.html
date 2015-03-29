@@ -3,7 +3,8 @@
 {% load url from future %}
 
 {% block content %}
-<h1>{% trans "View Message" %}</h1>
+<h4>Mensajes con {{  message.sender }}.</h4>
+<div class="mensajes">
 <dl class="message-headers">
     <dt>{% trans "Subject" %}</dt>
     <dd><strong>{{ message.subject }}</strong></dd>
@@ -11,16 +12,15 @@
     <dd>{{ message.sender }}</dd>
     <dt>{% trans "Date" %} </dt>
     <dd>{{ message.sent_at|date:_("DATETIME_FORMAT")}}</dd>
-    <dt>{% trans "Recipient" %}</dt>
-    <dd>{{ message.recipient }}</dd>
-</dl>
-{{ message.body|linebreaksbr }}<br /><br />
 
+</dl>
+
+{{ message.body|linebreaksbr }}<br /><br />
+</div>
 {% ifequal message.recipient.pk user.pk %}
 <a href="{% url 'messages_reply' message.id %}">{% trans "Reply" %}</a>
 {% endifequal %}
 <a href="{% url 'messages_delete' message.id %}">{% trans "Delete" %}</a>
-
 {% comment %}Example reply_form integration
 {% if reply_form %}
 <h1>{% trans "Compose reply"%}</h1>

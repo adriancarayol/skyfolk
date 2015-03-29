@@ -317,3 +317,156 @@ input[target="search"] {
 	margin-left: 50%;
 	opacity: 0.6;
 }
+
+
+
+/* compose.html */
+
+.contenedor {
+	width: 750px;
+	height: 500px;
+	background-color: rgba(230,230,230,0.5);
+	position: relative;
+	font-family: 'Open Sans', sans-serif;
+	left: 30%;
+	display: block
+}
+
+label[for="id_recipient"] {
+	padding: 7px 12px;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1;
+	color: white;
+	background-color: #80C8C8;
+	text-align: center;
+	border-right: 1px solid #ccc;
+	border-radius: 4px;
+	height: 23px;
+	top: 35px;
+	left: 21px;
+	position: absolute;
+}
+
+label[for="id_subject"] {
+	padding: 7px 30px;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1;
+	color: white;
+	background-color: #80C8C8;
+	text-align: center;
+	border-right: 1px solid #ccc;
+	border-radius: 4px;
+	height: 23px;
+	top: 81px;
+	left: 20px;
+	position: absolute;
+}
+
+#id_recipient {
+  display: inline-block;
+  width: 515px;
+  padding: 10px 0 7px 15px;
+  font-family: "Open Sans", sans;
+  font-weight: 400;
+  color: #377D6A;
+  background-color: #fff;
+  border: 0;
+  border-radius: 3px;
+  outline: 0;
+  text-indent: 10px; // Arbitrary.
+  transition: all .3s ease-in-out;
+  margin-top: 5%;
+  margin-left: 60px;
+}
+#id_subject {
+  display: inline-block;
+  width: 515px;
+  padding: 10px 0 7px 15px;
+  font-family: "Open Sans", sans;
+  font-weight: 400;
+  color: #377D6A;
+  background-color: #fff;
+  border: 0;
+  border-radius: 3px;
+  outline: 0;
+  text-indent: 10px; // Arbitrary.
+  transition: all .3s ease-in-out;
+  margin-top: 1%;
+  margin-left: 60px;
+}
+
+input:focus {
+  background-color: #fff;
+  transition: all .3s ease-in-out;
+}
+#id_body {
+ 
+  margin-top: 20px;
+  width: 600px;
+  font-family: "Open Sans", sans-serif;
+  border: 1px solid #B5DBDB;
+  overflow: hidden;
+  font-weight: 300;
+  font-size: 15px;
+  color: grey;
+  text-indent: 5px;
+  resize: none;
+  display: block;
+  transition: all .3s ease-in;
+}
+
+
+.contenedor > form:nth-child(1) > input:nth-child(3) {
+  background-color: #5cb85c;
+  padding: 12px 12px;
+  border: 0;
+  outline: none;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #FFE1E1;
+  font-width: 400;
+  position: absolute;
+  margin-top: 30px;
+  display: inline-block;
+  transition: all .3s ease-in;
+  cursor: pointer;
+  float: right;
+  right: 20px;
+}
+
+.contenedor > form:nth-child(1) > input:nth-child(3):hover {
+  background-image: url('https://cdn2.iconfinder.com/data/icons/inverticons-fill-vol-2/32/paper_plane_document_send_sent_mail-512.png');
+  background-size: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: transparent;
+}
+
+
+/* view.html */
+h4 {
+    text-indent: inherit;
+    display: block;
+    position: absolute;
+    width: auto;
+    top: 120px;
+    left: 45%;
+    margin: auto;
+    z-index: 999;
+    border-bottom: 2px solid rgba(44,44,40,0.777);
+    color: rgba(44,44,44,0.877);
+    -webkit-transition: all .3s linear;
+    -moz-transition: all .3s linear;
+    transition: all .3s linear;
+     font-family: "Open Sans", sans-serif;
+    cursor: pointer;
+}
+.mensajes {
+	width: auto;
+	position: absolute;
+	height: auto;
+	left: 40%;
+	top: 25%;
+}
