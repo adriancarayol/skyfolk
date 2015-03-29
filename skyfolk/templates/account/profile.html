@@ -402,8 +402,7 @@
 						<div class="wrapper" id="pub-{{item.from_publication__id}}">
 							  <div id="box">
 							        <input id="profile" type="checkbox" checked> 
-							        <label class="popo" for="profile">
-							        
+							        <label class="image" for="profile">
 									{% if item.user__profile__image and item.user__profile__image|file_exists %}
 									   <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
 									{% else %}
