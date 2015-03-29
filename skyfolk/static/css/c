@@ -7,8 +7,7 @@ body {
  }
 .wrapper {
 	position: relative;
-	width: 85%;
-	margin: auto;
+	width: 90%;
 	left: 20%;
 	height: 80%;
 	display: block;
@@ -30,12 +29,12 @@ body {
 	margin-top: 30px;
 	position: relative;
 	margin: auto;
+	font-size: 21px;
 	text-align: center;
 }
 .message_subject {
 		color: rgb(173,173,173);
 		font-weight: 300;
-		font-size: 21px;
 		text-decoration: none;
 }
 .time {
@@ -83,26 +82,13 @@ body {
 	width: 350px;
 	height: 300px;
 	top: 15px;
-	margin-top: 30px;
  	margin-right: 30px;
- 	margin-bottom: 20px;
  	display: inline-block;
 	background-color: #fafafa;
 	box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5);
 	overflow: inherit;
 	font-family: 'Open Sans', sans-serif;
 }
-.bt img {
-	position: absolute;
-	margin: auto;
-	width: 80px;
-	height: 80px;
-	border-radius: 100%;
-	top: -40px;
-	left: 135px;
-	border: 1px solid #ccc;
-}
-
 .name a {
 	text-align: center;
 	font-family: 'Open Sans', sans-serif;
@@ -130,22 +116,7 @@ body {
 	width: 350px;
 	background-color: rgb(230,230,230);
 }
-.bt .resumen {
-	color: #404040;
-	font-weight: 600;
-	position: relative;
-	margin: auto;
-	text-align: center;
-	max-width: 100%;
-	top: 20px;
-}
-.bt .resumen p{
-	height: auto;
-	width: 100%;
-	margin-top: 30px;
-	font-weight: 100;
-	position: absolute;
-}
+
 /* nav */
 .box-tool {
   width: 99.3%;
@@ -202,118 +173,25 @@ body {
 
 /* Mensajes privados - "titulo" */
 .titulo_m i {
-	margin-right: 10px;	
+	margin-right: 6px;	
 }
 .titulo_m {
   margin-left:  25px;
   padding:  10px 10px;
-  background-color:  rgba(44,44,44,0.477);
+  background-color:  rgba(44,44,44,0.777);
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   font-size: 30px;
   color: #F5F5F5;
-  width: 100%;
+  width: 85%;
 }
-.fa-send {
-	background-color: #fff;
-	width: 50px;
-	height: 50px;
-	border-radius: 100%;
+img {
 	position: absolute;
-	float: right;
-	right: 130px;
-	top: 55px;
-	z-index: 9999;
-	border: 2px solid rgb(204,237,220);
-	color: rgb(147,217,181);
-	outline: none;
-	cursor: pointer;
-	-webkit-transition: all .3s linear;
-	-moz-transition: all .3s linear;
-	transtion: all .3s linear;
-}
-button:hover {
-	background-color: rgb(204,237,220);
-	border: 2px solid rgb(204,237,220);
-	color: #fff;
-}
-/* Menu con opciones */ 
-aside {
-  position:  absolute;
-  margin-left: 20px;
-  top: 130px;
-  background-color: #FAFAFA;
-  height: 420px;
-  width: 280px;
-  border-radius:  7px;
-  -webkit-box-shadow: 2px 2px 7px 0px #efefef;
--moz-box-shadow:    2px 2px 7px 0px #efefef;
-box-shadow:         2px 2px 7px 0px #efefef;
-}
-aside nav {
-  list-style-type:  none;
-  height: 100%;
-  font-weight: 100;
-  font-family: 'Open Sans', sans-serif;
-
-}
-aside nav li {
-  color:  #000;
-  margin-top:  20px;
-  padding:  10px 10px;
-  border-bottom:  2px solid #fff;
-  background-color:  #fafafa;
-  border-left: 5px solid rgba(44,44,44,0.854);
-  border-radius:  3px;
-  transition:  all .2s ease-in;
-  cursor:  pointer;
-}
-aside nav li:hover {
-  color:  #00CED1;
-  background-color:  rgba(44,44,44,0.854);
-  border-left: 5px solid rgba(44,44,44,0.854);
-}
-aside nav li i {
-  float: left;
-  margin-left: 10px;
-  margin-right: 10px;
-  font-style: normal;
-  transition:  all .3s ease-in;
-}
-aside nav li:hover > i {
-  margin-left: 40px;
-}
-
-input[target="search"] {
-    border-radius: 20px;
-    background: url('http://png-4.findicons.com/files/icons/1389/g5_system/32/toolbar_find.png') 9px 9px no-repeat, linear-gradient(to bottom, #f7f7f8 0%,#ffffff 100%);
-    background-size: 19px;
-    border: none;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2) inset, 0 -1px 0 rgba(0,0,0,0.05) inset;
-    transition: all 0.2s linear;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 13px;
-    color: #222222;
-    position: relative;
-    height: 36px;
-    width: 250px;
-    padding-left: 30px;
-
-}
-/* NOTIFICACIONES */
-
-.no_messages {
-	color: rgb(185,230,207);
-	position: relative;
-	font-family: 'Open Sans', sans-serif;
-	margin-left: 30%;
-	font-size: 30px;
-}
-.no_mess {
-	position: relative;
-	width: 120px;
-	height: 120px;
-	margin-top: 5%;
-	margin-left: 50%;
-	opacity: 0.6;
+	margin: auto;
+	width: 80px;
+	height: 80px;
+	border-radius: 100%;
+	top: -40px;
+	left: 135px;
+	border: 1px solid #ccc;
 }
