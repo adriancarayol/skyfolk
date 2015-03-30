@@ -172,7 +172,7 @@
             
          
           <div class="user-avatar"><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"> </span>
-            <input type="checkbox" id="button-menu"  />
+            <!--<input type="checkbox" id="button-menu"  />-->
             {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
               <img id = "friend_request_progress" src="{{STATIC_URL}}img/friend_request_progress.png">
             {% endif %}
@@ -397,11 +397,36 @@
 				<div id="tab-comentarios">
 
 
-					{% for item in publications_top15 %}
-					      
+					{% for item in publications_top15 %}		      
 						<div class="wrapper" id="pub-{{item.from_publication__id}}">
-							  <div id="box">
-							        <input id="profile" type="checkbox" checked> 
+            <div class="box">
+            <input type="checkbox" id="profile">
+            <!-- Check para ampliar el mensaje... -->
+                  <div class="ampliado">
+                      <div class="nombre_image">
+                      <ul>
+                      <li><i class="first">{{item.user__first_name}} {{item.user__last_name}}</i></li>
+                      <li><a class="name" href="/profile/{{ item.user__username }}" >{{item.user__username}}</a></li>
+                    {% if item.user__profile__image and item.user__profile__image|file_exists %}
+                    </ul>
+                     <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
+                  {% else %}
+                     <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
+                  {% endif %}
+                      </div>
+                    <div class="parrafo comment">
+                    <a target="_blank">{{item.from_publication__created}}</a><br><br>{{item.from_publication__content}}
+                  </div>
+                  <div class="text_area">
+                      <textarea placeholder="Escribe tu mensaje..."></textarea>
+                        <ul>
+                        <li><i class="fa fa-heart fa-lg"></i></li>
+                        <li><i class="fa fa-reply fa-lg"></i></li>
+                        <li><i class="fa fa-star fa-lg"></i></li>
+                        </ul>
+                  </div>
+                  </div>
+
 							        <label class="image" for="profile">
 									{% if item.user__profile__image and item.user__profile__image|file_exists %}
 									   <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
@@ -410,10 +435,8 @@
 									{% endif %}
 							        <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
 							        </label>
-							        <span class="entypo-thumbs-up" title="¡Me gusta!"></span> 
-							        <span class="entypo-forward" title="Responder"></span>
-							    <span class="entypo-plus" title="Añadir a..."></span>
-							  </div>
+</div>
+</input>
 							  <article class="articulo">
 							    <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{item.user__username}}</a> mentioned you</h2>
 							    <div class="parrafo comment">
@@ -421,7 +444,6 @@
 							    </div>
 							  </article>
 					  	</div>
-					  	
 					
 					{% endfor %}
 					
