@@ -172,7 +172,8 @@ DATABASES = {
         # Or path to database file if using sqlite3.
         'NAME': 'skyfolkdb',
         'USER': 'skyfolk',
-        'PASSWORD': '1518',
+        'PASSWORD': 'EB6E736224B550A605BD62A72CA47285'
+                    'D608107FE990362469B1EFF287277648',
         # Empty for localhost through domain sockets or
         # '127.0.0.1' for localhost through TCP.
         'HOST': 'localhost',
@@ -245,7 +246,7 @@ STATICFILES_DIRS = (
 # heroku
 
 # Parse database configuration from $DATABASE_URL
-'''import dj_database_url
+import dj_database_url
 DATABASES['default'] = dj_database_url.config()
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -261,4 +262,4 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-#..................................................................'''
+#..................................................................

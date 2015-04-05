@@ -48,8 +48,8 @@ DEFAULT_APPS = (
 THIRD_PARTY_APPS = (
     # 'south',                 # Gestiona las migraciones de bdd
     'allauth',
-    'photologue',              # Galeria photologue.
-    'sortedm2m',	       # Galeria photologue.
+    # 'photologue',              # Galeria photologue.
+    # 'sortedm2m',	       # Galeria photologue.
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',          # REST framework
