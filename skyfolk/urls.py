@@ -39,7 +39,8 @@ urlpatterns = patterns(
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
     url(r'^accounts/password/change', user_profile_views.custom_password_change),
     url(r'^accounts/', include('allauth.urls')),
-
+    # url django-photologe(galeria de fotos) 
+    url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls')),
 
