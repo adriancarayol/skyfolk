@@ -106,20 +106,15 @@ footer li {
     -moz-transition: rotate(75deg);
     transition: rotate(75deg);
   }
-.block-form{
-
-
-    width: 300px;
-    height: 300px;
-    background-color: rgba(44,44,44,0.854);
+.row{
+    width: 370px;
+    height: 350px;
     margin: auto;
     position: relative;
-    top: 100px;
+    top: 90px;
+    border-radius: 3px;
+    opacity: 0.9;
     font-family: 'PT Sans', sans-serif; 
-    border-radius: 5px;
-    -webkit-box-shadow:  0 1px 5px rgba(0, 0, 0, 0.15);
-    -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 
 }
 
@@ -156,50 +151,29 @@ form {
   width: 70%;
   position: relative;
   margin: auto;
-  background-image: url('https://www.cs.umd.edu/sites/default/files/default_images/user_icon.png');
-  background-repeat: no-repeat;
-  background-size: 20px;
-  background-position: left;
-  padding: 5.2px 25px;
   outline: none;
-  border: 1px solid #ececec;
   -webkit-transition: all .3s linear;
   -moz-transition: all .3s linear;
   transition: all .3s linear;
-  border-radius: 5px;
 }
 .form-3 input[type="email"] {
   width: 70%;
   position: relative;
   margin: auto;
-  background-image: url('http://cdn.flaticon.com/png/256/36175.png');
-  background-repeat: no-repeat;
-  background-size: 20px;
-  background-position: left;
-  padding: 5.2px 25px;
   outline: none;
-  border: 1px solid #ececec;
   -webkit-transition: all .3s linear;
   -moz-transition: all .3s linear;
   transition: all .3s linear;
-  border-radius: 5px;
 }
 .form-3 input[type=password] {
   
   width: 70%;
   position: relative;
   margin: auto;
-  background-image: url('https://cdn4.iconfinder.com/data/icons/defaulticon/icons/png/256x256/padlock-closed.png');
-  background-repeat: no-repeat;
-  background-size: 20px;
-  background-position: left;
-  padding: 5.2px 25px;
   outline: none;
-  border: 1px solid #ececec;
   -webkit-transition: all .3s linear;
   -moz-transition: all .3s linear;
   transition: all .3s linear;
-  border-radius: 5px;
 
 
 
@@ -210,7 +184,7 @@ form {
   -moz-box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
   box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
 }
-.block-form h3 {
+.row h5 {
   position: absolute;
   left: 0%;
   text-align: center;
@@ -223,15 +197,6 @@ form {
   font-family: 'PT Sans', sans-serif; 
 }
 
-
-.btn-info:hover {
-
-    background-image: url('https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/edit.png');
-    background-repeat: no-repeat;
-    background-size: 30px;
-    background-position: center;
-    color: rgba(0,0,0,0);
-}
 /* Muestra los mensajes de error, por ejemplo -> "Contraseña incorrecta en los forms" */
 .errorlist li {
   color: white;
@@ -256,16 +221,6 @@ form {
     position: absolute;
 }
 
-
-.btn-success:hover {
-  background-image: url('https://cdn1.iconfinder.com/data/icons/windows-8-metro-style/512/login.png');
-  background-repeat: no-repeat;
-  background-size: 30px;
-  background-position: center;
-  color: rgba(0,0,0,0);
-
-
-}
 .block-formregister{
     width: 300px;
     height: auto;
@@ -284,7 +239,7 @@ form {
  
 }
 
-.block-formregister .btn-info, .block-formregister .btn-success {
+.block-formregister #iniciar_sesion, .block-formregister #registrar {
   top: 90%;
   position: relative;
   display: inline-block;
@@ -339,16 +294,19 @@ form {
     margin-right: 55px;
 }
 
-.form-3 .btn-success{
-    float: left;
-    margin-top: 55px;
-    position: absolute;
-    right: 20px;
+.form-3 #registrar{
+    float: right;
+    position: relative;
+    margin-top: -50px;
+    display: inline-block;
+    margin-right: 7px;
 }
 
-.form-3 .btn-info{
-    float: right;
+.form-3 #iniciar_sesion{
+    float: left;
+    margin-left: 7px;
     margin-top: 55px;
-    position: absolute;
-    right: 180px;
+    display: inline-block;
+    position: relative;
+   
 }

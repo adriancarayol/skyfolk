@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- Hojas de estilo SASS -->
 
-
-	       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" author="Adian,Carlos, Nestor"/>
+	       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" author="Adrian,Carlos, Nestor"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.css" />
          <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.min.css" />
@@ -23,6 +25,10 @@
         <link rel="shortcut icon" href="{{STATIC_URL}}img/logo.ico"> 
 	      <script src="{{STATIC_URL}}js/showandhide.js"></script>
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css" />
+
+        <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
+      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
 		  <script src="{{STATIC_URL}}js/modernizr.custom.63321.js"></script>
     <!-- IMPORTANTE PARA CAMBIO DE BACKGROUND -->
       <script>
@@ -72,7 +78,7 @@
        	
        {% block content %}{% endblock %}
 
-  <footer>
+  <footer class="page-footer grey darken-4">
          <div class="flex">
          </div>
             <ul>
