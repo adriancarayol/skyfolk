@@ -48,8 +48,8 @@ DEFAULT_APPS = (
 THIRD_PARTY_APPS = (
     # 'south',                 # Gestiona las migraciones de bdd
     'allauth',
-    'photologue',              # Galeria photologue.
-    'sortedm2m',	       # Galeria photologue.
+    # 'photologue',              # Galeria photologue.
+    # 'sortedm2m',	       # Galeria photologue.
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',          # REST framework
@@ -172,8 +172,7 @@ DATABASES = {
         # Or path to database file if using sqlite3.
         'NAME': 'skyfolkdb',
         'USER': 'skyfolk',
-        'PASSWORD': 'EB6E736224B550A605BD62A72CA47285'
-                    'D608107FE990362469B1EFF287277648',
+        'PASSWORD': '1518',
         # Empty for localhost through domain sockets or
         # '127.0.0.1' for localhost through TCP.
         'HOST': 'localhost',
@@ -244,7 +243,7 @@ STATICFILES_DIRS = (
 ##...................................................................
 
 # heroku
-
+'''
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES['default'] = dj_database_url.config()
@@ -262,4 +261,4 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-#..................................................................
+#..................................................................'''
