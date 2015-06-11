@@ -5,6 +5,8 @@ body {
                        padding: 0;
                        margin: auto;
                        background-size: 100%;
+                       max-width: 100%;
+                       max-height: 100%;
                        min-height: 100vh;
                        flex-direction: column;
                        background-repeat: no-repeat;
@@ -28,7 +30,7 @@ body {
   position: relative;
   margin: auto;
   left: -120px;
-  top: 120px;
+  top: 110px;
   width: 150px;
   height: 100px;
 }
@@ -38,7 +40,7 @@ body {
   position: absolute;
   margin: auto;
   vertical-align: middle;
-  top: -7px;
+  top: -30px;
   left: 0px;
 }
 .namesn i {
@@ -58,16 +60,19 @@ body {
   text-shadow: 1px 1px 1px #0096d7;
 }
 
-.page-footer {
+.footer_base {
   width: 100%;
   position: fixed;
   height: 20px;
-  bottom: 0;
+  bottom: 10px;
+  color: grey;
   -webkit-transition: all .3s ease-in;
   -moz-transition: all .3s ease-in;
   transition: all .3s ease-in;
 }
-
+.footer_base #about {
+  margin-right: 430px;
+}
 .flex {
   position: relative;
   margin: auto;
@@ -78,24 +83,16 @@ body {
   footer:hover {
     height: 100px;
 }
-.row{
+#login {
     width: 370px;
     height: 350px;
     margin: auto;
     position: relative;
-    top: 90px;
+    top: 80px;
     border-radius: 3px;
     opacity: 0.9;
     font-family: 'PT Sans', sans-serif; 
 
-}
-.flex #about {
-  position: relative;
-  display: inline-block;
-  top: -40px;
-  float: left;
-  width: auto;
-  height: 100px;
 }
 form {
     position: relative;
@@ -154,15 +151,15 @@ form {
   -moz-transition: all .3s linear;
   transition: all .3s linear;
 
-
-
 }
+
 .form-3 input:focus {
   background-position: 5px;
   -webkit-box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
   -moz-box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
   box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
 }
+
 .row h5 {
   position: absolute;
   left: 0%;
@@ -205,7 +202,7 @@ form {
     height: auto;
     background-color: rgba(44,44,44,0.854);
     position: relative;
-    top: -40px;
+    top: -120px;
     float: right;
     margin-right: 130px;
     font-family: 'PT Sans', sans-serif;
@@ -216,6 +213,11 @@ form {
     box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
     display: block;
  
+}
+.block-formregister #sign_in_register, #sign_up_register {
+  position: relative;
+  display: inline-block;
+  width: 135px;
 }
 
 .block-formregister #iniciar_sesion, .block-formregister #registrar {

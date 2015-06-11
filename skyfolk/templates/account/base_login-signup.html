@@ -8,9 +8,11 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
+        <!-- DE MOMENTO NO ES NECESARIO 
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap-theme.css" />
+        -->
         <title>¡Bienvenido a Skyfolk! - Iniciar sesión</title>
         <meta name="keywords" content="skyfolk, social, login, registro, sky, folk," />
         <link rel="shortcut icon" href="{{STATIC_URL}}img/logo.ico"> 
@@ -64,28 +66,23 @@
         $('#background_cycler').hide();//hide the background while the images load, ready to fade in later
       </script>
 
-      <img class="active" src="{{STATIC_URL}}img/backgrounds/1.jpg" alt=""/>
+      <img class="active" src="{{STATIC_URL}}img/backgrounds/7.jpg" alt=""/>
         <img src="{{STATIC_URL}}img/backgrounds/5.jpg" alt=""/>
-          <img src="{{STATIC_URL}}img/backgrounds/7.jpg" alt=""/>
+          <img src="{{STATIC_URL}}img/backgrounds/1.jpg" alt=""/>
             <img src="{{STATIC_URL}}img/backgrounds/6.jpg" alt=""/>  
       </div>
 
        	
        {% block content %}{% endblock %}
-
-  <footer class="page-footer grey lighten-4">
-         <div class="flex">
-
-            <div class="row">
-
-         <div class="col s1 grey lighten-1" id="about">
-            <a>Sobre Skyfolk.</a>
-          </div>
-
+    <div class="footer_base">   
+      <div class="footer-copyright blue-text text-darken-2">
+            <div class="container">
+            © 2015 Copyright
+            <a class="blue-text text-darken-4 right" href="#!">More Links</a>
+            <a id="about" class="blue-text text-darken-4 right" href="#!">Sobre Skyfolk</a>
             </div>
-
-         </div>
-  </footer>
+          </div>
+    </div>
   
 </body>
 
