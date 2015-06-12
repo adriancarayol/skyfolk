@@ -43,30 +43,7 @@
 {% endblock %}
 
 {% block content %}
-{% if user_profile.profile.image %}
-<body>
-<div id="toggle">
-  <nav class="menup">
-    <li class="profilee"><img src="{{user_profile.profile.image.url}}"><i>{{user_profile.username}}</i></li>
-    <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
-    <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
-    <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
-    <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
-    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
-  </nav>
-</div>
-{% else %}
-<div id="toggle">
-  <nav class="menup">
-    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user_profile.username}}</i></li>
-    <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion</li>
-    <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
-    <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
-    <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
-    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
-  </nav>
-</div>
-{% endif %}
+
 <div id="panel" style="display:none;"> 
 
   <div id="widget" style="display:none;"> 
