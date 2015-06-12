@@ -326,6 +326,7 @@
           </li>
         </ul>
       </div>
+      <!--
       <div class="location card">
         <div class="map"></div>
         <div class="decription container">
@@ -336,22 +337,39 @@
           <div class="col-lg-3"><a class="photos">Mirar fotos</a></div>
         </div>
       </div>
-
+-->
      <div class="messages">
-        <div class="messages-box">
-          <div class="message notice">
-            <button data-close="true" class="close"></button>
-            <div class="message-text">Ya estas dentro.</div>
-          </div>
-          <div id="publish-success" class="message success">
-            <button data-hide="true" class="close"></button>
-            <div class="message-text">Comentario publicado correctamente.</div>
-          </div>
-          <div class="message error">
-            <button data-close="true" class="close"></button>
-            <div class="message-text">Tu no tienes permiso para borrar este comentario.</div>
-          </div>
-        </div>
+      <div id="section">
+        <div class="wrapper">
+      {% for item in publications_top15 %}
+           <div class="line">
+                <li>
+                <div data-sr="wait 0.2s then scale up 30%" class="second">
+                {% if user_profile.profile.image %}
+                  <span class="acontecimiento" style="background-image: url('{{user_profile.profile.image.url}}');"></span>
+                  {% else %}
+                   <span class="acontecimiento" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');"></span>
+                   {% endif %}
+                    <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
+                    <div id="p" class="parrafo comment">
+                     {{item.from_publication__content}}
+                     </div>
+                  <div class="contenidoadicional">
+                    <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
+                  </div>
+                  <div class="controles">
+                    <ul>
+                      <li class="fa fa-heart fa-2x"></li>
+                      <li class="fa fa-share fa-2x"></li>
+                      <li class="fa fa-reply fa-2x"></li>
+                    </ul>
+                  </div>
+                  </div>
+                </li>
+    </div>
+      {% endfor %}
+  </div>
+</div>
       </div>
     </div>
   </div>
@@ -598,38 +616,7 @@
 
 
 </div>
-<div id="section">
-<div class="wrapper">
-    <div class="line">
-    {% for item in publications_top15 %}
-      <li>
-      <div data-sr="wait 0.2s then scale up 30%" class="second">
-      {% if user_profile.profile.image %}
-        <span class="acontecimiento" style="background-image: url('{{user_profile.profile.image.url}}');"></span>
-        {% else %}
-         <span class="acontecimiento" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');"></span>
-         {% endif %}
-          <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
-          <div id="p" class="parrafo comment">
-           {{item.from_publication__content}}
-           </div>
-        <div class="contenidoadicional">
-          <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
-        </div>
-        <div class="controles">
-          <ul>
-            <li class="fa fa-heart fa-2x"></li>
-            <li class="fa fa-share fa-2x"></li>
-            <li class="fa fa-reply fa-2x"></li>
-          </ul>
-        </div>
-        </div>
-      </li>
-      {% endfor %}
-    </div>
 
-  </div>
-</div>
 </body>
 <!-- IGNORAR, SOLO MUESTRA OBJETOS AL HACER SCROLL -->
     <script>

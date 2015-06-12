@@ -7,7 +7,7 @@
 #section .wrapper {
   position: relative;
   width: 900px;
-  top: 80px;
+  top: 50px;
   margin: auto;
   height: auto;
   overflow: hidden;
@@ -26,7 +26,7 @@
   box-shadow: 0.1px 0.1px grey;
   width: 10px;
   max-height: auto;
-  height: 800px;
+  height: 200px;
   position: relative;
   display: block;
 }
