@@ -14,10 +14,10 @@
 <div class="row" id="contenedor">
 	{% for item in resultSearch %}
 <li>
-<div class="col s4 m3 l4" id="target">
- <div id="photos" clas="col s4">
+<div class="col s4 m3 l4 z-depth-1" id="target">
+ <div id="photos" clas="col s4 m3 l4">
    <div class="col s4 m3 l4" id="cabeza">
-     <span class="relation">Amigo<i class="fa fa-user fa-lg"></i></span>
+     <span class="relation grey-text lighten-2"><i class="fa fa-user fa-lg"></i>Amigo</span>
      <div class="col s5" id="proffile" onclick="location.href='/profile/{{item.username}}'">
 				{% if item.profile.image %}
 				   <img class="circle responsive-img" src="{{item.profile.image.url}}">
@@ -27,16 +27,20 @@
      </div>
    </div>
   </div>
+  <div class="col s12">
   <ul class="informacion">
-    <li class="nombre">{{item.first_name}} {{item.last_name}}</li>
-    <li class="apodo">{{ item.username }}</li>
+    <li class="nombre grey-text text-darken-2">{{item.first_name}} {{item.last_name}}</li>
+    <li class="apodo blue-text text-darken-2">{{ item.username }}</li>
     <li class="estado">Feliz</li>
     </ul>
-  <ul class="controls">
+    </div>
+  <div class="col s12">
+  <ul class="controls z-depth-1">
     <li class="fa fa-heart fa-2x" onclick=AJAX_likeprofile('abort')><i></li>
     <li class="fa fa-reply fa-2x"></li>
     <li class="fa fa-plus fa-2x" onclick=AJAX_requestfriend('abort')></li> 
   </ul>
+  </div>
   </div>
   </li>
 	{% endfor %}
