@@ -261,12 +261,12 @@
     right: -255px;
   }
 }
-  #toggle {
+.toggle-2 {
   display: none;
   background-color: #fff;
   width: 200px;
   position: absolute;
-  top: 40px;
+  top:  40px;
   margin-right: 200px;
   font-family: 'Open Sans', sans-serif;
   height: 500px;
@@ -274,14 +274,14 @@
   color: #ccc;
   z-index: 9999;
 }
-#toggle img {
+.toggle-2 img {
   width: 70px;
   height: 70px;
   border-radius: 100%;
   border: 2px solid white;
   position: relative;
 }
-#toggle .profilee i {
+.toggle-2 .profilee i {
   text-align: right;
   position: relative;
   top: -7px;
@@ -292,13 +292,13 @@
   border-bottom-left-radius: 10px;
   border-top-left-radius: 5px;
 }
-#toggle img:hover {
+.toggle-2 img:hover {
   opacity: 0.6;
   transition: all .3s ease-in;
   -webkit-transition: all .3s ease-in;
   -moz-transition: all .3s ease-in;
 }
-#toggle li {
+.toggle-2 li {
   font-size: 13px;
   margin-top: 20px;
   margin-left: 10px;
@@ -310,7 +310,7 @@
   transition: all .3s ease-in;
   cursor: pointer;
 }
-#toggle li:hover {
+.toggle-2 li:hover {
   background-color: white;
   color: grey;
 }
@@ -331,6 +331,7 @@
   -moz-box-shadow:    0px 0px 5px 0px rgba(50, 50, 50, 0.75);
   box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 }
+
 #notificationn .not {
   list-style-type: none;
   display: block;
@@ -419,7 +420,7 @@
   margin-left: 5px;
 }
 
-.box-tool {
+.box-tool-2 {
   width: 100%;
   height: 40px;
   background-color: #fff;
@@ -443,7 +444,7 @@
   cursor: pointer;
 }
 
-.box-tool .logo {
+.box-tool-2 .logo {
   position: fixed;
   margin: auto;
   text-align: center;
@@ -451,10 +452,9 @@
   padding: 0;
   top: -280px;
 }
-.box-tool img {
-  width:: 120px;
-  height: 120px;
-  top: 0px;
-  cursor: pointer;
-  position: fixed;
+
+.btn-floating {
+  position: relative;
+  top: 70px;
+  right: 30px;
 }

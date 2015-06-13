@@ -635,79 +635,7 @@ body > .container {
     .message {
       border-radius: 0;
       margin-bottom: 0; } }
-  .message.notice {
-    background: #f3ce0c; }
-    .message.notice .close {
-      background: #e4c20b; }
-      .message.notice .close:hover {
-        background: #dbb90b; }
-  .message.success {
-    background: #91c76f; }
-    .message.success .close {
-      background: #7bbc52; }
-      .message.success .close:hover {
-        background: #70b346; }
-  .message.error {
-    background: #fb8973; }
-    .message.error .close {
-      background: #fa745a; }
-      .message.error .close:hover {
-        background: #fa684b; }
-  .message.notice, .message.success, .message.error, .message .close {
-    color: white;
-    text-shadow: 0 0.1em 0 rgba(0, 0, 0, 0.2); }
-  .message.hide {
-    opacity: 0;
-    -webkit-transform: scale(0);
-    -moz-transform: scale(0);
-    -ms-transform: scale(0);
-    -o-transform: scale(0);
-    transform: scale(0); }
-  .message .message-text {
-    padding: 0.75em;
-    margin-right: 1.5em; }
-    @media only screen and (max-width: 640px) {
-      .message .message-text {
-        margin-right: 3em; } }
-  .message .close {
-    right: 0;
-    top: 0;
-    bottom: 0;
-    border: 0;
-    padding: 0;
-    margin: 0;
-    width: 1.5em;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.15);
-    text-align: center;
-    box-shadow: inset 0.1em 0 rgba(0, 0, 0, 0.04);
-    cursor: pointer;
-    border-top-right-radius: 0.3em;
-    border-bottom-right-radius: 0.3em;
-    -webkit-transition: background-color 0.2s;
-    -moz-transition: background-color 0.2s;
-    transition: background-color 0.2s; }
-    @media only screen and (max-width: 640px) {
-      .message .close {
-        top: 0.5em;
-        right: 0.5em;
-        bottom: 0.5em;
-        border-radius: 0;
-        box-shadow: none; } }
-    .message .close:hover {
-      background: rgba(0, 0, 0, 0.2); }
-    .message .close:before {
-      content: "";
-      display: inline-block;
-      vertical-align: middle;
-      height: 100%; }
-    .message .close:after {
-      font-family: "FontAwesome";
-      content: "\f00d";
-      vertical-align: middle;
-      display: inline-block; }
-
-
+      
 .video-player {
   background: #1d2122; }
   .video-player .vbox {
@@ -1672,7 +1600,7 @@ margin: auto;
 text-align: center;
 letter-spacing: -1px;
 color: #FAFAFA;
-background-color: #246B61;
+background-color: #424242;
 opacity: 0.7;
 border-top-left-radius: 7px;
 border-top-right-radius: 7px;

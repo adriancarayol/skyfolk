@@ -91,7 +91,7 @@ top.window.outerWidth = screen.availWidth;
 
 <body>
 <!-- <div id="oHBContainer"> -->
-<nav class="box-tool">
+<nav class="box-tool-2">
 <ul>
 <!-- Segundo menu bola <li><button type="button" id="Menu">
   
@@ -101,10 +101,11 @@ top.window.outerWidth = screen.availWidth;
 <div id="ffacebook" class="size left"><span class="entypo-calendar"></span></div>
 <div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
     </button>-->
-  {% if user_profile.profile.image %}
-<div id="toggle">
-  <nav class="menup">
-    <li class="profilee"><img src="{{user_profile.profile.image.url}}"><i>{{user_profile.username}}</i></li>
+
+{% if user_profile.profile.image %}
+<div id="toggle" class="toggle-2 teal lighten-2">
+  <nav class="menup-2 teal lighten-2">
+    <li class="profilee-2"><img src="{{user_profile.profile.image.url}}"><i>{{user_profile.username}}</i></li>
     <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
     <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
@@ -113,9 +114,9 @@ top.window.outerWidth = screen.availWidth;
   </nav>
 </div>
 {% else %}
-<div id="toggle">
-  <nav class="menup">
-    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user_profile.username}}</i></li>
+<div id="toggle" class="toggle-2">
+  <nav class="menup-2">
+    <li class="profilee-2"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user_profile.username}}</i></li>
     <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion</li>
     <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
