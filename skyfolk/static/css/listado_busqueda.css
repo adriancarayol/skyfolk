@@ -458,3 +458,25 @@
   top: 70px;
   right: 30px;
 }
+
+.crear-grupo {
+  position: absolute;
+  z-index: 9999;
+  width: 480px;
+  height: 600px;
+  margin: auto;
+  top: 100px;
+  left: 40%;
+}
+
+@media only screen and (min-width: 641px) and (max-width: 959px) {
+  .crear-grupo {
+    left: 20%;
+  }
+}
+
+@media only screen and (min-width: 241px) and (max-width: 580px) {
+  .crear-grupo {
+    left: 10%;
+  }
+}
