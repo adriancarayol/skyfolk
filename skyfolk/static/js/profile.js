@@ -21,6 +21,7 @@ $(document).ready(function() {
 
   });
 
+
   $('#publish').on('click', function(event) {
 
     $(".entypo-mail").click();

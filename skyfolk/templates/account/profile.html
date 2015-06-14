@@ -406,7 +406,8 @@ function scrollWin() {
 					{% for item in publications_top15 %}		      
 						<div class="wrapper" id="pub-{{item.from_publication__id}}">
             <div class="box">
-            <input type="checkbox" id="profile">
+            <input type="checkbox" id="{{item.from_publication__id}}">
+            <label for="{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>
             <!-- Check para ampliar el mensaje... -->
                   <div class="ampliado">
                       <div class="nombre_image">
