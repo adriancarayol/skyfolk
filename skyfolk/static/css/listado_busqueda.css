@@ -13,7 +13,11 @@
   height: 250px;
   border-bottom: 4px solid rgba(44,44,44,0.777);
 }
-
+#contenedor {
+	width: 117%;
+	height: auto;
+	margin: auto;
+}
 #proffile {
   position: relative;
   margin: auto;
@@ -179,9 +183,9 @@
 .container {
   position: relative;
   top: 100px;
-  margin: auto;
   height: auto;
   width: auto;
+  left: -6%;
 }
 /* cf */
 
