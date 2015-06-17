@@ -8,18 +8,29 @@
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/widget1.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/conf.css" />
 <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
-<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+
 <script src="{{STATIC_URL}}js/jquery.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery-ui.js"></script>
 <script src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
 <script src="{{STATIC_URL}}js/jquery.gritter.js"></script>
 <script src="{{STATIC_URL}}js/profile.js"></script>
 <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
 <script src="{{STATIC_URL}}js/noti.js"></script>
 <script src="{{STATIC_URL}}js/notia.js"></script>
+<script src="{{STATIC_URL}}js/drag.js"></script> <!-- Permite mover el bloque donde se escribe un nuevo mensaje -->
+<script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
+<script src="{{STATIC_URL}}js/scrollReveal.js"></script>
+<script src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+
+<!-- NEW MENU -->
+
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
 
 
 {% block include_files %}{% endblock %}
@@ -80,39 +91,16 @@ top.window.outerWidth = screen.availWidth;
 //-->
 </script>
 
-</script>
 
 
 
-		
-		
-		<script>
-    /*
-			$(document).ready(function(){
-				//Examples of how to assign the ColorBox event to elements
-                $(".inline").colorbox({inline:true, width:"78%"});
-				$(".callbacks").colorbox({
-					onOpen:function(){ alert('onOpen: colorbox is about to open'); },
-					onLoad:function(){ alert('onLoad: colorbox has started to load the targeted content'); },
-					onComplete:function(){ alert('onComplete: colorbox has displayed the loaded content'); },
-					onCleanup:function(){ alert('onCleanup: colorbox has begun the close process'); },
-					onClosed:function(){ alert('onClosed: colorbox has completely closed'); }
-				});
-				
-				//Example of preserving a JavaScript event for inline calls.
-				$("#click").click(function(){ 
-					$('#click').css({"background-color":"#f00", "color":"#fff", "cursor":"inherit"}).text("Open this window again and this message will still be here.");
-					return false;
-				});
-			});
-    */
-		</script>
+
+
 </head>
 
 <body>
-<body onLoad="aparecerbola()">
 <!-- <div id="oHBContainer"> -->
-<nav class="barrah">
+<nav class="box-tool">
 <ul>
 <!-- Segundo menu bola <li><button type="button" id="Menu">
   
@@ -122,37 +110,74 @@ top.window.outerWidth = screen.availWidth;
 <div id="ffacebook" class="size left"><span class="entypo-calendar"></span></div>
 <div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
     </button>-->
+  {% if user_profile.profile.image %}
+<div id="toggle">
+  <nav class="menup">
+    <li class="profilee"><img src="{{user_profile.profile.image.url}}"><i>{{user_profile.username}}</i></li>
+    <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
+    <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+    <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
+    <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
+  </nav>
+</div>
+{% else %}
+<div id="toggle">
+  <nav class="menup">
+    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user_profile.username}}</i></li>
+    <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion</li>
+    <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+    <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
+    <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
+  </nav>
+</div>
+{% endif %}
+
 <li><div class="field" id="searchform">
   	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
   	<!--<button type="submit" class="btn">¡Buscar!</button>-->
-
+     
 	<form method='post' action='/search/'>{% csrf_token %}
 
 		{{searchForm}}
 		<!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
-		<button type="submit" id="btn-search" class="btn">¡Buscar!</button>
-                  
-	</form>
-	
 
-  	</div></li></li></ul>
+	</form>
+  <!-- Logotipo que re-direcciona a la pagina principal -->
+	<li>
+  <div class="logotipo_skyfolk" onclick="javascript:window.location.href='/'">
+
+  </div>
+  </li>
+
+  	</div>
+  	</li>
+  	<li class="fa fa-comment fa-lg"></li>
+      <div class="notificationss">
+        <li class="fa fa-bell fa-lg"><em>2</em></li>
+        <div id="notificationn">
+          <ul class="not">
+        <li>
+            <div class="cabeza">
+              <em>3</em>
+            </div>
+        </li>
+        <div class="msg">
+            <li><i class="fa fa-heart fa-lg"></i><a>+1 me gusta.</a></li>
+            <li><i class="fa fa-user fa-lg"></i><a>Pepe ha comenzado a seguirte.</a></li>
+            <li><i class="fa fa-paper-plane-o fa-lg"></i><a>Pedro te ha enviado un mensaje.</a></li>
+      </div>
+  </ul>
+  </div>
+</div>
+<li class="fa fa-bars fa-lg"></li>
+  	<li>
+  	</ul>
 
   	{% if showPerfilButtons or user.username == user_profile.username %}
 
 
-  		<div id ="box-tool">
-	  		<span class="fontawesome-th"></span>	  		<span class="fontawesome-comment-alt"></span>
-
-	  		<div class="notifications">
-  <span class="fontawesome-bell"><label class="count">3</label></span>
-  <div class="messages">
-    <a href="#" class="message"><span class="fontawesome-heart-empty">Has recibido 1 me gusta.</span></a>
-    <a href="#" class="message"><span class="fontawesome-user">Fernando ha empezado a seguirte.</span></a>
-    <a href="#" class="message"><span class="fontawesome-coffee">Quiere tomar algo contigo.</span></a>
-  </div>
-</div>
-
-	  	</div>
 
 
   	{% endif %}
@@ -162,12 +187,5 @@ top.window.outerWidth = screen.availWidth;
 {% block content %}{% endblock %}
 
 </body>
-</body>
-
-<footer class="container">
-  
-</footer>
-
-
 
 </html>

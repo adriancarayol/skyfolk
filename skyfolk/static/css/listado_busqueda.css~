@@ -461,7 +461,6 @@
 
 .crear-grupo {
   position: absolute;
-  display: none;
   z-index: 9999;
   width: 480px;
   height: 600px;
