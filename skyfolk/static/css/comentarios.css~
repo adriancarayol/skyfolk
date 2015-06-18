@@ -43,36 +43,6 @@ a, a:visited {
   margin-top: 20px;
   margin-bottom:12px;
 }
-@media only screen and (max-width: 800px) {
-	.articulo {
-		width: 200px;
-	}	
-	
-	.optiones_comentarios {
-		right: 50px;
-	}
-	
-}
-@media only screen and (max-width: 900px) {
-	.articulo {
-		width: 180px;
-	}
-}
-@media only screen and (max-width: 1200px) and (min-width: 900px) {
-	.articulo {
-		width: 180px;
-		
-	}
-	.opciones_comentarios {
-		margin-right: 50px;
-	}
-	
-}
-@media only screen and (max-width: 1300px) and (min-width: 1200px) {
-	.articulo {
-		width: 180px;
-	}
-}
 x:-o-prefocus {
 margin-top: -24px;
 }
