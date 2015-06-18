@@ -52,6 +52,18 @@ $(document).ready(function() {
     }
   });
   
+  /* Abrir crear/cerrar grupo en search.html */
+  
+  $('.btn-floating').on('click',function(event) {
+  	$('.crear-grupo').toggle("fast",function() {
+  	});
+  });
+  
+  $('#cerrar_grupo').on('click',function(event) {
+  	$('.crear-grupo').hide();
+  });
+ 
+
   $(document).keypress(function(e){
     var key = e.which;
     if (key == 109 && ($('#page-wrapper').is(':hidden'))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.

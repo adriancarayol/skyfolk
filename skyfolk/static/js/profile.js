@@ -63,7 +63,7 @@ $(document).ready(function() {
   	$('.crear-grupo').hide();
   });
  
-  
+
   $(document).keypress(function(e){
     var key = e.which;
     if (key == 109 && ($('#page-wrapper').is(':hidden'))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
@@ -389,7 +389,7 @@ function AJAX_respondFriendRequest(id_emitter, status) {
 
       if (response == "added_friend") {
 
-        alert("You have added a friend!");
+        sweetAlert("You have added a friend!");
 
 
       } else {
@@ -416,10 +416,10 @@ function AJAX_submit_publication() {
     data: $('#page-wrapper #message-form2').serialize(),
     success: function(data) {
       if (data == true) {
-        alert("You have successfully posted!");
+        sweetAlert("You have successfully posted!");
         $('#page-wrapper').hide();
       } else {
-        alert("Failed to publish");
+        sweetAlert("Failed to publish");
       }
 
     },

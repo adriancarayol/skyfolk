@@ -88,7 +88,7 @@ body {
     height: 350px;
     margin: auto;
     position: relative;
-    top: 80px;
+    top: 120px;
     border-radius: 3px;
     opacity: 0.9;
     font-family: 'PT Sans', sans-serif; 
@@ -198,11 +198,11 @@ form {
 }
 
 .block-formregister{
-    width: 300px;
+    width: 320px;
     height: auto;
     background-color: rgba(44,44,44,0.854);
     position: relative;
-    top: -120px;
+    top: -30px;
     float: right;
     margin-right: 130px;
     font-family: 'PT Sans', sans-serif;
@@ -212,17 +212,22 @@ form {
     -moz-box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
     box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
     display: block;
+    padding: 0px 0px 30px;
  
 }
 .block-formregister #sign_in_register, #sign_up_register {
   position: relative;
   display: inline-block;
+  margin: auto;
   width: 135px;
+  margin-left: 7px;
+  margin-top: 3px;
 }
 
 .block-formregister #iniciar_sesion, .block-formregister #registrar {
-  top: 90%;
   position: relative;
+  margin: auto;
+  margin-top: 3px;
   display: inline-block;
 }
 @media tv and (min-width: 700px) and (orientation: landscape) {
