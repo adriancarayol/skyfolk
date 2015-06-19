@@ -416,10 +416,22 @@ function AJAX_submit_publication() {
     data: $('#page-wrapper #message-form2').serialize(),
     success: function(data) {
       if (data == true) {
-        sweetAlert("You have successfully posted!");
+        swal({
+        	title: "",
+        	text: "You have successfully posted!",
+        	type: "success",
+        	timer: 1000,
+        	animation: "slide-from-top",
+        	showConfirmButton: false,
+        
+        });
         $('#page-wrapper').hide();
       } else {
-        sweetAlert("Failed to publish");
+        swal({
+        	title: "",
+	        text: "Failed to publish",
+		type: "error"
+        });
       }
 
     },
