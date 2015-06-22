@@ -1611,24 +1611,6 @@ float:left;
 }
 
 
-/* timeline */
-
-.fontawesome-bookmark {
-position: relative;
-font-size: 20px;
-overflow: hidden;
-display: block;
-margin: auto;
-text-align: center;
-letter-spacing: -1px;
-color: #FAFAFA;
-background-color: #424242;
-opacity: 0.7;
-border-top-left-radius: 7px;
-border-top-right-radius: 7px;
-cursor: pointer;
-}
-
 @media only screen and (max-width: 640px) {
     .aboutuser {
           left: 300px;

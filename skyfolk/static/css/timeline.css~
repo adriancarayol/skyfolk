@@ -148,18 +148,18 @@
 #section .wrapperx .line .second .controles {
   position: relative;
   display: inline-block;
-  margin: auto;
   width: 100%;
   height: 40px;
   margin-top: 10px;
 }
 
 #section .wrapperx .line .second .controles ul {
+  display: block;
   margin: auto;
+  margin-left: 60px;
   position: relative;
-  width: 100%;
+  width: 200px;
   height: 30px;
-  text-align: center;
 }
 
 #section .wrapperx .line .second .controles ul li {

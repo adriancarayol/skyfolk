@@ -20,15 +20,6 @@
 
 </script>  
 
-<!-- Cuando clickas en TimeLine se desplaza hacia abajo -->
-<script>
-function scrollWin() {
-    window.scrollBy(0,700);
-}
-
-</script>
-
-
   {% if liked == True %}
 
     <style type="text/css">
@@ -155,9 +146,7 @@ function scrollWin() {
     <div class="container">
  
       <div class="col-lg-6 col-md-12 col-sm-12">
-        <div class="user-card card">
-          <span class="fontawesome-bookmark" onclick="scrollWin()"> Timeline</span>
-            
+        <div class="user-card card">            
          
           <div class="user-avatar"><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"> </span>
             <!--<input type="checkbox" id="button-menu"  />-->
@@ -424,9 +413,9 @@ function scrollWin() {
                                         </div>
                                         <div class="controles">
                                             <ul>
-                                                <li class="fa fa-heart fa-2x"></li>
-                                                <li class="fa fa-share fa-2x"></li>
-                                                <li class="fa fa-reply fa-2x"></li>
+                                                <li class="fa fa-heart fa-lg"></li>
+                                                <li class="fa fa-tag fa-lg"></li>
+                                                <li class="fa fa-quote-left fa-lg"></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -437,11 +426,11 @@ function scrollWin() {
                     </div>
 	
 	         	</div>
-				<div id="tab-comentarios">
+	<div id="tab-comentarios">
 
 
-					{% for item in publications_top15 %}
-						<div class="wrapper" id="pub-{{item.from_publication__id}}">
+	{% for item in publications_top15 %}
+	<div class="wrapper" id="pub-{{item.from_publication__id}}">
             <div class="box">
             <input type="checkbox" id="{{item.from_publication__id}}">
             <label for="{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>
@@ -458,27 +447,29 @@ function scrollWin() {
                      <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
                   {% endif %}
                       </div>
+                      
                     <div class="parrafo comment">
-                    <a target="_blank">{{item.from_publication__created}}</a><br><br>{{item.from_publication__content}}
+                    <a target="_blank">{{item.from_publication__created}}</a><br><br>
+                    {{item.from_publication__content}}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
-                        <ul>
-                        <li><i class="fa fa-heart fa-lg"></i></li>
-                        <li><i class="fa fa-reply fa-lg"></i></li>
-                        <li><i class="fa fa-star fa-lg"></i></li>
-                        </ul>
+                       <div class="botones_ampliado">
+                       <button class="enviar_ampliado"><i class="fa fa-paper-plane"></i>Enviar</button>
+                       <button class="localizacion_ampliado"><i class="fa fa-map-marker"></i></button>
+                       <button class="foto_ampliado"><i class="fa fa-camera"></i></button>
+                       </div>
                   </div>
                   </div>
 
-							        <label class="image" for="profile">
-									{% if item.user__profile__image and item.user__profile__image|file_exists %}
-									   <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
-									{% else %}
-									   <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
-									{% endif %}
-							        <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
-							        </label>
+			<label class="image">
+				{% if item.user__profile__image and item.user__profile__image|file_exists %}
+				<img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
+					{% else %}
+						<img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
+							{% endif %}
+							      <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
+						</label>
 </div>
 </input>
 							  <article class="articulo">

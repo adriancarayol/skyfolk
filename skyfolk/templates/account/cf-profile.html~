@@ -16,6 +16,7 @@
 </hgroup>
 {% endblock %}
 
+
 {% block cf-form %}
 	<!--
 	Cambiar imagen <input class="actual" type="password" name="Contraseña actual." value="actual"><br>

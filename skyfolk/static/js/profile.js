@@ -8,6 +8,7 @@ $("#ilike_profile").click(function () {
 
 var countFriendList = 1;
 var countPublicationsList = 1;
+var countTimeLine = 1;
 
 $(document).ready(function() {
 
@@ -104,12 +105,12 @@ $(document).ready(function() {
 
     if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10) {
 
-      countPublicationsList++;
+      countTimeLine++;
       $.ajax({
         type: "POST",
         url: "/load_publications/",
         data: {
-          'slug': countPublicationsList,
+          'slug': countTimeLine,
           'csrfmiddlewaretoken': csrftoken
         },
         dataType: "json",
@@ -131,9 +132,9 @@ $(document).ready(function() {
     }
   });
 
-    $('#tab-timeline').bind('scroll', function() {
+$('#tab-timeline').bind('scroll', function() {
 
-        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 50) {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10) {
 
             countPublicationsList++;
             $.ajax({

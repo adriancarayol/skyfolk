@@ -447,6 +447,23 @@ body > .container {
 	height: 110px;
 	
 }
+
+/* Recolocamos la caja y la imagen */
+
+@media only screen and (max-width: 500px) {
+	.caja {
+		left: 0%;
+		
+	}
+}
+
+@media only screen and (min-width: 515px) and (max-width: 640px) {
+	.caja {
+		right: 30%;
+	}
+	
+}
+
 .img-responsive{
 	width: 110px;
 	height: 110px;
@@ -498,7 +515,7 @@ body > .container {
       .user-card .stats li a span {
         color: #717a7e; }
       .user-card .stats li a:hover {
-        background-color: rgba(160, 255, 255, 0.6);
+        background-color: #e0e0e0;
         color: #fff; }
         .user-card .stats li a:hover span {
           color: #fff; }
@@ -947,7 +964,9 @@ a {
   height:100%;
   
 }
+#li-tab-timeline {
 
+}
 #tab-comentarios{
   
   overflow: auto;
@@ -1427,23 +1446,22 @@ button[type="button"] {
   border-radius: 3px;
   border: none;
   font-size: 0.9rem;
-  padding: 0.6rem 1em;
-  color: white;
+  padding: 0.7rem 1em;
+  color: #FF0000;
   margin: 0 0.25rem;
   text-align: center;
-  background: #FF0000;
-  border-bottom: 1px solid #999;
+  background: #e0e0e0;
 }
 
 button[type="submit"] {
-  background: #7CE1FF;
+  background: #e0e0e0;
   border-bottom: 1px solid #7CE1FF;
   display: inline-block;
   border-radius: 3px;
   border: none;
   font-size: 0.9rem;
   padding: 0.6rem 1em;
-  color: white;
+  color: #1e88e5;
   margin: 0 0.25rem;
   text-align: center;
 }
@@ -1456,7 +1474,11 @@ button:hover {
   opacity: 1;
   border-color: 4px solid #98EBFF;
 }
-
+#tab-timeline {
+    height:100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
 .fontawesome-bullhorn {
   font-size: 20px;
   border:none;

@@ -30,8 +30,7 @@
 
 
 	{% block additional_files %}{% endblock%}
-	
-	
+
 </head>
 {% endblock%}	
 
