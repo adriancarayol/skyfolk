@@ -299,6 +299,7 @@ function scrollWin() {
         </div>
       </div>
     </div>
+      <!-- Contenedor principal -->
     <div class="container">
       <div class="video-player card">
         <div class="vbox">
@@ -349,7 +350,11 @@ function scrollWin() {
         </div>
       </div>
 -->
-     <div class="messages">
+<!--
+     <div class="messages">-->
+
+        <!-- Segunda version de timeline (abajo) -->
+         <!--
       <div id="section">
         <div class="wrapper">
       {% for item in publications_top15 %}
@@ -367,8 +372,8 @@ function scrollWin() {
                      </div>
                   <div class="contenidoadicional">
                     <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
-                  </div>
-                  <div class="controles">
+                  <!-- </div> -->
+                  <!-- <div class="controles">
                     <ul>
                       <li class="fa fa-heart fa-2x"></li>
                       <li class="fa fa-share fa-2x"></li>
@@ -376,12 +381,14 @@ function scrollWin() {
                     </ul>
                   </div>
                   </div>
+                  -->
+        <!--
                 </li>
     </div>
       {% endfor %}
   </div>
 </div>
-      </div>
+      </div>-->
     </div>
   </div>
 
@@ -391,19 +398,49 @@ function scrollWin() {
       <div id="div-separator">
         <div class="sidebar card" id="tab-container">
           <ul class="unstyled table fullwidth links">
-            <li class="tab" id="li-tab-popular"><a href="#tab-popular">Popular</a></li>
+            <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">timeline</a></li>
             <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
             <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Amigos</a></li>
           </ul>
           <div class="unstyled content" id="hood-tabs">
-				<div id="tab-popular">
-	
+				<div id="tab-timeline">
+                    <div id="section">
+                        <div class="wrapperx">
+                            {% for item in publications_top15 %}
+                            <div class="line">
+                                <li>
+                                    <div data-sr="wait 0.2s then scale up 30%" class="second">
+                                        {% if user_profile.profile.image %}
+                                        <span class="acontecimiento" style="background-image: url('{{user_profile.profile.image.url}}');"></span>
+                                        {% else %}
+                                        <span class="acontecimiento" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');"></span>
+                                        {% endif %}
+                                        <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
+                                        <div id="p" class="parrafo comment">
+                                            {{item.from_publication__content}}
+                                        </div>
+                                        <div class="contenidoadicional">
+                                            <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
+                                        </div>
+                                        <div class="controles">
+                                            <ul>
+                                                <li class="fa fa-heart fa-2x"></li>
+                                                <li class="fa fa-share fa-2x"></li>
+                                                <li class="fa fa-reply fa-2x"></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
 	
 	         	</div>
 				<div id="tab-comentarios">
 
 
-					{% for item in publications_top15 %}		      
+					{% for item in publications_top15 %}
 						<div class="wrapper" id="pub-{{item.from_publication__id}}">
             <div class="box">
             <input type="checkbox" id="{{item.from_publication__id}}">
@@ -643,8 +680,9 @@ function scrollWin() {
 
         easing: 'hustle',
         reset:  true,
-        delay:  'onload',
-        vFactor: 0.90,
+        delay:  'once',
+        vFactor: 0.60,
+          viewport: document.getElementById('tab-timeline')
       }
 
       window.sr = new scrollReveal( config );

@@ -131,6 +131,37 @@ $(document).ready(function() {
     }
   });
 
+    $('#tab-timeline').bind('scroll', function() {
+
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 50) {
+
+            countPublicationsList++;
+            $.ajax({
+                type: "POST",
+                url: "/load_publications/",
+                data: {
+                    'slug': countPublicationsList,
+                    'csrfmiddlewaretoken': csrftoken
+                },
+                dataType: "json",
+                success: function(response) {
+                    //load publications
+                    for (i = 0; i < response.length; i++) {
+                        addPublicationToHtmlList(response[i]);
+                    }
+                    //refresca plugin shorten
+                    $(".comment").shorten({
+                        "showChars": 145
+                    });
+                },
+                error: function(rs, e) {
+
+                }
+            });
+
+        }
+    });
+
 
   $("#li-tab-amigos").click(function() {
     $('#tab-amigos').css({
@@ -145,7 +176,7 @@ $(document).ready(function() {
 
   });
 
-  $("#li-tab-popular").click(function() {
+  $("#li-tab-timeline").click(function() {
     $('#tab-popular').css({
       "overflow": "auto"
     });

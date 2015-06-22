@@ -964,7 +964,9 @@ a {
   height:100%;
   
 }
+#li-tab-timeline {
 
+}
 #tab-comentarios{
   
   overflow: auto;
@@ -1472,7 +1474,11 @@ button:hover {
   opacity: 1;
   border-color: 4px solid #98EBFF;
 }
-
+#tab-timeline {
+    height:100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
 .fontawesome-bullhorn {
   font-size: 20px;
   border:none;
