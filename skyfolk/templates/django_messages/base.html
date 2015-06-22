@@ -1,33 +1,36 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/mensajes_privados.css"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 <!-- No es necesario de momento '''% extends "base.html" %''' -->
 {% load i18n %}
 
 {% load url from future %} 
 {% block bodyclass %}about{% endblock %}
-{% block content %}  
+
+{% block menu %}  
+
 {% endblock %}
-{% block sidebar %}
-
-<!-- nav con logotipo -->
-<nav class="box-tool">
-  <li><div class="logo"></div></li>
-  <li class="chat"><div></div></li>
-</nav>
-
-<!-- Menu de opciones --> 
-
-  <aside>
-    <nav class="vertical">
-      <li onclick="javascript:location.href='/messages/inbox'"><i class="fa fa-bars fa-lg"></i>Recibidos</li>
-      <li onclick="javascript:location.href='/messages/outbox'"><i class="fa fa-paper-plane fa-lg"></i>Enviados</li>
-      <li onclick="javascript:location.href='/messages/inbox'"><i class="fa fa-user fa-lg"></i>Mis contactos</li>
-      <li onclick="javascript:location.href='/messages/inbox'"><i class="fa fa-users fa-lg"></i>Grupos</li>
-      <li onclick="javascript:location.href='/messages/inbox'"><i class="fa fa-ban fa-lg"></i>Spam</li>
-      <li onclick="javascript:location.href='/messages/trash'"><i class="fa fa-trash fa-lg"></i>Papelera</li>
-      <li><div class="entrada"><input type="search" target="search" placeholder="Busca un mensaje..."></input></div></li>
-    </nav>
-  </aside>
   
+  {% block sidebar %}
+  
+    
+  
+  {% endblock %}
+
+  {% block right-sidebar %}
+
+
+
+
+  {% endblock %}
+   
+{% block content %}  
+
 {% endblock %}
+

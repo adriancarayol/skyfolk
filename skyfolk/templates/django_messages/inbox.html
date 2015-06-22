@@ -3,59 +3,96 @@
 {% load url from future %}
 {% load app_filters %}
 {% block include_files %}
+<body>
+{% block menu %}
+<!-- nav con logotipo -->
+<nav class="box-tool">
+  <li><div class="logo"></div></li>
+  <li class="chat"><div></div></li>
+</nav> 
 
+{% endblock %}
+{% block sidebar %}
+ <nav class="grey lighten-5 vertical-nav">
+    <ul class="collection">
+        <a onclick="javascript:location.href='/messages/compose'" class="light-blue lighten-1 white-text collection-item waves-effect waves-green btn" id="new_message"><i class="mdi-editor-mode-edit left"></i>New Message</a>
+        <a href="/messages/inbox/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-inbox left"></i>Inbox<span class="new badge">1</span></a>
+        <a href="/messages/fav/" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-favorite left"></i>Favorite</a>
+        <a href="/messages/outbox/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-send left"></i>Sent Email</li>
+        <a href="/messages/spam/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-drafts left"></i>Drafts<span class="badge">14</span></a>
+        <a href="/messages/group/" class="grey-text text-lighten-1 collection-item"><i class="mdi-communication-forum left"></i>Conversations<span class="badge">1</span></a>
+        <a href="/messages/trash/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-remove left"></i>Trash<span class="badge">130</span></a>
+      </ul>
+    </nav>
+{% endblock %}
+
+  {% block right-sidebar %}
+
+  <nav class="grey lighten-5 vertical-nav-2">
+        <ul class="collection">
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-add left"></i>Contactos (30)</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Pepe Perez</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez</li>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">14</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">1</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez<span class="badge">130</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Contactos (30)</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="new badge">1</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Pepe Perez</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez</li>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">14</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">1</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-social-group left"></i>Equipo desarrolladores<span class="badge">130</span></a>
+      </ul>
+    </nav>
+    {% endblock %}
 {% block content %}
-<head>
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-</head>
+
 <body>
 
-
-<div><h1 class="titulo_m"><i class="fa fa-envelope-o"></i>Mensajes privados</h1><button onclick="javascript:location.href='/messages/compose'" class="fa fa-send fa-lg"></button></div>
 {% if message_list %} 
-<div class="messages">
-<div class="wrapper">
+
+<div class="container" id="contenedor_messages">
+
 
     <!--<thead>
         <tr><th>{% trans "Sender" %}</th><th>{% trans "Subject" %}</th><th>{% trans "Received" %}</th><th>{% trans "Action" %}</th></tr>
     </thead>-->
     <tbody>
-{% for message in message_list %} 
-<!-- Codigo modificado (Adrian) --> 
-   <li> <div class="bt">
 
-{% if user_profile.profile.image %}
-    <div class="name_and_image">
-    <div class="name"><a>{{ message.sender }}</a></div>
-    <img src="{{user_profile.profile.image.url}}">
-    </div>
-{% else %}
-    <div class="name_and_image">
-    <div class="name"><a>{{ message.sender }}</a></div>
-    <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive">
-    </div>
-{% endif %}
-        <div class="asunto">
-            {% if message.new %}<strong>{% endif %}
-            {% if message.replied %}<em>{% endif %}
-            <a class="message_subject" href="{{message.get_absolute_url }}">{{ message.subject }}</a>
-            {% if message.replied %}</em>{% endif %}
-            {% if message.new %}</strong>{% endif %}
-        <div class="resumen">
-        <p>{{ message.body|linebreaksbr}}...</p>
+<!-- Codigo modificado (Adrian) --> 
+   <div class="row">
+   {% for message in message_list %} 
+            <div class="col s6 m8 l5">
+             <div class="grey lighten-4 card-panel teal">
+            <div class="col s5">
+                {% if user_profile.profile.image %}
+                    <img class="image-user" id="image_user" src="{{user_profile.profile.image.url}}">
+                    <span class="blue-text">{{ message.sender }}</span>
+                {% else %}
+                    <img class="image-user" id="image_user" src="{{STATIC_URL}}img/generic-avatar.png">
+                    <span class="blue-text">{{ message.sender }}</span>
+                {% endif %}
+            </div>
+                {% if message.new %}
+                    <h5><b><a class="message_subject" href="{{message.get_absolute_url }}">{{ message.subject }}</a></b></h5>
+                    <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
+                    <br><br>
+                {% endif %}
+                {% if message.replied %}
+                <h5><a class="message_subject" href="{{message.get_absolute_url }}">{{ message.subject }}</a></h5>
+                <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
+                <br><br>
+                {% endif %}
+                 <span class="grey-text">{{message.body}}</span>
+                 <a class="borrar" href="{% url 'messages_delete' message.id %}">Borrar</a>
         </div>
-        </div>
-        <div class="time">
-        <i class="date_time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
-        </div>
-        <ul class="ct">
-        <li><a class="fa fa-remove fa-lg" href="{% url 'messages_delete' message.id %}"></a></li>
-        </ul>
-    </div>
-    </li>
-{% endfor %}
-    </tbody>
+      </div>
+      {% endfor %}
 </div>
+
+    </tbody>
 </div>
 {% else %}
 <p class="no_messages">{% trans "¡No tienes mensajes!" %}</p>
