@@ -32,6 +32,7 @@ urlpatterns = patterns(
     url(r'^friends/$', 'user_profile.views.friends'),
     url(r'^respond_friend_request/$', 'user_profile.views.respond_friend_request', name='respond_friend_request'),
     url(r'^load_friends/$', 'user_profile.views.load_friends'),
+    url(r'^config/privacity/$','user_profile.views.config_privacity'),
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^publication/$', 'publications.views.publication_form'),
     url(r'^load_publications/$', 'publications.views.load_publications'),

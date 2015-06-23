@@ -622,7 +622,7 @@ $(document).ready(function() {
           $(this).css("display", "block");
         });
       } else {
-        $(this).fadeIn(function() {
+        $(this).fadeToggle(function() {
           $(this).css("display", "none");
         });
       }
@@ -656,11 +656,11 @@ $(document).ready(function() {
       displaying = $(this).css("display");
       $("#notificationn").val('');
       if (displaying == "none") {
-        $(this).delay(100).fadeToggle(function() {
+        $(this).fadeToggle(function() {
           $(this).css("display", "block");
         });
       } else {
-        $(this).delay(50).fadeToggle(function() {
+        $(this).fadeToggle(function() {
           $(this).css("display", "none");
         });
       }

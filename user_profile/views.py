@@ -163,6 +163,9 @@ def config_changepass(request):
     searchForm = SearchForm(request.POST)
     return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm}, context_instance=RequestContext(request))
 
+@login_required(login_url='/')
+def config_privacity(request):
+    return render_to_response('account/cf-privacity.html',{'showPerfilButtons': True}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def config_profile(request):
