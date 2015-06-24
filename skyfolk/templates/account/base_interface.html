@@ -105,6 +105,7 @@ top.window.outerWidth = screen.availWidth;
 </head>
 
 <body>
+{% block barra_navegacion %}
 <!-- <div id="oHBContainer"> -->
 <nav class="box-tool">
 <ul>
@@ -189,7 +190,7 @@ top.window.outerWidth = screen.availWidth;
   	{% endif %}
 
 </nav>
-
+{% endblock %}
 {% block content %}{% endblock %}
 
 </body>

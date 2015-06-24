@@ -17,7 +17,7 @@
 <script src="{{STATIC_URL}}js/profile.js"></script>
 <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
 <script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
-
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <!-- NEW MENU -->
 
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
@@ -90,6 +90,33 @@ top.window.outerWidth = screen.availWidth;
 </head>
 
 <body>
+{% block menu_opciones %}
+<nav class="opciones_busqueda">
+  <ul class="opc_ul">
+  <li>Popular</li>
+  <li>Imágenes</li>
+  <li>Videos</li>
+  <li>Widgets</li>
+  <li>Juegos</li>
+  <li>Grupos</li>
+  </ul>
+    <a class='blue lighten-2 dropdown-button btn right' href='#' data-activates='dropdown1'>Opciones</a>
+    <ul id='dropdown1' class='dropdown-content'>
+    <li><a href="#!"><i class="material-icons right">done</i>Cuentas</a></li>
+    <li><a href="#!">Grupos</a></li>
+    <li><a href="#!">Noticias</a></li>
+    <li><a href="#!">Fotos</a></li>
+    <li><a href="#!">Videos</a></li>
+    <li class="divider"></li>
+    <li><a href="#!"><i class="material-icons right">done</i>Seguidores</a></li>
+    <li><a href="#!"><i class="material-icons right">done</i>Todos</a></li>
+    <li class="divider"></li>
+    <li><a href="#!"><i class="material-icons right">done</i>Cerca de mi</a></li>
+    <li><a href="#!"><i class="material-icons right">done</i>Todo</a></li>
+  </ul>
+</nav>
+{% endblock %}
+{% block barra_search %}
 <!-- <div id="oHBContainer"> -->
 <nav class="box-tool-2">
 <ul>
@@ -175,7 +202,7 @@ top.window.outerWidth = screen.availWidth;
   	{% endif %}
 
 </nav>
-
+{% endblock %}
 {% block content %}{% endblock %}
 
 </body>
