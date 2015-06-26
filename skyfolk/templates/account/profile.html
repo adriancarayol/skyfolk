@@ -2,9 +2,9 @@
 {% load app_filters %}
 {% block include_files %}
 <!-- Mostrar objetos al hacer scroll -->
-<script type="text/javascript"> 
+<script type="text/javascript">
 
-	
+
    //first set the value you will be using.
    var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
    var MEDIA_URL = "{{MEDIA_URL}}";
@@ -12,13 +12,13 @@
    var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
    var stopRequests = false;
    var idRequestsTimer = null;
-   
+
    if(requests){
       idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3000);
 
     }
 
-</script>  
+</script>
 
   {% if liked == True %}
 
@@ -46,10 +46,10 @@
 
 {% block content %}
 
-<div id="panel" style="display:none;"> 
+<div id="panel" style="display:none;">
 
-  <div id="widget" style="display:none;"> 
-  
+  <div id="widget" style="display:none;">
+
     <div id="middle"></div>
     <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
     <div id="middle"><div class="entypo-user"></div></div>
@@ -140,14 +140,14 @@
 <!-- Fin notificacion me gusta -->
 <div class="container">
 
-  
+
   <div class="col-lg-8 col-md-6 col-sm-12">
 <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
     <div class="container">
- 
+
       <div class="col-lg-6 col-md-12 col-sm-12">
-        <div class="user-card card">            
-         
+        <div class="user-card card">
+
           <div class="user-avatar"><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"> </span>
             <!--<input type="checkbox" id="button-menu"  />-->
             {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
@@ -155,24 +155,24 @@
             {% endif %}
             <div class="caja">
              <div class="item">
-                
+
 				{% if user_profile.profile.image and user_profile.profile.image|file_exists %}
 				   <img src="{{user_profile.profile.image.url}}" class="user-pic">
 				{% else %}
 				   <img src="{{STATIC_URL}}img/generic-avatar.png" class="user-pic">
 				{% endif %}
-               
+
                <!--  <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">-->
 
                <span class="informacion">
                 {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
                    <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('abort')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('abort')></span>
-                   <span id="publish" class="entypo-forward" title="Escribir"></span>             
+                   <span id="publish" class="entypo-forward" title="Escribir"></span>
                 {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
                    <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
-                   <span id="publish" class="entypo-forward" title="Escribir"></span>    
+                   <span id="publish" class="entypo-forward" title="Escribir"></span>
                 {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
                    <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
@@ -183,8 +183,8 @@
               </div>
             </div>
           </div>
-    
- 
+
+
           <header>
             <!--
             <h1>Adrian Subname</h1>
@@ -210,7 +210,7 @@
           </ul>
         </div>
       </div>
-  
+
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="stock card">
           <div class="stock-chart">
@@ -225,7 +225,7 @@
               <div class="change">+4.95 (3.49%)</div>
             </div>
           </div>
-  
+
           <div class="yearly-changes container">
             <div class="year-all col-lg-6"><strong>+105.32</strong><span>Yearly change</span></div>
             <div class="year-chart col-lg-6">
@@ -424,7 +424,7 @@
                             {% endfor %}
                         </div>
                     </div>
-	
+
 	         	</div>
 	<div id="tab-comentarios">
 
@@ -447,7 +447,7 @@
                      <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
                   {% endif %}
                       </div>
-                      
+
                     <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
                     {{item.from_publication__content}}
@@ -462,14 +462,14 @@
                   </div>
                   </div>
 
-			<label class="image">
+			<div class="image">
 				{% if item.user__profile__image and item.user__profile__image|file_exists %}
 				<img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
 					{% else %}
 						<img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
 							{% endif %}
 							      <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
-						</label>
+						</div>
 </div>
 </input>
 							  <article class="articulo">
@@ -489,14 +489,14 @@
 
 							  </article>
 					  	</div>
-					
+
 					{% endfor %}
-					
-				
-					
+
+
+
 				</div>
 				<div id="tab-amigos">
-				
+
 					  <ul class="list-friends">
 
 					      {% for item in friends_top12 %}
@@ -510,17 +510,17 @@
 									<a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
 									</li>
 					      {% endfor %}
-					      
+
 					  </ul>
-					
+
 				</div>
           </div>
       </div>
       </div>
       </div>
       </div>
-      
- 
+
+
       <div class="col-lg-12">
         <div class="weather card">
           <div class="current">
@@ -599,18 +599,18 @@
       </span><img src="http://www.wellhappypeaceful.com/wp-content/uploads/2011/12/Dog-Cat-Best-Friend.jpg" alt"Photo"></div></li>
   </ul>
 </section>
-      
+
       </div>
 </div>
 
 <!-- Mensaje flotante -->
-<!--  
+<!--
 <div id="page-wrapper" style="display:none;">
   <h1></h1>
-  
+
   <div id="status">Conectando...</div>
-  
-  
+
+
   <form id="message-form2" action="#" method="post">
     <textarea id="message2" placeholder="Escribe tu mensaje aquí..." required></textarea>
     <button type="submit">Enviar</button>
@@ -618,8 +618,8 @@
     <button class="fontawesome-bullhorn"></button>
     <button class="fontawesome-camera"></button>
     <button class="fontawesome-map-marker"></button>
-   
-    
+
+
   </form>
 </div>
 -->
@@ -629,7 +629,7 @@
 	  	<h1></h1>
 		<div id="status">to {{ user_profile.username }}</div>
 		<form id="message-form2" action="" method="post">{% csrf_token %}
-	
+
 			{{publicationForm.as_p}}
 			<input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
 			<input type="text" name="emitterid" value="{{ user.pk }}" hidden>
@@ -639,7 +639,7 @@
 		    <button class="fontawesome-bullhorn"></button>
 		    <button class="fontawesome-camera"></button>
 		    <button class="fontawesome-map-marker"></button>
-	                  
+
 		</form>
 	</div>
 {% endif %}

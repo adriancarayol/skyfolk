@@ -444,10 +444,10 @@ body > .container {
     margin-top: -10em;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.35); }
 .user-pic{
-	
+
 	width: 110px;
 	height: 110px;
-	
+
 }
 
 /* Recolocamos la caja y la imagen */
@@ -455,7 +455,7 @@ body > .container {
 @media only screen and (max-width: 500px) {
 	.caja {
 		left: 0%;
-		
+
 	}
 }
 
@@ -463,13 +463,9 @@ body > .container {
 	.caja {
 		right: 30%;
 	}
-	
+
 }
 
-.img-responsive{
-	width: 110px;
-	height: 110px;
-}
 .user-card header, .user-card .status {
   text-align: center;
   padding: 0 1.5em; }
@@ -654,7 +650,7 @@ body > .container {
     .message {
       border-radius: 0;
       margin-bottom: 0; } }
-      
+
 .video-player {
   background: #1d2122; }
   .video-player .vbox {
@@ -783,8 +779,8 @@ body > .container {
       color: #e76049; }
     .sidebar .content figure .description a span {
       margin-right: 0.35em; }
-   
-    
+
+
 
 
 
@@ -961,19 +957,19 @@ a {
 
 
 #tab-amigos{
-  
+
   overflow: auto;
   height:100%;
-  
+
 }
 #li-tab-timeline {
 
 }
 #tab-comentarios{
-  
+
   overflow: auto;
   height:100%;
-  
+
 }
 #tab-amigos ul.list-friends {
   position: relative;
@@ -1001,12 +997,12 @@ a {
   color: #62C1BA;
   border: 1px solid #bad0dd;
   font:1.2em 'Montserrat Alternates';
-  
+
 -webkit-box-shadow: 0px 0px 13px 1px rgba(183,182,224,1);
 -moz-box-shadow: 0px 0px 13px 1px rgba(183,182,224,1);
 box-shadow: 0px 0px 13px 1px rgba(183,182,224,1);
-  
-  
+
+
 }
 #tab-amigos ul.list-friends li img {
   width: 72px;
@@ -1129,7 +1125,7 @@ ul.table > li {
  transform: scale (3,3)
   }
   /*Fin informacion perfil */
-  
+
   /* Presencia user */
  .foto_perfil {
   width: 45px;
@@ -1150,7 +1146,7 @@ ul.table > li {
   transition: all .3s ease-in-out;
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
-  z-index: 9999; 
+  z-index: 9999;
 
 }
 .foto_perfil:hover {
@@ -1162,8 +1158,8 @@ ul.table > li {
     margin-right: 100%;
     top: 3%;
     position: relative;
-    z-index: 9999; 
-    
+    z-index: 9999;
+
 }
 .nameact {
     list-style: none;
@@ -1349,6 +1345,10 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   border: 1px solid rgb(26, 188, 156);
 }
 
+.usr-img {
+  border-radius: 100%;
+}
+
 #avatar-publication{
 	background-repeat: no-repeat;
 	-webkit-background-size: cover;
@@ -1393,7 +1393,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   border-radius: 7px;
   cursor: move;
   font-family: 'Open Sans', sans-serif;
-  
+
   /*CENTRADO*/
   overflow: hidden;
   position: absolute;
@@ -1402,7 +1402,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   margin-top: -100px;
   margin-left: -292px; /*150px*/
   resize: none;
-  
+
 }
 
 
@@ -1546,7 +1546,7 @@ button:hover {
 }
 #notifi div.love h4 {
   position: relative;
-  margin: 10px; 
+  margin: 10px;
   text-align: center;
   color: grey;
 }

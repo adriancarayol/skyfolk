@@ -1,6 +1,6 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/mensajes_privados.css"/>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -10,27 +10,60 @@
 <!-- No es necesario de momento '''% extends "base.html" %''' -->
 {% load i18n %}
 
-{% load url from future %} 
+{% load url from future %}
 {% block bodyclass %}about{% endblock %}
 
-{% block menu %}  
+{% block menu %}
+<!-- nav con logotipo -->
+<nav class="box-tool">
+  <li><div class="logo"></div></li>
+  <li class="chat"><div></div></li>
+</nav>
 
 {% endblock %}
-  
+
   {% block sidebar %}
-  
-    
-  
+   <nav class="grey lighten-5 vertical-nav">
+    <ul class="collection">
+        <a onclick="javascript:location.href='/messages/compose'" class="light-blue lighten-1 white-text collection-item waves-effect waves-green btn" id="new_message"><i class="mdi-editor-mode-edit left"></i>New Message</a>
+        <a href="/messages/inbox/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-inbox left"></i>Inbox<span class="new badge">1</span></a>
+        <a href="/messages/fav/" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-favorite left"></i>Favorite</a>
+        <a href="/messages/outbox/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-send left"></i>Sent Email</li>
+        <a href="/messages/spam/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-drafts left"></i>Drafts<span class="badge">14</span></a>
+        <a href="/messages/group/" class="grey-text text-lighten-1 collection-item"><i class="mdi-communication-forum left"></i>Conversations<span class="badge">1</span></a>
+        <a href="/messages/trash/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-remove left"></i>Trash<span class="badge">130</span></a>
+      </ul>
+    </nav>
+
+
   {% endblock %}
 
   {% block right-sidebar %}
 
 
+  <nav class="grey lighten-5 vertical-nav-2">
+        <ul class="collection">
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-add left"></i>Contactos (30)</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Pepe Perez</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez</li>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">14</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">1</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez<span class="badge">130</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Contactos (30)</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="new badge">1</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Pepe Perez</a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez</li>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">14</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">1</span></a>
+        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-social-group left"></i>Equipo desarrolladores<span class="badge">130</span></a>
+      </ul>
+    </nav>
 
 
   {% endblock %}
-   
-{% block content %}  
+
+{% block content %}
 
 {% endblock %}
 

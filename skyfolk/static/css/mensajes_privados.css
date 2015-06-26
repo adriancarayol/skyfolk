@@ -68,8 +68,8 @@ body {
 }
 #new_message {
   padding: 20px 20px;
-    height: 60px;
-} 
+  height: 60px;
+}
 
 .vertical-nav-2 {
   float: right;
@@ -78,8 +78,8 @@ body {
 }
 .image-user {
 
-    width: 80px;
-    height: 80px;
+  width: 80px;
+  height: 80px;
   border-radius: 100%;
 }
 #contenedor_messages {
@@ -88,14 +88,14 @@ body {
   margin-right: 150px;
 }
 
-@media screen and (max-width: 800px) { 
+@media screen and (max-width: 800px) {
 
   #contenedor_messages {
   margin-left: 160px;
     }
  }
 
-@media screen and (min-width: 800px) and (max-width: 1000px) { 
+@media screen and (min-width: 800px) and (max-width: 1000px) {
 
     #contenedor_messages {
   margin-left: 160px;
@@ -121,37 +121,26 @@ body {
 
 
 /* compose.html */
+.compose_message {
 
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 100;
+  text-align: center;
+
+}
+.compose_table {
+    width: 400px;
+    height: auto;
+    position: relative;
+    margin: auto;
+
+}
 label[for="id_recipient"] {
-	padding: 7px 12px;
-	font-size: 15px;
-	font-weight: 500;
-	line-height: 1;
-	color: white;
-	background-color: #80C8C8;
-	text-align: center;
-	border-right: 1px solid #ccc;
-	border-radius: 4px;
-	height: 23px;
-	top: 35px;
-	left: 21px;
-	position: absolute;
+
 }
 
 label[for="id_subject"] {
-	padding: 7px 30px;
-	font-size: 15px;
-	font-weight: 500;
-	line-height: 1;
-	color: white;
-	background-color: #80C8C8;
-	text-align: center;
-	border-right: 1px solid #ccc;
-	border-radius: 4px;
-	height: 23px;
-	top: 81px;
-	left: 20px;
-	position: absolute;
+
 }
 
 #id_recipient {
@@ -192,7 +181,7 @@ input:focus {
   transition: all .3s ease-in-out;
 }
 #id_body {
- 
+
   margin-top: 20px;
   width: 600px;
   font-family: "Open Sans", sans-serif;

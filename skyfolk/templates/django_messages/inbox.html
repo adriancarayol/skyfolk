@@ -1,57 +1,15 @@
-{% extends "django_messages/base.html" %} 
-{% load i18n %} 
+{% extends "django_messages/base.html" %}
+{% load i18n %}
 {% load url from future %}
 {% load app_filters %}
 {% block include_files %}
 <body>
-{% block menu %}
-<!-- nav con logotipo -->
-<nav class="box-tool">
-  <li><div class="logo"></div></li>
-  <li class="chat"><div></div></li>
-</nav> 
 
-{% endblock %}
-{% block sidebar %}
- <nav class="grey lighten-5 vertical-nav">
-    <ul class="collection">
-        <a onclick="javascript:location.href='/messages/compose'" class="light-blue lighten-1 white-text collection-item waves-effect waves-green btn" id="new_message"><i class="mdi-editor-mode-edit left"></i>New Message</a>
-        <a href="/messages/inbox/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-inbox left"></i>Inbox<span class="new badge">1</span></a>
-        <a href="/messages/fav/" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-favorite left"></i>Favorite</a>
-        <a href="/messages/outbox/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-send left"></i>Sent Email</li>
-        <a href="/messages/spam/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-drafts left"></i>Drafts<span class="badge">14</span></a>
-        <a href="/messages/group/" class="grey-text text-lighten-1 collection-item"><i class="mdi-communication-forum left"></i>Conversations<span class="badge">1</span></a>
-        <a href="/messages/trash/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-remove left"></i>Trash<span class="badge">130</span></a>
-      </ul>
-    </nav>
-{% endblock %}
-
-  {% block right-sidebar %}
-
-  <nav class="grey lighten-5 vertical-nav-2">
-        <ul class="collection">
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-add left"></i>Contactos (30)</a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez</a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Pepe Perez</a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez</li>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">14</span></a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">1</span></a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez<span class="badge">130</span></a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Contactos (30)</a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="new badge">1</span></a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Pepe Perez</a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Antonio Martinez</li>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">14</span></a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-account-circle left"></i>Paco Jemez<span class="badge">1</span></a>
-        <a href="#!" class="grey-text text-lighten-1 collection-item"><i class="mdi-social-group left"></i>Equipo desarrolladores<span class="badge">130</span></a>
-      </ul>
-    </nav>
-    {% endblock %}
 {% block content %}
 
 <body>
 
-{% if message_list %} 
+{% if message_list %}
 
 <div class="container" id="contenedor_messages">
 
@@ -61,9 +19,9 @@
     </thead>-->
     <tbody>
 
-<!-- Codigo modificado (Adrian) --> 
+<!-- Codigo modificado (Adrian) -->
    <div class="row">
-   {% for message in message_list %} 
+   {% for message in message_list %}
             <div class="col s6 m8 l5">
              <div class="grey lighten-4 card-panel teal">
             <div class="col s5">
@@ -97,7 +55,7 @@
 {% else %}
 <p class="no_messages">{% trans "¡No tienes mensajes!" %}</p>
 <img class="no_mess" src="http://blog.cteep.com/wp-content/uploads/sugerencias.png" title="no_messages" alt="no_messages">
-{% endif %}  
+{% endif %}
 {% endblock %}
 {% endblock %}
 </body>
