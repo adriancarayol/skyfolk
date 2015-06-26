@@ -1,6 +1,7 @@
 {% extends "django_messages/base.html" %}
 {% load i18n %}
 {% block content %}
+
     <h3 class="compose_message">{% trans "Compose Message"%}</h3>
         <div class="container">
             <form action="" method="post">
@@ -8,7 +9,12 @@
             <table class="z-depth-1 compose_table">
                 {{ form.as_table }}
             </table>
-            <input type="submit" value="{% trans "Send" %} &raquo;"/>
+                <button class="compose-button waves-effect waves-light btn" type="submit" value="{% trans "Send" %} &raquo;"/>Enviar</button>
             </form>
         </div>
+    <!-- Reajusta el tamaño del textarea, conforme vamos escribiendo -->
+	<script>
+		autosize(document.querySelectorAll('textarea'));
+	</script>
+
 {% endblock %}
