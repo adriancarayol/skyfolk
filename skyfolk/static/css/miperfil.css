@@ -382,6 +382,40 @@ body > .container {
 .col-offset-12 {
   margin-left: 101.20482%; }
 
+.vbox .user-video {
+  width: 200px;
+  height: 100px;
+  display: inline-block;
+  background-image: url('http://parentesis.com/imagesPosts/taylor-swift-2014-sarah-barlow-billboard-650.jpg');
+  background-repeat: no-repeat;
+  border: 2px solid #fff;
+  background-size: 100%;
+  margin-top: 7px;
+  margin-left: 30px;
+  transtion: all .3s ease-in;
+  -webkit-transition: all .3s ease-in;
+  -moz-transition: all .3s ease-in;
+  position: relative;
+}
+.vbox .user-video:hover {
+    transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    -moz-tranform: scale(1.2);
+}
+.play-user-video {
+  outline: none;
+  border: 1px solid #e0e0e0;
+  width: 30px;
+  height: 30px;
+  margin: auto;
+  position: relative;
+  left: 43%;
+  top: 30%;
+  background: none;
+  border-radius: 100%;
+  color: #000;
+}
+
 .premium header {
   background: #1d2122;
   padding: 1.5em 1em;
@@ -652,12 +686,19 @@ body > .container {
       margin-bottom: 0; } }
 
 .video-player {
-  background: #1d2122; }
+  background: #bdbdbd;
+  background-image: url('http://nick-intl.mtvnimages.com/uri/mgid:file:gsp:scenic:/international/mtvema/2014/images/nominees/main/David-Guetta-1940x720.jpg?height=720&width=1940&matte=true&quality=0.75');
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+    .controls {
+     background: #1d2122;
+    }
   .video-player .vbox {
     position: relative; }
     .video-player .vbox .thumbnail {
       height: 20em;
-      background: #fdd005 url(//i.imgbox.com/acfTG4CJ) center center no-repeat; }
+      background: #e0e0e0 url(//i.imgbox.com/acfTG4CJ) center center no-repeat; }
     .video-player .vbox .play-btn {
       color: white;
       position: absolute;
@@ -780,10 +821,67 @@ body > .container {
     .sidebar .content figure .description a span {
       margin-right: 0.35em; }
 
+.follower-card {
+  width: 474px;
+  height: 250px;
+  margin-top: -25px;
+  background-color: #fff;
+}
+.follower-title {
+  color: #000;
+  position: relative;
+  text-align: left;
+  top: 7px;
+  padding: 0px 100px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: 100;
+}
+.follower-sug {
 
+ display: list-item;
+ list-style-type: none;
+ position: relative;
+ width: 300px;
+ height: 50px;
+ margin-left: 10px;
+ margin-top: 30px;
+ background-color: #fff;
+ box-sizing: border-box;
+ border-top-left-radius: 25px;
+ border-bottom-left-radius: 25px;
+ z-index: 9999;
+-webkit-box-shadow: 0px 0px 1px 0px rgba(50, 50, 50, 0.75);
+-moz-box-shadow:    0px 0px 1px 0px rgba(50, 50, 50, 0.75);
+box-shadow:         0px 0px 1px 0px rgba(50, 50, 50, 0.75);
 
+}
+.sug-user {
+ position: relative;
+  width: 50px;
+  height: 50px;
+  float: left;
+  border-radius: 100%;
+  border: 1px solid #e0e0e0;
 
-
+}
+.name-sug {
+  position: relative;
+  display: inline;
+  top: 15px;
+  text-align: center;
+}
+.add-sug {
+   border-radius: 100%;
+   width: 20px;
+   height: 20px;
+   background-color: #eeeeee;
+   color: #000;
+   margin-left: 7px;
+   border: none;
+   outline: none;
+}
 .weather .current {
   text-align: center;
   background: #ffcf00;

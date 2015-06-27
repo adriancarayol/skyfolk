@@ -301,9 +301,36 @@
       <!-- Contenedor principal -->
     <div class="container">
       <div class="video-player card">
+
         <div class="vbox">
+            <div class="user-video">
+                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+            </div>
+            <div class="user-video">
+                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+            </div>
+            <div class="user-video">
+                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+            </div>
+            <div class="user-video">
+                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+            </div>
+            <div class="user-video">
+                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+            </div>
+            <div class="user-video">
+                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+            </div>
+            <div class="user-video">
+                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+            </div>
+            <div class="user-video">
+                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+            </div>
+            <!--
           <div class="thumbnail"></div>
           <button class="play-btn"><span class="fontawesome-play"></span></button>
+            -->
         </div>
         <ul class="unstyled controls table">
           <li class="play">
@@ -337,7 +364,7 @@
           </li>
         </ul>
       </div>
-      <!--
+
       <div class="location card">
         <div class="map"></div>
         <div class="decription container">
@@ -348,7 +375,6 @@
           <div class="col-lg-3"><a class="photos">Mirar fotos</a></div>
         </div>
       </div>
--->
 <!--
      <div class="messages">-->
 
@@ -532,8 +558,30 @@
 
 
       <div class="col-lg-12">
+
         <div class="weather card">
           <div class="current">
+              <div class="follower-card">
+                  <span class="follower-title"><i >Sugerencias</i></span>
+            {% for item in friends_top12 %}
+                  <div class="follower-sug">
+                      {% if item.user__profile__image and item.user__profile__image|file_exists %}
+                      <img  class="sug-user" src="{{MEDIA_URL}}{{item.user__profile__image}}">
+                      <span class="name-sug">
+                      <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                      <button class="add-sug"><i class="fa fa-plus"></i></button>
+                      </span>
+                      {% else %}
+					  <img class="sug-user" src="{{STATIC_URL}}img/generic-avatar.png">
+                      <span class="name-sug">
+                      <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                     <button class="add-sug"><i class="fa fa-plus"></i></button>
+                      </span>
+					 {% endif %}
+                  </div>
+           {% endfor %}
+              </div>
+              <!-- WIDGET DEL TIEMPO
             <div class="icon"><span class="fontawesome-cloud"></span></div>
             <div class="temperature">30&deg;</div>
           </div>
@@ -551,7 +599,9 @@
           </div>
         </div>
       </div>
+-->
     </div>
+
   </div>
 <!--</div>-->
 
