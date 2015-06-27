@@ -12,7 +12,7 @@
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 <script src="{{STATIC_URL}}js/jquery.min.js"></script>
 <script src="{{STATIC_URL}}js/jquery-ui.js"></script>
@@ -60,7 +60,7 @@ $(document).ready(function(){
   });
 });
 */
-</script> 
+</script>
 
 <script language="javascript">
 /*
@@ -110,7 +110,7 @@ top.window.outerWidth = screen.availWidth;
 <nav class="box-tool">
 <ul>
 <!-- Segundo menu bola <li><button type="button" id="Menu">
-  
+
 <div id="centro"><img src="" width="300" height="300"><span class="entypo-user"></span></div>
 <div id="llinkedin" class="size left"><span class="entypo-users"></span></div>
 <div id="ddribbble" class="size right"><span class="entypo-mail"></span></div>
@@ -125,7 +125,7 @@ top.window.outerWidth = screen.availWidth;
     <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
     <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
-    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
   </nav>
 </div>
 {% else %}
@@ -136,7 +136,7 @@ top.window.outerWidth = screen.availWidth;
     <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
     <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
-    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
   </nav>
 </div>
 {% endif %}
@@ -144,7 +144,7 @@ top.window.outerWidth = screen.availWidth;
 <li><div class="field" id="searchform">
   	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
   	<!--<button type="submit" class="btn">¡Buscar!</button>-->
-     
+
 	<form method='post' action='/search/'>{% csrf_token %}
 
 		{{searchForm}}

@@ -52,18 +52,18 @@ $(document).ready(function() {
 
     }
   });
-  
+
   /* Abrir crear/cerrar grupo en search.html */
-  
+
   $('.btn-floating').on('click',function(event) {
   	$('.crear-grupo').toggle("fast",function() {
   	});
   });
-  
+
   $('#cerrar_grupo').on('click',function(event) {
   	$('.crear-grupo').hide();
   });
- 
+
 
   $(document).keypress(function(e){
     var key = e.which;
@@ -455,7 +455,7 @@ function AJAX_submit_publication() {
         	timer: 1000,
         	animation: "slide-from-top",
         	showConfirmButton: false,
-        
+
         });
         $('#page-wrapper').hide();
       } else {
@@ -576,14 +576,14 @@ function AJAX_requestfriend(status) {
           /*
            if (response == "friend"){
 
-                $("#addfriend").css('color', '#29b203');                                                
-                                            
+                $("#addfriend").css('color', '#29b203');
+
            }else if(response == "nofriend"){
 
-                $("#addfriend").css('color', '#46494c');                              
-                                      
+                $("#addfriend").css('color', '#46494c');
+
            }else{
-                
+
            }
            */
           if (response == "isfriend") {

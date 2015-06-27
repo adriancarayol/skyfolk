@@ -5,7 +5,7 @@
 <meta name="description" content="Mi perfil">
 <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/listado_busqueda.css" />
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -45,7 +45,7 @@ $(document).ready(function(){
   });
 });
 */
-</script> 
+</script>
 
 <script language="javascript">
 /*
@@ -121,7 +121,7 @@ top.window.outerWidth = screen.availWidth;
 <nav class="box-tool-2">
 <ul>
 <!-- Segundo menu bola <li><button type="button" id="Menu">
-  
+
 <div id="centro"><img src="" width="300" height="300"><span class="entypo-user"></span></div>
 <div id="llinkedin" class="size left"><span class="entypo-users"></span></div>
 <div id="ddribbble" class="size right"><span class="entypo-mail"></span></div>
@@ -130,25 +130,25 @@ top.window.outerWidth = screen.availWidth;
     </button>-->
 
 {% if user_profile.profile.image %}
-<div id="toggle" class="toggle-2 teal lighten-2">
-  <nav class="menup-2 teal lighten-2">
+<div id="toggle" class="z-depth-1 toggle-2">
+  <nav class="white menup-2">
     <li class="profilee-2"><img src="{{user_profile.profile.image.url}}"><i>{{user_profile.username}}</i></li>
     <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
     <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
     <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
-    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
   </nav>
 </div>
 {% else %}
-<div id="toggle" class="toggle-2">
-  <nav class="menup-2">
+<div id="toggle" class="z-depth-1 toggle-2">
+  <nav class=" white menup-2">
     <li class="profilee-2"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user_profile.username}}</i></li>
     <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion</li>
     <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
     <li><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
-    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>   
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
   </nav>
 </div>
 {% endif %}
@@ -156,7 +156,7 @@ top.window.outerWidth = screen.availWidth;
 <li><div class="field" id="searchform">
   	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
   	<!--<button type="submit" class="btn">¡Buscar!</button>-->
-     
+
 	<form method='post' action='/search/'>{% csrf_token %}
 
 		{{searchForm}}

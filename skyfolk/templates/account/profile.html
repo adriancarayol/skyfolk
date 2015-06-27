@@ -1,6 +1,16 @@
 {% extends "account/base_interface.html" %}
 {% load app_filters %}
 {% block include_files %}
+
+<!-- Para los emoticonos -->
+{% load emoji_tags %}
+{{ blog_post.body|emoji_replace }}
+{{ blog_post.body|emoji_replace_unicode }}
+{{ blog_post.body|emoji_replace_html_entities }}
+{% autoescape off %}
+{{ emoji|emoji_replace }}
+{% endautoescape %}
+
 <!-- Mostrar objetos al hacer scroll -->
 <script type="text/javascript">
 

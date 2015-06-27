@@ -190,7 +190,7 @@ label[for="id_body"] {
   margin-bottom: 50px;
   width: 90%;
   min-width: 515px;
-  padding: 20px;
+  padding: 20px 5px 5px 20px;
   font-family: "Open Sans", sans-serif;
   border: 1px solid #B5DBDB;
   overflow: hidden;
@@ -248,7 +248,20 @@ label[for="id_body"] {
   text-align: center;
 
 }
+.outbox_sent {
+
+  border-bottom: 1px solid #e0e0e0;
+}
+.messages {
+  width: 100%;
+}
 .view_tittle {
+
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 100;
+  text-align: center;
+}
+.trash_tittle {
 
   font-family: 'Open Sans', sans-serif;
   font-weight: 100;

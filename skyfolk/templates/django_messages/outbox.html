@@ -12,7 +12,7 @@
     </thead>
     <tbody>
 {% for message in message_list %}
-    <tr>
+    <tr class="outbox_sent">
         <td>{{ message.recipient }}</td>
         <td>
         <a href="{{ message.get_absolute_url }}">{{ message.subject }}</a>
