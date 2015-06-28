@@ -687,7 +687,7 @@ body > .container {
 
 .video-player {
   background: #bdbdbd;
-  background-image: url('http://nick-intl.mtvnimages.com/uri/mgid:file:gsp:scenic:/international/mtvema/2014/images/nominees/main/David-Guetta-1940x720.jpg?height=720&width=1940&matte=true&quality=0.75');
+  background-image: url(//i.imgbox.com/acfTG4CJ);
   background-size: 100%;
   background-repeat: no-repeat;
 }
@@ -820,33 +820,39 @@ body > .container {
       color: #e76049; }
     .sidebar .content figure .description a span {
       margin-right: 0.35em; }
+.widget-right-down {
+   margin-top: 30px;
+
+}
 
 .follower-card {
-  width: 474px;
+  width: 510px;
   height: 250px;
+  float: left;
   margin-top: -25px;
   background-color: #fff;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 .follower-title {
   color: #000;
   position: relative;
-  text-align: left;
   top: 7px;
   padding: 0px 100px;
   border-bottom: 1px solid #e0e0e0;
-  text-align: center;
+  margin-left: 100px;
   font-size: 1.5em;
   font-weight: 100;
 }
 .follower-sug {
 
- display: list-item;
+ display: inline-block;
  list-style-type: none;
  position: relative;
- width: 300px;
+ width: 230px;
  height: 50px;
  margin-left: 10px;
- margin-top: 30px;
+ margin-top: 20px;
  background-color: #fff;
  box-sizing: border-box;
  border-top-left-radius: 25px;
