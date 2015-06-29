@@ -35,6 +35,9 @@ $(document).ready(function() {
 
   });
 
+  $('.fa-paw').on('click',function() {
+      $(".info-paw").fadeToggle("fast");
+  });
 
   $('#message-form2').on('submit', function(event) {
 

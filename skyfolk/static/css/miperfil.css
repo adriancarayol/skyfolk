@@ -12,7 +12,7 @@
   font-family: 'FontAwesome', sans-serif;
 }
 html {
-	font-family: 'Open Sans', sans-serif;
+	 font-family: 'Open Sans', sans-serif;
 	 min-height:100%;
 }
 
@@ -25,7 +25,7 @@ html {
 }
 .container {
   *zoom: 1;
-  max-width: 980px;
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto; }
   .container:before, .container:after {
@@ -86,7 +86,7 @@ body > .container {
   display: block;
   float: left;
   margin-right: 1.20482%;
-  width: 32.53012%; }
+  width: 32.53199%; }
   .col-lg-4:last-child {
     margin-right: 0; }
 
@@ -493,11 +493,10 @@ body > .container {
 	}
 }
 
-@media only screen and (min-width: 515px) and (max-width: 640px) {
-	.caja {
-		right: 30%;
-	}
-
+/* Posicionamiento default */ 
+.caja {
+  left: 14px;
+  position: relative;
 }
 
 .user-card header, .user-card .status {
@@ -826,7 +825,7 @@ body > .container {
 }
 
 .follower-card {
-  width: 510px;
+  width: auto;
   height: 250px;
   float: left;
   margin-top: -25px;
@@ -849,7 +848,7 @@ body > .container {
  display: inline-block;
  list-style-type: none;
  position: relative;
- width: 230px;
+ width: 100%;
  height: 50px;
  margin-left: 10px;
  margin-top: 20px;
@@ -875,18 +874,28 @@ box-shadow:         0px 0px 1px 0px rgba(50, 50, 50, 0.75);
 .name-sug {
   position: relative;
   display: inline;
+  width: auto;
   top: 15px;
+  font-size: 1.1em;
+  margin-left: 30px;
   text-align: center;
 }
 .add-sug {
-   border-radius: 100%;
-   width: 20px;
+   width: 80px;
+   padding: 0px 0px 7px 0px;
    height: 20px;
+   color: #7CE1FF;
    background-color: #eeeeee;
-   color: #000;
+   font-family: 'Open Sans', sans-serif;
+   font-weight: 100;
+   font-size: 1.025em;
+   text-align: center;
    margin-left: 7px;
    border: none;
    outline: none;
+}
+.add-sug i {
+  margin-right: 7px;
 }
 .weather .current {
   text-align: center;
@@ -1214,20 +1223,128 @@ ul.table > li {
  font-size: 25px;
  position: relative;
  display: inline-block;
- margin-left: 350px;
+ float: right;
+ margin-right: 14px;
  text-shadow: grey 1px 1px 1px;
  margin-top: 7px;
   }
  .fa-paw:hover {
- color: rgba(44,44,7,0.777);
- font-size: 25px;
- position: relative;
- display: block;
- margin-left: 350px;
- text-shadow: grey 1px 1px 1px;
- transform: rotate(15deg);
- transform: scale (3,3)
+  -webkit-transform: rotate(15deg);
+  -moz-transform: rotate(15deg);
+  transform: rotate(15deg);
+  -webkit-transform: scale(1.3);
+  -moz-transform: scale(1.3);
+  transform: scale(1.3);
   }
+
+  .info-paw {
+    width: 50%;
+   left: 25.55502%;
+    display: none;
+    height: auto;
+    background-color: transparent;
+    position: absolute;
+    margin: auto;
+    z-index: 9999;  
+  }
+  .info-paw .info-nav {
+      width: 300px;
+      height: 300px;
+      border-radius: 100%;
+      background-color: #fff;
+      position: relative;
+      margin: auto;
+  }
+  .info-paw .info-nav .info-event {
+    width: 50px;
+    height: 50px;
+    float: right;
+    background-color: #fff;
+    background-image: url(' http://www.wheatonbible.org/Content/10713/Icons/events-calendar-icon.png');
+    background-size: 80%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #7CE1FF;
+    border-radius: 100%;
+    margin-right: -25px;
+    margin-top: -25px;
+    display: inline;
+    transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+  }
+  .info-paw .info-nav .info-trof {
+    width: 50px;
+    height: 50px;
+    float: right;
+    background-color: #fff;
+    background-image: url('http://gccentrepreneurship.com/wp-content/uploads/2015/02/trophy-icon-black-icon-trophy.png');
+    background-size: 80%;
+    border: 1px solid #7CE1FF;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 100%;
+    margin-right: 20px;
+    margin-top: 95px;
+    display: inline;
+    transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+  }
+  .info-paw .info-nav .info-groups {
+    width: 50px;
+    height: 50px;
+    float: right;
+    background-color: #fff;
+    border: 1px solid #7CE1FF;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Group_font_awesome.svg/512px-Group_font_awesome.svg.png');
+    background-size: 80%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 100%;
+    margin-right: -20px;
+    margin-top: 55px;
+    display: inline;
+    transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+  }
+  .info-paw .info-nav .info-groups:hover, .info-event:hover, .info-trof:hover {
+    opacity: 0.8;
+    cursor: pointer;
+  }
+  .info-paw .info-user-name {
+    text-align: center;
+    font-size: 1.5em;
+    margin-top: 10px;
+  }
+  .info-paw .info-user-name_last {
+    text-align: center;
+    font-size: 1.1em;
+    margin-top: 7px;
+  }
+  .info-paw .info-wrapper-pic {
+    width: 90px;
+    height: 90px;
+    margin-top: 50px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .info-paw .info-user-ciudad {
+    text-align: center;
+    font-size: 1em;
+    margin-top: 10px;
+  }
+  .info-paw .info-user-ciudad .fa-map-marker {
+    margin-right: 5px;
+    color: tomato;
+  }
+   .info-paw .info-user-pic {
+    width: 90px;
+    height: 90px;
+    border-radius: 100%;
+   }
   /*Fin informacion perfil */
 
   /* Presencia user */

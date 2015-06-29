@@ -63,8 +63,6 @@ class UserProfile(models.Model):
     
     
 
-
-
     #Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
         relationship, created = Relationship.objects.get_or_create(from_person=self, to_person=person, status=status)

@@ -194,7 +194,35 @@
             </div>
           </div>
 
+          <!-- INFORMACION ADICIONAL DEL USUARIO -->
+                <div class="col-sm-6 col-md-5 col-lg-5">
+                  <div class="info-paw">
+                    <div class="info-nav">
+                      <div class="info-wrapper-pic">
+                      {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
+                         <img src="{{user_profile.profile.image.url}}" class="info-user-pic">
+                      {% else %}
+                         <img src="{{STATIC_URL}}img/generic-avatar.png" class="info-user-pic">
+                      {% endif %}
+                      </div>
+                    <h1 class="info-user-name">{{ user_profile.username }}</h1>
+                    <h3 class="info-user-name_last">{{user_profile.first_name}} {{user_profile.last_name}}</h3>
+                    <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
+                        <div class="info-event">
 
+                        </div>
+                        <div class="info-groups">
+
+                        </div>
+                        <div class="info-trof">
+
+                        </div>
+                        <div class="info-relations">
+
+                        </div>
+                    </div>
+                </div>
+                </div>
           <header>
             <!--
             <h1>Adrian Subname</h1>
@@ -563,9 +591,9 @@
         <!-- <div class="weather card"> -->
       <div class="widget-right-down">
           <div class="current">
-              <div class="col-sm-3 col-md-4 col-lg-10">
+              <div class="col-sm-3 col-md-4 col-lg-12">
               <div class="follower-card">
-                  <span class="follower-title"><i >Sugerencias</i></span>
+                  <span class="follower-title"><i>Sugerencias</i></span>
 
                   {% for item in friends_top12 %}
                  <div class="follower-sug">
@@ -573,13 +601,13 @@
                       <img  class="sug-user" src="{{MEDIA_URL}}{{item.user__profile__image}}">
                       <span class="name-sug">
                       <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
-                      <button class="add-sug"><i class="fa fa-plus"></i></button>
+                      <button class="add-sug"><i class="fa fa-plus"></i>Seguir</button>
                       </span>
                       {% else %}
 					  <img class="sug-user" src="{{STATIC_URL}}img/generic-avatar.png">
                       <span class="name-sug">
                       <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
-                     <button class="add-sug"><i class="fa fa-plus"></i></button>
+                     <button class="add-sug"><i class="fa fa-plus"></i>Seguir</button>
                       </span>
 					 {% endif %}
                       </div>
