@@ -56,7 +56,7 @@ body > .container {
   @media only screen and (min-width: 1220px) {
     body > .container {
       font-size: 1.1em;
-      max-width: 1460px; } }
+      max-width: 1461px; } }
 
 .col-lg-1 {
   display: block;
