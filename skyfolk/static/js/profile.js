@@ -39,6 +39,22 @@ $(document).ready(function() {
       $(".info-paw").fadeToggle("fast");
   });
 
+  $('.info-trof').on('click',function() {
+    $(".trofeos").fadeToggle("fast");
+  });
+
+  $('.info-groups').on('click',function() {
+    $(".grupos").fadeToggle("fast");
+  });
+
+  $('#close-trofeos').on('click',function() {
+    $(".trofeos").hide("fast");
+  });
+
+  $('#close-grupos').on('click',function() {
+     $(".grupos").hide("fast");
+  });
+
   $('#message-form2').on('submit', function(event) {
 
     event.preventDefault();

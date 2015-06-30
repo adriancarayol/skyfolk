@@ -1239,7 +1239,7 @@ ul.table > li {
 
   .info-paw {
     width: 50%;
-   left: 25.55502%;
+    left: 25.55502%;
     display: none;
     height: auto;
     background-color: transparent;
@@ -1284,8 +1284,8 @@ ul.table > li {
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 100%;
-    margin-right: 20px;
-    margin-top: 95px;
+    margin-right: 15px;
+    margin-top: 110px;
     display: inline;
     transition: all .3s ease-in-out;
     -webkit-transition: all .3s ease-in-out;
@@ -1344,6 +1344,110 @@ ul.table > li {
     width: 90px;
     height: 90px;
     border-radius: 100%;
+   }
+   .trofeos {
+    width: 50%;
+    left: 25.55502%;
+    top: 100px;
+    display: none;
+    height: auto;
+    min-height: 600px;
+    background-color: #fff;
+    position: absolute;
+    margin: auto;
+    z-index: 9999;
+   }
+   .trofeos .fa-close {
+    float:right;
+    display: inline;
+    margin-top: 7px;
+    margin-right: 7px;
+    color: #424242;
+    cursor: pointer;
+   }
+   .trofeos .trofeos-title {
+    text-align: center;
+    color: #e0e0e0;
+    font-size: 2em;
+    margin-bottom: 20px;
+
+   }
+   .trofeos .wrapper-trofeos {
+    background-color: #eeeeee;
+    position: relative;
+    margin: auto;
+    width: 90%;
+    height: 570px;
+   }
+   .trofeos .trofeo-desb {
+    display: inline-block;
+    margin-top: 17px;
+    margin-left: 7px;
+    margin-right: 7px;
+    margin-bottom: 10px;
+   }
+   .trofeos img {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+   }
+
+   /* GRUPOS */ 
+
+   .grupos {
+    width: 50%;
+    top: 100px;
+    left: 25.55502%;
+    display: none;
+    height: auto;
+    min-height: 600px;
+    background-color: #fff;
+    position: absolute;
+    margin: auto;
+    z-index: 9999;
+   }
+   .grupos .fa-close {
+    float:right;
+    display: inline;
+    margin-top: 7px;
+    margin-right: 7px;
+    color: #424242;
+    cursor: pointer;
+   }
+   .grupos .grupos-title {
+    text-align: center;
+    color: #e0e0e0;
+    font-size: 2em;
+    margin-bottom: 20px;
+
+   }
+   .grupos .wrapper-grupos {
+    background-color: #eeeeee;
+    position: relative;
+    margin: auto;
+    width: 95%;
+    min-height: 500px;
+    height: auto;
+   }
+   .grupos .grupo-user {
+    position: relative;
+    display: inline-block;
+    background-color: #000;
+    width: 190px;
+    height: 150px;
+    margin: 14px;
+   }
+   .grupos img {
+    width: 100%;
+    height: 100%;;
+   }
+   .grupos .text-description {
+    position: absolute;
+    top: 75%;
+    font-size: 1.3em;
+    color: #000;
+    font-weight: 400;
+    margin-left: 7px;
    }
   /*Fin informacion perfil */
 
