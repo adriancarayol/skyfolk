@@ -237,6 +237,20 @@ input[type="checkbox"] {
   text-align: center;
 
 }
+.ampliado .botones_ampliado .cerrar_ampliado {
+  display: inline-block;
+  border-radius: 3px;
+  border: none;
+  font-size: 0.9rem;
+  padding: 0.7rem 1em;
+  color: #FF0000;
+  margin: 0 0.25rem;
+  text-align: center;
+  background: #f5f5f5;
+}
+.ampliado .botones_ampliado .cerrar_ampliado .fa-close {
+  margin-right: 6px;
+}
 .ampliado .botones_ampliado .localizacion_ampliado {
   background: #f5f5f5;
   border-bottom: 1px solid #7CE1FF;
@@ -300,8 +314,9 @@ input[type="checkbox"]{display:block;}
 input[type="checkbox"]:checked ~ .ampliado {
   position: absolute;
   z-index: 9999;
-  width: 365px;
+  width: 395px;
   background: white;
+  top: 200px;
   height: 486px;
   display: block;
   margin-left: 15px;

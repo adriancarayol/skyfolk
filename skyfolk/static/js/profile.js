@@ -48,11 +48,11 @@ $(document).ready(function() {
   });
 
   $('#close-trofeos').on('click',function() {
-    $(".trofeos").hide("fast");
+    $(".trofeos").fadeOut("fast");
   });
 
   $('#close-grupos').on('click',function() {
-     $(".grupos").hide("fast");
+     $(".grupos").fadeOut("fast");
   });
 
   $('#message-form2').on('submit', function(event) {
