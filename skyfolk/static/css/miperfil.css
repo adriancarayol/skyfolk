@@ -1259,6 +1259,8 @@ ul.table > li {
     width: 50px;
     height: 50px;
     float: right;
+    right: 0;
+    position: absolute;
     background-color: #fff;
     background-image: url(' http://www.wheatonbible.org/Content/10713/Icons/events-calendar-icon.png');
     background-size: 80%;
@@ -1277,6 +1279,8 @@ ul.table > li {
     width: 50px;
     height: 50px;
     float: right;
+    right: 0;
+    position: absolute;
     background-color: #fff;
     background-image: url('http://gccentrepreneurship.com/wp-content/uploads/2015/02/trophy-icon-black-icon-trophy.png');
     background-size: 80%;
@@ -1284,8 +1288,8 @@ ul.table > li {
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 100%;
-    margin-right: 15px;
-    margin-top: 110px;
+    margin-right: 75px;
+    margin-top: 95px;
     display: inline;
     transition: all .3s ease-in-out;
     -webkit-transition: all .3s ease-in-out;
@@ -1302,8 +1306,8 @@ ul.table > li {
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 100%;
-    margin-right: -20px;
-    margin-top: 55px;
+    margin-right: 15px;
+    margin-top: 45px;
     display: inline;
     transition: all .3s ease-in-out;
     -webkit-transition: all .3s ease-in-out;
