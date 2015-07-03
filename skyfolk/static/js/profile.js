@@ -55,6 +55,10 @@ $(document).ready(function() {
      $(".grupos").fadeOut("fast");
   });
 
+  $('.fa-reply').on('click',function(){
+        $('.replay-actual-message').fadeToggle("fast");
+  }); 
+
   $('#message-form2').on('submit', function(event) {
 
     event.preventDefault();
@@ -197,7 +201,7 @@ $('#tab-timeline').bind('scroll', function() {
   });
 
   $("#li-tab-timeline").click(function() {
-    $('#tab-popular').css({
+    $('#tab-timeline').css({
       "overflow": "auto"
     });
   });
