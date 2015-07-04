@@ -1674,10 +1674,6 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   border: 1px solid rgb(26, 188, 156);
 }
 
-.usr-img {
-  border-radius: 100%;
-}
-
 #avatar-publication{
 	background-repeat: no-repeat;
 	-webkit-background-size: cover;
