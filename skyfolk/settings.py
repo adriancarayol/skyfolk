@@ -56,6 +56,7 @@ THIRD_PARTY_APPS = (
     'django_messages',         # mensajes entre usuarios
     'emoji',
     'aboutSkyfolk',            # Informacion sobre la red social.
+    'market',                  # Tienda de la red social.
 )
 
 # Local Applications
