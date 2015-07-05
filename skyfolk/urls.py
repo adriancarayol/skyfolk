@@ -7,7 +7,7 @@ from api import views
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from user_profile import views as user_profile_views
-
+from aboutSkyfolk.views import about
 
 
 admin.autodiscover()
@@ -44,7 +44,8 @@ urlpatterns = patterns(
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls')),
-
+    # About skyfolk
+    url(r'^about/$',about),
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
     url(

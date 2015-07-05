@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
+    <title>Sobre Skyfolk</title>
+    <script>
+    $(document).ready(function(){
+      $('.parallax').parallax();
+    });
+    </script>
+</head>
+<body>
+    {% block nav %}
+        <nav class="grey lighten-4" id="navigation">
+            <div class="container">
+                <ul class="navlinks">
+                  <li><a class="blue-text text-darken-2" href="index.html">Homepage</a></li>
+                  <li><a class="blue-text text-darken-2" href="index.html">About Us</a></li>
+                  <li><a class="blue-text text-darken-2" href="index.html">Projects</a></li>
+                  <li><a class="blue-text text-darken-2" href="index.html">The Team</a></li>
+                  <li><a class="blue-text text-darken-2" href="index.html">Special Thanks</a></li>
+                </ul>
+            </div>
+    </nav>
+    {% endblock %}
+    {% block frontal %}
+    <div class="parallax-container">
+    <div class="parallax"><img src="http://images.artelista.com/artelista/obras/big/9/4/2815776578132337.jpg"></div>
+  </div>
+  <div class="section white">
+    <div class="row container">
+      <h2 class="header">Skyfolk</h2>
+      <p class="grey-text text-darken-3 lighten-3">Skyfolk es una red social... [Descripcion deseada]</p>
+    </div>
+  </div>
+  <div class="parallax-container">
+    <div class="parallax"><img src="images/parallax2.jpg"></div>
+  </div>
+
+    {% endblock %}
+</body>
+</html>
