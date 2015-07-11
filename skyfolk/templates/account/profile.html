@@ -689,20 +689,26 @@
           <div class="current">
               <div class="col-sm-3 col-md-4 col-lg-12">
               <div class="follower-card">
-                  <span class="follower-title"><i>Sugerencias</i></span>
-
+                <div class="follower-tab">
+                  <div class="follower-tab-personas">
+                  A quien seguir
+                  </div>
+                  <div class="follower-tab-grupos">
+                  Grupos
+                  </div>
+                </div>
                   {% for item in friends_top12 %}
                  <div class="follower-sug">
                       {% if item.user__profile__image and item.user__profile__image|file_exists %}
                       <img  class="sug-user" src="{{MEDIA_URL}}{{item.user__profile__image}}">
                       <span class="name-sug">
-                      <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                      <a class="random-sug" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
                       <button class="add-sug"><i class="fa fa-plus"></i>Seguir</button>
                       </span>
                       {% else %}
 					  <img class="sug-user" src="{{STATIC_URL}}img/generic-avatar.png">
                       <span class="name-sug">
-                      <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                      <a class="random-sug" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
                      <button class="add-sug"><i class="fa fa-plus"></i>Seguir</button>
                       </span>
 					 {% endif %}
