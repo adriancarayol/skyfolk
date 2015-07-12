@@ -462,7 +462,7 @@ body > .container {
   text-align: center; }
   .user-card .user-avatar .user-bg {
     width: 100%;
-    border-bottom: 2px solid #246B61;
+    border-bottom: 2px solid #1e88e5;
     border-top-left-radius: 0.3rem;
     border-top-right-radius: 0.3rem; }
     .user-card .user-avatar .user-bg:after {

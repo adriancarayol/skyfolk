@@ -37,8 +37,7 @@
   background-position:center;
   background-size: 100%;
   background-repeat: no-repeat;
-  border-color: #3A80A6;
-  border: 2px solid;
+  border: 2px solid #1976d2;
   -webkit-transition: all 0.2s linear;
   -moz-transition: all 0.2s linear;
   transition: all 0.2s linear;
@@ -50,9 +49,9 @@
   list-style-type: none;
   position: absolute;
   visibility: hidden;
-  -webkit-transition: all 3s ease-in;
-  -moz-transition: all 3s ease-in;
-  transition: all 3s ease-in;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
   cursor:pointer;
   right: 110px;
   top: -25px;
@@ -62,9 +61,9 @@
   position: absolute;
   right: 35px;
   visibility: hidden;;
-  -webkit-transition: all 3s ease-in;
-  -moz-transition: all 3s ease-in;
-  transition: all 3s ease-in;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
   cursor:pointer;
   top: -40px;
 }
@@ -73,20 +72,20 @@
   position: absolute;
   right: 130px;
   visibility: hidden;
-  -webkit-transition: all 3s ease-in;
-  -moz-transition: all 3s ease-in;
-  transition: all 3s ease-in;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
   cursor:pointer;
   top: 25px;
 }
 .profile li:nth-child(4) {
-    list-style-type: none;
+  list-style-type: none;
   position: absolute;
   right: 120px;
   visibility: hidden;
-  -webkit-transition: all 3s ease-in;
-  -moz-transition: all 3s ease-in;
-  transition: all 3s ease-in;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
   cursor:pointer;
   top: 70px;
 }
@@ -94,12 +93,13 @@
 .profile:hover li {
   visibility: visible;
   margin-top: -10px;
-  transition: all .3s ease-in;
-  -webkit-transition: all .3s ease-in;
-  -moz-transition: all .3s ease-in;
+  transition: all .2s ease-in;
+  -webkit-transition: all .2s ease-in;
+  -moz-transition: all .2s ease-in;
 }
+
 .profile li:hover {
-  color: GREY;
+  color: #1976d2;
   z-index: 9999;
 }
 

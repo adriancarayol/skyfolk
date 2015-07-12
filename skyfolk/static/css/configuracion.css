@@ -72,7 +72,7 @@ aside nav {
 }
 aside nav li {
   color:  #000;
-  margin-top:  20px;
+  margin-top: 20px;
   padding:  10px 10px;
   border-bottom:  2px solid #fff;
   background-color:  #fafafa;
@@ -82,9 +82,9 @@ aside nav li {
   cursor:  pointer;
 }
 aside nav li:hover {
-  color:  #00CED1;
+  color: #1976d2;
   background-color:  #E4E4E4;
-  border-left: 7px solid rgba(44,44,44,0.854);
+  border-left: 7px solid #1976d2;
 }
 aside nav li i {
   float: left;
