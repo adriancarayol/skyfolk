@@ -472,8 +472,8 @@ body > .container {
       background: red; }
   .user-card .user-avatar .user-pic {
     background: white;
-    padding: 0.25em;
-	  border: 1px solid #246B61;
+    padding: 0.1em;
+	  border: 1px solid #1e88e5;
     border-radius: 0.3rem;
     margin-top: -10em;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.35); }
@@ -1298,6 +1298,9 @@ ul.table > li {
       height: 300px;
       border-radius: 100%;
       background-color: #fff;
+      -webkit-box-shadow: 0px 0px 5px 0px rgba(25,118,210,1);
+      -moz-box-shadow: 0px 0px 5px 0px rgba(25,118,210,1);
+      box-shadow: 0px 0px 5px 0px rgba(25,118,210,1);
       position: relative;
       margin: auto;
   }
@@ -1312,7 +1315,7 @@ ul.table > li {
     background-size: 80%;
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px solid #7CE1FF;
+    border: 1px solid #1976d2;
     border-radius: 100%;
     margin-right: -25px;
     margin-top: -25px;
@@ -1330,7 +1333,7 @@ ul.table > li {
     background-color: #fff;
     background-image: url('http://gccentrepreneurship.com/wp-content/uploads/2015/02/trophy-icon-black-icon-trophy.png');
     background-size: 80%;
-    border: 1px solid #7CE1FF;
+    border: 1px solid #1976d2;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 100%;
@@ -1346,7 +1349,7 @@ ul.table > li {
     height: 50px;
     float: right;
     background-color: #fff;
-    border: 1px solid #7CE1FF;
+    border: 1px solid #1976d2;
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Group_font_awesome.svg/512px-Group_font_awesome.svg.png');
     background-size: 80%;
     background-position: center;

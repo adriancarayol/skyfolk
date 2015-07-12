@@ -644,7 +644,19 @@ a.fontawesome-cog:hover {
   -moz-transition: all .3s ease-in-out;
   -webkit-transition: all .3s ease-in-out;
 }
-
+.optiones_comentarios ul li:hover .fa-heart {
+  color: #f06292;
+}
+.optiones_comentarios ul li:hover .fa-quote-left {
+  color: grey;
+}
+.optiones_comentarios ul li:hover .fa-reply {
+  color: #1e88e5;
+}
+.optiones_comentarios ul li:hover .fa-tag {
+  color: #bbdefb;
+}
+/* Se expande al responder un mensaje... */
 .replay-actual-message {
   width: 100%;
   height: 100px;
