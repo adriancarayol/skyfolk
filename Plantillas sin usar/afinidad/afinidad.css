@@ -1,124 +1,146 @@
-@import url(http://weloveiconfonts.com/api/?family=fontawesome);
-
-/* fontawesome */
-[class*="fontawesome-"]:before {
-  font-family: 'FontAwesome', sans-serif;
-}
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 
-
 body {
-	margin: 50px auto 0;
-    max-width: 800px;
-    font-family: 'Open Sans', sans-serif;
-
-}
-header {
-	float: left;
-	left: 3%;
-	position: absolute;
-	border-bottom: 5px solid #FFA732;
-	top: 0%;
-	width: 800px;
-	font-size: 40px;
-	font-weight: 100;
-	text-decoration: none;
-	font-style: normal;
-	color: grey;
-	border-bottom-left-radius: 10px;
-	border-bottom-right-radius: 10px;
-}
-header span {
-	margin-right: 17px;
-	color: #FF6F00;
-}
-section {
-	margin: 50px auto 0;
-	max-width: 800px;
-	top: 20%;
-	position: absolute;
-	height: auto;
-	left: 5%;
-}
-section ol {
-	float: left;
-	font-size: 30px;
-	position: relative;
-	margin: auto;
-	left: 0%;
-	color: grey;
-	font-weight: 100;
-    padding: 10px 10px;
-
-}
-section ol li {
-	position: relative;
-	margin-top: 20px;
-}
-section ol li img {
-	width: 70px;
-	height: 70px;
-	border-bottom: 3px solid tomato;
-	border-radius: 5px;
-
-}
-section ol li div.wrapper {
-	background-color: rgba(142, 255, 255, 0.2);
-	height: auto;
-	width: 500px;
-	margin: 0;
 	padding: 0;
-	border-radius: 7px
+	background-color: #eeeeee;
+}
 
+.name-relations {
+	color: #424242;
+	margin-left: 3%;
+	width: 80%;
+	border-bottom: 1px solid #616161;
 }
-section ol li p {
-	font-size: 17px;
-	position: absolute;
-	display: inline;
-	margin-left: 20px;
-	text-align: center;
-    margin-top: 2px;
-}
-section ol li progress {
-	-webkit-appareance: progress-bar;
+.container .eje-central-relation {
 	position: relative;
-	margin-left: 40px;
-	top: -10px;
-	box-sizing: border-box;
+	width: 300px;
+	height: 300px;
+	border-radius: 100%;
+	margin: auto;
+	display: block;
+	border: 2px solid #1976d2;
 }
-section ol li progress[value] {
-	  -webkit-appearance: none;
-   appearance: none;
+.container .eje-central-relation img {
+	border-radius: 100%;
+	width: 100%;
+	height: 100%;
+}
+.container .eje-secundario-relation {
+	position: absolute;
+	width: 298px;
+	height: 298px;
+	top: 60px;
+	border-radius: 100%;
+	margin-top: 10px;
+	margin-left: 468px;
+}
+.container .eje-secundario-relation img {
+	width: 100%;
+	height: 100%;
+	border-radius: 100%;
+}
+.container .eje-secundario-relation .eje-secundario-right-1 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-left: -19%;
+	background-image: url('http://boast-talk.com/wp-content/uploads/2013/06/friends_icon.jpg');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 100%;
+	border: 2px solid #69f0ae;
+}
+.container .eje-secundario-relation .eje-secundario-right-1:hover > img {
+	opacity: 0;
+    -webkit-transition: all .3s linear;
+	transition: all .3s linear;
+	-moz-transition: all .3s linear;
+}
+.container .eje-secundario-relation .eje-secundario-right-2 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-left: -32%;
+	margin-top: 5%;
+	border: 2px solid #69f0ae;
+}
 
-  width: 250px;
-  height: 20px;
+.container .eje-secundario-relation .eje-secundario-right-3 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-top: 10%;
+	margin-left: -25%;
+	border: 2px solid #69f0ae;
 }
-progress[value]::-webkit-progress-value {
-background-image:
-	-webkit-linear-gradient(-45deg, 
-	                           transparent 33%, rgba(0, 0, 0, .1) 33%, 
-	                           rgba(0,0, 0, .1) 66%, transparent 66%),
-	-webkit-linear-gradient(top, 
-	                           rgba(0, 0, 0, .25), 
-	                           rgba(255, 255, 255, .25)),
-	-webkit-linear-gradient(left, #41EEE2, #41EEE2);
- border-radius: 2px; 
- background-size: 35px 20px, 100% 100%, 100% 100%;
-
- -webkit-animation: animate-bar 5s linear infinite;
-        animation: animate-bar 5s linear infinite;
+.container .eje-secundario-relation .eje-secundario-down-1 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-top: 5%;
+	margin-left: 0%;
+	border: 2px solid #1976d2;
 }
-@-webkit-keyframes animate-bar {
-   100% { background-position: -100px 0px; }
+.container .eje-secundario-relation .eje-secundario-down-2 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-top: -20%;
+	margin-left: 40%;
+	background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Heart_coraz%C3%B3n.svg/1024px-Heart_coraz%C3%B3n.svg.png');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 100%;
+	border: 2px solid #f06292;
 }
-
-@keyframes animate-bar {
-   100% { background-position: -100px 0px; }
+.container .eje-secundario-relation .eje-secundario-down-2:hover > img {
+	opacity: 0;
+    -webkit-transition: all .3s linear;
+	transition: all .3s linear;
+	-moz-transition: all .3s linear;
 }
-progress[value]::-webkit-progress-value::before {
-  content: '80%';
-  position: absolute;
-  left: 0;
-  top: -125%;
-  font-size: 14px;
+.container .eje-secundario-relation .eje-secundario-down-3 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-top: -35%;
+	margin-left: 80%;
+	border: 2px solid #1976d2;
+}
+.container .eje-secundario-relation .eje-secundario-left-1 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-left: 100%;
+	margin-top: -58%;
+	border: 2px solid #e3f2fd;
+}
+.container .eje-secundario-relation .eje-secundario-left-2 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-left: 105%;
+	margin-top: -60%;
+	border: 2px solid #aa00ff;
+}
+.container .eje-secundario-relation .eje-secundario-left-3 {
+	width: 80px;
+	height: 80px;
+	position: relative;
+	border-radius: 100%;
+	margin-left: 96%;
+	margin-top: -60%;
+	border: 2px solid #d32f2f;
+}
+.container .relations-controls {
+	position: relative;
+	margin-top: 200px;
 }
