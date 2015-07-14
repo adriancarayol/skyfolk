@@ -9,6 +9,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from user_profile import views as user_profile_views
 from aboutSkyfolk.views import about
 from market.views import market_inicio
+from relaciones.views import relaciones_user
 
 admin.autodiscover()
 
@@ -48,6 +49,8 @@ urlpatterns = patterns(
     url(r'^about/$',about),
     # Market Skyfolk
     url(r'^market/$',market_inicio),
+    # Relaciones usuario
+    url(r'^relations/$',relaciones_user),
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
     url(

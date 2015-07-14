@@ -57,6 +57,7 @@ THIRD_PARTY_APPS = (
     'emoji',
     'aboutSkyfolk',            # Informacion sobre la red social.
     'market',                  # Tienda de la red social.
+    'relaciones',			   # Controla las relaciones del usuario.
 )
 
 # Local Applications
