@@ -5,7 +5,7 @@
 #section .wrapperx {
   position: relative;
  /* width: 900px; */
-  width: 100%;
+  max-width: 100%;
   /*top: 50px; */
   /*margin: auto; */
   float: left;
@@ -53,7 +53,8 @@
 /* Second */
 #section .wrapperx .line .second {
   position: relative;
-  width: 350px;
+  min-width: 350px;
+  max-width: 100%;
   background-color: 0;
   height: auto;
   float: right;
