@@ -7,7 +7,7 @@ body {
                        background-size: 100%;
                        max-width: 100%;
                        max-height: 100%;
-                       min-height: 100vh;
+                       min-height: 90vh;
                        flex-direction: column;
                        background-repeat: no-repeat;
 }
@@ -66,12 +66,16 @@ body {
   height: 20px;
   bottom: 10px;
   color: grey;
+  margin-bottom: -5px;
   -webkit-transition: all .3s ease-in;
   -moz-transition: all .3s ease-in;
   transition: all .3s ease-in;
 }
-.footer_base #about {
-  margin-right: 430px;
+.footer_base a {
+  color: tomato;
+}
+.footer_base #about, #Blog, #tutorial, #empleo, #anunciarse, #privacidad {
+  margin-left: 80px;
 }
 .flex {
   position: relative;
@@ -241,13 +245,24 @@ form {
     left: 150px;
   }
 }
-@media screen and (max-width: 600px) and (max-height: 600px) {
-  body {
-    background-size: 100%;
-    background-repeat: repeat;
+
+/* Adaptamos el background del login dependiendo de la altura de la pagina */
+@media screen and (max-height: 600px) {
+  #background_cycler {
+    height: 140%; 
+  }
+}
+@media screen and (max-height: 500px) {
+  #background_cycler {
+    height: 1000px;
   }
 }
 
+@media screen and (max-height: 300px) {
+  #background_cycler {
+
+  }
+}
 
 /* DE CARLOS*/
 .form-3 .form-group{
