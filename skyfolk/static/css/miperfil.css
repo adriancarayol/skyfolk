@@ -383,8 +383,8 @@ body > .container {
   margin-left: 101.20482%; }
 
 .vbox .user-video {
-  width: 200px;
-  height: 100px;
+  width: 20%;
+  min-height: 100px;
   display: inline-block;
   background-image: url('http://parentesis.com/imagesPosts/taylor-swift-2014-sarah-barlow-billboard-650.jpg');
   background-repeat: no-repeat;
@@ -397,6 +397,13 @@ body > .container {
   -moz-transition: all .3s ease-in;
   position: relative;
 }
+
+@media only screen and (max-width: 1024px) {
+  .vbox .user-video {
+    display: none;
+  }
+}
+
 .vbox .user-video:hover {
     transform: scale(1.2);
     -webkit-transform: scale(1.2);
@@ -410,7 +417,7 @@ body > .container {
   margin: auto;
   position: relative;
   left: 43%;
-  top: 30%;
+  margin-top: 15%;
   background: none;
   border-radius: 100%;
   color: #000;
@@ -691,7 +698,7 @@ body > .container {
   background-repeat: no-repeat;
 }
     .controls {
-     background: #1d2122;
+     background: #bdbdbd;
     }
   .video-player .vbox {
     position: relative; }
@@ -704,7 +711,7 @@ body > .container {
       top: 50%;
       left: 50%;
       font-size: 4em;
-      background: rgba(255, 255, 255, 0.3);
+      background: #bdbdbd;
       border-radius: 100%;
       text-align: center;
       padding-left: 0.37em;
@@ -740,13 +747,15 @@ body > .container {
     .video-player .controls > li {
       vertical-align: middle;
       border-left: 0.1em solid #242728;
-      border-right: 0.1em solid #111315; }
+      border-right: 0.1em solid #111315; 
+      background-color: #9e9e9e;
+    }
       .video-player .controls > li:first-child {
         border-left: 0; }
       .video-player .controls > li:last-child {
         border-right: 0; }
       .video-player .controls > li:hover {
-        background: rgba(255, 255, 255, 0.05); }
+        background: #757575; }
       .video-player .controls > li.timeline {
         width: 70%;
         padding: 0 1em; }
@@ -1025,13 +1034,13 @@ body > .container {
   box-shadow: 0 0.1em rgba(255, 255, 255, 0.1);
   position: relative; }
   .progress-bar .bar .progress {
-    background: rgba(255, 255, 255, 0.15);
+    background: #90caf9;
     width: 60%;
     border-radius: 0.3rem; }
   .progress-bar .bar .value {
     width: 40%;
     height: 0.6em;
-    background: #e76049;
+    background: #1976d2;
     border-radius: 0.3rem;
     box-shadow: inset 0 0.1em rgba(255, 255, 255, 0.2); }
 
@@ -1852,46 +1861,59 @@ button:hover {
   border-color: 4px solid #98EBFF;
 }
 #tab-timeline {
-    height:100%;
+  height:100%;
   overflow-y: scroll;
   overflow-x: hidden;
 }
 .fontawesome-bullhorn {
-  font-size: 20px;
-  border:none;
-  background-color: transparent;
-  color: rgba(44,44,44,0.777);
-  text-align: center;
-  float:right;
-  display:inline-block;
+    background: #f5f5f5;
+    border-bottom: 1px solid #7CE1FF;
+    display: inline-block;
+    border-radius: 3px;
+    border: none;
+    font-size: 1.1rem;
+    padding: 1rem 1em;
+    float: right;
+    color: #1e88e5;
+    top: 10px;
+    margin: 0 0.25rem;
+    text-align: center;
 }
 .fontawesome-bullhorn:hover {
   background-color: white;
 
 }
 .fontawesome-camera {
-  font-size: 20px;
-  border:none;
-  background-color: transparent;
-  color: rgba(44,44,44,0.777);
-  text-align: center;
-  float:right;
-  display:inline-block;
-  margin-right: 10px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #7CE1FF;
+    display: inline-block;
+    border-radius: 3px;
+    border: none;
+    font-size: 1.1rem;
+    padding: 1rem 1em;
+    float: right;
+    color: #1e88e5;
+    top: 10px;
+    margin: 0 0.25rem;
+    text-align: center;
 
 }
 .fontawesome-camera:hover {
   background-color: white;
 }
 .fontawesome-map-marker {
-   font-size: 20px;
-  border:none;
-  background-color: transparent;
-  color: rgba(44,44,44,0.777);
-  text-align: center;
-  float:right;
-  display:inline-block;
-  margin-right: 10px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #7CE1FF;
+    display: inline-block;
+    border-radius: 3px;
+    border: none;
+    font-size: 1.1rem;
+    padding: 1rem 1em;
+    float: right;
+    color: #1e88e5;
+    top: 10px;
+    margin: 0 0.25rem;
+    text-align: center;
 
 
 }
