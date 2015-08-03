@@ -148,6 +148,8 @@
 </div>
 -->
 <!-- Fin notificacion me gusta -->
+
+
 <div class="container">
 
 
@@ -591,8 +593,8 @@
 	{% for item in publications_top15 %}
 	<div class="wrapper" id="pub-{{item.from_publication__id}}">
             <div class="box">
-            <input type="checkbox" id="{{item.from_publication__id}}">
-            <label for="{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>
+            <input type="checkbox" id="check-{{item.from_publication__id}}">
+            <label for="check-{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>
             <!-- Check para ampliar el mensaje... -->
                   <div class="ampliado">
                       <div class="nombre_image">
@@ -648,7 +650,7 @@
                 </div>
 
 							  </article>
-                <div class="replay-actual-message">
+                <div id="actual-{{item.from_publication__id}}" class="replay-actual-message">
                   <div class="triangle-reply"></div>
                   <textarea name="reply-textarea" rows="4" cols="50"></textarea>
                 </div>
@@ -657,6 +659,30 @@
 					{% endfor %}
 
 				</div>
+            <!-- Abre un textarea para responder a un comentario -->
+            <script>
+                $(document).ready(function(){
+
+                        var myflags = new Array();
+
+                        $('.fa-reply').click(function(){
+                          var f1 = false;
+                          for(var i=0;i<myflags.length;i++)
+                          {
+                              if (myflags[i] == this.id)
+                                {
+                                  f1 = true;
+                                }
+                          }
+                          if (!f1)
+                          {
+                            $('#actual-'+this.id).fadeToggle();
+                            myflags.push(this.id);
+                          }
+                          return false;
+                        });
+                      });
+            </script>
 				<div id="tab-amigos">
 
 					  <ul class="list-friends">

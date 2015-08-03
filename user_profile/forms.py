@@ -17,8 +17,6 @@ class SignupForm(forms.Form):
     #last_name = forms.CharField(max_length=30, label='Achternaam')
     first_name = forms.CharField(label=_('Firstname'), help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Firstname')}))
     last_name = forms.CharField(label=_('Lastname'), help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Lastname')}))
-
-
     def save(self, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']

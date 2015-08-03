@@ -55,10 +55,6 @@ $(document).ready(function() {
      $(".grupos").fadeOut("fast");
   });
 
-  $('.fa-reply').on('click',function(){
-        $('.replay-actual-message').fadeToggle("fast");
-  }); 
-
   $('#message-form2').on('submit', function(event) {
 
     event.preventDefault();
