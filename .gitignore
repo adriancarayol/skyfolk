@@ -8,3 +8,5 @@ skyfolk.sublime-project
 skyfolk.sublime-workspace
 build/
 .settings/
+.idea/
+skyfolk/media
