@@ -55,7 +55,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
     'emoji',
-    'aboutSkyfolk',            # Informacion sobre la red social.
+    'about',            # Informacion sobre la red social.
     'market',                  # Tienda de la red social.
     'relaciones',			   # Controla las relaciones del usuario.
 )
