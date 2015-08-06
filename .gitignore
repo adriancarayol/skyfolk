@@ -1,12 +1,12 @@
 venv
 *.pyc
-*.py~
 .project
 .pydevproject
-skyfolk/media/*
+skyfolk/media/
 skyfolk.sublime-project
 skyfolk.sublime-workspace
 build/
 .settings/
 .idea/
 skyfolk/media
+Thumbs.db
