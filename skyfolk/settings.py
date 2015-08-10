@@ -184,26 +184,6 @@ DATABASES = {
     }
 }
 
-#DATABASES = {
-#    'default': {
-#        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        # Or path to database file if using sqlite3.
-#        #'NAME': 'skyfolk_db',
-#        #'USER': 'postgres',
-#        #'PASSWORD': 'Palindromos_720',
-#        # Or path to database file if using sqlite3.
-#        'NAME': 'd27f8if9fbfjgl',
-#        'USER': 'iqzsahhpuvthkp',
-#        'PASSWORD': 'H9UoSdDil39_Z3TRjj_gn7JMja',
-#        # Empty for localhost through domain sockets or
-#        # '127.0.0.1' for localhost through TCP.
-#        'HOST': 'ec2-54-247-107-140.eu-west-1.compute.amazonaws.com',
-#        # Set to empty string for default.
-#        'PORT': '5432',
-#    }
-#}
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
@@ -232,7 +212,7 @@ SITE_ID = 1
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),
     ('Carlos Canicio', 'canicio7@gmail.com'),
-    ('Lostcitizen', 'lostcitizen@gmail.com'),
+    ('lostcitizen', 'lostcitizen@gmail.com'),
 )
 
 TEMPLATE_DIRS = (
@@ -242,4 +222,8 @@ TEMPLATE_DIRS = (
 STATICFILES_DIRS = (
     os.path.join(RAIZ_PROYECTO, 'static'),
 )
-
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+    os.path.join(RAIZ_PROYECTO, 'static'),
+        '/var/www/skyfolk.net/static/',
+)
