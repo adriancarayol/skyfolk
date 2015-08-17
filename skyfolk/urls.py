@@ -7,7 +7,7 @@ from api import views
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from user_profile import views as user_profile_views
-from aboutSkyfolk.views import about
+from about.views import about
 from market.views import market_inicio
 from relaciones.views import relaciones_user
 
