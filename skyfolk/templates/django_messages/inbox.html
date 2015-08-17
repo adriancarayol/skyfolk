@@ -43,12 +43,13 @@
                 <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
                 <br><br>
                 {% endif %}
-                 <span class="grey-text">{{message.body}}</span>
+                 <blockquote onclick="javascript:location.href='{{message.get_absolute_url }}'" class="grey-text truncate">{{message.body}}</blockquote>
                  <a class="borrar" href="{% url 'messages_delete' message.id %}">Borrar</a>
         </div>
       </div>
       {% endfor %}
 </div>
+
 
     </tbody>
 </div>

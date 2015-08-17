@@ -1,0 +1,111 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@import url(http://fonts.googleapis.com/css?family=Lato);
+
+body {
+	padding: 0;
+	background: none;
+	font-family: 'Open Sans', sans-serif;
+}
+
+h2 {
+	font-family: 'Lato', sans-serif;
+}
+.parallax-container {
+      height: 350px;
+ }
+
+.sk_info {
+	margin-left: 7px;
+}
+.tarjetas_info {
+	position: relative;
+	margin-left: 20%;
+}
+
+.icon_info, .icon_info_1, .icon_info_2 {
+	position: relative;
+	top: 45px;
+	margin: auto;
+	width: 80px;
+	height: 80px;
+	display: block;
+	border-radius: 100%;
+}
+.icon_info i {
+	text-align: center;
+	color: #bbdefb;
+}
+.icon_info_1 i {
+	color: #1e88e5;
+}
+.icon_info_2 i {
+	color: #42a5f5;
+}
+.info-logo-sk {
+	position: relative;
+	width: 200px;
+	height: 200px;
+	margin: auto;
+	margin-top: -300px;
+	border-radius: 100%;
+	cursor: pointer;
+	border: 2px solid #eee;
+	-webkit-transition: all .3s ease-in;
+	-moz-transition: all .3s ease-in;
+	transition: all .3s ease-in;
+}
+.info-logo-sk:hover {
+	border-color: #1e88e5;
+}
+.info-logo-sk img {
+	width: 100%;
+	height: 100%;
+}
+/* Out team - About us */
+
+.our-card-1, .our-card-2, .our-card-3 {
+	height: 300px;
+	margin-right: 20px;
+	margin-top: 20px;
+	max-width: 500px;
+	position: relative;
+	left: 9%;
+}
+.info-our-profile {
+	position: relative;
+	margin: auto;
+	width: 100%;
+}
+.info-our-profile .name {
+	position: relative;
+	top: 0;
+	width: 100%;
+	height: 20%;
+	background-color: transparent;
+	border-bottom: 1px solid #e0e0e0;
+	text-align: center;
+}
+.info-class {
+	position: relative;
+	width: 100%;
+	height: 70%;
+	background-color: transparent;
+	text-align: center;
+	margin-top: 20px;
+}
+.info-class i {
+	color: #ef5350;
+} 
+.info-class span {
+	color: #757575;
+	cursor: pointer;
+}
+
+/* Special thanks */
+
+.info-thanks {
+	position: relative;
+	margin: auto;
+	width: 70%;
+}
+

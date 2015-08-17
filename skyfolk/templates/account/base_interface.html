@@ -13,6 +13,7 @@
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+ <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
 
 <script src="{{STATIC_URL}}js/jquery.min.js"></script>
 <script src="{{STATIC_URL}}js/jquery-ui.js"></script>
@@ -31,6 +32,8 @@
 <link rel="stylesheet" href="{{STATIC_URL}}dist/sweetalert.css">
 <link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css">
 <script src="{{STATIC_URL}}dist/sweetalert.min.js"></script>
+
+<script src="{{STATIC_URL}}emoji/js/emoji.js"></script>
 
 <!-- NEW MENU -->
 
@@ -121,23 +124,27 @@ top.window.outerWidth = screen.availWidth;
   {% if user_profile.profile.image %}
 <div id="toggle">
   <nav class="menup">
-    <li class="profilee"><img src="{{user_profile.profile.image.url}}"><i>{{user_profile.username}}</i></li>
+    <li class="profilee"><img src="{{user_profile.profile.image.url}}"><i>{{user.username}}</i></li>
     <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
-    <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+    <li onclick="javascript:location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li onclick="javascript:location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
-    <li onclick="javascript:location.href='/relations'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
+    <li onclick="javascript:location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
     <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
+    <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
+    <li onclick="location.href='/about/home'">Ayuda</li>
   </nav>
 </div>
 {% else %}
 <div id="toggle">
   <nav class="menup">
-    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user_profile.username}}</i></li>
+    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user.username}}</i></li>
     <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion</li>
-    <li onclick="javascript:location.href='/messages'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+    <li onclick="javascript:location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li onclick="javascript:location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
-    <li onclick="javascript:location.href='/relations'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
+    <li onclick="javascript:location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
     <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
+    <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
+    <li onclick="location.href='/about/home'">Ayuda</li>
   </nav>
 </div>
 {% endif %}

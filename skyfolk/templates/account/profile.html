@@ -2,15 +2,6 @@
 {% load app_filters %}
 {% block include_files %}
 
-<!-- Para los emoticonos -->
-{% load emoji_tags %}
-{{ blog_post.body|emoji_replace }}
-{{ blog_post.body|emoji_replace_unicode }}
-{{ blog_post.body|emoji_replace_html_entities }}
-{% autoescape off %}
-{{ emoji|emoji_replace }}
-{% endautoescape %}
-
 <!-- Mostrar objetos al hacer scroll -->
 <script type="text/javascript">
 
@@ -178,18 +169,21 @@
 
                <span class="informacion">
                 {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('abort')></span>
-                   <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('abort')></span>
-                   <span id="publish" class="entypo-forward" title="Escribir"></span>
+                <span onclick="javascript:location.href='/config/profile/'" id="conf" class="entypo-cog" title="Configuracion"></span>
+                <span onclick="javascript:location.href='/friends/'" id="conf" class="entypo-users" title="Grupos"></span>
+                <span id="publish" class="entypo-forward" title="Escribir"></span>
                 {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
                    <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
+                {% if isFriend %}
                    <span id="publish" class="entypo-forward" title="Escribir"></span>
+                {% endif %}
                 {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
                    <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
                    <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
+                {% if isFriend %}
                    <span id="publish" class="entypo-forward" title="Escribir"></span>
-
+                {% endif %}
                 {% endif %}
                </span>
               </div>
@@ -317,7 +311,7 @@
             <p>{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
 
           </header>
-          <div class="status">Play hard.</div>
+          <div class="status">Estado por defecto.</div>
           <ul class="stats">
             <li><a href="/friends"><strong>380</strong><span>Seguidores</span></a></li>
             <li><a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a></li>
@@ -556,6 +550,7 @@
 				<div id="tab-timeline">
                     <div id="section">
                         <div class="wrapperx">
+                        {% if isFriend == True or user.username == user_profile.username %}
                             {% for item in publications_top15 %}
                             <div class="line">
                                 <li>
@@ -583,13 +578,18 @@
                                 </li>
                             </div>
                             {% endfor %}
+                            {% else %}
+                          <div class="cmt-hidden">
+                          <h3>¡Agrega a {{user_profile.username}} para ver sus comentarios!</h3>
+                          <br>
+                          </div>
+                          {% endif %}
                         </div>
                     </div>
 
 	         	</div>
 	<div id="tab-comentarios">
-
-
+  {% if isFriend or user.username == user_profile.username %}
 	{% for item in publications_top15 %}
 	<div class="wrapper" id="pub-{{item.from_publication__id}}">
             <div class="box">
@@ -621,6 +621,7 @@
                        <button class="localizacion_ampliado"><i class="fa fa-map-marker"></i></button>
                        <button class="foto_ampliado"><i class="fa fa-camera"></i></button>
                        </div>
+
                   </div>
                   </div>
 
@@ -653,12 +654,19 @@
                 <div id="actual-{{item.from_publication__id}}" class="replay-actual-message">
                   <div class="triangle-reply"></div>
                   <textarea name="reply-textarea" rows="4" cols="50"></textarea>
+
                 </div>
 					  	</div>
+    {% endfor %}
 
-					{% endfor %}
-
+    {% else %} 
+        <div class="cmt-hidden">
+          <h3>¡Agrega a {{user_profile.username}} para ver sus comentarios!</h3>
+            <br>
+        </div>
+    {% endif %}
 				</div>
+
             <!-- Abre un textarea para responder a un comentario -->
             <script>
                 $(document).ready(function(){
@@ -683,6 +691,93 @@
                         });
                       });
             </script>
+
+      <div id="atajos-keyboard-profile">
+        <table class="modal-table" summary="Atajos para acciones comunes.">
+          <div class="atajos-title">
+          Atajos de teclado
+          <i class="fa fa-close"></i>
+          </div>
+            <thead>
+            <div class="acc-atajos-div">
+              <tr class="acc-atajos">
+                <th colspan="2">Acciones</th>
+              </tr>
+              </div>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">m</b>
+                </td>
+                <td class="shortcut-label">Nuevo comentario</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">f</b>
+                </td>
+                <td class="shortcut-label">Favorito</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">r</b>
+                </td>
+                <td class="shortcut-label">Responder</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">a</b>
+                </td>
+                <td class="shortcut-label">Abrir atajos</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">d</b>
+                </td>
+                <td class="shortcut-label">Mensaje privado</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">s</b>
+                </td>
+                <td class="shortcut-label">Silenciar usuario</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">b</b>
+                </td>
+                <td class="shortcut-label">Bloquear usuario</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">o</b>
+                </td>
+                <td class="shortcut-label">Cerrar mensajes</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">p</b>
+                </td>
+                <td class="shortcut-label">Expandir foto</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">/</b>
+                </td>
+                <td class="shortcut-label">Buscar</td>
+              </tr>
+              <tr>
+                <td class="shortcut">
+                  <b class="sc-key">Shift</b>
+                  +
+                  <b class="sc-key">Enter</b>
+                </td>
+                <td class="shortcut-label">Enviar comentario</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+
 				<div id="tab-amigos">
 
 					  <ul class="list-friends">

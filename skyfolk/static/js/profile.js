@@ -62,10 +62,22 @@ $(document).ready(function() {
 
   });
 
-  $('#page-wrapper #message2').keypress(function(event) {
+  $('#atajos-keyboard-profile .atajos-title .fa-close').on('click',function() {
+    $('#atajos-keyboard-profile').fadeOut();
+  });
 
-    //tecla ENTER presinada
-    if (event.keyCode == 13) {
+
+  /* Menu vertical al hacer click cambia el estilo de "fa-bars" */
+
+  $(document).ready(function() {
+    $('.fa-bars').on('click',function() {
+          $(this).toggleClass("fa-bars-rotate");
+        });
+  });
+
+  $('#page-wrapper #message2').keypress(function(event) {
+    //tecla ENTER presinada + Shift
+    if (event.keyCode == 13 && event.shiftKey) {
 
       $('#sendformpubli').click();
 
@@ -83,6 +95,15 @@ $(document).ready(function() {
   	$('.crear-grupo').hide();
   });
 
+  /* Abrir - Cerrar lista de atajos */
+
+  $('.shortcut-keyboard').on('click',function() {
+    $('#atajos-keyboard-profile').fadeToggle("fast");
+  });
+
+/* ATAJOS DE DECLADO */
+
+/* Abre nuevo mensaje "m" */
 
   $(document).keypress(function(e){
     var key = e.which;
@@ -91,6 +112,15 @@ $(document).ready(function() {
         $('#page-wrapper').toggle();
     }
   });
+/* Abre atajos "a" */
+
+$(document).keypress(function(e){
+    var key = e.which;
+    if (key == 97 && ($('#atajos-keyboard-profile').is(':hidden')) && !($('#id_searchText').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        // Si presionas el char 'm' mostará el div para escribir un mensaje.
+        $('#atajos-keyboard-profile').show();
+    }
+});
 
 
   $('#tab-amigos').bind('scroll', function() {
@@ -700,3 +730,4 @@ $(document).ready(function() {
 
 
 });
+

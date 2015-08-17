@@ -132,12 +132,12 @@ def profile_view(request, username):
 @login_required(login_url='accounts/login')
 def search(request):
     # para mostarar tambien el cuadro de busqueda en la pagina
+
     searchForm = SearchForm(request.POST)
 
     if request.method == 'POST':
         if searchForm.is_valid:
             texto_to_search = request.POST['searchText']
-
             # hacer busqueda si hay texto para buscar, mediante consulta a la
             # base de datos y pasar el resultado
             if texto_to_search:
@@ -151,6 +151,8 @@ def search(request):
                 else:
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2])
+                if "carayol" == User.objects.filter(Q(first_name__icontains=texto_to_search)):
+                    myFriend = True
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': resultSearch}, context_instance=RequestContext(request))
 
@@ -169,6 +171,8 @@ def config_privacity(request):
 
 @login_required(login_url='/')
 def config_profile(request):
+
+    user_profile = request.user
 
     searchForm = SearchForm()
     print '>>>>>>>  PETICION CONFIG'
@@ -194,7 +198,7 @@ def config_profile(request):
         perfil_form = ProfileForm(instance=request.user.profile)
 
     print '>>>>>>>  paso x'
-    return render_to_response('account/cf-profile.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'user_form': user_form, 'perfil_form': perfil_form}, context_instance=RequestContext(request))
+    return render_to_response('account/cf-profile.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile':user_profile, 'user_form': user_form, 'perfil_form': perfil_form}, context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
     # 'user_form':user_form}, context_instance=RequestContext(request))
@@ -343,3 +347,8 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
 def changepass_confirmation(request):
     return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))
+
+
+def news_and_updates(request):
+
+    return render_to_response('account/novedades.html',context_instance=RequestContext(request))

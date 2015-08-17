@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 import publications
 #from publications.models import Publication
-
+import datetime
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
@@ -103,8 +103,7 @@ class UserProfile(models.Model):
     def get_myPublications(self):
         return self.publications.filter(
             to_publication__writer=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__id', 'to_publication__content', 'to_publication__created').reverse()
-      
-
+    
     def get_following(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWING)
 
@@ -114,6 +113,9 @@ class UserProfile(models.Model):
     def get_friends(self):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name', 'user__last_name', 'user__profile__image').order_by('id')
 
+    def get_username_friends(self):
+        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__username').order_by('id')
+        
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)
 

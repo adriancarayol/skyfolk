@@ -56,7 +56,7 @@ body > .container {
   @media only screen and (min-width: 1220px) {
     body > .container {
       font-size: 1.1em;
-      max-width: 1461px; } }
+      max-width: 1600px; } }
 
 .col-lg-1 {
   display: block;
@@ -856,7 +856,7 @@ body > .container {
  box-sizing: border-box;
  border-top-left-radius: 25px;
  border-bottom-left-radius: 25px;
- z-index: 9999;
+ z-index: 9998;
  -webkit-box-shadow: 0px 0px 1px 0px rgba(50, 50, 50, 0.75);
  -moz-box-shadow:    0px 0px 1px 0px rgba(50, 50, 50, 0.75);
  box-shadow:         0px 0px 1px 0px rgba(50, 50, 50, 0.75);
@@ -943,7 +943,7 @@ body > .container {
    border: 1px solid #e0e0e0;
    border-radius: 7px;
    font-family: 'Open Sans', sans-serif;
-   font-weight: 100;
+   font-weight: 400;
    font-size: 1.025em;
    text-align: center;
    margin-left: 7px;
@@ -951,6 +951,7 @@ body > .container {
 }
 .add-sug i {
   margin-right: 7px;
+  color: #1e88e5;
 }
 .weather .current {
   text-align: center;
@@ -1302,7 +1303,7 @@ ul.table > li {
     margin: auto;
     z-index: 9999;  
   }
-  .info-paw .info-nav {
+  .info-paw .info-nav { 
       width: 300px;
       height: 300px;
       border-radius: 100%;
@@ -1324,7 +1325,7 @@ ul.table > li {
     background-size: 80%;
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px solid #1976d2;
+    border: 1px solid #eee;
     border-radius: 100%;
     margin-right: -25px;
     margin-top: -25px;
@@ -1342,7 +1343,7 @@ ul.table > li {
     background-color: #fff;
     background-image: url('http://gccentrepreneurship.com/wp-content/uploads/2015/02/trophy-icon-black-icon-trophy.png');
     background-size: 80%;
-    border: 1px solid #1976d2;
+    border: 1px solid #eee;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 100%;
@@ -1358,7 +1359,7 @@ ul.table > li {
     height: 50px;
     float: right;
     background-color: #fff;
-    border: 1px solid #1976d2;
+    border: 1px solid #eee;
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Group_font_awesome.svg/512px-Group_font_awesome.svg.png');
     background-size: 80%;
     background-position: center;
@@ -1406,6 +1407,7 @@ ul.table > li {
     width: 90px;
     height: 90px;
     border-radius: 100%;
+    border: 2px solid rgba(25,118,210,1);
    }
    .trofeos {
     width: 50%;
@@ -1413,11 +1415,12 @@ ul.table > li {
     top: 100px;
     display: none;
     height: auto;
-    min-height: 600px;
+    min-height: 400px;
     background-color: #fff;
     position: absolute;
     margin: auto;
     z-index: 9999;
+    border-radius: 3px;
    }
    .trofeos .fa-close {
     float:right;
@@ -1425,6 +1428,7 @@ ul.table > li {
     margin-top: 7px;
     margin-right: 7px;
     color: #424242;
+    font-size: 15px;
     cursor: pointer;
    }
    .trofeos .trofeos-title {
@@ -1474,6 +1478,7 @@ ul.table > li {
     margin-top: 7px;
     margin-right: 7px;
     color: #424242;
+    font-size: 15px;
     cursor: pointer;
    }
    .grupos .grupos-title {
@@ -2040,7 +2045,74 @@ float:left;
     display: none;
   }
 }
+/* ATAJOS KEYBOARD */
 
+#atajos-keyboard-profile {
+  position: absolute;
+  top: 15%;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  width: 500px;
+  height: 400px;
+  z-index: 9999;
+  display: none;
+  background-color: #fff;
+  border-radius: 1px;
+}
+#atajos-keyboard-profile .atajos-title {
+  position: relative;
+  width: 100%;
+  height: 25px;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+  border-bottom: 2px solid #e0e0e0;
+  font-size: 16px;
+  color: #bdbdbd;
+  padding-bottom: 2.5px;
+  padding-top: 2.5px;
+}
+#atajos-keyboard-profile .atajos-title .fa-close {
+  float: right;
+  font-size: 14px;
+  margin-right: 5px;
+  margin-bottom: 1.5px;
+  cursor: pointer;
+}
+#atajos-keyboard-profile .acc-atajos-div {
+  margin-left: 20px;
+  position: relative;
+}
+#atajos-keyboard-profile .acc-atajos {
+  font-size: 15px;
+  color: #000;
+  font-weight: 500;
+}
+#atajos-keyboard-profile .modal-table {
+  position: relative;
+  margin: auto;
+  width: 90%;
+  margin-top: 2px;
+  height: 92.5%;
+}
+#atajos-keyboard-profile .modal-table .thead {
+  position: relative;
+  display: inline-block;
+  font-size: 14px;
+  color: #000;
+  border-bottom: 2px solid #eee;
+  margin-top: 1.5px;
+}
+#atajos-keyboard-profile .modal-table b {
+  background-color: #e0e0e0;
+  padding: 3px;
+  border-radius: 1.5px;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow:    0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+  box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+}
 /* WIDGET ENCUESTA */
 .stock .wrapper {
   margin-top: 0;
@@ -2133,4 +2205,26 @@ float:left;
 }
 .wrapper .widget-options .widget-result-no {
   color: #ef9a9a;
+}
+
+
+/* Div para mensajes ocultos */
+
+.cmt-hidden {
+  position: relative;
+  display: list-item;
+  list-style-type: none;
+  width: 95%;
+  margin: auto;
+  height: 400px;
+  margin-top: 50%;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+}
+.cmt-hidden h3 {
+  font-size: 2em;
+  color: #212121;
+  position: relative;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  top: 180px;
 }

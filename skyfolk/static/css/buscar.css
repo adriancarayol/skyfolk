@@ -133,12 +133,15 @@
 }
 .fa-bars:hover {
   color: grey;
-  transform: rotate(90deg);
   transition: all .3s ease-in;
   -webkit-transition: all .3s ease-in;
   -moz-transition: all .3s ease-in;
   }
-
+.fa-bars-rotate {
+    transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+}
 
 @media only screen and (min-width: 641px) and (max-width: 959px) {
   .field {
@@ -164,16 +167,16 @@
   top: 40px;
   margin-right: 200px;
   font-family: 'Open Sans', sans-serif;
-  height: 500px;
+  height: 540px;
   border-bottom-right-radius: 10px;
   color: #ccc;
   z-index: 9999;
 }
 #toggle img {
-  width: 70px;
-  height: 70px;
+  width: 75px;
+  height: 75px;
   border-radius: 100%;
-  border: 2px solid white;
+  border: 2px solid #eee;
   position: relative;
 }
 #toggle .profilee i {
@@ -204,11 +207,28 @@
   -moz-transition: all .3s ease-in;
   transition: all .3s ease-in;
   cursor: pointer;
+  border: none;
 }
-#toggle li:hover {
+#toggle li:nth-child(7) {
+  color: #000;
+}
+#toggle li:nth-child(8) {
+  margin-top: 20px;
+  border-top: 1px solid #1e88e5;
+  text-align: center;
+  color: #1e88e5;
+}
+#toggle li:nth-child(n+2):hover {
   background-color: white;
   color: grey;
+  border-right: 8px solid #eee;
 }
+#toggle li:nth-child(8):hover {
+  border-right: 8px solid #1e88e5;
+  border-left: 8px solid #1e88e5;
+  color: #1e88e5;
+}
+
 #notificationn {
   width: 210px;
   height: 200px;
