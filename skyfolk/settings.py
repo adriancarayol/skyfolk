@@ -55,7 +55,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
     'emoji',
-    'aboutSkyfolk',            # Informacion sobre la red social.
+    'about',            # Informacion sobre la red social.
     'market',                  # Tienda de la red social.
     'relaciones',			   # Controla las relaciones del usuario.
 )
@@ -173,10 +173,9 @@ DATABASES = {
         #'USER': 'postgres',
         #'PASSWORD': 'Palindromos_720',
         # Or path to database file if using sqlite3.
-        'NAME': 'skyfolkdb',
+        'NAME': 'skyfolk_db',
         'USER': 'skyfolk',
-        'PASSWORD': 'EB6E736224B550A605BD62A72CA47285'
-                    'D608107FE990362469B1EFF287277648',
+        'PASSWORD': 'v4g$h45HgY$%Y',
         # Empty for localhost through domain sockets or
         # '127.0.0.1' for localhost through TCP.
         'HOST': 'localhost',
@@ -184,26 +183,6 @@ DATABASES = {
         'PORT': '',
     }
 }
-
-#DATABASES = {
-#    'default': {
-#        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#        # Or path to database file if using sqlite3.
-#        #'NAME': 'skyfolk_db',
-#        #'USER': 'postgres',
-#        #'PASSWORD': 'Palindromos_720',
-#        # Or path to database file if using sqlite3.
-#        'NAME': 'd27f8if9fbfjgl',
-#        'USER': 'iqzsahhpuvthkp',
-#        'PASSWORD': 'H9UoSdDil39_Z3TRjj_gn7JMja',
-#        # Empty for localhost through domain sockets or
-#        # '127.0.0.1' for localhost through TCP.
-#        'HOST': 'ec2-54-247-107-140.eu-west-1.compute.amazonaws.com',
-#        # Set to empty string for default.
-#        'PORT': '5432',
-#    }
-#}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -233,7 +212,7 @@ SITE_ID = 1
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),
     ('Carlos Canicio', 'canicio7@gmail.com'),
-    ('Lostcitizen', 'lostcitizen@gmail.com'),
+    ('lostcitizen', 'lostcitizen@gmail.com'),
 )
 
 TEMPLATE_DIRS = (
@@ -243,26 +222,8 @@ TEMPLATE_DIRS = (
 STATICFILES_DIRS = (
     os.path.join(RAIZ_PROYECTO, 'static'),
 )
-
-##...................................................................
-
-# heroku
-
-# Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] = dj_database_url.config()
-# Honor the 'X-Forwarded-Proto' header for request.is_secure()
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Allow all host headers
-ALLOWED_HOSTS = ['*']
-# Static asset configuration
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = 'staticfiles'
-STATIC_URL = '/static/'
-
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, "static"),
+    os.path.join(RAIZ_PROYECTO, 'static'),
+        '/var/www/skyfolk.net/static/',
 )
-
-#..................................................................
