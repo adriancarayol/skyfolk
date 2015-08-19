@@ -14,15 +14,27 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 # Identificando la ruta de la raiz del proyecto
-import os
-RAIZ_PROYECTO = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+# import os
+# RAIZ_PROYECTO = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 gettext = lambda s: s
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'z_v9kx(!^1bqmedpn65t#*4t=6(0*17co+$%f!0vtug19xic()'
+#SECRET_KEY = 'z_v9kx(!^1bqmedpn65t#*4t=6(0*17co+$%f!0vtug19xic()'
+
+#Cargamos SECRET_KEY
+from django.core.exceptions import ImproperlyConfigured
+ 
+def get_env_variable(var_name):
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = "Set the %s environment variable" % var_name
+        raise ImproperlyConfigured(error_msg)
+ 
+SECRET_KEY = get_env_variable('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
