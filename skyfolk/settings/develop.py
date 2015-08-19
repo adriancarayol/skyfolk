@@ -215,7 +215,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Media (uploads, ...)
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR,'skyfolk'),'media')
 MEDIA_URL = '/media/'
 
 # Identificador
@@ -228,13 +228,10 @@ ADMINS = (
 )
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
+    os.path.join(os.path.join(BASE_DIR,'skyfolk'), 'templates'),
 )
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(os.path.join(BASE_DIR,'skyfolk'), "static"),
         '/var/www/skyfolk.net/static/',
 )
