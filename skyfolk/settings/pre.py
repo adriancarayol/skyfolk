@@ -1,7 +1,7 @@
 from .base import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # config e-mail
 #                   https://docs.djangoproject.com/en/dev/topics/email/
@@ -19,9 +19,9 @@ EMAIL_HOST_PASSWORD = '56g4eD&%&FGfgdsf'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'skyfolk_db',
-        'USER': 'skyfolk',
-        'PASSWORD': 'v4g$h45HgY$%Y',
+        'NAME': 'skyfolk-pre_db',
+        'USER': 'skyfolk-pre',
+        'PASSWORD': 'gDFgg$G=4h_%H',
         'HOST': 'localhost',
         'PORT': '',
     }

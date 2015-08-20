@@ -7,13 +7,15 @@ from publications.forms import PublicationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.db.models import Q
-from forms import ProfileForm, UserForm
+from user_profile.forms import ProfileForm, UserForm
 from user_profile.models import Relationship, LikeProfile, UserProfile
 from publications.models import Publication
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
-from django.utils import simplejson
+#from django.utils import simplejson
 #from django.utils import simplejson as json
+import json
+
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
@@ -49,8 +51,8 @@ def profile_view(request, username):
         if requestsToMe:
             requestsToMe_result = list()
             for item in requestsToMe:
-                print item
-                print str(item.pk) + " " + item.user.username + " " + item.user.email
+                print(item)
+                print(str(item.pk) + " " + item.user.username + " " + item.user.email)
                 requestsToMe_result.append(
                     {'id_profile': item.pk, 'username': item.user.username, })
 
@@ -77,20 +79,20 @@ def profile_view(request, username):
 
     if friend_request:
         existFriendRequest = True
-        print True
+        print(True)
     else:
         existFriendRequest = False
-        print False
+        print(False)
 
     # cargar lista de amigos (12 primeros)
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_friends()
-        print '>>>>>>> LISTA: '
+        print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
         friends = None
-
+        
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
@@ -109,7 +111,7 @@ def profile_view(request, username):
     # cargar lisa comentarios
     try:
         publications = user_profile.profile.get_publicationsToMe()
-        print '>>>>>>> LISTA PUBLICACIONES: '
+        print('>>>>>>> LISTA PUBLICACIONES: ')
         # print publications
         print(publications)
     except ObjectDoesNotExist:
@@ -175,18 +177,18 @@ def config_profile(request):
     user_profile = request.user
 
     searchForm = SearchForm()
-    print '>>>>>>>  PETICION CONFIG'
+    print('>>>>>>>  PETICION CONFIG')
     if request.POST:
         # formulario enviado
-        print '>>>>>>>  paso 1' + str(request.FILES)
+        print('>>>>>>>  paso 1' + str(request.FILES))
         user_form = UserForm(data=request.POST, instance=request.user)
         perfil_form = ProfileForm(
             request.POST, request.FILES, instance=request.user.profile)
 
-        print '>>>>>>>  paso 1.1'
+        print('>>>>>>>  paso 1.1')
         if user_form.is_valid() and perfil_form.is_valid():
             # formulario validado correctamente
-            print '>>>>>>  save'
+            print('>>>>>>  save')
             user_form.save()
             perfil_form.save()
             # poner mas tarde, que muestre un mensaje de formulario aceptado
@@ -197,7 +199,7 @@ def config_profile(request):
         user_form = UserForm(instance=request.user)
         perfil_form = ProfileForm(instance=request.user.profile)
 
-    print '>>>>>>>  paso x'
+    print('>>>>>>>  paso x')
     return render_to_response('account/cf-profile.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile':user_profile, 'user_form': user_form, 'perfil_form': perfil_form}, context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -220,7 +222,7 @@ def like_profile(request):
             user_liked.delete()
             response = "nolike"
         else:
-            print str(slug)
+            print(str(slug))
             created = user.profile.add_like(UserProfile.objects.get(pk=slug))
             created.save()
             response = "like"
@@ -229,13 +231,13 @@ def like_profile(request):
 
 
 def request_friend(request):
-    print '>>>>>>> peticion amistad '
+    print('>>>>>>> peticion amistad ')
     response = "null"
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
         profileUserId = slug
-        print str(profileUserId)
+        print(str(profileUserId))
         try:
             user_friend = user.profile.is_friend(profileUserId)
         except ObjectDoesNotExist:
@@ -256,7 +258,7 @@ def request_friend(request):
                     UserProfile.objects.get(pk=slug))
                 created.save()
 
-        print response
+        print(response)
 
     return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
 
@@ -319,7 +321,7 @@ def friends(request):
 
 def load_friends(request):
 
-    print '>>>>>> PETICION AJAX, CARGAR MAS AMIGOS'
+    print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.session.get('friends_list', None)
     if friendslist == None:
         friends_next = None
@@ -327,11 +329,11 @@ def load_friends(request):
         friendslist = simplejson.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
-            print '>>>>>>> SLUG: ' + slug
+            print('>>>>>>> SLUG: ' + slug)
             n = int(slug) * 12
             # devolvera None si esta fuera de rango?
             friends_next = friendslist[n - 12:n]
-            print '>>>>>>> LISTA: '
+            print('>>>>>>> LISTA: ')
             print(friends_next)
 
     return HttpResponse(simplejson.dumps(list(friends_next)), content_type='application/json')
