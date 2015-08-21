@@ -45,7 +45,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_friends()
-        print '>>>>>>> LISTA: '
+        print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
         friends = None
@@ -80,7 +80,7 @@ def outbox(request,template_name='django_messages/outbox.html'):
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_friends()
-        print '>>>>>>> LISTA: '
+        print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
         friends = None
@@ -119,7 +119,7 @@ def trash(request,template_name='django_messages/trash.html'):
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_friends()
-        print '>>>>>>> LISTA: '
+        print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
         friends = None
@@ -163,7 +163,7 @@ def compose(request,recipient=None, form_class=ComposeForm,
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_friends()
-        print '>>>>>>> LISTA: '
+        print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
         friends = None
@@ -220,7 +220,7 @@ def reply(request,message_id, form_class=ComposeForm,
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_friends()
-        print '>>>>>>> LISTA: '
+        print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
         friends = None
@@ -345,7 +345,7 @@ def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_friends()
-        print '>>>>>>> LISTA: '
+        print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
         friends = None
