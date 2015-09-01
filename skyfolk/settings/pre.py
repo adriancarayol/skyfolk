@@ -9,7 +9,7 @@ DEBUG = True
 # cuenta test de gmail para el envío de mails
 # user: dfgsdfgsdf906@gmail.com
 # pass: 56g4eD&%&FGfgdsf
-#                                                                               
+#
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -30,3 +30,4 @@ DATABASES = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/skyfolk.net/static/static-pre'
