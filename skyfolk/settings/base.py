@@ -66,7 +66,7 @@ FIRST_PARTY_APPS = (
     'publications',            # publicaciones en el perfil
     'about',                   # sobre los autores
     'market',                  # tienda de aplicaciones
-    'relaciones',              # app para controlar las relaciones entre users 
+    'relaciones',              # app para controlar las relaciones entre users
 )
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + FIRST_PARTY_APPS
