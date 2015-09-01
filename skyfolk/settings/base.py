@@ -19,17 +19,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
-#Cargamos SECRET_KEY                                                            
-from django.core.exceptions import ImproperlyConfigured                         
-                                                                                
-def get_env_variable(var_name):                                                 
-    try:                                                                        
-        return os.environ[var_name]                                             
-    except KeyError:                                                            
-        error_msg = "Set the %s environment variable" % var_name                
-        raise ImproperlyConfigured(error_msg)                                   
-                                                                                
-SECRET_KEY = get_env_variable('SECRET_KEY') 
+#Cargamos SECRET_KEY
+from django.core.exceptions import ImproperlyConfigured
+
+def get_env_variable(var_name):
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = "Set the %s environment variable" % var_name
+        raise ImproperlyConfigured(error_msg)
+
+SECRET_KEY = get_env_variable('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -149,13 +149,13 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # Required by allauth template tags                                         
-                "django.core.context_processors.request",                                   
-                # allauth specific context processors                                       
-                #"allauth.account.context_processors.account",                               
-                #"allauth.socialaccount.context_processors.socialaccount",                   
-                "django.core.context_processors.static",                                    
-                "django.core.context_processors.media",                                     
+                # Required by allauth template tags
+                "django.core.context_processors.request",
+                # allauth specific context processors
+                #"allauth.account.context_processors.account",
+                #"allauth.socialaccount.context_processors.socialaccount",
+                "django.core.context_processors.static",
+                "django.core.context_processors.media",
             ],
         },
     },
