@@ -9,11 +9,12 @@
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
 <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
-<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
+<link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
+
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
- <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+<meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
 
 <script src="{{STATIC_URL}}js/jquery.min.js"></script>
 <script src="{{STATIC_URL}}js/jquery-ui.js"></script>
@@ -33,12 +34,10 @@
 <link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css">
 <script src="{{STATIC_URL}}dist/sweetalert.min.js"></script>
 
-<script src="{{STATIC_URL}}emoji/js/emoji.js"></script>
 
 <!-- NEW MENU -->
 
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
 
 
 {% block include_files %}{% endblock %}
@@ -48,7 +47,7 @@
 $(document).ready(function(){
   $("#Menu").mouseover(function(){
     $("#panel").slideToggle("slow");
-	  });
+    });
 });
 
 $(document).ready(function(){
@@ -68,18 +67,18 @@ $(document).ready(function(){
 <script language="javascript">
 /*
 function aparecerbola(){
-	document.getElementById("widget").style.opacity = "0.9";
-	document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
+  document.getElementById("widget").style.opacity = "0.9";
+  document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
 }
 function cambiopagina(){
-	document.getElementById("widget").style.opacity = "0";
-	document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
-	setTimeout('location.href="columnas.php"', 500);
+  document.getElementById("widget").style.opacity = "0";
+  document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
+  setTimeout('location.href="columnas.php"', 500);
 }
 function cambiopagina(){
-	document.getElementById("widget").style.opacity = "0";
-	document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
-	setTimeout('location.href="columnas.php"', 500);
+  document.getElementById("widget").style.opacity = "0";
+  document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
+  setTimeout('location.href="columnas.php"', 500);
 }
 */
 </script>
@@ -150,52 +149,36 @@ top.window.outerWidth = screen.availWidth;
 {% endif %}
 
 <li><div class="field" id="searchform">
-  	<!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
-  	<!--<button type="submit" class="btn">¡Buscar!</button>-->
+    <!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
+    <!--<button type="submit" class="btn">¡Buscar!</button>-->
 
-	<form method='post' action='/search/'>{% csrf_token %}
+  <form method='post' action='/search/'>{% csrf_token %}
 
-		{{searchForm}}
-		<!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
+    {{searchForm}}
+    <!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
 
-	</form>
+  </form>
   <!-- Logotipo que re-direcciona a la pagina principal -->
-	<li>
+  <li>
   <div class="logotipo_skyfolk" onclick="javascript:window.location.href='/'">
 
   </div>
   </li>
 
-  	</div>
-  	</li>
-  	<li class="fa fa-comment fa-lg"></li>
-      <div class="notificationss">
-        <li class="fa fa-bell fa-lg"><em onclick="contador()">{{n_likes}}</em></li>
-        <div id="notificationn">
-          <ul class="not">
-        <li>
-            <div class="cabeza">
-              <em>3</em>
-            </div>
-        </li>
-        <div class="msg">
-            <li><i class="fa fa-heart fa-lg"></i><a>+1 me gusta.</a></li>
-            <li><i class="fa fa-user fa-lg"></i><a>Pepe ha comenzado a seguirte.</a></li>
-            <li><i class="fa fa-paper-plane-o fa-lg"></i><a>Pedro te ha enviado un mensaje.</a></li>
-      </div>
-  </ul>
-  </div>
-</div>
-<li class="fa fa-bars fa-lg"></li>
-  	<li>
-  	</ul>
+    </div>
+    </li>
+    <li class="fa fa-comment fa-lg"></li>
+    <li class="fa fa-bell fa-lg"><em onclick="contador()">{{n_likes}}</em></li>
+    <li class="fa fa-bars fa-lg"></li>
+    <li>
+    </ul>
 
-  	{% if showPerfilButtons or user.username == user_profile.username %}
+    {% if showPerfilButtons or user.username == user_profile.username %}
 
 
 
 
-  	{% endif %}
+    {% endif %}
 
 </nav>
 {% endblock %}

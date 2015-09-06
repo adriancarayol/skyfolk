@@ -22,18 +22,35 @@ $(document).ready(function() {
 
   });
 
+  /* LOADER para el perfil */
+  /*
+  $(window).load(function(e) {
+    $('.logotipo_skyfolk').addClass('logotipo_skyfolk-1');
+    $('body').css('background-color','tomato');
+  }); 
+
+*/
+/*
 
   $('#publish').on('click', function(event) {
 
-    $(".entypo-mail").click();
+    $(".fa-paper-plane").click();
 
   });
 
   $('#publish2').on('click', function(event) {
 
-    $(".entypo-mail").click();
+    $(".fa-paper-plane").click();
 
   });
+*/
+  
+  /* Al hacer click en el menu "bola" avanzamos hacia el TOP de la pagina */
+
+  $('.profile').click(function(){
+    $("html, body").animate({ scrollTop: 0 }, 200);
+    return false;
+ });
 
   $('.fa-paw').on('click',function() {
       $(".info-paw").fadeToggle("fast");
@@ -68,12 +85,22 @@ $(document).ready(function() {
 
 
   /* Menu vertical al hacer click cambia el estilo de "fa-bars" */
-
+/*
   $(document).ready(function() {
     $('.fa-bars').on('click',function() {
           $(this).toggleClass("fa-bars-rotate");
         });
   });
+*/
+
+/* Mostramos y ocultamos notificaciones y chat por la derecha */
+
+  $(".fa-bell").click(function(){
+            ($(".nav-vertical-and-chat").animate({width: 'toggle'},100) && $('body').toggleClass('move-body'));
+        });
+
+
+  /* Atajo para enviar comentarios mas rapido */
 
   $('#page-wrapper #message2').keypress(function(event) {
     //tecla ENTER presinada + Shift
@@ -87,12 +114,12 @@ $(document).ready(function() {
   /* Abrir crear/cerrar grupo en search.html */
 
   $('.btn-floating').on('click',function(event) {
-  	$('.crear-grupo').toggle("fast",function() {
-  	});
+    $('.crear-grupo').toggle("fast",function() {
+    });
   });
 
   $('#cerrar_grupo').on('click',function(event) {
-  	$('.crear-grupo').hide();
+    $('.crear-grupo').hide();
   });
 
   /* Abrir - Cerrar lista de atajos */
@@ -122,7 +149,8 @@ $(document).keypress(function(e){
     }
 });
 
-
+  /* FUNCIONES AJAX PARA TABS DE PERFIL */
+  
   $('#tab-amigos').bind('scroll', function() {
     if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
 
@@ -172,10 +200,12 @@ $(document).keypress(function(e){
           $(".comment").shorten({
             "showChars": 145
           });
+
         },
         error: function(rs, e) {
 
         }
+
       });
 
     }
@@ -297,22 +327,22 @@ function addPublicationToHtmlList(item) {
 
   if (item.user__profile__image) {
     $("#tab-comentarios").append('<div class="wrapper" id="pub-' + item.from_publication__id + '">\
-			        <div id="box">\
-			            <input id="profile" type="checkbox" checked>\
-			            <label class="popo" for="profile">\
-			            <img id="avatar-publication" src="' + MEDIA_URL + item.user__profile__image + '" alt="img" class="pub-avatar img-responsive">\
-			            </label>\
-			            <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
-			            <span class="entypo-forward" title="Responder"></span>\
-			        <span class="entypo-plus" title="Añadir a..."></span>\
-			      </div>\
-			      <article class="articulo">\
-			        <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
-			        <div class="parrafo comment">\
-			          <a target="_blank">' + item.from_publication__created + '</a><br>' + item.from_publication__content + '\
-			        </div>\
-			      </article>\
-			  </div>');
+              <div id="box">\
+                  <input id="profile" type="checkbox" checked>\
+                  <label class="popo" for="profile">\
+                  <img id="avatar-publication" src="' + MEDIA_URL + item.user__profile__image + '" alt="img" class="pub-avatar img-responsive">\
+                  </label>\
+                  <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
+                  <span class="entypo-forward" title="Responder"></span>\
+              <span class="entypo-plus" title="Añadir a..."></span>\
+            </div>\
+            <article class="articulo">\
+              <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
+              <div class="parrafo comment">\
+                <a target="_blank">' + item.from_publication__created + '</a><br>' + item.from_publication__content + '\
+              </div>\
+            </article>\
+        </div>');
 
 
 
@@ -350,22 +380,28 @@ function addPublicationToHtmlList(item) {
 
   } else {
     $("#tab-comentarios").append('<div class="wrapper">\
-			        <div id="box">\
-			            <input id="profile" type="checkbox" checked>\
-			            <label class="popo" for="profile">\
-			            <img id="avatar-publication" src="' + STATIC_URL + 'img/generic-avatar.png" alt="img" class="pub-avatar img-responsive">\
-			            </label>\
-			            <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
-			            <span class="entypo-forward" title="Responder"></span>\
-			        <span class="entypo-plus" title="Añadir a..."></span>\
-			      </div>\
-			      <article class="articulo">\
-			        <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
-			        <div class="parrafo comment">\
-			          <a target="_blank">' + item.from_publication__created + '</a><br>' + item.from_publication__content + '\
-			        </div>\
-			      </article>\
-			  </div>');
+              <div id="box">\
+                  <input type="checkbox" id="check-' + item.from_publication__id +'">\
+                  <label for="check-' + item.from_publication__id +'" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>\
+                  <div class="image">\
+                  <img id="avatar-publication" src="' + STATIC_URL + 'img/generic-avatar.png" alt="img" class="usr-img img-responsive">\
+                  </div>\
+            </div>\
+            <article class="articulo">\
+              <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
+              <div class="parrafo comment">\
+                <a target="_blank">' + item.from_publication__created + '</a><br><br>' + item.from_publication__content + '\
+              </div>\
+              <div class="optiones_comentarios">\
+                <ul class="opciones">\
+                       <li><i class="fa fa-heart"></i></li>\
+                       <li><i class="fa fa-quote-left"></i></li>\
+                       <li><i class="fa fa-reply"></i></li>\
+                       <li><i class="fa fa-tag"></i></li>\
+                    </ul>\
+                </div>\
+            </article>\
+        </div>');
 
   }
 
@@ -498,24 +534,30 @@ function AJAX_submit_publication() {
     success: function(data) {
       if (data == true) {
         swal({
-        	title: "",
-        	text: "You have successfully posted!",
-        	type: "success",
-        	timer: 1000,
-        	animation: "slide-from-top",
-        	showConfirmButton: false,
-
-        });
-        $('#page-wrapper').hide();
+          title: "",
+          text: "You have successfully posted!",
+          type: "success",
+          timer: 1000,
+          animation: "slide-from-top",
+          showConfirmButton: false,
+      });
+        
       } else {
         swal({
-        	title: "",
-	        text: "Failed to publish",
-		type: "error"
+          title: "",
+          text: "Failed to publish",
+    type: "error"
         });
       }
+      
+        $('#page-wrapper').hide(); // Ocultamos el DIV al publicar un mensaje.
+        
+        /* EN PRUEBAS */
+        var html = $(data).filter('#tab-comentarios').html();
 
-    },
+        $('#tab-comentarios').load(location.href + " #tab-comentarios"); // Mediante AJAX actualizamos los comentarios cuando hay uno nuevo.
+
+        },
     error: function(rs, e) {
       alert('ERROR: ' + rs.responseText);
     }
@@ -667,20 +709,23 @@ $(document).ready(function() {
       displaying = $(this).css("display");
       $("#toggle").val('');
       if (displaying == "none") {
-        $(this).fadeToggle(function() {
+        $(this).fadeToggle('fast',function() {
+          $(".fa-bars").addClass('fa-bars-rotate'); // Cambiamos el color de "fa-bars" para saber que el menu vertical está abierto.
           $(this).css("display", "block");
         });
       } else {
-        $(this).fadeToggle(function() {
+        $(this).fadeToggle('fast',function() {
+          $(".fa-bars").removeClass('fa-bars-rotate'); // Si esta oculto, fa-bars estará en su estado normal.
           $(this).css("display", "none");
         });
       }
     });
   });
 });
+
 /* Mensaje flotante */
 $(document).ready(function() {
-  $(".entypo-mail").click(function() {
+  $("#publish2").click(function()  {
     $("#page-wrapper").each(function() {
       displaying = $(this).css("display");
       $("#page-wrapper #message2").val('');
@@ -697,25 +742,23 @@ $(document).ready(function() {
   });
 });
 
-/* DISPLAY MESSAGES */
-
 $(document).ready(function() {
-  $(".fa-bell").click(function() {
-    $("#notificationn").each(function() {
+  $("#publish").click(function()  {
+    $("#page-wrapper").each(function() {
       displaying = $(this).css("display");
-      $("#notificationn").val('');
+      $("#page-wrapper #message2").val('');
       if (displaying == "none") {
-        $(this).fadeToggle(function() {
+        $(this).fadeOut('slow', function() {
           $(this).css("display", "block");
         });
       } else {
-        $(this).fadeToggle(function() {
+        $(this).fadeIn('slow', function() {
           $(this).css("display", "none");
         });
       }
     });
   });
-});;
+});
 
 
 function addItemToFriendList(name, lastname) {

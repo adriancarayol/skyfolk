@@ -1,67 +1,55 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
-@import url(http://weloveiconfonts.com/api/?family=entypo);
 @import url(http://fonts.googleapis.com/css?family=Gafata);
-@import url(http://weloveiconfonts.com/api/?family=entypo);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 @import url(http://fonts.googleapis.com/css?family=Gafata);
 @import url(http://fonts.googleapis.com/css?family=Carrois+Gothic+SC);
 
-/* entypo */
-[class*="entypo-"]:before {
-  font-family: 'entypo', sans-serif;
-}
-
-/* entypo */
-[class*="entypo-"]:before {
-  font-family: 'entypo', sans-serif;
-}
-
 body {
-	padding: 0;
-	background-color: #fff;
+  padding: 0;
+  background-color: #fff;
   max-width: 100%;
 }
 
 hgroup {
-	margin-bottom: 70px;
+  margin-bottom: 70px;
   position: relative;
 }
 span {
-	position: relative;
-	top: 40px;
-	left: 0px;
+  position: relative;
+  top: 40px;
+  left: 0px;
 }
 h6 {
-	position:  relative;
-  	margin-left:  70px;
-  	margin-top: 7px;
-  	color:  #3F3A3A;
-  	font-weight: 100;
-  	font-size: 13px;
+  position:  relative;
+    margin-left:  70px;
+    margin-top: 7px;
+    color:  #3F3A3A;
+    font-weight: 100;
+    font-size: 13px;
 }
 .fontawesome-cog {
- 		margin-left:  20px;
- 	 	padding:  10px 10px;
-  		font-family: 'Open Sans', sans-serif;
-  		font-weight: 300;
-  		font-size: 30px;
- 	 	color: grey;
-  		border-bottom: 1px solid rgba(44,44,44,0.854);
-  		width: 20%;
+    margin-left:  20px;
+    padding:  10px 10px;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      font-size: 30px;
+    color: grey;
+      border-bottom: 1px solid rgba(44,44,44,0.854);
+      width: 20%;
 
 }
 
 /* Menu vertical */ 
 aside {
-  	margin-left: 20px;
-  	background-color: #FAFAFA;
-  	height: 420px;
-  	width: 240px;
-  	border-radius:  7px;
-  	-webkit-box-shadow: 2px 2px 7px 0px #efefef;
-  	-moz-box-shadow:    2px 2px 7px 0px #efefef;
-  	box-shadow:         2px 2px 7px 0px #efefef;
-  	margin-top: 70px;
+    margin-left: 20px;
+    background-color: #FAFAFA;
+    height: 420px;
+    width: 240px;
+    border-radius:  7px;
+    -webkit-box-shadow: 2px 2px 7px 0px #efefef;
+    -moz-box-shadow:    2px 2px 7px 0px #efefef;
+    box-shadow:         2px 2px 7px 0px #efefef;
+    margin-top: 70px;
 }
 aside nav {
   list-style-type:  none;
@@ -122,52 +110,52 @@ aside nav li:hover > i {
   display: list-item;
 }
 label[for="id_first_name"] {
-	font-family: 'Open Sans', sans-serif;
-	position: absolute;
-  	color: rgba(44,44,44,0.776);
-  	font-weight: 100;
-  	top: 2px;
-  	margin-left: 5px;
+  font-family: 'Open Sans', sans-serif;
+  position: absolute;
+    color: rgba(44,44,44,0.776);
+    font-weight: 100;
+    top: 2px;
+    margin-left: 5px;
 }
 label[for="id_last_name"] {
-	font-family: 'Open Sans', sans-serif;
-	position: absolute;
-  	color: rgba(44,44,44,0.776);
-  	font-weight: 100;
-  	top: 2px;
-  	margin-left: 5px;
+  font-family: 'Open Sans', sans-serif;
+  position: absolute;
+    color: rgba(44,44,44,0.776);
+    font-weight: 100;
+    top: 2px;
+    margin-left: 5px;
 }
 #form-changepass {
   position: relative;
   left: 70px;
 }
 .img-circle {
-	  width: 100px;
-  	height: 100px;
-  	border: 1px solid #489AB1;
-  	cursor: pointer;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #489AB1;
+    cursor: pointer;
 }
 .chg {
-	position: relative;
-	display: inline-block;
-	top: 50px;
+  position: relative;
+  display: inline-block;
+  top: 50px;
   left: 30px;
-	height: auto;
+  height: auto;
 }
 .actual:focus {
-	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-   	border: 2px solid rgba(81, 203, 238, 1);
+  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 2px solid rgba(81, 203, 238, 1);
 }
 #float {
 
-	font-size: 15px;
-	font-family: 'Gafata', sans-serif;
-	margin: -30px;
-	padding-right: 5px;
-	background: #FFFFFF;
-	border: 50px solid #FFF;
-	border-radius: 8px 8px 8px 8px;
-	box-shadow: rgb(196,196,196) 5px 5px;
+  font-size: 15px;
+  font-family: 'Gafata', sans-serif;
+  margin: -30px;
+  padding-right: 5px;
+  background: #FFFFFF;
+  border: 50px solid #FFF;
+  border-radius: 8px 8px 8px 8px;
+  box-shadow: rgb(196,196,196) 5px 5px;
 }
 input[type="password"] {
   position: relative;
@@ -197,7 +185,7 @@ label[for="id_password2"] {
   top: 25px;
 }
 #contra {
-	position:  relative;
+  position:  relative;
   margin: auto; 
   display:  block;
   width:  680px;
@@ -205,16 +193,16 @@ label[for="id_password2"] {
   max-height: 410px;
   top:  -420px;
   border-radius: 7px;
- 	-webkit-box-shadow: 2px 2px 7px 0px #efefef;
-	-moz-box-shadow:    2px 2px 7px 0px #efefef;
-	box-shadow:         2px 2px 7px 0px #efefef;
+  -webkit-box-shadow: 2px 2px 7px 0px #efefef;
+  -moz-box-shadow:    2px 2px 7px 0px #efefef;
+  box-shadow:         2px 2px 7px 0px #efefef;
   border: 1px solid #ececec;
 }
 #contra li {
-	  	list-style-type: none;
-  		position: relative;
-  		display: block;
-  		margin-top: 30px;
+      list-style-type: none;
+      position: relative;
+      display: block;
+      margin-top: 30px;
 }
 
 /* Boton salvar cambios */
@@ -244,75 +232,75 @@ button[type="submit"] {
   font-size: 0.9em;
 }
 #image-clear_id {
-	position: relative;
-	display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 #id_image {
-	display: inline-block;
-	position: relative;
-	top: 40px;
-	margin-top: 30px;
+  display: inline-block;
+  position: relative;
+  top: 40px;
+  margin-top: 30px;
 }
 label[for="id_image"] {
-	color: #ccc;
-	font-weight: 100;
+  color: #ccc;
+  font-weight: 100;
 
 }
 hgroup {
-	position: relative;
-	margin-bottom: 30px;
-	margin-top: 0px;
+  position: relative;
+  margin-bottom: 30px;
+  margin-top: 0px;
 
 }
 .cn {
-	font-size: 20px;	
-	text-shadow: #ccc 0.5px 0.5px 0.5px;
-	color: #ccc;
-	font-family: 'Open Sans', sans-serif;
-	margin-left: 7px;
-	margin-top: -14px;
+  font-size: 20px;  
+  text-shadow: #ccc 0.5px 0.5px 0.5px;
+  color: #ccc;
+  font-family: 'Open Sans', sans-serif;
+  margin-left: 7px;
+  margin-top: -14px;
 
 }
 .ch { 
-	font-size: 12px;
-	text-shadow: #ccc 0.2px 0.2px 0.2px;
-	color: #ccc;
-	margin: 6px;
-	margin-top: 20px;
-	font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  text-shadow: #ccc 0.2px 0.2px 0.2px;
+  color: #ccc;
+  margin: 6px;
+  margin-top: 20px;
+  font-family: 'Open Sans', sans-serif;
 }
 .wrapper {
-	position:relative;
-	display: block;
-	background-color: #FAFAFA;
-	height: auto;
-	width: auto;
-	clear:both;
+  position:relative;
+  display: block;
+  background-color: #FAFAFA;
+  height: auto;
+  width: auto;
+  clear:both;
 }
 .profilex {
-	 width: 620px;
-  	border-bottom-left-radius: 70px;
-  	border-top-left-radius: 70px;
-  	border-bottom-right-radius: 7px;
-  	border-top-right-radius: 7px;
-  	height: 100px;
-  	background-color: #fff;
-  	left: 20px;
-  	border: 1px solid #ececec;
-  	margin-top: 12px;
-  	position: relative;
+   width: 620px;
+    border-bottom-left-radius: 70px;
+    border-top-left-radius: 70px;
+    border-bottom-right-radius: 7px;
+    border-top-right-radius: 7px;
+    height: 100px;
+    background-color: #fff;
+    left: 20px;
+    border: 1px solid #ececec;
+    margin-top: 12px;
+    position: relative;
 }
 
 @media (min-width: 1200px) {
-	#contra {
-		height: 1320px;
-	}
+  #contra {
+    height: 1320px;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
-	#contra {
-		height: 1500px;
-	}
+  #contra {
+    height: 1500px;
+  }
 }
 
 @media only screen and (min-width: 641px) and (max-width: 959px) {

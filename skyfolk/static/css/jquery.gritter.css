@@ -9,6 +9,7 @@
 	border-right: 5px;
 	background-color: #fff;
 }
+
 .gritter-item {
 	display:block;
 	color: #64b5f6;
@@ -93,7 +94,7 @@
 	color: #64b5f6;
 	padding: 5px 5px 5px 5px;
 	font-family: 'Open Sans', sans-serif;
-	font-size: 200;
+	font-size: 1em;
 	border-radius: 3px;
 	outline: none; 
 	cursor: pointer;
@@ -125,7 +126,7 @@
 	color: tomato;
 	padding: 5px 5px 5px 5px;
 	font-family: 'Open Sans', sans-serif;
-	font-size: 200;
+	font-size: 1em;
 	border-radius: 3px;
 	outline: none; 
 	cursor: pointer;
@@ -141,7 +142,7 @@
 	opacity: 0.8;
 	padding: 5px 5px 5px 5px;
 	font-family: 'Open Sans', sans-serif;
-	font-size: 200;
+	font-size: 1em;
 	border-radius: 5px;
 	outline: none; 
 	cursor: pointer;

@@ -15,9 +15,9 @@
   border-bottom: 4px solid rgba(44,44,44,0.777);
 }
 #contenedor {
-	width: 117%;
-	height: auto;
-	margin: auto;
+  width: 117%;
+  height: auto;
+  margin: auto;
 }
 #proffile {
   position: relative;
@@ -141,8 +141,9 @@
 
 .field>form input[type=text] {
   float: right;
-  left: 350%;
+  right: -400%;
   position:relative;
+  display: inline-block;
   width: 300px;
   background-color: #f0f0f0;
   opacity: 0.6;
@@ -163,7 +164,6 @@
   background-repeat: no-repeat;
   background-position: 95%;
   background-size: 13px;
-  line-height: -1.02px;
   padding: 0px 20px;
   color: black;
 }
@@ -172,7 +172,6 @@
   background-position: 1%;
 }
 .field>form input[type="text"] {
-  border: 0.2 em solid #3E9397;
   transition: all .3s ease-in;
 }
 
@@ -228,10 +227,9 @@
   float: left;
   display: inline-block;
   position: relative;
-  left: -350px;
   top: 14px;
   list-style-type: none;
-  margin-left: 50px;
+  margin-left: -300px;
   cursor: pointer;
 }
 .fa-bell em {
@@ -257,23 +255,6 @@
   -moz-transition: all .3s ease-in;
   }
 
-
-@media only screen and (min-width: 641px) and (max-width: 959px) {
-  .field {
-    width: 831px; }
-  }
-@media only screen and (max-width: 640px) {
-    .field {
-    width: 631px; }
-  }
-@media only screen and (max-width: 640px) {
-  .field {
-    width: 600px;
-  }
-  .fa-bell, .fa-comment {
-    right: -255px;
-  }
-}
 .toggle-2 {
   display: none;
   background-color: #fff;
@@ -422,7 +403,7 @@
   text-align: center;
   padding: 3px 0px;
   color: #fffffe;
-  margin-left: 0px;ç
+  margin-left: 0px;
   cursor: pointer;
 }
 #notificationn li:nth-child(1n+2) {
@@ -437,8 +418,8 @@
   margin-top: 0px;
   margin-botton: 0px;
  }
-.#toggle .menup-2 {
- box-shadow: 0;
+#toggle .menup-2 {
+ box-shadow: none;
 
 }
 .box-tool-2 {
@@ -454,6 +435,7 @@
 }
 .logotipo_skyfolk {
   position: fixed;
+  display: inline-block;
   width: 47px;
   background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');
   background-size: 120px;
@@ -571,4 +553,33 @@
   height: 550px;
   padding: 70px 350px 10px 0px;
   margin-top: 40px;
+}
+@media only screen and (max-width: 840px) {
+  .opciones_busqueda {
+    display: none;
+  }
+  .btn-floating  {
+    float: right;
+    position: absolute;
+    right: -80px;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .container {
+    left: -20%;
+  }
+  .btn-floating {
+    opacity: 0;
+  }
+  .fa-bars {
+    top: 14px;
+    margin-left: -100px;
+  }
+  .field>form input[type=text] {
+    right: -280px;
+    width: 100px;
+    margin-left: 18px;
+    margin-top: 4px;
+  }
 }
