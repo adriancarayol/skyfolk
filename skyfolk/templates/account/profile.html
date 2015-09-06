@@ -15,7 +15,7 @@
    var idRequestsTimer = null;
 
    if(requests){
-      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3000);
+      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3500);
 
     }
 
@@ -25,7 +25,7 @@
 
     <style type="text/css">
         #ilike_profile {
-            color: #29b203;
+            color: #ec407a;
         }
     </style>
 
@@ -47,31 +47,16 @@
 
 {% block content %}
 
-<div id="panel" style="display:none;">
-
-  <div id="widget" style="display:none;">
-
-    <div id="middle"></div>
-    <div id="linkedin" class="size left"><span class="entypo-users"></span></div>
-    <div id="middle"><div class="entypo-user"></div></div>
-
-    <div id="linkedin" class="size left"><a href="/friends"><span class="entypo-users"></span></a></div>
-    <div id="dribbble" class="size right"><span class="entypo-mail"></span></div>
-    <div id="facebook" class="size left"><a href="/newsevent"><span class="entypo-calendar"></span></div></a>
-    <div id="twitter" class="size right"><a href="{% url 'account_logout' %}"><span class="entypo-logout"></span></div></a>
-
-  </div>
-</div>
 {% if user_profile.profile.image %}
       <nav class="profile" style="background-image: url('{{user_profile.profile.image.url}}');">
-      <li class="fa fa-envelope fa-2x" id="publish2"></li>
+      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
       <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
       <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
       <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
     </nav>
 {% else %}
       <nav class="profile" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');">
-      <li class="fa fa-envelope fa-2x" id="publish2"></li>
+      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
       <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
       <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
       <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
@@ -139,7 +124,46 @@
 </div>
 -->
 <!-- Fin notificacion me gusta -->
+<!-- MENU VERTICAL CON NOTIFICACIONES Y CHAT -->
+<div class="nav-vertical-and-chat">
 
+<div clas="col-lg-12 col-md-12 col-sm-12">
+  <div class="chat_1"> <!-- Chat en menu vertical -->
+    <div class="ventana_m">
+      <ul class="conver">
+        <li>
+          <div class="me"><img src="http://e.fastcompany.net/multisite_files/fastcompany/slideshow/2013/05/3010031-slide-slide-3-how-to-talk-like-a-most-creative-person.jpg">
+            <p>Hey!, check your inbox!</p>
+          </div>
+        </li>
+        <li>
+          <div class="you"><img src="http://itspronouncedmetrosexual.com/wp-content/themes/ipmtheme/library/images/sam-killermann-headshot.jpg">
+            <p>Ok! I send you a message with your information.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!--
+    <ul class="ctrl">
+      <li>  </li>
+      <li>  </li>
+      <li>  </li>
+    </ul>
+    -->
+    <div class="opc">
+      <textarea></textarea>
+      <!--
+      <ul class="op">
+        <li class="emt"></li>
+        <li class="sent"></li>
+        <li class="voz"></li>
+      </ul>
+      -->
+    </div>
+  </div>
+</div>
+
+</div>
 
 <div class="container">
 
@@ -151,7 +175,7 @@
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="user-card card">
 
-          <div class="user-avatar"><img src="{{STATIC_URL}}img/1.jpg" class="user-bg"><span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"> </span>
+          <div class="user-avatar"><img src="{{STATIC_URL}}img/backgrounds/5.jpg" class="user-bg"><span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
             <!--<input type="checkbox" id="button-menu"  />-->
             {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
               <img id = "friend_request_progress" src="{{STATIC_URL}}img/friend_request_progress.png">
@@ -159,30 +183,30 @@
             <div class="caja">
              <div class="item">
 
-				{% if user_profile.profile.image and user_profile.profile.image|file_exists %}
-				   <img src="{{user_profile.profile.image.url}}" class="user-pic">
-				{% else %}
-				   <img src="{{STATIC_URL}}img/generic-avatar.png" class="user-pic">
-				{% endif %}
+        {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
+           <img src="{{user_profile.profile.image.url}}" class="user-pic">
+        {% else %}
+           <img src="{{STATIC_URL}}img/generic-avatar.png" class="user-pic">
+        {% endif %}
 
                <!--  <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">-->
 
                <span class="informacion">
                 {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
-                <span onclick="javascript:location.href='/config/profile/'" id="conf" class="entypo-cog" title="Configuracion"></span>
-                <span onclick="javascript:location.href='/friends/'" id="conf" class="entypo-users" title="Grupos"></span>
-                <span id="publish" class="entypo-forward" title="Escribir"></span>
+                <span onclick="javascript:location.href='/config/profile/'" id="conf" class="fa fa-cog" title="Configuracion"></span>
+                <span onclick="javascript:location.href='/friends/'" id="conf" class="fa fa-users" title="Grupos"></span>
+                <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
                 {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
-                   <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
+                   <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
+                   <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
                 {% if isFriend %}
-                   <span id="publish" class="entypo-forward" title="Escribir"></span>
+                   <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
                 {% endif %}
                 {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                   <span id="addfriend" class="entypo-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
-                   <span id="ilike_profile" class="entypo-thumbs-up" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
+                   <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
+                   <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
                 {% if isFriend %}
-                   <span id="publish" class="entypo-forward" title="Escribir"></span>
+                   <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
                 {% endif %}
                 {% endif %}
                </span>
@@ -226,15 +250,19 @@
                      <span id="close-trofeos" class="fa fa-close fa-2x"></span>
                       <h3 class="trofeos-title">Logros de {{ user_profile.username }}</h3>
                       <div class="wrapper-trofeos">
-                          <div class="col-sm-1 col-md-1 col-lg-1">
-                            <span class="trofeo-desb"><img src="https://cdn4.iconfinder.com/data/icons/ballicons-2-free/100/pencil-128.png" title="¡Primer comentario!" alt="¡Primer comentario!"></span>
+                          <div class="col-sm-3 col-md-3 col-lg-4">
+                            <span class="trofeo-desb"><img src="https://cdn4.iconfinder.com/data/icons/ballicons-2-free/100/pencil-128.png" title="¡Primer comentario!" alt="¡Primer comentario!">
+                            </span>
                           </div>
-                          <div class="col-sm-1 col-md-1 col-lg-1">
-                            <span class="trofeo-desb"><img src="https://cdn4.iconfinder.com/data/icons/ballicons-2-free/100/heart-128.png" title="1 me gusta" alt="1 me gusta"></span>
+                          <div class="col-sm-3 col-md-3 col-lg-4">
+                            <span class="trofeo-desb"><img src="https://cdn4.iconfinder.com/data/icons/ballicons-2-free/100/heart-128.png" title="1 me gusta" alt="1 me gusta">
+                            </span>
                           </div>
-                        <div class="col-sm-1 col-md-1 col-lg-1">
-                            <span class="trofeo-desb"><img src="https://cdn2.iconfinder.com/data/icons/ballicons-2-free/100/bowling-128.png" title="Jugador avanzado" alt="Jugador avanzado"></span>
-                          </div>  
+                        <div class="col-sm-3 col-md-3 col-lg-4">
+                            <span class="trofeo-desb"><img src="https://cdn2.iconfinder.com/data/icons/ballicons-2-free/100/bowling-128.png" title="Jugador avanzado" alt="Jugador avanzado">
+                            </span>
+                          </div>
+
                       </div>
                   </div>
                 </div>
@@ -247,47 +275,49 @@
                       <h3 class="grupos-title">Grupos de {{ user_profile.username }}</h3>
                       <div class="wrapper-grupos">
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg"  alt="img-group">
+                              <span class="text-description">Nombre del grupo</span>
+                              <i class="fa fa-users"> 50</i>
+                              <i class="fa fa-heart"> 12</i>
+                          </div>
+                          <div class="grupo-user">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg"  alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                           <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
-                              <span class="text-description">Nombre del grupo</span>
-                          </div>
-                          <div class="grupo-user">
-                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" title"img-group" alt="img-group">
+                              <img src="http://images.forwallpaper.com/files/thumbs/preview/77/779217__wallpaper-sports-extreme-style-skydiving_p.jpg" alt="img-group">
                               <span class="text-description">Nombre del grupo</span>
                           </div>
                       </div>
@@ -423,37 +453,37 @@
 
         <div class="vbox">
             <div class="user-video">
-                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+                <button class="play-user-video"><span class="fa fa-play"></span></button>
             </div>
             <div class="user-video">
-                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+                <button class="play-user-video"><span class="fa fa-play"></span></button>
             </div>
             <div class="user-video">
-                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+                <button class="play-user-video"><span class="fa fa-play"></span></button>
             </div>
             <div class="user-video">
-                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+                <button class="play-user-video"><span class="fa fa-play"></span></button>
             </div>
             <div class="user-video">
-                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+                <button class="play-user-video"><span class="fa fa-play"></span></button>
             </div>
             <div class="user-video">
-                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+                <button class="play-user-video"><span class="fa fa-play"></span></button>
             </div>
             <div class="user-video">
-                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+                <button class="play-user-video"><span class="fa fa-play"></span></button>
             </div>
             <div class="user-video">
-                <button class="play-user-video"><span class="fontawesome-play"></span></button>
+                <button class="play-user-video"><span class="fa fa-play"></span></button>
             </div>
             </div>
             <!--
           <div class="thumbnail"></div>
-          <button class="play-btn"><span class="fontawesome-play"></span></button>
+          <button class="play-btn"><span class="fa fa-play"></span></button>
             -->
         <ul class="unstyled controls table">
           <li class="play">
-            <button><span class="fontawesome-play"></span></button>
+            <button><span class="fa fa-play"></span></button>
           </li>
           <li class="timeline">
             <div class="progress-bar">
@@ -467,7 +497,7 @@
           <li class="volume-ctl">
             <ul class="unstyled table">
               <li class="volume-btn">
-                <button><span class="fontawesome-volume-up"></span></button>
+                <button><span class="fa fa-volume-up"></span></button>
               </li>
               <li class="volume-bar">
                 <div class="progress-bar">
@@ -479,7 +509,7 @@
             </ul>
           </li>
           <li class="fullscreen">
-            <button><span class="fontawesome-desktop"></span></button>
+            <button><span class="fa fa-desktop"></span></button>
           </li>
         </ul>
       </div>
@@ -547,7 +577,7 @@
             <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Amigos</a></li>
           </ul>
           <div class="unstyled content" id="hood-tabs">
-				<div id="tab-timeline">
+        <div id="tab-timeline">
                     <div id="section">
                         <div class="wrapperx">
                         {% if isFriend == True or user.username == user_profile.username %}
@@ -587,11 +617,11 @@
                         </div>
                     </div>
 
-	         	</div>
-	<div id="tab-comentarios">
+            </div>
+  <div id="tab-comentarios">
   {% if isFriend or user.username == user_profile.username %}
-	{% for item in publications_top15 %}
-	<div class="wrapper" id="pub-{{item.from_publication__id}}">
+  {% for item in publications_top15 %}
+  <div class="wrapper" id="pub-{{item.from_publication__id}}">
             <div class="box">
             <input type="checkbox" id="check-{{item.from_publication__id}}">
             <label for="check-{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>
@@ -617,7 +647,7 @@
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
                        <div class="botones_ampliado">
                        <button class="enviar_ampliado"><i class="fa fa-paper-plane"></i>Enviar</button>
-                       <button class="cerrar_ampliado"><i class="fa fa-close"></i>Cerrar</button>
+                       <button class="cerrar_ampliado"><i class="fa fa-close"></i><label for="check-{{item.from_publication__id}}">Cerrar</label></button>
                        <button class="localizacion_ampliado"><i class="fa fa-map-marker"></i></button>
                        <button class="foto_ampliado"><i class="fa fa-camera"></i></button>
                        </div>
@@ -625,21 +655,21 @@
                   </div>
                   </div>
 
-			<div class="image">
-				{% if item.user__profile__image and item.user__profile__image|file_exists %}
-				<img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
-					{% else %}
-						<img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
-							{% endif %}
-							      <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
-						</div>
+      <div class="image">
+        {% if item.user__profile__image and item.user__profile__image|file_exists %}
+        <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
+          {% else %}
+            <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
+              {% endif %}
+                    <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
+            </div>
 </div>
-</input>
-							  <article class="articulo">
-							    <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{item.user__username}}</a> mentioned you</h2>
-							    <div class="parrafo comment">
-							      <a target="_blank">{{item.from_publication__created}}</a><br>{{item.from_publication__content}}
-							    </div>
+
+                <article class="articulo">
+                  <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{item.user__username}}</a> mentioned you</h2>
+                  <div class="parrafo comment">
+                    <a target="_blank">{{item.from_publication__created}}</a><br>{{item.from_publication__content}}
+                  </div>
               <!-- OPCIONES DE COMENTARIOS -->
                 <div class="optiones_comentarios">
                     <ul class="opciones">
@@ -650,13 +680,13 @@
                     </ul>
                 </div>
 
-							  </article>
+                </article>
                 <div id="actual-{{item.from_publication__id}}" class="replay-actual-message">
                   <div class="triangle-reply"></div>
                   <textarea name="reply-textarea" rows="4" cols="50"></textarea>
 
                 </div>
-					  	</div>
+    </div>
     {% endfor %}
 
     {% else %} 
@@ -665,32 +695,8 @@
             <br>
         </div>
     {% endif %}
-				</div>
+        </div>
 
-            <!-- Abre un textarea para responder a un comentario -->
-            <script>
-                $(document).ready(function(){
-
-                        var myflags = new Array();
-
-                        $('.fa-reply').click(function(){
-                          var f1 = false;
-                          for(var i=0;i<myflags.length;i++)
-                          {
-                              if (myflags[i] == this.id)
-                                {
-                                  f1 = true;
-                                }
-                          }
-                          if (!f1)
-                          {
-                            $('#actual-'+this.id).fadeToggle();
-                            myflags.push(this.id);
-                          }
-                          return false;
-                        });
-                      });
-            </script>
 
       <div id="atajos-keyboard-profile">
         <table class="modal-table" summary="Atajos para acciones comunes.">
@@ -778,25 +784,25 @@
           </table>
       </div>
 
-				<div id="tab-amigos">
+        <div id="tab-amigos">
 
-					  <ul class="list-friends">
+            <ul class="list-friends">
 
-					      {% for item in friends_top12 %}
-					      			<!--<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a></li>-->
-									<li id="friend-{{item.user__id}}">
-									{% if item.user__profile__image and item.user__profile__image|file_exists %}
-									   <img src="{{MEDIA_URL}}{{item.user__profile__image}}" class="usr-img img-responsive">
-									{% else %}
-									   <img src="{{STATIC_URL}}img/generic-avatar.png" class="usr-img img-responsive">
-									{% endif %}
-									<a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
-									</li>
-					      {% endfor %}
+                {% for item in friends_top12 %}
+                      <!--<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a></li>-->
+                  <li id="friend-{{item.user__id}}">
+                  {% if item.user__profile__image and item.user__profile__image|file_exists %}
+                     <img src="{{MEDIA_URL}}{{item.user__profile__image}}" class="usr-img img-responsive">
+                  {% else %}
+                     <img src="{{STATIC_URL}}img/generic-avatar.png" class="usr-img img-responsive">
+                  {% endif %}
+                  <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                  </li>
+                {% endfor %}
 
-					  </ul>
+            </ul>
 
-				</div>
+        </div>
           </div>
       </div>
       </div>
@@ -818,21 +824,21 @@
                   Grupos
                   </div>
                 </div>
-                  {% for item in friends_top12 %}
+                  {% for item in allUsers %}
                  <div class="follower-sug">
                       {% if item.user__profile__image and item.user__profile__image|file_exists %}
                       <img  class="sug-user" src="{{MEDIA_URL}}{{item.user__profile__image}}">
                       <span class="name-sug">
-                      <a class="random-sug" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                      <a class="random-sug" href="/profile/{{ item.username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
                       <button class="add-sug"><i class="fa fa-plus"></i>Seguir</button>
                       </span>
                       {% else %}
-					  <img class="sug-user" src="{{STATIC_URL}}img/generic-avatar.png">
+                     <img class="sug-user" src="{{STATIC_URL}}img/generic-avatar.png">
                       <span class="name-sug">
-                      <a class="random-sug" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                      <a class="random-sug" href="/profile/{{ item.username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.username}})</a>
                      <button class="add-sug"><i class="fa fa-plus"></i>Seguir</button>
                       </span>
-					 {% endif %}
+                       {% endif %}
                       </div>
                     {% endfor %}
                   </div>
@@ -860,6 +866,7 @@
    <!-- </div> -->
           </div>
   </div>
+
 <!--</div>-->
 
 
@@ -870,23 +877,28 @@
   <fieldset class="controls">
   <ul class="btn">
     <li><button class="all">Todas</button></li>
-    <li><select>
-      <option value"choose" selected="selected">Choose...</option>
+    <li>
+        <select>
+      <option value="choose" selected="selected">Choose...</option>
       <option value="rec">Recientes</option>
       <option value="+">Mas Likes</option>
-      <option value="+m">Mas comentadas</option></select></li>
-    <li><select>
-      <option value"choose" selected="selected">Year...</option>
+      <option value="+m">Mas comentadas</option>
+        </select>
+    </li>
+    <li>
+        <select>
+      <option value="choose" selected="selected">Year...</option>
       <option value="rec">2015</option>
       <option value="+">2016</option>
-      <option value="+m">2017</option></select></li>
+      <option value="+m">2017</option></select>
+    </li>
   </ul>
   <ul class="layout">
     <li><button class="fontawesome-reorder"></button></li>
     <li><button class="fontawesome-table"></button></li>
 </ul>
+          </fieldset>
   <ul>
-    </fieldset>
     <li><div class="photo">
       <span class="text">
         <p href="#">Vacaciones en Tenerife.</p>
@@ -898,22 +910,22 @@
         <p>Vacaciones en Tenerife.</p>
         <i class="fontawesome-heart"> 1.031</i>
         <a class="fontawesome-comment"> 432</a>
-      </span></span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt"Photo"></div></li>
+      </span></span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt="Photo"></div></li>
     <li><div class="photo"><span class="text">
         <p href="#">Vacaciones en Tenerife.</p>
         <i class="fontawesome-heart"> 1.031</i>
         <a class="fontawesome-comment"> 432</a>
-      </span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt"Photo"></div></li>
+      </span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt="Photo"></div></li>
     <li><div class="photo"><span class="text">
         <p href="#">Vacaciones en Tenerife.</p>
         <i class="fontawesome-heart"> 1.031</i>
         <a class="fontawesome-comment"> 432</a>
-      </span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt"Photo"></div></li>
+      </span><img src="http://www.anvari.org/db/cols/Best_Journalism_Photos/Best_Photo_6.jpg" alt="Photo"></div></li>
     <li><div class="photo"><span class="text">
         <p href="#">Vacaciones en Tenerife.</p>
         <i class="fontawesome-heart"> 1.031</i>
         <a class="fontawesome-comment"> 432</a>
-      </span><img src="http://www.wellhappypeaceful.com/wp-content/uploads/2011/12/Dog-Cat-Best-Friend.jpg" alt"Photo"></div></li>
+      </span><img src="http://www.wellhappypeaceful.com/wp-content/uploads/2011/12/Dog-Cat-Best-Friend.jpg" alt="Photo"></div></li>
   </ul>
 </section>
 
@@ -942,31 +954,28 @@
 -->
 
 {% if user.is_authenticated %}
-	<div id="page-wrapper" style="display:none;">
-	  	<h1></h1>
-		<div id="status">to {{ user_profile.username }}</div>
-		<form id="message-form2" action="" method="post">{% csrf_token %}
+  <div id="page-wrapper" style="display:none;">
+      <h1></h1>
+    <div id="status">to {{ user_profile.username }}</div>
+    <form id="message-form2" action="" method="post">{% csrf_token %}
 
-			{{publicationForm.as_p}}
-			<input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
-			<input type="text" name="emitterid" value="{{ user.pk }}" hidden>
-		    <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"></i> Enviar</button>
-		    <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
-		    <button type="button" id="close"><i class="fa fa-remove"></i> Cerrar</button>
-		    <button class="fontawesome-bullhorn"></button>
-		    <button class="fontawesome-camera"></button>
-		    <button class="fontawesome-map-marker"></button>
+      {{publicationForm.as_p}}
+      <input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
+      <input type="text" name="emitterid" value="{{ user.pk }}" hidden>
+        <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"></i> Enviar</button>
+        <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
+        <button type="button" id="close"><i class="fa fa-remove"></i> Cerrar</button>
+        <button class="fontawesome-bullhorn"><i class="fa fa-bullhorn"></i></button>
+        <button class="fontawesome-camera"><i class="fa fa-camera"></i></button>
+        <button class="fontawesome-map-marker"><i class="fa fa-map-marker"></i></button>
 
-		</form>
-	</div>
+    </form>
+  </div>
 {% endif %}
 
 <!-- ALERTS BOOTSTRAP (NO USAR TODAVIA) -->
 <div id="friend-success" class="alert alert-success alert-dismissible" role="alert" hidden><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>You have added a friend!</div>
 <div id="publish-success" class="alert alert-success alert-dismissible" role="alert" hidden><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>You have successfully posted!</div>
-
-
-
 
 
 

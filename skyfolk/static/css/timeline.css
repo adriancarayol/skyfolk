@@ -5,7 +5,7 @@
 #section .wrapperx {
   position: relative;
  /* width: 900px; */
-  min-width: 100%;
+  max-width: 100%;
   /*top: 50px; */
   /*margin: auto; */
   float: left;
@@ -15,28 +15,7 @@
   border: 0;
   box-shadow: 0;
 }
-@media only screen and (max-width: 800px) {
-  #section .wrapperx {
-    /*width: 747px; */
-    width: 100%;
-  }
-}
-@media only screen and (min-width:800px) and (max-width: 900px) {
-  #section .wrapperx {
-    /*width: 780px; */
-    width: 100%;
-  }
-}
-@media only screen and (min-width: 960px) and (max-width: 1350px) {
-  #section .wrapperx {
-    /* width: 580px; */
-    width: 100%;
-  }
-  #section .wrapperx .line {
-    /* left: -60px;*/
-    width: 100%;
-  }
-}
+
 #section .wrapperx .line li {
   list-style-type: none;
 }
@@ -53,9 +32,8 @@
 /* Second */
 #section .wrapperx .line .second {
   position: relative;
-  min-width: 310px;
-  max-width: 100%;
-  background-color: 0;
+  min-width: 350px;
+  background-color: transparent;
   height: auto;
   float: right;
   right: -387px;

@@ -15,7 +15,7 @@ body {
 /* Random Background */
 #background_cycler{padding:0;margin:0;width:100%;position:absolute;top:0;left:0;z-index:-1;height:100%;}
 #background_cycler img{position:absolute;left:0;top:0;width:100%;z-index:1;height: 100%;}
-#background_cycler img.active{z-index:3};
+#background_cycler img.active{z-index:3}
 
 /* LOGO */
 .namesn {
@@ -24,7 +24,6 @@ body {
   width: 200px;
   height: 120px;
   margin: auto;
-  bottom: 200px;
 }
 .logo {
   position: relative;
@@ -103,6 +102,7 @@ form {
     position: relative;
     top: 23px;
     font-family: 'PT Sans', sans-serif;
+    color: #fff;
   
 
 }
@@ -139,7 +139,7 @@ form {
   font-weight: 100;
   top: -4px;
 }
-.form-3 input[type=text] {
+.form-3 input[type="text"] {
   width: 70%;
   position: relative;
   margin: auto;
@@ -246,7 +246,10 @@ form {
   margin-top: 3px;
   display: inline-block;
 }
-@media tv and (min-width: 700px) and (orientation: landscape) {
+
+/* Adaptamos el background del login dependiendo de la altura de la pagina */
+
+@media screen and (min-width: 700px) and (orientation: landscape) {
   .register {
     left: 120px;
   }
@@ -258,25 +261,27 @@ form {
   }
 }
 
-/* Adaptamos el background del login dependiendo de la altura de la pagina */
-@media screen and (max-height: 600px) {
-  #background_cycler {
-    height: 140%; 
+ @media screen and (max-width: 600px) {
+  .block-formregister {
+    margin: auto;
+    top: -80px;
+    float: none;
   }
-}
+  #background_cycler {
+    height: 115%; 
+  }
+  .footer_base {
+    display: none;
+  }
+ }
+
 @media screen and (max-height: 500px) {
   #background_cycler {
     height: 1000px;
   }
 }
 
-@media screen and (max-height: 300px) {
-  #background_cycler {
 
-  }
-}
-
-/* DE CARLOS*/
 .form-3 .form-group{
   height: 56%;
   width: 100%;
