@@ -12,8 +12,6 @@ from user_profile.models import Relationship, LikeProfile, UserProfile
 from publications.models import Publication
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
-#from django.utils import simplejson
-#from django.utils import simplejson as json
 import json
 
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -57,7 +55,7 @@ def profile_view(request, username):
                     {'id_profile': item.pk, 'username': item.user.username, })
 
             # print requestsToMe_result
-            json_requestsToMe = simplejson.dumps(requestsToMe_result)
+            json_requestsToMe = json.dumps(requestsToMe_result)
 
     # saber si el usuario que visita el perfil es amigo
     if request.user.username != username:
@@ -96,10 +94,10 @@ def profile_view(request, username):
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            #request.session['friends_list'] = simplejson.dumps(friends.values())
+            #request.session['friends_list'] = json.dumps(friends.values())
             #request.session['friends_list'] = list(friends)
             #request.session['friends_list'] = serializers.serialize('json', list(friends))
-            request.session['friends_list'] = simplejson.dumps(list(friends))
+            request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
         else:
@@ -120,7 +118,7 @@ def profile_view(request, username):
     publications_top15 = None
     if publications != None:
         if len(publications) > 15:
-            request.session['publications_list'] = simplejson.dumps(
+            request.session['publications_list'] = json.dumps(
                 list(publications), cls=DjangoJSONEncoder)
             publications_top15 = publications[0:15]
         else:
@@ -227,7 +225,7 @@ def like_profile(request):
             created.save()
             response = "like"
 
-    return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+    return HttpResponse(json.dumps(response), mimetype='application/javascript')
 
 
 def request_friend(request):
@@ -260,7 +258,7 @@ def request_friend(request):
 
         print(response)
 
-    return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+    return HttpResponse(json.dumps(response), mimetype='application/javascript')
 
 
 def respond_friend_request(request):
@@ -296,7 +294,7 @@ def respond_friend_request(request):
             else:
                 response = "rejected"
 
-    return HttpResponse(simplejson.dumps(response), mimetype='application/javascript')
+    return HttpResponse(json.dumps(response), mimetype='application/javascript')
 
 
 @login_required(login_url='/')
@@ -326,7 +324,7 @@ def load_friends(request):
     if friendslist == None:
         friends_next = None
     else:
-        friendslist = simplejson.loads(friendslist)
+        friendslist = json.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
             print('>>>>>>> SLUG: ' + slug)
@@ -336,7 +334,7 @@ def load_friends(request):
             print('>>>>>>> LISTA: ')
             print(friends_next)
 
-    return HttpResponse(simplejson.dumps(list(friends_next)), content_type='application/json')
+    return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
 
 
 class CustomPasswordChangeView(PasswordChangeView):
