@@ -2,7 +2,6 @@ from django.shortcuts import render, render_to_response , get_object_or_404
 from publications.forms import PublicationForm
 from django.http import HttpResponse
 from django.db import IntegrityError
-#from django.utils import simplejson
 import json
 from django.contrib.auth import get_user_model
 
@@ -29,7 +28,7 @@ def publication_form(request):
             except IntegrityError:
                 pass
 
-        return HttpResponse(simplejson.dumps(response), content_type='application/json')
+        return HttpResponse(json.dumps(response), content_type='application/json')
     
 def load_publications(request):
 
@@ -47,7 +46,7 @@ def load_publications(request):
             print('>>>>>>> LISTA: ')
             print(publications_next)
 
-    return HttpResponse(simplejson.dumps(list(publications_next)), content_type='application/json')
+    return HttpResponse(json.dumps(list(publications_next)), content_type='application/json')
 
 
 
