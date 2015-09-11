@@ -1,11 +1,16 @@
 #!/usr/bin/env python
-
 import subprocess
+import os
 
 if __name__ == "__main__":
     # Verficamos con git en que rama nos encontramos
-    stdoutdata = subprocess.check_output("git status", shell=True)
-
+    stdoutdata = subprocess.check_output(
+        'git status --git-dir=' + os.getcwd() + '/.git ' + '--work-tree=' + os.getcwd(),
+        shell=True
+    )
+    print('-----------------------stdoutdata')
+    print(stdoutdata)
+    print('---------------------------------')
     # Compara byte array
     if b'On branch develop' in stdoutdata:
         import manage.manage_develop
