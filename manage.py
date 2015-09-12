@@ -8,7 +8,7 @@ if __name__ == "__main__":
     if len (sys.argv) == 1:
         # Si tiene 1 argumento...
         pass
-
+    print("getcwd: " + os.getcwd())
     stdoutdata = subprocess.check_output(
         'git --work-tree=\"' + os.getcwd() + '\" --git-dir=\"' + os.getcwd() + '/.git\" status',
         shell=True
