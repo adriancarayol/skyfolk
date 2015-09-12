@@ -15,7 +15,11 @@ if __name__ == "__main__":
         primerParam = "null"
         segundoParam = "null"
 
+<<<<<<< HEAD
     #print("primerParam: " + primerParam + " / segundoParam" + segundoParam)
+=======
+    print("primerParam: " + str(primerParam) + " / segundoParam" + str(segundoParam))
+>>>>>>> 71f097ca4588a55e1da523bce33e0697430303be
     if primerParam == "--entorno" and ( segundoParam == "develop" or
                                         segundoParam == "pre" or
                                         segundoParam == "master" ):
