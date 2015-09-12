@@ -14,7 +14,7 @@ if __name__ == "__main__":
         primerParam = None
         segundoParam = None
 
-    print("primerParam: " + primerParam + " / segundoParam" + segundoParam)
+    print("primerParam: " + str(primerParam) + " / segundoParam" + str(segundoParam))
     if primerParam == "--entorno" and ( segundoParam == "develop" or
                                         segundoParam == "pre" or
                                         segundoParam == "master" ):
