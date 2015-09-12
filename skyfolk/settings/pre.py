@@ -19,8 +19,8 @@ EMAIL_HOST_PASSWORD = '56g4eD&%&FGfgdsf'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'skyfolk-pre_db',
-        'USER': 'skyfolk-pre',
+        'NAME': 'skyfolk_pre_db',
+        'USER': 'skyfolk_pre',
         'PASSWORD': 'gDFgg$G=4h_%H',
         'HOST': 'localhost',
         'PORT': '',
