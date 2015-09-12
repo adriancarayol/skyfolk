@@ -5,6 +5,7 @@ import sys
 
 if __name__ == "__main__":
 
+
     if os.path.isfile("/var/www/skyfolk/run/deploy-master.lock"):
         entorno = "master"
     elif os.path.isfile("/var/www/skyfolk/run/deploy-pre.lock"):
