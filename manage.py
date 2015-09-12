@@ -10,20 +10,21 @@ if __name__ == "__main__":
         primerParam = str(sys.argv[1])
         segundoParam = str(sys.argv[2])
     except:
-        print("catch")
-        primerParam = None
-        segundoParam = None
+        #sys.exit(0)
+        #print("catch")
+        primerParam = "null"
+        segundoParam = "null"
 
-    print("primerParam: " + primerParam + " / segundoParam" + segundoParam)
+    #print("primerParam: " + primerParam + " / segundoParam" + segundoParam)
     if primerParam == "--entorno" and ( segundoParam == "develop" or
                                         segundoParam == "pre" or
                                         segundoParam == "master" ):
-        print("Antes de extraer parametros: " + str(sys.argv))
+        #print("Antes de extraer parametros: " + str(sys.argv))
         deploy = True
         entorno = segundoParam
         sys.argv.remove(str(sys.argv[1]))
         sys.argv.remove(str(sys.argv[1]))
-        print("Despues de extraer parametros: " + str(sys.argv))
+        #print("Despues de extraer parametros: " + str(sys.argv))
     else:
         #develop
         entorno = "develop"
