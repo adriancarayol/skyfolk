@@ -200,6 +200,8 @@ USE_TZ = True
 
 SITE_ID=1
 
+FILE_CHARSET="utf-8"
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
