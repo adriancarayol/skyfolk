@@ -1,0 +1,300 @@
+{% load app_filters %}
+
+<!doctype html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/materialize.css" />
+		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/afinidad.css" />
+		<link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
+
+		  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+</head>
+
+	<body>
+	<header><h4 class="name-relations">Controla tus relaciones</h4></header>
+	<div class="container">
+		<div class="eje-central-relation">
+			{% if user_profile.profile.image and user_profile.profile.image|file_exists %}
+                         <img src="{{user_profile.profile.image.url}}" class="info-user-pic">
+                      {% else %}
+                         <img src="{{STATIC_URL}}img/generic-avatar.png" class="info-user-pic">
+                      {% endif %}
+						<div class="eje-secundario-relation">
+
+
+
+
+							<ul>
+
+								{% for item in bestFriendsOrBestFamily %}
+								<li>
+									<div class="eje-secundario">
+										{% if item.user__profile__image and item.user__profile__image|file_exists %}
+									<img src="{{user_profile.profile.image.url}}" title="{{item.user__username}}" alt="{{item.user__username}}">
+										{% else %}
+										<img src="{{STATIC_URL}}img/generic-avatar.png" title="{{item.user__username}}" alt="{{item.user__username}}">
+										{% endif %}
+									</div>
+								</li>
+								{% endfor %}
+							</ul>
+			</div>
+		</div>
+
+
+			<div class="relations-controls">
+			  <div class="divider"></div>
+				  <div class="section">
+				    <h5 class="blue-text text-darken-4">Tu familia</h5>
+				      <div class="row">
+						{% for item in bestFriendsOrBestFamily %}
+					        <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
+					          	<div class="image-card"><img class="circle responsive-img" src="{{user_profile.profile.image.url}}">	</div>
+								  {% else %}
+								  <div class="image-card"><img class="circle responsive-img" src="{{STATIC_URL}}img/generic-avatar.png">	</div>
+					          	{% endif %}
+					            <div class="card-content white-text">
+					              <span class="card-title">{{item.user__first_name}} {{item.user__last_name}} (@{{item.user__username}})</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+						{% endfor %}
+
+					      </div>
+				  </div>
+
+			  <div class="divider"></div>
+				  <div class="section">
+				    <h5 class="blue-text text-darken-4">Más comentarios</h5>
+				    				      <div class="row">
+
+					        <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/women/23.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Katie Walters</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+
+ 							<div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/women/60.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Christina Hayes</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+
+					 <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/men/96.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Melvin Herrera</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>	
+
+					      </div>
+				  </div>
+
+			  <div class="divider"></div>
+				  <div class="section">
+				    <h5 class="blue-text text-darken-4">Más me gusta</h5>
+				    				      <div class="row">
+
+					        <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/women/23.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Katie Walters</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+
+ 							<div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/women/60.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Christina Hayes</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+
+					 <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/men/96.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Melvin Herrera</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>	
+
+					      </div>
+			  </div>
+
+			  <div class="divider"></div>
+				  <div class="section">
+				    <h5 class="blue-text text-darken-4">Más fotos juntos</h5>
+				    				      <div class="row">
+
+					        <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/women/23.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Katie Walters</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+
+ 							<div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/women/60.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Christina Hayes</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+
+					 <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/men/96.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Melvin Herrera</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>	
+
+					      </div>
+			  </div>
+
+			  <div class="divider"></div>
+				  <div class="section">
+				    <h5 class="blue-text text-darken-4">Más citados</h5>
+				    				      <div class="row">
+
+					        <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/women/23.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Katie Walters</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+
+ 							<div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/women/60.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Christina Hayes</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>
+
+					 <div class="col s12 m6">
+					          <div class="card blue lighten-1">
+					          	<div class="image-card"><img class="circle responsive-img" src="https://randomuser.me/api/portraits/med/men/96.jpg">	</div>
+					            <div class="card-content white-text">
+					              <span class="card-title">Melvin Herrera</span>
+					              <p>I am a very simple card. I am good at containing small bits of information.
+					              I am convenient because I require little markup to use effectively.</p>
+					            </div>
+					            <div class="card-action">
+					              <a class="white-text" href="#"><i class="small material-icons left">person_pin</i>Visitar perfil</a>
+					              <a class="white-text" href="#"><i class="small material-icons">delete</i>Borrar relación</a>
+					            </div>
+					          </div>
+					        </div>	
+
+					      </div>
+			  </div>
+
+
+			</div>
+	</div>
+
+	</body>
+
+</html>

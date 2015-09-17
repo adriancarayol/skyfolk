@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="Mi perfil">
+<meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
+<link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/widget1.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
+<link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
+<link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
+<link rel="icon" type="image/png" href="{% static "images/favicon.ico" %}" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+
+<script src="{{STATIC_URL}}js/jquery.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery-ui.js"></script>
+<script src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
+<script src="{{STATIC_URL}}js/jquery.gritter.js"></script>
+<script src="{{STATIC_URL}}js/profile.js"></script>
+<script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
+<script src="{{STATIC_URL}}js/noti.js"></script>
+<script src="{{STATIC_URL}}js/notia.js"></script>
+<script src="{{STATIC_URL}}js/drag.js"></script> <!-- Permite mover el bloque donde se escribe un nuevo mensaje -->
+<script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
+<script src="{{STATIC_URL}}js/scrollReveal.js"></script>
+<script src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+<!-- Sweet Alert -->
+
+<link rel="stylesheet" href="{{STATIC_URL}}dist/sweetalert.css">
+<link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css">
+<script src="{{STATIC_URL}}dist/sweetalert.min.js"></script>
+
+
+<!-- NEW MENU -->
+
+
+
+
+{% block include_files %}{% endblock %}
+
+<script>
+/*
+$(document).ready(function(){
+  $("#Menu").mouseover(function(){
+    $("#panel").slideToggle("slow");
+    });
+});
+
+$(document).ready(function(){
+  $("#Menu").mouseover(function(){
+    $("#panel").animate({
+      left:'250px',
+      opacity:'0.9',
+      height:'0px',
+      width:'0px'
+    });
+  });
+});
+*/
+</script>
+
+
+<script language="javascript">
+/*
+function aparecerbola(){
+  document.getElementById("widget").style.opacity = "0.9";
+  document.getElementById("widget").style.webkitTransition = "opacity 1s linear";
+}
+function cambiopagina(){
+  document.getElementById("widget").style.opacity = "0";
+  document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
+  setTimeout('location.href="columnas.php"', 500);
+}
+function cambiopagina(){
+  document.getElementById("widget").style.opacity = "0";
+  document.getElementById("widget").style.webkitTransition = "opacity 0.9s linear";
+  setTimeout('location.href="columnas.php"', 500);
+}
+*/
+</script>
+
+<script language="JavaScript1.2">
+<!--
+
+window.moveTo(0,0);
+if (document.all) {
+top.window.resizeTo(screen.availWidth,screen.availHeight);
+}
+else if (document.layers||document.getElementById) {
+if (top.window.outerHeight<screen.availHeight||top.window.outerWidth<screen.availWidth){
+top.window.outerHeight = screen.availHeight;
+top.window.outerWidth = screen.availWidth;
+}
+}
+//-->
+</script>
+
+
+
+
+
+
+</head>
+
+<body>
+
+{% block barra_navegacion %}
+<!-- <div id="oHBContainer"> -->
+<nav class="box-tool">
+<ul>
+<!-- Segundo menu bola <li><button type="button" id="Menu">
+
+<div id="centro"><img src="" width="300" height="300"><span class="entypo-user"></span></div>
+<div id="llinkedin" class="size left"><span class="entypo-users"></span></div>
+<div id="ddribbble" class="size right"><span class="entypo-mail"></span></div>
+<div id="ffacebook" class="size left"><span class="entypo-calendar"></span></div>
+<div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
+    </button>-->
+  {% if user_profile.profile.image %}
+<div id="toggle">
+  <nav class="menup">
+    <li class="profilee"><img src="{{user_profile.profile.image.url}}"><i>{{user.username}}</i></li>
+    <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
+    <li onclick="javascript:location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+    <li onclick="javascript:location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
+    <li onclick="javascript:location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
+    <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
+    <li onclick="location.href='/about/home'">Ayuda</li>
+  </nav>
+</div>
+{% else %}
+<div id="toggle">
+  <nav class="menup">
+    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user.username}}</i></li>
+    <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion</li>
+    <li onclick="javascript:location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+    <li onclick="javascript:location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
+    <li onclick="javascript:location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
+    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
+    <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
+    <li onclick="location.href='/about/home'">Ayuda</li>
+  </nav>
+</div>
+{% endif %}
+
+<li><div class="field" id="searchform">
+    <!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
+    <!--<button type="submit" class="btn">¡Buscar!</button>-->
+
+  <form method='post' action='/search/'>{% csrf_token %}
+
+    {{searchForm}}
+    <!--<button type="submit" class="btn" onclick="javascript:window.location.href='/search'">¡Buscar!</button>-->
+
+  </form>
+  <!-- Logotipo que re-direcciona a la pagina principal -->
+  <li>
+  <div class="logotipo_skyfolk" onclick="javascript:window.location.href='/'">
+
+  </div>
+  </li>
+
+    </div>
+    </li>
+    <li class="fa fa-comment fa-lg"></li>
+    <li class="fa fa-bell fa-lg"><em onclick="contador()">{{n_likes}}</em></li>
+    <li class="fa fa-bars fa-lg"></li>
+    <li>
+    </ul>
+
+    {% if showPerfilButtons or user.username == user_profile.username %}
+
+
+
+
+    {% endif %}
+
+</nav>
+{% endblock %}
+{% block content %}{% endblock %}
+
+</body>
+
+</html>

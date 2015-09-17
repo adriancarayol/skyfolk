@@ -1,0 +1,37 @@
+{% extends "account/base_cf.html" %}
+{% block additional_files %}
+	<style>
+		#menucf-profile {
+			background:#fafafa;
+		}
+		
+	</style>
+{% endblock%}
+
+{% block cf-title %}
+<hgroup>
+	<h4 class="cn"> Perfil </h4>
+	<h6 class="ch"> Cambia datos de tu perfil</h6>
+</hgroup>
+{% endblock %}
+
+{% block cf-form %}
+	<!--
+	Cambiar imagen <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
+	<input id="btn" type="submit" value="Guardar cambios">
+	-->
+	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
+	<div class="profilex">
+	{% if user_profile.profile.image %}
+	<img src="{{user_profile.profile.image.url}}" class="img-circle">
+	{% else %}
+	<img src="{{STATIC_URL}}img/generic-avatar.png" class="img-circle">
+	{% endif %}
+		{{ user_form }}
+	</div>
+	<div class="chg">
+    	{{ perfil_form }}
+		<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
+		</div>
+	</form>
+{% endblock %}

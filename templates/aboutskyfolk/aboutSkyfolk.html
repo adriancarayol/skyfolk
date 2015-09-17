@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/about.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
+    <link rel="icon" type="image/png" href="{% static "images/favicon.ico" %}" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>Sobre Skyfolk - Conoce un poco mas.</title>
+    <script>
+    $(document).ready(function(){
+      $('.parallax').parallax();
+    });
+    </script>
+
+</head>
+<body>
+    {% block nav %}
+        <nav class="grey lighten-4" id="navigation">
+            <div class="container">
+                <ul class="navlinks">
+                  <li><a class="blue-text text-darken-2" href="/about/home">Homepage</a></li>
+                  <li><a class="blue-text text-darken-2" href="/about/us">About Us</a></li>
+                  <li><a class="blue-text text-darken-2" href="/about/project">Project</a></li>
+                  <li><a class="blue-text text-darken-2" href="/about/team">The Team</a></li>
+                  <li><a class="blue-text text-darken-2" href="/about/special">Special Thanks</a></li>
+                </ul>
+            </div>
+    </nav>
+    {% endblock %}
+    {% block frontal %}
+    <div class="parallax-container">
+    <div class="parallax"><img src="http://images.artelista.com/artelista/obras/big/9/4/2815776578132337.jpg"></div>
+  </div>
+  <div class="section white">
+    <div class="row container">
+      {% block title %}<h2 class="grey-text text-lighten-1 header">Skyfolk</h2>{% endblock %}
+      {% block description %}<p class="grey-text text-darken-3 lighten-3 sk_info">Skyfolk es tu red social definitiva, recibe noticias, controla tus relaciones, administra tu mundo.</p>{% endblock %}
+    </div>
+      {% endblock %}
+    <!-- Creamos las tarjetas con informacion -->
+      {% block content %}
+<div class="tarjetas_info">
+  <div class="row">
+    <div class="col s3 m3 l3">
+        <div class="white card-panel teal">
+        <h5>
+            Elige el aspecto de tu perfil.
+        </h5>
+          <span class="blue-text text-darken-1">
+          Tú eres el protagonista.
+          <br><br>
+          Elige la configuración de tu perfil, el aspecto que tendrá y la manera en la que tus contactos pueden interactuar con ella.
+          <br><br>
+          No olvides visitar <a href="/market">nuestra tienda</a> para administrar tus widgets facilmente.
+          <br><br>
+          <br><br>
+          </span>
+        <div class="icon_info_1">
+              <i class="large material-icons">dashboard</i>
+        </div>
+        </div>
+      </div>
+
+    <div class="col s3 m3 l3">
+        <div class="white card-panel teal">
+        <h5>
+            Administra tus relaciones.
+        </h5>
+          <span class="blue-text text-darken-1">
+          Nadie mejor que tu para decidir que papel juegan las personas en tu vida.
+
+          <br><br>
+          Por ello podrás elegir distintas opciones para tenerlos más cerca, avisarte si pasa algo importante, animar a un amigo o quedar con la familia.
+          <br><br>
+          <br><br>
+          <br>
+          </span>
+        <div class="icon_info_2">
+              <i class="large material-icons">contacts</i>
+        </div>
+        </div>
+      </div>
+
+    <div class="col s3 m3 l3">
+        <div class="white card-panel teal">
+          <h5>
+            Crea tus propios grupos.
+          </h5>
+          <span class="blue-text text-darken-1">
+          Tu eliges: Público o privado.
+          <br><br>
+          Administra tus grupos con mayor facilidad, comparte información, imágenes, videos, eventos.
+          <br><br>
+          Puedes incluir widgets en los grupos para que los participantes puedan interactuar con ellos, dependiendo la temática del grupo, puedes elegir entre un repertorio de widgets inmenso.
+          </span>
+            <div class="icon_info">
+              <i class="large material-icons">group_work</i>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="parallax-container">
+    <div class="parallax"><img src="images/parallax2.jpg"></div>
+  </div>
+  <div class="info-logo-sk">
+    <img onclick="location.href='/'" src="{{STATIC_URL}}img/logo.png" title="skyfolk" alt="skyfolk">
+  </div>
+{% endblock %}
+</body>
+</html>
