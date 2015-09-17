@@ -6,7 +6,7 @@ import sys
 
 if __name__ == "__main__":
 
-
+    # verificamos si param --entorno [develop|pre|master]
     deploy = False
     try:
         primerParam = str(sys.argv[1])
