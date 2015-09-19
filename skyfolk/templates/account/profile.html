@@ -599,6 +599,7 @@
                                         </div>
                                         <div class="controles">
                                             <ul>
+                                                <li class="fa fa-trash fa-lg"></li>
                                                 <li class="fa fa-heart fa-lg"></li>
                                                 <li class="fa fa-tag fa-lg"></li>
                                                 <li class="fa fa-quote-left fa-lg"></li>
@@ -621,7 +622,7 @@
   <div id="tab-comentarios">
   {% if isFriend or user.username == user_profile.username %}
   {% for item in publications_top15 %}
-  <div class="wrapper" id="pub-{{item.from_publication__id}}">
+  <div class="wrapper" id="pub-{{item.from_publication__id}}" data-id="{{ user.pk }}">
             <div class="box">
             <input type="checkbox" id="check-{{item.from_publication__id}}">
             <label for="check-{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>
@@ -673,6 +674,11 @@
               <!-- OPCIONES DE COMENTARIOS -->
                 <div class="optiones_comentarios">
                     <ul class="opciones">
+                        {% if user.is_authenticated and user.username == item.user__username %} <!-- Si estamos visitando un perfil que no es el nuestro -->
+                             <li><i class="fa fa-trash"></i></li>
+                        {% elif user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
+                             <li><i class="fa fa-trash"></i></li>
+                        {% endif %}
                        <li><i class="fa fa-heart"></i></li>
                        <li><i class="fa fa-quote-left"></i></li>
                        <li><i class="fa fa-reply"></i></li>

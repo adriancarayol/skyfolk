@@ -93,6 +93,29 @@ $(document).ready(function() {
   });
 */
 
+    /* Borrar publicacion */
+  $('.optiones_comentarios .fa-trash').on('click',function() {
+    var caja_publicacion = $(this).closest('.wrapper');
+    //alert($(caja_comentario).html());
+    swal({
+        	title: "Are you sure?",
+            text: "You will not be able to recover this publication!",
+            type: "warning",
+        	animation: "slide-from-top",
+        	showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No God, please no!",
+            closeOnConfirm: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                AJAX_delete_publication(caja_publicacion);
+            }
+        });
+  });
+
+
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
 
   $(".fa-bell").click(function(){
@@ -767,10 +790,39 @@ function addItemToFriendList(name, lastname) {
 
 }
 
+/*****************************************************/
+/********** AJAX para botones de comentarios *********/
+/*****************************************************/
 
-$(document).ready(function() {
+function AJAX_delete_publication(caja_publicacion) {
+  var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
+  var id_user = $(caja_publicacion).data('id')// obtengo id
+  var data = {
+           userprofile_id: id_user,
+           publication_id: id_pub
+       };
+  //event.preventDefault(); //stop submit
+  $.ajax({
+    url: '/publication/delete/',
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    success: function(data) {
+        // borrar caja publicacion
+        if (data==true) {
+            $(caja_publicacion).fadeToggle("fast");
+        }else{
+            swal({
+                title: "Fail",
+                text: "Failed to delete publish.",
+                type: "error"
+            });
+        }
+    },
+    error: function(rs, e) {
+      alert('ERROR: ' + rs.responseText);
+    }
+  });
 
 
-
-});
-
+}
