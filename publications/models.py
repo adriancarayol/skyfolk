@@ -12,5 +12,3 @@ class Publication(models.Model):
     image = models.ImageField(upload_to='publicationimages', verbose_name='Image',blank=True, null=True)
     is_response_from = models.ForeignKey('self', related_name='responses', null=True)
     created = models.DateTimeField(auto_now_add=True)
-    
-    

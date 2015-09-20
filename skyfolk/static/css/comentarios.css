@@ -66,7 +66,6 @@ a, a:visited {
   }
 }
 
-
 .h22 {
   margin: 1px 0 7px;
   font-size: 1.2rem;
@@ -694,6 +693,10 @@ a.fontawesome-cog:hover {
 .optiones_comentarios ul li:hover .fa-tag {
   color: #bbdefb;
 }
+.optiones_comentarios .fa-trash:hover {
+  color: #f44336;
+}
+
 /* Se expande al responder un mensaje... */
 .replay-actual-message {
   width: 100%;

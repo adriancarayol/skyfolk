@@ -27,7 +27,7 @@ def uploadAvatarPath(instance, filename):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, related_name='profile')
-    
+
     # Other fields here
     #accepted_eula = models.BooleanField()
     #favorite_animal = models.CharField(max_length=20, default="Dragons.")
@@ -51,17 +51,17 @@ class UserProfile(models.Model):
                 return result[0].verified
         return False
     """
-    
+
     def save(self, *args, **kwargs):
         # delete old image when replacing by updating the file
         try:
             this = UserProfile.objects.get(id=self.id)
             if this.image != self.image:
                 this.image.delete(save=False)
-        except: pass # when new photo then we do nothing, normal case          
+        except: pass # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
-    
-    
+
+
 
     #Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
@@ -79,14 +79,14 @@ class UserProfile(models.Model):
 
     def get_relationships(self, status):
         return self.relationships.filter(
-            to_people__status=status, 
+            to_people__status=status,
             to_people__from_person=self)
 
     def get_related_to(self, status):
         return self.related_to.filter(
-            from_people__status=status, 
+            from_people__status=status,
             from_people__to_person=self)
-        
+
 
     #Methods of publications
     def remove_publication(self, publicationid):
@@ -95,7 +95,7 @@ class UserProfile(models.Model):
     def get_publicationsToMe(self):
         return self.publications_to.filter(
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__id', 'from_publication__content', 'from_publication__created', 'user__profile__image').order_by('from_publication__created').reverse()
-        
+
     def get_publicationsToMeTop15(self):
         return self.publications_to.filter(
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__id', 'from_publication__content', 'from_publication__created', 'user__profile__image').order_by('from_publication__created').reverse()[0:15]
@@ -103,7 +103,7 @@ class UserProfile(models.Model):
     def get_myPublications(self):
         return self.publications.filter(
             to_publication__writer=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__id', 'to_publication__content', 'to_publication__created').reverse()
-    
+
     def get_following(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWING)
 
@@ -115,11 +115,11 @@ class UserProfile(models.Model):
 
     def get_username_friends(self):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__username').order_by('id')
-        
+
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)
 
-    
+
     #methods likes
     def add_like(self, profile):
         like, created = LikeProfile.objects.get_or_create(from_like=self, to_like=profile)
