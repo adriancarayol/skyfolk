@@ -72,6 +72,3 @@ def load_publications(request):
             print(publications_next)
 
     return HttpResponse(json.dumps(list(publications_next)), content_type='application/json')
-
-
-
