@@ -27,11 +27,14 @@ class SignupForm(forms.Form):
 class UserForm(forms.ModelForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
+
     class Meta:
         model = User
         fields = ('first_name', 'last_name')
 
 class ProfileForm(forms.ModelForm):
+    status = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
+
     class Meta:
         model = UserProfile
-        fields = ('image',)
+        fields = ('image', 'status')

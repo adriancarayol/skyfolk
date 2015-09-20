@@ -89,7 +89,7 @@ def profile_view(request, username):
         print(friends)
     except ObjectDoesNotExist:
         friends = None
-        
+
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:

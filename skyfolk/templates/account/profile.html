@@ -48,7 +48,7 @@
 {% block content %}
 
 {% if user_profile.profile.image %}
-      <nav class="profile" style="background-image: url('{{user_profile.profile.image.url}}');">
+      <nav class="profile" style="background-image: url('{{user_profile.image.url}}');">
       <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
       <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
       <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
@@ -341,7 +341,7 @@
             <p>{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
 
           </header>
-          <div class="status">Estado por defecto.</div>
+          <div class="status">{{ user_profile.profile.status }}</div>
           <ul class="stats">
             <li><a href="/friends"><strong>380</strong><span>Seguidores</span></a></li>
             <li><a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a></li>

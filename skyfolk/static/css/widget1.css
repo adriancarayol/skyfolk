@@ -7,8 +7,8 @@
   right: 0%;
   top: 87%;
   border-radius: 100%;
-  background-position:center;
-  background-size: 100%;
+  background-position: center;
+  background-size: 105px 105px !important;
   background-repeat: no-repeat;
   border-color: #3A80A6;
   border: 2px solid;
@@ -29,7 +29,7 @@
   top: 87%;
   border-radius: 100%;
   background-position:center;
-  background-size: 100%;
+  background-size: 105px 105px !important;
   background-repeat: no-repeat;
   border: 2px solid #1976d2;
   -webkit-transition: all 0.2s linear;

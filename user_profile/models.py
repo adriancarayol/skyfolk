@@ -36,7 +36,7 @@ class UserProfile(models.Model):
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
     publications = models.ManyToManyField('self', through='publications.Publication', symmetrical=False, related_name='publications_to')
-    status = models.CharField(max_length=20, null=True)
+    status = models.CharField(max_length=20, null=True, verbose_name='estado')
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
