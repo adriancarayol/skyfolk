@@ -3,14 +3,14 @@ from django.template import RequestContext, loader
 
 def about(request,view):
     if view == 'home':
-        plantilla = 'aboutskyfolk/aboutSkyfolk.html'
+        plantilla = 'about/aboutSkyfolk.html'
     elif view == 'us':
-        plantilla = 'aboutskyfolk/aboutUs.html'
+        plantilla = 'about/aboutUs.html'
     elif view == 'project':
-        plantilla = 'aboutskyfolk/project.html'
+        plantilla = 'about/project.html'
     elif view == 'team':
-        plantilla = 'aboutskyfolk/team.html'
+        plantilla = 'about/team.html'
     elif view == "special":
-        plantilla = 'aboutskyfolk/special.html'
+        plantilla = 'about/special.html'
 
     return render(request,plantilla)
