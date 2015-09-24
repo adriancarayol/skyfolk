@@ -38,6 +38,7 @@ urlpatterns = patterns(
     url(r'^config/privacity/$','user_profile.views.config_privacity'),
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^publication/$', 'publications.views.publication_form'),
+    url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),

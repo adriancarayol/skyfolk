@@ -89,13 +89,14 @@ body {
 }
 #login {
     width: 370px;
-    height: 350px;
+    height: 390px;
     margin: auto;
     position: relative;
+    display: block;
     top: 120px;
     border-radius: 3px;
     opacity: 0.9;
-    font-family: 'PT Sans', sans-serif; 
+    font-family: 'PT Sans', sans-serif;
 
 }
 form {
@@ -103,7 +104,6 @@ form {
     top: 23px;
     font-family: 'PT Sans', sans-serif;
     color: #fff;
-  
 
 }
 
@@ -121,11 +121,14 @@ form {
     left: 30px;
 }
 #id_remember {
-  left: -10%;
-  position: relative;
-  top: -0.15%;
   display: inline;
+  left: 58%;
 }
+
+#losepwd {
+  margin-left: 20%;
+}
+
 #login .button {
   position: relative;
   text-align: center;
@@ -158,7 +161,7 @@ form {
   transition: all .3s linear;
 }
 .form-3 input[type=password] {
-  
+
   width: 70%;
   position: relative;
   margin: auto;
@@ -186,18 +189,19 @@ form {
   width: 100%;
   margin-bottom: 10px;
   font-weight: 100;
-  font-family: 'PT Sans', sans-serif; 
+  font-family: 'PT Sans', sans-serif;
 }
 
 /* Muestra los mensajes de error, por ejemplo -> "Contraseña incorrecta en los forms" */
 .errorlist li {
   color: white;
+  display: inline-block;
   position: relative;
 }
 .form-3 a{
 
     /*float: left;*/
-   
+
     margin-left: 60px;
     position: relative;
     top: 13px;
@@ -229,7 +233,7 @@ form {
     box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
     display: block;
     padding: 0px 0px 30px;
- 
+
 }
 .block-formregister #sign_in_register, #sign_up_register {
   position: relative;
@@ -268,7 +272,7 @@ form {
     float: none;
   }
   #background_cycler {
-    height: 115%; 
+    height: 115%;
   }
   .footer_base {
     display: none;
@@ -287,7 +291,7 @@ form {
   width: 100%;
 }
 .form-3{
-  
+
   height: 100%;
   width: 100%;
   padding: 10px;
@@ -297,11 +301,11 @@ form {
 .form-3 p{
   /*display: block;*/
   padding-bottom: 10px;
-  
+
 }
 
 .form-3 input{
- 
+
   margin: 0 auto;
   display: block;
 
@@ -326,5 +330,5 @@ form {
     margin-top: 55px;
     display: inline-block;
     position: relative;
-   
+
 }

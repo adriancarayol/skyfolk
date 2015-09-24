@@ -13,7 +13,6 @@ from publications.models import Publication
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 import json
-
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
@@ -90,7 +89,7 @@ def profile_view(request, username):
         print(friends)
     except ObjectDoesNotExist:
         friends = None
-        
+
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
@@ -225,7 +224,7 @@ def like_profile(request):
             created.save()
             response = "like"
 
-    return HttpResponse(json.dumps(response), mimetype='application/javascript')
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
 def request_friend(request):
@@ -258,7 +257,7 @@ def request_friend(request):
 
         print(response)
 
-    return HttpResponse(json.dumps(response), mimetype='application/javascript')
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
 def respond_friend_request(request):
@@ -294,7 +293,7 @@ def respond_friend_request(request):
             else:
                 response = "rejected"
 
-    return HttpResponse(json.dumps(response), mimetype='application/javascript')
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
 @login_required(login_url='/')
