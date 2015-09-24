@@ -95,7 +95,18 @@ h2 {
 }
 .info-class i {
 	color: #ef5350;
-} 
+	position: relative;
+	top: 0px;
+	-webkit-transition-property: top, bottom;
+  -webkit-transition-duration: 0.5s;
+	-moz-transition-property: top, bottom;
+	-moz-transition-duration: 0.5s;
+	transition-property: top, bottom;
+	transition-duration: 0.5s;
+}
+.info-class i:hover {
+	top: -5px;
+}
 .info-class span {
 	color: #757575;
 	cursor: pointer;
@@ -108,4 +119,3 @@ h2 {
 	margin: auto;
 	width: 70%;
 }
-

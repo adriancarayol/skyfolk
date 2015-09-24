@@ -102,6 +102,19 @@ def profile_view(request, username):
         else:
             friends_top12 = friends
 
+    # mostrar color segun estado (parte emocional)
+    statusAux = user_profile.profile.status.lower().split()
+
+    def compList(list1,list2):
+        for i in list1:
+            if i in list2:
+                return True
+            else:
+                return False
+
+    myList = ['trabajando','no','si','feliz']
+    if compList(statusAux,myList):
+        print ('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
     # mostrar formulario para enviar comentarios/publicaciones
     publicationForm = PublicationForm()
 

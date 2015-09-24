@@ -33,8 +33,8 @@ class UserForm(forms.ModelForm):
         fields = ('first_name', 'last_name')
 
 class ProfileForm(forms.ModelForm):
-    status = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
+    status = forms.CharField(widget=forms.TextInput(attrs={'class': 'status', 'placeholder' : 'Estado', 'maxlength' : '20'}))
 
     class Meta:
         model = UserProfile
-        fields = ('image', 'status')
+        fields = ('image', 'backImage', 'status')

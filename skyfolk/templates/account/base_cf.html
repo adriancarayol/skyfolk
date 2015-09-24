@@ -3,23 +3,23 @@
 {% block include_files %}
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- 	
+
  	<link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
-    <link rel="stylesheet" href="{{STATIC_URL}}css/media/bootstrap/css/bootstrap.css" type="text/css" media="all">
+  <link rel="stylesheet" href="{{STATIC_URL}}css/media/bootstrap/css/bootstrap.css" type="text/css" media="all">
 	<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' />
 	<link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"/>
-	
+
 
 	<!--[if IE 7]>
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome-ie7.min.css" rel="stylesheet" />
 	<![endif]-->
-		
+
 	<script>
 	$(document).ready(function() {
 		$('ul.form li a').click(
 			function(e) {
-				
+
 				e.stopPropagation; // stop the click from bubbling
 				$(this).closest('ul').find('.selected').removeClass('selected');
 				$(this).parent().addClass('selected');
@@ -29,15 +29,15 @@
 
 
 	{% block additional_files %}{% endblock%}
-	
-	
+
+
 </head>
-{% endblock%}	
+{% endblock%}
 
 
 {% block content %}
 <hgroup>
-<span> 
+<span>
 	<h3 class="fontawesome-cog"><i class="fa fa-cog"></i> Configuracion</h3>
 	<h6>Configure, edite o cambie cualquier cosa de su perfil.</h6>
 </span>
@@ -81,14 +81,3 @@ Verificar contraseña <input class="actual" type="password" name="Repita su nuev
 </body>
 </html>
 {% endblock%}
-
-
-
-
-
-
-
-
-
-
-

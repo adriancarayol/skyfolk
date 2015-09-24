@@ -1,8 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
-@import url(http://fonts.googleapis.com/css?family=Gafata);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
-@import url(http://fonts.googleapis.com/css?family=Gafata);
-@import url(http://fonts.googleapis.com/css?family=Carrois+Gothic+SC);
 
 body {
   padding: 0;
@@ -39,7 +36,7 @@ h6 {
 
 }
 
-/* Menu vertical */ 
+/* Menu vertical */
 aside {
     margin-left: 20px;
     background-color: #FAFAFA;
@@ -149,7 +146,7 @@ label[for="id_last_name"] {
 #float {
 
   font-size: 15px;
-  font-family: 'Gafata', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   margin: -30px;
   padding-right: 5px;
   background: #FFFFFF;
@@ -186,7 +183,7 @@ label[for="id_password2"] {
 }
 #contra {
   position:  relative;
-  margin: auto; 
+  margin: auto;
   display:  block;
   width:  680px;
   min-height: 400px;
@@ -236,15 +233,48 @@ button[type="submit"] {
   display: inline-block;
 }
 #id_image {
-  display: inline-block;
+  display: list-item;
   position: relative;
-  top: 40px;
-  margin-top: 30px;
+  top: 0px;
+  margin-top: 20px;
 }
 label[for="id_image"] {
   color: #ccc;
   font-weight: 100;
 
+}
+#id_backImage {
+  display: list-item;
+  position: relative;
+  top: 0px;
+  margin-top: 20px;
+}
+label[for="id_backImage"] {
+  color: #ccc;
+  font-weight: 100;
+
+}
+#id_status {
+  width: 200px;
+  position: relative;
+  margin: auto;
+  padding: 5px 7px;
+  color: rgba(44,44,44,0.854);
+  border: 1px solid #ececec;
+  border-radius: 2px;
+  transition: all .3s linear;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s;
+  font-family: 'Open Sans', sans-serif;
+  top: -170px;
+  margin-left: 20px;
+  margin-right: 0px;
+}
+label[for="id_status"] {
+  top: -170px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 100;
+  position: relative;
 }
 hgroup {
   position: relative;
@@ -253,7 +283,7 @@ hgroup {
 
 }
 .cn {
-  font-size: 20px;  
+  font-size: 20px;
   text-shadow: #ccc 0.5px 0.5px 0.5px;
   color: #ccc;
   font-family: 'Open Sans', sans-serif;
@@ -261,7 +291,7 @@ hgroup {
   margin-top: -14px;
 
 }
-.ch { 
+.ch {
   font-size: 12px;
   text-shadow: #ccc 0.2px 0.2px 0.2px;
   color: #ccc;
