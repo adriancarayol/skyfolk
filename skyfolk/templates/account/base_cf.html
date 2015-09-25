@@ -55,29 +55,31 @@
       <li onclick="javascript:window.location.href='/config/relations'" class="relaciones"><i class="fa fa-circle-thin fa"></i>Mis relaciones</li>
     </nav>
   </aside>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-12" id="contra">
+    <li>
+    <form id="levi">
+    	{% block cf-title %}{% endblock %}
+    <!--
+    <h4 id="cn"> Contraseña </h4>
+    <h6 id="ch"> Cambia tu contraseña o recupera tu contraseña actual.</h6>
+    -->
+    </form></li>
+    <!-- <form id="float">--> <!-- NO PUEDE HABER UN FORM DENTRO DE OTRO FORM, YA QUE ENTONCES EL FORM NO FUNCIONA CORRECTAMENTE -->
+    	{% block cf-form %}{% endblock %}
+    <!--
+    Contraseña actual <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
+    Nueva contraseña <input class="actual" type="password" name="Nueva contraseña." value=""><br>
+    Verificar contraseña <input class="actual" type="password" name="Repita su nueva contraseña." value=""><br>
+    <input id="btn" type="submit" value="Guardar cambios">
+    <p id="lost"><a href="/"> ¿Olvidaste tu contraseña?</a> </p>
+    -->
 
-<div id="contra">
-<li>
-<form id="levi">
-	{% block cf-title %}{% endblock %}
-<!--
-<h4 id="cn"> Contraseña </h4>
-<h6 id="ch"> Cambia tu contraseña o recupera tu contraseña actual.</h6>
--->
-</form></li>
-<!-- <form id="float">--> <!-- NO PUEDE HABER UN FORM DENTRO DE OTRO FORM, YA QUE ENTONCES EL FORM NO FUNCIONA CORRECTAMENTE -->
-	{% block cf-form %}{% endblock %}
-<!--
-Contraseña actual <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
-Nueva contraseña <input class="actual" type="password" name="Nueva contraseña." value=""><br>
-Verificar contraseña <input class="actual" type="password" name="Repita su nueva contraseña." value=""><br>
-<input id="btn" type="submit" value="Guardar cambios">
-<p id="lost"><a href="/"> ¿Olvidaste tu contraseña?</a> </p>
--->
-
-<!--  </form> -->
+    <!--  </form> -->
+    </div>
+  </div>
 </div>
-
 </body>
 </html>
 {% endblock%}

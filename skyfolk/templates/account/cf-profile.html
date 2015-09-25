@@ -4,7 +4,7 @@
 		#menucf-profile {
 			background:#fafafa;
 		}
-		
+
 	</style>
 {% endblock%}
 
@@ -16,10 +16,6 @@
 {% endblock %}
 
 {% block cf-form %}
-	<!--
-	Cambiar imagen <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
-	<input id="btn" type="submit" value="Guardar cambios">
-	-->
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
 	<div class="profilex">
 	{% if user_profile.profile.image %}

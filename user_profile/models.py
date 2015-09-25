@@ -23,10 +23,10 @@ REQUEST_STATUSES = (
 )
 
 def uploadAvatarPath(instance, filename):
-    return '%s/avatar/%s' % (instance.user.username, filename)
+    return '%s/avatar/%s' % (instance.user.username, filename[:20])
 
 def uploadBackImagePath(instance, filename):
-    return '%s/backImage/%s' % (instance.user.username, filename)
+    return '%s/backImage/%s' % (instance.user.username, filename[:20])
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, related_name='profile')
@@ -142,7 +142,7 @@ class UserProfile(models.Model):
 
     #methods friends
     def add_friend(self, profile):
-        return self.add_relationship(profile, RELATIONSHIP_FRIEND, True) #mas adelante cambiar aqui True por False
+        return self.add_relationship(profile, RELATIONSHIP_FRIEND, False) #mas adelante cambiar aqui True por False
 
     def is_friend(self, profile):
         return Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND)

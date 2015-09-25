@@ -182,33 +182,38 @@ label[for="id_password2"] {
   top: 25px;
 }
 #contra {
-  position:  relative;
-  margin: auto;
-  display:  block;
+  position:  absolute;
+  margin-right: auto;
+  margin-left: auto;
+  top: 200px;
+  right: 0;
+  left: 0;
   width:  680px;
-  min-height: 400px;
-  max-height: 410px;
-  top:  -420px;
+  max-height: 66%;
   border-radius: 7px;
   -webkit-box-shadow: 2px 2px 7px 0px #efefef;
   -moz-box-shadow:    2px 2px 7px 0px #efefef;
   box-shadow:         2px 2px 7px 0px #efefef;
-  border: 1px solid #ececec;
+  border: 1px solid #e0e0e0;
 }
+
 #contra li {
       list-style-type: none;
       position: relative;
-      display: block;
+      display: list-item;
       margin-top: 30px;
+}
+#contra-2 {
+  margin-top: 10px;
 }
 
 /* Boton salvar cambios */
 
 button[type="submit"] {
   position: relative;
-  display: block;
+  display: inline;
   top: 80px;
-  right: 100px;
+  margin-right: 80px;
   float: right;
   padding: 10px 7px;
   width: 100px;
@@ -218,9 +223,11 @@ button[type="submit"] {
 }
 #boton-perfil {
   position: relative;
-  display: block;
-  top: 70px;
-  right: -110px;
+  display: list-item;
+  top: 0px;
+  bottom: 1px;
+  right: 0;
+  margin-left: 300px;
   float: right;
   padding: 10px 7px;
   width: 100px;
@@ -228,16 +235,13 @@ button[type="submit"] {
   line-height: 2px;
   font-size: 0.9em;
 }
-#image-clear_id {
-  position: relative;
-  display: inline-block;
-}
 #id_image {
   display: list-item;
   position: relative;
   top: 0px;
   margin-top: 20px;
 }
+
 label[for="id_image"] {
   color: #ccc;
   font-weight: 100;
@@ -252,8 +256,10 @@ label[for="id_image"] {
 label[for="id_backImage"] {
   color: #ccc;
   font-weight: 100;
+  margin-right: 10px;
 
 }
+
 #id_status {
   width: 200px;
   position: relative;
@@ -266,12 +272,12 @@ label[for="id_backImage"] {
   -webkit-transition: all .3s linear;
   -moz-transition: all .3s;
   font-family: 'Open Sans', sans-serif;
-  top: -170px;
+  margin-top: 10px;
   margin-left: 20px;
   margin-right: 0px;
 }
 label[for="id_status"] {
-  top: -170px;
+  top: 0px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 100;
   position: relative;

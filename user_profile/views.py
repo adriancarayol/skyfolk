@@ -103,7 +103,10 @@ def profile_view(request, username):
             friends_top12 = friends
 
     # mostrar color segun estado (parte emocional)
-    statusAux = user_profile.profile.status.lower().split()
+    try:
+        statusAux = user_profile.profile.status.lower().split()
+    except:
+        statusAux = None
 
     def compList(list1,list2):
         for i in list1:
@@ -113,8 +116,9 @@ def profile_view(request, username):
                 return False
 
     myList = ['trabajando','no','si','feliz']
-    if compList(statusAux,myList):
-        print ('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
+    if statusAux != None:
+        if compList(statusAux,myList):
+            print ('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
     # mostrar formulario para enviar comentarios/publicaciones
     publicationForm = PublicationForm()
 
@@ -147,6 +151,7 @@ def search(request):
 
     searchForm = SearchForm(request.POST)
 
+
     if request.method == 'POST':
         if searchForm.is_valid:
             texto_to_search = request.POST['searchText']
@@ -157,19 +162,17 @@ def search(request):
                 if len(words) == 1:
                     resultSearch = User.objects.filter(Q(first_name__icontains=texto_to_search) | Q(
                         last_name__icontains=texto_to_search) | Q(username__icontains=texto_to_search))
+
                 elif len(words) == 2:
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1])
                 else:
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2])
-                if "carayol" == User.objects.filter(Q(first_name__icontains=texto_to_search)):
-                    myFriend = True
-
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': resultSearch}, context_instance=RequestContext(request))
 
     else:
-        return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': ()}, context_instance=RequestContext(request))
+        return render_to_response('account/search.html', {'showPerfilButtons': True,  'searchForm': searchForm, 'resultSearch': ()}, context_instance=RequestContext(request))
 
 
 @login_required(login_url='/')

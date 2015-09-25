@@ -44,12 +44,12 @@ urlpatterns = patterns(
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
     url(r'^accounts/password/change', user_profile_views.custom_password_change),
     url(r'^accounts/', include('allauth.urls')),
-    # url django-photologe(galeria de fotos) 
+    # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # url novedades e inicio
     url(r'^inicio/$','user_profile.views.news_and_updates'),
     # url mensajes privados
-    url(r'^messages/', include('django_messages.urls')),
+    url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
     url(r'^about/([^/]+)/$',about),
     # Market Skyfolk

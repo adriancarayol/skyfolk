@@ -32,12 +32,12 @@
         <a onclick="javascript:location.href='/'" class="grey-text collection-item btn" id="new_message">{{request.user}}</a>
         {% if message_list|length >= 0 %}
         <a onclick="javascript:location.href='/messages/inbox/'" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-inbox left"></i>Inbox<span class="new badge">{{ message_list|length }}</span></a>
-        {% endif %}
+          {% endif %}
         <a href="/messages/fav/" class="grey-text text-lighten-1 collection-item"><i class="mdi-action-favorite left"></i>Favorite</a>
         <a href="/messages/outbox/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-send left"></i>Sent Email</li>
-        <a href="/messages/spam/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-drafts left"></i>Drafts<span class="badge">{{ message_list|length }}</span></a>
+        <a href="/messages/spam/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-drafts left"></i>Drafts<span class="badge"></span></a>
         <a href="/messages/group/" class="grey-text text-lighten-1 collection-item"><i class="mdi-communication-forum left"></i>Conversations<span class="badge">1</span></a>
-        <a href="/messages/trash/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-remove left"></i>Trash<span class="badge">{{ message_list|length }}</span></a>
+        <a href="/messages/trash/" class="grey-text text-lighten-1 collection-item"><i class="mdi-content-remove left"></i>Trash<span class="badge"></span></a>
       </ul>
     </nav>
 
@@ -66,4 +66,3 @@
 {% block content %}
 
 {% endblock %}
-
