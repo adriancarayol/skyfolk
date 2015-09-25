@@ -362,8 +362,3 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
 def changepass_confirmation(request):
     return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))
-
-
-def news_and_updates(request):
-
-    return render_to_response('account/novedades.html',context_instance=RequestContext(request))

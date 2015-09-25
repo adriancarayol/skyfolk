@@ -47,7 +47,7 @@ urlpatterns = patterns(
     # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # url novedades e inicio
-    url(r'^inicio/$','user_profile.views.news_and_updates'),
+    url(r'^inicio/mypublications/','latest_news.views.news_and_updates'),
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk

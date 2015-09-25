@@ -31,25 +31,6 @@ h3 {
     text-align: center;
     text-shadow: 4px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 0 rgba(255, 255, 255, 0.9);
 }
-/*  Opcion para ser responsive */
-
-@media screen and (max-width: 31.5em) {
-	.contnedor {
-		padding: 10px 10px 50px 10px;
-	}
-	.contnedor li {
-		width: 100%;
-		min-width: 100px;
-	}
-}
-@media screen and (max-width: 25em) {
-
-	.np-icon span {
-		display: none;
-	}
-
-}
-
 
 img {
 width: auto;
@@ -57,23 +38,6 @@ height: auto;
 position: relative;
 
 }
-.contnedor {
-	padding: 20px 20px 140px 20px;
-	max-width: 1800px;
-	margin: 0 auto;
-	list-style: none;
-	text-align: center;
-}
-
-.contnedor li {
-	display: inline-block;
-	width: 393px;
-	margin: 0;
-	padding: 20px;
-	text-align: left;
-	position: relative;
-}
-
 
 .contnedor figure {
 	margin: 0;
@@ -124,24 +88,19 @@ figcaption span {
 
 }
 .comm {
-	position: relative;
-	display: block;
-	margin: auto;
+	margin-top: 25px;
 	width: 390px;
 	height: auto;
 	background-color: #fff;
 	border-radius: 7px;
-	-webkit-box-shadow: 0px 0px 8px 0px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow:    0px 0px 8px 0px rgba(50, 50, 50, 0.75);
-     box-shadow:         0px 0px 8px 0px rgba(50, 50, 50, 0.75);
 }
-.comm h5 {
+
+.comm h6 {
 	text-align: center;
 	position: relative;
-	top: -45px;
-	border-bottom: 1px solid grey;
-	width: auto;
-	margin-bottom: 7px;
+	top: -25px;
+	margin-bottom: 10px;
+    display: inline-block;
 }
 .comm span {
 	position: relative;
@@ -185,7 +144,6 @@ figcaption span {
 
 .caption figure > div {
 	overflow: hidden;
-	max-width: auto;
 	width: 380px;
 }
 
@@ -318,63 +276,4 @@ figcaption span {
   position: relative;
   width: 120px;
   height: 120px;
-}
-.opciones {
-	display: block;
-	position: absolute;
-	margin: auto;
-	float: right;
-	right: 0;
-	top: 60px;
-}
-.opciones ul {
-	list-style-type: none;
-}
-.opciones li {
-	display: inline-block;
-}
-.popular {
-	background-image: url("images/heart.ico");
-	width: 40px;
-	height: 40px;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 50%;
-	margin-right: 7px;
-	cursor: pointer;
-}
-.actividad {
-    background-image: url("images/friends.ico");
-	width: 40px;
-	height: 40px;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 50%;
-	margin-right: 7px;
-	cursor: pointer;
-}
-.descubre {
-	 background-image: url("images/find.ico");
-	width: 40px;
-	height: 40px;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 50%;
-	margin-right: 7px;
-	cursor: pointer;
-}
-.novedades {
-    background-image: url("images/new.ico");
-	width: 40px;
-	height: 40px;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 50%;
-	margin-right: 7px;
-	cursor: pointer;
-}
-.opciones li:hover {
-	-webkit-trasnform: scale(1.07);
-	-moz-transform: scale(1.07);
-	transform: scale(1.07);
 }
