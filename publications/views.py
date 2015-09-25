@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.db import IntegrityError
 import json
 from django.contrib.auth import get_user_model
-
+from emoji import *
 
 # Create your views here.
 def publication_form(request):
@@ -21,6 +21,7 @@ def publication_form(request):
                 publication = form.save(commit=False)
                 publication.writer = emitter.profile
                 publication.profile = userprofile.profile
+                publication.content = Emoji.replace(publication.content)
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 publication.save()

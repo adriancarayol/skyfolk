@@ -1,6 +1,8 @@
 {% extends "account/base_interface.html" %}
 {% load app_filters %}
 {% block include_files %}
+{% load emoji_tags %}
+{% include 'emoji/script.html' %}
 
 <!-- Mostrar objetos al hacer scroll -->
 <script type="text/javascript">
@@ -648,7 +650,9 @@
 
                     <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                    {{item.from_publication__content}}
+                    {% autoescape on %}
+                    {{ item.from_publication__content.articulo|emoji_replace }}
+                    {% endautoescape %}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>

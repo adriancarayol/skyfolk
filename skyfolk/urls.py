@@ -65,7 +65,7 @@ urlpatterns = patterns(
             namespace='rest_framework'
         )
     ),
-    url(r'^emoji/', include('emoji.urls')),
+    url(r'^emoji/', include('emoji.urls', namespace="emoji")),
 )
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
