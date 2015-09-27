@@ -142,7 +142,7 @@ class UserProfile(models.Model):
 
     #methods friends
     def add_friend(self, profile):
-        return self.add_relationship(profile, RELATIONSHIP_FRIEND, False) #mas adelante cambiar aqui True por False
+        return self.add_relationship(profile, RELATIONSHIP_FRIEND, True) #mas adelante cambiar aqui True por False, para diferenciar seguidores de seguidos.
 
     def is_friend(self, profile):
         return Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND)
