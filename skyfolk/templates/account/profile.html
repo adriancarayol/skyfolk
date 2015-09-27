@@ -840,7 +840,8 @@
                   Grupos
                   </div>
                 </div>
-                  {% for item in allUsers %}
+                  {% for item in listR %}
+                      {% if item.username != user_profile.username %}
                  <div class="follower-sug">
                       {% if item.user__profile__image and item.user__profile__image|file_exists %}
                       <img  class="sug-user" src="{{MEDIA_URL}}{{item.user__profile__image}}">
@@ -856,6 +857,7 @@
                       </span>
                        {% endif %}
                       </div>
+                      {% endif %}
                     {% endfor %}
                   </div>
 

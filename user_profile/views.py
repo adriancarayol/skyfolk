@@ -19,6 +19,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.safestring import mark_safe
 #allauth
 from allauth.account.views import PasswordChangeView
+import random
 
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -102,6 +103,27 @@ def profile_view(request, username):
         else:
             friends_top12 = friends
 
+    # cargar recomendaciones por amigos
+
+    listR = []
+    try:
+        friends = user_profile.profile.get_friends()
+        for i in friends:
+            print('TU AMIGO >>>>>>>>>>')
+            user_i = get_object_or_404(
+                get_user_model(), username__iexact=i["user__username"])
+            try:
+                listR = user_i.profile.get_friends()[:5]
+                if len(listR) < 5:
+                    listR = User.objects.all()[:random.randint(1, 10)]
+            except ObjectDoesNotExist:
+                listR = User.objects.all()[:random.randint(1, 10)]
+
+    except ObjectDoesNotExist:
+        listR = User.objects.all()[:random.randint(1, 10)]
+
+
+
     # mostrar color segun estado (parte emocional)
     try:
         statusAux = user_profile.profile.status.lower().split()
@@ -122,7 +144,7 @@ def profile_view(request, username):
     # mostrar formulario para enviar comentarios/publicaciones
     publicationForm = PublicationForm()
 
-    # cargar lisa comentarios
+    # cargar lista comentarios
     try:
         publications = user_profile.profile.get_publicationsToMe()
         print('>>>>>>> LISTA PUBLICACIONES: ')
@@ -142,7 +164,7 @@ def profile_view(request, username):
 
     # print ">>>>> PERFIL: " + str(user_profile.profile.pk)
     # print ">>>>> VISITANTE/USUARIO: " + str(user.profile.pk)
-    return render_to_response('account/profile.html', {'publications_top15': publications_top15, 'friends_top12': friends_top12, 'user_profile': user_profile, 'searchForm': searchForm, 'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes, 'isFriend': isFriend, 'existFriendRequest': existFriendRequest, 'json_requestsToMe': json_requestsToMe}, context_instance=RequestContext(request))
+    return render_to_response('account/profile.html', {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12, 'user_profile': user_profile, 'searchForm': searchForm, 'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes, 'isFriend': isFriend, 'existFriendRequest': existFriendRequest, 'json_requestsToMe': json_requestsToMe}, context_instance=RequestContext(request))
 
 
 @login_required(login_url='accounts/login')
@@ -213,7 +235,7 @@ def config_profile(request):
         perfil_form = ProfileForm(instance=request.user.profile)
 
     print('>>>>>>>  paso x')
-    return render_to_response('account/cf-profile.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile':user_profile, 'user_form': user_form, 'perfil_form': perfil_form}, context_instance=RequestContext(request))
+    return render_to_response('account/cf-profile.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile, 'user_form': user_form, 'perfil_form': perfil_form}, context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
     # 'user_form':user_form}, context_instance=RequestContext(request))
