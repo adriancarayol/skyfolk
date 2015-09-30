@@ -219,6 +219,7 @@ $(document).keypress(function(e){
           for (i = 0; i < response.length; i++) {
             addPublicationToHtmlList(response[i]);
           }
+          // $('#tab-comentarios').load(location.href + " #tab-comentarios");
           //refresca plugin shorten
           $(".comment").shorten({
             "showChars": 145
