@@ -5,7 +5,7 @@
   position: fixed;
   background-color: white;
   right: 1%;
-  top: 80%;
+  bottom: 2%;
   border-radius: 100%;
   background-position: center;
   background-size: 105px 105px !important;
@@ -26,7 +26,7 @@
   position: fixed;
   background-color: white;
   right: 1%;
-  top: 80%;
+  bottom: 2%;
   border-radius: 100%;
   background-position:center;
   background-size: 105px 105px !important;
@@ -97,12 +97,6 @@
   z-index: 9999;
 }
 
-
-@media only screen and (max-width: 960px) and (max-height: 600px) {
-  .profile {
-    top: 80%;
-  }
-}
 @media only screen and (max-width: 736px) and (max-height: 414px) {
   .profile {
     display: none;

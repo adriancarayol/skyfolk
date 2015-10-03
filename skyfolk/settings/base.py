@@ -64,6 +64,7 @@ FIRST_PARTY_APPS = (
     'landing',                 # página de inicio
     'user_profile',            # perfil de usuario
     'publications',            # publicaciones en el perfil
+    'timeline',
     'about',                   # sobre los autores
     'market',                  # tienda de aplicaciones
     'relaciones',              # app para controlar las relaciones entre users

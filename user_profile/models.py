@@ -4,6 +4,7 @@ from allauth.account.models import EmailAddress
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 import publications
+import timeline
 #from publications.models import Publication
 import datetime
 
@@ -172,6 +173,9 @@ class UserProfile(models.Model):
         n = next * 4
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[n-4:n]
 """
+    #methods timeline
+    # def add_timeline(self, publicationid):
+
 
 
 

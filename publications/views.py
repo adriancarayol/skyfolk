@@ -63,7 +63,7 @@ def load_publications(request):
     if publicationslist == None:
         publications_next = None
     else:
-        publicationslist = simplejson.loads(publicationslist)
+        publicationslist = json.loads(publicationslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
             print('>>>>>>> SLUG: ' + slug)

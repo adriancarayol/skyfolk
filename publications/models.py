@@ -9,6 +9,6 @@ class Publication(models.Model):
     content = models.TextField(blank=False)
     writer = models.ForeignKey(UserProfile, related_name='from_publication')
     profile = models.ForeignKey(UserProfile, related_name='to_publication')
-    image = models.ImageField(upload_to='publicationimages', verbose_name='Image',blank=True, null=True)
+    image = models.ImageField(upload_to='publicationimages', verbose_name='Image', blank=True, null=True)
     is_response_from = models.ForeignKey('self', related_name='responses', null=True)
     created = models.DateTimeField(auto_now_add=True)

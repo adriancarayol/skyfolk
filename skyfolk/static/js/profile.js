@@ -115,6 +115,13 @@ $(document).ready(function() {
         });
   });
 
+    /* Agregar timeline */
+    $('.optiones_comentarios .fa-tag').on('click', function() {
+        var caja_publicacion = $(this).closest('.wrapper');
+        alert('VAS A AÑADIR EL COMENTARIO A TU TIMELINE');
+        AJAX_add_timeline(caja_publicacion);
+    });
+
 
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
 
@@ -812,6 +819,43 @@ function AJAX_delete_publication(caja_publicacion) {
         // borrar caja publicacion
         if (data==true) {
             $(caja_publicacion).fadeToggle("fast");
+        }else{
+            swal({
+                title: "Fail",
+                text: "Failed to delete publish.",
+                type: "error"
+            });
+        }
+    },
+    error: function(rs, e) {
+      alert('ERROR: ' + rs.responseText);
+    }
+  });
+
+
+}
+
+/*****************************************************/
+/********** AJAX para agregar al TIMELINE *********/
+/*****************************************************/
+
+function AJAX_add_timeline(caja_publicacion) {
+  var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
+  var id_user = $(caja_publicacion).data('id')// obtengo id
+  var data = {
+           userprofile_id: id_user,
+           publication_id: id_pub
+       };
+  //event.preventDefault(); //stop submit
+  $.ajax({
+    url: '/timeline/addToTimeline/',
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    success: function(data) {
+        // borrar caja publicacion
+        if (data==true) {
+            $(caja_publicacion).css('background-color', 'tomato');
         }else{
             swal({
                 title: "Fail",

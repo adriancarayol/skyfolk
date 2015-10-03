@@ -46,6 +46,8 @@ urlpatterns = patterns(
     url(r'^accounts/', include('allauth.urls')),
     # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
+    # url add to timeline
+    url(r'^timeline/addToTimeline/$', 'timeline.views.addToTimeline', name='add_timeline'),
     # url novedades e inicio
     url(r'^inicio/mypublications/','latest_news.views.news_and_updates'),
     # url mensajes privados
