@@ -650,8 +650,8 @@
 
                     <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                    {% autoescape on %}
-                    {{ item.from_publication__content.articulo|emoji_replace }}
+                    {% autoescape off %}
+                    {{ item.from_publication__content|emoji_replace_html_entities }}
                     {% endautoescape %}
                   </div>
                   <div class="text_area">
