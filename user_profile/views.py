@@ -17,14 +17,14 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.safestring import mark_safe
-#allauth
+# allauth
 from allauth.account.views import PasswordChangeView
 import random
+
 
 # Create your views here.
 @login_required(login_url='accounts/login')
 def profile_view(request, username):
-
     user = request.user
     # para mostarar el cuadro de busqueda en la pagina:
     searchForm = SearchForm(request.POST)
@@ -38,7 +38,7 @@ def profile_view(request, username):
     if request.user.username != username:
         liked = True
         try:
-            #LikeProfile.objects.get(from_like=request.user.profile.id, to_like=user_profile.profile)
+            # LikeProfile.objects.get(from_like=request.user.profile.id, to_like=user_profile.profile)
             request.user.profile.has_like(user_profile.profile)
         except ObjectDoesNotExist:
             liked = False
@@ -84,7 +84,7 @@ def profile_view(request, username):
 
     # cargar lista de amigos (12 primeros)
     try:
-        #friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_friends()
         print('>>>>>>> LISTA: ')
         print(friends)
@@ -94,9 +94,9 @@ def profile_view(request, username):
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            #request.session['friends_list'] = json.dumps(friends.values())
-            #request.session['friends_list'] = list(friends)
-            #request.session['friends_list'] = serializers.serialize('json', list(friends))
+            # request.session['friends_list'] = json.dumps(friends.values())
+            # request.session['friends_list'] = list(friends)
+            # request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
@@ -111,7 +111,7 @@ def profile_view(request, username):
         for i in friends:
             try:
                 user_i = get_object_or_404(
-                get_user_model(), username__iexact=i["user__username"])
+                    get_user_model(), username__iexact=i["user__username"])
                 listR = user_i.profile.get_friends()
             except ObjectDoesNotExist:
                 listR = User.objects.all()
@@ -127,17 +127,17 @@ def profile_view(request, username):
     except:
         statusAux = None
 
-    def compList(list1,list2):
+    def compList(list1, list2):
         for i in list1:
             if i in list2:
                 return True
             else:
                 return False
 
-    myList = ['trabajando','no','si','feliz']
+    myList = ['trabajando', 'no', 'si', 'feliz']
     if statusAux != None:
-        if compList(statusAux,myList):
-            print ('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
+        if compList(statusAux, myList):
+            print('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
     # mostrar formulario para enviar comentarios/publicaciones
     publicationForm = PublicationForm()
 
@@ -161,7 +161,12 @@ def profile_view(request, username):
 
     # print ">>>>> PERFIL: " + str(user_profile.profile.pk)
     # print ">>>>> VISITANTE/USUARIO: " + str(user.profile.pk)
-    return render_to_response('account/profile.html', {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12, 'user_profile': user_profile, 'searchForm': searchForm, 'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes, 'isFriend': isFriend, 'existFriendRequest': existFriendRequest, 'json_requestsToMe': json_requestsToMe}, context_instance=RequestContext(request))
+    return render_to_response('account/profile.html',
+                              {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
+                               'user_profile': user_profile, 'searchForm': searchForm,
+                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes,
+                               'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
+                               'json_requestsToMe': json_requestsToMe}, context_instance=RequestContext(request))
 
 
 @login_required(login_url='accounts/login')
@@ -169,7 +174,6 @@ def search(request):
     # para mostarar tambien el cuadro de busqueda en la pagina
 
     searchForm = SearchForm(request.POST)
-
 
     if request.method == 'POST':
         if searchForm.is_valid:
@@ -188,24 +192,31 @@ def search(request):
                 else:
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2])
-                return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': resultSearch}, context_instance=RequestContext(request))
+                return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
+                                                                  'resultSearch': resultSearch},
+                                          context_instance=RequestContext(request))
 
     else:
-        return render_to_response('account/search.html', {'showPerfilButtons': True,  'searchForm': searchForm, 'resultSearch': ()}, context_instance=RequestContext(request))
+        return render_to_response('account/search.html',
+                                  {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': ()},
+                                  context_instance=RequestContext(request))
 
 
 @login_required(login_url='/')
 def config_changepass(request):
     searchForm = SearchForm(request.POST)
-    return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm}, context_instance=RequestContext(request))
+    return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm},
+                              context_instance=RequestContext(request))
+
 
 @login_required(login_url='/')
 def config_privacity(request):
-    return render_to_response('account/cf-privacity.html',{'showPerfilButtons': True}, context_instance=RequestContext(request))
+    return render_to_response('account/cf-privacity.html', {'showPerfilButtons': True},
+                              context_instance=RequestContext(request))
+
 
 @login_required(login_url='/')
 def config_profile(request):
-
     user_profile = request.user
 
     searchForm = SearchForm()
@@ -232,14 +243,16 @@ def config_profile(request):
         perfil_form = ProfileForm(instance=request.user.profile)
 
     print('>>>>>>>  paso x')
-    return render_to_response('account/cf-profile.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile, 'user_form': user_form, 'perfil_form': perfil_form}, context_instance=RequestContext(request))
+    return render_to_response('account/cf-profile.html',
+                              {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
+                               'user_form': user_form, 'perfil_form': perfil_form},
+                              context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
     # 'user_form':user_form}, context_instance=RequestContext(request))
 
 
 def like_profile(request):
-
     response = "null"
     if request.method == 'POST':
         user = request.user
@@ -296,7 +309,6 @@ def request_friend(request):
 
 
 def respond_friend_request(request):
-
     response = "null"
     if request.method == 'POST':
         user = request.user
@@ -333,26 +345,34 @@ def respond_friend_request(request):
 
 @login_required(login_url='/')
 def friends(request):
+    searchForm = SearchForm()
 
+        # cargar lista de amigos (12 primeros)
     try:
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = request.user.profile.get_friends()
+        print('>>>>>>> LISTA: ')
+        print(friends)
     except ObjectDoesNotExist:
         friends = None
 
     friends_top4 = None
     if friends != None:
-        if len(friends) > 4:
-            request.session['friends_list'] = serializers.serialize(
-                'json', friends)
-            friends_top4 = friends[0:4]
+        if len(friends) > 12:
+            # request.session['friends_list'] = json.dumps(friends.values())
+            # request.session['friends_list'] = list(friends)
+            # request.session['friends_list'] = serializers.serialize('json', list(friends))
+            request.session['friends_list'] = json.dumps(list(friends))
+            friends_top4 = friends[0:12]
+
         else:
             friends_top4 = friends
 
-    return render_to_response('account/amigos.html', {'friends_top4': friends_top4}, context_instance=RequestContext(request))
+    return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm},
+                              context_instance=RequestContext(request))
 
 
 def load_friends(request):
-
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.session.get('friends_list', None)
     if friendslist == None:
@@ -372,12 +392,13 @@ def load_friends(request):
 
 
 class CustomPasswordChangeView(PasswordChangeView):
-
     @property
     def success_url(self):
         return '/accounts/password/change/confirmation/'
 
+
 custom_password_change = login_required(CustomPasswordChangeView.as_view())
+
 
 def changepass_confirmation(request):
     return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))

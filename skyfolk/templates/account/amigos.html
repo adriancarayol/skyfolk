@@ -1,37 +1,20 @@
+{% extends "account/base_interface.html" %}
 <html>
 <head>
-  <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js" /></script>
-  <script src="{{STATIC_URL}}js/friends.js"></script>
-  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/amigos.css" />
-  <script src='http://codepen.io/assets/libs/fullpage/jquery.js'></script>
- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">  
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
+    <script src="{{STATIC_URL}}js/friends.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
 </head>
 
 <header> <form method="get" action="/search" id="search">
   <input name="q" type="text" size="40" placeholder="Buscar..." />
   </form> </header>
 <!-- CREAR NUEVO GRUPO DE AMIGOS -->
-<fieldset>
-<button class="All" title="All">All</button>
-<select>
-  <option value="1">Choose...</option>
-  <option value="2">Amigos</option>
-  <option value="3">Trabajo</option>
-</select>
-<div class="controls">
-  <div class="new-post">
-    <div class="fa fa-plus icon icon-plus"></div>
-    <div class="fa fa-pencil icon icon-pencil"></div>
-  </div>
+    <fieldset>
+        <button class="All" title="All">All</button>
 
-  <div class="live">
-    <div title="Grupo público" class="fa fa-unlock icon icon-lock"></div>
-  </div>
-  <div class="live2">
-    <div title="Grupo privado" class="fa fa-lock icon icon-lock2"></div>
-  </div>
-</fieldset>
+    </fieldset>
   <div class="wrapper" id="section" style="display:none;">
     <div class="col-md-9 col-ls-12">
       <img src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-128.png" class="img-rounded">
