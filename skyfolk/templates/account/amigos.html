@@ -1,4 +1,4 @@
-{% extends "account/base_interface.html" %}
+{% extends 'account/base_interface.html' %}
 <html>
 <head>
     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
@@ -9,49 +9,10 @@
 
 <header> <form method="get" action="/search" id="search">
   <input name="q" type="text" size="40" placeholder="Buscar..." />
-  </form> </header>
-<!-- CREAR NUEVO GRUPO DE AMIGOS -->
-    <fieldset>
-        <button class="All" title="All">All</button>
-
-    </fieldset>
-  <div class="wrapper" id="section" style="display:none;">
-    <div class="col-md-9 col-ls-12">
-      <img src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/user_male2-128.png" class="img-rounded">
-      <form role="form">
-    <div class="form-group">
-      <label for="exampleInputEmail1" class="name">Nombre</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter the group name.">
-    </div>
-    <div class="form-group">
-      <label for="exampleInputPassword1" class="lema">Clave</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="(Optional)">
-    </div>
-    <div class="form-group">
-      <label for="exampleInputPassword1" class="lema">Estado</label>
-      <input type="email" class="form-control" id="exampleInputPassword1" placeholder="Introduce un estado.">
-    </div>
   </form>
-     <div class="relaciones">
-       <h4>Mis contactos</h4>
-       <ul class="ctc">
-         <li><img class="img-circle" src="http://sharpresearchgroup.com/wp-content/uploads/2014/09/538642-user_512x512.png"><a>Marta Sánchez.</a></li>
-         <li><img class="img-circle" src="http://sharpresearchgroup.com/wp-content/uploads/2014/09/538642-user_512x512.png"><a>Marta Sánchez.</a></li>
-       </ul>
-      </div>
-        <div class='search-container'>
-          <input placeholder='Buscar un contacto...' type='text'>
-          <a class='button'>
-            <i class='fontawesome-search'></i>
-          </a>
-    </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-   </div>
-<!-- FIN CREAR NUEVO GRUPO AMIGOS -->
+</header>
+{% block content %}
 <div id="content_profile_cards">
-
-
-
 {% for item in friends_top4 %}
 
 <li><div class="profile_card">
@@ -66,7 +27,7 @@
   <div class="perfil">
     <div class="foto_perfil"></div>
     <div class="inner_content">
-      <h2 class="nomb" id="nomb">{{item.user.username}}</h2>
+      <h2 class="nomb" id="nomb">{{ item.user__username }}</h2>
       <span id="desc">
         <p class="descripcion" id="desc_one">Profunder</p>
       <p class="descripcion" id="desc_two">Mensaje de texto de prueba </p></span>
@@ -228,5 +189,5 @@
 
 -->
 
-
-</html>
+{% endblock %}
+</center></center>

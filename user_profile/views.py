@@ -351,8 +351,11 @@ def friends(request):
     try:
         # friends_4 = request.user.profile.get_friends_next4(1)
         friends = request.user.profile.get_friends()
+        print('>>>>> Usuario realiza la peticion')
+        print(request.user.username)
         print('>>>>>>> LISTA: ')
         print(friends)
+        name = request.user.username
     except ObjectDoesNotExist:
         friends = None
 
@@ -368,7 +371,7 @@ def friends(request):
         else:
             friends_top4 = friends
 
-    return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm},
+    return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'name': name,  'searchForm': searchForm},
                               context_instance=RequestContext(request))
 
 
