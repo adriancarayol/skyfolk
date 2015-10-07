@@ -371,7 +371,7 @@ def friends(request):
         else:
             friends_top4 = friends
 
-    return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'name': name,  'searchForm': searchForm},
+    return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm},
                               context_instance=RequestContext(request))
 
 
