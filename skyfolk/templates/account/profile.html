@@ -49,21 +49,7 @@
 
 {% block content %}
 
-{% if user_profile.profile.image %}
-      <nav class="profile" style="background-image: url('{{user_profile.image.url}}');">
-      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
-      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
-      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
-      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
-    </nav>
-{% else %}
-      <nav class="profile" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');">
-      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
-      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
-      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
-      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
-    </nav>
-{% endif %}
+
 
 <!--
  <div class="Mensaje" id="js-timer">
@@ -129,7 +115,6 @@
 <!-- MENU VERTICAL CON NOTIFICACIONES Y CHAT -->
 <div class="nav-vertical-and-chat">
 
-<div clas="col-lg-12 col-md-12 col-sm-12">
   <div class="chat_1"> <!-- Chat en menu vertical -->
     <div class="ventana_m">
       <ul class="conver">

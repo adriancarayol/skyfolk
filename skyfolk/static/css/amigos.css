@@ -1,0 +1,60 @@
+.container .personal-card {
+    background-color: #fff;
+    width: 100%;
+    margin-top: 20px;
+    margin-left: 15em;
+    height: 300px;
+}
+
+.container .header {
+    background-color: tomato;
+    height: 150px;
+}
+
+.container .personal-card .header .back-profile-user {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.container .personal-card .header .bg-user {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    margin: auto;
+    display: block;
+}
+.container .personal-card .header .profile-user-bg {
+    position: relative;
+    margin-top: -40px;
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+    border: 4px solid #fff;
+
+}
+.container .personal-card .header .like-him {
+    position: absolute;
+    margin-top: -30px;
+    float: right;
+    background-color: tomato;
+    border-radius: 100%;
+    width: 50px;
+    margin-left: 300px;
+    height: 50px;
+    padding-left: 14px;
+    padding-top: 14px;
+
+}
+
+.container .personal-card .name-friend {
+    position: relative;
+    width: 60%;
+    height: auto;
+    margin: auto;
+    margin-top: 50px;
+    text-align: center;
+    border-radius: 7px;
+    padding: 2px;
+    color: grey;
+    background-color: #e0e0e0;
+}

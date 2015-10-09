@@ -1,38 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="description" content="Mi perfil">
-<meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
-<link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/widget1.css" />
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
-<link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
-<link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
-<link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+    <meta charset="UTF-8">
+    <meta name="description" content="Mi perfil">
+    <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
+    <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/widget1.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
+    <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-<script src="{{STATIC_URL}}js/jquery.min.js"></script>
-<script src="{{STATIC_URL}}js/jquery-ui.js"></script>
-<script src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
-<script src="{{STATIC_URL}}js/jquery.gritter.js"></script>
-<script src="{{STATIC_URL}}js/profile.js"></script>
-<script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
-<script src="{{STATIC_URL}}js/noti.js"></script>
-<script src="{{STATIC_URL}}js/notia.js"></script>
-<script src="{{STATIC_URL}}js/drag.js"></script> <!-- Permite mover el bloque donde se escribe un nuevo mensaje -->
-<script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
-<script src="{{STATIC_URL}}js/scrollReveal.js"></script>
-<script src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+
+    <script src="{{STATIC_URL}}js/jquery.min.js"></script>
+    <script src="{{STATIC_URL}}js/jquery-ui.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.gritter.js"></script>
+    <script src="{{STATIC_URL}}js/profile.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
+    <script src="{{STATIC_URL}}js/noti.js"></script>
+    <script src="{{STATIC_URL}}js/notia.js"></script>
+    <script src="{{STATIC_URL}}js/drag.js"></script> <!-- Permite mover el bloque donde se escribe un nuevo mensaje -->
+    <script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
+    <script src="{{STATIC_URL}}js/scrollReveal.js"></script>
+    <script src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+    <script src="{{STATIC_URL}}js/friends.js"></script>
 <!-- Sweet Alert -->
 
-<link rel="stylesheet" href="{{STATIC_URL}}dist/sweetalert.css">
-<link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css">
-<script src="{{STATIC_URL}}dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="{{STATIC_URL}}dist/sweetalert.css">
+    <link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css">
+    <script src="{{STATIC_URL}}dist/sweetalert.min.js"></script>
 
 
 <!-- NEW MENU -->
@@ -120,10 +123,10 @@ top.window.outerWidth = screen.availWidth;
 <div id="ffacebook" class="size left"><span class="entypo-calendar"></span></div>
 <div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
     </button>-->
-  {% if user_profile.profile.image %}
+  {% if request.user.profile.image %}
 <div id="toggle">
   <nav class="menup">
-    <li class="profilee"><img src="{{user_profile.profile.image.url}}"><i>{{user.username}}</i></li>
+    <li class="profilee"><img src="{{ request.user.profile.image.url }}"><i>{{ request.user.username }}</i></li>
     <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
     <li onclick="javascript:location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li onclick="javascript:location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
@@ -136,7 +139,7 @@ top.window.outerWidth = screen.availWidth;
 {% else %}
 <div id="toggle">
   <nav class="menup">
-    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{user.username}}</i></li>
+    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{ request.user.username }}</i></li>
     <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion</li>
     <li onclick="javascript:location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
     <li onclick="javascript:location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
@@ -179,7 +182,23 @@ top.window.outerWidth = screen.availWidth;
 
 
     {% endif %}
+<!-- Menu principal - circular -->
 
+{% if request.user.profile.image %}
+      <nav class="profile" style="background-image: url('{{request.user.profile.image.url}}');">
+      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
+      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
+      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
+      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
+    </nav>
+{% else %}
+      <nav class="profile" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');">
+      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
+      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
+      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
+      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
+    </nav>
+{% endif %}
 </nav>
 {% endblock %}
 {% block content %}{% endblock %}
