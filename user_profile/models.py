@@ -41,6 +41,7 @@ class UserProfile(models.Model):
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
     publications = models.ManyToManyField('self', through='publications.Publication', symmetrical=False, related_name='publications_to')
+    timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False, related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
 
     def __unicode__(self):
@@ -93,8 +94,14 @@ class UserProfile(models.Model):
             from_people__status=status,
             from_people__to_person=self)
 
+    #Methods of timeline
+
+    def getTimelineToMe(self):
+        return self.timeline_to.filter(
+            from_timeline=self).values('user__username', 'user__first_name').ordered_by('from_timeline__insertation_date').reverse()
 
     #Methods of publications
+
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
 
@@ -173,11 +180,6 @@ class UserProfile(models.Model):
         n = next * 4
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[n-4:n]
 """
-    #methods timeline
-    # def add_timeline(self, publicationid):
-
-
-
 
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

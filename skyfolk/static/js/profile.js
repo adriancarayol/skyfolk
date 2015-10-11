@@ -241,7 +241,7 @@ $(document).keypress(function(e){
 
     }
   });
-
+/*
 $('#tab-timeline').bind('scroll', function() {
 
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10) {
@@ -273,7 +273,7 @@ $('#tab-timeline').bind('scroll', function() {
         }
     });
 
-
+/**/
   $("#li-tab-amigos").click(function() {
     $('#tab-amigos').css({
       "overflow": "auto"
@@ -859,7 +859,7 @@ function AJAX_add_timeline(caja_publicacion) {
         }else{
             swal({
                 title: "Fail",
-                text: "Failed to delete publish.",
+                text: "Failed to add to timeline.",
                 type: "error"
             });
         }

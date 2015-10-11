@@ -574,7 +574,7 @@
                     <div id="section">
                         <div class="wrapperx">
                         {% if isFriend == True or user.username == user_profile.username %}
-                            {% for item in publications_top15 %}
+                            {% for item in t %}
                             <div class="line">
                                 <li>
                                     <div data-sr="wait 0.2s then scale up 30%" class="second">
@@ -585,7 +585,7 @@
                                         {% endif %}
                                         <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
                                         <div id="p" class="parrafo comment">
-                                            {{item.from_publication__content}}
+                                            {{item.content}}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
@@ -635,9 +635,9 @@
 
                     <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                    {% autoescape off %}
-                    {{ item.from_publication__content|emoji_replace_html_entities }}
-                    {% endautoescape %}
+                        {% autoescape off %}
+                    {{ item.from_publication__content }}
+                        {% endautoescape %}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
