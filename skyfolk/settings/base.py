@@ -219,7 +219,7 @@ MEDIA_URL = '/media/'
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),
-    ('Carlos Canicio', 'canicio7@gmail.com'),
+    ('Gabriel Fernandez', 'gabofer82@gmail.com'),
     ('lostcitizen', 'lostcitizen@gmail.com'),
 )
 

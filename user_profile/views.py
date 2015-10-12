@@ -350,29 +350,27 @@ def respond_friend_request(request):
 
 
 @login_required(login_url='/')
-def friends(request):
+def friends(request, username):
     searchForm = SearchForm()
+
+    user_profile = get_object_or_404(
+        get_user_model(), username__iexact=username)
 
         # cargar lista de amigos (12 primeros)
     try:
         # friends_4 = request.user.profile.get_friends_next4(1)
-        friends = request.user.profile.get_friends()
-        print('>>>>> Usuario realiza la peticion')
-        print(request.user.username)
-        print('>>>>>>> LISTA: ')
-        print(friends)
-        name = request.user.username
+        friends = user_profile.profile.get_friends()
     except ObjectDoesNotExist:
         friends = None
 
     friends_top4 = None
     if friends != None:
-        if len(friends) > 12:
+        if len(friends) > 4:
             # request.session['friends_list'] = json.dumps(friends.values())
             # request.session['friends_list'] = list(friends)
             # request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
-            friends_top4 = friends[0:12]
+            friends_top4 = friends[0:4]
 
         else:
             friends_top4 = friends

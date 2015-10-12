@@ -163,7 +163,7 @@
         <div class="user-card card">
 
           <div class="user-avatar">
-            {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
+            {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
             <img src="{{user_profile.profile.backImage.url}}" class="user-bg">
             {% else %}
             <img src="{{STATIC_URL}}img/backgrounds/5.jpg" class="user-bg">
@@ -336,7 +336,7 @@
           </header>
           <div class="status">{{ user_profile.profile.status }}</div>
           <ul class="stats">
-            <li><a href="/friends"><strong>{{ friends_top12|length }}</strong><span>Seguidores</span></a></li>
+            <li><a href="/friends/{{ user_profile.username }}"><strong>{{ friends_top12|length }}</strong><span>Seguidores</span></a></li>
             <li><a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a></li>
             <li><a class='inline' href="#inline_content"><strong>48</strong><span>Fotos</span></a></li>
           </ul>

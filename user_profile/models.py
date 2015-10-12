@@ -124,7 +124,7 @@ class UserProfile(models.Model):
         return self.get_related_to(RELATIONSHIP_FOLLOWING)
 
     def get_friends(self):
-        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name', 'user__last_name', 'user__profile__image').order_by('id')
+        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name', 'user__last_name', 'user__profile__image', 'user__profile__backImage').order_by('id')
 
     def get_username_friends(self):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__username').order_by('id')

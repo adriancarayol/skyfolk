@@ -32,7 +32,7 @@ urlpatterns = patterns(
     url(r'^config/profile/$', 'user_profile.views.config_profile'),
     #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^like_profile/$', 'user_profile.views.like_profile', name='like_profile'),
-    url(r'^friends/$', 'user_profile.views.friends'),
+    url(r'^friends/(?P<username>[\w-]+)/$', 'user_profile.views.friends'),
     url(r'^respond_friend_request/$', 'user_profile.views.respond_friend_request', name='respond_friend_request'),
     url(r'^load_friends/$', 'user_profile.views.load_friends'),
     url(r'^config/privacity/$','user_profile.views.config_privacity'),
