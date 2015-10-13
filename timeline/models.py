@@ -3,5 +3,5 @@ from user_profile.models import UserProfile
 
 class Timeline(models.Model):
     content = models.TextField(blank=False)
-    author = models.ForeignKey(UserProfile, related_name='from_author')
+    author = models.ForeignKey(UserProfile, related_name='from_timeline')
     insertion_date = models.DateField(auto_now_add=True)

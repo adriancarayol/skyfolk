@@ -10,6 +10,7 @@ from django.db.models import Q
 from user_profile.forms import ProfileForm, UserForm
 from user_profile.models import Relationship, LikeProfile, UserProfile
 from publications.models import Publication
+from timeline.models import Timeline
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 import json
@@ -158,13 +159,18 @@ def profile_view(request, username):
             publications_top15 = publications[0:15]
         else:
             publications_top15 = publications
-
+    # cargar timeline
+    print('>>>>>>>>>>> TIMELINE <<<<<<<<<<<')
+    try:
+        t = Timeline.objects.all()
+    except ObjectDoesNotExist:
+        t =  None
     # print ">>>>> PERFIL: " + str(user_profile.profile.pk)
     # print ">>>>> VISITANTE/USUARIO: " + str(user.profile.pk)
     return render_to_response('account/profile.html',
                               {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
                                'user_profile': user_profile, 'searchForm': searchForm,
-                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes,
+                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes, 't': t,
                                'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
                                'json_requestsToMe': json_requestsToMe}, context_instance=RequestContext(request))
 
@@ -344,29 +350,27 @@ def respond_friend_request(request):
 
 
 @login_required(login_url='/')
-def friends(request):
+def friends(request, username):
     searchForm = SearchForm()
+
+    user_profile = get_object_or_404(
+        get_user_model(), username__iexact=username)
 
         # cargar lista de amigos (12 primeros)
     try:
         # friends_4 = request.user.profile.get_friends_next4(1)
-        friends = request.user.profile.get_friends()
-        print('>>>>> Usuario realiza la peticion')
-        print(request.user.username)
-        print('>>>>>>> LISTA: ')
-        print(friends)
-        name = request.user.username
+        friends = user_profile.profile.get_friends()
     except ObjectDoesNotExist:
         friends = None
 
     friends_top4 = None
     if friends != None:
-        if len(friends) > 12:
+        if len(friends) > 4:
             # request.session['friends_list'] = json.dumps(friends.values())
             # request.session['friends_list'] = list(friends)
             # request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
-            friends_top4 = friends[0:12]
+            friends_top4 = friends[0:4]
 
         else:
             friends_top4 = friends

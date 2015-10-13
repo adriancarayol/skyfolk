@@ -49,21 +49,7 @@
 
 {% block content %}
 
-{% if user_profile.profile.image %}
-      <nav class="profile" style="background-image: url('{{user_profile.image.url}}');">
-      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
-      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
-      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
-      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
-    </nav>
-{% else %}
-      <nav class="profile" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');">
-      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
-      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
-      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
-      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
-    </nav>
-{% endif %}
+
 
 <!--
  <div class="Mensaje" id="js-timer">
@@ -129,7 +115,6 @@
 <!-- MENU VERTICAL CON NOTIFICACIONES Y CHAT -->
 <div class="nav-vertical-and-chat">
 
-<div clas="col-lg-12 col-md-12 col-sm-12">
   <div class="chat_1"> <!-- Chat en menu vertical -->
     <div class="ventana_m">
       <ul class="conver">
@@ -178,7 +163,7 @@
         <div class="user-card card">
 
           <div class="user-avatar">
-            {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
+            {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
             <img src="{{user_profile.profile.backImage.url}}" class="user-bg">
             {% else %}
             <img src="{{STATIC_URL}}img/backgrounds/5.jpg" class="user-bg">
@@ -351,7 +336,7 @@
           </header>
           <div class="status">{{ user_profile.profile.status }}</div>
           <ul class="stats">
-            <li><a href="/friends"><strong>{{ friends_top12|length }}</strong><span>Seguidores</span></a></li>
+            <li><a href="/friends/{{ user_profile.username }}"><strong>{{ friends_top12|length }}</strong><span>Seguidores</span></a></li>
             <li><a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a></li>
             <li><a class='inline' href="#inline_content"><strong>48</strong><span>Fotos</span></a></li>
           </ul>
@@ -589,7 +574,7 @@
                     <div id="section">
                         <div class="wrapperx">
                         {% if isFriend == True or user.username == user_profile.username %}
-                            {% for item in publications_top15 %}
+                            {% for item in t %}
                             <div class="line">
                                 <li>
                                     <div data-sr="wait 0.2s then scale up 30%" class="second">
@@ -600,7 +585,7 @@
                                         {% endif %}
                                         <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
                                         <div id="p" class="parrafo comment">
-                                            {{item.from_publication__content}}
+                                            {{item.content}}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
@@ -650,9 +635,9 @@
 
                     <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                    {% autoescape off %}
-                    {{ item.from_publication__content|emoji_replace_html_entities }}
-                    {% endautoescape %}
+                        {% autoescape off %}
+                    {{ item.from_publication__content }}
+                        {% endautoescape %}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>

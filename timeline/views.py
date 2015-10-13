@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -14,12 +15,15 @@ def addToTimeline(request):
         )
         print(obj_userprofile)
         obj_pub = request.POST['publication_id']
-        print(obj_pub)
+        #print(obj_pub)
         try:
-            content = Publication.objects.get(pk=obj_pub)
-            print(content.content)
+            pubToAdd = Publication.objects.get(pk=obj_pub)
+            # print(pubToAdd.content)
+            t = Timeline(content=pubToAdd.content, author=obj_userprofile.profile)
+            t.save()
+            # print(t.content)
             response = True
-        except:
+        except ObjectDoesNotExist:
             response = False
 
         return HttpResponse(json.dumps(response), content_type='application/json')
