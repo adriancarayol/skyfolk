@@ -39,6 +39,7 @@ urlpatterns = patterns(
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^publication/$', 'publications.views.publication_form'),
     url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),
+    url(r'^publication/addLike/$', 'publications.views.addLike', name='add_like'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
