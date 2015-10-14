@@ -38,5 +38,6 @@ if __name__ == "__main__":
         import manage.manage_pre
     else:
         #develop
+        os.environ['SECRET_KEY'] = 'develop'
         import manage.manage_develop
 
