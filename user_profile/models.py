@@ -102,16 +102,19 @@ class UserProfile(models.Model):
 
     #Methods of publications
 
+    def add_like(self, publicationid):
+        publications.models.Publication.objects.get(pk=publications).save()
+
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
 
     def get_publicationsToMe(self):
         return self.publications_to.filter(
-            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__id', 'from_publication__content', 'from_publication__created', 'user__profile__image').order_by('from_publication__created').reverse()
+            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__id', 'from_publication__content', 'from_publication__created', 'from_publication__mlikes', 'user__profile__image').order_by('from_publication__created').reverse()
 
     def get_publicationsToMeTop15(self):
         return self.publications_to.filter(
-            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__id', 'from_publication__content', 'from_publication__created', 'user__profile__image').order_by('from_publication__created').reverse()[0:15]
+            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name', 'from_publication__id', 'from_publication__content', 'from_publication__created', 'from_publication__mlikes', 'user__profile__image').order_by('from_publication__created').reverse()[0:15]
 
     def get_myPublications(self):
         return self.publications.filter(

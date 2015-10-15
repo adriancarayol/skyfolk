@@ -5,7 +5,7 @@ from publications.models import Publication
 class PublicationForm(ModelForm):
     class Meta:
         model = Publication
-        exclude = ('image', 'is_response_from', 'created', 'writer', 'profile')
+        exclude = ('image','is_response_from', 'created', 'writer', 'profile')
 
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)

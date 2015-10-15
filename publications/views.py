@@ -74,3 +74,18 @@ def load_publications(request):
             print(publications_next)
 
     return HttpResponse(json.dumps(list(publications_next)), content_type='application/json')
+
+def addLike(request):
+    if request.POST:
+        obj_userprofile = get_object_or_404(
+            get_user_model(),
+            pk=request.POST['userprofile_id']
+        )
+        try:
+            obj_userprofile.profile.add_like(
+                    publicationid=request.POST['publication_id']
+            )
+            response = True
+        except:
+            response = False
+    return HttpResponse(json.dump(response), content_type='application/json')
