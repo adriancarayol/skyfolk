@@ -17,6 +17,7 @@
 
 {% block cf-form %}
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
+    <div class="col-lg-12">
 	<div class="profilex">
 	{% if user_profile.profile.image %}
 	<img src="{{user_profile.profile.image.url}}" class="img-circle">
@@ -25,9 +26,12 @@
 	{% endif %}
 		{{ user_form }}
 	</div>
+    </div>
+    <div class="col-lg-10">
 	<div class="chg">
     	{{ perfil_form }}
 		<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
 		</div>
+        </div>
 	</form>
 {% endblock %}

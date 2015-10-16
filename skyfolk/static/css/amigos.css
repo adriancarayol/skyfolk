@@ -2,7 +2,6 @@
     background-color: #fff;
     width: 100%;
     margin-top: 20px;
-    margin-left: 15em;
     height: 300px;
 }
 
@@ -24,7 +23,7 @@
 }
 .container .personal-card .header .profile-user-bg {
     position: relative;
-    margin-top: -40px;
+    margin-top: -80px;
     width: 80px;
     height: 80px;
     border-radius: 100%;
@@ -32,9 +31,10 @@
 
 }
 .container .personal-card .header .like-him {
-    position: absolute;
+    position: relative;
     margin-top: -30px;
     float: right;
+    margin-right: 20px;
     background-color: tomato;
     border-radius: 100%;
     width: 50px;
@@ -42,6 +42,7 @@
     height: 50px;
     padding-left: 14px;
     padding-top: 14px;
+    display: inline-block;
 
 }
 

@@ -5,11 +5,8 @@
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
  	<link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
-  <link rel="stylesheet" href="{{STATIC_URL}}css/media/bootstrap/css/bootstrap.css" type="text/css" media="all">
 	<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' />
 	<link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
-	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"/>
-
 
 	<!--[if IE 7]>
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome-ie7.min.css" rel="stylesheet" />
@@ -36,14 +33,19 @@
 
 
 {% block content %}
-<hgroup>
+
+    <div class="container">
+    <div class="col-lg-10">
+        <hgroup>
 <span>
 	<h3 class="fontawesome-cog"><i class="fa fa-cog"></i> Configuracion</h3>
 	<h6>Configure, edite o cambie cualquier cosa de su perfil.</h6>
 </span>
-</hgroup>
-<body>
-  <aside>
+        </hgroup>
+    </div>
+    <div class="col-lg-12 col-sm-9">
+    <div class="col-lg-2 col-md-12 col-sm-12">
+  <div class="sidebar">
     <nav>
       <li class="perfil" onclick="javascript:window.location.href='/config/profile'"><i class="fa fa-user"></i>Perfil</li>
       <li class="Contraseña" onclick="javascript:window.location.href='/accounts/password/change/'"><i class="fa fa-lock"></i>Contraseña</li>
@@ -54,10 +56,10 @@
       <li class="ban"><i class="fa fa-minus"></i>Cuentas bloqueadas</li>
       <li onclick="javascript:window.location.href='/config/relations'" class="relaciones"><i class="fa fa-circle-thin fa"></i>Mis relaciones</li>
     </nav>
-  </aside>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-xs-12 col-sm-6 col-md-8 col-lg-12" id="contra">
+  </div>
+    </div>
+    <div class="col-lg-7 col-md-9 col-sm-8">
+    <div id="contra">
     <li>
     <form id="levi">
     	{% block cf-title %}{% endblock %}
@@ -78,8 +80,7 @@
 
     <!--  </form> -->
     </div>
-  </div>
-</div>
-</body>
-</html>
+    </div>
+    </div>
+    </div>
 {% endblock%}
