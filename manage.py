@@ -17,7 +17,7 @@ if __name__ == "__main__":
         primerParam = "null"
         segundoParam = "null"
 
-    #print("primerParam: " + primerParam + " / segundoParam" + segundoParam)
+    print("primerParam: " + primerParam + " / segundoParam" + segundoParam)
     if primerParam == "--entorno" and ( segundoParam == "develop" or
                                         segundoParam == "pre" or
                                         segundoParam == "master" ):
@@ -35,7 +35,9 @@ if __name__ == "__main__":
     if entorno == "master":
         import manage.manage_master
     elif entorno == "pre":
+        os.environ['SECRET_KEY'] = 'pre'
         import manage.manage_pre
+        # print(manage_pre)
     else:
         #develop
         os.environ['SECRET_KEY'] = 'develop'
