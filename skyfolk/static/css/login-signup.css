@@ -13,7 +13,7 @@ body {
 
 /* Random Background */
 #background_cycler{padding:0;margin:0;width:100%;position:absolute;top:0;left:0;z-index:-1;min-height:100%;}
-#background_cycler img{position:absolute;left:0;top:0;width:100%; height: 100%; z-index:1;}
+#background_cycler img{position:fixed;left:0;top:0;width:100%; min-height: 100%; z-index:1;}
 #background_cycler img.active{z-index:3}
 
 /* LOGO */
@@ -275,6 +275,12 @@ form {
   }
   .footer_base {
     display: none;
+  }
+  .namesn {
+      margin-top: -20%;
+  }
+  #login {
+      width: 350px;
   }
  }
 
