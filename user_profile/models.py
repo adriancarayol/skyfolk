@@ -102,8 +102,13 @@ class UserProfile(models.Model):
 
     #Methods of publications
 
-    def add_like(self, publicationid):
-        publications.models.Publication.objects.get(pk=publications).save()
+    def get_publication(self, publicationid):
+        return publications.models.Publication.objects.get(pk=publicationid)
+
+    def add_like_pub(self, publicationid):
+        t = publications.models.Publication.objects.get(pk=publicationid)
+        t.mlikes += 1
+        t.save()
 
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
