@@ -838,6 +838,10 @@ function AJAX_delete_publication(caja_publicacion) {
 
 }
 
+/*****************************************************/
+/********** AJAX para añadir me gusta a comentario *********/
+/*****************************************************/
+
 function AJAX_add_like(caja_publicacion) {
   var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
   var id_user = $(caja_publicacion).data('id')// obtengo id
@@ -847,14 +851,17 @@ function AJAX_add_like(caja_publicacion) {
        };
   //event.preventDefault(); //stop submit
   $.ajax({
-    url: '/publication/addLike/',
+    url: '/publication/add_like/',
     type: 'POST',
     dataType: 'json',
     data: data,
     success: function(data) {
-        // borrar caja publicacion
         if (data==true) {
-            $(caja_publicacion).css('background-color', 'black');
+            swal({
+                title: "Éxito",
+                text: "Añadido un me gusta al comentario",
+                type: "success"
+            });
         }else{
             swal({
                 title: "Fail",
