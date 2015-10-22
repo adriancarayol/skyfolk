@@ -34,7 +34,6 @@ def profile_view(request, username):
         get_user_model(), username__iexact=username)
 
     json_requestsToMe = None
-
     # saber si el usuario que visita el perfil le gusta
     if request.user.username != username:
         liked = True
@@ -105,7 +104,7 @@ def profile_view(request, username):
             friends_top12 = friends
 
     # cargar recomendaciones por amigos
-
+    # TODO
     listR = []
     try:
         friends = user_profile.profile.get_friends()
@@ -123,6 +122,8 @@ def profile_view(request, username):
 
 
     # mostrar color segun estado (parte emocional)
+    # TODO
+    '''
     try:
         statusAux = user_profile.profile.status.lower().split()
     except:
@@ -139,6 +140,7 @@ def profile_view(request, username):
     if statusAux != None:
         if compList(statusAux, myList):
             print('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
+    '''
     # mostrar formulario para enviar comentarios/publicaciones
     publicationForm = PublicationForm()
 
