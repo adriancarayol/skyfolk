@@ -94,10 +94,10 @@ def add_like(request):
         pub = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
         # que vamos a increment sus me likes
 
-        user_profile = get_object_or_404(  # Obtenemos el modelo del escritor del comentario
-                                           get_user_model(),
-                                           pk=pub.writer.id
-                                           )
+        user_profile = get_object_or_404(
+            get_user_model(),
+            pk=pub.writer.id
+        )
 
         print("WRITER >>>>>>>>>> " + user_profile.username + " REQUEST USER >" + request.user.username)
 
