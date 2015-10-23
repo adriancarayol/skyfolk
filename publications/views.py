@@ -101,13 +101,19 @@ def add_like(request):
 
         print("WRITER >>>>>>>>>> " + user_profile.username + " REQUEST USER >" + request.user.username)
 
-        if request.user.username != user_profile.username:  # Si el escritor del comentario
+        ''' Mostrar los usuarios que han dado un me gusta a ese comentario '''
+        print("USERS LIKES COMMENT: ")
+        print(pub.user_give_me_like.all())
+
+        if request.user.username != user_profile.username and request.user not in pub.user_give_me_like.all():  # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
+            # tampooco si el usuario ya ha dado like antes
             try:
                 obj_userprofile.profile.add_like_pub(
                     publicationid=request.POST['publication_id']
                 )
+                pub.user_give_me_like.add(request.user) # Añadimos a la lista los usuarios que han dado me gusta
                 response = True
             except ObjectDoesNotExist:
                 response = False

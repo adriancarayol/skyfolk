@@ -121,10 +121,12 @@ $(document).ready(function() {
         alert('VAS A AÑADIR EL COMENTARIO A TU TIMELINE');
         AJAX_add_timeline(caja_publicacion);
     });
+
     /* Añadir me gusta a comentario */
     $('.optiones_comentarios .fa-heart').on('click', function() {
         var caja_publicacion = $(this).closest('.wrapper');
-        AJAX_add_like(caja_publicacion);
+        var heart = this
+        AJAX_add_like(caja_publicacion, heart);
     })
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
 
@@ -842,7 +844,7 @@ function AJAX_delete_publication(caja_publicacion) {
 /********** AJAX para añadir me gusta a comentario *********/
 /*****************************************************/
 
-function AJAX_add_like(caja_publicacion) {
+function AJAX_add_like(caja_publicacion, heart) {
   var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
   var id_user = $(caja_publicacion).data('id')// obtengo id
   var data = {
@@ -857,11 +859,7 @@ function AJAX_add_like(caja_publicacion) {
     data: data,
     success: function(data) {
         if (data==true) {
-            swal({
-                title: "Éxito",
-                text: "Añadido un me gusta al comentario",
-                type: "success"
-            });
+            $(heart).css('color','#f06292');
         }else{
             swal({
                 title: "Fail",
