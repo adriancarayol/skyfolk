@@ -109,13 +109,6 @@ class UserProfile(models.Model):
         t = publications.models.Publication.objects.get(pk=publicationid)
         t.mlikes += 1
         t.save()
-    # TODO
-    def add_user_add_like_comment(self, profileid):
-        pass
-
-    # TODO
-    def get_user_add_like_comment(self, profileid):
-        return publications.models.Publication.objects.filter(user_give_me_like=profileid).order_by('id')
 
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
