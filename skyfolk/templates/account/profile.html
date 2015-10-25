@@ -674,7 +674,7 @@
                         {% elif user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
                              <li><i class="fa fa-trash"></i></li>
                         {% endif %}
-                        {% if item.from_publication__mlikes != None %}
+                        {% if item.from_publication__mlikes != None and item.from_publication__mlikes != 0 %}
                        <li><i class="fa fa-heart"></i> {{ item.from_publication__mlikes }} </li>
                         {% else %}
                         <li><i class="fa fa-heart"></i></li>
