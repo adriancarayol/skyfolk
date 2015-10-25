@@ -113,7 +113,10 @@ def add_like(request):
                 obj_userprofile.profile.add_like_pub(
                     publicationid=request.POST['publication_id']
                 )
+
                 pub.user_give_me_like.add(request.user) # Añadimos a la lista los usuarios que han dado me gusta
+                pub.save()
+
                 response = True
             except ObjectDoesNotExist:
                 response = False
