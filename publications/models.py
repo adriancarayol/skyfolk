@@ -14,4 +14,4 @@ class Publication(models.Model):
     is_response_from = models.ForeignKey('self', related_name='responses', null=True)
     created = models.DateTimeField(auto_now_add=True)
     mlikes = models.IntegerField(blank=True, default=0)
-    user_give_me_like = models.ManyToManyField(User, blank=True, null=True)
+    user_give_me_like = models.ManyToManyField(User, blank=True)
