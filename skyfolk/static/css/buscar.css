@@ -113,6 +113,9 @@
   list-style-type: none;
   margin-left: 50px;
   cursor: pointer;
+    transition: all .2s ease-in-out;
+  -webkit-transition: all .2s ease-in-out;
+  -moz-transition: all .2s ease-in-out;
 }
 .fa-bell em {
   background-color: tomato;
@@ -131,15 +134,13 @@
 }
 .fa-bars:hover {
   opacity: 0.8;
-  transition: all .3s ease-in;
-  -webkit-transition: all .3s ease-in;
-  -moz-transition: all .3s ease-in;
   }
+  
 .fa-bars-rotate {
-    transition: all .3s ease-in;
-  -webkit-transition: all .3s ease-in;
-  -moz-transition: all .3s ease-in;
-  color: #1976d2 !important;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    transform: rotate(90deg);
+    color: #1976d2 !important;
 }
 .fa-bars-rotate-2 {
   color: tomato;
