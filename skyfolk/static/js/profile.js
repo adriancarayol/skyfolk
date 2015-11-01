@@ -46,12 +46,12 @@ $(document).ready(function() {
 */
   
   /* Al hacer click en el menu "bola" avanzamos hacia el TOP de la pagina */
-
+/*
   $('.profile').click(function(){
     $("html, body").animate({ scrollTop: 0 }, 200);
     return false;
  });
-
+*/
   $('.fa-paw').on('click',function() {
       $(".info-paw").fadeToggle("fast");
   });
