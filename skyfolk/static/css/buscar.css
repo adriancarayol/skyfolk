@@ -117,6 +117,7 @@
   -webkit-transition: all .2s ease-in-out;
   -moz-transition: all .2s ease-in-out;
 }
+
 .fa-bell em {
   background-color: tomato;
   font-size: 10px;
@@ -259,6 +260,87 @@
   animation-duration: 4s;
   animation-iteration-count: 3;
   animation-direction: alternate;
+}
+.logotipo_skyfolk:hover {
+    background: none;
+}
+.logotipo_skyfolk li:nth-child(1) {
+  list-style-type: none;
+  position: absolute;
+  visibility: hidden;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+    width: 40px;
+    height: 40px;
+    background: none;
+  top: 0px;
+  }
+.logotipo_skyfolk li:nth-child(1) img {
+    width: 40px;
+    height: 40px;
+    position: relative;
+        -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+}
+.logotipo_skyfolk li:nth-child(2) {
+  list-style-type: none;
+  position: absolute;
+  visibility: hidden;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+  left: 70px;
+  top: 60px;
+  }
+.logotipo_skyfolk li:nth-child(3) {
+  list-style-type: none;
+  position: absolute;
+  visibility: hidden;;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+    right: 60px;
+  top: 60px;
+}
+.logotipo_skyfolk li:nth-child(4) {
+  list-style-type: none;
+  position: absolute;
+  right: 130px;
+  visibility: hidden;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+  top: 31px;
+}
+.logotipo_skyfolk li:nth-child(5) {
+  list-style-type: none;
+  position: absolute;
+  left: 120px;
+  visibility: hidden;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+  top: 30px;
+}
+
+.logotipo_skyfolk:hover li {
+  visibility: visible;
+  margin-top: 10px;
+  transition: all .2s ease-in;
+  -webkit-transition: all .2s ease-in;
+  -moz-transition: all .2s ease-in;
+}
+
+.logotipo_skyfolk li:hover {
+  color: #1976d2;
+  z-index: 9999;
 }
 
 @keyframes pre-loader-logo {
