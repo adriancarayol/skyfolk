@@ -133,6 +133,7 @@ top.window.outerWidth = screen.availWidth;
     <li onclick="javascript:location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
     <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
     <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
+      <li class="shortcut-keyboard" onclick="javascript:location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
     <li onclick="location.href='/about/home'">Ayuda</li>
   </nav>
 </div>
@@ -146,6 +147,7 @@ top.window.outerWidth = screen.availWidth;
     <li onclick="javascript:location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
     <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
     <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
+      <li class="shortcut-keyboard" onclick="javascript:location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
     <li onclick="location.href='/about/home'">Ayuda</li>
   </nav>
 </div>
