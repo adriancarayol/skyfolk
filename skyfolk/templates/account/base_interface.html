@@ -101,20 +101,13 @@ top.window.outerWidth = screen.availWidth;
 }
 //-->
 </script>
-
-
-
-
-
-
 </head>
-
 <body>
 
 {% block barra_navegacion %}
 <!-- <div id="oHBContainer"> -->
 <nav class="box-tool">
-<ul>
+<ul class="box-tool-wrapper">
 <!-- Segundo menu bola <li><button type="button" id="Menu">
 
 <div id="centro"><img src="" width="300" height="300"><span class="entypo-user"></span></div>
@@ -123,35 +116,26 @@ top.window.outerWidth = screen.availWidth;
 <div id="ffacebook" class="size left"><span class="entypo-calendar"></span></div>
 <div id="ttwitter" class="size right"><span class="entypo-logout"></span></div>
     </button>-->
-  {% if request.user.profile.image %}
+
+<li>
 <div id="toggle">
-  <nav class="menup">
-    <li class="profilee"><img src="{{ request.user.profile.image.url }}"><i>{{ request.user.username }}</i></li>
-    <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
-    <li onclick="javascript:location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
-    <li onclick="javascript:location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
-    <li onclick="javascript:location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
+  <ul class="menup">
+      {% if request.user.profile.image %}
+        <li class="profilee"><img src="{{ request.user.profile.image.url }}"><i onclick="location.href='/profile/{{ request.user }}'">{{ request.user.username }}</i></li>
+      {% else %}
+       <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{ request.user.username }}</i></li>
+      {% endif %}
+    <li onclick="location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
+    <li onclick="location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+    <li onclick="location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
+    <li onclick="location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
     <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
     <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
-      <li class="shortcut-keyboard" onclick="javascript:location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
+      <li class="shortcut-keyboard" onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
     <li onclick="location.href='/about/home'">Ayuda</li>
-  </nav>
+  </ul>
 </div>
-{% else %}
-<div id="toggle">
-  <nav class="menup">
-    <li class="profilee"><img src="{{STATIC_URL}}img/generic-avatar.png"><i>{{ request.user.username }}</i></li>
-    <li onclick="javascript:location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion</li>
-    <li onclick="javascript:location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
-    <li onclick="javascript:location.href='/market'"><i class="fa fa-bookmark-o fa-lg"></i> Market</li>
-    <li onclick="javascript:location.href='/relations/{{user_profile.username}}'"><i class="fa fa-circle-o fa-lg"></i> Mis relaciones</li>
-    <li><i class="fa fa-play fa-lg"></i> Multimedia</li>
-    <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
-      <li class="shortcut-keyboard" onclick="javascript:location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
-    <li onclick="location.href='/about/home'">Ayuda</li>
-  </nav>
-</div>
-{% endif %}
+</li>
 
 <li><div class="field" id="searchform">
     <!--<input type="text" id="searchterm" placeholder="¿Que es lo que quieres buscar?" />-->
@@ -172,18 +156,15 @@ top.window.outerWidth = screen.availWidth;
            <li class="profile-user" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');"></li>
       {% endif %}
           <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
-      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
-      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
-      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
-  </nav>
-  </li>
-
-    </div>
+      <li class="fa fa-home fa-2x" onclick="location.href='/'"></li>
+      <li class="fa fa-users fa-2x" onclick="location.href='/friends'"></li>
+      <li class="fa fa-sign-out fa-2x" onclick="location.href='{% url 'account_logout' %}'"></li>
     </li>
+
     <li class="fa fa-comment fa-lg"></li>
     <li class="fa fa-bell fa-lg"><em onclick="contador()">{{n_likes}}</em></li>
-    <li class="fa fa-bars fa-lg"></li>
-    <li>
+    <ul class="fa fa-bars fa-lg">
+        <li></li>
     </ul>
 
     {% if showPerfilButtons or user.username == user_profile.username %}
@@ -194,7 +175,7 @@ top.window.outerWidth = screen.availWidth;
     {% endif %}
 <!-- Menu principal - circular -->
 
-
+</ul>
 </nav>
 {% endblock %}
 {% block content %}{% endblock %}

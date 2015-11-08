@@ -405,19 +405,24 @@
   #toggle li {
     margin-top: 5px;
   }
-  #toggle li:nth-child(9) {
-    display: none;
-  }
+
   #toggle li:nth-child(8) {
     display: block;
   }
+
   #toggle li:nth-child(7) {
       display: none;
   }
+
+  #toggle li:nth-child(9) {
+    display: none;
+  }
+
   #page-wrapper {
     width: 50%;
     margin-left: -94px;
   }
+
   #page-wrapper .fontawesome-bullhorn, .fontawesome-camera, .fontawesome-map-marker {
     display: none;
   }
