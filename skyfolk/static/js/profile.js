@@ -128,6 +128,7 @@ $(document).ready(function() {
         var heart = this
         AJAX_add_like(caja_publicacion, heart);
     })
+
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
 
   $(".fa-bell").click(function(){
@@ -159,7 +160,7 @@ $(document).ready(function() {
 
   /* Abrir - Cerrar lista de atajos */
 
-  $('.shortcut-keyboard').on('click',function() {
+  $('.menup li:nth-child(7)').on('click',function() {
     $('#atajos-keyboard-profile').fadeToggle("fast");
   });
 
