@@ -741,7 +741,9 @@ function AJAX_requestfriend(status) {
   /* DISPLAY MENU */
 
 $(document).ready(function() {
-  $(".fa-bars").click(function() {
+  $(".fa-bars").on("click", function(event) {
+    if ( !$(event.target).is( "li" )) {
+
     $("#toggle").each(function() {
       displaying = $(this).css("display");
       $("#toggle").val('');
@@ -757,6 +759,7 @@ $(document).ready(function() {
         });
       }
     });
+      }
   });
 });
 
