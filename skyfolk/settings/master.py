@@ -10,11 +10,14 @@ DEBUG = False
 # user: dfgsdfgsdf906@gmail.com
 # pass: 56g4eD&%&FGfgdsf
 #
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'dfgsdfgsdf906@gmail.com'
-EMAIL_HOST_PASSWORD = '56g4eD&%&FGfgdsf'
+
+EMAIL_HOST = 'localhost'
+EMAIL_USE_TLS = False
+#EMAIL_USE_TLS = True
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = '587'
+#EMAIL_HOST_USER = 'dfgsdfgsdf906@gmail.com'
+#EMAIL_HOST_PASSWORD = '56g4eD&%&FGfgdsf'
 
 DATABASES = {
     'default': {
@@ -31,4 +34,5 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/skyfolk/static/master/static'
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/var/www/skyfolk/static/master/media'
