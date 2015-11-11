@@ -303,8 +303,11 @@ $('#tab-timeline').bind('scroll', function() {
 
   $('#tab-container').easytabs({
 
-    defaultTab: "#li-tab-comentarios",
-    animate: false
+        defaultTab: "#li-tab-comentarios",
+        animate: true,
+        animationSpeed: "fast",
+        updateHash: false,
+
 
   });
 
