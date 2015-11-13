@@ -170,7 +170,7 @@ $(document).ready(function() {
 
   $(document).keypress(function(e){
     var key = e.which;
-    if (key == 109 && ($('#page-wrapper').is(':hidden')) && !($('#id_searchText').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+    if (key == 109 && ($('#page-wrapper').is(':hidden')) && !$('.search-in-tab').is(":focus") && !($('#id_searchText').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
         // Si presionas el char 'm' mostará el div para escribir un mensaje.
         $('#page-wrapper').toggle();
     }
@@ -179,7 +179,7 @@ $(document).ready(function() {
 
 $(document).keypress(function(e){
     var key = e.which;
-    if (key == 97 && ($('#atajos-keyboard-profile').is(':hidden')) && !($('#id_searchText').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+    if (key == 97 && ($('#atajos-keyboard-profile').is(':hidden')) && !$('.search-in-tab').is(":focus") && !($('#id_searchText').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
         // Si presionas el char 'm' mostará el div para escribir un mensaje.
         $('#atajos-keyboard-profile').show();
     }
