@@ -84,39 +84,40 @@ def add_like(request):
 
     if request.POST:
 
-        obj_userprofile = get_object_or_404(
-            get_user_model(),
-            pk=request.POST['userprofile_id']
-        )
-
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
 
         pub = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        # que vamos a increment sus me likes
+        # que vamos a incrementar sus likes
 
         user_profile = get_object_or_404(
             get_user_model(),
             pk=pub.writer.id
         )
 
-        print("WRITER >>>>>>>>>> " + user_profile.username + " REQUEST USER >" + request.user.username)
+        print("WRITER >>>>>>>>>> " + user_profile.username + " REQUEST USER > " + request.user.username)
 
         ''' Mostrar los usuarios que han dado un me gusta a ese comentario '''
+
         print("USERS LIKES COMMENT: ")
         print(pub.user_give_me_like.all())
 
         if request.user.username != user_profile.username and request.user not in pub.user_give_me_like.all():  # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
-            # tampooco si el usuario ya ha dado like antes
+            # tampooco si el usuario ya ha dado like antes.
             try:
-                obj_userprofile.profile.add_like_pub(
-                    publicationid=request.POST['publication_id']
-                )
-
-                pub.user_give_me_like.add(request.user) # Añadimos a la lista los usuarios que han dado me gusta
+                pub.add_like_pub()
+                pub.user_give_me_like.add(request.user) # add users like
                 pub.save()
+                response = True
+            except ObjectDoesNotExist:
+                response = False
 
+        elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all():
+            try:
+                pub.reduce_like_pub()
+                pub.user_give_me_like.remove(request.user)
+                pub.save()
                 response = True
             except ObjectDoesNotExist:
                 response = False

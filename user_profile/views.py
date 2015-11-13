@@ -161,6 +161,7 @@ def profile_view(request, username):
             publications_top15 = publications[0:15]
         else:
             publications_top15 = publications
+
     # cargar timeline
     print('>>>>>>>>>>> TIMELINE <<<<<<<<<<<')
     try:

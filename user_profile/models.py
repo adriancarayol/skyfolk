@@ -105,11 +105,6 @@ class UserProfile(models.Model):
     def get_publication(self, publicationid):
         return publications.models.Publication.objects.get(pk=publicationid)
 
-    def add_like_pub(self, publicationid):
-        t = publications.models.Publication.objects.get(pk=publicationid)
-        t.mlikes += 1
-        t.save()
-
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
 
