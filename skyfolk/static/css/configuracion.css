@@ -1,5 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+
 hgroup {
   margin-bottom: 70px;
   position: relative;
@@ -30,51 +31,47 @@ h6 {
 
 }
 
-/* Menu vertical */
-.sidebar {
-  background-color: #fff;
+/* Menu horizontal */
+.menu-config {
   position: relative;
-  height: 420px;
+  display: block;
   width: 100%;
-  border-radius:  7px;
-  -webkit-box-shadow: 2px 2px 7px 0px #efefef;
-  -moz-box-shadow:    2px 2px 7px 0px #efefef;
-  box-shadow:         2px 2px 7px 0px #efefef;
-  margin-top: 70px;
+  height: 70px;
+  padding-left: 120px;
+  margin-top: 2%;
+  margin-bottom: 5%;
 }
-.sidebar nav {
-  list-style-type:  none;
-  height: 100%;
-  font-weight: 100;
-  font-family: 'Open Sans', sans-serif;
+.menu-config a {
+  margin-left: 50px;
+  flex: 1;
+  text-decoration: none;
+  color: grey;
+  background-color: #eeeeee;
+  box-shadow: 0 0 0 4px #1e88e5;
+  display: inline-block;
+  height: 100px;
+  width: 100px;
+  border-radius: 100%;
+  text-align: center;
+}
+.menu-config a:hover {
+  -webkit-transition: activeA .4s ease-in;
+  -moz-transition: activeA .4s ease-in;
+  animation: activeA .4s ease-in;
+  color: #1e88e5;
+}
+.menu-config i {
+  margin-top: 25px;
+}
 
+@keyframes activeA {
+  0%{ box-shadow: 0 0 0 4px #1e88e5; opacity:1;}
+  25%{ box-shadow: 0 0 0 1px #1e88e5; opacity:1;}
+  50%{ box-shadow: 0 0 0 7px #1e88e5; opacity:1;}
+  75%{ box-shadow: 0 0 0 4px #1e88e5; opacity:1;}
+  100%{ box-shadow: 0 0 0 5px #1e88e5; opacity:1;}
 }
-.sidebar nav li {
-  color:  #000;
-  margin-top: 20px;
-  padding:  10px 10px;
-  border-bottom:  2px solid #fff;
-  background-color:  #fff;
-  border-left: 5px solid rgba(44,44,44,0.854);
-  border-radius:  3px;
-  transition:  all .2s ease-in;
-  cursor:  pointer;
-}
-.sidebar nav li:hover {
-  color: #1976d2;
-  background-color:  #E4E4E4;
-  border-left: 7px solid #1976d2;
-}
-.sidebar nav li i {
-  float: left;
-  margin-left: 10px;
-  margin-right: 10px;
-  font-style: normal;
-  transition:  all .3s ease-in;
-}
-.sidebar nav li:hover > i {
-  margin-left: 40px;
-}
+
 .wr {
   position: relative;
   margin: auto;
