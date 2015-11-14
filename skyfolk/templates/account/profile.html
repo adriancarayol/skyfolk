@@ -635,9 +635,7 @@
 
                     <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                        {% autoescape off %}
-                    {{ item.from_publication__content }}
-                        {% endautoescape %}
+                    {{ item.from_publication__content | safe }}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>

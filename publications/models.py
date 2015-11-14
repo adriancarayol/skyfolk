@@ -3,6 +3,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 from user_profile.models import UserProfile
+from django.utils.safestring import mark_safe 
+
 
 
 # Create your models here.
@@ -26,6 +28,10 @@ class Publication(models.Model):
         _numLikes = int(self.mlikes)
         _numLikes -= 1
         self.mlikes = str(_numLikes)
+
+    def __str__(self):
+        return self.content
+
 
 
 class Hashtag(models.Model):

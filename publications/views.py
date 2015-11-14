@@ -27,7 +27,7 @@ def publication_form(request):
                 publication = form.save(commit=False)
                 publication.writer = emitter.profile
                 publication.profile = userprofile.profile
-                publication.content = Emoji.replace(mark_safe(publication.content))
+                publication.content = Emoji.replace(publication.content)
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 publication.save()
@@ -35,13 +35,13 @@ def publication_form(request):
             except IntegrityError:
                 pass
 
-        words = form.cleaned_data['content'].split(" ")
-        for word in words:
-            if word[0] == "#":
-                hashtag, created = Hashtag.objects.get_or_create(name=word[1:])
-                hashtag.publicacion.add(publication)
+        #words = form.cleaned_data['content'].split(" ")
+        #for word in words:
+         #   if word[0] == "#":
+         #       hashtag, created = Hashtag.objects.get_or_create(name=word[1:])
+         #       hashtag.publicacion.add(publication)
 
-        print("Se han creado HashTags -> " + hashtag.name)
+        #print("Se han creado HashTags -> " + hashtag.name)
 
         return HttpResponse(json.dumps(response), content_type='application/json')
 
