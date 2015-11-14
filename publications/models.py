@@ -16,6 +16,7 @@ class Publication(models.Model):
     mlikes = models.CharField(blank=True, default=0, max_length=3)
     user_give_me_like = models.ManyToManyField(User, blank=True)
 
+    # Metodos para publicaciones
     def add_like_pub(self):
         _numLikes = int(self.mlikes)
         _numLikes += 1
@@ -25,3 +26,16 @@ class Publication(models.Model):
         _numLikes = int(self.mlikes)
         _numLikes -= 1
         self.mlikes = str(_numLikes)
+
+
+class Hashtag(models.Model):
+    name = models.CharField(max_length=64, unique=True)
+    publicacion = models.ManyToManyField(Publication)
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = 'hashtag'
+        verbose_name_plural = 'hashtags'
+
+    def __unicode__(self):
+        return self.name
