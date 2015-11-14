@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from emoji import *
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist
-from publications.models import Publication
+from publications.models import Publication,Hashtag
 
 
 # Create your views here.
@@ -19,6 +19,8 @@ def publication_form(request):
         userprofile = get_object_or_404(get_user_model(), pk=request.POST['userprofileid'])
         emitter = get_object_or_404(get_user_model(), pk=request.POST['emitterid'])
         response = False
+
+        publication = None
 
         if form.is_valid():
             try:
@@ -32,6 +34,14 @@ def publication_form(request):
                 response = True
             except IntegrityError:
                 pass
+
+        words = form.cleaned_data['content'].split(" ")
+        for word in words:
+            if word[0] == "#":
+                hashtag, created = Hashtag.objects.get_or_create(name=word[1:])
+                hashtag.publicacion.add(publication)
+
+        print("Se han creado HashTags -> " + hashtag.name)
 
         return HttpResponse(json.dumps(response), content_type='application/json')
 
