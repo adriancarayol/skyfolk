@@ -11,6 +11,7 @@ span {
   top: 40px;
   left: 0px;
 }
+
 h6 {
   position:  relative;
     margin-left:  70px;
@@ -19,6 +20,7 @@ h6 {
     font-weight: 100;
     font-size: 13px;
 }
+
 .fontawesome-cog {
     margin-left:  20px;
     padding:  10px 10px;
@@ -30,46 +32,41 @@ h6 {
       width: 20%;
 
 }
+.wrapper {
+  position:relative;
+  display: block;
+  background-color: #FAFAFA;
+  height: auto;
+  width: auto;
+  clear: both;
+}
 
 /* Menu horizontal */
 .menu-config {
   position: relative;
   display: block;
-  width: 100%;
-  height: 70px;
-  padding-left: 120px;
-  margin-top: 2%;
-  margin-bottom: 5%;
+  width: 15%;
+  height: auto;
+  margin-top: 30px;
+  background-color: #eeeeee;
 }
 .menu-config a {
-  margin-left: 50px;
   flex: 1;
   text-decoration: none;
   color: grey;
-  background-color: #eeeeee;
-  box-shadow: 0 0 0 4px #1e88e5;
-  display: inline-block;
-  height: 100px;
-  width: 100px;
-  border-radius: 100%;
   text-align: center;
+  height: 40px;
+  display: block;
+  border-right: 2px solid #1e88e5;
+  background-color: #fff;
+  margin-bottom: 5px;
+  transition: all .3s linear;
+  -webkit-transition: all .3s linear;
+  -moz-transition: all .3s linear;
 }
 .menu-config a:hover {
-  -webkit-transition: activeA .4s ease-in;
-  -moz-transition: activeA .4s ease-in;
-  animation: activeA .4s ease-in;
   color: #1e88e5;
-}
-.menu-config i {
-  margin-top: 25px;
-}
-
-@keyframes activeA {
-  0%{ box-shadow: 0 0 0 4px #1e88e5; opacity:1;}
-  25%{ box-shadow: 0 0 0 1px #1e88e5; opacity:1;}
-  50%{ box-shadow: 0 0 0 7px #1e88e5; opacity:1;}
-  75%{ box-shadow: 0 0 0 4px #1e88e5; opacity:1;}
-  100%{ box-shadow: 0 0 0 5px #1e88e5; opacity:1;}
+  border-right: 10px solid #eee;
 }
 
 .wr {
@@ -79,6 +76,7 @@ h6 {
   height: 300px;
   left: 27%;
 }
+
 .actual, #form-changepass input{
   width: 20%;
   position: relative;
@@ -154,35 +152,40 @@ input[type="password"] {
   left: 220px;
 }
 label[for="id_oldpassword"] {
-  color: grey;
+  color: #212121 ;
   font-weight: 100;
   position: relative;
   top: 25px;
 }
 label[for="id_password1"] {
-  color: grey;
+  color: #212121 ;
   font-weight: 100;
   position: relative;
   top: 25px;
 }
 label[for="id_password2"] {
-  color: grey;
+  color: #212121 ;
   font-weight: 100;
   position: relative;
   top: 25px;
 }
 #contra {
-      position:  relative;
-      margin-top: 5%;
-    margin-left: 20%;
-      width:  100%;
-    background-color: #fff;
-      height: 600px;
-      border-radius: 7px;
-      -webkit-box-shadow: 2px 2px 7px 0px #efefef;
-      -moz-box-shadow:    2px 2px 7px 0px #efefef;
-      box-shadow:         2px 2px 7px 0px #efefef;
-      border: 1px solid #e0e0e0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  background-color: #fff;
+  top: 15%;
+  height: 570px;
+  max-height: auto;
+  width: 50%;
+  border-radius: 7px;
+  -webkit-box-shadow: 2px 2px 7px 0px #efefef;
+  -moz-box-shadow:    2px 2px 7px 0px #efefef;
+  box-shadow:         2px 2px 7px 0px #efefef;
+  border: 1px solid #e0e0e0;
 }
 
 #contra li {
@@ -193,35 +196,33 @@ label[for="id_password2"] {
 }
 #contra-2 {
   margin-top: 10px;
+  height: 100%;
+  width: 100%;
 }
-
+#form-changepass {
+  height: 100%;
+}
 /* Boton salvar cambios */
 
 button[type="submit"] {
   position: relative;
-  display: inline;
-  top: 80px;
-  margin-right: 80px;
-  float: right;
   padding: 10px 7px;
-  width: 100px;
+  width: 150px;
   height: 30px;
+  float: right;
+  margin-right: 10%;
+  top: 50%;
   line-height: 2px;
-  font-size: 0.9em;
+  font-size: 1.3em;
 }
 #boton-perfil {
   position: relative;
-  display: list-item;
-  top: 0px;
-  bottom: 1px;
-  right: 0;
-  margin-left: 300px;
-  float: right;
   padding: 10px 7px;
-  width: 100px;
+  width: 150px;
   height: 30px;
+  float: right;
   line-height: 2px;
-  font-size: 0.9em;
+  font-size: 1.3em;
 }
 #id_image {
   display: list-item;
@@ -231,7 +232,7 @@ button[type="submit"] {
 }
 
 label[for="id_image"] {
-  color: #ccc;
+  color: #212121;
   font-weight: 100;
 
 }
@@ -242,7 +243,7 @@ label[for="id_image"] {
   margin-top: 20px;
 }
 label[for="id_backImage"] {
-  color: #ccc;
+  color: #212121;
   font-weight: 100;
   margin-right: 10px;
 
@@ -279,27 +280,19 @@ hgroup {
 .cn {
   font-size: 20px;
   text-shadow: #ccc 0.5px 0.5px 0.5px;
-  color: #ccc;
+  color: #424242;
   font-family: 'Open Sans', sans-serif;
-  margin-left: 7px;
+  margin-left: 17px;
   margin-top: -14px;
 
 }
 .ch {
   font-size: 12px;
   text-shadow: #ccc 0.2px 0.2px 0.2px;
-  color: #ccc;
-  margin: 6px;
+  color: #424242;
+  margin-left: 20px;
   margin-top: 20px;
   font-family: 'Open Sans', sans-serif;
-}
-.wrapper {
-  position:relative;
-  display: block;
-  background-color: #FAFAFA;
-  height: auto;
-  width: auto;
-  clear:both;
 }
 .profilex {
    width: 90%;
