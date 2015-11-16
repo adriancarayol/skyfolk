@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from emoji import *
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist
-from publications.models import Publication,Hashtag
+from publications.models import Publication
 
 # Create your views here.
 def publication_form(request):
@@ -132,4 +132,3 @@ def add_like(request):
             response = False
 
     return HttpResponse(json.dumps(response), content_type='application/json')
-

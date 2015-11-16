@@ -27,14 +27,14 @@ class Publication(models.Model):
     def __str__(self):
         return self.content
 
-class Hashtag(models.Model):
-    name = models.CharField(max_length=64, unique=True)
-    publicacion = models.ManyToManyField(Publication)
+#class Hashtag(models.Model):
+    #name = models.CharField(max_length=64, unique=True)
+    #publicacion = models.ManyToManyField(Publication)
 
-    class Meta:
-        ordering = ('name',)
-        verbose_name = 'hashtag'
-        verbose_name_plural = 'hashtags'
+    #class Meta:
+        #ordering = ('name',)
+        #verbose_name = 'hashtag'
+        #verbose_name_plural = 'hashtags'
 
-    def __unicode__(self):
-        return self.name
+    #def __unicode__(self):
+        #return self.name
