@@ -9,7 +9,6 @@ from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist
 from publications.models import Publication,Hashtag
 
-
 # Create your views here.
 def publication_form(request):
     print('>>>>>>>> PETICION AJAX PUBLICACION')
@@ -91,30 +90,27 @@ def load_publications(request):
 # TODO
 def add_like(request):
     response = False
-
     if request.POST:
-
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
-
         pub = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
         # que vamos a incrementar sus likes
-
         user_profile = get_object_or_404(
             get_user_model(),
             pk=pub.writer.id
         )
 
-        print("WRITER >>>>>>>>>> " + user_profile.username + " REQUEST USER > " + request.user.username)
-
-        ''' Mostrar los usuarios que han dado un me gusta a ese comentario '''
-
-        print("USERS LIKES COMMENT: ")
+        # Mostrar los usuarios que han dado un me gusta a ese comentario
+        print("(USUARIO PETICIÓN): " + request.user.username)
+        print("(PERFIL DE USUARIO): " + user_profile.username)
+        print("(USERS QUE HICIERON LIKE): ")
         print(pub.user_give_me_like.all())
 
-        if request.user.username != user_profile.username and request.user not in pub.user_give_me_like.all():  # Si el escritor del comentario
+        if request.user.username != user_profile.username and request.user not in pub.user_give_me_like.all():
+            # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
             # tampooco si el usuario ya ha dado like antes.
+            print ("Incrementando like")
             try:
                 pub.add_like_pub()
                 pub.user_give_me_like.add(request.user) # add users like
@@ -124,6 +120,7 @@ def add_like(request):
                 response = False
 
         elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all():
+            print ("Decrementando like")
             try:
                 pub.reduce_like_pub()
                 pub.user_give_me_like.remove(request.user)
@@ -135,3 +132,4 @@ def add_like(request):
             response = False
 
     return HttpResponse(json.dumps(response), content_type='application/json')
+

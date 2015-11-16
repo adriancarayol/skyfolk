@@ -1,11 +1,10 @@
-#encoding:utf-8
 from django.forms import ModelForm
 from publications.models import Publication
 
 class PublicationForm(ModelForm):
     class Meta:
         model = Publication
-        exclude = ('image','is_response_from', 'created', 'writer', 'profile', 'mlikes', 'user_give_me_like')
+        exclude = ('image','is_response_from', 'created', 'writer', 'profile', 'likes', 'user_give_me_like')
 
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
