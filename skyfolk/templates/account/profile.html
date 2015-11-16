@@ -635,9 +635,7 @@
 
                     <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                        {% autoescape off %}
-                    {{ item.from_publication__content }}
-                        {% endautoescape %}
+                    {{ item.from_publication__content | safe }}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
@@ -662,9 +660,9 @@
 </div>
 
                 <article class="articulo">
-                  <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{item.user__username}}</a> mentioned you</h2>
+                  <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{ item.user__username }}</a> ha publicado:  </h2>
                   <div class="parrafo comment">
-                    <a target="_blank">{{item.from_publication__created}}</a><br>{{item.from_publication__content}}
+                    <a target="_blank">{{item.from_publication__created}}</a><br>{{ item.from_publication__content | safe }}
                   </div>
               <!-- OPCIONES DE COMENTARIOS -->
                 <div class="optiones_comentarios">
@@ -674,10 +672,10 @@
                         {% elif user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
                              <li><i class="fa fa-trash"></i></li>
                         {% endif %}
-                        {% if item.from_publication__mlikes != None and item.from_publication__mlikes != 0 %}
-                       <li><i class="fa fa-heart"></i> {{ item.from_publication__mlikes }} </li>
+                        {% if item.from_publication__mlikes > '0' %}
+                            <li><i class="fa fa-heart"></i> {{ item.from_publication__mlikes }} </li>
                         {% else %}
-                        <li><i class="fa fa-heart"></i></li>
+                            <li><i class="fa fa-heart"></i></li>
                         {% endif %}
                        <li><i class="fa fa-quote-left"></i></li>
                        <li><i class="fa fa-reply"></i></li>
@@ -790,7 +788,7 @@
       </div>
 
         <div id="tab-amigos">
-
+            <input class="search-in-tab" type="search" placeholder="¿A quién buscas?" title="Search">
             <ul class="list-friends">
 
                 {% for item in friends_top12 %}

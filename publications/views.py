@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from emoji import *
 from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist
-from publications.models import Publication
+from publications.models import Publication,Hashtag
 
 
 # Create your views here.
@@ -20,18 +20,28 @@ def publication_form(request):
         emitter = get_object_or_404(get_user_model(), pk=request.POST['emitterid'])
         response = False
 
+        publication = None
+
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
                 publication.writer = emitter.profile
                 publication.profile = userprofile.profile
-                publication.content = Emoji.replace(mark_safe(publication.content))
+                publication.content = Emoji.replace(publication.content)
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 publication.save()
                 response = True
             except IntegrityError:
                 pass
+
+        #words = form.cleaned_data['content'].split(" ")
+        #for word in words:
+         #   if word[0] == "#":
+         #       hashtag, created = Hashtag.objects.get_or_create(name=word[1:])
+         #       hashtag.publicacion.add(publication)
+
+        #print("Se han creado HashTags -> " + hashtag.name)
 
         return HttpResponse(json.dumps(response), content_type='application/json')
 
@@ -84,39 +94,40 @@ def add_like(request):
 
     if request.POST:
 
-        obj_userprofile = get_object_or_404(
-            get_user_model(),
-            pk=request.POST['userprofile_id']
-        )
-
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
 
         pub = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        # que vamos a increment sus me likes
+        # que vamos a incrementar sus likes
 
         user_profile = get_object_or_404(
             get_user_model(),
             pk=pub.writer.id
         )
 
-        print("WRITER >>>>>>>>>> " + user_profile.username + " REQUEST USER >" + request.user.username)
+        print("WRITER >>>>>>>>>> " + user_profile.username + " REQUEST USER > " + request.user.username)
 
         ''' Mostrar los usuarios que han dado un me gusta a ese comentario '''
+
         print("USERS LIKES COMMENT: ")
         print(pub.user_give_me_like.all())
 
         if request.user.username != user_profile.username and request.user not in pub.user_give_me_like.all():  # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
-            # tampooco si el usuario ya ha dado like antes
+            # tampooco si el usuario ya ha dado like antes.
             try:
-                obj_userprofile.profile.add_like_pub(
-                    publicationid=request.POST['publication_id']
-                )
-
-                pub.user_give_me_like.add(request.user) # Añadimos a la lista los usuarios que han dado me gusta
+                pub.add_like_pub()
+                pub.user_give_me_like.add(request.user) # add users like
                 pub.save()
+                response = True
+            except ObjectDoesNotExist:
+                response = False
 
+        elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all():
+            try:
+                pub.reduce_like_pub()
+                pub.user_give_me_like.remove(request.user)
+                pub.save()
                 response = True
             except ObjectDoesNotExist:
                 response = False
