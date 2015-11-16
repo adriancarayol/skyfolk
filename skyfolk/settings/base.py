@@ -23,6 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 from django.core.exceptions import ImproperlyConfigured
 
 def get_env_variable(var_name):
+    '''Intenta leer una variable de entorno'''
     try:
         return os.environ[var_name]
     except KeyError:
@@ -32,7 +33,7 @@ def get_env_variable(var_name):
 SECRET_KEY = get_env_variable('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -99,20 +100,14 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'user_profile.forms.SignupForm'
 ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/login'
 # / DJANGO ALL AUTH CONFIG
 
-# config e-mail
-#                   https://docs.djangoproject.com/en/dev/topics/email/
-#
-# cuenta test de gmail para el envío de mails
-# user: dfgsdfgsdf906@gmail.com
-# pass: 56g4eD&%&FGfgdsf
-#
-#EMAIL_USE_TLS = True
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_PORT = 587
-#EMAIL_HOST_USER = 'dfgsdfgsdf906@gmail.com'
-#EMAIL_HOST_PASSWORD = '56g4eD&%&FGfgdsf'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# /Fin config e-mail
+# CONFIG E-MAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'skyfolk <no-reply@skyfolk.net>'
 
 # REST FRAMEWORK
 #                   http://www.django-rest-framework.org/

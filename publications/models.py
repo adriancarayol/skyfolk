@@ -13,27 +13,17 @@ class Publication(models.Model):
     image = models.ImageField(upload_to='publicationimages', verbose_name='Image', blank=True, null=True)
     is_response_from = models.ForeignKey('self', related_name='responses', null=True)
     created = models.DateTimeField(auto_now_add=True)
-    #mlikes = models.CharField(blank=True, default=0, max_length=3)
-    likes = models.IntegerField(default=0, blank=True, null=True, max_length=10)
+    likes = models.IntegerField(default=0, blank=True, null=True)
     user_give_me_like = models.ManyToManyField(User, blank=True)
 
-    # Metodos para publicaciones
+    # metodos del modelo
     def add_like_pub(self):
-        print("(self.likes antes)")
-        print(self.likes)
         self.likes += 1
-        print("(self.likes despues)")
-        print(self.likes)
-        #_numLikes = int(self.mlikes)
-        #_numLikes += 1
-        #self.mlikes = str(_numLikes)
 
     def reduce_like_pub(self):
         self.likes -= 1
-        #_numLikes = int(self.mlikes)
-        #_numLikes -= 1
-        #self.mlikes = str(_numLikes)
 
+    # metadatos
     def __str__(self):
         return self.content
 
@@ -48,4 +38,3 @@ class Hashtag(models.Model):
 
     def __unicode__(self):
         return self.name
-
