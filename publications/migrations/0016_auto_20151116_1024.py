@@ -11,6 +11,18 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.CreateModel(
+            name='Hashtag',
+            fields=[
+                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('name', models.CharField(unique=True, max_length=64)),
+            ],
+            options={
+                'verbose_name_plural': 'hashtags',
+                'ordering': ('name',),
+                'verbose_name': 'hashtag',
+            },
+        ),
         migrations.RemoveField(
             model_name='publication',
             name='mlikes',
@@ -19,5 +31,10 @@ class Migration(migrations.Migration):
             model_name='publication',
             name='likes',
             field=models.IntegerField(default=0, max_length=10, null=True, blank=True),
+        ),
+        migrations.AddField(
+            model_name='hashtag',
+            name='publicacion',
+            field=models.ManyToManyField(to='publications.Publication'),
         ),
     ]
