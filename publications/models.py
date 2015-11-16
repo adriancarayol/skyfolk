@@ -14,7 +14,7 @@ class Publication(models.Model):
     is_response_from = models.ForeignKey('self', related_name='responses', null=True)
     created = models.DateTimeField(auto_now_add=True)
     #mlikes = models.CharField(blank=True, default=0, max_length=3)
-    likes = models.IntegerField(default=0)
+    likes = models.IntegerField(default=0, blank=True, null=True, max_length=10)
     user_give_me_like = models.ManyToManyField(User, blank=True)
 
     # Metodos para publicaciones
@@ -48,3 +48,4 @@ class Hashtag(models.Model):
 
     def __unicode__(self):
         return self.name
+
