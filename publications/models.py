@@ -5,10 +5,9 @@ from django.utils.translation import ugettext as _
 from user_profile.models import UserProfile
 from django.utils.safestring import mark_safe
 
-# Create your models here.
 class Publication(models.Model):
     content = models.TextField(blank=False)
-    writer = models.ForeignKey(UserProfile, related_name='from_publication')
+    author = models.ForeignKey(UserProfile, related_name='from_publication')
     profile = models.ForeignKey(UserProfile, related_name='to_publication')
     image = models.ImageField(upload_to='publicationimages', verbose_name='Image', blank=True, null=True)
     is_response_from = models.ForeignKey('self', related_name='responses', null=True)
@@ -27,14 +26,14 @@ class Publication(models.Model):
     def __str__(self):
         return self.content
 
-class Hashtag(models.Model):
-    name = models.CharField(max_length=64, unique=True)
-    publicacion = models.ManyToManyField(Publication)
+#class Hashtag(models.Model):
+    #name = models.CharField(max_length=64, unique=True)
+    #publicacion = models.ManyToManyField(Publication)
 
-    class Meta:
-        ordering = ('name',)
-        verbose_name = 'hashtag'
-        verbose_name_plural = 'hashtags'
+    #class Meta:
+        #ordering = ('name',)
+        #verbose_name = 'hashtag'
+        #verbose_name_plural = 'hashtags'
 
-    def __unicode__(self):
-        return self.name
+    #def __unicode__(self):
+        #return self.name

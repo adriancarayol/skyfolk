@@ -118,7 +118,7 @@ class UserProfile(models.Model):
 
     def get_myPublications(self):
         return self.publications.filter(
-            to_publication__writer=self).values('user__username', 'to_publication__profile' , 'user__first_name', 'user__last_name', 'from_publication__id', 'to_publication__content', 'to_publication__created').reverse()
+            to_publication__author=self).values('user__username', 'to_publication__profile' , 'user__first_name', 'user__last_name', 'from_publication__id', 'to_publication__content', 'to_publication__created').reverse()
 
     def get_following(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWING)
