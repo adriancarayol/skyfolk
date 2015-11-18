@@ -9,22 +9,19 @@ from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist
 from publications.models import Publication
 
-# Create your views here.
 def publication_form(request):
     print('>>>>>>>> PETICION AJAX PUBLICACION')
     if request.POST:
-
         form = PublicationForm(request.POST)
         userprofile = get_object_or_404(get_user_model(), pk=request.POST['userprofileid'])
         emitter = get_object_or_404(get_user_model(), pk=request.POST['emitterid'])
         response = False
-
         publication = None
 
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-                publication.writer = emitter.profile
+                publication.author = emitter.profile
                 publication.profile = userprofile.profile
                 publication.content = Emoji.replace(publication.content)
                 print(str(userprofile.profile))
@@ -96,7 +93,7 @@ def add_like(request):
         # que vamos a incrementar sus likes
         user_profile = get_object_or_404(
             get_user_model(),
-            pk=pub.writer.id
+            pk=pub.author.id
         )
 
         # Mostrar los usuarios que han dado un me gusta a ese comentario

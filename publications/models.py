@@ -5,10 +5,9 @@ from django.utils.translation import ugettext as _
 from user_profile.models import UserProfile
 from django.utils.safestring import mark_safe
 
-# Create your models here.
 class Publication(models.Model):
     content = models.TextField(blank=False)
-    writer = models.ForeignKey(UserProfile, related_name='from_publication')
+    author = models.ForeignKey(UserProfile, related_name='from_publication')
     profile = models.ForeignKey(UserProfile, related_name='to_publication')
     image = models.ImageField(upload_to='publicationimages', verbose_name='Image', blank=True, null=True)
     is_response_from = models.ForeignKey('self', related_name='responses', null=True)

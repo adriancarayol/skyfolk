@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('publications', '0015_auto_20151026_1910'),
+        ('publications', '0016_auto_20151118_0841'),
     ]
 
     operations = [
@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='publication',
             name='likes',
-            field=models.IntegerField(null=True, default=0, blank=True),
+            field=models.IntegerField(default=0, blank=True, null=True),
         ),
     ]
