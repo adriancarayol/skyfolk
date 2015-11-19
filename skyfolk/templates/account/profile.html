@@ -43,11 +43,12 @@
     </style>
   {% endif %}
 
+  <!-- Si el usuario está autorizado a cambiar los pines, se mostrará el menú -->
   {% if user.username == user_profile.username %}
   <style type="text/css">
-  .user-card:hover .ventana-pin {
-    display: block
-  }
+    .user-card:hover .ventana-pin {
+      display: block
+    }
   </style>
   {% endif %}
 
