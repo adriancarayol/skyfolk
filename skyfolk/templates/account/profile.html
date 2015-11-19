@@ -43,6 +43,15 @@
     </style>
   {% endif %}
 
+  <!-- Si el usuario está autorizado a cambiar los pines, se mostrará el menú -->
+  {% if user.username == user_profile.username %}
+  <style type="text/css">
+    .user-card:hover .ventana-pin {
+      display: block
+    }
+  </style>
+  {% endif %}
+
 {% endblock %}
 
 
@@ -161,7 +170,11 @@
 
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="user-card card">
-
+          <nav class="ventana-pin">
+            <a><i class="fa fa-times"></i></a>
+            <a><i class="fa fa-expand"></i></a>
+            <a><i class="fa fa-thumb-tack"></i></a>
+          </nav>
           <div class="user-avatar">
             {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
             <img src="{{user_profile.profile.backImage.url}}" class="user-bg">
