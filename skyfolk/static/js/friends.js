@@ -1,13 +1,10 @@
 
 $(document).ready(function(){
-	/*
-	addProfileCard("pepe");
+
+	/*addProfileCard("pepe");
 	addProfileCard("juan");
 	addProfileCard("eufrasio");
-	addProfileCard("condemor");
-	*/
-
-
+	addProfileCard("condemor");*/
 });
 
 
@@ -44,10 +41,8 @@ $(document).ready(function(){
 
 
 function addProfileCard(username){
-
-	$("#content_profile_cards").append('<div class="profile_card"><div class="header"><div class="inner_head"><a href="#"><span class="entypo-plus"></span><i>Agregar</i></a><a href="#"><span class="entypo-chat"></span><i>Chat</i></a><a href="#"><span class="entypo-star"></span><i>Favorito</i></a><a href="#"><span class="entypo-heart-empty"></span><i>Me gusta</i></a></div></div><div class="perfil"><div class="foto_perfil"></div><div class="inner_content"><h2 class="nomb" id="nomb">' + username + '</h2><span id="desc"><p class="descripcion" id="desc_one">Profunder</p><p class="descripcion" id="desc_two">Mensaje de texto de prueba </p></span><div class="social_links"><ul><li ><a id="Enviar..." href="/" class="button"><span class="entypo-forward"></span></a></li><li ><a id="Notificar..." href="/"  class="button"><span class="entypo-bell"></span></a></li> <li ><a id="Bloquear..." href="/"  class="button"><span class="entypo-block"></span></a></li> </ul></div></div></div></div>');
-
-
+	//$(".container").append('<div class="personal-card"><div class="col-lg-12"><div class="header"><div class="inner_head"><a href="#"><span class="entypo-plus"></span><i>Agregar</i></a><a href="#"><span class="entypo-chat"></span><i>Chat</i></a><a href="#"><span class="entypo-star"></span><i>Favorito</i></a><a href="#"><span class="entypo-heart-empty"></span><i>Me gusta</i></a></div></div><div class="perfil"><div class="foto_perfil"></div><div class="inner_content"><h2 class="nomb" id="nomb">' + username + '</h2><span id="desc"><p class="descripcion" id="desc_one">Profunder</p><p class="descripcion" id="desc_two">Mensaje de texto de prueba </p></span><div class="social_links"><ul><li ><a id="Enviar..." href="/" class="button"><span class="entypo-forward"></span></a></li><li ><a id="Notificar..." href="/"  class="button"><span class="entypo-bell"></span></a></li> <li ><a id="Bloquear..." href="/"  class="button"><span class="entypo-block"></span></a></li> </ul></div></div></div></div></div>');
+    $(".container").append('<div class="col-lg-3 col-md-10 col-sm-12"><div class="personal-card"><div class="col-lg-12"><div class="header"><img class="back-profile-user"><i class="fa fa-user fa-2x like-him"></i><div class="bg-user"></div><img class="profile-user-bg"></div><div class="col-lg-12"></div><div class="col-lg-12"></div><div class="name-friend"></div><p>'+ username + '</p><br><p>xxd</p></div></div></div></div>')
 }
 
 
@@ -61,89 +56,28 @@ function addProfileCard(username){
                         dataType: "json",
                         success: function(response) {
                           
-                        	//load friends
-                        	//alert(response);
-                        	/*
+                        	// load friends
+                        	alert("CARGANDO AMIGOS");
+
                         	response = JSON.parse(response)
                         	for (i=0;i<response.length;x++){
         						addProfileCard(response[i].user.username);
 
 							}
-							*/
+
 
                         },
                         error: function(rs, e) {
-                           //alert(rs.responseText);
-                           /*
+                           alert(rs.responseText);
+
                          	response = JSON.parse(response)
                         	for (i=0;i<response.length;x++){
         						addProfileCard(response[i].user.username);
 
 							}
-							*/                     
+
                         }
                 });            
 
       
     }    
-/* SECTION CREAR GRUPO */
-
-
-/* abrir */
-$(document).ready(function(){
-   $(".live").click(function () {
-      $("#section").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "none") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","block");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
-/* cerrar */ 
-$(document).ready(function(){
-   $(".fontawesome-remove").click(function () {
-      $("#section").each(function() {
-        displaying = $(this).css("display");
-        if(displaying == "block") {
-          $(this).fadeOut('slow',function() {
-           $(this).css("display","none");
-          });
-        } else {
-          $(this).fadeIn('slow',function() {
-            $(this).css("display","none");
-          });
-        }
-      });
-    });
-  });
-
-
-/* CREAR */
-
-/* VARIABLES PARA HACER APARECER BOTONES */
-
-jQuery(document).ready(function($) {
-  var iconPencil = $('.controls .new-post .icon-pencil');
-  var iconPlus = $('.controls .new-post .icon-plus');
-  var liveBtn = $('.controls .live') 
-  var liveBtn2 = $('.controls .live2');
-  var newPostBtn = $('.controls .new-post');
-  $('.controls').hover(function() {
-    $(iconPencil).addClass('active');
-    $(iconPlus).addClass('unactive');
-    $(liveBtn).addClass('active');
-    $(liveBtn2).addClass('active');
-  }, function() {
-    $(iconPencil).removeClass('active');
-    $(iconPlus).removeClass('unactive');
-    $(liveBtn).removeClass('active');
-    $(liveBtn2).removeClass('active')
-  });
-});
