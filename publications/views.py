@@ -127,5 +127,5 @@ def add_like(request):
                 response = False
         else:
             response = False
-
+            
     return HttpResponse(json.dumps(response), content_type='application/json')

@@ -12,9 +12,13 @@ var countTimeLine = 1;
 
 $(document).ready(function() {
 
-  $(".comment").shorten({
+  /*$(".comment").shorten({
     "showChars": 145
-  });
+  });*/
+  
+  if ($('#tab-comentarios .wrapper').height() > 145) {
+    $('#tab-comentarios .wrapper').css('height','auto');  
+  }
 
   $('#page-wrapper #close').on('click', function(event) {
 
@@ -255,10 +259,12 @@ $( document ).on('keydown', function(e) {
           }
           // $('#tab-comentarios').load(location.href + " #tab-comentarios");
           //refresca plugin shorten
-          $(".comment").shorten({
+          /*$(".comment").shorten({
             "showChars": 145
-          });
-
+          }); */
+	    if ($('#tab-comentarios .wrapper').height() > 145) {
+	     $('#tab-comentarios .wrapper').css('height','auto');  
+	   }
         },
         error: function(rs, e) {
 
