@@ -483,8 +483,7 @@ body > .container {
   float: right;
   margin-right: 14px;
 }
-.user-card .user-avatar {
-  text-align: center; }
+.user-card .user-avatar { text-align: center; }
   .user-card .user-avatar .user-bg {
     width: 100%;
     min-height: 351.567px;
