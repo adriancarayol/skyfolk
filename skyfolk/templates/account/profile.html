@@ -192,7 +192,7 @@
         {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
            <img src="{{user_profile.profile.image.url}}" class="user-pic">
         {% else %}
-           <img src="{{STATIC_URL}}img/generic-avatar.png" class="user-pic">
+           <img src="{{STATIC_URL}}img/nuevo.png" class="user-pic">
         {% endif %}
 
                <!--  <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">-->
@@ -228,7 +228,7 @@
                       {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
                          <img src="{{user_profile.profile.image.url}}" class="info-user-pic">
                       {% else %}
-                         <img src="{{STATIC_URL}}img/generic-avatar.png" class="info-user-pic">
+                         <img src="{{STATIC_URL}}img/nuevo.png" class="info-user-pic">
                       {% endif %}
                       </div>
                     <h1 class="info-user-name">{{ user_profile.username }}</h1>
@@ -594,7 +594,7 @@
                                         {% if user_profile.profile.image %}
                                         <span class="acontecimiento" style="background-image: url('{{user_profile.profile.image.url}}');"></span>
                                         {% else %}
-                                        <span class="acontecimiento" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');"></span>
+                                        <span class="acontecimiento" style="background-image: url('{{STATIC_URL}}img/nuevo.png');"></span>
                                         {% endif %}
                                         <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
                                         <div id="p" class="parrafo comment">
@@ -642,7 +642,7 @@
                     </ul>
                      <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
                   {% else %}
-                     <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
+                     <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
                   {% endif %}
                       </div>
 
@@ -666,7 +666,7 @@
         {% if item.user__profile__image and item.user__profile__image|file_exists %}
         <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
           {% else %}
-            <img src="{{STATIC_URL}}img/generic-avatar.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
+            <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
               {% endif %}
                     <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
             </div>
@@ -810,7 +810,7 @@
                   {% if item.user__profile__image and item.user__profile__image|file_exists %}
                      <img src="{{MEDIA_URL}}{{item.user__profile__image}}" class="usr-img img-responsive">
                   {% else %}
-                     <img src="{{STATIC_URL}}img/generic-avatar.png" class="usr-img img-responsive">
+                     <img src="{{STATIC_URL}}img/nuevo.png" class="usr-img img-responsive">
                   {% endif %}
                   <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
                   </li>
@@ -850,7 +850,7 @@
                       <button class="add-sug"><i class="fa fa-plus"></i>Seguir</button>
                       </span>
                       {% else %}
-                     <img class="sug-user" src="{{STATIC_URL}}img/generic-avatar.png">
+                     <img class="sug-user" src="{{STATIC_URL}}img/nuevo.png">
                       <span class="name-sug">
                       <a class="random-sug" href="/profile/{{ item.username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.username}})</a>
                      <button class="add-sug"><i class="fa fa-plus"></i>Seguir</button>

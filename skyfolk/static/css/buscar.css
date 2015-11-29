@@ -51,7 +51,7 @@
   height:34px;
   width:70px;
 }
-.btn{ 
+.btn{
    cursor: pointer;
 }
 .container-search{
@@ -131,7 +131,7 @@
 .fa-bars:hover {
   opacity: 0.8;
   }
-  
+
 .fa-bars-rotate {
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
@@ -144,11 +144,11 @@
 
 @media only screen and (min-width: 641px) and (max-width: 959px) {
   .field {
-    width: 831px; } 
+    width: 831px; }
   }
 @media only screen and (max-width: 640px) {
     .field {
-    width: 631px; }  
+    width: 631px; }
   }
 @media only screen and (max-width: 640px) {
   .field {
@@ -325,11 +325,11 @@
 
 }
 .fa-bars li:nth-child(5) img {
-        width: 40px;
-        height:40px;
-       -webkit-border-radius: 100%;
-       -moz-border-radius: 100%;
-        border-radius: 100%;
+    width: 40px;
+    height:40px;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
 }
 .fa-bars:hover li {
   visibility: visible;
@@ -425,7 +425,7 @@
     display: none;
   }
 }
-    
+
   /* Buscar en el tab-amigos */
     .search-in-tab {
         position: relative;

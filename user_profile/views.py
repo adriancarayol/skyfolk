@@ -361,7 +361,7 @@ def friends(request, username):
 
         # cargar lista de amigos (12 primeros)
     try:
-        # friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next(1)
         friends = user_profile.profile.get_friends()
     except ObjectDoesNotExist:
         friends = None
