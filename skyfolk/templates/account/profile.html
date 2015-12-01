@@ -37,7 +37,7 @@
   {% if isFriend == True %}
 
     <style type="text/css">
-        #addfriend {
+        #addfriend { 
             color: #29b203;
         }
     </style>
@@ -47,6 +47,9 @@
   {% if user.username == user_profile.username %}
   <style type="text/css">
     .user-card:hover .ventana-pin {
+      display: block;
+    }
+    .card:hover .ventana-pin2 {
       display: block;
     }
   </style>
@@ -331,19 +334,6 @@
                   </div>
                 </div>
           <header>
-            <!--
-            <h1>Adrian Subname</h1>
-            <p>_Adrianxxxxxxx</p>
-            -->
-            <!--
-            <h1>{{ user.first_name }} {{ user.last_name }}</h1>
-            <p>{{ user.username }}</p>
-            -->
-            <!--
-            <h1>{{ userProfile.first_name }} {{ userProfile.last_name }}</h1>
-            <p>{{ userProfile.username }}</p>
-            -->
-            <!--<h1>{{ userProfile.first_name }} {{ userProfile.last_name }}</h1>-->
             <p>{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
 
           </header>
@@ -358,6 +348,11 @@
 
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="stock card">
+            <nav class="ventana-pin2">
+              <a><i class="fa fa-times"></i></a>
+              <a><i class="fa fa-expand"></i></a>
+              <a><i class="fa fa-thumb-tack"></i></a>
+          </nav>
         <!-- Widget encuestas -->
          <div class="wrapper">
             <div class="widget-wr">

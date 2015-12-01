@@ -477,12 +477,26 @@ body > .container {
   display: none;
 }
 
+.card .ventana-pin2 {
+  width: 100%;
+  height: auto;
+  display: none;
+}
+
 .user-card .ventana-pin a {
   display: inline-block;
   font-size: 17px;
   float: right;
   margin-right: 14px;
 }
+
+.card .ventana-pin2 a {
+    display: inline-block;
+  font-size: 17px;
+  float: right;
+  margin-right: 14px;
+}
+
 .user-card .user-avatar { text-align: center; }
   .user-card .user-avatar .user-bg {
     width: 100%;
