@@ -112,7 +112,7 @@ a, a:visited {
   border-radius: 100%;
   float: right;
   margin-right: 3px;
-  top: -5px;
+  top: 2px;
   -webkit-box-shadow: 0px 0px 1px 0px rgba(50, 50, 50, 0.75);
   -moz-box-shadow:    0px 0px 1px 0px rgba(50, 50, 50, 0.75);
   box-shadow:         0px 0px 1px 0px rgba(50, 50, 50, 0.75);
@@ -137,15 +137,13 @@ input[type="checkbox"] {
   opacity: 0;
 }
 .ampliado {
-  width: inherit;
-  height: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
   font-family: 'Open Sans';
   display: none;
   border: 2px solid rgb(110,110,110);
-  overflow-y: scroll;
-  overflow-x: hidden;
-
 }
+
 .ampliado .nombre_image {
   position: relative;
   top: 10px;
@@ -171,9 +169,14 @@ input[type="checkbox"] {
   letter-spacing: 1px;
   margin-top: 30px;
   background-color: #f5f5f5;
+  color: black;
   padding: 7px 17px;
   text-indent: 1em;
   opacity: 0.7;
+}
+.ampliado .parrafo img {
+  width: 20px;
+  height: 20px;
 }
 .ampliado .parrafo a[target="_blank"] {
   position: relative;
@@ -208,7 +211,7 @@ input[type="checkbox"] {
   top: 150px;
   width: 90%;
   margin: auto;
-  height: 90px;
+  height: 130px;
 }
 .ampliado .botones_ampliado {
   position: relative;
@@ -247,8 +250,8 @@ input[type="checkbox"] {
 }
 .ampliado .botones_ampliado .localizacion_ampliado {
   background: #f5f5f5;
-  border-bottom: 1px solid #7CE1FF;
-  display: inline-block;
+  border-bottom: 1px solid #1e88e5;
+  display: inline-flex;
   border-radius: 3px;
   border: none;
   font-size: 1.1rem;
@@ -262,8 +265,8 @@ input[type="checkbox"] {
 }
 .ampliado .botones_ampliado .foto_ampliado {
   background: #f5f5f5;
-  border-bottom: 1px solid #7CE1FF;
-  display: inline-block;
+  border-bottom: 1px solid #1e88e5;
+  display: inline-flex;
   border-radius: 3px;
   border: none;
   font-size: 1.1rem;
@@ -289,33 +292,35 @@ input[type="checkbox"] {
   margin-left: 60px;
   position: relative;
   display: inline-block;
-
 }
+
 .ampliado textarea {
-  overflow:hidden;
+  overflow: hidden;
   background: #fff;
-  padding:10px;
-  width:320px;
+  padding: 10px;
+  width: 90%;
+  height: 80px;
   font-size:14px;
-  margin:50px auto;
-  display:block;
-  border-radius: 5px;
-  color: grey;
-  border: 1px solid #7CE1FF;
+  margin: 50px auto;
+  display: block;
+  border-radius: 2px;
+  color: black;
+  border: 1px solid #1e88e5;
   resize: none;
 }
-input[type="checkbox"]{display:block;}
-input[type="checkbox"]:checked ~ .ampliado {
-      position: absolute;
-      z-index: 9999;
-      width: 395px;
-      transition: all .3s ease-in;
-      background: white;
-      top: 200px;
-      height: 486px;
-      display: block;
-      margin-left: 15px;
-      box-shadow: 7px 7px 0px rgba(0, 0, 0, 0.16);
+ .ampliado {
+    position: absolute;
+    z-index: 9999;
+    width: 50%;
+    background: white;
+    top: 200px;
+    height: 486px;
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    box-shadow: 7px 7px 0px rgba(0, 0, 0, 0.16);
 }
 /* Responder - Me gusta - Añadir */
 span[class*="fa-paper-plane"] {

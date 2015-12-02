@@ -96,17 +96,40 @@ $(document).ready(function() {
       $('.ventana-pin').fadeIn("fast");
     }
   }); 
+  
+  /* Expandir comentario */
+  
+ $('.fa-expand').on('click', function() {
+    var caja_pub = $(this).closest('.wrapper');
+    expandComment(caja_pub);
+ });
+  
+ function expandComment(caja_pub) {
+    var id_pub = $(caja_pub).attr('id').split('-')[1]  // obtengo id
+    var commentToExpand = 'expand-' + id_pub;
+    $(commentToExpand).fadeToggle();
+    alert(commentToExpand);
+ }
 
-
-  /* Menu vertical al hacer click cambia el estilo de "fa-bars" */
 /*
-  $(document).ready(function() {
-    $('.fa-bars').on('click',function() {
-          $(this).toggleClass("fa-bars-rotate");
-        });
-  });
-*/
+  var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
+  var id_user = $(caja_publicacion).data('id')// obtengo id
+  var data = {
+           userprofile_id: id_user,
+           publication_id: id_pub
+       };
+  //event.preventDefault(); //stop submit
+  $.ajax({
+    url: '/timeline/addToTimeline/',
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    success: function(data) {
+        // borrar caja publicacion
+        if (data==true) {
+            $(caja_publicacion).css('background-color', 'tomato');
 
+*/
     /* Borrar publicacion */
   $('.optiones_comentarios .fa-trash').on('click',function() {
     var caja_publicacion = $(this).closest('.wrapper');
