@@ -86,6 +86,16 @@ $(document).ready(function() {
   $('#atajos-keyboard-profile .atajos-title .fa-close').on('click',function() {
     $('#atajos-keyboard-profile').fadeOut();
   });
+  
+  $('#configurationOnProfile').on('click', function() {
+    if ($('.ventana-pin').is(':visible')) {
+      $('html, body').removeClass('body-inConf');
+      $('.ventana-pin').fadeOut("fast");
+    } else {
+      $('html, body').addClass('body-inConf');
+      $('.ventana-pin').fadeIn("fast");
+    }
+  }); 
 
 
   /* Menu vertical al hacer click cambia el estilo de "fa-bars" */

@@ -471,30 +471,23 @@ body > .container {
   margin-bottom: 1em; }
 
 /* Ventana para las opciones de cada pin */ 
-.user-card .ventana-pin {
+
+* .ventana-pin {
   width: 100%;
   height: auto;
   display: none;
+  border-radius: 3px;
 }
 
-.card .ventana-pin2 {
-  width: 100%;
-  height: auto;
-  display: none;
-}
-
-.user-card .ventana-pin a {
-  display: inline-block;
-  font-size: 17px;
+* .ventana-pin a {
   float: right;
+  font-size: 17px;
   margin-right: 14px;
 }
-
-.card .ventana-pin2 a {
-    display: inline-block;
-  font-size: 17px;
-  float: right;
-  margin-right: 14px;
+  
+ /* Color para el body + html al hacer click en configuracion de perfil */
+.body-inConf {
+  background-color: #e6e6e6;
 }
 
 .user-card .user-avatar { text-align: center; }

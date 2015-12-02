@@ -43,18 +43,6 @@
     </style>
   {% endif %}
 
-  <!-- Si el usuario está autorizado a cambiar los pines, se mostrará el menú -->
-  {% if user.username == user_profile.username %}
-  <style type="text/css">
-    .user-card:hover .ventana-pin {
-      display: block;
-    }
-    .card:hover .ventana-pin2 {
-      display: block;
-    }
-  </style>
-  {% endif %}
-
 {% endblock %}
 
 
@@ -202,8 +190,8 @@
 
                <span class="informacion">
                 {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
-                <span onclick="javascript:location.href='/config/profile/'" id="conf" class="fa fa-cog" title="Configuracion"></span>
-                <span onclick="javascript:location.href='/friends/'" id="conf" class="fa fa-users" title="Grupos"></span>
+                <span id="configurationOnProfile" class="fa fa-cog" title="Configuracion"></span>
+                <span onclick="location.href='/friends/'" id="conf" class="fa fa-users" title="Grupos"></span>
                 <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
                 {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
                    <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
@@ -348,7 +336,7 @@
 
       <div class="col-lg-6 col-md-12 col-sm-12">
         <div class="stock card">
-            <nav class="ventana-pin2">
+            <nav class="ventana-pin">
               <a><i class="fa fa-times"></i></a>
               <a><i class="fa fa-expand"></i></a>
               <a><i class="fa fa-thumb-tack"></i></a>
@@ -451,7 +439,6 @@
       <!-- Contenedor principal -->
     <div class="container">
       <div class="video-player card">
-
         <div class="vbox">
             <div class="user-video">
                 <button class="play-user-video"><span class="fa fa-play"></span></button>
@@ -570,6 +557,11 @@
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div class="container">
       <div class="col-lg-12">
+         <nav class="ventana-pin">
+           <a><i class="fa fa-times"></i></a>
+           <a><i class="fa fa-expand"></i></a>
+           <a><i class="fa fa-thumb-tack"></i></a>
+         </nav>
       <div id="div-separator">
         <div class="sidebar card" id="tab-container">
           <ul class="unstyled table fullwidth links">
