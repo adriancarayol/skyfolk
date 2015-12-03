@@ -91,7 +91,7 @@ body > .container {
   display: block;
   float: left;
   margin-right: 1.20482%;
-  width: 32.53199%; }
+  width: 32.531%; }
   .col-lg-4:last-child {
     margin-right: 0; }
 
@@ -204,6 +204,7 @@ body > .container {
     display: block;
     float: left;
     margin-right: 1.20482%;
+    margin-top: 5.3%;
     width: 49.39759%; }
     .col-md-6:last-child {
       margin-right: 0; } }
@@ -381,6 +382,7 @@ body > .container {
     display: block;
     float: left;
     margin-right: 1.20482%;
+    margin-top: 5.25%;
     width: 100%; }
     .col-sm-12:last-child {
       margin-right: 0; } }

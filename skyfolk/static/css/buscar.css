@@ -1,8 +1,7 @@
 /*caja de busqueda*/
 .field>form input[type=text],
 .field>form button {
- /* display:block;*/
- font:1.2em 'Montserrat Alternates';
+  font:1.2em 'Open Sans', sans-serif;;
 }
 
 .field>form input[type=text] {
@@ -17,7 +16,7 @@
   top: 7px;
   text-align: left;
   display: block;
-  font-family: sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   appearance: none;
   box-shadow: none;
@@ -76,7 +75,7 @@
 *{
   padding: 0;
   margin: 0;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   box-sizing: border-box;
 }
 .float-right{
@@ -240,7 +239,6 @@
   position: fixed;
   top: 0px;
   z-index: 9999;
-  margin-bottom: 200px;
 }
 .logotipo_skyfolk {
   position: fixed;
