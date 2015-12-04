@@ -106,9 +106,8 @@ $(document).ready(function() {
   
  function expandComment(caja_pub) {
     var id_pub = $(caja_pub).attr('id').split('-')[1]  // obtengo id
-    var commentToExpand = 'expand-' + id_pub;
+    var commentToExpand = document.getElementById('expand-' + id_pub);
     $(commentToExpand).fadeToggle();
-    alert(commentToExpand);
  }
 
 /*
