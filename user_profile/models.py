@@ -43,6 +43,7 @@ class UserProfile(models.Model):
     publications = models.ManyToManyField('self', through='publications.Publication', symmetrical=False, related_name='publications_to')
     timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False, related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
+    ultimosUsuariosVisitados = models.ManyToManyField('self')
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)

@@ -105,6 +105,7 @@ def profile_view(request, username):
 
     # cargar recomendaciones por amigos
     # TODO
+    '''
     listR = []
     try:
         friends = user_profile.profile.get_friends()
@@ -117,9 +118,21 @@ def profile_view(request, username):
                 listR = User.objects.all()
 
     except ObjectDoesNotExist:
-        listR = User.objects.all()[:random.randint(1, 10)]
-
-
+        listR = User.objects.all()[:random.randint(1, 10)] '''
+        
+    listR = []
+    try:
+        friends = request.user.profile.get_friends()
+        if len(friends) < 10:
+            print("El usuario tiene menos de 10 amigos")
+            listR = User.objects.all()
+        else:
+            print("El usuario tiene mas o igual a 10 amigos")
+            listR = friends
+        print("Obteniendo recomendaciones del usuario" + request.user.username)
+    except ObjectDoesNotExist:
+        friends = None
+        print("El usuario no tiene amigos")
 
     # mostrar color segun estado (parte emocional)
     # TODO
