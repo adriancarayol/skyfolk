@@ -157,20 +157,21 @@ label[for="id_body"] {
   min-width: 515px;
   font-family: "Open Sans", sans;
   font-weight: 400;
-  color: #e0e0e0;
+  color: #616161;
   text-indent: 10px;
   transition: all .3s ease-in-out;
   margin-top: 1%;
   margin-left: 2.5px;
   margin-right: 2.5px;
 }
+
 #id_subject {
   display: inline-block;
   width: 90%;
   min-width: 515px;
   font-family: "Open Sans", sans;
   font-weight: 400;
-  color: #e0e0e0;
+  color: #616161;
   text-indent: 10px;
   transition: all .3s ease-in-out;
   margin-top: 1%;
@@ -189,7 +190,7 @@ label[for="id_body"] {
   overflow: hidden;
   font-weight: 300;
   font-size: 15px;
-  color: grey;
+  color: #616161;
   text-indent: 5px;
   display: block;
   resize: none;

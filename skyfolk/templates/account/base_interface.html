@@ -161,17 +161,14 @@ top.window.outerWidth = screen.availWidth;
         <li class="fa fa-users fa-2x" onclick="location.href='/friends/{{ request.user }}'"></li>
         <li class="fa fa-sign-out fa-2x" onclick="location.href='{% url 'account_logout' %}'"></li>
         {% if request.user.profile.image %}
-        <li class="profile-user"><img src="{{request.user.profile.image.url}}"></li>
+        <li class="profile-user" onclick="location.href='/profile/{{ request.user }}'"><img src="{{request.user.profile.image.url}}"></li>
       {% else %}
-        <li class="profile-user"><img src="{{STATIC_URL}}img/nuevo.png"></li>
+        <li class="profile-user" onclick="location.href='/profile/{{ request.user }}'"><img src="{{STATIC_URL}}img/nuevo.png"></li>
       {% endif %}
     </ul>
 
     {% if showPerfilButtons or user.username == user_profile.username %}
-
-
-
-
+    <!-- BOTONES ESPACIALES PARA EL USUARIO QUE HACE LOGIN, SÓLO VISIBLE POR EL USUARIO QUE INICIA SESIÓN -->
     {% endif %}
 <!-- Menu principal - circular -->
 

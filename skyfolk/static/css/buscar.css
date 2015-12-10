@@ -339,7 +339,6 @@
 
 .fa-bars li:hover {
   color: #1976d2;
-  z-index: 9999;
 }
 
 @keyframes pre-loader-logo {

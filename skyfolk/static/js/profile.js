@@ -17,7 +17,7 @@ $(document).ready(function() {
   });*/
   
   if ($('#tab-comentarios .wrapper').height() > 145) {
-    $('#tab-comentarios .wrapper').css('height','auto');  
+    $(this).css('height','auto');
   }
 
   $('#page-wrapper #close').on('click', function(event) {
@@ -493,6 +493,7 @@ function addPublicationToHtmlList(item) {
               </div>\
               <div class="optiones_comentarios">\
                 <ul class="opciones">\
+		       <li><i class="fa fa-trash"></i></li>\
                        <li><i class="fa fa-heart"></i></li>\
                        <li><i class="fa fa-quote-left"></i></li>\
                        <li><i class="fa fa-reply"></i></li>\
@@ -627,6 +628,7 @@ function AJAX_submit_publication() {
   //event.preventDefault(); //stop submit
   $.ajax({
     url: '/publication/',
+    action: "load_publications",
     type: 'POST',
     dataType: 'json',
     data: $('#page-wrapper #message-form2').serialize(),
