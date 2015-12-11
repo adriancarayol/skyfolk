@@ -49,9 +49,11 @@ for a {{site_name}} account and sign in below:{% endblocktrans %}</p>
 	  <input class="form-control" type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
 	  {% endif %}
 	  </div>
-	  <a class="button secondaryAction" id="losepwd" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
 	  <button id="iniciar_sesion" class="waves-effect waves-light btn" type="submit">{% trans "Sign In" %}</button>
 	  <a id="registrar" type="button" class="waves-effect waves-light btn" onclick="javascript:location.href='{{ signup_url }}'">{% trans "Sign Up" %}</a>
+    <div class="forgot_pswd">
+    <a class="button secondaryAction" id="losepwd" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+    </div>
 	</form>
 </div>
 {% endblock %}

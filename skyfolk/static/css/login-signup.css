@@ -119,28 +119,43 @@ form {
     font-width: 100;
     left: 30px;
 }
-#id_remember {
-  display: inline;
-  left: 58%;
-}
 
-#losepwd {
-  margin-left: 20%;
-}
+/* Estilos para el botón ¿olvido su contraseña? */
 
-#login .button {
-  position: relative;
+.forgot_pswd {
+  position: absolute;
+  display: block;
+  margin-top: 120px;
+  height: 60px;
+  width: 100%;
+  background-color: #616161 !important;
+  right: 0;
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+  border-top: 2px solid #e3f2fd;
   text-align: center;
-  top: 30px;
-  left: 7%;
 }
+.forgot_pswd > .secondaryAction {
+  font-size: 16px;
+  margin: auto;
+}
+
+#id_remember {
+  display: block;
+  left: 60%;
+  margin-top: 7px;
+}
+
 .form-3 label[for="id_remember"] {
   position: relative;
-  left: 30%;
+  left: 35%;
   font-size: 1.01121em;
   font-weight: 100;
-  top: -4px;
+  display: table;
+  top: 25px;
 }
+
 .form-3 input[type="text"] {
   width: 70%;
   position: relative;
@@ -205,15 +220,6 @@ form {
     position: relative;
     top: 13px;
 
-}
-.checkbox{
-    background-color: blue;
-    /*width: 20px;*/
-}
-.checkbox-rembember{
-    width: 100%;
-    float: left;
-    position: absolute;
 }
 
 .block-formregister{
