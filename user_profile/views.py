@@ -183,6 +183,15 @@ def profile_view(request, username):
         t =  None
     # print ">>>>> PERFIL: " + str(user_profile.profile.pk)
     # print ">>>>> VISITANTE/USUARIO: " + str(user.profile.pk)
+    
+    ''' COMPROBACION DE SI EL USUARIO SE HA REGISTRADO POR PRIMERA VEZ, MOSTRAR LA PAGINA DE CONFIGURACION INICIAL '''
+    last_login = str(user_profile.last_login)
+    date_joined = str(user_profile.date_joined)
+    
+    
+    print("Last login -> " + last_login[:16] + " dated joined -> " + date_joined[:16])
+
+        
     return render_to_response('account/profile.html',
                               {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
                                'user_profile': user_profile, 'searchForm': searchForm,

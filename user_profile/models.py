@@ -44,6 +44,7 @@ class UserProfile(models.Model):
     timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False, related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
     ultimosUsuariosVisitados = models.ManyToManyField('self')
+    firstLogin = models.BooleanField(default=False)
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
