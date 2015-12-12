@@ -53,13 +53,8 @@
 .btn{
    cursor: pointer;
 }
-.container-search{
-  margin: auto;
-  background-color: #fff;
 
-}
-.container-search #search-noelements{
-
+#search-noelements{
   margin:0 auto 0 auto;
   width:40%;
   text-align:center;

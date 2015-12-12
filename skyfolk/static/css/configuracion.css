@@ -313,8 +313,17 @@ hgroup {
 
 /* MEDIAS */
 
-@media only screen and (max-width:632px) {
+@media only screen and (max-width: 1550px) {
     hgroup {
         display: none;
     }
+    #contra {
+      display: none;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+  #contra {
+    
+  }
 }
