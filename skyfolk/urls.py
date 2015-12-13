@@ -1,4 +1,4 @@
-#####
+﻿#####
 
 
 from django.conf.urls import patterns, include, url
@@ -12,6 +12,7 @@ from user_profile import views as user_profile_views
 from about.views import about
 from market.views import market_inicio
 from relaciones.views import relaciones_user
+from user_profile.views import welcomeView
 
 admin.autodiscover()
 
@@ -69,6 +70,8 @@ urlpatterns = patterns(
         )
     ),
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
+    # Página de bienvenida a nuevos usuarios.
+    url(r'^welcome/', welcomeView.as_view()),
 )
 
 urlpatterns += staticfiles_urlpatterns()

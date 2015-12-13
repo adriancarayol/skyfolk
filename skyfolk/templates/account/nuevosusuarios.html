@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>¡Bienvenido a Skyfolk!</title>
+	<meta charset="utf-8" />
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/welcome.css" />
+</head>
+<body class="teal lighten-5" style="background-image: url({{STATIC_URL}}img/backgrounds/2.jpg);">
+    <div class="container">
+        <div class="row">
+            <div class="card-info">
+            <div class="col s12 m12 l12">
+                <div class="card blue-grey lighten-5">
+                    <div class="card-content blue-text">
+                        <h3>Bienvenido a Skyfolk.</h3>
+                        <h5>Estamos preparando tu cuenta.</h5>
+                    </div> 
+                    <div class="progress">
+                        <div class="indeterminate"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <a onclick="location.href='/step1/{{request.user}}'" class="waves-effect waves-light btn right">Configurar cuenta</a>
+        <a onclick="location.href='/profile/{{request.user}}'" class="waves-effect waves-light btn">Omitir</a>
+    </div>
+
+</body>
+</html>

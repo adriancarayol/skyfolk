@@ -1,0 +1,13 @@
+﻿body {
+    padding: 0;
+    margin: auto;
+    max-width: 80%;
+    height: 100%;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+.card-info {
+    margin-top: 30%;
+    text-align: center;
+}

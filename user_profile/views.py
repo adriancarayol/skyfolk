@@ -1,4 +1,4 @@
-from django.shortcuts import render
+﻿from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template import RequestContext, loader
@@ -21,6 +21,7 @@ from django.utils.safestring import mark_safe
 # allauth
 from allauth.account.views import PasswordChangeView
 import random
+from django.views.generic import TemplateView
 
 
 # Create your views here.
@@ -434,3 +435,7 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
 def changepass_confirmation(request):
     return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))
+
+
+class welcomeView(TemplateView):
+    template_name = "account/nuevosusuarios.html"
