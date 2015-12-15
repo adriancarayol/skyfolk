@@ -439,3 +439,10 @@ def changepass_confirmation(request):
 
 class welcomeView(TemplateView):
     template_name = "account/nuevosusuarios.html"
+    
+class welcomeStep1(TemplateView):
+    template_name = "account/welcomestep1.html"
+    
+    def get(self, request, *args, **kwargs):
+        newUser = request.user.username
+        return render(request, self.template_name, {'newUser':newUser})

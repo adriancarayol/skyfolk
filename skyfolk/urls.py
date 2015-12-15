@@ -12,7 +12,7 @@ from user_profile import views as user_profile_views
 from about.views import about
 from market.views import market_inicio
 from relaciones.views import relaciones_user
-from user_profile.views import welcomeView
+from user_profile.views import welcomeView, welcomeStep1
 
 admin.autodiscover()
 
@@ -72,6 +72,8 @@ urlpatterns = patterns(
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/', welcomeView.as_view()),
+    # Página de bienvenida, paso 1.
+    url(r'^step1/(?P<username>[\w-]+)/$', welcomeStep1.as_view()),
 )
 
 urlpatterns += staticfiles_urlpatterns()
