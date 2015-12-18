@@ -124,7 +124,7 @@
 }
 .fa-bars:hover {
   opacity: 0.8;
-  }
+}
 
 .fa-bars-rotate {
     -webkit-transform: rotate(90deg);
@@ -253,13 +253,9 @@
   animation-direction: alternate;
 }
 
-.fa-bars li:nth-child(1) {
+.fa-bars .fa-bars-content li:nth-child(1) {
       list-style-type: none;
       position: absolute;
-      visibility: hidden;
-      -webkit-transition: all 4s ease-in;
-      -moz-transition: all 4s ease-in;
-      transition: all 4s ease-in;
       cursor:pointer;
       background: none;
       top: 0;
@@ -267,73 +263,104 @@
       font-size: 20px;
   }
 
-.fa-bars li:nth-child(2) {
+.fa-bars .fa-bars-content li:nth-child(2) {
       list-style-type: none;
       position: absolute;
-      visibility: hidden;
-      -webkit-transition: all 4s ease-in;
-      -moz-transition: all 4s ease-in;
-      transition: all 4s ease-in;
       cursor:pointer;
       left: 100px;
       top: 0;
       font-size: 20px;
   }
-.fa-bars li:nth-child(3) {
+.fa-bars .fa-bars-content li:nth-child(3) {
       list-style-type: none;
       position: absolute;
-      visibility: hidden;;
-      -webkit-transition: all 4s ease-in;
-      -moz-transition: all 4s ease-in;
-      transition: all 4s ease-in;
       cursor:pointer;
       left: 150px;
       top: 0;
-    font-size: 20px;
+      font-size: 20px;
 }
-.fa-bars li:nth-child(4) {
+.fa-bars .fa-bars-content li:nth-child(4) {
       list-style-type: none;
       position: absolute;
-      visibility: hidden;
-      -webkit-transition: all 4s ease-in;
-      -moz-transition: all 4s ease-in;
-      transition: all 4s ease-in;
       cursor:pointer;
       left: 200px;
       top: 0;
-    font-size: 20px;
+      font-size: 20px;
 }
-.fa-bars li:nth-child(5) {
+.fa-bars .fa-bars-content li:nth-child(5) {
       list-style-type: none;
       position: absolute;
       left: 250px;
-      visibility: hidden;
-      -webkit-transition: all 4s ease-in;
-      -moz-transition: all 4s ease-in;
-      transition: all 4s ease-in;
       cursor:pointer;
       top: 30px;
       width: 40px;
       height: 40px;
 
 }
-.fa-bars li:nth-child(5) img {
+.fa-bars .fa-bars-content li:nth-child(5) img {
     width: 40px;
     height:40px;
     -webkit-border-radius: 100%;
     -moz-border-radius: 100%;
     border-radius: 100%;
 }
-.fa-bars:hover li {
-  visibility: visible;
-  margin-left: 10px;
-  transition: all .2s ease-in;
-  -webkit-transition: all .2s ease-in;
-  -moz-transition: all .2s ease-in;
+
+.fa-bars .fa-bars-content {
+  display: none;
+  position: absolute;
+  width: 300px;
+  height: 30px;
+  background: none;
 }
 
-.fa-bars li:hover {
+.fa-bars:hover .fa-bars-content {
+  display: inline-block;
+}
+
+.fa-bars:hover .fa-bars-content li:nth-child(1) {
+  -moz-animation: bounce .1s ease-in-out;
+  -webkit-animation: bounce .1s ease-in-out;
+  animation: bounce .1s ease-in-out;
+}
+
+.fa-bars:hover .fa-bars-content li:nth-child(2) {
+  -moz-animation: bounce .3s ease-in-out;
+  -webkit-animation: bounce .3s ease-in-out;
+  animation: bounce .3s ease-in-out;
+}
+
+.fa-bars:hover .fa-bars-content li:nth-child(3) {
+  -moz-animation: bounce .5s ease-in-out;
+  -webkit-animation: bounce .5s ease-in-out;
+  animation: bounce .5s ease-in-out;
+}
+
+.fa-bars:hover .fa-bars-content li:nth-child(4) {
+  -moz-animation: bounce .7s ease-in-out;
+  -webkit-animation: bounce .7s ease-in-out;
+  animation: bounce .7s ease-in-out;
+}
+
+.fa-bars:hover .fa-bars-content li:nth-child(5) {
+  -moz-animation: bounce .9s ease-in-out;
+  -webkit-animation: bounce .9s ease-in-out;
+  animation: bounce .9s ease-in-out;
+}
+
+.fa-bars .fa-bars-content li:hover {
   color: #1976d2;
+}
+
+@keyframes bounce {
+
+        25%{ opacity: 0; }
+        100%{ opacity : 1;}
+}
+
+@-webkit-keyframes bounce {
+
+        25%{ display: none; }
+        100%{ display: block; }
 }
 
 @keyframes pre-loader-logo {

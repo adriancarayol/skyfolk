@@ -156,6 +156,8 @@ top.window.outerWidth = screen.availWidth;
     <li class="fa fa-comment fa-lg"></li>
     <li class="fa fa-bell fa-lg"><em onclick="contador()">{{n_likes}}</em></li>
     <ul class="fa fa-bars fa-lg">
+    <li class="fa-bars-content">
+    <ul>
         <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
         <li class="fa fa-home fa-2x" onclick="location.href='/'"></li>
         <li class="fa fa-users fa-2x" onclick="location.href='/friends/{{ request.user }}'"></li>
@@ -165,6 +167,8 @@ top.window.outerWidth = screen.availWidth;
       {% else %}
         <li class="profile-user" onclick="location.href='/profile/{{ request.user }}'"><img src="{{STATIC_URL}}img/nuevo.png"></li>
       {% endif %}
+      </ul>
+    </li>
     </ul>
 
     {% if showPerfilButtons or user.username == user_profile.username %}
