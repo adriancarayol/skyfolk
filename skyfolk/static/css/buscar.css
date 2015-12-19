@@ -305,12 +305,15 @@
     border-radius: 100%;
 }
 
+/* Menu superior izquierda */
+
 .fa-bars .fa-bars-content {
   display: none;
   position: absolute;
   top: 0;
   width: 300px;
   height: 30px;
+  margin-left: 14px;
   background: none;
 }
 

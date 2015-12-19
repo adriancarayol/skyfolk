@@ -7,6 +7,7 @@ import publications
 import timeline
 #from publications.models import Publication
 import datetime
+from django.template.defaultfilters import default
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
@@ -43,8 +44,9 @@ class UserProfile(models.Model):
     publications = models.ManyToManyField('self', through='publications.Publication', symmetrical=False, related_name='publications_to')
     timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False, related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
-    ultimosUsuariosVisitados = models.ManyToManyField('self')
-    firstLogin = models.BooleanField(default=False)
+    ultimosUsuariosVisitados = models.ManyToManyField('self') # Lista de ultimos usuarios visitados.
+    firstLogin = models.BooleanField(default=False) # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto, mostrar configuracion inicial.
+    hiddenMenu = models.BooleanField(default=False) # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
