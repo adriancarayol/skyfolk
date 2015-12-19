@@ -107,7 +107,20 @@ $(document).ready(function() {
  function expandComment(caja_pub) {
     var id_pub = $(caja_pub).attr('id').split('-')[1]  // obtengo id
     var commentToExpand = document.getElementById('expand-' + id_pub);
-    $(commentToExpand).fadeToggle();
+    $(commentToExpand).fadeToggle("fast");
+ }
+ 
+ /* Cerrar comentario expandido */
+
+ $('.cerrar_ampliado').on('click', function() {
+ 	var expand = $(this).closest('.ampliado');
+ 	closeExpand(expand);
+ });
+ 
+ function closeExpand(expand) {
+ 	var c = $(expand).attr('id').split('-')[1]
+ 	var toClose = document.getElementById('expand-' + c);
+ 	$(toClose).hide();
  }
 
 /*
