@@ -308,6 +308,7 @@
 .fa-bars .fa-bars-content {
   display: none;
   position: absolute;
+  top: 0;
   width: 300px;
   height: 30px;
   background: none;
