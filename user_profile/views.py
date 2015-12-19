@@ -206,7 +206,9 @@ def search(request):
     # para mostarar tambien el cuadro de busqueda en la pagina
 
     searchForm = SearchForm(request.POST)
-
+    # mostrar formulario para enviar comentarios/publicaciones
+    publicationForm = PublicationForm()
+    
     if request.method == 'POST':
         if searchForm.is_valid:
             texto_to_search = request.POST['searchText']
@@ -230,27 +232,30 @@ def search(request):
 
     else:
         return render_to_response('account/search.html',
-                                  {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': ()},
+                                  {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': (), 'publicationForm': publicationForm},
                                   context_instance=RequestContext(request))
 
 
 @login_required(login_url='/')
 def config_changepass(request):
     searchForm = SearchForm(request.POST)
-    return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm},
+    publicationForm = PublicationForm()
+    return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm':publicationForm},
                               context_instance=RequestContext(request))
 
 
 @login_required(login_url='/')
 def config_privacity(request):
-    return render_to_response('account/cf-privacity.html', {'showPerfilButtons': True},
+    searchForm = SearchForm(request.POST)
+    publicationForm = PublicationForm()
+    return render_to_response('account/cf-privacity.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm':publicationForm},
                               context_instance=RequestContext(request))
 
 
 @login_required(login_url='/')
 def config_profile(request):
     user_profile = request.user
-
+    publicationForm = PublicationForm()
     searchForm = SearchForm()
     print('>>>>>>>  PETICION CONFIG')
     if request.POST:
@@ -277,7 +282,7 @@ def config_profile(request):
     print('>>>>>>>  paso x')
     return render_to_response('account/cf-profile.html',
                               {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
-                               'user_form': user_form, 'perfil_form': perfil_form},
+                               'user_form': user_form, 'perfil_form': perfil_form, 'publicationForm':publicationForm},
                               context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,

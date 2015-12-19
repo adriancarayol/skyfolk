@@ -3,7 +3,7 @@
 {% block include_files %}
 {% load emoji_tags %}
 {% include 'emoji/script.html' %}
-
+{% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 <!-- Mostrar objetos al hacer scroll -->
 <script type="text/javascript">
 
@@ -960,35 +960,23 @@
 
 {% if user.is_authenticated %}
   <div id="page-wrapper" style="display:none;">
-      <h1></h1>
+      <h1> </h1>
     <div id="status">to {{ user_profile.username }}</div>
     <form id="message-form2" action="" method="post">{% csrf_token %}
-
-      {{publicationForm.as_p}}
+		{{publicationForm.as_p}}
       <input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
       <input type="text" name="emitterid" value="{{ user.pk }}" hidden>
-        <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"></i> Enviar</button>
+        <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"> </i> Enviar</button>
         <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
-        <button type="button" id="close"><i class="fa fa-remove"></i> Cerrar</button>
-        <button class="fontawesome-bullhorn"><i class="fa fa-bullhorn"></i></button>
-        <button class="fontawesome-camera"><i class="fa fa-camera"></i></button>
-        <button class="fontawesome-map-marker"><i class="fa fa-map-marker"></i></button>
+        <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
+        <button class="fontawesome-bullhorn"><i class="fa fa-bullhorn"> </i></button>
+        <button class="fontawesome-camera"><i class="fa fa-camera"> </i></button>
+        <button class="fontawesome-map-marker"><i class="fa fa-map-marker"> </i></button>
 
     </form>
   </div>
 {% endif %}
-
-<!-- ALERTS BOOTSTRAP (NO USAR TODAVIA) -->
-<div id="friend-success" class="alert alert-success alert-dismissible" role="alert" hidden><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>You have added a friend!</div>
-<div id="publish-success" class="alert alert-success alert-dismissible" role="alert" hidden><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>You have successfully posted!</div>
-
-
-
-
-
 </div>
-
-</body>
 <!-- IGNORAR, SOLO MUESTRA OBJETOS AL HACER SCROLL -->
     <script>
 
@@ -997,9 +985,7 @@
     </script>
 
      <script>
-
       var config = {
-
         easing: 'hustle',
         reset:  true,
         delay:  'once',
