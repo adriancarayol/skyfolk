@@ -155,6 +155,7 @@ top.window.outerWidth = screen.availWidth;
     <li class="fa fa-bell fa-lg"><em onclick="contador()">{{n_likes}}</em></li>
     <ul class="fa fa-bars fa-lg">
     {% if user.profile.hiddenMenu == False %} <!-- Elección del usuario el menu a mostrar -->
+
     <li class="fa-bars-content">
     <ul>
         <li class="fa fa-paper-plane fa-2x" id="publish2"> </li>
@@ -170,13 +171,20 @@ top.window.outerWidth = screen.availWidth;
     </li>
     {% endif %}
     </ul>
-
     {% if showPerfilButtons or user.username == user_profile.username %}
     <!-- BOTONES ESPACIALES PARA EL USUARIO QUE HACE LOGIN, SÓLO VISIBLE POR EL USUARIO QUE INICIA SESIÓN -->
     {% endif %}
 <!-- Menu principal - circular -->
 
 </ul>
+ {% if user.profile.hiddenMenu == True %}
+      <ul class="oldMenu">
+        <li><i class="fa  fa-paper-plane"> </i> Mensaje</li>
+        <li><i class="fa fa-home"></i> Inicio</li>
+        <li><i class="fa fa-users"></i> Seguidos</li>
+        <li><i class="fa fa-sign-out"></i> Salir</li>
+      </ul>
+    {% endif %}
 </nav>
 {% endblock %}
 {% block content %}{% endblock %}

@@ -235,6 +235,38 @@
   top: 0px;
   z-index: 9999;
 }
+
+/* Menu opcional para usuario */
+
+.box-tool .oldMenu  {
+  position: relative;
+  height: 30px;
+  width: 30%;
+  display: inline-block;
+  margin-left: 30px;
+}
+
+.box-tool .oldMenu li {
+  display: inline-block;
+  background-color: #fff;
+  height: 100%;
+  text-align: center;
+  margin-left: 2px;
+  margin-top: 7px;
+  padding: 5px 10px;
+  color: #424242;
+  font-size: 1.4em;
+  -webkit-transition: all .1s ease-in;
+  transition: all .1s ease-in;
+  -moz-transition: all .1s ease-in;
+  cursor: pointer;
+}
+
+.box-tool .oldMenu li:hover {
+  color: #1e88e5;
+    border-bottom: 2px solid #1e88e5;
+}
+
 .logotipo_skyfolk {
   position: fixed;
   width: 47px;
