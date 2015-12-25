@@ -19,16 +19,16 @@
                 </i>
                 <div class="bg-user">
                     {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
-                        <img class="profile-user-bg" src="{{MEDIA_URL}}{{item.user__profile__image}}">
+                        <img class="profile-user-bg" src="{{MEDIA_URL}}{{item.user__profile__image}}" onclick="location.href='/profile/{{ item.user__username }}'">
                     {% else %}
-                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/5.jpg">
+                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/5.jpg" onclick="location.href='/profile/{{ item.user__username }}'">
                     {% endif %}
                 </div>
             </div>
         </div>
         <div class="col-lg-12">
             <div class="name-friend">
-            <p>{{ item.user__username }}</p><br>
+            <p>{{ item.user__username }} </p><br>
                 <p>{{ item.user__first_name }} {{item.user__last_name}}</p>
             </div>
 
