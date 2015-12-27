@@ -579,9 +579,13 @@
                                 <li>
                                     <div data-sr="wait 0.2s then scale up 30%" class="second">
                                         {% if user_profile.profile.image %}
-                                        <span class="acontecimiento" style="background-image: url('{{user_profile.profile.image.url}}');"></span>
+                                        <span class="acontecimiento">
+                                          <img style="border-radius: 100%; width: 100%; height:100%;" src="{{user_profile.profile.image.url}}"></img>
+                                        </span>
                                         {% else %}
-                                        <span class="acontecimiento" style="background-image: url('{{STATIC_URL}}img/nuevo.png');"></span>
+                                        <span class="acontecimiento">
+                                          <img style="border-radius: 100%; width: 100%; height:100%;" src="{{STATIC_URL}}img/nuevo.png"></img>
+                                        </span>
                                         {% endif %}
                                         <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
                                         <div id="p" class="parrafo comment">

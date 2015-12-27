@@ -5,11 +5,8 @@
     <title>¡Bienvenido a Skyfolk, {{ newUser }}!</title>
     {% endblock %}
 	<meta charset="utf-8" />
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
-
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.css"  media="screen,projection"/>
+    <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
     <script src="{{STATIC_URL}}js/welcome.js"></script>
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/welcome.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
