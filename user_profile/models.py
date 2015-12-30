@@ -8,6 +8,7 @@ import timeline
 #from publications.models import Publication
 import datetime
 from django.template.defaultfilters import default
+from _overlapped import NULL
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
@@ -25,10 +26,10 @@ REQUEST_STATUSES = (
 )
 
 def uploadAvatarPath(instance, filename):
-    return '%s/avatar/%s' % (instance.user.username, filename[:20])
+    return '%s/avatar/%s' % (instance.user.username, filename)
 
 def uploadBackImagePath(instance, filename):
-    return '%s/backImage/%s' % (instance.user.username, filename[:20])
+    return '%s/backImage/%s' % (instance.user.username, filename)
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True, related_name='profile')

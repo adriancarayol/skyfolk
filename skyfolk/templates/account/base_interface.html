@@ -110,10 +110,10 @@ top.window.outerWidth = screen.availWidth;
 </ul>
  {% if user.profile.hiddenMenu == True %}
       <ul class="oldMenu">
-        <li><i class="fa  fa-paper-plane"> </i> Mensaje</li>
-        <li><i class="fa fa-home"></i> Inicio</li>
-        <li><i class="fa fa-users"></i> Seguidos</li>
-        <li><i class="fa fa-sign-out"></i> Salir</li>
+        <li id="publish2"><i class="fa  fa-paper-plane"> </i> Mensaje</li>
+        <li onclick="location.href='/'"><i class="fa fa-home" ></i> Inicio</li>
+        <li onclick="location.href='/friends/{{ request.user }}'"><i class="fa fa-users"></i> Seguidos</li>
+        <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
       </ul>
     {% endif %}
 </nav>

@@ -271,6 +271,15 @@ label[for="id_status"] {
   font-weight: 100;
   position: relative;
 }
+#id_hiddenMenu {
+	opacity: 1;
+}
+label[for="id_hiddenMenu"] {
+  top: 0px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 100;
+  position: relative;
+}
 hgroup {
   position: relative;
   margin-bottom: 30px;
