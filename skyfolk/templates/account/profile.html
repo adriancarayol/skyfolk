@@ -1,47 +1,11 @@
 {% extends "account/base_interface.html" %}
 {% load app_filters %}
+{% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
 {% load emoji_tags %}
 {% include 'emoji/script.html' %}
-{% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 <!-- Mostrar objetos al hacer scroll -->
-<script type="text/javascript">
 
-
-   //first set the value you will be using.
-   var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
-   var MEDIA_URL = "{{MEDIA_URL}}";
-
-   var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
-   var stopRequests = false;
-   var idRequestsTimer = null;
-
-   if(requests){
-      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3500);
-
-    }
-
-</script>
-
-  {% if liked == True %}
-
-    <style type="text/css">
-        #ilike_profile {
-            color: #ec407a;
-        }
-    </style>
-
-
-  {% endif %}
-
-  {% if isFriend == True %}
-
-    <style type="text/css">
-        #addfriend { 
-            color: #29b203;
-        }
-    </style>
-  {% endif %}
 
 {% endblock %}
 
@@ -1000,5 +964,43 @@
       window.sr = new scrollReveal( config );
 
     </script>
+    
+    <script type="text/javascript">
+
+
+   //first set the value you will be using.
+   var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
+   var MEDIA_URL = "{{MEDIA_URL}}";
+
+   var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
+   var stopRequests = false;
+   var idRequestsTimer = null;
+
+   if(requests){
+      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3500);
+
+    }
+
+</script>
+
+  {% if liked == True %}
+
+    <style type="text/css">
+        #ilike_profile {
+            color: #ec407a;
+        }
+    </style>
+
+
+  {% endif %}
+
+  {% if isFriend == True %}
+
+    <style type="text/css">
+        #addfriend { 
+            color: #29b203;
+        }
+    </style>
+  {% endif %}
 
 {% endblock%}
