@@ -77,39 +77,10 @@ h6 {
   left: 27%;
 }
 
-.actual, #form-changepass input{
-  width: 20%;
-  position: relative;
-  margin: auto;
-  padding: 5px 7px;
-  color: rgba(44,44,44,0.854);
-  border: 1px solid #ececec;
-  border-radius: 2px;
-  transition: all .3s linear;
-  -webkit-transition: all .3s linear;
-  -moz-transition: all .3s;
-  margin-left: 20px;
-  margin-right: 0px;
-}
 #recent,#new,#new2 {
   display: list-item;
 }
-label[for="id_first_name"] {
-  font-family: 'Open Sans', sans-serif;
-  position: absolute;
-    color: rgba(44,44,44,0.776);
-    font-weight: 100;
-    top: 2px;
-    margin-left: 5px;
-}
-label[for="id_last_name"] {
-  font-family: 'Open Sans', sans-serif;
-  position: absolute;
-    color: rgba(44,44,44,0.776);
-    font-weight: 100;
-    top: 2px;
-    margin-left: 5px;
-}
+
 #form-changepass {
   position: relative;
   left: 70px;
@@ -127,9 +98,42 @@ label[for="id_last_name"] {
   left: 30px;
   height: auto;
 }
+.actual {
+  padding: 10px 5px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
+  transition: border 0.3s;
+}
 .actual:focus {
-  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-    border: 2px solid rgba(81, 203, 238, 1);
+	 border-bottom: solid 2px #1E88E5;
+}
+.nameConfig {
+	width: auto;
+	height: 50px;
+	position: absolute;
+	display: inline-block;
+	float: right;
+	right: 50%;
+	bottom: 0;
+}
+.nameConfig .errorlist, .lastConfig .errorlist {
+	position: absolute;
+	bottom: 70px;
+	color: #404040;
+}
+.lastConfig {
+	width: auto;
+	height: 50px;
+	position: absolute;
+	display: inline-block;
+	float: right;
+	right: 20%;
+	bottom: 0;
+}
+
+.nameConfig p, .lastConfig p {
+	position: absolute;
+	top: -5px;
 }
 #float {
 
