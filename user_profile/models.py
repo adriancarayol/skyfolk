@@ -8,7 +8,7 @@ import timeline
 #from publications.models import Publication
 import datetime
 from django.template.defaultfilters import default
-from _overlapped import NULL
+#from _overlapped import NULL
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
