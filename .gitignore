@@ -12,4 +12,7 @@ skyfolk/media
 Thumbs.db
 db.sqlite3
 .ropeproject/
-
+.externalToolBuilders/
+.metadata/
+.vscode/
+Web.config
