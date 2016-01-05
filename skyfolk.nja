@@ -1,0 +1,29 @@
+{
+  "mainFile": "manage.py", 
+  "use-tabs": false, 
+  "venv": "/home/adrian/skyfolk/venv/bin/python", 
+  "relatedProjects": [], 
+  "name": "skyfolk", 
+  "license": "", 
+  "url": "http://127.0.0.1:8000/", 
+  "pythonPath": "/home/adrian/skyfolk/venv/bin/python3.5", 
+  "preExecScript": "", 
+  "additional_builtins": [], 
+  "programParams": "runserver", 
+  "indentation": 4, 
+  "PYTHONPATH": "", 
+  "supported-extensions": [
+    ".py", 
+    ".html", 
+    ".jpg", 
+    ".png", 
+    ".ui", 
+    ".css", 
+    ".json", 
+    ".js", 
+    ".ini"
+  ], 
+  "project-type": "web", 
+  "postExecScript": "", 
+  "description": ""
+}

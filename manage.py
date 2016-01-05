@@ -18,9 +18,9 @@ if __name__ == "__main__":
         segundoParam = "null"
 
     print("primerParam: " + primerParam + " / segundoParam" + segundoParam)
-    if primerParam == "--entorno" and ( segundoParam == "develop" or
+    if primerParam == "--entorno" and (segundoParam == "develop" or
                                         segundoParam == "pre" or
-                                        segundoParam == "master" ):
+                                        segundoParam == "master"):
         #print("Antes de extraer parametros: " + str(sys.argv))
         deploy = True
         entorno = segundoParam
