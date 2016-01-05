@@ -16,3 +16,9 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+
+DEVELOP_APPS = (
+    'django_extensions',
+)
+
+INSTALLED_APPS = DEVELOP_APPS + INSTALLED_APPS
