@@ -1,31 +1,36 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, HttpResponseRedirect
-from twitter.models import *
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate, logout
-import datetime, re, random
+import datetime
+import random
+import re
 from time import time, sleep
+from urllib import urlencode
+
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import User
 from django.core.serializers.json import simplejson
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
+
+from twitter.models import *
+
 
 try:
 	import cPickle as pickle
 except ImportError:
 	import pickle
 
-from urllib import urlencode
 
 # Create your views here.
 
-TWEETS_EN_PAGE = 10			#La cantidad de tweets que se muestran por página
+TWEETS_EN_PAGE = 10			#La cantidad de tweets que se muestran por pï¿½gina
 TWEETS_EN_PROFILE = 10		#La cantidad de tweets que se muestran en prefiles
 MENSAJES_POR_CHAT = 20		#La cantidad de mensajes que se muestran en el chat
-LONGITUD_MENSAJE_CHAT = 100 #La longitud máxima del mensaje de chat
+LONGITUD_MENSAJE_CHAT = 100 #La longitud mï¿½xima del mensaje de chat
 TIEMPO_CONEXION = 60		#El tiempo que pasa para marcar usuarios desconectados
 CHAT_BAN = []				#Usuarios baneados del chat
-CHAT_TIMEOUT = 10			#El tiempo máximo de espera para que se cargue el chat
+CHAT_TIMEOUT = 10			#El tiempo mï¿½ximo de espera para que se cargue el chat
 CHAT_LOOP = .5				#El tiempo que pasa hasta que se vuelve a cargarse el bucle
 
 def borrar(request, tweet_id):
@@ -505,7 +510,7 @@ def chat(request):
 	#Actualiza el estado del usuario
 	f = Conectado.objects.filter(usuario = request.user)
 	if f:
-		#Ya se conectó alguna vez
+		#Ya se conectï¿½ alguna vez
 		f = f[0]
 		f.tiempo = time()
 		f.save()

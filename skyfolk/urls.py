@@ -1,18 +1,19 @@
 ﻿#####
 
 
+from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from rest_framework import viewsets, routers
-from rest_framework import routers
-from api import views
-from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
-from user_profile import views as user_profile_views
+from rest_framework import routers, viewsets, routers
+
 from about.views import about
+from api import views
 from market.views import market_inicio
 from relaciones.views import relaciones_user
+from user_profile import views as user_profile_views
 from user_profile.views import welcomeView, welcomeStep1
+
 
 admin.autodiscover()
 

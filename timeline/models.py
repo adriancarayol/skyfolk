@@ -1,5 +1,7 @@
 from django.db import models
+
 from user_profile.models import UserProfile
+
 
 class Timeline(models.Model):
     content = models.TextField(blank=False)

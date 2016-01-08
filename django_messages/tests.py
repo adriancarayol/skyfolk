@@ -1,7 +1,7 @@
-from django.test import TestCase
-from django.test.client import Client
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.test import TestCase
+from django.test.client import Client
 from django.utils import timezone
 from django_messages.models import Message
 from django_messages.utils import format_subject, format_quote

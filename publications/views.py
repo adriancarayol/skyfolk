@@ -1,13 +1,16 @@
-from django.shortcuts import render, render_to_response, get_object_or_404
-from publications.forms import PublicationForm
-from django.http import HttpResponse
-from django.db import IntegrityError
 import json
+
 from django.contrib.auth import get_user_model
-from emoji import *
-from django.utils.safestring import mark_safe
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
+from django.http import HttpResponse
+from django.shortcuts import render, render_to_response, get_object_or_404
+from django.utils.safestring import mark_safe
+from emoji import *
+
+from publications.forms import PublicationForm
 from publications.models import Publication
+
 
 def publication_form(request):
     print('>>>>>>>> PETICION AJAX PUBLICACION')

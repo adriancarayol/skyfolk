@@ -1,15 +1,18 @@
+import datetime
+
+from allauth.account.models import EmailAddress
 from django.contrib.auth.models import User
 from django.db import models
-from allauth.account.models import EmailAddress
 from django.db.models.signals import post_save
+from django.template.defaultfilters import default
 from django.utils.translation import ugettext as _
+
 import publications
 import timeline
-#from publications.models import Publication
-import datetime
-from django.template.defaultfilters import default
-#from _overlapped import NULL
 
+
+#from publications.models import Publication
+#from _overlapped import NULL
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
 RELATIONSHIP_FRIEND = 3

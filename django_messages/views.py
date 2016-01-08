@@ -1,27 +1,24 @@
-from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext as _
-from django.utils import timezone
-from django.core.urlresolvers import reverse
 from django.conf import settings
-
-from django_messages.models import Message
-from django_messages.forms import ComposeForm
-from django_messages.utils import format_quote, get_user_model, get_username_field
-
-from django.shortcuts import render_to_response, get_object_or_404, render
-from django.template import RequestContext, loader
+from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Q
-from user_profile.models import Relationship, LikeProfile, UserProfile
-
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.db.models import Q
+from django.http import Http404, HttpResponseRedirect, HttpResponse, \
+    HttpResponseRedirect
+from django.shortcuts import render_to_response, get_object_or_404, \
+    render_to_response, get_object_or_404, render
+from django.template import RequestContext, RequestContext, loader
+from django.utils import timezone
+from django.utils.translation import ugettext as _
+from django_messages.forms import ComposeForm
+from django_messages.models import Message
+from django_messages.utils import format_quote, get_user_model, \
+    get_username_field
 
+from user_profile.models import Relationship, LikeProfile, UserProfile
 
 
 User = get_user_model()

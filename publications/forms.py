@@ -1,5 +1,7 @@
 from django.forms import ModelForm
+
 from publications.models import Publication
+
 
 class PublicationForm(ModelForm):
     class Meta:

@@ -1,11 +1,13 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+import json
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+
 from publications.models import Publication
 from timeline.models import Timeline
-import json
+
 
 def addToTimeline(request):
     print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')

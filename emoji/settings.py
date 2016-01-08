@@ -1,5 +1,6 @@
 from django.conf import settings
 
+
 # The exact tag that is being used for replacing images and the values
 # being passed in through `str#format`.
 EMOJI_IMG_TAG = getattr(settings, 'EMOJI_IMG_TAG', (

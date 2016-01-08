@@ -1,8 +1,10 @@
-from django import template
 from datetime import date, timedelta
+
+from django import template
+from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
-from django.core.exceptions import ValidationError
+
 
 register = template.Library()
 

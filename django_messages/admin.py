@@ -1,10 +1,12 @@
 from django import forms
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
 from django.contrib import admin
 from django.contrib.auth.models import Group
-
+from django.utils.translation import gettext_lazy as _
+from django_messages.models import Message
 from django_messages.utils import get_user_model
+
+
 User = get_user_model()
 
 if "notification" in settings.INSTALLED_APPS:
@@ -12,7 +14,6 @@ if "notification" in settings.INSTALLED_APPS:
 else:
     notification = None
     
-from django_messages.models import Message
 
 class MessageAdminForm(forms.ModelForm):
     """

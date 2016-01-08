@@ -1,5 +1,6 @@
 from django.template import Library, Node, TemplateSyntaxError
 
+
 class InboxOutput(Node):
     def __init__(self, varname=None):
         self.varname = varname

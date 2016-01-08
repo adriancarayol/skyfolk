@@ -1,15 +1,17 @@
 import datetime
+
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django_messages.fields import CommaSeparatedUserField
+from django_messages.models import Message
+
 
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
 else:
     notification = None
 
-from django_messages.models import Message
-from django_messages.fields import CommaSeparatedUserField
 
 class ComposeForm(forms.Form):
     """

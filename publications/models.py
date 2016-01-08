@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
-from django.utils.translation import ugettext as _
-from user_profile.models import UserProfile
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
+
+from user_profile.models import UserProfile
+
 
 class Publication(models.Model):
     content = models.TextField(blank=False)
