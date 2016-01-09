@@ -94,22 +94,8 @@
         </li>
       </ul>
     </div>
-    <!--
-    <ul class="ctrl">
-      <li>  </li>
-      <li>  </li>
-      <li>  </li>
-    </ul>
-    -->
     <div class="opc">
       <textarea></textarea>
-      <!--
-      <ul class="op">
-        <li class="emt"></li>
-        <li class="sent"></li>
-        <li class="voz"></li>
-      </ul>
-      -->
     </div>
   </div>
 </div>
@@ -117,8 +103,6 @@
 </div>
 
 <div class="container">
-
-
   <div class="col-lg-8 col-md-6 col-sm-12">
 <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
     <div class="container">
@@ -583,6 +567,7 @@
   <div id="tab-comentarios">
   {% if isFriend or user.username == user_profile.username %}
   {% for item in publications_top15 %}
+
   <div class="wrapper" id="pub-{{item.from_publication__id}}" data-id="{{ user.pk }}">
             <div class="box">
             <!--<input type="checkbox" id="check-{{item.from_publication__id}}"> -->
@@ -640,8 +625,8 @@
                         {% elif user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
                              <li><i class="fa fa-trash"></i></li>
                         {% endif %}
-                        {% if item.from_publication__mlikes > '0' %}
-                            <li><i class="fa fa-heart"></i> {{ item.from_publication__mlikes }} </li>
+                        {% if item.from_publication__likes >= 0 %}
+                            <li><i class="fa fa-heart"></i> {{ item.from_publication__likes }} </li>
                         {% else %}
                             <li><i class="fa fa-heart"></i></li>
                         {% endif %}

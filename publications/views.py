@@ -109,7 +109,7 @@ def add_like(request):
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
-            # tampooco si el usuario ya ha dado like antes.
+            # tampoco si el usuario ya ha dado like antes.
             print ("Incrementando like")
             try:
                 pub.add_like_pub()
