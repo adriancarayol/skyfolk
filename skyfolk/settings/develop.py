@@ -1,4 +1,5 @@
 from .base import *
+from django.conf.global_settings import SECRET_KEY
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
