@@ -5,7 +5,7 @@ import sys
 
 
 if __name__ == "__main__":
-
+    #import ipdb;ipdb.set_trace()
     # verificamos si param --entorno [develop|pre|master]
     deploy = False
     try:
@@ -29,13 +29,13 @@ if __name__ == "__main__":
         #print("Despues de extraer parametros: " + str(sys.argv))
     else:
         #develop
+        #os.environ['SECRET_KEY'] = 'develop'
         entorno = "develop"
 
     print("entorno: " + entorno + " / argv: " + str(sys.argv))
     if entorno == "master":
         import manage.manage_master
     elif entorno == "pre":
-        os.environ['SECRET_KEY'] = 'pre'
         import manage.manage_pre
         # print(manage_pre)
     else:

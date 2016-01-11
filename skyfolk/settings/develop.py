@@ -2,6 +2,9 @@ from .base import *
 from django.conf.global_settings import SECRET_KEY
 
 
+# La SECRET_KEY para entorno develop
+SECRET_KEY = 'develop'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
