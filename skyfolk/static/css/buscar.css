@@ -152,7 +152,7 @@
   #toggle {
   display: none;
   background-color: #fff;
-  width: 200px;
+  width: 250px;
   position: absolute;
   top: 40px;
   margin-right: 200px;
@@ -170,9 +170,8 @@
   position: relative;
 }
 #toggle .profilee i {
-  text-align: right;
   position: relative;
-  top: -7px;
+  top: -30px;
   left: 10px;
   background-color: rgba(44,44,44,0.554);
   color: white;

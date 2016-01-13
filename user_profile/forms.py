@@ -34,7 +34,7 @@ class UserForm(forms.ModelForm):
         fields = ('first_name', 'last_name')
 
 class ProfileForm(forms.ModelForm):
-    status = forms.CharField(widget=forms.TextInput(attrs={'class': 'status', 'placeholder' : 'Estado', 'maxlength' : '20'}))
+    status = forms.CharField(widget=forms.TextInput(attrs={'class': 'status', 'placeholder' : 'Estado', 'maxlength' : '20'}), required=False)
     hiddenMenu = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'hiddeMenu'}), required=False)
     
     class Meta:
