@@ -186,8 +186,8 @@
   -moz-transition: all .3s ease-in;
 }
 #toggle li {
-  font-size: 13px;
-  margin-top: 20px;
+  font-size: 15px;
+  margin-top: 10px;
   margin-left: 10px;
   list-style-type: none;
   padding: 10px 10px;
@@ -195,6 +195,7 @@
   -webkit-transition: all .3s ease-in;
   -moz-transition: all .3s ease-in;
   transition: all .3s ease-in;
+  border-bottom: 3px solid #000;
   cursor: pointer;
   border: none;
 }
