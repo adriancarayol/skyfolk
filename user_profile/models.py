@@ -50,7 +50,7 @@ class UserProfile(models.Model):
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
     ultimosUsuariosVisitados = models.ManyToManyField('self') # Lista de ultimos usuarios visitados.
     firstLogin = models.BooleanField(default=False) # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto, mostrar configuracion inicial.
-    hiddenMenu = models.BooleanField(default=True) # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
+    #hiddenMenu = models.BooleanField(default=True) # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)

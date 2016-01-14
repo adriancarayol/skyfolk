@@ -1,9 +1,9 @@
 {% extends 'account/base_interface.html' %}
 
 {% block include_files %}
-<head>
- <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  	<link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
 	<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' />
 	<link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
@@ -13,20 +13,18 @@
 	<![endif]-->
 
 	<script>
-	$(document).ready(function() {
-		$('ul.form li a').click(
-			function(e) {
-
-				e.stopPropagation; // stop the click from bubbling
-				$(this).closest('ul').find('.selected').removeClass('selected');
-				$(this).parent().addClass('selected');
-			});
-	});
+	 $(document).ready(function() {
+  	 	$('ul.form li a').click(
+  	 		function(e) {
+  
+	 			e.stopPropagation; // stop the click from bubbling
+	 			$(this).closest('ul').find('.selected').removeClass('selected');
+	 			$(this).parent().addClass('selected');
+	 		});
+	 });
 	</script>
 
-
 	{% block additional_files %}{% endblock%}
-
 
 </head>
 {% endblock%}
@@ -36,59 +34,46 @@
 
   <div class="contenedor">
   <hgroup>
-<span>
-	<h3 class="fontawesome-cog"><i class="fa fa-cog"></i> Configuracion</h3>
-	<h6>Configure, edite o cambie cualquier cosa de su perfil.</h6>
-</span>
+  <span>
+  	<h3 class="fontawesome-cog"><i class="fa fa-cog"></i> Configuracion</h3>
+  	<h6>Configure, edite o cambie cualquier cosa de su perfil.</h6>
+  </span>
   </hgroup>
   <br>
   <nav class="menu-config">
       <a class="perfil" onclick="window.location.href='/config/profile'"><i class="fa fa-user"></i><br>Perfil</a>
       <a class="Contraseña" onclick="window.location.href='/accounts/password/change/'"><i class="fa fa-lock"></i><br>Contraseña</a>
-      <a onclick="window.location.href='/config/privacity'" class="Seguridad"><i class="fa fa-eye fa"></i><br>Privacidad</a>
-      <a class="Movil"><i class="fa fa-mobile"></i><br>Movil y correo</a>
-      <a class="widgets"><i class="fa fa-list-ul"></i><br>Widgets</a>
-      <a class="Diseño"><i class="fa fa-dashboard"></i><br>Diseño</a>
-      <a class="ban"><i class="fa fa-minus"></i><br>Lista negra</a>
-      <a onclick="window.location.href='/config/relations'" class="relaciones"><i class="fa fa-circle-thin fa"></i><br>Mis relaciones</a>
   </nav>
       <div class="col-lg-12 col-sm-9">
-
-      <div class="col-lg-7 col-md-9 col-sm-8">
-      <div id="contra">
-      <li>
-      <form id="levi">
-      	{% block cf-title %}{% endblock %}
-
-      </form>
-      </li>
-          {% block cf-form %}{% endblock %}
-
-      </div>
-      </div>
+        <div class="col-lg-7 col-md-9 col-sm-8">
+          <div id="contra">
+            <li>
+              <form id="levi">
+              	{% block cf-title %}{% endblock %}
+              </form>
+            </li>
+            {% block cf-form %}{% endblock %}
+            </div>
+        </div>
       </div>
     </div>
-	
 		<!-- Permite mostrar el form para enviar mensajes -->
-{% if user.is_authenticated %}
+  {% if user.is_authenticated %}
   <div id="page-wrapper" style="display:none;">
-      <h1> </h1>
+    <h1> </h1>
     <div id="status">to {{ user_profile.username }}</div>
     <form id="message-form2" action="" method="post">{% csrf_token %}
-
       {{publicationForm.as_p}}
       <input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
       <input type="text" name="emitterid" value="{{ user.pk }}" hidden>
-        <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"> </i> Enviar</button>
-        <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
-        <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
-        <button class="fontawesome-bullhorn"><i class="fa fa-bullhorn"> </i></button>
-        <button class="fontawesome-camera"><i class="fa fa-camera"> </i></button>
-        <button class="fontawesome-map-marker"><i class="fa fa-map-marker"> </i></button>
-
+      <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"> </i> Enviar</button>
+      <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
+      <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
+      <button class="fontawesome-bullhorn"><i class="fa fa-bullhorn"> </i></button>
+      <button class="fontawesome-camera"><i class="fa fa-camera"> </i></button>
+      <button class="fontawesome-map-marker"><i class="fa fa-map-marker"> </i></button>
     </form>
   </div>
 {% endif %}
-
 
 {% endblock%}
