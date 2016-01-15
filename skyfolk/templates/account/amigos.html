@@ -1,6 +1,11 @@
 {% extends 'account/base_interface.html' %}
 {% load app_filters %}
-<html>
+
+{% block extra-css %}
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
+    <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
+{% endblock %}
+
 {% block content %}
 
 <div class="container">
@@ -47,4 +52,7 @@
 
 </div>
 {% endblock %}
-</html>
+
+{% block extra-js %}
+    <script src="{{STATIC_URL}}js/friends.js"></script>
+{% endblock %}

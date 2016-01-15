@@ -8,6 +8,14 @@
 
 {% endblock %}
 
+
+{% block extra-css %}
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" /> <!-- Estilos para la galeria de fotos -->
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
+{% endblock %}
+
+
 {% block content %}
 
 <!-- Fin notificacion me gusta -->
@@ -205,10 +213,9 @@
                   </div>
                 </div>
           <header>
-            <p>{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
-
+            <p><a href="/profile/{{user_profile.username}}">@{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</a></p>
+            <div class="status">{{ user_profile.profile.status }}</div>
           </header>
-          <div class="status">{{ user_profile.profile.status }}</div>
           <ul class="stats">
             <li><a href="/friends/{{ user_profile.username }}"><strong>{{ friends_top12|length }}</strong><span>Seguidores</span></a></li>
             <li><a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a></li>
@@ -674,4 +681,13 @@
     </style>
   {% endif %}
 
-{% endblock%}
+{% endblock %}
+
+{% block extra-js %}
+  <script src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
+  <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
+  <script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
+  <script src="{{STATIC_URL}}js/scrollReveal.js"></script>
+  <script src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+{% endblock %}
+
