@@ -253,15 +253,28 @@
   padding: 5px 10px;
   color: #424242;
   font-size: 1.4em;
-  -webkit-transition: all .1s ease-in;
-  transition: all .1s ease-in;
-  -moz-transition: all .1s ease-in;
+  -webkit-transition: all .1s ease-in-out;
+  transition: all .1s ease-in-out;
+  -moz-transition: all .1s ease-in-out;
   cursor: pointer;
 }
-
 .box-tool .oldMenu li:hover {
   color: #1e88e5;
-    border-bottom: 2px solid #1e88e5;
+}
+
+.box-tool .oldMenu li:after {
+  content: '';
+  display: block;
+  margin-top: 3px;
+  height: 0px;
+  width: 100%;
+  background-color: transparent;
+  transition: height .2s ease-in-out, background-color .2s ease-in-out;
+}
+
+.box-tool .oldMenu li:hover:after {
+  height: 3px;
+  background-color: #1e88e5;
 }
 
 .logotipo_skyfolk {
