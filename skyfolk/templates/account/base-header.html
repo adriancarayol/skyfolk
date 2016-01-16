@@ -10,8 +10,8 @@
               {% endif %}
             <li onclick="location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
             <li onclick="location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
+            <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
             <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
-              <li class="shortcut-keyboard" onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
             <li onclick="location.href='/about/home'">Ayuda</li>
           </ul>
         </div>
