@@ -6,15 +6,20 @@
     <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    
     <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" />
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
     <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
 
 
+    {% block extra-js %}
 
+    {% endblock %}
     <!-- bloques de estilos para cada pagina -->
     {% block extra-css %}
 
@@ -48,10 +53,21 @@
     <!-- Contenido de cada pagina por separado -->
     {% endblock %}
     <!-- bloque de js para cada pagina -->
-    {% block extra-js %}
+    <script src="{{STATIC_URL}}js/jquery.min.js"></script>
+    <script src="{{STATIC_URL}}js/jquery-ui.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.gritter.js"></script>
+    <script src="{{STATIC_URL}}js/profile.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
+    <script src="{{STATIC_URL}}js/scrollReveal.js"></script>
+    <script src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+    <script src="{{STATIC_URL}}js/friends.js"></script>
+<!-- Sweet Alert -->
 
-    {% endblock %}
-<script src="{{STATIC_URL}}js/profile.js"></script>
+    <link rel="stylesheet" href="{{STATIC_URL}}dist/sweetalert.css">
+    <link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css">
+    <script src="{{STATIC_URL}}dist/sweetalert.min.js"></script>
 
   </body>
 </html>
