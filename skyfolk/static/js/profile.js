@@ -572,7 +572,7 @@ function AJAX_likeprofile(status) {
 
         if (response == "like") {
 
-          $("#ilike_profile").css('color', '#29b203');
+          $("#ilike_profile").css('color', '#ec407a');
 
           //Aumentamos el valor del campo
           $("#likes strong").html(parseInt($("#likes strong").html()) + 1);

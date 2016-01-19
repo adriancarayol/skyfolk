@@ -213,7 +213,7 @@
                   </div>
                 </div>
           <header>
-            <p><a href="/profile/{{user_profile.username}}">@{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</a></p>
+            <p>@{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
             <div class="status">{{ user_profile.profile.status }}</div>
           </header>
           <ul class="stats">
@@ -800,7 +800,7 @@
    var idRequestsTimer = null;
 
    if(requests){
-      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 3500);
+      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
 
     }
 
