@@ -1,7 +1,6 @@
 html {
-
   color: #555;
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', sans-serif;  
   font-size: 11.5px;
   -webkit-font-smoothing: antialiased;
 }

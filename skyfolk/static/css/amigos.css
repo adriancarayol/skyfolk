@@ -1,7 +1,15 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
+
+body {
+    font-size: 11.5px !important;
+    font-family: 'Open Sans', sans-serif !important;
+}
+
 .container .personal-card {
     background-color: #fff;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 20px; 
     height: 300px;
 }
 
