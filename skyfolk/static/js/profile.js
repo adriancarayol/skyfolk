@@ -163,6 +163,29 @@ $(document).ready(function() {
             }
         });
   });
+    
+  /* Agregar Amigo por medio de PIN */
+  $('#agregar-amigo-pin').on('click', function() {
+      swal({
+        	title: "Add new friend!",
+            text: "Insert the friend's PIN",
+            type: "input",
+        	animation: "slide-from-top",
+        	showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Add it!",
+            cancelButtonText: "Cancel!",
+            closeOnConfirm: true
+        }, function(inputValue) {
+          if (inputValue === false) return false;
+          if (inputValue === "") {
+            swal.showInputError("You need to write something!");
+            return false
+          }
+          AJAX_addNewFriendByPIN(caja_publicacion);
+        });
+  });
 
     /* Agregar timeline */
     $('.optiones_comentarios .fa-tag').on('click', function() {
@@ -597,6 +620,42 @@ function AJAX_likeprofile(status) {
   } else if (status == "anonymous") {
     alert("Debe estar registrado");
   }
+
+}
+
+
+function AJAX_addNewFriendByPIN(pin) {
+  $.ajax({
+
+    type: "POST",
+    url: "/add-friend-by-pin/",
+    data: {
+      'pin': pin,
+      'csrfmiddlewaretoken': csrftoken
+    },
+    dataType: "json",
+    success: function(response) {
+
+      if (response == "added_friend") {
+          swal({
+              title: "Success!",
+              text: "You have added a friend!",
+              timer: 3000,
+              showConfirmButton: true
+            });
+
+        sweetAlert();
+
+
+      } else {
+
+      }
+    },
+    error: function(rs, e) {
+      alert(rs.responseText);
+    }
+  });
+
 
 }
 
