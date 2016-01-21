@@ -1,4 +1,4 @@
-﻿#####
+#####
 
 
 from django.conf import settings
@@ -39,6 +39,7 @@ urlpatterns = patterns(
     url(r'^load_friends/$', 'user_profile.views.load_friends'),
     url(r'^config/privacity/$','user_profile.views.config_privacity'),
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
+    url(r'^add_friend_by_pin/$', 'user_profile.views.add_friend_by_pin'),
     url(r'^publication/$', 'publications.views.publication_form'),
     url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),
     url(r'^publication/add_like/$', 'publications.views.add_like', name='add_like'),
