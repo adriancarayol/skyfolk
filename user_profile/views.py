@@ -290,6 +290,38 @@ def config_profile(request):
     # 'user_form':user_form}, context_instance=RequestContext(request))
 
 
+@login_required(login_url='accounts/login')
+def add_friend_by_pin(request):
+    reponse = 'no_added_friend'
+    print('>>>>>>> peticion amistad')
+    if request.method == 'POST':
+        print('>>>>>>> despues de post')
+        user = request.user
+        pin = request.POST.get('pin')
+        print('>>>>>>> el pin que llego es: {}'.format(pin))
+        user = UserProfile.objects.get(pk=user.pk)
+        print('>>>>>>> user-pin: {}'.format(user.pin))
+        if user.pin == pin:
+            return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
+        
+        friend_pk = UserProfile.get_pk_for_pin(pin)
+        print('>>>>>>> friend pk: {}'.format(friend_pk))
+        if friend_pk:
+            friend = UserProfile.objects.get(pk=friend_pk)
+        else:
+            return HttpResponse(json.dumps('none'), content_type='application/javascript')
+        if user.is_friend(friend):
+            return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+        
+        # try:
+        user.add_friend(friend)
+        response = 'added_friend'
+        # except Exception as e:
+        #     print(e)
+            
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+
 def like_profile(request):
     response = "null"
     if request.method == 'POST':

@@ -35,6 +35,8 @@ def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
 
 class UserProfile(models.Model):
+    PIN_LENGTH = 9
+    
     user = models.OneToOneField(User, unique=True, related_name='profile')
 
     # Other fields here
@@ -80,7 +82,10 @@ class UserProfile(models.Model):
 
     #Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
+        print('>>>>>>> add_relationship')
         relationship, created = Relationship.objects.get_or_create(from_person=self, to_person=person, status=status)
+        print('>>>>>>> created')
+        print(created)
         if symm:
             # avoid recursion by passing 'symm=False'
             person.add_relationship(self, status, False)
@@ -161,10 +166,17 @@ class UserProfile(models.Model):
 
     #methods friends
     def add_friend(self, profile):
+        print('>>>>>>> add_friend')
         return self.add_relationship(profile, RELATIONSHIP_FRIEND, True) #mas adelante cambiar aqui True por False, para diferenciar seguidores de seguidos.
 
     def is_friend(self, profile):
-        return Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND)
+        try:
+            if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND):
+                return True
+            else:
+                return False
+        except:
+            return False
 
     def get_friends_top12(self):
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values('user__username', 'user__first_name', 'user__last_name').order_by('id')[0:12]
@@ -179,18 +191,43 @@ class UserProfile(models.Model):
 
     def get_friend_request(self, profile):
         return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FRIEND)
-
+    
     def get_received_friends_requests(self):
         return self.requestsToMe.filter(from_request__status=1, from_request__receiver=self)
 
     def remove_received_friend_request(self, profile):
         Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FRIEND).delete()
 
-"""
-    def get_friends_next4(self, next):
-        n = next * 4
-        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[n-4:n]
-"""
+    """
+        def get_friends_next4(self, next):
+            n = next * 4
+            return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[n-4:n]
+    """
+    @property
+    def pin(self):
+        # PIN format: pk + token + diff
+        print('>>>>>>> get_pin()')
+        str_pk = str(self.pk)
+        length = len(str_pk)
+        if length < self.PIN_LENGTH:
+            diff = self.PIN_LENGTH - length - 1
+            # the value used as pickle needs generate a number with 8 digits as minimal length
+            pickle = 87654321.13
+            if length >= 3 and length < 6:
+                pickle = 876543.13
+            elif length >=6 and length < 9:
+                pickle = 8765.13
+            token = str(self.pk * pickle).replace('.', '')[-diff:]
+            str_pk = '{}{}{}'.format(str_pk, token, diff)
+            return str_pk
+        else:
+            return str_pk
+        
+    def get_pk_for_pin(pin):
+        if len(pin) == 9:
+            diff = int(pin[-1:])
+            return pin[:-(diff+1)]
+        return None
 
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

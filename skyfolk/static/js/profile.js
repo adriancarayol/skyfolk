@@ -163,6 +163,34 @@ $(document).ready(function() {
             }
         });
   });
+    
+  /* Agregar Amigo por medio de PIN */
+  $('#agregar-amigo-pin').on('click', function() {
+      swal({
+            title: "Add new friend!",
+            text: "Insert the friend's PIN",
+            type: "input",
+            animation: "slide-from-top",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Add it!",
+            cancelButtonText: "Cancel!",
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true
+        }, function(inputValue) {
+          if (inputValue === false) return false;
+          if (inputValue === "") {
+            swal.showInputError("You need to write something!");
+            return false
+          }
+          if (inputValue.length != 9) {
+            swal.showInputError("Wrong PIN format!");
+            return false
+          }
+          AJAX_addNewFriendByPIN(inputValue);
+        });
+  });
 
     /* Agregar timeline */
     $('.optiones_comentarios .fa-tag').on('click', function() {
@@ -597,6 +625,55 @@ function AJAX_likeprofile(status) {
   } else if (status == "anonymous") {
     alert("Debe estar registrado");
   }
+
+}
+
+
+function AJAX_addNewFriendByPIN(pin) {
+  $.ajax({
+    type: "POST",
+    url: "/add_friend_by_pin/",
+    data: {
+      'pin': pin,
+      'csrfmiddlewaretoken': csrftoken
+    },
+    dataType: "json",
+    success: function(response) {
+      if (response == "added_friend") {
+          swal({
+              title: "Success!",
+              text: "You have added a friend!",
+              timer: 3000,
+              showConfirmButton: true
+            });
+      } else if (response == 'your_own_pin') {
+          swal({
+              title: "Wait a moment!",
+              text: "It's your own pin!",
+              timer: 3000,
+              showConfirmButton: true
+            });
+      } else if (response == 'its_your_friend') {
+          swal({
+              title: "Wait a moment!",
+              text: "It's already your friend!",
+              timer: 3000,
+              showConfirmButton: true
+            });
+      } else if (response == 'no_added_friend'){
+          swal({
+              title: "We have a problem",
+              text: "Friend no added",
+              timer: 3000,
+              showConfirmButton: true
+            });
+      }
+    },
+    error: function(rs, e) {
+      alert(rs.responseText);
+    }
+  });
+
 
 }
 
