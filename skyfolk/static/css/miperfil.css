@@ -1118,7 +1118,7 @@ a {
 }
 
 
-#tab-container .tab a {color:#404040;}      /* unvisited link */
+#tab-container .tab a {color:#404040; outline:none;}      /* unvisited link */
 #tab-container .tab a:visited {color:#404040;}  /* visited link */
 
 #tab-container .tab.active { background: #FFFFFF; position: relative; border-bottom: 1px solid #1e88e5;}
