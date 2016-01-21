@@ -165,10 +165,10 @@ $(document).ready(function() {
   });
     
   /* Agregar Amigo por medio de PIN */
-  $('#agregar-amigo-pin').on('click', function() {
+  $('#agregar-amigo').on('click', function() {
       swal({
             title: "Add new friend!",
-            text: "Insert the friend's PIN",
+            text: "Insert the friend's username or PIN",
             type: "input",
             animation: "slide-from-top",
             showConfirmButton: true,
@@ -184,11 +184,16 @@ $(document).ready(function() {
             swal.showInputError("You need to write something!");
             return false
           }
-          if (inputValue.length != 9) {
+          if ((inputValue.length != 9) && (is_numeric(inputValue))) {
             swal.showInputError("Wrong PIN format!");
             return false
           }
-          AJAX_addNewFriendByPIN(inputValue);
+          if (!is_numeric(inputValue)) {
+              tipo = 'username';
+          } else {
+              tipo = 'pin'
+          }
+          AJAX_addNewFriendByUsernameOrPin(inputValue, tipo);
         });
   });
 
@@ -629,12 +634,13 @@ function AJAX_likeprofile(status) {
 }
 
 
-function AJAX_addNewFriendByPIN(pin) {
+function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
   $.ajax({
     type: "POST",
     url: "/add_friend_by_pin/",
     data: {
-      'pin': pin,
+      'valor': valor,
+      'tipo': tipo,
       'csrfmiddlewaretoken': csrftoken
     },
     dataType: "json",
@@ -643,28 +649,42 @@ function AJAX_addNewFriendByPIN(pin) {
           swal({
               title: "Success!",
               text: "You have added a friend!",
-              timer: 3000,
+              timer: 4000,
               showConfirmButton: true
             });
       } else if (response == 'your_own_pin') {
           swal({
               title: "Wait a moment!",
               text: "It's your own pin!",
-              timer: 3000,
+              timer: 4000,
+              showConfirmButton: true
+            });
+      } else if (response == 'your_own_username') {
+          swal({
+              title: "Wait a moment!",
+              text: "It's your own username!",
+              timer: 4000,
               showConfirmButton: true
             });
       } else if (response == 'its_your_friend') {
           swal({
               title: "Wait a moment!",
               text: "It's already your friend!",
-              timer: 3000,
+              timer: 4000,
               showConfirmButton: true
             });
       } else if (response == 'no_added_friend'){
           swal({
               title: "We have a problem",
               text: "Friend no added",
-              timer: 3000,
+              timer: 4000,
+              showConfirmButton: true
+            });
+      } else if (response == 'no_match'){
+          swal({
+              title: "We have a problem",
+              text: "This username or pin no exists.",
+              timer: 4000,
               showConfirmButton: true
             });
       }
@@ -1072,6 +1092,13 @@ function AJAX_add_timeline(caja_publicacion) {
       alert('ERROR: ' + rs.responseText);
     }
   });
+}
 
+/*****************************************************/
+/**********              UTIL                *********/
+/*****************************************************/
 
+function is_numeric(value) {
+    var is_number =  /^\d+$/.test(value);
+    return is_number;
 }

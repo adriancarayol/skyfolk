@@ -291,33 +291,52 @@ def config_profile(request):
 
 
 @login_required(login_url='accounts/login')
-def add_friend_by_pin(request):
+def add_friend_by_username_or_pin(request):
     reponse = 'no_added_friend'
-    print('>>>>>>> peticion amistad')
     if request.method == 'POST':
-        print('>>>>>>> despues de post')
-        user = request.user
-        pin = request.POST.get('pin')
-        print('>>>>>>> el pin que llego es: {}'.format(pin))
-        user = UserProfile.objects.get(pk=user.pk)
-        print('>>>>>>> user-pin: {}'.format(user.pin))
-        if user.pin == pin:
-            return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
-        
-        friend_pk = UserProfile.get_pk_for_pin(pin)
-        print('>>>>>>> friend pk: {}'.format(friend_pk))
-        if friend_pk:
-            friend = UserProfile.objects.get(pk=friend_pk)
-        else:
-            return HttpResponse(json.dumps('none'), content_type='application/javascript')
-        if user.is_friend(friend):
-            return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
-        
-        # try:
-        user.add_friend(friend)
-        response = 'added_friend'
-        # except Exception as e:
-        #     print(e)
+        if request.POST.get('tipo') == 'pin':
+            user = request.user
+            pin = request.POST.get('valor')
+            user = UserProfile.objects.get(pk=user.pk)
+            if user.pin == pin:
+                return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
+            
+            try:
+                friend_pk = UserProfile.get_pk_for_pin(pin)
+                friend = UserProfile.objects.get(pk=friend_pk)
+            except:
+                return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
+            
+            if user.is_friend(friend):
+                return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+
+            try:
+                user.add_friend(friend)
+                response = 'added_friend'
+            except Exception as e:
+                print(e)
+            
+        else:  # tipo == username
+            user = request.user
+            username = request.POST.get('valor')
+            user = UserProfile.objects.get(pk=user.pk)
+            
+            if user.user.username == username:
+                return HttpResponse(json.dumps('your_own_username'), content_type='application/javascript')
+            
+            friend = None
+            try:
+                friend = UserProfile.objects.get(user__username=username)
+            except:
+                return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
+            if user.is_friend(friend):
+                return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+
+            try:
+                user.add_friend(friend)
+                response = 'added_friend'
+            except Exception as e:
+                print(e)
             
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
