@@ -239,7 +239,7 @@ figcaption span {
   margin: auto;
   width: 40px;
   height: 40px;
-  background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');
+  background-image: url('{{STATIC_URL}}img/logo.png');
   background-repeat: no-repeat;
   background-size: 120px;
   background-position: center;
@@ -253,7 +253,6 @@ figcaption span {
 .box-tool .chat {
   width: 40px;
   height: 40px;
-  background-image:url('http://s27.postimg.org/mu9viuten/1418959285_357941.png');
   border: none;
   position: relative;
   background-repeat: no-repeat;

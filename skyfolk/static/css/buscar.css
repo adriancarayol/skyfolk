@@ -291,7 +291,6 @@
 .logotipo_skyfolk {
   position: fixed;
   width: 47px;
-  background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');
   /*background-color: tomato;*/
   background-size: 120px;
   background-repeat: no-repeat;
@@ -300,10 +299,6 @@
   margin: auto;
   left: 50%;
   cursor: pointer;
-  animation-name: pre-loader-logo;
-  animation-duration: 4s;
-  animation-iteration-count: 3;
-  animation-direction: alternate;
 }
 
 .fa-bars .fa-bars-content li:nth-child(1) {
@@ -376,28 +371,6 @@
 
 .fa-bars .fa-bars-content li:hover {
   color: #1976d2;
-}
-
-@keyframes pre-loader-logo {
-    0%   {background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');}
-    25%  {background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');}
-    50%  {background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');}
-    75%  {background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');}
-    100% {background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');}
-}
-
-.logotipo_skyfolk-1 {
-  position: fixed;
-  width: 47px;
-  background-image: url('http://s11.postimg.org/58jltbaqb/logo.png');
-  background-size: 120px;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  background-position: center;
-  height: 47px;
-  margin: auto;
-  left: 50%;
-  cursor: pointer;
 }
 
 .box-tool .logo {

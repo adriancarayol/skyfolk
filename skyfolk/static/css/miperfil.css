@@ -1154,29 +1154,27 @@ a {
 #tab-amigos ul.list-friends li {
   display: table;
   background-color: #FAFAFA;
-  border-bottom-left-radius: 50px;
-  border-top-left-radius: 50px;
   margin: 10px;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
   width: 95%;
-  color: #62C1BA;
-  border: 1px solid #bad0dd;
-  -webkit-box-shadow: 0px 0px 3px 1px rgba(183,182,224,1);
-  -moz-box-shadow: 0px 0px 3px 1px rgba(183,182,224,1);
-  box-shadow: 0px 0px 3px 1px rgba(183,182,224,1);
+  color: #1e88e5;
+  -webkit-box-shadow: 0px 0px 3px 1px #1e88e5;
+  -moz-box-shadow: 0px 0px 3px 1px #1e88e5;
+  box-shadow: 0px 0px 3px 1px #1e88e5;
 
 
 }
+
 #tab-amigos ul.list-friends li img {
   width: 72px;
   height: 72px;
-  border-radius: 100%;
   float: left;
-  border: 1px solid #bad0dd;
+  border-right: 2px solid #1e88e5;
   cursor: pointer;
 
 }
+
 #tab-amigos ul.list-friends li a {
   text-decoration: none;
   margin: auto;
@@ -1195,9 +1193,6 @@ a {
 #tab-amigos ul.list-friends li a:hover {
   opacity: 0.5;
   transition: all .2s ease-in;
-}
-#tab-amigos ul.list-friends li {
-  border: 1px solid #D2FF78;
 }
 
 ul.table > li {
