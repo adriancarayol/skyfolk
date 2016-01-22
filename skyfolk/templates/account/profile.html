@@ -15,9 +15,7 @@
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
 {% endblock %}
 
-
 {% block content %}
-
 <!-- Fin notificacion me gusta -->
 <!-- MENU VERTICAL CON NOTIFICACIONES Y CHAT -->
 <div class="nav-vertical-and-chat">
@@ -752,14 +750,14 @@
 {% if user.is_authenticated %}
   <div id="page-wrapper" style="display:none;">
       <h1> </h1>
-    <div id="status">to {{ user_profile.username }}</div>
+    <div id="status"><i class="fa fa-paper-plane"> </i> Mensaje para {{ user_profile.username }}</div>
     <form id="message-form2" action="" method="post">{% csrf_token %}
     {{publicationForm.as_p}}
       <input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
       <input type="text" name="emitterid" value="{{ user.pk }}" hidden>
+        <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
         <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"> </i> Enviar</button>
         <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
-        <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
         <button class="fontawesome-bullhorn"><i class="fa fa-bullhorn"> </i></button>
         <button class="fontawesome-camera"><i class="fa fa-camera"> </i></button>
         <button class="fontawesome-map-marker"><i class="fa fa-map-marker"> </i></button>
