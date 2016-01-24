@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
 @import url(http://fonts.googleapis.com/css?family=Pacifico); /* ONLY FOR LOGO */
 
 body {
@@ -16,6 +16,24 @@ body {
 #background_cycler img{position:fixed;left:0;top:0;width:100%; min-height: 100%; z-index:1;}
 #background_cycler img.active{z-index:3}
 
+header {
+  width: 100%;
+  background-color: #616161;
+  opacity: 0.8;
+  position: absolute;
+  top: 0;
+  height: 50px;
+  text-align: left;
+  padding: 7px;
+}
+header h4 {
+  top: 0;
+  position: relative;
+  display: inline;
+  margin-left: 10px;
+  color: #1e85ef;
+
+}
 /* LOGO */
 .namesn {
   position: relative;
@@ -39,7 +57,7 @@ body {
   position: absolute;
   margin: auto;
   vertical-align: middle;
-  top: -30px;
+  top: 0px;
   left: 0px;
 }
 .namesn i {
@@ -95,13 +113,13 @@ body {
     top: 120px;
     border-radius: 3px;
     opacity: 0.9;
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
 
 }
 form {
     position: relative;
     top: 23px;
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     color: #fff;
 
 }
@@ -114,7 +132,7 @@ form {
     position: relative;
     text-align: center;
     color: #efefef;
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 12px;
     font-width: 100;
     left: 30px;
@@ -203,7 +221,7 @@ form {
   width: 100%;
   margin-bottom: 10px;
   font-weight: 100;
-  font-family: 'PT Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 /* Muestra los mensajes de error, por ejemplo -> "Contraseña incorrecta en los forms" */
@@ -230,7 +248,7 @@ form {
     top: -30px;
     float: right;
     margin-right: 130px;
-    font-family: 'PT Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     -webkit-box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
@@ -334,5 +352,13 @@ form {
     margin-top: 55px;
     display: inline-block;
     position: relative;
+}
+@media screen and (max-height: 700px) and (min-width: 800px){
+  #login {
+    top: -100px;
+  }
+  .logo {
+    display: none;
+  }
 
 }
