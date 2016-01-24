@@ -1,9 +1,16 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 
+body {
+    font-size: 11.5px !important;
+    font-family: 'Open Sans', sans-serif !important;
+}
+
 hgroup {
   margin-bottom: 70px;
   position: relative;
+  border-bottom: 1px solid #66757F;
+  padding: 10px 0px;
 }
 
 span {
@@ -12,42 +19,37 @@ span {
   left: 0px;
 }
 
-h6 {
-  position:  relative;
-    margin-left:  70px;
-    margin-top: 7px;
-    color:  #3F3A3A;
-    font-weight: 100;
-    font-size: 13px;
-}
-
-.fontawesome-cog {
-    margin-left:  20px;
-    padding:  10px 10px;
-      font-family: 'Open Sans', sans-serif;
-      font-weight: 300;
-      font-size: 30px;
-    color: grey;
-      border-bottom: 1px solid rgba(44,44,44,0.854);
-      width: 20%;
-
-}
-.wrapper {
-  position:relative;
+h4 {
   display: block;
-  background-color: #FAFAFA;
-  height: auto;
-  width: auto;
-  clear: both;
+  color: #66757F;
+  font-weight: 100;
+  font-size: 22px !important;
 }
 
+h6 {
+  display: inline-block;
+  margin-top: 7px;
+  margin-left: 15px !important;
+  color:  #66757F;
+  font-weight: 100;
+  font-size: 15px !important;
+}
+
+.wrapper-p {
+  margin-top: 5% !important;
+  margin-left: 7% !important;
+  background-color: #fafafa;
+  padding: 10px;
+  border-radius: 8px;
+}
 /* Menu horizontal */
 .menu-config {
   position: relative;
   display: block;
-  width: 15%;
+  float: left;
+  width: 20%;
   height: auto;
-  margin-top: 30px;
+  margin-top: 5%;
   background-color: #eeeeee;
 }
 .menu-config a {
@@ -77,7 +79,7 @@ h6 {
   left: 27%;
 }
 
-#recent,#new,#new2 {
+#recent, #new, #new2 {
   display: list-item;
 }
 
@@ -85,19 +87,17 @@ h6 {
   position: relative;
   left: 70px;
 }
-.img-circle {
-    width: 100px;
-    height: 100px;
-    border: 1px solid #489AB1;
+.img-profile {
+    width: 120px;
+    height: 120px;
+    box-shadow: 0px 1px 5px #1976D2;
     cursor: pointer;
+    display: block;
+    position: relative;
+    margin: auto;
+    top: 80px;
 }
-.chg {
-  position: relative;
-  display: inline-block;
-  top: 50px;
-  left: 30px;
-  height: auto;
-}
+
 .actual {
   padding: 10px 5px;
   border: none;
@@ -109,32 +109,17 @@ h6 {
 	 border-bottom: solid 2px #1E88E5;
 }
 .nameConfig {
-	width: auto;
-	height: 50px;
-	position: absolute;
-	display: inline-block;
-	float: right;
-	right: 50%;
-	bottom: 0;
+  position: relative;
 }
 .nameConfig .errorlist, .lastConfig .errorlist {
-	position: absolute;
-	bottom: 70px;
-	color: #404040;
+
 }
 .lastConfig {
-	width: auto;
-	height: 50px;
-	position: absolute;
-	display: inline-block;
-	float: right;
-	right: 20%;
-	bottom: 0;
+  position: relative;
 }
 
 .nameConfig p, .lastConfig p {
-	position: absolute;
-	top: -5px;
+  position: relative;
 }
 #float {
 
@@ -308,36 +293,12 @@ hgroup {
   margin-top: 20px;
   font-family: 'Open Sans', sans-serif;
 }
+.wrapper-profilex {
+  min-height: 900px;
+}
 .profilex {
-   width: 90%;
-    border-bottom-left-radius: 70px;
-    border-top-left-radius: 70px;
-    border-bottom-right-radius: 7px;
-    border-top-right-radius: 7px;
-    height: 100px;
-    background-color: #fff;
-    left: 20px;
-    border: 1px solid #ececec;
-    margin-top: 12px;
-    position: relative;
-}
-.profilex .img-circle {
-  border-radius: 100%;
-}
-
-/* MEDIAS */
-
-@media only screen and (max-width: 1550px) {
-    hgroup {
-        display: none;
-    }
-    #contra {
-      display: none;
-    }
-}
-
-@media only screen and (max-width: 800px) {
-  #contra {
-    
-  }
+  position: relative;
+  height: 200px;
+  box-shadow: 0px 1px 5px grey;
+  background-color: transparent;
 }

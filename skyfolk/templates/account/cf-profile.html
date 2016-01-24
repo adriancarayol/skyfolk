@@ -1,11 +1,6 @@
 {% extends "account/base_cf.html" %}
 {% block additional_files %}
-	<style>
-		#menucf-profile {
-			background:#fafafa;
-		}
-		
-	</style>
+
 {% endblock%}
 
 {% block cf-title %}
@@ -16,31 +11,34 @@
 {% endblock %}
 
 {% block cf-form %}
-	<!--
-	Cambiar imagen <input class="actual" type="password" name="Contraseña actual." value="actual"><br>
-	<input id="btn" type="submit" value="Guardar cambios">
-	-->
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
-	<div class="profilex">
-	{% if user_profile.profile.image %}
-	<img src="{{user_profile.profile.image.url}}" class="img-circle">
-	{% else %}
-	<img src="{{STATIC_URL}}img/generic-avatar.png" class="img-circle">
-	{% endif %}
-	<div class="nameConfig">
-		<p>{{ user_form.first_name.errors}}</p>
-		<p>¿Como te llamas?</p>
-		{{ user_form.first_name }}
-	</div>
-	<div class="lastConfig">
-		<p>{{ user_form.last_name.errors }}</p>
-		<p>¿Y tu apellido?</p>
-		{{ user_form.last_name }}
-	</div>
-	</div>
-	<div class="chg">
-    	{{ perfil_form.as_ul }}
-		<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
+	<div class="col-lg-12 col-md-12 col-sm-12 wrapper-profilex">
+
+		{% if user_profile.profile.backImage %}
+			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{user_profile.profile.backImage.url}}') no-repeat center center fixed; background-size: cover;">
+		{% else %}
+			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{STATIC_URL}}img/backgrounds/5.jpg') no-repeat center center fixed; background-size: cover;">
+		{% endif %}
+			{% if user_profile.profile.image %}
+				<img src="{{user_profile.profile.image.url}}" class="img-profile">
+			{% else %}
+				<img src="{{STATIC_URL}}img/nuevo.png" class="img-profile">
+			{% endif %}
+		</div>
+		<div class="nameConfig">
+				<p>{{ user_form.first_name.errors}}</p>
+				<p>¿Como te llamas?</p>
+				{{ user_form.first_name }}
+				</div>
+				<div class="lastConfig">
+				<p>{{ user_form.last_name.errors }}</p>
+				<p>¿Y tu apellido?</p>
+				{{ user_form.last_name }}
+				</div>
+		    	{{ perfil_form.as_ul }}
+				</div>
+						<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
+
 		</div>
 	</form>
 {% endblock %}

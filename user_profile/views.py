@@ -239,7 +239,7 @@ def search(request):
 
 @login_required(login_url='/')
 def config_changepass(request):
-    searchForm = SearchForm(request.POST)
+    searchForm = SearchForm()
     publicationForm = PublicationForm()
     return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm':publicationForm},
                               context_instance=RequestContext(request))
@@ -247,9 +247,9 @@ def config_changepass(request):
 
 @login_required(login_url='/')
 def config_privacity(request):
-    searchForm = SearchForm(request.POST)
+    searchForm = SearchForm()
     publicationForm = PublicationForm()
-    return render_to_response('account/cf-privacity.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm':publicationForm},
+    return render_to_response('account/cf-privacity.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm},
                               context_instance=RequestContext(request))
 
 
@@ -282,8 +282,8 @@ def config_profile(request):
 
     print('>>>>>>>  paso x')
     return render_to_response('account/cf-profile.html',
-                              {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
-                               'user_form': user_form, 'perfil_form': perfil_form, 'publicationForm':publicationForm},
+            {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
+            'user_form': user_form, 'perfil_form': perfil_form, 'publicationForm': publicationForm},
                               context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
