@@ -16,24 +16,6 @@ body {
 #background_cycler img{position:fixed;left:0;top:0;width:100%; min-height: 100%; z-index:1;}
 #background_cycler img.active{z-index:3}
 
-header {
-  width: 100%;
-  background-color: #616161;
-  opacity: 0.8;
-  position: absolute;
-  top: 0;
-  height: 50px;
-  text-align: left;
-  padding: 7px;
-}
-header h4 {
-  top: 0;
-  position: relative;
-  display: inline;
-  margin-left: 10px;
-  color: #1e85ef;
-
-}
 /* LOGO */
 .namesn {
   position: relative;
@@ -160,9 +142,9 @@ form {
 }
 
 #id_remember {
-  display: block;
   left: 60%;
-  margin-top: 7px;
+  display: inherit;
+  margin-top: 5px;
 }
 
 .form-3 label[for="id_remember"] {
@@ -170,7 +152,7 @@ form {
   left: 35%;
   font-size: 1.01121em;
   font-weight: 100;
-  display: table;
+  display: inline;
   top: 25px;
 }
 
@@ -206,9 +188,6 @@ form {
 
 .form-3 input:focus {
   background-position: 5px;
-  -webkit-box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
-  -moz-box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
-  box-shadow: 0px 0px 8px 1px rgba(12,198,204,1);
 }
 
 .row h5 {
@@ -355,10 +334,12 @@ form {
 }
 @media screen and (max-height: 700px) and (min-width: 800px){
   #login {
-    top: -100px;
+    top: 10px;
   }
-  .logo {
-    display: none;
+  .namesn {
+    float: left;
+    margin-left: 5%;
+    top: -80px;
   }
 
 }
