@@ -36,7 +36,7 @@ def uploadBackImagePath(instance, filename):
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9
-    
+
     user = models.OneToOneField(User, unique=True, related_name='profile')
 
     # Other fields here
@@ -191,7 +191,7 @@ class UserProfile(models.Model):
 
     def get_friend_request(self, profile):
         return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FRIEND)
-    
+
     def get_received_friends_requests(self):
         return self.requestsToMe.filter(from_request__status=1, from_request__receiver=self)
 
@@ -222,7 +222,7 @@ class UserProfile(models.Model):
             return str_pk
         else:
             return str_pk
-        
+
     def get_pk_for_pin(pin):
         if len(pin) == 9:
             diff = int(pin[-1:])

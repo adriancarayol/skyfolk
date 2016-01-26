@@ -27,7 +27,8 @@
       <script src="//code.jquery.com/jquery-1.10.2.js"></script>
       <script src="{{STATIC_URL}}js/loginSignUp.js"></script>
     <!-- IMPORTANTE PARA CAMBIO DE BACKGROUND -->
-      <script>
+
+    <!-- <script>
 
       function cycleImages(){
         var $active = $('#background_cycler .active');
@@ -44,7 +45,7 @@
       // run every 7s
       setInterval('cycleImages()', 7000);
     })
-    </script>
+  </script> -->
 
 		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
 
@@ -60,29 +61,35 @@
         </div>
         </div>
 
-       <div id="background_cycler" > <!-- Random backgrounds -->
-
+  <!-- <div id="background_cycler" > --> <!-- Random backgrounds -->
+<!--
       <script type="text/javascript">
         $('#background_cycler').hide();//hide the background while the images load, ready to fade in later
       </script>
 
       <img class="active" src="{{STATIC_URL}}img/backgrounds/3.jpg" alt=""/>
         <img src="{{STATIC_URL}}img/backgrounds/5.jpg" alt=""/>
-      </div>
+  </div>
+-->
+  <!-- Background con video -->
 
+  <video autoplay loop poster="polina.jpg" id="bgvid">
+    <source src="http://thenewcode.com/assets/videos/polina.webm" type="video/webm">
+    <source src="http://thenewcode.com/assets/videos/polina.mp4" type="video/mp4">
+  </video>
 
        {% block content %}{% endblock %}
     <div class="footer_base">
-      <div class="col s3 m3 l10 footer-copyright blue-text text-lighten-5">
+      <div class="col s3 m3 l10 footer-copyright">
             <div class="container">
-            <a class="blue-text text-lighten-5 left">© 2015 Copyright</a>
-            <a class="blue-text text-lighten-5 right" href="#!">More Links</a>
-            <a id="about" class="blue-text text-lighten-5" href="/about/home">Sobre Skyfolk</a>
-            <a id="Blog" class="blue-text text-lighten-5" href="/blog">Blog</a>
-            <a id="tutorial" class="blue-text text-lighten-5" href="/blog">Ayuda</a>
-            <a id="empleo" class="blue-text text-lighten-5" href="/blog">Trabaja con nosotros</a>
-            <a id="anunciarse" class="blue-text text-lighten-5" href="/blog">Anunciarse</a>
-            <a id="privacidad" class="blue-text text-lighten-5" href="/blog">Privacidad</a>
+            <a class="left">© 2015 Copyright</a>
+            <a class="right" href="#!">More Links</a>
+            <a id="about" href="/about/home">Sobre Skyfolk</a>
+            <a id="Blog" href="/blog">Blog</a>
+            <a id="tutorial" href="/blog">Ayuda</a>
+            <a id="empleo" href="/blog">Trabaja con nosotros</a>
+            <a id="anunciarse" href="/blog">Anunciarse</a>
+            <a id="privacidad" href="/blog">Privacidad</a>
             </div>
           </div>
     </div>

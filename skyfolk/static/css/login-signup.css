@@ -23,6 +23,7 @@ body {
   width: 200px;
   height: 120px;
   margin: auto;
+  margin-bottom: 10px;
 }
 .logo {
   position: relative;
@@ -51,7 +52,7 @@ body {
   left: 87px;
   font-size: 5em;
   text-decoration: none;
-  color: grey;
+  color: #212121;
   letter-spacing: 0.5px;
   display: inline-block;
   font-family: 'Pacifico', cursive;
@@ -59,19 +60,45 @@ body {
   text-shadow: 1px 1px 1px #0096d7;
 }
 
+/* Background con video */
+video#bgvid {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    background: url(polina.jpg) no-repeat;
+    background-size: cover;
+}
+
 .footer_base {
   width: 100%;
   position: fixed;
-  height: 20px;
-  bottom: 10px;
-  color: grey;
+  height: 37px;
+  padding: 10px;
+  bottom: 5px;
   margin-bottom: -5px;
   -webkit-transition: all .3s ease-in;
   -moz-transition: all .3s ease-in;
   transition: all .3s ease-in;
+  background-color: white;
 }
 .footer_base a {
-  color: tomato;
+  color: #212121;
+  font-family: 'Open Sans', sans-serif;
+  -moz-transtion: all .2s ease-in;
+  -webkit-transition: all .2s ease-in;
+  transition: all .2s ease-in;
+}
+.footer_base a:hover {
+  color: #26A69A;
 }
 .footer_base #about, #Blog, #tutorial, #empleo, #anunciarse, #privacidad {
   margin-left: 80px;
@@ -96,14 +123,13 @@ body {
     border-radius: 3px;
     opacity: 0.9;
     font-family: 'Open Sans', sans-serif;
-
 }
+
 form {
     position: relative;
     top: 23px;
     font-family: 'Open Sans', sans-serif;
-    color: #fff;
-
+    color: black;
 }
 
 .links{
@@ -113,7 +139,7 @@ form {
 .form-3 label {
     position: relative;
     text-align: center;
-    color: #efefef;
+    color: #212121;
     font-family: 'Open Sans', sans-serif;
     font-size: 12px;
     font-width: 100;
@@ -128,12 +154,12 @@ form {
   margin-top: 120px;
   height: 60px;
   width: 100%;
-  background-color: #616161 !important;
+  background-color: white !important;
   right: 0;
   left: 0;
   margin-left: auto;
   margin-right: auto;
-  border-top: 2px solid #e3f2fd;
+  border-top: 2px solid #212121;
   text-align: center;
 }
 .forgot_pswd > .secondaryAction {
@@ -195,8 +221,8 @@ form {
   left: 0%;
   text-align: center;
   margin: auto;
-  color: #ececec;
-  border-bottom: 1px solid #cccccc;
+  color: #212121;
+  border-bottom: 1px solid #212121;
   width: 100%;
   margin-bottom: 10px;
   font-weight: 100;
@@ -332,6 +358,25 @@ form {
     display: inline-block;
     position: relative;
 }
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: #212121;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color: #212121;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color: #212121;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color: #212121;
+}
+:placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+  color: #212121;
+}
+
 @media screen and (max-height: 700px) and (min-width: 800px){
   #login {
     top: 10px;
