@@ -25,20 +25,43 @@
 				<img src="{{STATIC_URL}}img/nuevo.png" class="img-profile">
 			{% endif %}
 		</div>
-		<div class="nameConfig">
+		<div class="index-wrapper">
+				<div class="nameConfig">
 				<p>{{ user_form.first_name.errors}}</p>
 				<p>¿Como te llamas?</p>
-				{{ user_form.first_name }}
-				</div>
+				<p>{{ user_form.first_name }}</p>
+			</div>
 				<div class="lastConfig">
 				<p>{{ user_form.last_name.errors }}</p>
 				<p>¿Y tu apellido?</p>
-				{{ user_form.last_name }}
+				<p>{{ user_form.last_name }}</p>
+			</div>
+				<div class="image-usr">
+					<p>{{ perfil_form.image.errors }}</p>
+					<p>Elige una imagen de perfil.</p>
+					<p>{{ perfil_form.image }}</p>
 				</div>
-		    	{{ perfil_form.as_ul }}
-				</div>
-						<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
 
+				<div class="backimage-usr">
+					<p>{{ perfil_form.backImage.errors }}</p>
+					<p>Elige una imagen de fondo.</p>
+					<p>{{ perfil_form.backImage }}</p>
+				</div>
+
+				<div class="status-usr">
+					<p>{{ perfil_form.status.errors }}</p>
+					<p>Introduce un estado ;-).</p>
+					<p>{{ perfil_form.status }}</p>
+				</div>
+
+				<div class="menu-usr">
+					<p>{{ perfil_form.hiddenMenu.errors }}</p>
+					<p>Menu estático</p>
+					<p>{{ perfil_form.hiddenMenu }}</p>
+				</div>
+		</div>
+			</div>
+				<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
 		</div>
 	</form>
 {% endblock %}

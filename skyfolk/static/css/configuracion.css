@@ -37,6 +37,8 @@ h6 {
   background-color: #fafafa;
   padding: 10px;
   border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+
 }
 
 /* Menu horizontal */
@@ -98,20 +100,31 @@ h6 {
   border-bottom: solid 2px #c9c9c9;
   transition: border 0.3s;
   outline: none;
+  width: 100%;
 }
 .actual:focus {
   border-bottom: solid 2px #1E88E5;
 }
-.nameConfig {
+
+.index-wrapper {
   position: relative;
+  display: block;
+  width: 350px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 20%;
+  height: auto;
 }
-.nameConfig .errorlist, .lastConfig .errorlist {}
-.lastConfig {
+.nameConfig, .lastConfig, .image-usr, .backimage-usr, .status-usr, .menu-usr {
   position: relative;
+  display: block;
+  margin-bottom: 30px;
 }
-.nameConfig p, .lastConfig p {
-  position: relative;
+
+.nameConfig .errorlist, .lastConfig .errorlist {
+  color: tomato;
 }
+
 #float {
   font-size: 15px;
   font-family: 'Open Sans', sans-serif;
@@ -185,15 +198,25 @@ label[for="id_password2"] {
 /* Boton salvar cambios */
 
 button[type="submit"] {
-  position: relative;
-  padding: 10px 7px;
-  width: 150px;
-  height: 30px;
+  border: medium none;
+  border-radius: 2px;
+  display: inline-block;
+  height: 36px;
+  line-height: 36px;
+  padding: 0px 2rem;
+  text-transform: uppercase;
+  vertical-align: middle;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
+  text-decoration: none;
+  color: #FFF;
+  background-color: #26A69A;
+  text-align: center;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-out 0s;
+  cursor: pointer;
   float: right;
   margin-right: 10%;
-  top: 50%;
-  line-height: 2px;
-  font-size: 1.3em;
+  outline: none;
 }
 #boton-perfil {
   position: relative;
@@ -278,7 +301,7 @@ hgroup {
   font-family: 'Open Sans', sans-serif;
 }
 .wrapper-profilex {
-  min-height: 900px;
+  min-height: auto;
 }
 .profilex {
   position: relative;
