@@ -283,6 +283,16 @@
   background-color: transparent;
   transition: height .2s ease-in-out, background-color .2s ease-in-out;
 }
+@media only screen and (max-width: 1200px) {
+.box-tool .oldMenu li {
+  font-size: 1.1em;
+  }
+}
+@media only screen and (max-width: 1005px)  {
+  .box-tool .oldMenu {
+    display: none;
+    }
+}
 
 .box-tool .oldMenu li:hover:after {
   height: 3px;
@@ -405,8 +415,9 @@
       margin-top: 3px;
       width: 250px;
   }
+
   #toggle {
-    height: 380px;
+    height: auto;
   }
   #toggle li {
     margin-top: 5px;

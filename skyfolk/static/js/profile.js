@@ -15,7 +15,7 @@ $(document).ready(function() {
   /*$(".comment").shorten({
     "showChars": 145
   });*/
-  
+
   if ($('#tab-comentarios .wrapper').height() > 145) {
     $(this).css('height','auto');
   }
@@ -31,7 +31,7 @@ $(document).ready(function() {
   $(window).load(function(e) {
     $('.logotipo_skyfolk').addClass('logotipo_skyfolk-1');
     $('body').css('background-color','tomato');
-  }); 
+  });
 
 */
 /*
@@ -48,7 +48,7 @@ $(document).ready(function() {
 
   });
 */
-  
+
   /* Al hacer click en el menu "bola" avanzamos hacia el TOP de la pagina */
 /*
   $('.profile').click(function(){
@@ -86,7 +86,7 @@ $(document).ready(function() {
   $('#atajos-keyboard-profile .atajos-title .fa-close').on('click',function() {
     $('#atajos-keyboard-profile').fadeOut();
   });
-  
+
   $('#configurationOnProfile').on('click', function() {
     if ($('.ventana-pin').is(':visible')) {
       $('html, body').removeClass('body-inConf');
@@ -95,28 +95,28 @@ $(document).ready(function() {
       $('html, body').addClass('body-inConf');
       $('.ventana-pin').fadeIn("fast");
     }
-  }); 
-  
+  });
+
   /* Expandir comentario */
-  
+
  $('.fa-expand').on('click', function() {
     var caja_pub = $(this).closest('.wrapper');
     expandComment(caja_pub);
  });
-  
+
  function expandComment(caja_pub) {
     var id_pub = $(caja_pub).attr('id').split('-')[1]  // obtengo id
     var commentToExpand = document.getElementById('expand-' + id_pub);
     $(commentToExpand).fadeToggle("fast");
  }
- 
+
  /* Cerrar comentario expandido */
 
  $('.cerrar_ampliado').on('click', function() {
  	var expand = $(this).closest('.ampliado');
  	closeExpand(expand);
  });
- 
+
  function closeExpand(expand) {
  	var c = $(expand).attr('id').split('-')[1]
  	var toClose = document.getElementById('expand-' + c);
@@ -163,7 +163,7 @@ $(document).ready(function() {
             }
         });
   });
-    
+
   /* Agregar Amigo por medio de PIN */
   $('#agregar-amigo').on('click', function() {
       swal({
@@ -254,10 +254,10 @@ $(document).ready(function() {
 
   $(document).keypress(function(e){
     var key = e.which;
-    if (key == 109 && ($('#page-wrapper').is(':hidden')) && 
-    !$('.search-in-tab').is(":focus") && 
+    if (key == 109 && ($('#page-wrapper').is(':hidden')) &&
+    !$('.search-in-tab').is(":focus") &&
     !($('#id_searchText').is(":focus")) &&
-    !($('.sweet-alert input').is(":focus")) && 
+    !($('.sweet-alert input').is(":focus")) &&
     !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
         // Si presionas el char 'm' mostará el div para escribir un mensaje.
         $('#page-wrapper').toggle();
@@ -267,10 +267,10 @@ $(document).ready(function() {
 
 $(document).keypress(function(e){
     var key = e.which;
-    if (key == 97 && ($('#atajos-keyboard-profile').is(':hidden')) && 
-    !$('.search-in-tab').is(":focus") && 
-    !($('#id_searchText').is(":focus")) && 
-    !($('.sweet-alert input').is(":focus")) && 
+    if (key == 97 && ($('#atajos-keyboard-profile').is(':hidden')) &&
+    !$('.search-in-tab').is(":focus") &&
+    !($('#id_searchText').is(":focus")) &&
+    !($('.sweet-alert input').is(":focus")) &&
     !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
         // Si presionas el char 'm' mostará el div para escribir un mensaje.
         $('#atajos-keyboard-profile').show();
@@ -280,10 +280,10 @@ $(document).keypress(function(e){
 /* Cierra todas las ventajas emergentes. */
 
 $( document ).on('keydown', function(e) {
-    if ( e.keyCode === 27 && 
+    if ( e.keyCode === 27 &&
     ($('#atajos-keyboard-profile').is(':visible') ||
     $('#page-wrapper').is(':visible'))) { // escape
-        
+
         $('#page-wrapper').hide();
         $('#atajos-keyboard-profile').hide();
 
@@ -291,7 +291,7 @@ $( document ).on('keydown', function(e) {
 });
 
   /* FUNCIONES AJAX PARA TABS DE PERFIL */
-  
+
   $('#tab-amigos').bind('scroll', function() {
     if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
 
@@ -343,7 +343,7 @@ $( document ).on('keydown', function(e) {
             "showChars": 145
           }); */
 	    if ($('#tab-comentarios .wrapper').height() > 145) {
-	     $('#tab-comentarios .wrapper').css('height','auto');  
+	     $('#tab-comentarios .wrapper').css('height','auto');
 	   }
         },
         error: function(rs, e) {
@@ -754,7 +754,7 @@ function AJAX_submit_publication() {
           animation: "slide-from-top",
           showConfirmButton: false,
       });
-        
+
       } else {
         swal({
           title: "",
@@ -762,9 +762,9 @@ function AJAX_submit_publication() {
     type: "error"
         });
       }
-      
+
         $('#page-wrapper').hide(); // Ocultamos el DIV al publicar un mensaje.
-        
+
         /* EN PRUEBAS */
         var html = $(data).filter('#tab-comentarios').html();
 
@@ -919,7 +919,6 @@ function AJAX_requestfriend(status) {
 $(document).ready(function() {
   $(".fa-bars").on("click", function(event) {
     if ( !$(event.target).is( "li" )) {
-
     $("#toggle").each(function() {
       displaying = $(this).css("display");
       $("#toggle").val('');
@@ -938,6 +937,17 @@ $(document).ready(function() {
       }
   });
 });
+
+/* Ocultar menu vertical al hacer click fuera de el */
+
+$(document).click(function(event) {
+    if(!$(event.target).closest('#toggle').length) {
+        if($('#toggle').is(":visible")) {
+            $('#toggle').hide();
+            $('.fa-bars').removeClass('fa-bars-rotate');
+        }
+    }
+})
 
 /* Mensaje flotante */
 $(document).ready(function() {
