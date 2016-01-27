@@ -18,7 +18,7 @@
                {% if item.user__profile__image and item.user__profile__image|file_exists %}
                    <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user__profile__backImage }}">
                    {% else %}
-                   <img class="back-profile-user" src="{{ STATIC_URL }}img/5.jpg">
+                   <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
                 {% endif %}
                 <i class="fa fa-user fa-2x like-him">
                 </i>
@@ -26,7 +26,7 @@
                     {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
                         <img class="profile-user-bg" src="{{MEDIA_URL}}{{item.user__profile__image}}" onclick="location.href='/profile/{{ item.user__username }}'">
                     {% else %}
-                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/5.jpg" onclick="location.href='/profile/{{ item.user__username }}'">
+                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" onclick="location.href='/profile/{{ item.user__username }}'">
                     {% endif %}
                 </div>
             </div>

@@ -949,6 +949,7 @@ $(document).click(function(event) {
     }
 })
 
+
 /* Mensaje flotante */
 $(document).ready(function() {
   $("#publish2").click(function()  {
@@ -986,6 +987,9 @@ $(document).ready(function() {
   });
 });
 
+ $(document).ready(function() {
+    $("#page-wrapper").draggable();
+  });
 function addItemToFriendList(name, lastname) {
 
   $("#tab-amigos ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
