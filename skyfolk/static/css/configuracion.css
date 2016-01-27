@@ -101,6 +101,7 @@ h6 {
   transition: border 0.3s;
   outline: none;
   width: 100%;
+  background-color: transparent;
 }
 .actual:focus {
   border-bottom: solid 2px #1E88E5;

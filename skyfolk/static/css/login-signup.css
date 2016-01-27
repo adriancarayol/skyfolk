@@ -231,7 +231,7 @@ form {
 
 /* Muestra los mensajes de error, por ejemplo -> "Contraseña incorrecta en los forms" */
 .errorlist li {
-  color: white;
+  color: #212121;
   display: inline-block;
   position: relative;
 }

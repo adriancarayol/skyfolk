@@ -1791,17 +1791,23 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 }
 #page-wrapper #status {
   font-size: 1.4em;
-}
-h1 {
-  margin-top: 0;
-}
-
-#status {
-  font-size: 13px;
   margin-bottom: 1rem;
-  text-align: center;
 }
-
+#page-wrapper #status .fa-paper-plane {
+  font-size: 2em !important;
+  padding: 7px;
+}
+#page-wrapper #status h4 {
+  top: -15px;
+  position: relative;
+  display: inline-block;
+}
+#page-wrapper #status h6 {
+  top: -10px;
+  position: relative;
+  margin-left: 54px;
+  font-size: 0.7em !important;
+}
 .open {
   color: green;
 }
@@ -1838,15 +1844,15 @@ h1 {
   padding: 0px 2rem;
   text-transform: uppercase;
   vertical-align: middle;
-  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
   text-decoration: none;
-  color: #FFF;
-  background-color: #26A69A;
+  color: #212121;
+  background-color: transparent;
   text-align: center;
   letter-spacing: 0.5px;
   transition: all 0.2s ease-out 0s;
   cursor: pointer;
   float: right;
+  margin-right: 7px;
   outline: none;
 }
 
@@ -1859,27 +1865,34 @@ h1 {
   padding: 0px 2rem;
   text-transform: uppercase;
   vertical-align: middle;
-  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16), 0px 2px 10px 0px rgba(0, 0, 0, 0.12);
   text-decoration: none;
-  color: #FFF;
-  background-color: #26A69A;
+  color: #1e88e5;
+  background-color: transparent;
   text-align: center;
   letter-spacing: 0.5px;
   transition: all 0.2s ease-out 0s;
   cursor: pointer;
   float: right;
-  margin-right: 7px;
   outline: none;
 }
-button:hover {
-  opacity: 0.75;
-  cursor: pointer;
+
+#page-wrapper button[type="submit"]:hover {
+  opacity: 0.8;
+  background-color: #eee;
 }
+
+#page-wrapper button[type="button"]:hover {
+  opacity: 0.8;
+  background-color: #eee;
+  color: grey;
+}
+
 #tab-timeline {
   height:100%;
   overflow-y: scroll;
   overflow-x: hidden;
 }
+
 .fontawesome-bullhorn {
     background: #f5f5f5;
     border-bottom: 1px solid #7CE1FF;
