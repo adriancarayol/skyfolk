@@ -1031,7 +1031,7 @@ function AJAX_delete_publication(caja_publicacion) {
 }
 
 /*****************************************************/
-/********** AJAX para añadir me gusta a comentario *********/
+/********** AJAX para añadir me gusta a comentario ***/
 /*****************************************************/
 
 function AJAX_add_like(caja_publicacion, heart) {
@@ -1050,10 +1050,10 @@ function AJAX_add_like(caja_publicacion, heart) {
     success: function(data) {
         if (data==true) {
             $(heart).css('color','#f06292');
-        }else{
+        } else{
             swal({
-                title: "Fail",
-                text: "Failed to add like.",
+                title: ":-(",
+                text: "¡No puedes dar like a este comentario!",
                 type: "error"
             });
         }
