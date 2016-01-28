@@ -1,5 +1,9 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
-@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
+@font-face {
+    font-family: 'Open Sans', sans-serif;
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans'), local('Open Sans'), url({{STATIC_URL}}font/Open-Sans/OpenSans-Light.ttf) format('truetype');
+}
 
 body {
     font-size: 11.5px !important;
@@ -9,7 +13,7 @@ body {
 .container .personal-card {
     background-color: #fff;
     width: 100%;
-    margin-top: 20px; 
+    margin-top: 20px;
     height: 300px;
 }
 
