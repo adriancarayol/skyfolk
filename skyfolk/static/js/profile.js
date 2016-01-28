@@ -1048,8 +1048,19 @@ function AJAX_add_like(caja_publicacion, heart) {
     dataType: 'json',
     data: data,
     success: function(data) {
-        if (data==true) {
+      var response = data.response;
+      var status = data.statusLike;
+      var numLikes = document.getElementById('like-heart');
+      var countLikes = numLikes.innerHTML;
+        if (response==true) {
             $(heart).css('color','#f06292');
+            if (status == 1) {
+              countLikes++;
+            } else if (status == 2) {
+              $(heart).css('color','#555');
+              countLikes--;
+            }
+            numLikes.innerHTML = " " + countLikes;
         } else{
             swal({
                 title: ":-(",

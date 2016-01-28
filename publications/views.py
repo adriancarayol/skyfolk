@@ -90,6 +90,8 @@ def load_publications(request):
 # TODO
 def add_like(request):
     response = False
+    statusLike = 0
+    data = []
     if request.POST:
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
         pub = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
@@ -116,9 +118,10 @@ def add_like(request):
                 pub.user_give_me_like.add(request.user) # add users like
                 pub.save()
                 response = True
+                statusLike = 1
             except ObjectDoesNotExist:
                 response = False
-
+                statusLike = 0
         elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all():
             print ("Decrementando like")
             try:
@@ -126,9 +129,13 @@ def add_like(request):
                 pub.user_give_me_like.remove(request.user)
                 pub.save()
                 response = True
+                statusLike = 2
             except ObjectDoesNotExist:
                 response = False
+                statusLike = 0
         else:
             response = False
-            
-    return HttpResponse(json.dumps(response), content_type='application/json')
+            statusLike = 0
+    print("Fin like comentario ---> Response" + str(response) + " Estado" + str(statusLike))
+    data = json.dumps({'response': response, 'statusLike': statusLike})
+    return HttpResponse(data, content_type='application/json')

@@ -376,7 +376,7 @@
             <button><span class="fa fa-desktop"></span></button>
           </li>
         </ul>
-      
+
     <!-- Contenedor principal -->
     <div class="container">
     </div>
@@ -506,9 +506,9 @@
                              <li><i class="fa fa-trash"></i></li>
                         {% endif %}
                         {% if item.from_publication__likes >= 0 %}
-                            <li><i class="fa fa-heart"></i> {{ item.from_publication__likes }} </li>
+                            <li ><i id="like-heart" class="fa fa-heart"> {{ item.from_publication__likes }} </i></li>
                         {% else %}
-                            <li><i class="fa fa-heart"></i></li>
+                            <li ><i id="like-heart" class="fa fa-heart"></i></li>
                         {% endif %}
                        <li><i class="fa fa-quote-left"></i></li>
                        <li><i class="fa fa-reply"></i></li>
