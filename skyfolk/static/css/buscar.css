@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Pacifico); /* ONLY FOR LOGO */
+
 /*caja de busqueda*/
 .field>form input[type=text],
 .field>form button {
@@ -158,7 +160,7 @@
   margin-right: 200px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 100;
-  height: 540px;
+  height: auto;
   border-bottom-right-radius: 10px;
   color: #ccc;
   z-index: 9999;
@@ -196,7 +198,7 @@
   list-style-type: none;
   padding: 10px 10px;
   color: rgba(44,44,44,0.854);
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.46);
+  box-shadow: 0 1px 2px -2px #212121;
   -webkit-transition: all .3s ease-in;
   -moz-transition: all .3s ease-in;
   transition: all .3s ease-in;
@@ -220,8 +222,7 @@
 
 #toggle li:nth-child(n+2):hover {
   background-color: white;
-  color: grey;
-  border-right: 8px solid #414141;
+  color: #1e88e5;
 }
 #toggle li:nth-child(5):hover, #toggle li:nth-child(6):hover {
   border-right: 8px solid #1e88e5;
@@ -303,15 +304,16 @@
 
 .logotipo_skyfolk {
   position: fixed;
-  width: 47px;
-  /*background-color: tomato;*/
-  background-size: 120px;
-  background-repeat: no-repeat;
-  background-position: center;
-  height: 40px;
+  font-family: 'Pacifico', cursive !important;
   margin: auto;
   left: 50%;
   cursor: pointer;
+  top: 12px;
+  font-size: 1.4em;
+}
+.logotipo_skyfolk i {
+  color: #0096d7;
+  text-shadow: 1px 1px 1px #ccc;
 }
 
 .fa-bars .fa-bars-content li:nth-child(1) {

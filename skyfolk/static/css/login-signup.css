@@ -209,7 +209,6 @@ form {
   -webkit-transition: all .3s linear;
   -moz-transition: all .3s linear;
   transition: all .3s linear;
-
 }
 
 .form-3 input:focus {
@@ -248,7 +247,7 @@ form {
 .block-formregister{
     width: 320px;
     height: auto;
-    background-color: rgba(44,44,44,0.854);
+    background-color: #fff;
     position: relative;
     top: -30px;
     float: right;
@@ -379,11 +378,9 @@ form {
 
 @media screen and (max-height: 700px) and (min-width: 800px){
   #login {
-    top: 10px;
+    top: 50px;
   }
   .namesn {
-    float: left;
-    margin-left: 5%;
     top: -80px;
   }
 
