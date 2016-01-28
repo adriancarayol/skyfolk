@@ -1,13 +1,9 @@
-@font-face {
-    font-family: 'Open Sans', sans-serif;
-    font-style: normal;
-    font-weight: 300;
-    src: local('Open Sans'), local('Open Sans'), url({{STATIC_URL}}font/Open-Sans/OpenSans-Light.ttf) format('truetype');
-}
-
 body {
     font-size: 11.5px !important;
+    font-style: normal;
+    font-weight: 300;
     font-family: 'Open Sans', sans-serif !important;
+    color: #555;
 }
 
 .container .personal-card {
