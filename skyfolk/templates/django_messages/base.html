@@ -1,65 +1,40 @@
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/mensajes_privados.css"/>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/autosize.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/autosize.js"></script>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-
-</head>
-<!-- No es necesario de momento '''% extends "base.html" %''' -->
+{% extends "account/base_interface.html" %}
 {% load i18n %}
 
 {% load url from future %}
 {% block bodyclass %}about{% endblock %}
+{% block title %} <title> Mensajes privados - {{user.username }}</title> {% endblock %}
 
-{% block menu %}
-<!-- nav con logotipo -->
-<nav class="box-tool">
-  <li><div class="logo"></div></li>
-  <li class="chat"><div></div></li>
-</nav>
+{% block extra-js %}
 
 {% endblock %}
+<!-- bloques de estilos para cada pagina -->
+{% block extra-css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/mensajes_privados.css" />
+{% endblock %}
+<body>
 
-  {% block sidebar %}
-   <nav class="grey lighten-5 vertical-nav">
-        <a onclick="javascript:location.href='/'" class="center-align" id="new_message">{{request.user}}</a>
-        {% if message_list|length >= 0 %}
-           <a onclick="javascript:location.href='/messages/inbox/'"><i class="mdi-content-inbox left"></i>Inbox <div class="chip">{{ message_list|length }}</div></a>
-        {% endif %}
-        <a href="/messages/fav/"><i class="mdi-action-favorite left"></i>Favorite</a>
-        <a href="/messages/outbox/"><i class="mdi-content-send left"></i>Sent Email</li>
-        <a href="/messages/spam/"><i class="mdi-content-drafts left"></i>Drafts<span class="badge"></span></a>
-        <a href="/messages/group/"><i class="mdi-communication-forum left"></i>Conversations<div class="chip">1</div></a>
-        <a href="/messages/trash/"><i class="mdi-content-remove left"></i>Trash <span class="badge"></span></a>
-    </nav>
+{% block content %}
+  <div class="col-lg-12 col-md-12 col-sm-12 wrapper">
+  <nav class="col-lg-3 col-md-12 col-sm-12 menu-messages">
+      <a class="perfil" onclick="window.location.href='/messages/inbox'"><i class="fa fa-user"></i><br>Inbox</a>
+      <a class="Contraseña" onclick="window.location.href='/messages/trash'"><i class="fa fa-lock"></i><br>Papelera</a>
+      <a class="Contraseña" onclick="window.location.href='/messages/compose'"><i class="fa fa-lock"></i><br>Componer</a>
+      <a class="Contraseña" onclick="window.location.href='/messages/outbox'"><i class="fa fa-lock"></i><br>Enviados</a>
+  </nav>
 
-
-  {% endblock %}
-
-  {% block right-sidebar %}
-
-
-  <nav class="grey lighten-5 vertical-nav-2">
+  <nav class="col-lg-3 col-md-12 col-sm-12 menu-messages-2">
         <a href="#!" class="center-align">Contactos ({{ friends_top12|length }})</a>
         {% for item in friends_top12 %}
         <a href="/messages/compose/{{item.user__username}}"><i class="mdi-action-account-circle left"></i>({{item.user__username}})</a>
         {% endfor %}
         <a href="#!"><i class="mdi-social-group left"></i>Equipo desarrolladores <div class="chip">130</div></a>
     </nav>
+    {% block body %}
 
+    {% endblock %}
 
-  {% endblock %}
-{% block button_compose %}
-
-  <a id="compose-button-message" onclick="javascript:location.href='/messages/compose'" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">add</i></a>
+    <a id="compose-button-message" onclick="javascript:location.href='/messages/compose'" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">add</i></a>
 {% endblock %}
-{% block content %}
-
-{% endblock %}
+  </div>
+</body>
