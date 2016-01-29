@@ -21,11 +21,11 @@
     {% block extra-css %}
 
     {% endblock %}
-    
 
-  
+
+
     {% block include_files %}{% endblock %}
-  
+
     <script>
       window.moveTo(0,0);
       if (document.all) {
@@ -40,7 +40,7 @@
     </script>
   </head>
   <body>
-    <!-- Header de la pagina --> 
+    <!-- Header de la pagina -->
     {% block barra_navegacion %}
       {% include "account/base-header.html" %}
     {% endblock %}
@@ -54,7 +54,7 @@
   {% if user.is_authenticated %}
   <div id="page-wrapper" style="display:none;">
     <div id="status">
-    <i class="fa fa-paper-plane"> </i> 
+    <i class="fa fa-paper-plane"> </i>
     <h4>Publicar comentario</h4>
     <h6>Publica un comentario para que el mundo lo vea.</h6>
     </div>

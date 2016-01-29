@@ -12,10 +12,6 @@ var countTimeLine = 1;
 
 $(document).ready(function() {
 
-  /*$(".comment").shorten({
-    "showChars": 145
-  });*/
-
   if ($('#tab-comentarios .wrapper').height() > 145) {
     $(this).css('height','auto');
   }
@@ -23,39 +19,36 @@ $(document).ready(function() {
   $('#page-wrapper #close').on('click', function(event) {
 
     $('#page-wrapper').hide();
-
   });
 
-  /* LOADER para el perfil */
-  /*
-  $(window).load(function(e) {
-    $('.logotipo_skyfolk').addClass('logotipo_skyfolk-1');
-    $('body').css('background-color','tomato');
-  });
 
-*/
-/*
+  window.onload=function() {
+      var currentPage = window.location.href.split('/')[3];
+          switch (currentPage) {
+              case "friends":
+              $('.oldMenu li:nth-child(3)').css('color','#1e88e5');
+                  break;
+              case "profile":
+                  $('.oldMenu li:nth-child(1)').css('color','#1e88e5');
+                  break;
+              case "search":
+                  $('#id_searchText').css('border','1px solid #1e88e5');
+                  break;
+              case 3:
+                  currentPage = "Wednesday";
+                  break;
+              case 4:
+                  currentPage = "Thursday";
+                  break;
+              case 5:
+                  currentPage = "Friday";
+                  break;
+              case 6:
+                  currentPage = "Saturday";
+                  break;
+    }
+}
 
-  $('#publish').on('click', function(event) {
-
-    $(".fa-paper-plane").click();
-
-  });
-
-  $('#publish2').on('click', function(event) {
-
-    $(".fa-paper-plane").click();
-
-  });
-*/
-
-  /* Al hacer click en el menu "bola" avanzamos hacia el TOP de la pagina */
-/*
-  $('.profile').click(function(){
-    $("html, body").animate({ scrollTop: 0 }, 200);
-    return false;
- });
-*/
   $('.fa-paw').on('click',function() {
       $(".info-paw").fadeToggle("fast");
   });

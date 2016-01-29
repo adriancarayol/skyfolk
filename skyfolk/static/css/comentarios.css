@@ -1,6 +1,6 @@
 html {
   color: #555;
-  font-family: 'Open Sans', sans-serif;  
+  font-family: 'Open Sans', sans-serif;
   font-size: 11.5px;
   -webkit-font-smoothing: antialiased;
 }
@@ -139,9 +139,21 @@ input[type="checkbox"] {
 .ampliado {
   overflow-y: scroll;
   overflow-x: hidden;
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', sans-serif;
   display: none;
-  border: 2px solid rgb(110,110,110);
+  box-shadow: 0 1px 5px #1976d2;
+  border-radius: 3px;
+  position: absolute;
+  z-index: 9999;
+  width: 60%;
+  background: white;
+  top: 200px;
+  height: 586px;
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
 }
 
 .ampliado .nombre_image {
@@ -208,7 +220,7 @@ input[type="checkbox"] {
 }
 .ampliado .text_area {
   position: relative;
-  top: 150px;
+  top: 220px;
   width: 90%;
   margin: auto;
   height: 130px;
@@ -220,61 +232,104 @@ input[type="checkbox"] {
   height: 30px;
 }
 .ampliado .botones_ampliado .enviar_ampliado {
-  background: #f5f5f5;
-  border-bottom: 1px solid #7CE1FF;
+  border: medium none;
+  border-radius: 2px;
   display: inline-block;
-  border-radius: 3px;
-  border: none;
-  font-size: 0.9rem;
-  padding: 0.6rem 1em;
+  height: 36px;
+  line-height: 36px;
+  padding: 0px 2rem;
+  text-transform: uppercase;
+  vertical-align: middle;
+  text-decoration: none;
   color: #1e88e5;
-  top: 10px;
-  margin: 0 0.25rem;
+  background-color: transparent;
   text-align: center;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-out 0s;
+  cursor: pointer;
+  float: right;
+  outline: none;
 
 }
-
+.ampliado .botones_ampliado .enviar_ampliado:hover {
+  opacity: 0.8;
+  background-color: #eee;
+  color: grey;
+}
 .ampliado .botones_ampliado .cerrar_ampliado {
+  border: medium none;
+  border-radius: 2px;
   display: inline-block;
-  border-radius: 3px;
-  border: none;
-  font-size: 0.9rem;
-  padding: 0.7rem 1em;
-  color: #FF0000;
-  margin: 0 0.25rem;
+  height: 36px;
+  line-height: 36px;
+  padding: 0px 2rem;
+  text-transform: uppercase;
+  vertical-align: middle;
+  text-decoration: none;
+  color: #212121;
+  background-color: transparent;
   text-align: center;
-  background: #f5f5f5;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-out 0s;
+  cursor: pointer;
+  float: right;
+  margin-right: 7px;
+  outline: none;
+}
+
+.ampliado .botones_ampliado .cerrar_ampliado:hover {
+  opacity: 0.8;
+  background-color: #eee;
 }
 .ampliado .botones_ampliado .cerrar_ampliado .fa-close {
   margin-right: 6px;
 }
 .ampliado .botones_ampliado .localizacion_ampliado {
-  background: #f5f5f5;
-  border-bottom: 1px solid #1e88e5;
-  display: inline-flex;
+  background: transparent;
+  display: inline-block;
   border-radius: 3px;
   border: none;
   font-size: 1.1rem;
-  padding: 0.6rem 1em;
+  padding: 1rem 1em;
+  float: left;
   color: #1e88e5;
-  float: right;
   top: 10px;
+  cursor: pointer;
   margin: 0 0.25rem;
   text-align: center;
 
 }
-.ampliado .botones_ampliado .foto_ampliado {
-  background: #f5f5f5;
-  border-bottom: 1px solid #1e88e5;
-  display: inline-flex;
+
+.ampliado .botones_ampliado .difundir_ampliado {
+  background: transparent;
+  display: inline-block;
   border-radius: 3px;
   border: none;
   font-size: 1.1rem;
-  padding: 0.6rem 1em;
-  float: right;
+  padding: 1rem 1em;
+  float: left;
   color: #1e88e5;
   top: 10px;
   margin: 0 0.25rem;
+  cursor: pointer;
+  text-align: center;
+}
+.ampliado .difundir_ampliado:hover, .foto_ampliado:hover, .localizacion_ampliado:hover {
+  box-shadow: 0 1px 5px #1976d2;
+}
+
+.ampliado .botones_ampliado .foto_ampliado {
+  background: transparent;
+  display: inline-block;
+  border-radius: 3px;
+  border: none;
+  font-size: 1.1rem;
+  padding: 1rem 1em;
+  float: left;
+  color: #1e88e5;
+  top: 10px;
+  margin: 0 0.25rem;
+  cursor: pointer;
   text-align: center;
 
 }
@@ -308,20 +363,7 @@ input[type="checkbox"] {
   border: 1px solid #1e88e5;
   resize: none;
 }
- .ampliado {
-    position: absolute;
-    z-index: 9999;
-    width: 50%;
-    background: white;
-    top: 200px;
-    height: 486px;
-    display: none;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    box-shadow: 7px 7px 0px rgba(0, 0, 0, 0.16);
-}
+
 /* Responder - Me gusta - Añadir */
 span[class*="fa-paper-plane"] {
   cursor:pointer;

@@ -1,6 +1,14 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
 body {
-  font-size: 11.5px !important;
-  font-family: 'Open Sans', sans-serif !important;
+    font-size: 11.5px !important;
+    font-style: normal;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif !important;
+    color: #555;
 }
 
 hgroup {
@@ -219,11 +227,12 @@ button[type="submit"] {
 #boton-perfil {
   position: relative;
   padding: 10px 7px;
-  width: 150px;
+  width: auto;
   height: 30px;
   float: right;
   line-height: 2px;
   font-size: 1.3em;
+  display: block;
 }
 #id_image {
   display: list-item;

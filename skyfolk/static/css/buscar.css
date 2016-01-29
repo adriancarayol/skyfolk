@@ -308,8 +308,9 @@
   margin: auto;
   left: 50%;
   cursor: pointer;
-  top: 12px;
-  font-size: 1.4em;
+  top: 10px;
+  font-size: 1.7em;
+  letter-spacing: 0.2px;
 }
 .logotipo_skyfolk i {
   color: #0096d7;
