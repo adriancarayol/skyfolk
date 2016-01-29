@@ -1040,7 +1040,7 @@ function AJAX_add_like(caja_publicacion, heart) {
   var data = {
            userprofile_id: id_user,
            publication_id: id_pub
-       };
+        };
   //event.preventDefault(); //stop submit
   $.ajax({
     url: '/publication/add_like/',
@@ -1060,7 +1060,11 @@ function AJAX_add_like(caja_publicacion, heart) {
               $(heart).css('color','#555');
               countLikes--;
             }
-            numLikes.innerHTML = " " + countLikes;
+            if (countLikes == 0) {
+              numLikes.innerHTML = " ";
+            } else {
+              numLikes.innerHTML = " " + countLikes;
+            }
         } else{
             swal({
                 title: ":-(",

@@ -447,11 +447,8 @@
   <div id="tab-comentarios">
   {% if isFriend or user.username == user_profile.username %}
   {% for item in publications_top15 %}
-
   <div class="wrapper" id="pub-{{item.from_publication__id}}" data-id="{{ user.pk }}">
             <div class="box">
-            <!--<input type="checkbox" id="check-{{item.from_publication__id}}"> -->
-            <!-- <label for="check-{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label> -->
             <span id="check-{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"> </i></span>
             <!-- Check para ampliar el mensaje... -->
                   <div class="ampliado" id="expand-{{item.from_publication__id}}">
@@ -479,7 +476,6 @@
                        <button class="localizacion_ampliado"><i class="fa fa-map-marker"></i></button>
                        <button class="foto_ampliado"><i class="fa fa-camera"></i></button>
                        </div>
-
                   </div>
                   </div>
       <div class="image">
@@ -488,7 +484,6 @@
           {% else %}
             <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
               {% endif %}
-                    <!--  <img id="avatar-publication" src="{{STATIC_URL}}img/generic-avatar.png" alt="img" class="img-responsive">-->
             </div>
 </div>
 
@@ -505,7 +500,7 @@
                         {% elif user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
                              <li><i class="fa fa-trash"></i></li>
                         {% endif %}
-                        {% if item.from_publication__likes >= 0 %}
+                        {% if item.from_publication__likes > 0 %}
                             <li ><i id="like-heart" class="fa fa-heart"> {{ item.from_publication__likes }} </i></li>
                         {% else %}
                             <li ><i id="like-heart" class="fa fa-heart"></i></li>
