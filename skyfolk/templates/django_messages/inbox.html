@@ -17,21 +17,24 @@
                       <img class="image-user" id="image_user" src="{{STATIC_URL}}img/generic-avatar.png">
                       <span class="blue-text">{{ message.sender }}</span>
                   {% endif %}
-              </div>
-              <div class="col-lg-4 col-md-8 col-sm-8 msg-inbox">
                   {% if message.new %}
-                      <h5><b><a class="message_subject" href="{{message.get_absolute_url }}">{{ message.subject }}</a></b></h5>
-                      <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
-                      <br><br>
+                    <span title="¡Nuevo mensaje!" class="new-message"><i class="fa fa-bell-o"></i></span>
                   {% endif %}
                   {% if message.replied %}
-                  <h5><a class="message_subject" href="{{message.get_absolute_url }}">{{ message.subject }}</a></h5>
-                  <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
-                  <br><br>
+                    <span title="Mensaje respondido" class="replied-message"><i class="fa fa-pencil-square-o"></i></span>
                   {% endif %}
-                   <blockquote onclick="javascript:location.href='{{message.get_absolute_url }}'" class="grey-text truncate">{{message.body}}</blockquote>
-                   <a class="borrar" href="{% url 'messages_delete' message.id %}">Borrar</a>
               </div>
+              <div class="col-lg-4 col-md-8 col-sm-8 msg-inbox">
+                      <h5>
+                        <b>
+                          <a class="message_subject" href="{{message.get_absolute_url }}">{{ message.subject }}</a>
+                        </b>
+                      </h5>
+                      <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
+                      <br><br>
+                   <blockquote onclick="javascript:location.href='{{message.get_absolute_url }}'" class="grey-text truncate">{{message.body}}</blockquote>
+              </div>
+              <a class="borrar" href="{% url 'messages_delete' message.id %}"><i class="fa fa-trash"></i></a>
             </div>
         {% endfor %}
   {% else %}
