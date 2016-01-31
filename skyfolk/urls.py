@@ -1,6 +1,3 @@
-#####
-
-
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
@@ -13,7 +10,7 @@ from market.views import market_inicio
 from relaciones.views import relaciones_user
 from user_profile import views as user_profile_views
 from user_profile.views import welcomeView, welcomeStep1
-
+import notifications
 
 admin.autodiscover()
 
@@ -76,6 +73,8 @@ urlpatterns = patterns(
     url(r'^welcome/', welcomeView.as_view()),
     # Página de bienvenida, paso 1.
     url(r'^step1/(?P<username>[\w-]+)/$', welcomeStep1.as_view()),
+    #notificaciones
+    url('^inbox/notifications/', include('notifications.urls', namespace='notifications')),
 )
 
 urlpatterns += staticfiles_urlpatterns()

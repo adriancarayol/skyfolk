@@ -61,6 +61,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
     'emoji',
+    'notifications',           # siempre último
 )
 
 FIRST_PARTY_APPS = (
@@ -74,7 +75,7 @@ FIRST_PARTY_APPS = (
     'latest_news',
 )
 
-INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + FIRST_PARTY_APPS
+INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
 
 # DJANGO ALL AUTH CONFIG
 
