@@ -124,7 +124,6 @@ label[for="id_body"] {
   line-height: 36px;
   padding: 0px 2rem;
   text-transform: uppercase;
-  vertical-align: middle;
   text-decoration: none;
   color: #1e88e5;
   background-color: transparent;
@@ -138,10 +137,28 @@ label[for="id_body"] {
   float: right;
   outline: none;
 }
-.compose-button:hover {
+.compose-button:hover, .compose-view-button:hover {
   opacity: 0.8;
   background-color: #eee;
   color: grey;
+}
+.compose-view-button {
+  border: medium none;
+  border-radius: 2px;
+  display: inline-block;
+  height: 36px;
+  line-height: 36px;
+  padding: 0px 2rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #1e88e5;
+  background-color: transparent;
+  text-align: center;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-out 0s;
+  cursor: pointer;
+  float: right;
+  outline: none;
 }
 
 .outbox_sent {
@@ -150,16 +167,10 @@ label[for="id_body"] {
 .messages {
   width: 100%;
 }
-.view_tittle {
-
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 100;
-  text-align: center;
-}
-
-
 .card {
   background-color: #f5f5f5;
+  padding: 10px;
+  height: auto;
 }
 .card blockquote {
   cursor: pointer;
@@ -167,6 +178,7 @@ label[for="id_body"] {
   border-left: 6px solid #f44336;
   padding: 7px;
   display: inline-block;
+
 }
 .card .borrar {
   font-size: 2em;
@@ -177,29 +189,30 @@ label[for="id_body"] {
   float: right;
   text-decoration: none;
 }
-.mensajes {
-  position: relative;
-  margin: auto;
-  height: 800px;
-  max-width: 700px;
-  margin-top: 40px;
-}
 
-.mensajes .message-headers {
-  border-bottom: 3px solid #727272;
-  padding-bottom: 10px;
+.body-view .message-headers {
+    border-bottom: 3px solid #1e88e5;
+    padding: 10px;
 }
-.mensajes .message-headers dt {
-  color: #9e9e9e;
+.body-view .message-headers dt {
+  color: #1e88e5;
   margin-left: 7px;
-  font-family: 'Open Sans', sans-serif;
   font-weight: 400;
   font-size: 14px;
+  padding: 3px;
 }
-.mensajes .message-headers dd {
-  font-family: 'Open Sans', sans-serif;
+.body-view .message-headers dd {
+  color: #212121;
+  margin-left: 7px;
+  font-weight: 400;
+  font-size: 14px;
+  padding: 3px;
 }
-
+.body-view blockquote {
+  padding: 10px;
+  font-size: 1.3em;
+  color: #212121;
+}
 #compose-button-message {
   float: right;
   position: fixed;
@@ -272,10 +285,6 @@ label[for="id_body"] {
   border-right: 10px solid #eee;
 }
 
-.card {
-  padding: 10px;
-  height: 200px;
-}
 .card .msg-inbox  {
   position: relative;
   top: 0;
@@ -327,7 +336,7 @@ label[for="id_body"] {
 
 /* Trash - Outbox */
 
-.trash_tittle, .outbox_title, .compose_message {
+.trash_tittle, .outbox_title, .compose_message, .view_tittle {
   font-family: 'Open Sans', sans-serif;
   font-weight: 100;
   text-align: center;

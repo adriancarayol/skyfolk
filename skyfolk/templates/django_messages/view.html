@@ -4,8 +4,7 @@
 
 {% block body %}
 <h3 class="view_tittle">Mensajes con {{  message.sender }}.</h3>
-<div class="container">
-    <div class="col s12 m12 l9z-depth-1 mensajes">
+      <div class="col-lg-6 col-md-12 col-sm-12 body-view">
         <dl class="grey lighten-5 message-headers">
             <dt>{% trans "Subject" %}</dt>
             <dd><strong>{{ message.subject }}</strong></dd>
@@ -19,11 +18,10 @@
 
         {% endblock %}
     <blockquote>{{ message.body|linebreaksbr }}</blockquote><br /><br />
-    </div>
     {% ifequal message.recipient.pk user.pk %}
-    <a href="{% url 'messages_reply' message.id %}" class="compose-button waves-effect waves-light btn" type="submit" value="{% trans "Send" %} &raquo;"/>{% trans "Reply" %}</a>
+    <a href="{% url 'messages_reply' message.id %}" class="compose-view-button" type="submit" value="{% trans "Send" %} &raquo;"/>{% trans "Reply" %}</a>
     {% endifequal %}
-    <a href="{% url 'messages_delete' message.id %}" class="compose-button waves-effect waves-red btn" type="submit" value="{% trans "Send" %} &raquo;"/>{% trans "Delete" %}</a>
+    <a href="{% url 'messages_delete' message.id %}" class="compose-view-button" type="submit" value="{% trans "Send" %} &raquo;"/>{% trans "Delete" %}</a>
     {% comment %}Example reply_form integration
     {% if reply_form %}
     <h1>{% trans "Compose reply"%}</h1>
@@ -37,4 +35,5 @@
 </div>
 {% endif %}
 {% endcomment %}
+</div>
 {% endblock %}
