@@ -224,3 +224,9 @@ ADMINS = (
     ('Gabriel Fernandez', 'gabofer82@gmail.com'),
     ('lostcitizen', 'lostcitizen@gmail.com'),
 )
+
+# NOTIFICACIONES
+NOTIFICATIONS_SOFT_DELETE=True          # Marca las notificaciones como borradas en vez de eliminarlas de la base de datos.
+NOTIFICATIONS_USE_JSONFIELD=True        # Permite enviar datos arbitrarios en las notificaciones
+
+
