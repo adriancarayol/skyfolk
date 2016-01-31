@@ -52,7 +52,8 @@ def profile_view(request, username):
             requestsToMe_result = list()
             for item in requestsToMe:
                 print(item)
-                print(str(item.pk) + " " + item.user.username + " " + item.user.email)
+                print(
+                    str(item.pk) + " " + item.user.username + " " + item.user.email)
                 requestsToMe_result.append(
                     {'id_profile': item.pk, 'username': item.user.username, })
 
@@ -182,7 +183,7 @@ def profile_view(request, username):
     try:
         t = Timeline.objects.all()
     except ObjectDoesNotExist:
-        t =  None
+        t = None
     # print ">>>>> PERFIL: " + str(user_profile.profile.pk)
     # print ">>>>> VISITANTE/USUARIO: " + str(user.profile.pk)
 
@@ -190,9 +191,8 @@ def profile_view(request, username):
     last_login = str(user_profile.last_login)
     date_joined = str(user_profile.date_joined)
 
-
-    print("Last login -> " + last_login[:16] + " dated joined -> " + date_joined[:16])
-
+    print(
+        "Last login -> " + last_login[:16] + " dated joined -> " + date_joined[:16])
 
     return render_to_response('account/profile.html',
                               {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
@@ -233,7 +233,8 @@ def search(request):
 
     else:
         return render_to_response('account/search.html',
-                                  {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': (), 'publicationForm': publicationForm},
+                                  {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': (
+                                  ), 'publicationForm': publicationForm},
                                   context_instance=RequestContext(request))
 
 
@@ -241,7 +242,7 @@ def search(request):
 def config_changepass(request):
     searchForm = SearchForm()
     publicationForm = PublicationForm()
-    return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm':publicationForm},
+    return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm},
                               context_instance=RequestContext(request))
 
 
@@ -282,8 +283,8 @@ def config_profile(request):
 
     print('>>>>>>>  paso x')
     return render_to_response('account/cf-profile.html',
-            {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
-            'user_form': user_form, 'perfil_form': perfil_form, 'publicationForm': publicationForm},
+                              {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
+                               'user_form': user_form, 'perfil_form': perfil_form, 'publicationForm': publicationForm},
                               context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -499,11 +500,25 @@ class welcomeView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         newUser = request.user.username
-        return render(request, self.template_name, {'newUser':newUser})
+        return render(request, self.template_name, {'newUser': newUser})
+
 
 class welcomeStep1(TemplateView):
     template_name = "account/welcomestep1.html"
 
     def get(self, request, *args, **kwargs):
         newUser = request.user.username
-        return render(request, self.template_name, {'newUser':newUser})
+        return render(request, self.template_name, {'newUser': newUser})
+
+
+def setfirstLogin(request):
+    print('HAY')
+    response = False
+    user = request.user
+    user = UserProfile.objects.get(pk=user.pk)
+    try:
+        user.firstLogin = True
+        response = True
+    except ObjectDoesNotExist:
+        response = False
+    return HttpResponse(json.dumps(response), content_type='application/json')

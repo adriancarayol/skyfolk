@@ -35,19 +35,14 @@ body {
 }
 
 .no_messages {
-  color: rgb(185,230,207);
-  position: relative;
+  color: #1e88e5;
   font-family: 'Open Sans', sans-serif;
-  margin-left: 30%;
+  text-align: center;
   font-size: 30px;
 }
 .no_mess {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin-top: 5%;
-  margin-left: 50%;
-  opacity: 0.6;
+  width: 140px;
+  height: 140px;
 }
 
 .compose_table {

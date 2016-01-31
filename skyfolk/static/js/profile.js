@@ -407,8 +407,7 @@ $('#tab-timeline').bind('scroll', function() {
 
   });
 
-
-
+/* FIN DOCUMENT READY */
 });
 
 function addFriendToHtmlList(item) {
@@ -1015,8 +1014,6 @@ function AJAX_delete_publication(caja_publicacion) {
       alert('ERROR: ' + rs.responseText);
     }
   });
-
-
 }
 
 /*****************************************************/

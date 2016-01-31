@@ -79,7 +79,6 @@ class UserProfile(models.Model):
         super(UserProfile, self).save(*args, **kwargs)
 
 
-
     #Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
         print('>>>>>>> add_relationship')

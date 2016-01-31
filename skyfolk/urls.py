@@ -25,6 +25,7 @@ urlpatterns = patterns(
     # Importamos las URLS del resto de apps:
     url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^setfirstLogin/', 'user_profile.views.setfirstLogin', name='setfirstLogin'),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
     url(r'^search/$','user_profile.views.search'),
     url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
@@ -70,7 +71,7 @@ urlpatterns = patterns(
     ),
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Página de bienvenida a nuevos usuarios.
-    url(r'^welcome/', welcomeView.as_view()),
+    url(r'^welcome/(?P<username>[\w-]+)/$', welcomeView.as_view()),
     # Página de bienvenida, paso 1.
     url(r'^step1/(?P<username>[\w-]+)/$', welcomeStep1.as_view()),
     #notificaciones
