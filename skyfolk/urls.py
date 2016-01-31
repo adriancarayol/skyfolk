@@ -74,7 +74,7 @@ urlpatterns = patterns(
     # Página de bienvenida, paso 1.
     url(r'^step1/(?P<username>[\w-]+)/$', welcomeStep1.as_view()),
     #notificaciones
-    url('^inbox/notifications/', include('notifications.urls', namespace='notifications')),
+    url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
 )
 
 urlpatterns += staticfiles_urlpatterns()
