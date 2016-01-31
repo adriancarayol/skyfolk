@@ -50,22 +50,25 @@ body {
   opacity: 0.6;
 }
 
-
-
-/* compose.html */
-.compose_message {
-
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 100;
-  text-align: center;
-
-}
 .compose_table {
-    width: 400px;
-    position: relative;
-    height: auto;
-    margin: auto;
-
+  box-sizing: auto;
+  position: relative;
+  overflow:hidden;
+  padding:10px;
+  width: 100%;
+  font-size: 14px;
+  margin: auto;
+  display: block;
+  border-radius: 7px;
+  border: 3px solid #1E88E5;
+}
+.compose_table textarea {
+  width: 100%;
+  right: -100%;
+  top: -50px;
+  height: 200px;
+  position: relative;
+  display: block;
 }
 label[for="id_recipient"] {
   display: none;
@@ -77,50 +80,18 @@ label[for="id_subject"] {
 label[for="id_body"] {
   display: none;
 }
-#id_recipient {
-  display: inline-block;
-  width: 90%;
-  min-width: 515px;
-  font-family: "Open Sans", sans;
-  font-weight: 400;
-  color: #616161;
-  text-indent: 10px;
-  transition: all .3s ease-in-out;
-  margin-top: 1%;
-  margin-left: 2.5px;
-  margin-right: 2.5px;
+#id_recipient, #id_subject {
+  padding: 10px 5px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
+  transition: border 0.3s;
+  outline: none;
+  width: 80%;
+  background-color: transparent;
+  margin-left: 10%;
 }
-
-#id_subject {
-  display: inline-block;
-  width: 90%;
-  min-width: 515px;
-  font-family: "Open Sans", sans;
-  font-weight: 400;
-  color: #616161;
-  text-indent: 10px;
-  transition: all .3s ease-in-out;
-  margin-top: 1%;
-  margin-left: 2.5px;
-  margin-right: 2.5px;
-}
-
-#id_body {
-  margin-top: 20px;
-  margin-bottom: 50px;
-  width: 90%;
-  min-width: 515px;
-  padding: 20px 5px 5px 20px;
-  font-family: "Open Sans", sans-serif;
-  border: 1px solid #B5DBDB;
-  overflow: hidden;
-  font-weight: 300;
-  font-size: 15px;
-  color: #616161;
-  text-indent: 5px;
-  display: block;
-  resize: none;
-  transition: all .3s ease-in;
+#id_recipient:focus, #id_subject:focus {
+  border-bottom: solid 2px #1E88E5;
 }
 
 .time {
@@ -129,15 +100,32 @@ label[for="id_body"] {
 }
 
 .compose-button {
+  border: medium none;
+  border-radius: 2px;
   display: inline-block;
-  position: relative;
-  left: 350px;
-  margin-top: -60px;
-
+  height: 36px;
+  line-height: 36px;
+  padding: 0px 2rem;
+  text-transform: uppercase;
+  vertical-align: middle;
+  text-decoration: none;
+  color: #1e88e5;
+  background-color: transparent;
+  text-align: center;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-out 0s;
+  cursor: pointer;
+  margin-top: -45px;
+  margin-left: 7px;
+  position: absolute;
+  outline: none;
 }
-
+.compose-button:hover {
+  opacity: 0.8;
+  background-color: #eee;
+  color: grey;
+}
 .outbox_sent {
-
   border-bottom: 1px solid #e0e0e0;
 }
 .messages {
@@ -318,9 +306,9 @@ label[for="id_body"] {
 }
 
 
-/* Trash */
+/* Trash - Outbox */
 
-.trash_tittle, .outbox_title {
+.trash_tittle, .outbox_title, .compose_message {
   font-family: 'Open Sans', sans-serif;
   font-weight: 100;
   text-align: center;
@@ -364,3 +352,6 @@ label[for="id_body"] {
   padding-bottom: 10px;
   padding-right: 10px;
 }
+
+/* Compose */
+
