@@ -19,7 +19,7 @@ class ComposeForm(forms.Form):
     """
     recipient = CommaSeparatedUserField(label=_(u"Recipient"), initial="Nombre")
     subject = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Asunto'}), max_length=120)
-    body = forms.CharField(widget=forms.Textarea(attrs={'rows': '10', 'cols':'55','placeholder':'Escribe tu mensaje...'}))
+    body = forms.CharField(widget=forms.Textarea(attrs={'rows': '10', 'cols':'120','placeholder':'Escribe tu mensaje...'}))
 
 
     def __init__(self, *args, **kwargs):
