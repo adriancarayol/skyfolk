@@ -417,7 +417,7 @@
                                         {% endif %}
                                         <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
                                         <div id="p" class="parrafo comment">
-                                            {{item.content}}
+                                                {{item.content}}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
@@ -466,7 +466,7 @@
 
                     <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                    {{ item.from_publication__content | safe }}
+                        {{ item.from_publication__content | safe }}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
@@ -491,7 +491,10 @@
                 <article class="articulo">
                   <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{ item.user__username }}</a> ha publicado:  </h2>
                   <div class="parrafo comment">
-                    <a target="_blank">{{item.from_publication__created}}</a><br>{{ item.from_publication__content | safe }}
+                    <a target="_blank">{{item.from_publication__created}}</a><br>
+                      <div id="comment-content">
+                      {{ item.from_publication__content | safe }}
+                          </div>
                   </div>
               <!-- OPCIONES DE COMENTARIOS -->
                 <div class="optiones_comentarios">

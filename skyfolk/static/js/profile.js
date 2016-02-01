@@ -12,9 +12,31 @@ var countTimeLine = 1;
 
 $(document).ready(function() {
 
-  if ($('#tab-comentarios .wrapper').height() > 145) {
-    $(this).css('height','auto');
-  }
+    /* Show more - Comentarios */
+  $('#tab-comentarios .wrapper .parrafo').each(function() {
+      var lenght = 5;
+      var details = $(this).find('#comment-content');
+      var original_html = details.html();
+      var original_text = details.text();
+
+      if (original_text.length > 700)
+      {
+          var truncate_text = $.trim(original_text).substring(0, lenght).split(" ").slice(0, -1).join(" ") + " ";
+          var show_more = $('<a href="#more"> + Mostrar más...</a>');
+
+          show_more.on('click', function() {
+            details.html(original_html);
+              return false;
+          });
+
+          var displayText = $.trim(original_text).substring(0, 10);
+          details.html(truncate_text);
+          details.append(displayText + "...");
+          details.append(show_more);
+      }
+
+  });
+
 
   $('#page-wrapper #close').on('click', function(event) {
 

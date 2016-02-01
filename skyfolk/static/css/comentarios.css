@@ -21,9 +21,10 @@ a, a:visited {
   border-radius: 5px;
   box-shadow: 0 0 10px #ddd;
   overflow: hidden;
-  height:auto;
+  height: auto;
 
 }
+
 .articulo {
   float: left;
   left: 37px;
