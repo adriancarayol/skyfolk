@@ -12,31 +12,41 @@ var countTimeLine = 1;
 
 $(document).ready(function() {
 
-    /* Show more - Comentarios */
-  $('#tab-comentarios .wrapper .parrafo').each(function() {
-      var lenght = 5;
-      var details = $(this).find('#comment-content');
-      var original_html = details.html();
-      var original_text = details.text();
 
-      if (original_text.length > 700)
-      {
-          var truncate_text = $.trim(original_text).substring(0, lenght).split(" ").slice(0, -1).join(" ") + " ";
-          var show_more = $('<a href="#more"> + Mostrar más...</a>');
 
-          show_more.on('click', function() {
-            details.html(original_html);
-              return false;
-          });
-
-          var displayText = $.trim(original_text).substring(0, 10);
-          details.html(truncate_text);
-          details.append(displayText + "...");
-          details.append(show_more);
-      }
-
+    $('.text').each(function(){
+    var length = 5;
+    var details = $(this);
+    var original_html = details.html();
+    var original_text = details.text();
+    var truncated_text = $.trim(original_text).substring(0, length).split(" ").slice(0, -1).join(" ") + " ";
+    var show_more = $('<a href="#more">more</a>');
+        show_more.on('click', function(){
+          details.html(original_html);
+          return false;
+        })
+    details.html(truncated_text);
+    details.append(show_more);
   });
 
+
+    $(".show-more a").on("click", function() {
+
+    var $this = $(this);
+    var $content = $this.parent().prev("div.comment");
+    var linkText = $this.text().toUpperCase();
+
+    var text = $content.text();
+    if(linkText === "+ MOSTRAR MÁS"){
+        linkText = "- Mostrar menos";
+        $content.css('height', 'auto');
+    } else {
+        linkText = "+ Mostrar más";
+        $content.css('height', '3em');
+    };
+
+    $this.text(linkText);
+});
 
   $('#page-wrapper #close').on('click', function(event) {
 

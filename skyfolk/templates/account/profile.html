@@ -464,7 +464,7 @@
                   {% endif %}
                       </div>
 
-                    <div class="parrafo comment">
+                    <div class="parrafo comment-tab">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
                         {{ item.from_publication__content | safe }}
                   </div>
@@ -492,10 +492,11 @@
                   <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{ item.user__username }}</a> ha publicado:  </h2>
                   <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br>
-                      <div id="comment-content">
                       {{ item.from_publication__content | safe }}
-                          </div>
                   </div>
+                    <div class="show-more">
+                        <a href="#">+ Mostrar más</a>
+                    </div>
               <!-- OPCIONES DE COMENTARIOS -->
                 <div class="optiones_comentarios">
                     <ul class="opciones">

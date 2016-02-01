@@ -24,7 +24,18 @@ a, a:visited {
   height: auto;
 
 }
-
+.comment {
+    overflow: hidden;
+    line-height: 1em;
+    height: 3em;
+}
+.comment-tab {
+    height: auto;
+}
+.show-more {
+    padding: 10px 0;
+    text-align: center;
+}
 .articulo {
   float: left;
   left: 37px;
