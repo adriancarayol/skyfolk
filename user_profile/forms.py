@@ -41,3 +41,5 @@ class ProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ('image', 'backImage', 'status', 'hiddenMenu')
         #fields = ('image', 'backImage', 'status')
+
+

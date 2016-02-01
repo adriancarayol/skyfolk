@@ -495,12 +495,10 @@ def changepass_confirmation(request):
     return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))
 
 
-class welcomeView(TemplateView):
-    template_name = "account/nuevosusuarios.html"
+def welcomeView(request, username):
+    newUser = username
+    return render_to_response("account/nuevosusuarios.html", context_instance=RequestContext(request, {'newUser': newUser}))
 
-    def get(self, request, *args, **kwargs):
-        newUser = request.user.username
-        return render(request, self.template_name, {'newUser': newUser})
 
 
 class welcomeStep1(TemplateView):
@@ -512,13 +510,11 @@ class welcomeStep1(TemplateView):
 
 
 def setfirstLogin(request):
-    print('HAY')
     response = False
-    user = request.user
-    user = UserProfile.objects.get(pk=user.pk)
-    try:
-        user.firstLogin = True
+    if request.method == 'POST':
+        name = request.POST.get('username', None)
+        print('>>>>>>>>>>>>>>>' + name + "<<<<<<<<<<<<")
         response = True
-    except ObjectDoesNotExist:
-        response = False
+
     return HttpResponse(json.dumps(response), content_type='application/json')
+
