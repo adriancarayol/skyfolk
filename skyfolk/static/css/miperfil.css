@@ -1268,7 +1268,6 @@ ul.table > li {
     right: 0;
     position: absolute;
     background-color: #fff;
-    background-image: url('http://www.wheatonbible.org/Content/10713/Icons/events-calendar-icon.png');
     background-size: 80%;
     background-position: center;
     background-repeat: no-repeat;
@@ -1288,7 +1287,6 @@ ul.table > li {
     right: 0;
     position: absolute;
     background-color: #fff;
-    background-image: url('http://gccentrepreneurship.com/wp-content/uploads/2015/02/trophy-icon-black-icon-trophy.png');
     background-size: 80%;
     border: 1px solid #eee;
     background-position: center;
@@ -1307,7 +1305,6 @@ ul.table > li {
     float: right;
     background-color: #fff;
     border: 1px solid #eee;
-    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Group_font_awesome.svg/512px-Group_font_awesome.svg.png');
     background-size: 80%;
     background-position: center;
     background-repeat: no-repeat;
@@ -1503,9 +1500,6 @@ ul.table > li {
  .foto_perfil {
   width: 45px;
   height: 45px;
-  background: url(http://4.bp.blogspot.com/-OMr8Sy2iEwk/T2DXLgbjXpI/AAAAAAAADKk/RtqLjc2i3J8/s1600/el_padrino_marlon_brando.jpg) no-repeat top right;
-
-
   background-size: 98%;
   border-radius: 98%;
   margin: auto;
@@ -2271,7 +2265,6 @@ z-index:  101;
   cursor: pointer;
 }
 .ctrl li:nth-child(1) {
-  background-image: url('http://cdn.flaticon.com/png/256/32763.png');
   background-size: 50%;
   background-repeat: no-repeat;
   background-position: center;
@@ -2282,13 +2275,11 @@ z-index:  101;
   transform: scale(1.1);
 }
 .ctrl li:nth-child(2) {
-    background-image: url('http://cdn.flaticon.com/png/256/32325.png');
   background-size: 50%;
   background-repeat: no-repeat;
   background-position: center;
 }
 .ctrl li:nth-child(3) {
-      background-image: url('http://cdn.flaticon.com/png/256/61155.png');
   background-size: 50%;
   background-repeat: no-repeat;
   background-position: center;
