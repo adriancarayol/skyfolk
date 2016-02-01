@@ -32,9 +32,9 @@
             </div>
             </div>
         </div>
-        <a onclick="location.href='/step1/{{request.user}}'" class="waves-effect waves-light btn right" onload="loadButtons()">Configurar cuenta</a>
-        <a onclick="setfirstLogin(this);" href="/profile/{{newUser}}" id="omitir-{{newUser}}" class="waves-effect waves-light btn" onload="loadButtons()">Omitir</a>
-        {% endblock %}
+            <a onclick="location.href='/step1/{{request.user}}'" class="waves-effect waves-light btn right" onload="loadButtons()">Configurar cuenta</a>
+            <a href="/profile/{{newUser}}" onclick="setfirstLogin(this);" id="omitir-{{newUser}}" class="waves-effect waves-light btn" onload="loadButtons()">Omitir</a>
+           {% endblock %}
     </div>
 
 </body>

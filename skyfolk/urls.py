@@ -71,7 +71,7 @@ urlpatterns = patterns(
     ),
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Página de bienvenida a nuevos usuarios.
-    url(r'^welcome/(?P<username>[\w-]+)/$', welcomeView.as_view()),
+    url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
     # Página de bienvenida, paso 1.
     url(r'^step1/(?P<username>[\w-]+)/$', welcomeStep1.as_view()),
     #notificaciones
