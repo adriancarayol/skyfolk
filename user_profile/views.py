@@ -108,20 +108,6 @@ def profile_view(request, username):
 
     # cargar recomendaciones por amigos
     # TODO
-    '''
-    listR = []
-    try:
-        friends = user_profile.profile.get_friends()
-        for i in friends:
-            try:
-                user_i = get_object_or_404(
-                    get_user_model(), username__iexact=i["user__username"])
-                listR = user_i.profile.get_friends()
-            except ObjectDoesNotExist:
-                listR = User.objects.all()
-
-    except ObjectDoesNotExist:
-        listR = User.objects.all()[:random.randint(1, 10)] '''
 
     listR = []
     try:
