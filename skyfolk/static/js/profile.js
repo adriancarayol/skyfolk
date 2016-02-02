@@ -14,19 +14,17 @@ $(document).ready(function() {
 
 
 
-    $('.text').each(function(){
-    var length = 5;
-    var details = $(this);
-    var original_html = details.html();
-    var original_text = details.text();
-    var truncated_text = $.trim(original_text).substring(0, length).split(" ").slice(0, -1).join(" ") + " ";
-    var show_more = $('<a href="#more">more</a>');
-        show_more.on('click', function(){
-          details.html(original_html);
-          return false;
-        })
-    details.html(truncated_text);
-    details.append(show_more);
+    /* Show more - Show less */
+
+    $('#tab-comentarios .wrapper').each(function(){
+    var text = $(this).find('.wrp-comment').text();
+    var show = $(this).find('.show-more a');
+
+    if (text.length < 150)
+    {
+        $(show).css('display','none');
+    }
+
   });
 
 

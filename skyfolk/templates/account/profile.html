@@ -492,7 +492,7 @@
                   <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{ item.user__username }}</a> ha publicado:  </h2>
                   <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br>
-                      {{ item.from_publication__content | safe }}
+                      <div class="wrp-comment">{{ item.from_publication__content | safe }}</div>
                   </div>
                     <div class="show-more">
                         <a href="#">+ Mostrar más</a>
