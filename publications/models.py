@@ -24,7 +24,6 @@ class Publication(models.Model):
     def reduce_like_pub(self):
         self.likes -= 1
 
-    # metadatos
     def __str__(self):
         return self.content
 

@@ -735,7 +735,7 @@ function AJAX_respondFriendRequest(id_emitter, status) {
     success: function(response) {
 
       if (response == "added_friend") {
-
+        addItemToFriendList('Nuevo','nuevo');
         sweetAlert("You have added a friend!");
 
 
@@ -807,7 +807,7 @@ function showRequest(id_profile, username) {
     // (string | mandatory) the text inside the notification
     text: '',
     // (string | optional) the image to display on the left
-    image: '../../static/img/imagesgritter/a.png',
+    image: '../../static/img/nuevo.png',
     // (bool | optional) if you want it to fade out on its own or just sit there
     sticky: true,
     // (int | optional) the time you want it to be alive for before fading out
@@ -826,22 +826,6 @@ function showRequest(id_profile, username) {
   });
 
 }
-
-/*
-function cambiopagina(){
-  document.getElementById("linkedin").style.opacity = "1";
-  document.getElementById("linkedin").style.webkitTransition = "opacity 0.9s linear";
-  setTimeout('location.href="/friends"', 500);
-}
-function cambiopagina(){
-  document.getElementById("twitter").style.opacity = "1";
-  document.getElementById("twitter").style.webkitTransition = "opacity 0.9s linear";
-  setTimeout('location.href="/outsession"', 500);
-}
-
-*/
-
-
 
 $(document).ready(function() {
   //Examples of how to assign the ColorBox event to elements

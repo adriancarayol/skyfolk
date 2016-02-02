@@ -119,6 +119,7 @@ def add_like(request):
                 pub.save()
                 response = True
                 statusLike = 1
+
             except ObjectDoesNotExist:
                 response = False
                 statusLike = 0
