@@ -25,7 +25,6 @@
         <li>
           <div class="logotipo_skyfolk" onclick="location.href='/'"> <i>S</i>kyfolk</div>
         </li>
-        <li class="fa fa-comment fa-lg"> </li>
         <li class="fa fa-bell fa-lg"><em onclick="contador()">{{n_likes}}</em></li>
       <ul class="fa fa-bars fa-lg">
             {% if user.profile.hiddenMenu == False %} <!-- Elección del usuario el menu a mostrar -->
@@ -62,6 +61,19 @@
         <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
       </ul>
     {% endif %}
+
+    <!-- MENU VERTICAL CON NOTIFICACIONES  -->
+    <div class="col-lg-3 col-md-8 col-sm-12 nav-vertical-and-chat">
+      <div class="col-lg-12 col-md-12 col-sm-12 notification-like">
+        <div class="col-lg-2 col-md-2 col-sm-2 hexagon">
+        <i class="fa fa-heart fa-lg"></i>
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-9 notification-content">
+          <h4>¡<a>{{ request.user.username }}</a>, has recibido un me gusta!</h4>
+          <button class="fa fa-check notification-show"></button>
+        </div>
+      </div>
+    </div>
     </nav>
     <script src="{{STATIC_URL}}js/jquery.min.js"></script>
     <script src="{{STATIC_URL}}js/jquery-ui.js"></script>
