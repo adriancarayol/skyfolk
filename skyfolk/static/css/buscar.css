@@ -263,9 +263,9 @@
   background-color: #fff;
   height: 100%;
   text-align: center;
-  margin-left: 2px;
-  margin-top: 7px;
-  padding: 5px 10px;
+  margin-left: 5px;
+  margin-top: 10px;
+  padding: 0px 10px;
   color: #424242;
   font-size: 1.4em;
   -webkit-transition: all .1s ease-in-out;
@@ -275,16 +275,7 @@
 }
 .box-tool .oldMenu li:hover {
   color: #1e88e5;
-}
-
-.box-tool .oldMenu li:after {
-  content: '';
-  display: block;
-  margin-top: 3px;
-  height: 0px;
-  width: 100%;
-  background-color: transparent;
-  transition: height .2s ease-in-out, background-color .2s ease-in-out;
+  border-bottom: 3px solid #1e88e5;
 }
 @media only screen and (max-width: 1200px) {
 .box-tool .oldMenu li {

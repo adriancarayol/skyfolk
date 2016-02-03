@@ -13,7 +13,6 @@ var countTimeLine = 1;
 $(document).ready(function() {
 
 
-
     /* Show more - Show less */
 
     $('#tab-comentarios .wrapper').each(function(){
@@ -56,10 +55,10 @@ $(document).ready(function() {
       var currentPage = window.location.href.split('/')[3];
           switch (currentPage) {
               case "friends":
-              $('.oldMenu li:nth-child(3)').css('color','#1e88e5');
+              $('.oldMenu li:nth-child(3)').css('border-bottom','3px solid #1e88e5');
                   break;
               case "profile":
-                  $('.oldMenu li:nth-child(1)').css('color','#1e88e5');
+                  $('.oldMenu li:nth-child(1)').css('border-bottom','3px solid #1e88e5');
                   break;
               case "search":
                   $('#id_searchText').css('border','1px solid #1e88e5');
