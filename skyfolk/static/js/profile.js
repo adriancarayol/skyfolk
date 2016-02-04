@@ -10,12 +10,12 @@ var countFriendList = 1;
 var countPublicationsList = 1;
 var countTimeLine = 1;
 
-$(document).ready(function() {
+$(document).ready(function () {
 
 
     /* Show more - Show less */
 
-    $('#tab-comentarios .wrapper').each(function(){
+    $('#tab-comentarios .wrapper').each(function () {
     var text = $(this).find('.wrp-comment').text();
     var show = $(this).find('.show-more a');
 
@@ -40,7 +40,7 @@ $(document).ready(function() {
     } else {
         linkText = "+ Mostrar más";
         $content.css('height', '3em');
-    };
+    }
 
     $this.text(linkText);
 });
@@ -227,9 +227,9 @@ $(document).ready(function() {
     });
 
     /* Añadir me gusta a comentario */
-    $('.optiones_comentarios .fa-heart').on('click', function() {
+    $('.optiones_comentarios #like-heart').on('click', function() {
         var caja_publicacion = $(this).closest('.wrapper');
-        var heart = this
+        var heart = this;
         AJAX_add_like(caja_publicacion, heart);
     })
 
@@ -1049,7 +1049,7 @@ function AJAX_add_like(caja_publicacion, heart) {
     success: function(data) {
       var response = data.response;
       var status = data.statusLike;
-      var numLikes = document.getElementById('like-heart');
+      var numLikes = heart;
       var countLikes = numLikes.innerHTML;
         if (response==true) {
             $(heart).css('color','#f06292');
