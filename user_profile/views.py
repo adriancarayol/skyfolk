@@ -136,9 +136,12 @@ def profile_view(request, username):
             else:
                 return False
 
-    myList = ['trabajando', 'no', 'si', 'feliz']
+    estados = {'feliz': 1, 'triste': 2, 'cabreado': 3, 'enojado': 4, 'sorprendido': 5, 
+               'somnoliento': 6, 'cansado': 7, 'pensativo': 8, 'saludable': 9, 
+               'enfermo': 10, 'hambriento': 11,'asustado': 12, 'aburrido': 13, 'apenado': 14} 
+    
     if statusAux != None:
-        if compList(statusAux, myList):
+        if compList(statusAux, estados):
             print('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
         else:
             print('>>> El usuario ' + user_profile.username + " no tiene ningún estado ańimico")
