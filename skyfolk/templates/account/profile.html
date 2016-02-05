@@ -8,6 +8,11 @@
 
 {% endblock %}
 
+{% block extra-js %}
+  <script src="{{STATIC_URL}}js/scrollReveal.js"></script>
+  <script src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+  <script src="{{STATIC_URL}}js/list.min.js"></script>
+{% endblock %}
 
 {% block extra-css %}
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
@@ -507,9 +512,11 @@
         </div>
 
         <div id="tab-amigos">
-            <input class="search-in-tab" type="search" placeholder="¿A quién buscas?" title="Search">
-            <ul class="list-friends">
-
+            <input class="search" type="search" placeholder="¿A quién buscas?" title="Search">
+            <button class="sort" data-sort="name">
+              Sort by name
+            </button>
+            <ul class="list">
                 {% for item in friends_top12 %}
                   <li id="friend-{{item.user__id}}">
                   {% if item.user__profile__image and item.user__profile__image|file_exists %}
@@ -517,13 +524,12 @@
                   {% else %}
                      <img src="{{STATIC_URL}}img/nuevo.png" class="usr-img img-responsive">
                   {% endif %}
-                  <a href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                  <a class="name" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
                   </li>
                 {% endfor %}
-
             </ul>
-
         </div>
+
           </div>
       </div>
       </div>
@@ -667,6 +673,18 @@
       idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
 
     }
+
+</script>
+
+
+<!-- Busqueda en tab-amigos -->
+<script>
+  var options = {
+    valueNames: [ 'name' ],
+    indexAsync : true
+  };
+
+  var userList = new List('tab-amigos', options);
 
 </script>
 

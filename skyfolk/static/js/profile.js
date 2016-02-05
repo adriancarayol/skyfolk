@@ -442,11 +442,11 @@ $('#tab-timeline').bind('scroll', function() {
 function addFriendToHtmlList(item) {
 
   if (item.user__profile__image) {
-    $("#tab-amigos ul.list-friends").append('<li id="friend-' + item.user__id + '"><img src="' + MEDIA_URL + item.user__profile__image + '"  class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
+    $("#tab-amigos ul.list").append('<li id="friend-' + item.user__id + '"><img src="' + MEDIA_URL + item.user__profile__image + '"  class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
 
     //SI NO EXISTE LA URL DE LA IMAGEN, SE CAMBIA POR EL AVATAR POR DEFECTO. QUITAR ESTO CUANDO
     //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
-    imageselector = $("#tab-amigos ul.list-friends #friend-" + item.user__id + " img.friend-avatar")
+    imageselector = $("#tab-amigos ul.list #friend-" + item.user__id + " img.friend-avatar")
     URL_CHECK = MEDIA_URL + item.user__profile__image;
     URL_CHANGE = STATIC_URL + 'img/generic-avatar.png';
     //Check image URL;
@@ -480,7 +480,7 @@ function addFriendToHtmlList(item) {
     })(imageselector, URL_CHECK, URL_CHANGE);
 
   } else {
-    $("#tab-amigos ul.list-friends").append('<li id="friend-' + item.user__id + '"><img src="' + STATIC_URL + 'img/generic-avatar.png" class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
+    $("#tab-amigos ul.list").append('<li id="friend-' + item.user__id + '"><img src="' + STATIC_URL + 'img/generic-avatar.png" class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
   }
 
 

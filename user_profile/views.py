@@ -416,9 +416,8 @@ def friends(request, username):
 
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
-
-        # cargar lista de amigos (12 primeros)
-    try:
+    
+    '''try:
         # friends_4 = request.user.profile.get_friends_next(1)
         friends = user_profile.profile.get_friends()
     except ObjectDoesNotExist:
@@ -434,8 +433,12 @@ def friends(request, username):
             friends_top4 = friends[0:4]
 
         else:
-            friends_top4 = friends
-
+            friends_top4 = friends'''
+    try:
+        friends_top4 = user_profile.profile.get_friends()
+    except ObjectDoesNotExist:
+        friends_top4 = None
+        
     return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm},
                               context_instance=RequestContext(request))
 

@@ -444,7 +444,7 @@
 }
 
   /* Buscar en el tab-amigos */
-    .search-in-tab {
+  #tab-amigos .search {
         position: relative;
         border: none;
         width: 70%;
@@ -458,9 +458,31 @@
         background: #eeeeee url("/static/img/search-icon.png") no-repeat 95%;
         background-size: 13px;
     }
-    .search-in-tab:focus {
+    #tab-amigos .search:focus {
         background: #fefefe url('/static/img/search-icon.png') no-repeat 1%;
         background-size: 13px;
+    }
+
+    #tab-amigos .sort {
+      position: relative;
+      display: block;
+      outline: none;
+      margin: auto;
+      text-align: center;
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease-out 0s;
+      height: 36px;
+      line-height: 36px;
+      padding: 0px 2rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #1e88e5;
+      background-color: transparent;
+      border: medium none;
+      border-radius: 2px;
+    }
+    #tab-amigos .sort:hover {
+      background-color: #eee;
     }
 @media only screen and (min-width: 640px) and (max-width: 1080px) {
   .logotipo_skyfolk {
