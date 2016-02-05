@@ -266,7 +266,7 @@ $(document).ready(function () {
 
   /* Abrir - Cerrar lista de atajos */
 
-  $('.menup li:nth-child(7)').on('click',function() {
+  $('.menup .shortcut-keyboard').on('click',function() {
     $('#atajos-keyboard-profile').fadeToggle("fast");
   });
 

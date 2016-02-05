@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <!-- codigo del modulo allauth -->
- 
+
   <head>
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
@@ -27,10 +27,8 @@
     </div>
     {% endif %}
 <div class="display-info-reset-password">
-<div class="skyfolk-logo">
-    <img src="{{ STATIC_URL }}img/logo.png">
-</div>
-    <h6>Restablecimiento de contraseña</h6>
+<div class="logotipo_skyfolk" onclick="location.href='/'"> <h5><i>S</i>kyfolk</h5> <h6>Restablecimiento de contraseña</h6></div>
+
 </div>
     <div class="menu">
       <strong>¿No necesitas recuperar o restablecer tu contraseña?</strong>
@@ -50,7 +48,7 @@
     {% block extra_body %}
     {% endblock %}
   </body>
-  
+
 
 
 
