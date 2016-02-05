@@ -73,6 +73,7 @@ FIRST_PARTY_APPS = (
     'market',                  # tienda de aplicaciones
     'relaciones',              # app para controlar las relaciones entre users
     'latest_news',
+    'achievements',            # modulo para los logros del usuario
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
