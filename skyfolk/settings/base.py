@@ -112,6 +112,8 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'skyfolk <no-reply@skyfolk.net>'
 
+# SESSION EXPIRATION
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 # REST FRAMEWORK
 #                   http://www.django-rest-framework.org/
 REST_FRAMEWORK = {
@@ -132,7 +134,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'skyfolk.middleware.AutoLogout', 
 )
+
+
+# Auto logout delay in minutes
+AUTO_LOGOUT_DELAY = 5 #equivalent to 5 minutes
 
 ROOT_URLCONF = 'skyfolk.urls'
 
