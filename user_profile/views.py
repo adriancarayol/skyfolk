@@ -22,7 +22,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm
 from user_profile.models import Relationship, LikeProfile, UserProfile
-
+from achievements.models import Achievements
 
 # allauth
 # Create your views here.
@@ -173,6 +173,7 @@ def profile_view(request, username):
         t = Timeline.objects.all()
     except ObjectDoesNotExist:
         t = None
+        
 
     return render_to_response('account/profile.html',
                               {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,

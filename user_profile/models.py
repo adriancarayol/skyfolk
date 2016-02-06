@@ -6,9 +6,11 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.template.defaultfilters import default
 from django.utils.translation import ugettext as _
+from achievements.models import Achievements
 
 import publications
 import timeline
+
 
 
 #from publications.models import Publication
@@ -53,7 +55,8 @@ class UserProfile(models.Model):
     ultimosUsuariosVisitados = models.ManyToManyField('self') # Lista de ultimos usuarios visitados.
     firstLogin = models.BooleanField(default=False) # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto, mostrar configuracion inicial.
     hiddenMenu = models.BooleanField(default=True) # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
-
+    achievements = models.ManyToManyField('self', Achievements, symmetrical=False)
+    
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
 

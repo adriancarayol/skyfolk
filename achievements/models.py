@@ -13,10 +13,11 @@ class Achievements(models.Model):
         ('D', 500),
         ('M', 1000),
     )
-    name = models.CharField(max_length=30)
-    description = models.CharField(max_length=145)
-    points = models.IntegerField(default=0, choices=POINTS)
-    image = models.ImageField(upload_to=uploadAchievementsPath, verbose_name='image', blank=True, null=True)
+    name = models.CharField(max_length=30) # nombre del logro
+    description = models.CharField(max_length=145) # descripcion del logro
+    points = models.IntegerField(default=0, choices=POINTS) # puntuacion del logro
+    image = models.ImageField(upload_to=uploadAchievementsPath, verbose_name='image', blank=True, null=True) # imagen del logro
+    unlock = models.BooleanField(default=False) # bloqueado/desbloqueado
     
     def __str__(self):
         return '%s %s' % (self.name, self.description)
