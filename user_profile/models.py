@@ -199,7 +199,20 @@ class UserProfile(models.Model):
 
     def remove_received_friend_request(self, profile):
         Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FRIEND).delete()
-
+        
+        
+    # Metodos para logros
+    
+    def setNewAchievement(self, nombre, descripcion, puntos):
+        try:
+            logro = Achievements.objects.get(name=nombre)
+        except Achievements.DoesNotExist:
+            logro = Achievements(name=nombre, description=descripcion, points=puntos, unlock=True)
+            logro.save()
+            self.achievements.add(logro)
+    
+    
+            
     """
         def get_friends_next4(self, next):
             n = next * 4
@@ -230,13 +243,13 @@ class UserProfile(models.Model):
             diff = int(pin[-1:])
             return pin[:-(diff+1)]
         return None
-
-
+    
+    
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 
-
-
+       
+        
 
 class Relationship(models.Model):
     from_person = models.ForeignKey(UserProfile, related_name='from_people')
