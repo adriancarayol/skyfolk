@@ -22,7 +22,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm
 from user_profile.models import Relationship, LikeProfile, UserProfile
-from achievements.models import Achievements
+
 
 # allauth
 # Create your views here.

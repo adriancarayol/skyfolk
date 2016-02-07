@@ -6,7 +6,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.template.defaultfilters import default
 from django.utils.translation import ugettext as _
-from achievements.models import Achievements
+
 
 import publications
 import timeline
