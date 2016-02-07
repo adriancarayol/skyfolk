@@ -2304,5 +2304,105 @@ textarea:focus {
 
 .move-body {
   margin-right: 300px;
+}
 
+/* LOADER */
+
+@-webkit-keyframes loader-before {
+  0% {
+    left: 0;
+    width: 0;
+  }
+  50% {
+    left: 25%;
+    width: 75%;
+  }
+  75% {
+    left: 100%;
+    width: 0;
+  }
+}
+@keyframes loader-before {
+  0% {
+    left: 0;
+    width: 0;
+  }
+  50% {
+    left: 25%;
+    width: 75%;
+  }
+  75% {
+    left: 100%;
+    width: 0;
+  }
+}
+@-webkit-keyframes loader-after {
+  0%,
+  50% {
+    left: 0;
+    width: 0;
+  }
+  75% {
+    left: 0;
+    width: 25%;
+  }
+  100% {
+    left: 100%;
+    width: 0;
+  }
+}
+@keyframes loader-after {
+  0%,
+  50% {
+    left: 0;
+    width: 0;
+  }
+  75% {
+    left: 0;
+    width: 25%;
+  }
+  100% {
+    left: 100%;
+    width: 0;
+  }
+}
+
+#loader {
+  display: inline-block;
+  position: relative;
+  height: 4px;
+  width: 100%;
+  margin-top: 11px;
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), -webkit-linear-gradient(left, #1e88e5, #1e88e5);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), linear-gradient(to right, #1e88e5, #1e88e5);
+}
+
+#loader:after, #loader:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background-color: #1e88e5;
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+          animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+          animation-timing-function: linear;
+}
+#loader:before {
+  left: 0;
+  -webkit-animation-name: loader-before;
+     -moz-animation-name: loader-before;
+          animation-name: loader-before;
+}
+#loader:after {
+  right: 0;
+  -webkit-animation-name: loader-after;
+     -moz-animation-name: loader-after;
+          animation-name: loader-after;
 }

@@ -10,6 +10,11 @@ var countFriendList = 1;
 var countPublicationsList = 1;
 var countTimeLine = 1;
 
+  /* LOADER PARA SKYFOLK */
+$(window).load(function() {
+  $("#loader").fadeOut("slow");;
+});
+
 $(document).ready(function () {
 
 
@@ -518,12 +523,17 @@ function addPublicationToHtmlList(item) {
                   <img src="' + MEDIA_URL + item.user__profile__image + '" alt="img" class="usr-img img-responsive">\
                   </div>\
                   </div>\
-              <span class="entypo-plus" title="Añadir a..."></span>\
             </div>\
             <article class="articulo">\
               <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> ha publicado: </h2>\
               <div class="parrafo comment">\
-                <a target="_blank">' + item.from_publication__created + '</a><br>' + item.from_publication__content + '\
+                <a target="_blank">' + item.from_publication__created + '</a><br>\
+                <div class="wrp-comment">' + item.from_publication__content + '</div>\
+              </div>\
+              <div class="show-more">\
+                <a href="#">+ Mostrar más</a>\
+              </div>\
+              <div class="optiones_comentarios">\
               </div>\
             </article>\
         </div>');

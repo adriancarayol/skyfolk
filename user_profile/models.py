@@ -55,7 +55,7 @@ class UserProfile(models.Model):
     ultimosUsuariosVisitados = models.ManyToManyField('self') # Lista de ultimos usuarios visitados.
     firstLogin = models.BooleanField(default=False) # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto, mostrar configuracion inicial.
     hiddenMenu = models.BooleanField(default=True) # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
-    
+
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
 
@@ -112,7 +112,7 @@ class UserProfile(models.Model):
 
     def getTimelineToMe(self):
         return self.timeline_to.filter(
-            from_timeline=self).values('user__username', 'user__first_name').ordered_by('from_timeline__insertation_date')
+            from_timeline=self).values('user__username', 'user__first_name').ordered_by('from_timeline__insertation_date').reverse()
 
     #Methods of publications
 
@@ -198,8 +198,8 @@ class UserProfile(models.Model):
 
     def remove_received_friend_request(self, profile):
         Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FRIEND).delete()
-        
-                
+
+
     """
         def get_friends_next4(self, next):
             n = next * 4
@@ -230,13 +230,13 @@ class UserProfile(models.Model):
             diff = int(pin[-1:])
             return pin[:-(diff+1)]
         return None
-    
-    
+
+
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 
-       
-        
+
+
 
 class Relationship(models.Model):
     from_person = models.ForeignKey(UserProfile, related_name='from_people')

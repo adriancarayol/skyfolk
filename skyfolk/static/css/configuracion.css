@@ -87,7 +87,14 @@ h6 {
 }
 #form-changepass {
   position: relative;
-  left: 70px;
+  display: block;
+  margin-left: 27%;
+}
+#form-changepass label {
+  font-size: 1.2em;
+}
+#form-changepass #btn {
+  margin-top: 40px;
 }
 .img-profile {
   width: 120px;
@@ -99,8 +106,8 @@ h6 {
   margin: auto;
   top: 80px;
 }
-.actual {
-  padding: 10px 5px;
+.actual, #form-changepass input {
+  padding: 0px 5px;
   border: none;
   border-bottom: solid 2px #c9c9c9;
   transition: border 0.3s;
@@ -108,7 +115,10 @@ h6 {
   width: 100%;
   background-color: transparent;
 }
-.actual:focus {
+ #form-changepass input {
+  width: 30%;
+}
+.actual:focus, #form-changepass input:focus {
   border-bottom: solid 2px #1E88E5;
 }
 
@@ -198,7 +208,7 @@ label[for="id_password2"] {
   width: 100%;
 }
 #form-changepass {
-  height: 100%;
+  height: auto;
 }
 
 /* Boton salvar cambios */
@@ -224,7 +234,7 @@ button[type="submit"] {
   margin-right: 10%;
   outline: none;
 }
-#boton-perfil {
+#boton-perfil, #btn {
   position: relative;
   padding: 10px 7px;
   width: auto;
