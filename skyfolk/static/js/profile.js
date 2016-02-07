@@ -448,7 +448,7 @@ function addFriendToHtmlList(item) {
     //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
     imageselector = $("#tab-amigos ul.list #friend-" + item.user__id + " img.friend-avatar")
     URL_CHECK = MEDIA_URL + item.user__profile__image;
-    URL_CHANGE = STATIC_URL + 'img/generic-avatar.png';
+    URL_CHANGE = STATIC_URL + 'img/nuevo.png';
     //Check image URL;
     (function(imageselector, URL_CHECK, URL_CHANGE) {
 
@@ -492,16 +492,36 @@ function addPublicationToHtmlList(item) {
   if (item.user__profile__image) {
     $("#tab-comentarios").append('<div class="wrapper" id="pub-' + item.from_publication__id + '">\
               <div id="box">\
-                  <input id="profile" type="checkbox" checked>\
-                  <label class="popo" for="profile">\
-                  <img id="avatar-publication" src="' + MEDIA_URL + item.user__profile__image + '" alt="img" class="pub-avatar img-responsive">\
-                  </label>\
-                  <span class="entypo-thumbs-up" title="¡Me gusta!"></span>\
-                  <span class="entypo-forward" title="Responder"></span>\
+                  <span id="check-' + item.from_publication__id + '" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></span>\
+                  <div class="ampliado" id="expand-' + item.from_publication__id +'">\
+                    <div class="nombre_image">\
+                    <ul>\
+                    <li><i class="first">' + item.user__first_name + item.user__last_name + '</i></li>\
+                    <li><a class="name" href="/profile/' + item.user__username + '" >' + item.user__username + '</a></li>\
+                    </ul>\
+                    <img src="' + MEDIA_URL + item.user__profile__image + '" alt="img" class="usr-img img-responsive">\
+                    </div>\
+                    <div class="parrafo comment-tab">\
+                    <a target="_blank">' + item.from_publication__created + '</a><br><br>' + item.from_publication__content + '\
+                    </div>\
+                    <div class="text_area">\
+                      <textarea placeholder="Escribe tu mensaje..."></textarea>\
+                      <div class="botones_ampliado">\
+                        <button class="enviar_ampliado"></i class="fa fa-paper-plane"></i>Enviar</button>\
+                        <button class="cerrar_ampliado"></i class="fa fa-close"></i><label for="check-' + item.from_publication__id + '">Cerrar</label></button>\
+                        <button class="difundir_ampliado"></i class="fa fa-bullhorn"></i> Difundir mensaje</button>\
+                        <button class="foto_ampliado"></i class="fa fa-paperclip"></i> Añadir archivo</button>\
+                        <button class="localizacion_ampliado"></i class="fa fa-map-marker"></i> Añadir localización</button>\
+                      </div>\
+                  </div>\
+                  <div class="image">\
+                  <img src="' + MEDIA_URL + item.user__profile__image + '" alt="img" class="usr-img img-responsive">\
+                  </div>\
+                  </div>\
               <span class="entypo-plus" title="Añadir a..."></span>\
             </div>\
             <article class="articulo">\
-              <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
+              <h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> ha publicado: </h2>\
               <div class="parrafo comment">\
                 <a target="_blank">' + item.from_publication__created + '</a><br>' + item.from_publication__content + '\
               </div>\
@@ -514,7 +534,7 @@ function addPublicationToHtmlList(item) {
     //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
     imageselector = $("#tab-comentarios #pub-" + item.from_publication__id + " img.pub-avatar");
     URL_CHECK = MEDIA_URL + item.user__profile__image;
-    URL_CHANGE = STATIC_URL + 'img/generic-avatar.png';
+    URL_CHANGE = STATIC_URL + 'img/nuevo.png';
     //Check image URL
     (function(imageselector, URL_CHECK, URL_CHANGE) {
 

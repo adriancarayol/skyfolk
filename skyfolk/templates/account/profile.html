@@ -417,11 +417,11 @@
             <!-- Check para ampliar el mensaje... -->
                   <div class="ampliado" id="expand-{{item.from_publication__id}}">
                       <div class="nombre_image">
-                      <ul>
+                    <ul>
                       <li><i class="first">{{item.user__first_name}} {{item.user__last_name}}</i></li>
                       <li><a class="name" href="/profile/{{ item.user__username }}" >{{item.user__username}}</a></li>
-                    {% if item.user__profile__image and item.user__profile__image|file_exists %}
                     </ul>
+                    {% if item.user__profile__image and item.user__profile__image|file_exists %}
                      <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
                   {% else %}
                      <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->

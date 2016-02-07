@@ -96,6 +96,8 @@ video#bgvid {
   -moz-transtion: all .2s ease-in;
   -webkit-transition: all .2s ease-in;
   transition: all .2s ease-in;
+  cursor: pointer;
+  text-decoration: none;
 }
 .footer_base a:hover {
   color: #26A69A;
@@ -178,8 +180,9 @@ form {
   left: 35%;
   font-size: 1.01121em;
   font-weight: 100;
-  display: inline;
+  display: inline-block;
   top: 25px;
+  margin-top: 15px;
 }
 
 .form-3 input[type="text"] {
