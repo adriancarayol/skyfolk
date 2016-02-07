@@ -571,9 +571,9 @@ body > .container {
         color: #717a7e; }
       .user-card .stats li a:hover {
         background-color: #e0e0e0;
-        color: #fff; }
+        color: #1e88e5; }
         .user-card .stats li a:hover span {
-          color: #fff; }
+          color: #1e88e5; }
 
 .stock .stock-chart {
   background: #00c5de;
@@ -1111,7 +1111,7 @@ a {
   overflow-x:hidden; }
 
 .unstyled.content{
-  height: 805px;
+  height: 1175px;
 }
 
 #div-separator{

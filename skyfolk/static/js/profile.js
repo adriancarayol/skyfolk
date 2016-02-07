@@ -767,11 +767,10 @@ function AJAX_submit_publication() {
           title: "",
           text: "You have successfully posted!",
           type: "success",
-          timer: 1000,
+          timer: 500,
           animation: "slide-from-top",
           showConfirmButton: false,
       });
-
       } else {
         swal({
           title: "",
@@ -781,11 +780,6 @@ function AJAX_submit_publication() {
       }
 
         $('#page-wrapper').hide(); // Ocultamos el DIV al publicar un mensaje.
-
-        /* EN PRUEBAS */
-        var html = $(data).filter('#tab-comentarios').html();
-
-        $('#tab-comentarios').load(location.href + " #tab-comentarios"); // Mediante AJAX actualizamos los comentarios cuando hay uno nuevo.
 
         },
     error: function(rs, e) {
