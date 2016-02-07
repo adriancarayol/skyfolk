@@ -60,7 +60,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
-    'achievements',            # achivements
+    #'achievements',            # achivements
     'emoji',
     'notifications',           # siempre último
 )
