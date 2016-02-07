@@ -106,10 +106,6 @@ def profile_view(request, username):
         else:
             friends_top12 = friends
 
-
-    # Logros
-    print('>>>>>>> LOGRO NUEVO <<<<<<<')
-    logros = request.user.profile.setNewAchievement('¡Nuevo usuario!', 'Tu primer premio', 50)
      
     # cargar recomendaciones por amigos
     # TODO
