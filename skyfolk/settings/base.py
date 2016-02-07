@@ -60,6 +60,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
+    'achievements',            # achivements
     'emoji',
     'notifications',           # siempre último
 )
@@ -73,7 +74,7 @@ FIRST_PARTY_APPS = (
     'market',                  # tienda de aplicaciones
     'relaciones',              # app para controlar las relaciones entre users
     'latest_news',
-    'achievements',            # modulo para los logros del usuario
+    #'achievements',            # modulo para los logros del usuario
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
@@ -135,7 +136,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'skyfolk.middleware.AutoLogout', 
+    'skyfolk.middleware.AutoLogout',
 )
 
 
