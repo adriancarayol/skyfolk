@@ -112,7 +112,7 @@ class UserProfile(models.Model):
 
     def getTimelineToMe(self):
         return self.timeline_to.filter(
-            from_timeline=self).values('user__username', 'user__first_name').ordered_by('from_timeline__insertation_date').reverse()
+            from_timeline__profile=self).values('user__username', 'user__first_name', 'from_timeline__content', 'from_timeline__insertion_date').order_by('from_timeline__insertion_date').reverse()
 
     #Methods of publications
 

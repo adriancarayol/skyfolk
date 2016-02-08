@@ -366,7 +366,7 @@
                     <div id="section">
                         <div class="wrapperx">
                         {% if isFriend == True or user.username == user_profile.username %}
-                            {% for item in t %}
+                            {% for item in timeline %}
                             <div class="line">
                                 <li>
                                     <div data-sr="wait 0.2s then scale up 30%" class="second">
@@ -379,9 +379,9 @@
                                           <img style="border-radius: 100%; width: 100%; height:100%;" src="{{STATIC_URL}}img/nuevo.png"></img>
                                         </span>
                                         {% endif %}
-                                        <span class="head"><a>{{user_profile.username}}  <a class="fecha_" target="_blank">{{item.from_publication__created}}</a></a><em></em></span>
+                                        <span class="head"><a href="/profile/{{item.user__username}}">{{item.user__username}}</a>  <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em></span>
                                         <div id="p" class="parrafo comment">
-                                                {{item.content}}
+                                                {{ item.from_timeline__content }}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->

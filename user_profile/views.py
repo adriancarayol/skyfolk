@@ -106,7 +106,7 @@ def profile_view(request, username):
         else:
             friends_top12 = friends
 
-     
+
     # cargar recomendaciones por amigos
     # TODO
 
@@ -137,16 +137,16 @@ def profile_view(request, username):
             else:
                 return False
 
-    estados = {'feliz': 1, 'triste': 2, 'cabreado': 3, 'enojado': 4, 'sorprendido': 5, 
-               'somnoliento': 6, 'cansado': 7, 'pensativo': 8, 'saludable': 9, 
-               'enfermo': 10, 'hambriento': 11,'asustado': 12, 'aburrido': 13, 'apenado': 14} 
-    
+    estados = {'feliz': 1, 'triste': 2, 'cabreado': 3, 'enojado': 4, 'sorprendido': 5,
+               'somnoliento': 6, 'cansado': 7, 'pensativo': 8, 'saludable': 9,
+               'enfermo': 10, 'hambriento': 11,'asustado': 12, 'aburrido': 13, 'apenado': 14}
+
     if statusAux != None:
         if compList(statusAux, estados):
             print('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
         else:
             print('>>> El usuario ' + user_profile.username + " no tiene ningún estado ańimico")
-    
+
     # mostrar formulario para enviar comentarios/publicaciones
     publicationForm = PublicationForm()
 
@@ -171,15 +171,15 @@ def profile_view(request, username):
     # cargar timeline
     print('>>>>>>>>>>> TIMELINE <<<<<<<<<<<')
     try:
-        t = Timeline.objects.all()
+        timeline = user_profile.profile.getTimelineToMe()
     except ObjectDoesNotExist:
-        t = None
-        
+        timeline = None
+
 
     return render_to_response('account/profile.html',
                               {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
                                'user_profile': user_profile, 'searchForm': searchForm,
-                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes, 't': t,
+                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes, 'timeline': timeline,
                                'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
                                'json_requestsToMe': json_requestsToMe}, context_instance=RequestContext(request))
 
@@ -421,7 +421,7 @@ def friends(request, username):
 
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
-    
+
     '''try:
         # friends_4 = request.user.profile.get_friends_next(1)
         friends = user_profile.profile.get_friends()
@@ -443,7 +443,7 @@ def friends(request, username):
         friends_top4 = user_profile.profile.get_friends()
     except ObjectDoesNotExist:
         friends_top4 = None
-        
+
     return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm},
                               context_instance=RequestContext(request))
 
@@ -502,4 +502,3 @@ def setfirstLogin(request):
         response = True
 
     return HttpResponse(json.dumps(response), content_type='application/json')
-
