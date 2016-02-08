@@ -364,7 +364,7 @@
           <div class="unstyled content" id="hood-tabs">
         <div id="tab-timeline">
                     <div id="section">
-                        <div class="wrapperx">
+                        <div class="wrapperx" id="tim-{{item.from_timeline__id}}" data-id="{{ user.pk }}">
                         {% if isFriend == True or user.username == user_profile.username %}
                             {% for item in timeline %}
                             <div class="line">
@@ -381,7 +381,7 @@
                                         {% endif %}
                                         <span class="head"><a href="/profile/{{item.user__username}}">{{item.user__username}}</a>  <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em></span>
                                         <div id="p" class="parrafo comment">
-                                                {{ item.from_timeline__content }}
+                                                {{ item.from_timeline__content | safe}}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->

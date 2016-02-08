@@ -50,6 +50,7 @@ urlpatterns = patterns(
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # url add to timeline
     url(r'^timeline/addToTimeline/$', 'timeline.views.addToTimeline', name='add_timeline'),
+    url(r'^timeline/removeTimeline/$', 'timeline.views.removeTimeline', name='remove_timeline'),
     # url novedades e inicio
     url(r'^inicio/mypublications/','latest_news.views.news_and_updates'),
     # url mensajes privados

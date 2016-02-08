@@ -191,6 +191,28 @@ $(document).ready(function () {
         });
   });
 
+  /* Borrar timeline */
+
+  $('#tab-timeline .controles .fa-trash').on('click', function() {
+    var div_timeline = $(this).closest('.wrapperx');
+    swal({
+      title: "Are you sure?",
+      text: "You will not be able to recover this history!",
+      type: "warning",
+      animation: "slide-from-top",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No God, please no!",
+      closeOnConfirm: true
+    }, function(isConfirm) {
+      if (isConfirm) {
+        AJAX_delete_timeline(div_timeline);
+      }
+    });
+});
+
   /* Agregar Amigo por medio de PIN */
   $('#agregar-amigo').on('click', function() {
       swal({
@@ -1018,6 +1040,41 @@ function addItemToFriendList(name, lastname) {
 
 }
 
+
+/*****************************************************/
+/********** AJAX para borrado de timeline ***********/
+/****************************************************/
+
+function AJAX_delete_timeline(div_timeline) {
+  var id_pub = $(div_timeline).attr('id').split('-')[1]  // obtengo id
+  var id_user = $(div_timeline).data('id')// obtengo id
+  var data = {
+           userprofile_id: id_user,
+           timeline_id: id_pub
+       };
+  //event.preventDefault(); //stop submit
+  $.ajax({
+    url: '/timeline/removeTimeline/',
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    success: function(data) {
+        // borrar caja publicacion
+        if (data==true) {
+            $(div_timeline).fadeToggle("fast");
+        }else{
+            swal({
+                title: "Fail",
+                text: "Failed to delete publish.",
+                type: "error"
+            });
+        }
+    },
+    error: function(rs, e) {
+      alert('ERROR: ' + rs.responseText);
+    }
+  });
+}
 /*****************************************************/
 /********** AJAX para botones de comentarios *********/
 /*****************************************************/

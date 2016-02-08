@@ -418,7 +418,7 @@ def respond_friend_request(request):
 @login_required(login_url='/')
 def friends(request, username):
     searchForm = SearchForm()
-
+    publicationForm = PublicationForm()
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
 
@@ -444,7 +444,8 @@ def friends(request, username):
     except ObjectDoesNotExist:
         friends_top4 = None
 
-    return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm},
+    return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm,
+    'publicationForm': publicationForm},
                               context_instance=RequestContext(request))
 
 

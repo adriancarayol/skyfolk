@@ -92,3 +92,18 @@ html, body {
 .container .personal-card .name-friend p:last-child {
     color: #414141;
 }
+
+/* No items - Search */
+
+#search-noelements {
+   position: relative;
+   display: block;
+   margin: auto;
+   text-align: center;
+}
+
+#search-noelements h5 {
+  color: #555;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 2em;
+}
