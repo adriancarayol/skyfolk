@@ -35,12 +35,10 @@ body {
   cursor: pointer;
 }
 .logo img {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   position: absolute;
-  margin: auto;
-  vertical-align: middle;
-  top: 0px;
+  top: 12px;
   left: 0px;
 }
 .namesn i {
@@ -52,7 +50,7 @@ body {
   left: 87px;
   font-size: 5em;
   text-decoration: none;
-  color: #212121;
+  color: #555;
   letter-spacing: 0.5px;
   display: inline-block;
   font-family: 'Pacifico', cursive;
