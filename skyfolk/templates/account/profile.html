@@ -364,10 +364,10 @@
           <div class="unstyled content" id="hood-tabs">
         <div id="tab-timeline">
                     <div id="section">
-                        <div class="wrapperx" id="tim-{{item.from_timeline__id}}" data-id="{{ user.pk }}">
+                        <div class="wrapperx">
                         {% if isFriend == True or user.username == user_profile.username %}
                             {% for item in timeline %}
-                            <div class="line">
+                            <div class="line" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
                                 <li>
                                     <div data-sr="wait 0.2s then scale up 30%" class="second">
                                         {% if user_profile.profile.image %}

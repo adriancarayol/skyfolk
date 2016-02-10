@@ -194,7 +194,7 @@ $(document).ready(function () {
   /* Borrar timeline */
 
   $('#tab-timeline .controles .fa-trash').on('click', function() {
-    var div_timeline = $(this).closest('.wrapperx');
+    var div_timeline = $(this).closest('.line');
     swal({
       title: "Are you sure?",
       text: "You will not be able to recover this history!",
@@ -272,9 +272,7 @@ $(document).ready(function () {
   $('#page-wrapper #message2').keypress(function(event) {
     //tecla ENTER presinada + Shift
     if (event.keyCode == 13 && event.shiftKey) {
-
       $('#sendformpubli').click();
-
     }
   });
 
@@ -1047,11 +1045,12 @@ function addItemToFriendList(name, lastname) {
 
 function AJAX_delete_timeline(div_timeline) {
   var id_pub = $(div_timeline).attr('id').split('-')[1]  // obtengo id
-  var id_user = $(div_timeline).data('id')// obtengo id
+  var id_user = $(div_timeline).data('id') // obtengo id
   var data = {
            userprofile_id: id_user,
            timeline_id: id_pub
        };
+       alert("id pub: " + id_pub + " id_user: " + id_user);
   //event.preventDefault(); //stop submit
   $.ajax({
     url: '/timeline/removeTimeline/',
@@ -1059,7 +1058,7 @@ function AJAX_delete_timeline(div_timeline) {
     dataType: 'json',
     data: data,
     success: function(data) {
-        // borrar caja publicacion
+        // borrar caja timeline
         if (data==true) {
             $(div_timeline).fadeToggle("fast");
         }else{
