@@ -1050,7 +1050,7 @@ function AJAX_delete_timeline(div_timeline) {
            userprofile_id: id_user,
            timeline_id: id_pub
        };
-       alert("id pub: " + id_pub + " id_user: " + id_user);
+  //alert("id pub: " + id_pub + " id_user: " + id_user);
   //event.preventDefault(); //stop submit
   $.ajax({
     url: '/timeline/removeTimeline/',
