@@ -323,12 +323,11 @@ $(document).keypress(function(e){
 /* Cierra todas las ventajas emergentes. */
 
 $( document ).on('keydown', function(e) {
-    if ( e.keyCode === 27 &&
-    ($('#atajos-keyboard-profile').is(':visible') ||
-    $('#page-wrapper').is(':visible'))) { // escape
+    if ( e.keyCode === 27 ) { // escape
 
-        $('#page-wrapper').hide();
-        $('#atajos-keyboard-profile').hide();
+        $('#page-wrapper').hide();  // Oculta from para crear comentario.
+        $('#atajos-keyboard-profile').hide(); // Oculta atajos de teclado.
+        $('.ampliado').hide(); // Oculta mensaje ampliado.
 
     }
 });
