@@ -140,8 +140,8 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-# Auto logout delay in minutes
-AUTO_LOGOUT_DELAY = 5 #equivalent to 5 minutes
+# Auto logout delay in minutes - 1 mes
+AUTO_LOGOUT_DELAY = 60
 
 ROOT_URLCONF = 'skyfolk.urls'
 

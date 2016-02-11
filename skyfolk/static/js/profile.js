@@ -1,11 +1,3 @@
-/*
-$("#ilike_profile").click(function () {
-    alert("ok!");
-});
-*/
-
-
-
 var countFriendList = 1;
 var countPublicationsList = 1;
 var countTimeLine = 1;
@@ -1147,6 +1139,9 @@ function AJAX_add_like(caja_publicacion, heart) {
             swal({
                 title: ":-(",
                 text: "¡No puedes dar like a este comentario!",
+                timer: 1000,
+                animation: "slide-from-bottom",
+                showConfirmButton: false,
                 type: "error"
             });
         }

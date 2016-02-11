@@ -280,14 +280,26 @@
   border-bottom: 3px solid #1e88e5;
 }
 @media only screen and (max-width: 1200px) {
-.box-tool .oldMenu li {
-  font-size: 1.1em;
+  .box-tool .oldMenu {
+    width: 40.9%;
   }
+  .box-tool .oldMenu li {
+    font-size: 1.2em;
+    margin-left: -2px;
+    }
+    .box-tool .logotipo_skyfolk { display: none; }
 }
+
 @media only screen and (max-width: 1005px)  {
   .box-tool .oldMenu {
     display: none;
     }
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1250px) {
+  .box-tool .oldMenu li {
+    margin-left: 1px;
+  }
 }
 
 .box-tool .oldMenu li:hover:after {
