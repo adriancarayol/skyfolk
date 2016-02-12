@@ -26,8 +26,8 @@ class SignupForm(forms.Form):
 
 
 class UserForm(forms.ModelForm):
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual'}))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'maxlength': '30'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'maxlength': '30'}))
 
     class Meta:
         model = User

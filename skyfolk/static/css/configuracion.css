@@ -107,7 +107,7 @@ h6 {
   top: 80px;
 }
 .actual, #form-changepass input {
-  padding: 0px 5px;
+  padding: 5px 5px;
   border: none;
   border-bottom: solid 2px #c9c9c9;
   transition: border 0.3s;
@@ -118,7 +118,7 @@ h6 {
  #form-changepass input {
   width: 30%;
 }
-.actual:focus, #form-changepass input:focus {
+.actual:focus, #form-changepass input:focus, #id_status:focus {
   border-bottom: solid 2px #1E88E5;
 }
 
@@ -266,20 +266,13 @@ label[for="id_backImage"] {
   margin-right: 10px;
 }
 #id_status {
-  width: 200px;
-  position: relative;
-  margin: auto;
-  padding: 5px 7px;
-  color: rgba(44, 44, 44, 0.854);
-  border: 1px solid #ececec;
-  border-radius: 2px;
-  transition: all .3s linear;
-  -webkit-transition: all .3s linear;
-  -moz-transition: all .3s;
-  font-family: 'Open Sans', sans-serif;
-  margin-top: 10px;
-  margin-left: 20px;
-  margin-right: 0px;
+  padding: 5px 5px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
+  transition: border 0.3s;
+  outline: none;
+  width: 100%;
+  background-color: transparent;
 }
 label[for="id_status"] {
   top: 0px;

@@ -10,6 +10,7 @@
 </hgroup>
 {% endblock %}
 
+
 {% block cf-form %}
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
 	<div class="col-lg-12 col-md-12 col-sm-12 wrapper-profilex">
@@ -64,4 +65,14 @@
 				<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
 		</div>
 	</form>
+	<script>
+		jQuery("a").each(function(i, value) {
+	   var hyperlink = jQuery(value);
+	   var text = hyperlink.text();
+
+	   if(text.length > 25) {
+	      hyperlink.text(text.substring(0, 21) + "...");
+	   }
+	});
+	</script>
 {% endblock %}
