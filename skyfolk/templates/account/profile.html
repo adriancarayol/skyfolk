@@ -662,7 +662,21 @@
 
 </script>
 
+<script type="text/javascript">
+$(document).ready(function() {
+  $("#message2").mention({
+      delimiter: '@',
+      users: [{
+          username: "ashley"
+      }, {
+          username: "roger"
+      }, {
+          username: "frecklefart123"
+      }]
+  });
+});
 
+</script>
 <!-- Busqueda en tab-amigos -->
 <script>
   var options = {

@@ -23,7 +23,6 @@ $(document).ready(function () {
 
   });
 
-
     $(".show-more a").on("click", function() {
 
     var $this = $(this);

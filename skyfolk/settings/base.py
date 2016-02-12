@@ -16,7 +16,8 @@ import os
 from django.core.exceptions import ImproperlyConfigured
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 
 
 # Quick-start development settings - unsuitable for production
@@ -102,7 +103,7 @@ LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
 ACCOUNT_SIGNUP_FORM_CLASS = 'user_profile.forms.SignupForm'
-ACCOUNT_LOGOUT_REDIRECT_URL ='/accounts/login'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 # / DJANGO ALL AUTH CONFIG
 
 # CONFIG E-MAIL
@@ -207,7 +208,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-SITE_ID=1
+SITE_ID = 1
 
 #FILE_CHARSET="utf-8"
 
@@ -216,7 +217,7 @@ SITE_ID=1
 
 # COOKIES sessions
 
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30 # One month
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # One month
 
 STATIC_URL = '/static/'
 
@@ -225,7 +226,7 @@ STATICFILES_DIRS = (
 )
 
 # Media (uploads, ...)
-MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR,'skyfolk'),'media')
+MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
 MEDIA_URL = '/media/'
 
 ADMINS = (
@@ -235,7 +236,10 @@ ADMINS = (
 )
 
 # NOTIFICACIONES
-NOTIFICATIONS_SOFT_DELETE=True          # Marca las notificaciones como borradas en vez de eliminarlas de la base de datos.
-NOTIFICATIONS_USE_JSONFIELD=True        # Permite enviar datos arbitrarios en las notificaciones
+''' Marca las notificaciones como borradas
+    en vez de eliminarlas de la base de datos.'''
+NOTIFICATIONS_SOFT_DELETE = True
+''' Permite enviar datos arbitrarios en las notificaciones '''
+NOTIFICATIONS_USE_JSONFIELD = True
 
 
