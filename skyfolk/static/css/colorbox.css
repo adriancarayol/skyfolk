@@ -200,6 +200,12 @@ section li {
   background-color: #fff;
   position: relative;
 }
+
+select {
+    -moz-appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+}
 .btn {
   position: relative;
   display: inline;
@@ -211,16 +217,16 @@ section li {
   font-family: 'Open Sans', sans-serif;
   font-weight: 200;
   border: 1px solid transparent;
-  background:#33cccc;
-  color: white;
-  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+  background: transparent;
+  color: #1e88e5;
+  -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   outline: none;
   cursor: pointer;
   transition: all .3s ease-in;
 }
 .btn li .all:hover {
-  color: #33cccc;
-  background: #fff;
+  background: #eee;
 }
 .btn li select {
   border: 1px solid transparent;
@@ -228,12 +234,13 @@ section li {
   font-family: 'Open Sans', sans-serif;
   transition: all .3s ease-in-out;
   outline-color: white;
-  background:#33cccc;
-  color: white;
+  -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  background: transparent;
+  color: #1e88e5;
 }
 .btn li select:hover {
-  color: #33cccc;
-  background: white;
+  background: #eee;
 }
 
 .layout {
@@ -246,9 +253,10 @@ section li {
   font-family: 'Open Sans', sans-serif;
   font-weight: 200;
   border: 1px solid transparent;
-  background:#33cccc;
+  background: transparent;
   color: white;
-  -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+  -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   outline: none;
   cursor: pointer;
   margin-top: 5%;
