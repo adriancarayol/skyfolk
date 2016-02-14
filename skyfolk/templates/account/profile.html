@@ -672,6 +672,7 @@ $(document).ready(function() {
     },
     dataType: 'json',
     success: function(data) {
+    alert(data.friends);
       $("#message2").mention({
           queryBy: ['name', 'username'],
           users: [{
