@@ -1,4 +1,4 @@
-import json
+s    import json
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
@@ -137,6 +137,28 @@ def add_like(request):
         else:
             response = False
             statusLike = 0
-    print("Fin like comentario ---> Response" + str(response) + " Estado" + str(statusLike))
+    print("Fin like comentario ---> Response" + str(response)
+    + " Estado" + str(statusLike))
     data = json.dumps({'response': response, 'statusLike': statusLike})
+    return HttpResponse(data, content_type='application/json')
+
+
+def get_mentions(request):
+    response = False
+    if request.POST:
+        slug = request.POST['slug']  # ID del usuario que hace login
+
+        try:
+            user = get_object_or_404(
+            get_user_model(), pk=slug)
+            print('>>>>>> ESTO ES GET_MENTIONS <<<<<<<<<<<')
+            friends = user.profile.get_friends()
+            response = True
+            print(user.username)
+            print(len(friends))
+        except ObjectDoesNotExist:
+            friends = None
+            response = False
+
+    data = json.dumps({'response': response, 'friends': list(friends)})
     return HttpResponse(data, content_type='application/json')

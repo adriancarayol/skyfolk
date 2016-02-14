@@ -797,7 +797,7 @@ function AJAX_submit_publication() {
   //event.preventDefault(); //stop submit
   $.ajax({
     url: '/publication/',
-    action: "load_publications",
+    action: '/load_publications/',
     type: 'POST',
     dataType: 'json',
     data: $('#page-wrapper #message-form2').serialize(),
@@ -864,7 +864,7 @@ $(document).ready(function() {
   //Examples of how to assign the ColorBox event to elements
   $(".inline").colorbox({
     inline: true,
-    width: "78%"
+    width: "80%"
   });
   $(".callbacks").colorbox({
     onOpen: function() {

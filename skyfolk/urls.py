@@ -42,7 +42,7 @@ urlpatterns = patterns(
     url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),
     url(r'^publication/add_like/$', 'publications.views.add_like', name='add_like'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
-    url(r'^load_publications/$', 'publications.views.load_publications'),
+    #url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
     url(r'^accounts/password/change', user_profile_views.custom_password_change),
     url(r'^accounts/', include('allauth.urls')),
@@ -59,6 +59,8 @@ urlpatterns = patterns(
     url(r'^about/([^/]+)/$',about),
     # Market Skyfolk
     url(r'^market/$',market_inicio),
+    # Menciones en comentarios
+    url(r'^get_mentions/', 'publications.views.get_mentions', name='get_mentions'),
     # Relaciones usuario
     url(r'^relations/(?P<username>[\w-]+)/$',relaciones_user),
     # Importamos las urls de REST Framework

@@ -664,15 +664,34 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-  $("#message2").mention({
-      delimiter: '@',
-      users: [{
-          username: "ashley"
-      }, {
-          username: "roger"
-      }, {
-          username: "frecklefart123"
-      }]
+  $.ajax({
+    url: '/get_mentions/',
+    type: 'POST',
+    data: {
+      'slug': $("#profileId").html(),
+    },
+    dataType: 'json',
+    success: function(data) {
+      $("#message2").mention({
+          queryBy: ['name', 'username'],
+          users: [{
+              username: "sarah",
+              name: "Sarah Jones",
+              image: "http://placekitten.com/25/25"
+          }, {
+              username: "bigCat",
+              name: "Scott Pfaff",
+              image: "http://placekitten.com/25/25"
+          }, {
+              username: "coderDude",
+              name: "Roger Penn",
+              image: "http://placekitten.com/25/25"
+          }]
+      });
+    },
+    error: function(rs, e) {
+      alert("No se puede.");
+    }
   });
 });
 
