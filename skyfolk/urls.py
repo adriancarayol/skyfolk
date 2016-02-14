@@ -58,7 +58,7 @@ urlpatterns = patterns(
     # About skyfolk
     url(r'^about/([^/]+)/$',about),
     # Market Skyfolk
-    url(r'^market/$',market_inicio),
+    url(r'^market/$', market_inicio),
     # Menciones en comentarios
     url(r'^get_mentions/', 'publications.views.get_mentions', name='get_mentions'),
     # Relaciones usuario

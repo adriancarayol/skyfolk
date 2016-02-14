@@ -1,5 +1,4 @@
-s    import json
-
+import json
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError

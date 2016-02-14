@@ -23,7 +23,7 @@
     ".js", 
     ".ini"
   ], 
-  "project-type": "", 
+  "project-type": "Django App", 
   "postExecScript": "", 
   "description": ""
 }
