@@ -158,6 +158,6 @@ def get_mentions(request):
         except ObjectDoesNotExist:
             friends = None
             response = False
-
+                    
     data = json.dumps({'response': response, 'friends': list(friends)})
     return HttpResponse(data, content_type='application/json')
