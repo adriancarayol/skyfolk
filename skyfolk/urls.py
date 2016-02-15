@@ -50,6 +50,7 @@ urlpatterns = patterns(
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # url add to timeline
     url(r'^timeline/addToTimeline/$', 'timeline.views.addToTimeline', name='add_timeline'),
+    # url remove timeline
     url(r'^timeline/removeTimeline/$', 'timeline.views.removeTimeline', name='remove_timeline'),
     # url novedades e inicio
     url(r'^inicio/mypublications/','latest_news.views.news_and_updates'),
@@ -76,7 +77,7 @@ urlpatterns = patterns(
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
     # Página de bienvenida, paso 1.
-    url(r'^step1/(?P<username>[\w-]+)/$', welcomeStep1.as_view()),
+    url(r'^step1/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeStep1', name='welcomeStep1'),
     #notificaciones
     url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
 )

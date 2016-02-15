@@ -662,6 +662,7 @@
 
 </script>
 
+<!-- Esto es para las menciones a usuarios -->
 <script type="text/javascript">
 $(document).ready(function() {
   $.ajax({
@@ -672,9 +673,6 @@ $(document).ready(function() {
     },
     dataType: 'json',
     success: function(data) {
-    for (i = 0; i < data.friends.length; i++) {
-        alert(data.friends[i].username);
-    }
       $("#message2").mention({
           queryBy: ['name', 'username'],
           users: [{

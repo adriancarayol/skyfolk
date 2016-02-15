@@ -4,10 +4,7 @@
 
 #section .wrapperx {
   position: relative;
- /* width: 900px; */
   max-width: 100%;
-  /*top: 50px; */
-  /*margin: auto; */
   float: left;
   left: 0px;
   height: auto;
@@ -25,7 +22,8 @@
   background-color: #f5f5f5;
   box-shadow: 0.1px 0.1px grey;
   width: 10px;
-  height: 200px;
+  height: 300px;
+  max-height: auto;
   position: relative;
   display: block;
 }
@@ -33,6 +31,7 @@
 #section .wrapperx .line .second {
   position: relative;
   min-width: 350px;
+  max-width: 100%;
   background-color: transparent;
   height: auto;
   float: right;
@@ -88,6 +87,7 @@
 #section .wrapperx .line #p img {
   width: 20px;
   height: 20px;
+  z-index: 9999;
 }
 #section .wrapperx .line .second .head .fecha_ {
   font-size: 10px;

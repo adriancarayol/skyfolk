@@ -480,26 +480,20 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 def changepass_confirmation(request):
     return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))
 
-
 def welcomeView(request, username):
     newUser = username
     return render_to_response("account/nuevosusuarios.html", context_instance=RequestContext(request, {'newUser': newUser}))
 
 
-
-class welcomeStep1(TemplateView):
-    template_name = "account/welcomestep1.html"
-
-    def get(self, request, *args, **kwargs):
-        newUser = request.user.username
-        return render(request, self.template_name, {'newUser': newUser})
+def welcomeStep1(request, username):
+    newUser = request.user.username
+    return render_to_response("account/welcomestep1.html", context_instance=RequestContext(request, {'newUser': newUser}))
 
 
 def setfirstLogin(request):
     response = False
     if request.method == 'POST':
-        name = request.POST.get('username', None)
-        print('>>>>>>>>>>>>>>>' + name + "<<<<<<<<<<<<")
+        username = request.POST.get('username', None)
         response = True
 
     return HttpResponse(json.dumps(response), content_type='application/json')

@@ -41,8 +41,8 @@ function AJAX_setLogin(username) {
     type: "POST",
     url: "/setfirstLogin/",
     data: {
-      'username': username,
-      'csrfmiddlewaretoken': csrftoken
+      'csrfmiddlewaretoken': csrftoken,
+      'username': username
     },
     dataType: "json",
     success: function(response) {
@@ -53,7 +53,6 @@ function AJAX_setLogin(username) {
         {
             alert('ya se ha modificado');
         }
-
     },
     error: function(rs, e) {
       alert(rs.responseText);

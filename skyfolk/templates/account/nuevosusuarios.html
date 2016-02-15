@@ -7,7 +7,7 @@
 	<meta charset="utf-8" />
     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.css"  media="screen,projection"/>
     <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
-    <script src="{{STATIC_URL}}js/welcome.js"></script>
+		<script src="{{STATIC_URL}}js/welcome.js"></script>
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/welcome.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -32,9 +32,13 @@
             </div>
             </div>
         </div>
-            <a onclick="location.href='/step1/{{request.user}}'" class="waves-effect waves-light btn right" onload="loadButtons()">Configurar cuenta</a>
-            <a href="/profile/{{newUser}}" onclick="setfirstLogin(this);" id="omitir-{{newUser}}" class="waves-effect waves-light btn" onload="loadButtons()">Omitir</a>
-           {% endblock %}
+						<form onsubmit="return false;">
+							{% csrf_token %}
+							<button id="omitir-{{newUser}}" class="updatebutton" onclick="setfirstLogin(this);">Submit</button>
+						</form>
+        		<a onclick="location.href='/step1/{{request.user}}'" class="waves-effect waves-light btn right" onload="loadButtons()">Configurar cuenta</a>
+            <ahref="/profile/{{newUser}}" id="omitir-{{newUser}}" class="waves-effect waves-light btn" onload="loadButtons()">Omitir</a>
+					 {% endblock %}
     </div>
 
 </body>

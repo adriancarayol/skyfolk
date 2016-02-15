@@ -2,7 +2,7 @@
 @import url(https://fonts.googleapis.com/css?family=Pacifico);
 
 body {
-	background-color: #efefef;
+	background-color: #fafafa;
 	padding: 0;
 	font-family: 'Open Sans', sans-serif;
 }
@@ -48,6 +48,8 @@ body {
 	margin-top: 60px;
 	margin-right: auto;
 	margin-left: auto;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+	background-color: #fff;
 }
 
 ul {
@@ -94,7 +96,6 @@ strong {
 p {
 	text-align: center;
 }
-
 form {
 	position: relative;
 	display: block;
@@ -106,15 +107,15 @@ form {
 input[type="submit"] {
     background-color: #64B5F6 !important;
     position: relative;
-    cursor: pointer;
+		cursor: pointer;
     display: inline-block;
+		float: right;
     overflow: hidden;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    vertical-align: middle;
     z-index: 1;
     text-decoration: none;
     color: #FFF;
