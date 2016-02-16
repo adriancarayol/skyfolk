@@ -327,7 +327,6 @@ $( document ).on('keydown', function(e) {
 
   $('#tab-amigos').bind('scroll', function() {
     if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-
       countFriendList++;
       $.ajax({
         type: "POST",
@@ -797,7 +796,6 @@ function AJAX_submit_publication() {
   //event.preventDefault(); //stop submit
   $.ajax({
     url: '/publication/',
-    action: '/load_publications/',
     type: 'POST',
     dataType: 'json',
     data: $('#page-wrapper #message-form2').serialize(),
