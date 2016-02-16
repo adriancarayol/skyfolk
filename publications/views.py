@@ -13,6 +13,9 @@ from publications.models import Publication
 
 def publication_form(request):
     print('>>>>>>>> PETICION AJAX PUBLICACION')
+    jsons = []
+    pub_id = -1
+    content = ''
     if request.POST:
         form = PublicationForm(request.POST)
         userprofile = get_object_or_404(get_user_model(), pk=request.POST['userprofileid'])
@@ -29,6 +32,8 @@ def publication_form(request):
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 publication.save()
+                pub_id = publication.id
+                content = publication.content
                 response = True
             except IntegrityError:
                 pass
@@ -40,8 +45,12 @@ def publication_form(request):
          #       hashtag.publicacion.add(publication)
 
         #print("Se han creado HashTags -> " + hashtag.name)
-
-        return HttpResponse(json.dumps(response), content_type='application/json')
+        username = str(userprofile.username)
+        emittername = str(emitter.username)
+        pub_id = str(pub_id)
+        jsons = json.dumps({'username': username, 'emittername': emittername,
+        'response': response, 'pub_id': pub_id, 'content': content})
+        return HttpResponse(jsons, content_type='application/json')
 
 
 def delete_publication(request):
@@ -158,6 +167,6 @@ def get_mentions(request):
         except ObjectDoesNotExist:
             friends = None
             response = False
-                    
+
     data = json.dumps({'response': response, 'friends': list(friends)})
     return HttpResponse(data, content_type='application/json')

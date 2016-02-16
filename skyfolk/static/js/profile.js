@@ -95,10 +95,8 @@ $(document).ready(function () {
   });
 
   $('#message-form2').on('submit', function(event) {
-
     event.preventDefault();
     AJAX_submit_publication();
-
   });
 
   $('#atajos-keyboard-profile .atajos-title .fa-close').on('click',function() {
@@ -790,22 +788,29 @@ function AJAX_respondFriendRequest(id_emitter, status) {
 }
 
 
+function addToCommentTab(content, emitter, username, id) {
+  console.log("EN CAMINO! :-)");
+}
 
 function AJAX_submit_publication() {
-
-  //event.preventDefault(); //stop submit
   $.ajax({
     url: '/publication/',
     type: 'POST',
     dataType: 'json',
     data: $('#page-wrapper #message-form2').serialize(),
     success: function(data) {
-      if (data == true) {
+      var content = data.content
+      var response = data.response;
+      var username = data.username; // Perfil al que va la publicacion
+      var emittername = data.emittername; // Emisor del mensaje
+      var pub_id = data.pub_id
+      if (response == true) {
+        addToCommentTab(content, emittername, username, pub_id);
         swal({
-          title: "",
+          title: "Success!",
           text: "You have successfully posted!",
           type: "success",
-          timer: 500,
+          timer: 900,
           animation: "slide-from-top",
           showConfirmButton: false,
       });
@@ -816,9 +821,7 @@ function AJAX_submit_publication() {
     type: "error"
         });
       }
-
-        $('#page-wrapper').hide(); // Ocultamos el DIV al publicar un mensaje.
-
+        $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
         },
     error: function(rs, e) {
       alert('ERROR: ' + rs.responseText);
