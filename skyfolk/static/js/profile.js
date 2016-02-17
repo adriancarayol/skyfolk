@@ -46,7 +46,6 @@ $(document).ready(function () {
     $('#page-wrapper').hide();
   });
 
-
   window.onload=function() {
       var currentPage = window.location.href.split('/')[3];
           switch (currentPage) {
@@ -988,25 +987,7 @@ $(document).click(function(event) {
 
 /* Mensaje flotante */
 $(document).ready(function() {
-  $("#publish2").click(function()  {
-    $("#page-wrapper").each(function() {
-      displaying = $(this).css("display");
-      $("#page-wrapper #message2").val('');
-      if (displaying == "none") {
-        $(this).fadeOut('slow', function() {
-          $(this).css("display", "block");
-        });
-      } else {
-        $(this).fadeIn('slow', function() {
-          $(this).css("display", "none");
-        });
-      }
-    });
-  });
-});
-
-$(document).ready(function() {
-  $("#publish").click(function()  {
+  $("#publish2, #compose-new-no-comments, #publish").click(function()  {
     $("#page-wrapper").each(function() {
       displaying = $(this).css("display");
       $("#page-wrapper #message2").val('');

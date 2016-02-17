@@ -1,4 +1,5 @@
 import json
+import re
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
@@ -38,13 +39,9 @@ def publication_form(request):
             except IntegrityError:
                 pass
 
-        #words = form.cleaned_data['content'].split(" ")
-        #for word in words:
-         #   if word[0] == "#":
-         #       hashtag, created = Hashtag.objects.get_or_create(name=word[1:])
-         #       hashtag.publicacion.add(publication)
 
-        #print("Se han creado HashTags -> " + hashtag.name)
+        tags = re.findall('#[a-zA-Z0-9]+', content)
+        print('Los tags son -> ' + str(tags))
         username = str(userprofile.username)
         emittername = str(emitter.username)
         pub_id = str(pub_id)
@@ -93,7 +90,7 @@ def load_publications(request):
             print(publications_next)
 
     return HttpResponse(json.dumps(list(publications_next)), content_type='application/json')
-    
+
 # TODO
 def add_like(request):
     response = False

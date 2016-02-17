@@ -738,3 +738,45 @@ a.fontawesome-cog:hover {
   font-family: 'Open Sans', sans-serif;
   resize: none;
 }
+
+#tab-comentarios .no-comments {
+  width: 100%;
+  height: 20%;
+  position: relative;
+  display: block;
+  border-bottom: 5px solid #eee;
+  text-align: center;
+}
+#tab-comentarios .no-comments .no-comments-text-info {
+  top: 80px;
+  font-size: 1.5em;
+  position: relative;
+  display: block;
+}
+#tab-comentarios .no-comments .no-comments-new-comment {
+  display: block;
+  bottom: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  background-color: #1e88e5;
+  color: white;
+  border-top-left-radius: 100%;
+  border-top-right-radius: 100%;
+  cursor: pointer;
+  padding-top: 25px;
+  height: 70px;
+  width: 70px;
+  transition: all .2s ease-in-out;
+  -moz-transition: all .2s ease-in-out;
+  -webkit-transition: all .2s ease-in-out;
+}
+
+#tab-comentarios .no-comments .no-comments-new-comment:hover {
+  opacity: 0.8;
+  background-color: #eee;
+  color: grey;
+}

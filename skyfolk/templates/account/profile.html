@@ -410,6 +410,14 @@
             </div>
   <div id="tab-comentarios">
   {% if isFriend or user.username == user_profile.username %}
+  {% if publications_top15|length == 0 %}
+    <div class="no-comments">
+      <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+      <a id="compose-new-no-comments" class="no-comments-new-comment">
+        <i class="fa fa-paper-plane fa-lg"></i>
+      </a>
+    </div>
+  {% endif %}
   {% for item in publications_top15 %}
   <div class="wrapper" id="pub-{{item.from_publication__id}}" data-id="{{ user.pk }}">
             <div class="box">
