@@ -59,11 +59,11 @@ urlpatterns = patterns(
     # About skyfolk
     url(r'^about/([^/]+)/$',about),
     # Market Skyfolk
-    url(r'^market/$', market_inicio),
+    #url(r'^market/$', market_inicio),
     # Menciones en comentarios
-    url(r'^get_mentions/', 'publications.views.get_mentions', name='get_mentions'),
+    #url(r'^get_mentions/', 'publications.views.get_mentions', name='get_mentions'),
     # Relaciones usuario
-    url(r'^relations/(?P<username>[\w-]+)/$',relaciones_user),
+    #url(r'^relations/(?P<username>[\w-]+)/$',relaciones_user),
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
     url(

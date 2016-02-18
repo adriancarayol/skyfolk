@@ -1,9 +1,8 @@
 {% extends "account/base_interface.html" %}
 {% load app_filters %}
+{% load tags_mentions %}
 {% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
-{% load emoji_tags %}
-{% include 'emoji/script.html' %}
 <!-- Mostrar objetos al hacer scroll -->
 
 {% endblock %}
@@ -372,16 +371,16 @@
                                     <div data-sr="wait 0.2s then scale up 30%" class="second">
                                         {% if user_profile.profile.image %}
                                         <span class="acontecimiento">
-                                          <img style="border-radius: 100%; width: 100%; height:100%;" src="{{user_profile.profile.image.url}}"></img>
+                                          <img style="border-radius: 100%; width: 100%; height:100%;" src="{{user_profile.profile.image.url}}"> </img>
                                         </span>
                                         {% else %}
                                         <span class="acontecimiento">
-                                          <img style="border-radius: 100%; width: 100%; height:100%;" src="{{STATIC_URL}}img/nuevo.png"></img>
+                                          <img style="border-radius: 100%; width: 100%; height:100%;" src="{{STATIC_URL}}img/nuevo.png"> </img>
                                         </span>
                                         {% endif %}
                                         <span class="head"><a href="/profile/{{item.user__username}}">{{item.user__username}}</a>  <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em></span>
                                         <div id="p" class="parrafo comment">
-                                                {{ item.from_timeline__content | safe}}
+                                                {{ item.from_timeline__content|replace_tags_mentions|safe}}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
@@ -438,7 +437,7 @@
 
                     <div class="parrafo comment-tab">
                     <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                        {{ item.from_publication__content | safe }}
+                        {{ item.from_publication__content|replace_tags_mentions|safe }}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
@@ -464,7 +463,7 @@
                   <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{ item.user__username }}</a> ha publicado:  </h2>
                   <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br>
-                      <div class="wrp-comment">{{ item.from_publication__content | safe }}</div>
+                      <div class="wrp-comment">{{ item.from_publication__content|replace_tags_mentions|safe}}</div>
                   </div>
                     <div class="show-more">
                         <a href="#">+ Mostrar más</a>
@@ -671,6 +670,7 @@
 </script>
 
 <!-- Esto es para las menciones a usuarios -->
+    <!--
 <script type="text/javascript">
 $(document).ready(function() {
   $.ajax({
@@ -704,7 +704,7 @@ $(document).ready(function() {
   });
 });
 
-</script>
+</script> -->
 <!-- Busqueda en tab-amigos -->
 <script>
   var options = {

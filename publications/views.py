@@ -1,5 +1,4 @@
 import json
-import re
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
@@ -30,14 +29,6 @@ def publication_form(request):
                 publication.author = emitter.profile
                 publication.profile = userprofile.profile
                 publication.content = Emoji.replace(publication.content)
-                hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', publication.content)
-                ''' Tags para comentario '''
-                for hashtag in hashtags:
-                    publication.content = publication.content.replace(hashtag, '<a href="/search/">%s</a>' % (hashtag))
-                ''' Menciones para comentario '''
-                menciones = re.findall('\\@[a-zA-Z0-9_]+', publication.content)
-                for mencion in menciones:
-                    publication.content = publication.content.replace(mencion, '<a href="/profile/%s">%s</a>' % (mencion[1:], mencion))
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 publication.save()
@@ -47,15 +38,11 @@ def publication_form(request):
             except IntegrityError:
                 pass
 
-
-        tags = re.findall('#[a-zA-Z0-9]+', content)
-        tags = list(tags)
-
         username = str(userprofile.username)
         emittername = str(emitter.username)
         pub_id = str(pub_id)
         jsons = json.dumps({'username': username, 'emittername': emittername,
-            'response': response, 'pub_id': pub_id, 'content': content, 'tags': tags})
+            'response': response, 'pub_id': pub_id, 'content': content })
         return HttpResponse(jsons, content_type='application/json')
 
 
@@ -156,7 +143,7 @@ def add_like(request):
     return HttpResponse(data, content_type='application/json')
 
 
-def get_mentions(request):
+'''def get_mentions(request):
     response = False
     if request.POST:
         slug = request.POST['slug']  # ID del usuario que hace login
@@ -174,4 +161,4 @@ def get_mentions(request):
             response = False
 
     data = json.dumps({'response': response, 'friends': list(friends)})
-    return HttpResponse(data, content_type='application/json')
+    return HttpResponse(data, content_type='application/json')'''
