@@ -30,6 +30,14 @@ def publication_form(request):
                 publication.author = emitter.profile
                 publication.profile = userprofile.profile
                 publication.content = Emoji.replace(publication.content)
+                hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', publication.content)
+                ''' Tags para comentario '''
+                for hashtag in hashtags:
+                    publication.content = publication.content.replace(hashtag, '<a href="/search/">%s</a>' % (hashtag))
+                ''' Menciones para comentario '''
+                menciones = re.findall('\\@[a-zA-Z0-9_]+', publication.content)
+                for mencion in menciones:
+                    publication.content = publication.content.replace(mencion, '<a href="/profile/%s">%s</a>' % (mencion[1:], mencion))
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 publication.save()
