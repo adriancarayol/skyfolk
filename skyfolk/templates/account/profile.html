@@ -358,7 +358,7 @@
         <div class="sidebar card" id="tab-container">
           <ul class="unstyled table fullwidth links">
             <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">timeline</a></li>
-            <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
+	    <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
             <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Amigos</a></li>
           </ul>
           <div class="unstyled content" id="hood-tabs">
@@ -410,7 +410,7 @@
             </div>
   <div id="tab-comentarios">
   {% if isFriend or user.username == user_profile.username %}
-  {% if publications_top15|length == 0 %}
+  {% if publications_top15|length == 0 %} <!-- Si el usuario no tiene comentarios, proponemos uno -->
     <div class="no-comments">
       <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
       <a id="compose-new-no-comments" class="no-comments-new-comment">

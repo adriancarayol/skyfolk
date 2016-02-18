@@ -41,12 +41,13 @@ def publication_form(request):
 
 
         tags = re.findall('#[a-zA-Z0-9]+', content)
-        print('Los tags son -> ' + str(tags))
+        tags = list(tags)
+
         username = str(userprofile.username)
         emittername = str(emitter.username)
         pub_id = str(pub_id)
         jsons = json.dumps({'username': username, 'emittername': emittername,
-        'response': response, 'pub_id': pub_id, 'content': content})
+            'response': response, 'pub_id': pub_id, 'content': content, 'tags': tags})
         return HttpResponse(jsons, content_type='application/json')
 
 

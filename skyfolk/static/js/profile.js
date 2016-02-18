@@ -803,6 +803,11 @@ function AJAX_submit_publication() {
       var username = data.username; // Perfil al que va la publicacion
       var emittername = data.emittername; // Emisor del mensaje
       var pub_id = data.pub_id
+      /* Para los hashtags en los comentarios */
+      for(var i = 0; i < data.tags.length; i++) {
+	alert(data.tags[i]);
+      }
+
       if (response == true) {
         addToCommentTab(content, emittername, username, pub_id);
         swal({
