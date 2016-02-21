@@ -4,7 +4,7 @@ var countTimeLine = 1;
 
   /* LOADER PARA SKYFOLK */
 $(window).load(function() {
-  $("#loader").fadeOut("slow");;
+    $("#loader").fadeOut("slow");
 });
 
 $(document).ready(function () {
@@ -12,7 +12,7 @@ $(document).ready(function () {
 
     /* Show more - Show less */
 
-    $('#tab-comentarios .wrapper').each(function () {
+    $('#tab-comentarios').find('.wrapper').each(function () {
     var text = $(this).find('.wrp-comment').text();
     var show = $(this).find('.show-more a');
 
@@ -29,7 +29,6 @@ $(document).ready(function () {
     var $content = $this.parent().prev("div.comment");
     var linkText = $this.text().toUpperCase();
 
-    var text = $content.text();
     if(linkText === "+ MOSTRAR MÁS"){
         linkText = "- Mostrar menos";
         $content.css('height', 'auto');
@@ -41,7 +40,7 @@ $(document).ready(function () {
     $this.text(linkText);
 });
 
-  $('#page-wrapper #close').on('click', function(event) {
+  $('#page-wrapper').find('#close').on('click', function(event) {
 
     $('#page-wrapper').hide();
   });
@@ -71,7 +70,7 @@ $(document).ready(function () {
                   currentPage = "Saturday";
                   break;
     }
-}
+};
 
   $('.fa-paw').on('click',function() {
       $(".info-paw").fadeToggle("fast");
@@ -98,8 +97,8 @@ $(document).ready(function () {
     AJAX_submit_publication();
   });
 
-  $('#atajos-keyboard-profile .atajos-title .fa-close').on('click',function() {
-    $('#atajos-keyboard-profile').fadeOut();
+  $('#atajos-keyboard-profile').find('.atajos-title .fa-close').on('click',function() {
+    $('#atajos-keyboard-profile').hide();
   });
 
   $('#configurationOnProfile').on('click', function() {
@@ -112,6 +111,17 @@ $(document).ready(function () {
     }
   });
 
+  /* Abrir respuesta a comentario */
+    $('.fa-reply').on('click', function() {
+        var i = $(this).closest('.wrapper');
+        replyComment(i);
+    });
+
+    function replyComment(caja_pub) {
+        var id_comment = $(caja_pub).attr('id').split('-')[1];
+        var commentReply = document.getElementById('actual-' + id_comment);
+        $(commentReply).toggleClass("reply-actual-message-show");
+    }
   /* Expandir comentario */
 
  $('.fa-expand').on('click', function() {
@@ -120,7 +130,7 @@ $(document).ready(function () {
  });
 
  function expandComment(caja_pub) {
-    var id_pub = $(caja_pub).attr('id').split('-')[1]  // obtengo id
+    var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
     var commentToExpand = document.getElementById('expand-' + id_pub);
     $(commentToExpand).fadeToggle("fast");
  }
@@ -133,7 +143,7 @@ $(document).ready(function () {
  });
 
  function closeExpand(expand) {
- 	var c = $(expand).attr('id').split('-')[1]
+ 	var c = $(expand).attr('id').split('-')[1];
  	var toClose = document.getElementById('expand-' + c);
  	$(toClose).hide();
  }
@@ -181,7 +191,7 @@ $(document).ready(function () {
 
   /* Borrar timeline */
 
-  $('#tab-timeline .controles .fa-trash').on('click', function() {
+  $('#tab-timeline').find('.controles .fa-trash').on('click', function() {
     var div_timeline = $(this).closest('.line');
     swal({
       title: "Are you sure?",
@@ -225,6 +235,7 @@ $(document).ready(function () {
             swal.showInputError("Wrong PIN format!");
             return false
           }
+          var tipo;
           if (!is_numeric(inputValue)) {
               tipo = 'username';
           } else {
@@ -246,7 +257,7 @@ $(document).ready(function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart);
-    })
+    });
 
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
 
@@ -257,7 +268,7 @@ $(document).ready(function () {
 
   /* Atajo para enviar comentarios mas rapido */
 
-  $('#page-wrapper #message2').keypress(function(event) {
+  $('#page-wrapper').find('#message2').keypress(function(event) {
     //tecla ENTER presinada + Shift
     if (event.keyCode == 13 && event.shiftKey) {
       $('#sendformpubli').click();
@@ -268,12 +279,12 @@ $(document).ready(function () {
 
   /* Abrir crear/cerrar grupo en search.html */
 
-  $('.btn-floating').on('click',function(event) {
-    $('.crear-grupo').toggle("fast",function() {
+  $('.btn-floating').on('click', function () {
+        $('.crear-grupo').toggle("fast",function() {
     });
   });
 
-  $('#cerrar_grupo').on('click',function(event) {
+  $('#cerrar_grupo').on('click',function() {
     $('.crear-grupo').hide();
   });
 
@@ -336,7 +347,7 @@ $( document ).on('keydown', function(e) {
         success: function(response) {
 
           //load friends
-          for (i = 0; i < response.length; i++) {
+          for (var i = 0; i < response.length; i++) {
             addFriendToHtmlList(response[i]);
           }
         },
@@ -363,7 +374,7 @@ $( document ).on('keydown', function(e) {
         dataType: "json",
         success: function(response) {
           //load publications
-          for (i = 0; i < response.length; i++) {
+          for (var i = 0; i < response.length; i++) {
             addPublicationToHtmlList(response[i]);
           }
           // $('#tab-comentarios').load(location.href + " #tab-comentarios");
@@ -371,8 +382,8 @@ $( document ).on('keydown', function(e) {
           /*$(".comment").shorten({
             "showChars": 145
           }); */
-	    if ($('#tab-comentarios .wrapper').height() > 145) {
-	     $('#tab-comentarios .wrapper').css('height','auto');
+	    if ($('#tab-comentarios').find('.wrapper').height() > 145) {
+	     $('#tab-comentarios').find('.wrapper').css('height','auto');
 	   }
         },
         error: function(rs, e) {
@@ -442,7 +453,7 @@ $('#tab-timeline').bind('scroll', function() {
         defaultTab: "#li-tab-comentarios",
         animate: true,
         animationSpeed: "fast",
-        updateHash: false,
+        updateHash: false
 
 
   });
@@ -453,11 +464,11 @@ $('#tab-timeline').bind('scroll', function() {
 function addFriendToHtmlList(item) {
 
   if (item.user__profile__image) {
-    $("#tab-amigos ul.list").append('<li id="friend-' + item.user__id + '"><img src="' + MEDIA_URL + item.user__profile__image + '"  class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
+    $("#tab-amigos").find("ul.list").append('<li id="friend-' + item.user__id + '"><img src="' + MEDIA_URL + item.user__profile__image + '"  class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
 
     //SI NO EXISTE LA URL DE LA IMAGEN, SE CAMBIA POR EL AVATAR POR DEFECTO. QUITAR ESTO CUANDO
     //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
-    imageselector = $("#tab-amigos ul.list #friend-" + item.user__id + " img.friend-avatar")
+    imageselector = $("#tab-amigos").find("ul.list #friend-" + item.user__id + " img.friend-avatar")
     URL_CHECK = MEDIA_URL + item.user__profile__image;
     URL_CHANGE = STATIC_URL + 'img/nuevo.png';
     //Check image URL;
@@ -491,7 +502,7 @@ function addFriendToHtmlList(item) {
     })(imageselector, URL_CHECK, URL_CHANGE);
 
   } else {
-    $("#tab-amigos ul.list").append('<li id="friend-' + item.user__id + '"><img src="' + STATIC_URL + 'img/generic-avatar.png" class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
+    $("#tab-amigos").find("ul.list").append('<li id="friend-' + item.user__id + '"><img src="' + STATIC_URL + 'img/generic-avatar.png" class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
   }
 
 
@@ -548,7 +559,7 @@ function addPublicationToHtmlList(item) {
 
     //SI NO EXISTE LA URL DE LA IMAGEN, SE CAMBIA POR EL AVATAR POR DEFECTO. QUITAR ESTO CUANDO
     //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
-    imageselector = $("#tab-comentarios #pub-" + item.from_publication__id + " img.pub-avatar");
+    imageselector = $("#tab-comentarios").find("#pub-" + item.from_publication__id + " img.pub-avatar");
     URL_CHECK = MEDIA_URL + item.user__profile__image;
     URL_CHANGE = STATIC_URL + 'img/nuevo.png';
     //Check image URL
@@ -646,43 +657,41 @@ $.ajaxSetup({
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/
 function AJAX_likeprofile(status) {
   //alert($("#likes strong").html());
-  if (status == "noabort") {
-    $.ajax({
+  if (status == "noabort") $.ajax({
       type: "POST",
       url: "/like_profile/",
       data: {
-        'slug': $("#profileId").html(),
-        'csrfmiddlewaretoken': csrftoken
+          'slug': $("#profileId").html(),
+          'csrfmiddlewaretoken': csrftoken
       },
       //data: {'slug': $("#profileId").html()},
       dataType: "json",
-      success: function(response) {
+      success: function (response) {
 
-        if (response == "like") {
+          if (response == "like") {
 
-          $("#ilike_profile").css('color', '#ec407a');
+              $("#ilike_profile").css('color', '#ec407a');
 
-          //Aumentamos el valor del campo
-          $("#likes strong").html(parseInt($("#likes strong").html()) + 1);
+              //Aumentamos el valor del campo
+              $("#likes").find("strong").html(parseInt($("#likes").find("strong").html()) + 1);
 
-        } else if (response == "nolike") {
+          } else if (response == "nolike") {
 
-          $("#ilike_profile").css('color', '#46494c');
+              $("#ilike_profile").css('color', '#46494c');
 
-          if ($("#likes strong").html() > 0) {
-            //Decrementar
-            $("#likes strong").html(parseInt($("#likes strong").html()) - 1);
+              if ($("#likes").find("strong").html() > 0) {
+                  //Decrementar
+                  $("#likes").find("strong").html(parseInt($("#likes").find("strong").html()) - 1);
+              }
+
+          } else {
+
           }
-
-        } else {
-
-        }
       },
-      error: function(rs, e) {
-        alert(rs.responseText);
+      error: function (rs, e) {
+          alert(rs.responseText);
       }
-    });
-  } else if (status == "anonymous") {
+  }); else if (status == "anonymous") {
     alert("Debe estar registrado");
   }
 
@@ -745,7 +754,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
       }
     },
     error: function(rs, e) {
-      alert(rs.responseText);
+      alert(rs.responseText + " " + e);
     }
   });
 
@@ -779,7 +788,7 @@ function AJAX_respondFriendRequest(id_emitter, status) {
       }
     },
     error: function(rs, e) {
-      alert(rs.responseText);
+      alert(rs.responseText + " " + e);
     }
   });
 
@@ -792,7 +801,7 @@ function AJAX_submit_publication() {
     url: '/publication/',
     type: 'POST',
     dataType: 'json',
-    data: $('#page-wrapper #message-form2').serialize(),
+    data: $('#page-wrapper').find('#message-form2').serialize(),
     success: function(data) {
       var content = data.content
       var response = data.response;
@@ -805,8 +814,8 @@ function AJAX_submit_publication() {
           type: "success",
           timer: 900,
           animation: "slide-from-top",
-          showConfirmButton: false,
-      });
+          showConfirmButton: false
+        });
       } else {
         swal({
           title: "",
@@ -817,7 +826,7 @@ function AJAX_submit_publication() {
         $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
         },
     error: function(rs, e) {
-      alert('ERROR: ' + rs.responseText);
+      alert('ERROR: ' + rs.responseText + " " + e);
     }
   });
 
@@ -933,7 +942,7 @@ function AJAX_requestfriend(status) {
           }
         },
         error: function(rs, e) {
-          alert(rs.responseText);
+          alert(rs.responseText + " " + e);
         }
       });
     } else if (status == "anonymous") {
@@ -984,7 +993,7 @@ $(document).ready(function() {
   $("#publish2, #compose-new-no-comments, #publish").click(function()  {
     $("#page-wrapper").each(function() {
       displaying = $(this).css("display");
-      $("#page-wrapper #message2").val('');
+      $("#page-wrapper").find("#message2").val('');
       if (displaying == "none") {
         $(this).fadeOut('slow', function() {
           $(this).css("display", "block");
@@ -1000,7 +1009,7 @@ $(document).ready(function() {
 
 function addItemToFriendList(name, lastname) {
 
-  $("#tab-amigos ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
+  $("#tab-amigos").find("ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
 
 }
 
@@ -1010,8 +1019,8 @@ function addItemToFriendList(name, lastname) {
 /****************************************************/
 
 function AJAX_delete_timeline(div_timeline) {
-  var id_pub = $(div_timeline).attr('id').split('-')[1]  // obtengo id
-  var id_user = $(div_timeline).data('id') // obtengo id
+  var id_pub = $(div_timeline).attr('id').split('-')[1];  // obtengo id
+  var id_user = $(div_timeline).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
            timeline_id: id_pub
@@ -1036,7 +1045,7 @@ function AJAX_delete_timeline(div_timeline) {
         }
     },
     error: function(rs, e) {
-      alert('ERROR: ' + rs.responseText);
+      alert('ERROR: ' + rs.responseText + " " + e);
     }
   });
 }
@@ -1045,8 +1054,8 @@ function AJAX_delete_timeline(div_timeline) {
 /*****************************************************/
 
 function AJAX_delete_publication(caja_publicacion) {
-  var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
-  var id_user = $(caja_publicacion).data('id')// obtengo id
+  var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
+  var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
            publication_id: id_pub
@@ -1070,7 +1079,7 @@ function AJAX_delete_publication(caja_publicacion) {
         }
     },
     error: function(rs, e) {
-      alert('ERROR: ' + rs.responseText);
+      alert('ERROR: ' + rs.responseText + ' ' + e);
     }
   });
 }
@@ -1080,8 +1089,8 @@ function AJAX_delete_publication(caja_publicacion) {
 /*****************************************************/
 
 function AJAX_add_like(caja_publicacion, heart) {
-  var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
-  var id_user = $(caja_publicacion).data('id')// obtengo id
+  var id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+  var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
            publication_id: id_pub
@@ -1122,11 +1131,9 @@ function AJAX_add_like(caja_publicacion, heart) {
         }
     },
     error: function(rs, e) {
-      alert('ERROR: ' + rs.responseText);
+      alert('ERROR: ' + rs.responseText + e);
     }
   });
-
-
 }
 
 /*****************************************************/
@@ -1134,8 +1141,8 @@ function AJAX_add_like(caja_publicacion, heart) {
 /*****************************************************/
 
 function AJAX_add_timeline(caja_publicacion) {
-  var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
-  var id_user = $(caja_publicacion).data('id')// obtengo id
+  var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
+  var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
            publication_id: id_pub
@@ -1159,7 +1166,7 @@ function AJAX_add_timeline(caja_publicacion) {
         }
     },
     error: function(rs, e) {
-      alert('ERROR: ' + rs.responseText);
+      alert('ERROR: ' + rs.responseText + e);
     }
   });
 }
