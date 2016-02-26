@@ -711,14 +711,35 @@ a.fontawesome-cog:hover {
   border-top: 1px solid #eeeeee;
   position: relative;
 }
+
+.replay-actual-message .enviar {
+  float: right;
+  display: inline-block;
+  position: relative;
+  bottom: 55px;
+  margin-right: 10px;
+  border: 1px solid transparent;
+  padding: 7px;
+  border-radius: 3px;
+  outline: none;
+  -webkit-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+  -moz-transition: all .2s ease-in-out;
+  cursor: pointer;
+}
+.replay-actual-message .enviar:hover {
+    color: #1e88e5;
+    border: 1px solid #1e88e5;
+}
 .reply-actual-message-show {
   display: inline-block;
 }
+
 .replay-actual-message .triangle-reply {
   width: 10px;
   height: 10px;
-  background-color: #eeeeee;
-  border: 1px solid #eeeeee;
+  background-color: #1e88e5;
+  border: 1px solid #1e88e5;
   position: relative;
   margin: auto;
   -webkit-transform: rotate(45deg);

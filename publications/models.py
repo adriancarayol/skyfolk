@@ -17,7 +17,7 @@ class Publication(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0, blank=True, null=True)
     user_give_me_like = models.ManyToManyField(User, blank=True)
-
+    comments = models.ManyToManyField('Comment')
     # metodos del modelo
     def add_like_pub(self):
         self.likes += 1
@@ -27,3 +27,12 @@ class Publication(models.Model):
 
     def __str__(self):
         return self.content
+
+
+class Comment(models.Model):
+    content = models.TextField(blank=False)
+    author = models.ForeignKey(UserProfile, related_name='from_response')
+    child_comments = models.ManyToManyField('Comment')
+    created = models.DateTimeField(auto_now_add=True)
+
+# Post.objects.all().select_related('comments').get(pk=1)
