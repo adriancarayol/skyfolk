@@ -1,17 +1,7 @@
-import datetime
-
-from allauth.account.models import EmailAddress
-from django.contrib.auth.models import User
-from django.db import models
-from django.db.models.signals import post_save
-from django.template.defaultfilters import default
-from django.utils.translation import ugettext as _
-
-
 import publications
 import timeline
-
-
+from django.contrib.auth.models import User
+from django.db import models
 
 #from publications.models import Publication
 #from _overlapped import NULL
