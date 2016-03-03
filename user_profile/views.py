@@ -53,9 +53,10 @@ def profile_view(request, username):
 
     # saber si el usuario que visita el perfil es amigo
     if request.user.username != username:
-        isFriend = True
+        isFriend = False
         try:
-            request.user.profile.is_friend(user_profile.profile)
+            if request.user.profile.is_friend(user_profile.profile):
+                isFriend = True
         except ObjectDoesNotExist:
             isFriend = False
     else:

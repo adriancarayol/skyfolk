@@ -114,8 +114,8 @@ def add_like(request):
             # tampoco si el usuario ya ha dado like antes.
             print ("Incrementando like")
             try:
-                pub.add_like_pub()
                 pub.user_give_me_like.add(request.user) # add users like
+                pub.set_like_pub(len(pub.user_give_me_like.all()))
                 pub.save()
                 response = True
                 statusLike = 1
@@ -126,8 +126,8 @@ def add_like(request):
         elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all():
             print ("Decrementando like")
             try:
-                pub.reduce_like_pub()
                 pub.user_give_me_like.remove(request.user)
+                pub.set_like_pub(len(pub.user_give_me_like.all()))
                 pub.save()
                 response = True
                 statusLike = 2
