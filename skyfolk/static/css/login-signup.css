@@ -86,7 +86,7 @@ video#bgvid {
   -webkit-transition: all .3s ease-in;
   -moz-transition: all .3s ease-in;
   transition: all .3s ease-in;
-  background-color: rgba(255, 255, 255, 0.8); 
+  background-color: rgba(255, 255, 255, 0.8);
 }
 .footer_base a {
   color: #212121;
@@ -124,9 +124,9 @@ video#bgvid {
     position: relative;
     display: block;
     top: 120px;
-    border-radius: 3px;
-    opacity: 0.9;
+    border-radius: 1px;
     font-family: 'Open Sans', sans-serif;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 }
 
 form {
@@ -163,10 +163,11 @@ form {
   left: 0;
   margin-left: auto;
   margin-right: auto;
-  border-top: 2px solid #212121;
+  border-top: 2px solid #bdbdbd;
   text-align: center;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 }
 .forgot_pswd > .secondaryAction {
   font-size: 16px;
@@ -227,8 +228,8 @@ form {
   left: 0%;
   text-align: center;
   margin: auto;
-  color: #212121;
-  border-bottom: 1px solid #212121;
+  color: #757575;
+  border-bottom: 1px solid #bdbdbd;
   width: 100%;
   margin-bottom: 10px;
   font-weight: 100;

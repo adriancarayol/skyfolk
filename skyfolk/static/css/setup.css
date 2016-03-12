@@ -51,6 +51,9 @@ body {
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 	background-color: #fff;
 }
+.contacto-password, .lost-password {
+	color: grey;
+}
 
 ul {
 	list-style: none;
@@ -81,8 +84,9 @@ button {
     transition: all .2s ease-in;
 }
 
-h1 {
+.lost-password-title {
 	text-align: center;
+	color: grey;
 }
 
 strong {

@@ -539,7 +539,7 @@ password_set = login_required(PasswordSetView.as_view())
 
 
 class PasswordResetView(AjaxCapableProcessFormViewMixin, FormView):
-    template_name = "account/password_reset.html"
+    template_name = "account/account/password_reset.html"
     form_class = ResetPasswordForm
     success_url = reverse_lazy("account_reset_password_done")
 
