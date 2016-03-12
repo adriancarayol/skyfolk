@@ -132,7 +132,7 @@ login = LoginView.as_view()
 
 
 class CloseableSignupMixin(object):
-    template_name_signup_closed = "account/signup_closed.html"
+    template_name_signup_closed = "account/account/signup_closed.html"
 
     def dispatch(self, request, *args, **kwargs):
         # WORKAROUND: https://code.djangoproject.com/ticket/19316
@@ -208,9 +208,9 @@ class ConfirmEmailView(TemplateResponseMixin, View):
 
     def get_template_names(self):
         if self.request.method == 'POST':
-            return ["account/email_confirmed.html"]
+            return ["account/account/email_confirmed.html"]
         else:
-            return ["account/email_confirm.html"]
+            return ["account/account/email_confirm.html"]
 
     def get(self, *args, **kwargs):
         try:
@@ -227,7 +227,7 @@ class ConfirmEmailView(TemplateResponseMixin, View):
         confirmation.confirm(self.request)
         get_adapter().add_message(self.request,
                                   messages.SUCCESS,
-                                  'account/messages/email_confirmed.txt',
+                                  'account/account/messages/email_confirmed.txt',
                                   {'email': confirmation.email_address.email})
         if app_settings.LOGIN_ON_EMAIL_CONFIRMATION:
             resp = self.login_on_confirm(confirmation)
@@ -308,7 +308,7 @@ confirm_email = ConfirmEmailView.as_view()
 
 
 class EmailView(AjaxCapableProcessFormViewMixin, FormView):
-    template_name = "account/account/email.html"
+    template_name = "account/account/account/email.html"
     form_class = AddEmailForm
     success_url = reverse_lazy('account_email')
 
@@ -328,7 +328,7 @@ class EmailView(AjaxCapableProcessFormViewMixin, FormView):
         email_address = form.save(self.request)
         get_adapter().add_message(self.request,
                                   messages.INFO,
-                                  'account/messages/'
+                                  'account/account/messages/'
                                   'email_confirmation_sent.txt',
                                   {'email': form.cleaned_data["email"]})
         signals.email_added.send(sender=self.request.user.__class__,
@@ -367,7 +367,7 @@ class EmailView(AjaxCapableProcessFormViewMixin, FormView):
             )
             get_adapter().add_message(request,
                                       messages.INFO,
-                                      'account/messages/'
+                                      'account/account/messages/'
                                       'email_confirmation_sent.txt',
                                       {'email': email})
             email_address.send_confirmation(request)
@@ -385,7 +385,7 @@ class EmailView(AjaxCapableProcessFormViewMixin, FormView):
             if email_address.primary:
                 get_adapter().add_message(request,
                                           messages.ERROR,
-                                          'account/messages/'
+                                          'account/account/messages/'
                                           'cannot_delete_primary_email.txt',
                                           {"email": email})
             else:
@@ -396,7 +396,7 @@ class EmailView(AjaxCapableProcessFormViewMixin, FormView):
                                            email_address=email_address)
                 get_adapter().add_message(request,
                                           messages.SUCCESS,
-                                          'account/messages/email_deleted.txt',
+                                          'account/account/messages/email_deleted.txt',
                                           {"email": email})
                 return HttpResponseRedirect(self.get_success_url())
         except EmailAddress.DoesNotExist:
@@ -418,7 +418,7 @@ class EmailView(AjaxCapableProcessFormViewMixin, FormView):
                                                 verified=True).exists():
                 get_adapter().add_message(request,
                                           messages.ERROR,
-                                          'account/messages/'
+                                          'account/account/messages/'
                                           'unverified_primary_email.txt')
             else:
                 # Sending the old primary address to the signal
@@ -432,7 +432,7 @@ class EmailView(AjaxCapableProcessFormViewMixin, FormView):
                 get_adapter() \
                     .add_message(request,
                                  messages.SUCCESS,
-                                 'account/messages/primary_email_set.txt')
+                                 'account/account/messages/primary_email_set.txt')
                 signals.email_changed \
                     .send(sender=request.user.__class__,
                           request=request,
@@ -454,7 +454,7 @@ email = login_required(EmailView.as_view())
 
 
 class PasswordChangeView(AjaxCapableProcessFormViewMixin, FormView):
-    template_name = "account/password_change.html"
+    template_name = "account/account/password_change.html"
     form_class = ChangePasswordForm
     success_url = reverse_lazy("account_change_password")
 
@@ -499,7 +499,7 @@ password_change = login_required(PasswordChangeView.as_view())
 
 
 class PasswordSetView(AjaxCapableProcessFormViewMixin, FormView):
-    template_name = "account/password_set.html"
+    template_name = "account/account/password_set.html"
     form_class = SetPasswordForm
     success_url = reverse_lazy("account_set_password")
 
@@ -523,7 +523,7 @@ class PasswordSetView(AjaxCapableProcessFormViewMixin, FormView):
         form.save()
         get_adapter().add_message(self.request,
                                   messages.SUCCESS,
-                                  'account/messages/password_set.txt')
+                                  'account/account/messages/password_set.txt')
         signals.password_set.send(sender=self.request.user.__class__,
                                   request=self.request, user=self.request.user)
         return super(PasswordSetView, self).form_valid(form)
@@ -539,7 +539,7 @@ password_set = login_required(PasswordSetView.as_view())
 
 
 class PasswordResetView(AjaxCapableProcessFormViewMixin, FormView):
-    template_name = "account/password_reset.html"
+    template_name = "account/account/password_reset.html"
     form_class = ResetPasswordForm
     success_url = reverse_lazy("account_reset_password_done")
 
@@ -563,13 +563,13 @@ password_reset = PasswordResetView.as_view()
 
 
 class PasswordResetDoneView(TemplateView):
-    template_name = "account/password_reset_done.html"
+    template_name = "account/account/password_reset_done.html"
 
 password_reset_done = PasswordResetDoneView.as_view()
 
 
 class PasswordResetFromKeyView(AjaxCapableProcessFormViewMixin, FormView):
-    template_name = "account/password_reset_from_key.html"
+    template_name = "account/account/password_reset_from_key.html"
     form_class = ResetPasswordKeyForm
     success_url = reverse_lazy("account_reset_password_from_key_done")
 
@@ -607,7 +607,7 @@ class PasswordResetFromKeyView(AjaxCapableProcessFormViewMixin, FormView):
         form.save()
         get_adapter().add_message(self.request,
                                   messages.SUCCESS,
-                                  'account/messages/password_changed.txt')
+                                  'account/account/messages/password_changed.txt')
         signals.password_reset.send(sender=self.reset_user.__class__,
                                     request=self.request,
                                     user=self.reset_user)
@@ -622,14 +622,14 @@ password_reset_from_key = PasswordResetFromKeyView.as_view()
 
 
 class PasswordResetFromKeyDoneView(TemplateView):
-    template_name = "account/password_reset_from_key_done.html"
+    template_name = "account/account/password_reset_from_key_done.html"
 
 password_reset_from_key_done = PasswordResetFromKeyDoneView.as_view()
 
 
 class LogoutView(TemplateResponseMixin, View):
 
-    template_name = "account/logout.html"
+    template_name = "account/account/logout.html"
     redirect_field_name = "next"
 
     def get(self, *args, **kwargs):
@@ -649,7 +649,7 @@ class LogoutView(TemplateResponseMixin, View):
     def logout(self):
         get_adapter().add_message(self.request,
                                   messages.SUCCESS,
-                                  'account/messages/logged_out.txt')
+                                  'account/account/messages/logged_out.txt')
         auth_logout(self.request)
 
     def get_context_data(self, **kwargs):
@@ -670,12 +670,12 @@ logout = LogoutView.as_view()
 
 
 class AccountInactiveView(TemplateView):
-    template_name = 'account/account_inactive.html'
+    template_name = 'account/account/account_inactive.html'
 
 account_inactive = AccountInactiveView.as_view()
 
 
 class EmailVerificationSentView(TemplateView):
-    template_name = 'account/verification_sent.html'
+    template_name = 'account/account/verification_sent.html'
 
 email_verification_sent = EmailVerificationSentView.as_view()
