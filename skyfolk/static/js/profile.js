@@ -16,7 +16,7 @@ $(document).ready(function () {
     var text = $(this).find('.wrp-comment').text();
     var show = $(this).find('.show-more a');
 
-    if (text.length < 150)
+    if (text.length < 60)
     {
         $(show).css('display','none');
     }

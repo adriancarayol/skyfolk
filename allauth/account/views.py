@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import (HttpResponseRedirect, Http404,
                          HttpResponsePermanentRedirect)
@@ -15,7 +16,7 @@ from .adapter import get_adapter
 from .forms import (
     AddEmailForm, ChangePasswordForm,
     LoginForm, ResetPasswordKeyForm,
-    ResetPasswordForm, SetPasswordForm, SignupForm, UserTokenForm)
+    ResetPasswordForm, SetPasswordForm, SignupForm, UserTokenForm, ContactForm)
 from .models import EmailAddress, EmailConfirmation
 from .utils import (get_next_redirect_url, complete_signup,
                     get_login_redirect_url, perform_login,
@@ -541,6 +542,7 @@ password_set = login_required(PasswordSetView.as_view())
 class PasswordResetView(AjaxCapableProcessFormViewMixin, FormView):
     template_name = "account/account/password_reset.html"
     form_class = ResetPasswordForm
+    contact_form = ContactForm
     success_url = reverse_lazy("account_reset_password_done")
 
     def get_form_class(self):
@@ -561,6 +563,26 @@ class PasswordResetView(AjaxCapableProcessFormViewMixin, FormView):
 
 password_reset = PasswordResetView.as_view()
 
+class PasswordNeedContact(FormView):
+    template_name = "account/account/password_contact.html"
+    form_class = ContactForm
+    success_url = reverse_lazy("account_reset_password_done")
+
+    def get_form_class(self):
+        return get_form_class(app_settings.FORMS,
+                              'reset_password',
+                              self.form_class)
+
+
+
+    def get_context_data(self, **kwargs):
+        ret = super(PasswordNeedContact, self).get_context_data(**kwargs)
+        # NOTE: For backwards compatibility
+        ret['password_reset_form'] = ret.get('form')
+        # (end NOTE)
+        return ret
+
+password_contact = PasswordNeedContact.as_view()
 
 class PasswordResetDoneView(TemplateView):
     template_name = "account/password_reset_done.html"

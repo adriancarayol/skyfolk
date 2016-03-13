@@ -77,19 +77,21 @@ video#bgvid {
 }
 
 .footer_base {
-  width: 100%;
-  position: fixed;
-  height: 37px;
-  padding: 10px;
-  bottom: 5px;
-  margin-bottom: -5px;
-  -webkit-transition: all .3s ease-in;
-  -moz-transition: all .3s ease-in;
-  transition: all .3s ease-in;
-  background-color: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    position: fixed;
+    height: 37px;
+    padding: 10px;
+    bottom: 5px;
+    margin-bottom: -5px;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+
 }
 .footer_base a {
-  color: #212121;
+  color: #616161;
   font-family: 'Open Sans', sans-serif;
   -moz-transtion: all .2s ease-in;
   -webkit-transition: all .2s ease-in;
@@ -128,7 +130,10 @@ video#bgvid {
     font-family: 'Open Sans', sans-serif;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 }
-
+#login label, .block-formregister label {
+    color: grey;
+    font-size: 1em;
+}
 form {
     position: relative;
     top: 23px;
@@ -143,9 +148,7 @@ form {
 .form-3 label {
     position: relative;
     text-align: center;
-    color: #212121;
     font-family: 'Open Sans', sans-serif;
-    font-size: 12px;
     font-width: 100;
     left: 30px;
 }
@@ -209,7 +212,6 @@ form {
   transition: all .3s linear;
 }
 .form-3 input[type=password] {
-
   width: 70%;
   position: relative;
   margin: auto;
@@ -261,11 +263,8 @@ form {
     float: right;
     margin-right: 130px;
     font-family: 'Open Sans', sans-serif;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    -webkit-box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
-    -moz-box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
-    box-shadow: -1px 2px 17px 0px rgba(65,109,152,1);
+    border-radius: 3px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
     display: block;
     padding: 0px 0px 30px;
 
@@ -382,6 +381,11 @@ form {
 }
 :placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
   color: #212121;
+}
+/* INPUT COLOR FOCUS */
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
+    border-bottom: 1px solid #64B5F6 !important;
+    box-shadow: 0 1px 0 0 #64B5F6 !important;
 }
 
 @media screen and (max-height: 700px) and (min-width: 800px){
