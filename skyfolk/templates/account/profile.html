@@ -41,7 +41,12 @@
             <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
             <!--<input type="checkbox" id="button-menu"  />-->
             {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
-              <img id = "friend_request_progress" src="{{STATIC_URL}}img/friend_request_progress.png">
+            <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
+            <script type="text/javascript">
+              $(window).load(function() {
+                  $('#addfriend').replaceWith('<span class="fa fa-clock-o" title="En proceso">'+' '+'</div>');
+              });
+            </script>
             {% endif %}
             <div class="caja">
              <div class="item">

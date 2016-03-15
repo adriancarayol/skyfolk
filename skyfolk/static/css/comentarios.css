@@ -402,7 +402,6 @@ input[type="checkbox"] {
     opacity:1;
     z-index: 2;
     position: relative;
-
   }
 
   span[class*="fa-heart"] {
@@ -419,6 +418,22 @@ input[type="checkbox"] {
     z-index: 2;
     position: relative;
   }
+  span[class*="fa-clock-o"] {
+    cursor:pointer;
+    float:left;
+    display: block;
+    font-size: 2em;
+    height: 100%;
+    text-align: center;
+    width: 70px;
+    padding: 30px 20px;
+    opacity:1;
+    z-index: 2;
+    position: relative;
+  }
+  span[class*="fa-clock-o"] {background:#c8e6c9 }
+  span[class*="fa-clock-o"]:hover {
+    background:#a5d6a7;}
 
   span[class*="plus"] {background:#e1f5fe;}
   span[class*="plus"]:hover {

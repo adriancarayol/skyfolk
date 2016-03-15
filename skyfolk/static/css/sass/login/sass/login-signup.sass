@@ -279,10 +279,10 @@ form
 
 
   & #iniciar_sesion, & #registrar
-  position: relative
-  margin: auto
-  margin-top: 3px
-  display: inline-block
+    position: relative
+    margin: auto
+    margin-top: 3px
+    display: inline-block
 
 
 /* Adaptamos el background del login dependiendo de la altura de la pagina */
@@ -348,21 +348,22 @@ form
   display: inline-block
   position: relative
 
-::-webkit-input-placeholder  /* WebKit, Blink, Edge */
+/* WebKit, Blink, Edge */
+::-webkit-input-placeholder
   color: #212121
-
-::-moz-placeholder  /* Mozilla Firefox 4 to 18 */
-  color: #212121
-  opacity: 1
-
-::-moz-placeholder  /* Mozilla Firefox 19+ */
+/* Mozilla Firefox 4 to 18 */
+\:-moz-placeholder
   color: #212121
   opacity: 1
-
-::-ms-input-placeholder  /* Internet Explorer 10-11 */
+/* Mozilla Firefox 19+ */
+::-moz-placeholder
   color: #212121
-
-::-placeholder-shown  /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+  opacity: 1
+/* Internet Explorer 10-11 */
+\:-ms-input-placeholder
+  color: #212121
+/* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+::-placeholder-shown
   color: #212121
 
 /* INPUT COLOR FOCUS */

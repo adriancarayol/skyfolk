@@ -5,7 +5,7 @@
         <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/about.css">
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <link rel="icon" type="image/png" href="{{STATIC_URL}}images/favicon.ico}" />
-     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.css"  media="screen,projection"/>
+     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
     <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -22,6 +22,7 @@
         <nav class="grey lighten-4" id="navigation">
             <div class="container">
                 <ul class="navlinks">
+                  <li><div class="logotipo_skyfolk" onclick="location.href='/'"><b>S</b>kyfolk</div></li>
                   <li><a class="blue-text text-darken-2" href="/about/home">Homepage</a></li>
                   <li><a class="blue-text text-darken-2" href="/about/us">About Us</a></li>
                   <li><a class="blue-text text-darken-2" href="/about/project">Project</a></li>
@@ -37,7 +38,7 @@
   </div>
   <div class="section white">
     <div class="row container">
-      {% block title %}<h2 class="grey-text text-lighten-1 header">Skyfolk</h2>{% endblock %}
+      {% block title %}<h2 class="grey-text text-lighten-1 header">Skyfolk.</h2>{% endblock %}
       {% block description %}<p class="grey-text text-darken-3 lighten-3 sk_info">Skyfolk es tu red social definitiva, recibe noticias, controla tus relaciones, administra tu mundo.</p>{% endblock %}
     </div>
       {% endblock %}
@@ -57,7 +58,7 @@
           <br><br>
           No olvides visitar <a href="/market">nuestra tienda</a> para administrar tus widgets facilmente.
           <br><br>
-          <br><br>
+          <br>
           </span>
         <div class="icon_info_1">
               <i class="large material-icons">dashboard</i>
@@ -72,7 +73,6 @@
         </h5>
           <span class="blue-text text-darken-1">
           Nadie mejor que tu para decidir que papel juegan las personas en tu vida.
-
           <br><br>
           Por ello podrás elegir distintas opciones para tenerlos más cerca, avisarte si pasa algo importante, animar a un amigo o quedar con la familia.
           <br><br>
@@ -108,9 +108,9 @@
   <div class="parallax-container">
     <div class="parallax"><img src="images/parallax2.jpg"></div>
   </div>
-  <div class="info-logo-sk">
-    <img onclick="location.href='/'" src="{{STATIC_URL}}img/logo.png" title="skyfolk" alt="skyfolk">
-  </div>
 {% endblock %}
+<div class="info-logo-sk">
+  <img onclick="location.href='/'" src="{{STATIC_URL}}img/logo.png" title="skyfolk" alt="skyfolk">
+</div>
 </body>
 </html>

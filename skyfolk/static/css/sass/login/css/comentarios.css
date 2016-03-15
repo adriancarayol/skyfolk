@@ -348,153 +348,171 @@ input[type="checkbox"] {
   border: 1px solid #1e88e5;
   resize: none; }
 
-  /* Responder - Me gusta - Añadir */
-  span[class*="fa-paper-plane"] {
-    cursor:pointer;
-    float:left;
-    display: block;
-    font-size: 2em;
-    text-align: center;
-    height: 100%;
-    width:70px;
-    padding: 30px 20px;
-    opacity: 1;
-    z-index:2;
-    position: relative;
-  }
-  span[class*="fa-cog"] {
-    cursor:pointer;
-    float:left;
-    display: block;
-    font-size: 2em;
-    height: 100%;
-    width:70px;
-    line-height:55px;
-    text-align: center;
-    padding: 30px 20px;
-    opacity:1;
-    z-index:2;
-    position: relative;
-  }
-  span[class*="fa-users"] {
-    cursor:pointer;
-    float:left;
-    display: block;
-    font-size: 2em;
-    height: 100%;
-    text-align: center;
-    width: 70px;
-    padding: 30px 20px;
-    opacity:1;
-    z-index:2;
-    position: relative;
-  }
+/* Responder - Me gusta - Añadir */
+span .fa-paper-plane {
+  cursor: pointer;
+  float: left;
+  display: block;
+  font-size: 2em;
+  text-align: center;
+  height: 100%;
+  width: 70px;
+  padding: 30px 20px;
+  opacity: 1;
+  z-index: 2;
+  position: relative; }
 
-  span[class*="fa-plus"] {
-    cursor:pointer;
-    float:left;
-    display: block;
-    font-size: 2em;
-    height: 100%;
-    text-align: center;
-    width: 70px;
-    padding: 30px 20px;
-    opacity:1;
-    z-index: 2;
-    position: relative;
+span .fa-cog {
+  cursor: pointer;
+  float: left;
+  display: block;
+  font-size: 2em;
+  height: 100%;
+  width: 70px;
+  line-height: 55px;
+  text-align: center;
+  padding: 30px 20px;
+  opacity: 1;
+  z-index: 2;
+  position: relative; }
 
-  }
+span .fa-users {
+  cursor: pointer;
+  float: left;
+  display: block;
+  font-size: 2em;
+  height: 100%;
+  text-align: center;
+  width: 70px;
+  padding: 30px 20px;
+  opacity: 1;
+  z-index: 2;
+  position: relative; }
 
-  span[class*="fa-heart"] {
-    cursor:pointer;
-    float:left;
-    display: block;
-    text-align: center;
-    font-size: 2em;
-    height: 100%;
-    width:70px;
-    line-height:55px;
-    padding: 30px 20px;
-    opacity:1;
-    z-index: 2;
-    position: relative;
-  }
+span .fa-plus {
+  cursor: pointer;
+  float: left;
+  display: block;
+  font-size: 2em;
+  height: 100%;
+  text-align: center;
+  width: 70px;
+  padding: 30px 20px;
+  opacity: 1;
+  z-index: 2;
+  position: relative; }
 
-  span[class*="plus"] {background:#e1f5fe;}
-  span[class*="plus"]:hover {
-    background:rgba(48,164,209,0.3);}
+span .fa-heart {
+  cursor: pointer;
+  float: left;
+  display: block;
+  text-align: center;
+  font-size: 2em;
+  height: 100%;
+  width: 70px;
+  line-height: 55px;
+  padding: 30px 20px;
+  opacity: 1;
+  z-index: 2;
+  position: relative; }
 
-  span[class*="paper-plane"] {background:#b3e5fc;}
-  span[class*="paper-plane"]:hover {
-    background:rgba(46,120,209,0.3);}
+span .fa-clock-o {
+  cursor: pointer;
+  float: left;
+  display: block;
+  text-align: center;
+  font-size: 2em;
+  height: 100%;
+  width: 70px;
+  line-height: 55px;
+  padding: 30px 20px;
+  opacity: 1;
+  z-index: 2;
+  position: relative; }
 
-  span[class*="cog"] {background:#e1f5fe;}
-  span[class*="cog"]:hover {
-    background:rgba(46,120,209,0.3);}
+span .plus {
+  background: #e1f5fe; }
 
-  span[class*="users"] {background:#81d4fa;}
-  span[class*="users"]:hover {
-    background:rgba(48,164,209,0.3);}
+span .plus:hover {
+  background: rgba(48, 164, 209, 0.3); }
 
-  span[class*="heart"] {background:#81d4fa;}
-  span[class*="heart"]:hover {
-    background:rgba(48,164,209,0.3);}
+span .fa-clock-o {
+  background: #e1f5fe; }
 
+span .fa-clock-o:hover {
+  background: rgba(48, 164, 209, 0.3); }
 
-  .caja {
-      display: inline-block;
-      width: 90px;
-      height: 20px;
-      vertical-align: top;
-      margin: 1em 1.5em 2em 0;
-      cursor: pointer;
-      position: relative;
-      font-family: Tahoma, Arial;
-      -webkit-transition:.5s;
-      -moz-transition:.5s;
-      -o-transition:.5s;
-      transition:.5s;
-    }
+span .paper-plane {
+  background: #b3e5fc; }
 
-    .item:hover img {
-      box-shadow: none;
-      border-radius: 10px;
-    }
+span .paper-plane:hover {
+  background: rgba(46, 120, 209, 0.3); }
 
-    .item:hover .informacion {
-      box-shadow: 0px 3px 8px rgba(0,0,0,0.3);
-      border-radius: 3px;
-    }
+span .cog {
+  background: #e1f5fe; }
 
-    .item img {
-      display: block;
-      position: absolute;
-      top: 0;
-      border-radius: 3px;
-      box-shadow: 0px 3px 8px rgba(0,0,0,0.3);
-    }
+span .cog:hover {
+  background: rgba(46, 120, 209, 0.3); }
 
-    .item .informacion {
-      display: block;
-      position: absolute;
-      top: -13.5em;
-      left: -46px;
-      height: 76px;
-      width: 210px;
-      border-radius: 15px;
-      padding: 0px;
-      font-size: 12px;
-      text-shadow: 1px 1px 1px rgba(255,255,255,0.5);
-      box-shadow: none;
-      background: rgb(236,241,244);
-      margin-top: 70px;
-      opacity: 0.7;
-      }
-      .item .informacion:hover {
-        opacity :1;
-      }
+span .users {
+  background: #81d4fa; }
 
+span .users:hover {
+  background: rgba(48, 164, 209, 0.3); }
 
+span .heart {
+  background: #81d4fa; }
+
+span .heart:hover {
+  background: rgba(48, 164, 209, 0.3); }
+
+.caja {
+  display: inline-block;
+  width: 90px;
+  height: 20px;
+  vertical-align: top;
+  margin: 1em 1.5em 2em 0;
+  cursor: pointer;
+  position: relative;
+  font-family: Tahoma, Arial;
+  -webkit-transition: 5s;
+  -moz-transition: 5s;
+  -o-transition: 5s;
+  transition: 5s; }
+
+.item:hover img {
+  box-shadow: none;
+  border-radius: 10px; }
+
+.item:hover .informacion {
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 3px; }
+
+.item img {
+  display: block;
+  position: absolute;
+  top: 0;
+  border-radius: 3px;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3); }
+
+.item .informacion {
+  display: block;
+  position: absolute;
+  top: 13.5em;
+  left: 46px;
+  height: 76px;
+  width: 210px;
+  border-radius: 15px;
+  padding: 0px;
+  font-size: 12px;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+  background: #ecf1f4;
+  margin-top: 70px;
+  opacity: 0.7; }
+
+.item .informacion:hover {
+  opacity: 1; }
 
 .informacion strong {
   border-bottom: 1px solid #CCCCCC;
