@@ -57,6 +57,12 @@ $(document).ready(function () {
               case "search":
                   $('#id_searchText').css('border','1px solid #1e88e5');
                   break;
+              case "config":
+                $('.menup li:nth-child(2)').css('color','#1e88e5');
+                break;
+              case "messages":
+                $('.menup li:nth-child(3)').css('color','#1e88e5');
+                break;
     }
 };
 
@@ -827,7 +833,7 @@ function showRequest(id_profile, username) {
 
   var unique_id = $.gritter.add({
     // (string | mandatory) the heading of the notification
-    title: '<a href="/profile/'+username+'">'+'username'+'</a>' + ' wants to be your friend!',
+    title: '<a href="/profile/'+username+'">'+username+'</a>' + ' wants to be your friend!',
     // (string | mandatory) the text inside the notification
     text: '',
     // (string | optional) the image to display on the left
