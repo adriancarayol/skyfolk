@@ -129,7 +129,8 @@ class UserProfile(models.Model):
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
                                                    'from_publication__content', 'from_publication__created',
-                                                   'from_publication__likes', 'user__profile__image').order_by(
+                                                   'from_publication__likes', 'user__profile__image',
+                                                   'from_publication__replies').order_by(
             'from_publication__created').reverse()
 
     def get_publicationsToMeTop15(self):
