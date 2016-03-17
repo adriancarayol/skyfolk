@@ -3,7 +3,8 @@
 {% block include_files %}
 
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="{{STATIC_URL}}js/configure.js"></script>
  	<link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
 	<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' />
 	<link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
@@ -11,20 +12,8 @@
 	<!--[if IE 7]>
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome-ie7.min.css" rel="stylesheet" />
 	<![endif]-->
-
-	<script>
-	 $(document).ready(function() {
-  	 	$('ul.form li a').click(
-  	 		function(e) {
-  
-	 			e.stopPropagation; // stop the click from bubbling
-	 			$(this).closest('ul').find('.selected').removeClass('selected');
-	 			$(this).parent().addClass('selected');
-	 		});
-	 });
-	</script>
-
-	{% block additional_files %}{% endblock%}
+	{% block additional_files %}
+	{% endblock%}
 
 </head>
 {% endblock%}

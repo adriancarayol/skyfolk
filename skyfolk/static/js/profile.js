@@ -5,6 +5,39 @@ var countTimeLine = 1;
   /* LOADER PARA SKYFOLK */
 $(window).load(function() {
     $("#loader").fadeOut("slow");
+
+    var currentPage = window.location.href.split('/')[3];
+    switch (currentPage) {
+              case "friends":
+                $('.oldMenu').find('li:nth-child(3)').css('border-bottom','3px solid #1e88e5');
+                  break;
+              case "profile":
+                  $('.oldMenu').find('li:nth-child(1)').css('border-bottom','3px solid #1e88e5');
+                  break;
+              case "search":
+                  $('#id_searchText').css('border','1px solid #1e88e5');
+                  break;
+              case "config":
+                $('.menup').find('li:nth-child(2)').css('color','#1e88e5');
+                break;
+              case "messages":
+                $('.menup').find(' li:nth-child(3)').css('color','#1e88e5');
+                break;
+        default:
+            break;
+    }
+    /* Dar color a la opcion activa en el menu, template configuracion. */
+    var conf = window.location.href.split('/')[4];
+    switch (conf) {
+        case "profile":
+            $('.menu-config').find('a:first-child').css('color','#1e88e5');
+            break;
+        case "password":
+            $('.menu-config').find('a:nth-child(2)').css('color', '#1e88e5');
+            break;
+        default:
+            break;
+    }
 });
 
 $(document).ready(function () {
@@ -44,27 +77,6 @@ $(document).ready(function () {
 
     $('#page-wrapper').hide();
   });
-
-  window.onload=function() {
-      var currentPage = window.location.href.split('/')[3];
-          switch (currentPage) {
-              case "friends":
-              $('.oldMenu li:nth-child(3)').css('border-bottom','3px solid #1e88e5');
-                  break;
-              case "profile":
-                  $('.oldMenu li:nth-child(1)').css('border-bottom','3px solid #1e88e5');
-                  break;
-              case "search":
-                  $('#id_searchText').css('border','1px solid #1e88e5');
-                  break;
-              case "config":
-                $('.menup li:nth-child(2)').css('color','#1e88e5');
-                break;
-              case "messages":
-                $('.menup li:nth-child(3)').css('color','#1e88e5');
-                break;
-    }
-};
 
   $('.fa-paw').on('click',function() {
       $(".info-paw").fadeToggle("fast");
