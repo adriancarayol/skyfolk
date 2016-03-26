@@ -11,6 +11,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from publications.forms import PublicationForm
+from publications.models import Publication
 from user_profile.forms import ProfileForm, UserForm, SearchForm
 from user_profile.models import UserProfile
 
@@ -194,15 +195,21 @@ def search(request):
                 if len(words) == 1:
                     resultSearch = User.objects.filter(Q(first_name__icontains=texto_to_search) | Q(
                         last_name__icontains=texto_to_search) | Q(username__icontains=texto_to_search))
-
+                    resultMessages = Publication.objects.filter(Q(content__icontains=texto_to_search) |
+                                                                Q(author__user__username__icontains=texto_to_search))
                 elif len(words) == 2:
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1])
                 else:
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2])
+
+                if len(words) > 1:
+                    for w in words:
+                        resultMessages = Publication.objects.filter(Q(content__icontains=w))
+
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                                  'resultSearch': resultSearch},
+                                                                  'resultSearch': resultSearch, 'resultMessages': resultMessages},
                                           context_instance=RequestContext(request))
 
     else:

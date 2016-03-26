@@ -1,0 +1,133 @@
+/*
+
+ HTML
+
+ {% if request.user.profile.image %}
+      <nav class="profile" style="background-image: url('{{request.user.profile.image.url}}');">
+      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
+      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
+      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
+      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
+    </nav>
+{% else %}
+      <nav class="profile" style="background-image: url('{{STATIC_URL}}img/generic-avatar.png');">
+      <li class="fa fa-paper-plane fa-2x" id="publish2"></li>
+      <li class="fa fa-home fa-2x" onclick="javascript:location.href='/'"></li>
+      <li class="fa fa-users fa-2x" onclick="javascript:location.href='/friends'"></li>
+      <li class="fa fa-sign-out fa-2x" onclick="javascript:location.href='{% url 'account_logout' %}'"></li>
+    </nav>
+{% endif %}
+
+
+.profile {
+  color: rgba(44,44,44,0.888);
+  width: 105px;
+  height: 105px;
+  position: fixed;
+    display: none;
+  background-color: white;
+  left: 2%;
+  top: 5%;
+  border-radius: 100%;
+  background-position: center;
+  background-size: 105px 105px !important;
+  background-repeat: no-repeat;
+  border-color: #3A80A6;
+  border: 2px solid;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+  cursor:pointer;
+  z-index: 9999;
+  opacity: 0.4;
+}
+.profile:hover {
+  background-color: rgba(44,44,44,0.777);
+  width: 105px;
+  height: 105px;
+  position: fixed;
+  background-color: white;
+  left: 2%;
+  top: 5%;
+  border-radius: 100%;
+  background-position:center;
+  background-size: 105px 105px !important;
+  background-repeat: no-repeat;
+  border: 2px solid #1976d2;
+  -webkit-transition: all 0.2s linear;
+  -moz-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+  cursor:pointer;
+  z-index: 9999;
+  opacity: 1;
+}
+.profile li:nth-child(1) {
+  list-style-type: none;
+  position: absolute;
+  visibility: hidden;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+  right: 110px;
+  top: -25px;
+  }
+.profile li:nth-child(2) {
+  list-style-type: none;
+  position: absolute;
+  right: 35px;
+  visibility: hidden;;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+  top: -40px;
+}
+.profile li:nth-child(3) {
+  list-style-type: none;
+  position: absolute;
+  right: 130px;
+  visibility: hidden;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+  top: 25px;
+}
+.profile li:nth-child(4) {
+  list-style-type: none;
+  position: absolute;
+  right: 120px;
+  visibility: hidden;
+  -webkit-transition: all 4s ease-in;
+  -moz-transition: all 4s ease-in;
+  transition: all 4s ease-in;
+  cursor:pointer;
+  top: 70px;
+}
+
+.profile:hover li {
+  visibility: visible;
+  margin-top: -10px;
+  transition: all .2s ease-in;
+  -webkit-transition: all .2s ease-in;
+  -moz-transition: all .2s ease-in;
+}
+
+.profile li:hover {
+  color: #1976d2;
+  z-index: 9999;
+}
+
+@media only screen and (max-width: 736px) and (max-height: 414px) {
+  .profile {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  .profile {
+    display: none;
+  }
+}
+*/

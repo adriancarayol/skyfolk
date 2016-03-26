@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAAA,UAAU,CACR,UAAU,CAAE,6DAA+D,CAC7E,WAAW,CACT,UAAU,CAAE,6DAA+D,CAC3E,eAAe,CAAE,GAAG",
-"sources": ["../sass/style.sass"],
-"names": [],
-"file": "style.css"
-}
