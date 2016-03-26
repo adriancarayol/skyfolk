@@ -1,3 +1,5 @@
+$blueskyfolk: #1e88e5
+
 *
   -webkit-box-sizing: border-box
   -moz-box-sizing: border-box
@@ -62,7 +64,7 @@ html, body
   -webkit-transform: scale(1.1)
   -moz-transition: scale(1.1)
   transition: scale(1.1)
-  border-color: #1e88e5
+  border-color: $blueskyfolk
   opacity: 1
 
 .container .personal-card .header .like-him
@@ -70,7 +72,7 @@ html, body
   margin-top: -30px
   float: right
   margin-right: 20px
-  background-color: #1e88e5
+  background-color: $blueskyfolk
   color: #fff
   border-radius: 100%
   width: 50px
@@ -93,7 +95,7 @@ html, body
   background-color: #e0e0e0
 
 .container .personal-card .name-friend a:first-child
-  color: #1e88e5
+  color: $blueskyfolk
   text-decoration: none
 
 .container .personal-card .name-friend p:last-child
@@ -105,10 +107,49 @@ html, body
   border-radius: 3px
   padding: 10px
 
+  & a
+    text-decoration: none
+    font-size: 1.4em
+    display: inline-block
+    color: $blueskyfolk
+
+  & i
+    font-size: 1.4em
+    color: grey
+
+  & .pub-author
+    padding-top: 10px
+    padding-bottom: 10px
+    text-align: center
+
+  & .profile-user-bg
+    position: relative
+    top: 70px
+    width: 80px
+    height: 80px
+    margin: auto
+    display: block
+    border-radius: 3px
+    box-shadow: 0 1px 5px #1976d2
+    cursor: pointer
+    -webkit-transition: all .3s ease-in
+    -moz-transition: all .3s ease-in
+    transition: all .3s ease-in
+
+  & .pub-bg
+    height: 120px
+    position: relative
+    display: block
+    margin-bottom: 10%
+    border-radius: 3px
+
 .comm
   height: auto
-  font-size: 1.3em
+  font-size: 1.25em
   font-family: 'Open Sans', sans-serif
+  color: #616161
+  padding: 7px
+  border-left: 3px solid tomato
 
 .comm h6
   text-align: center
@@ -147,7 +188,12 @@ html, body
   margin: auto
   text-align: center
 
-#search-noelements h5
-  color: #555
-  font-family: 'Open Sans', sans-serif
-  font-size: 2em
+  & .not-query
+    font-size: 0.8em
+    color: #414141
+    font-family: 'Open Sans', sans-serif
+
+  & h5
+    color: #555
+    font-family: 'Open Sans', sans-serif
+    font-size: 2em

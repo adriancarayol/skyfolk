@@ -195,8 +195,7 @@ def search(request):
                 if len(words) == 1:
                     resultSearch = User.objects.filter(Q(first_name__icontains=texto_to_search) | Q(
                         last_name__icontains=texto_to_search) | Q(username__icontains=texto_to_search))
-                    resultMessages = Publication.objects.filter(Q(content__icontains=texto_to_search) |
-                                                                Q(author__user__username__icontains=texto_to_search))
+
                 elif len(words) == 2:
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1])
@@ -204,12 +203,16 @@ def search(request):
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2])
 
-                if len(words) > 1:
-                    for w in words:
-                        resultMessages = Publication.objects.filter(Q(content__icontains=w))
+
+                for w in words:
+                    resultMessages = Publication.objects.filter(Q(content__icontains=w) |
+                                                                Q(author__user__username__icontains=w) |
+                                                                Q(author__user__first_name__icontains=w) |
+                                                                Q(author__user__last_name__icontains=w))
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                                  'resultSearch': resultSearch, 'resultMessages': resultMessages},
+                                                                  'resultSearch': resultSearch, 'resultMessages': resultMessages,
+                                                                  'words': words},
                                           context_instance=RequestContext(request))
 
     else:
