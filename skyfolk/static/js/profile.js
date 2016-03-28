@@ -43,6 +43,7 @@ $(window).load(function() {
 $(document).ready(function () {
 
 
+
     /* Show more - Show less */
 
     $('#tab-comentarios').find('.wrapper').each(function () {
@@ -311,6 +312,7 @@ $(document).ready(function () {
     !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
         // Si presionas el char 'm' mostará el div para escribir un mensaje.
         $('#page-wrapper').toggle();
+        $('#page-wrapper').find('#message2').focus();
     }
   });
 /* Abre atajos "a" */
@@ -330,6 +332,7 @@ $(document).keypress(function(e){
 $( document ).on('keydown', function(e) {
     if ( e.keyCode === 27 ) { // escape
 
+        $('#page-wrapper').find('#message2').blur(); // Focus del textarea off.
         $('#page-wrapper').hide();  // Oculta from para crear comentario.
         $('#atajos-keyboard-profile').hide(); // Oculta atajos de teclado.
         $('.ampliado').hide(); // Oculta mensaje ampliado.
@@ -1004,7 +1007,9 @@ $(document).ready(function() {
         $(this).fadeOut('slow', function() {
           $(this).css("display", "block");
         });
+          $(this).find('#message2').focus();
       } else {
+          $(this).find('#message2').blur();
         $(this).fadeIn('slow', function() {
           $(this).css("display", "none");
         });

@@ -59,7 +59,7 @@
     <h6>Publica un comentario para que el mundo lo vea.</h6>
     </div>
     <form id="message-form2" action="" method="post">{% csrf_token %}
-    {{publicationForm.as_p}}
+    {{ publicationForm.as_p }}
       <input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
       <input type="text" name="emitterid" value="{{ user.pk }}" hidden>
         <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"> </i> Enviar</button>

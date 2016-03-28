@@ -215,9 +215,6 @@ SITE_ID = 1
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-# COOKIES sessions
-
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # One month
 
 STATIC_URL = '/static/'
 
