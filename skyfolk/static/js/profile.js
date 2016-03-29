@@ -253,14 +253,14 @@ $(document).ready(function () {
   });
 
     /* Agregar timeline */
-    $('.optiones_comentarios .fa-tag').on('click', function() {
+    $('.optiones_comentarios').find('.fa-tag').on('click', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         alert('VAS A AÑADIR EL COMENTARIO A TU TIMELINE');
         AJAX_add_timeline(caja_publicacion);
     });
 
     /* Añadir me gusta a comentario */
-    $('.optiones_comentarios #like-heart').on('click', function() {
+    $('.optiones_comentarios').find('#like-heart').on('click', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart);
@@ -337,6 +337,14 @@ $( document ).on('keydown', function(e) {
         $('#atajos-keyboard-profile').hide(); // Oculta atajos de teclado.
         $('.ampliado').hide(); // Oculta mensaje ampliado.
 
+    }
+});
+
+    $( document ).on('keydown', function(e) {
+    if ( e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) &&
+    !($('input').is(":focus")) &&
+    !($('textarea').is(":focus"))) { // escape
+        $('#id_searchText').focus(); // Focus del textarea off.
     }
 });
 

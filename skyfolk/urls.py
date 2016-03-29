@@ -6,11 +6,11 @@ from rest_framework import routers, viewsets, routers
 
 from about.views import about
 from api import views
-from market.views import market_inicio
-from relaciones.views import relaciones_user
+#from market.views import market_inicio
+#from relaciones.views import relaciones_user
 from user_profile import views as user_profile_views
-from user_profile.views import welcomeView, welcomeStep1
-import notifications
+#from user_profile.views import welcomeView, welcomeStep1
+# import notifications
 
 admin.autodiscover()
 
@@ -60,8 +60,6 @@ urlpatterns = patterns(
     url(r'^about/([^/]+)/$',about),
     # Market Skyfolk
     #url(r'^market/$', market_inicio),
-    # Menciones en comentarios
-    #url(r'^get_mentions/', 'publications.views.get_mentions', name='get_mentions'),
     # Relaciones usuario
     #url(r'^relations/(?P<username>[\w-]+)/$',relaciones_user),
     # Importamos las urls de REST Framework
