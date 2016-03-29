@@ -69,7 +69,7 @@
   font-size: 0.8em;
   line-height: 22px !important; }
 
-.fa-comment, .fa-bell {
+.fa-comment, .notification-bell {
   float: right;
   display: inline-block;
   position: relative;
@@ -94,16 +94,17 @@
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out; }
 
-.fa-bell em {
+.notification-bell em {
   background-color: tomato;
   font-size: 10px;
   padding: 5px 5px;
   border-radius: 100%;
   text-decoration: none;
   border-top-left-radius: 10px;
+  display: inline-block;
   color: white; }
 
-.fa-comment:hover, .fa-bell:hover {
+.fa-comment:hover, .notification-bell:hover {
   -webkit-transform: scale(1.1);
   -moz-transform: scale(1.1);
   transform: scale(1.1);
@@ -128,7 +129,7 @@
   .field {
     width: 600px; }
 
-  .fa-bell, .fa-comment {
+  .notification-bell, .fa-comment {
     right: -255px; } }
 #toggle {
   display: none;

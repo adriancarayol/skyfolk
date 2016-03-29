@@ -269,8 +269,8 @@ $(document).ready(function () {
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
 
   $(".fa-bell").click(function(){
-            ($(".nav-vertical-and-chat").animate({width: 'toggle'},100) && $('body').toggleClass('move-body'));
-        });
+    $(".nav-vertical-and-chat").animate({width: 'toggle'},100);
+  });
 
 
   /* Atajo para enviar comentarios mas rapido */

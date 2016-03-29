@@ -1,9 +1,15 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300)
 
+$blueskyfolk: #1e88e5
 *
   -webkit-box-sizing: border-box
   -moz-box-sizing: border-box
   box-sizing: border-box
+
+
+
+button::-moz-focus-inner
+  border: 0
 
 /* IMPORTANTE PARA CONSERVAR LOS BORDES DE LA INTERFAZ */
 
@@ -2060,7 +2066,7 @@ ul.table > li
 
 .nav-vertical-and-chat
   position: fixed
-  right: 0
+  right: -1.2%
   display: none
   top: 40px
   background-color: rgba(189, 189, 189, 0.7)
@@ -2068,35 +2074,92 @@ ul.table > li
   z-index: 9998
   font-family: 'Open Sans', sans-serif
   overflow: hidden
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
 
-.nav-vertical-and-chat .notification-like
-  height: 110px
-  margin-top: 2%
-  display: list-item
-  background-color: #fff
-  opacity: 0.5
-  -webkit-transition: all .1s linear
-  -moz-transition: all .1s linear
-  transition: all .1s linear
+  & .nav-vertical-controls
+    position: absolute
+    display: block
+    height: 120px
+    bottom: 0
+    & .controls-notifications
+      position: relative
+      list-style-type: none
+      text-align: center
+      & li
+        border: medium none
+        border-radius: 2px
+        display: inline-block
+        height: 36px
+        line-height: 36px
+        padding: 0px 2rem
+        text-transform: uppercase
+        text-decoration: none
+        background-color: $blueskyfolk
+        text-align: center
+        letter-spacing: 0.5px
+        transition: all 0.2s ease-out 0s
+        cursor: pointer
+        outline: none
+        font-size: 1.3em
+        & a, a:visited
+          color: #fff
 
-.nav-vertical-and-chat .notification-like:hover
-  opacity: 1
+  & .notification-like
+    height: 110px
+    margin-top: 2%
+    display: list-item
+    background-color: #fff
+    opacity: 0.5
+    -webkit-transition: all .1s linear
+    -moz-transition: all .1s linear
+    transition: all .1s linear
 
-.nav-vertical-and-chat .notification-like .hexagon
-  position: relative
-  width: 50px
-  height: 28.87px
-  background-color: #f48fb1
-  margin: 14.43px 0
-  top: 25%
-  margin-left: 5%
+    &:hover
+      opacity: 1
 
-.nav-vertical-and-chat .notification-like .hexagon i
+    & .hexagon
+      position: relative
+      width: 50px
+      height: 28.87px
+      background-color: #f48fb1
+      margin: 14.43px 0
+      top: 25%
+      margin-left: 5%
+
+      & i
+        position: absolute
+        margin-top: 5px
+        margin-left: 12px
+        font-size: 2em
+        color: #fff
+
+#hover-clear-notify
+  display: none
   position: absolute
-  margin-top: 5px
-  margin-left: 12px
-  font-size: 2em
+  right: 0
+  margin-right: 0px
+  margin-top: 20px
+  border-radius: 100%
+  height: 40px
+  width: 40px
+  outline: none
+  border: none
+  background-color: tomato
   color: #fff
+  font-size: 1em
+  text-align: center
+  cursor: pointer
+
+.notification-bell:hover
+  height: 50px
+  -webkit-transition: all .2s ease-in
+  -moz-transition: all .2s ease-in
+  transition: all .2s ease-in
+
+  & > #hover-clear-notify
+    display: block
+    &:hover
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
 
 .nav-vertical-and-chat .notification-like .hexagon:before,
 .nav-vertical-and-chat .notification-like .hexagon:after
