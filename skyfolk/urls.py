@@ -41,6 +41,7 @@ urlpatterns = patterns(
     url(r'^publication/$', 'publications.views.publication_form'),
     url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),
     url(r'^publication/add_like/$', 'publications.views.add_like', name='add_like'),
+    url(r'^publication/add_hate/$', 'publications.views.add_hate', name='add_hate'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
     #url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),

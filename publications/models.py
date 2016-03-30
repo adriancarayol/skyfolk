@@ -16,12 +16,17 @@ class Publication(models.Model):
                                          related_name='responses', null=True)
     created = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0, blank=True, null=True)
-    user_give_me_like = models.ManyToManyField(User, blank=True)
+    hates = models.IntegerField(default=0, blank=True, null=True)
+    user_give_me_like = models.ManyToManyField(User, blank=True, related_name='likes_me')
+    user_give_me_hate = models.ManyToManyField(User, blank=True, related_name='hates_me')
     parent = models.ForeignKey('self', null=True, related_name='replies')
 
     # metodos del modelo
     def set_like_pub(self, likes):
         self.likes = likes
+
+    def set_hate_pub(self, hates):
+        self.hates = hates
 
 
     def __str__(self):
