@@ -51,37 +51,44 @@
 </div>
 {% endfor %}
     </div>
-    {% endif %}
+ {% endif %}
     {% if resultMessages|length = 0 %}
     {% else %}
     <div class="col-lg-12 col-md-10 col-sm-12">
-            <h2 class="messages-search">Publicaciones</h2>
-            {% for pub in resultMessages %}
-            <div class="col-lg-3 col-md-5 col-sm-12 pub-search">
+    <h2 class="messages-search">Publicaciones</h2>
+    {% for pub in resultMessages %}
+   <div class="col-lg-3 col-md-5 col-sm-12 pub-search">
+    <div class="personal-card">
+        <div class="col-lg-12">
+            <div class="header">
                 {% if pub.profile.backImage %}
-              <div class="col-lg-12 col-md-12 col-sm-12 pub-bg"  style="background-image: url('{{pub.profile.backImage.url}}');">
-                {% else %}
-                  <div class="col-lg-12 col-md-12 col-sm-12 pub-bg"  style="background-image: url('{{STATIC_URL}}img/backgrounds/5.jpg');">
+                <img class="col-lg-12 col-md-12 col-sm-12 pub-bg" src="{{ pub.profile.backImage.url }}">
+                   {% else %}
+                   <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
                 {% endif %}
-                {% if pub.profile.image %}
-                    <img class="profile-user-bg" src="{{pub.profile.image.url}}" onclick="location.href='/profile/{{ pub.user__username }}'">
-                {% else %}
-                    <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" onclick="location.href='/profile/{{ pub.user__username }}'">
-                {% endif %}
-              </div>
-              <div class="col-lg-12 col-md-12 col-sm-12 pub-author">
+                <div class="bg-user">
+                  {% if pub.profile.image %}
+                        <img class="profile-user-bg" src="{{ pub.profile.image.url }}" onclick="location.href='/profile/{{ pub.author.user }}'">
+                    {% else %}
+                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" onclick="location.href='/profile/{{ pub.author.user }}'">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 pub-author">
                 <a href="/profile/{{pub.author.user}}">@{{ pub.author.user }}</a>
                 <i> ({{ pub.author.user.first_name}} {{ pub.author.user.last_name }})</i>
               </div>
-                  <div class="col-lg-12 col-md-12 col-sm-12 comm">
+            <div class="col-lg-12 col-md-12 col-sm-12 comm">
                     <p class="pub-content">{{ pub.content|safe }}</p>
-                  </div>
             </div>
-         </div>
-            {% endfor %}
-    {% endif %}
+        </div>
+    </div>
 </div>
-
+{% endfor %}
+ {% endif %}
+ </div>
 {% block messages %}
 	<!-- Permite mostrar el form para enviar mensajes -->
 {% if user.is_authenticated %}

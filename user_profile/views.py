@@ -205,13 +205,14 @@ def search(request):
 
 
                 for w in words:
-                    resultMessages = Publication.objects.filter(Q(content__icontains=w) |
+                    print('Palabra encontrada -> ' + w)
+                    result_messages = Publication.objects.filter(Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
                                                                 Q(author__user__username__icontains=w) |
                                                                 Q(author__user__first_name__icontains=w) |
-                                                                Q(author__user__last_name__icontains=w))
+                                                                Q(author__user__last_name__icontains=w)).order_by('created').reverse()
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                                  'resultSearch': resultSearch, 'resultMessages': resultMessages,
+                                                                  'resultSearch': resultSearch, 'resultMessages': result_messages,
                                                                   'words': words},
                                           context_instance=RequestContext(request))
 
