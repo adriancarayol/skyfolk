@@ -1186,11 +1186,11 @@ function AJAX_add_hate(caja_publicacion, heart) {
       var numLikes = heart;
       var countLikes = numLikes.innerHTML;
         if (response==true) {
-            //$(heart).css('color','#f06292');
+            $(heart).css('color','#ba68c8');
             if (status == 1) {
               countLikes++;
             } else if (status == 2) {
-              //$(heart).css('color','#555');
+              $(heart).css('color','#555');
               countLikes--;
             }
             if (countLikes == 0) {

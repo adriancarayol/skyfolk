@@ -477,23 +477,23 @@
                 <div class="optiones_comentarios">
                     <ul class="opciones">
                         {% if user.is_authenticated and user.username == item.user__username %} <!-- Si estamos visitando un perfil que no es el nuestro -->
-                             <li><i class="fa fa-trash"></i></li>
+                             <li title="Borrar comentario"><i class="fa fa-trash"></i></li>
                         {% elif user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
-                             <li><i class="fa fa-trash"></i></li>
+                             <li title="Borrar comentario"><i class="fa fa-trash"></i></li>
                         {% endif %}
                         {% if item.from_publication__hates > 0 %}
-                        <li id="fa-hate" class="fa-broken-heart"><img style="width: 19px; height: 19px; margin-top: 1px;" src="{{STATIC_URL}}img/bheart.png"> {{ item.from_publication__hates }}</li>
+                        <li title="No me gusta" class="fa-broken-heart"><i id="fa-hate" class="fa fa-heartbeat"> {{ item.from_publication__hates }}</i></li>
                         {% else %}
-                        <li id="fa-hate" class="fa-broken-heart"><img style="width: 19px; height: 19px; margin-top: 1px;" src="{{STATIC_URL}}img/bheart.png"> </li>
+                        <li title="No me gusta" class="fa-broken-heart"><i id="fa-hate" class="fa fa-heartbeat"></i></li>
                         {% endif %}
                         {% if item.from_publication__likes > 0 %}
-                            <li ><i id="like-heart" class="fa fa-heart"> {{ item.from_publication__likes }} </i></li>
+                            <li title="¡Me gusta!"><i id="like-heart" class="fa fa-heart"> {{ item.from_publication__likes }} </i></li>
                         {% else %}
-                            <li ><i id="like-heart" class="fa fa-heart"></i></li>
+                            <li title="¡Me gusta!"><i id="like-heart" class="fa fa-heart"></i></li>
                         {% endif %}
-                       <li><i class="fa fa-quote-left"></i></li>
-                       <li><i class="fa fa-reply"></i></li>
-                       <li><i class="fa fa-tag"></i></li>
+                       <li title="Citar"><i class="fa fa-quote-left"></i></li>
+                       <li title="Responder"><i class="fa fa-reply"></i></li>
+                       <li  title="Añadir a mi timeline"><i class="fa fa-tag"></i></li>
                     </ul>
                 </div>
 

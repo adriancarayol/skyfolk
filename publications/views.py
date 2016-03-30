@@ -106,7 +106,8 @@ def add_like(request):
         print("(USERS QUE HICIERON LIKE): ")
         print(pub.user_give_me_like.all())
 
-        if request.user.username != user_profile.username and request.user not in pub.user_give_me_like.all():
+        if request.user.username != user_profile.username and not request.user in pub.user_give_me_like.all()\
+                and not request.user in pub.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
@@ -122,7 +123,8 @@ def add_like(request):
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all():
+        elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all()\
+                and not request.user in pub.user_give_me_hate.all():
             print ("Decrementando like")
             try:
                 pub.user_give_me_like.remove(request.user)
@@ -160,7 +162,8 @@ def add_hate(request):
         print("(USERS QUE HICIERON LIKE): ")
         print(pub.user_give_me_hate.all())
 
-        if request.user.username != user_profile.username and request.user not in pub.user_give_me_hate.all():
+        if request.user.username != user_profile.username and request.user not in pub.user_give_me_like.all()\
+                and request.user not in pub.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
@@ -176,7 +179,8 @@ def add_hate(request):
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif request.user.username != user_profile.username and request.user in pub.user_give_me_hate.all():
+        elif request.user.username != user_profile.username and request.user in pub.user_give_me_hate.all()\
+                and not request.user in pub.user_give_me_like.all():
             print ("Decrementando like")
             try:
                 pub.user_give_me_hate.remove(request.user)
