@@ -266,6 +266,14 @@ $(document).ready(function () {
         AJAX_add_like(caja_publicacion, heart);
     });
 
+    /* Añadir no me gusta a comentario */
+
+    $('.optiones_comentarios').find('#fa-hate').on('click', function() {
+        var caja_publicacion = $(this).closest('.wrapper');
+        var heart = this;
+        AJAX_add_hate(caja_publicacion, heart);
+    });
+
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
 
   $(".fa-bell").click(function(){
@@ -1122,7 +1130,7 @@ function AJAX_add_like(caja_publicacion, heart) {
     data: data,
     success: function(data) {
       var response = data.response;
-      var status = data.statusLike;
+      var status = data.statuslike;
       var numLikes = heart;
       var countLikes = numLikes.innerHTML;
         if (response==true) {
@@ -1141,7 +1149,59 @@ function AJAX_add_like(caja_publicacion, heart) {
         } else{
             swal({
                 title: ":-(",
-                text: "¡No puedes dar like a este comentario!",
+                text: "¡No puedes dar me gusta a este comentario!",
+                timer: 1000,
+                animation: "slide-from-bottom",
+                showConfirmButton: false,
+                type: "error"
+            });
+        }
+    },
+    error: function(rs, e) {
+      alert('ERROR: ' + rs.responseText + e);
+    }
+  });
+}
+
+/*****************************************************/
+/******* AJAX para añadir no me gusta a comentario ***/
+/*****************************************************/
+
+function AJAX_add_hate(caja_publicacion, heart) {
+  var id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+  var id_user = $(caja_publicacion).data('id'); // obtengo id
+  var data = {
+           userprofile_id: id_user,
+           publication_id: id_pub
+        };
+  //event.preventDefault(); //stop submit
+  $.ajax({
+    url: '/publication/add_hate/',
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    success: function(data) {
+      var response = data.response;
+      var status = data.statuslike;
+      var numLikes = heart;
+      var countLikes = numLikes.innerHTML;
+        if (response==true) {
+            //$(heart).css('color','#f06292');
+            if (status == 1) {
+              countLikes++;
+            } else if (status == 2) {
+              //$(heart).css('color','#555');
+              countLikes--;
+            }
+            if (countLikes == 0) {
+              numLikes.innerHTML = " ";
+            } else {
+              numLikes.innerHTML = " " + countLikes;
+            }
+        } else{
+            swal({
+                title: ":-(",
+                text: "¡No puedes dar no me gusta a este comentario!",
                 timer: 1000,
                 animation: "slide-from-bottom",
                 showConfirmButton: false,

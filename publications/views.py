@@ -87,10 +87,9 @@ def load_publications(request):
 
     return HttpResponse(json.dumps(list(publications_next)), content_type='application/json')
 
-# TODO
 def add_like(request):
     response = False
-    statusLike = 0
+    statuslike = 0
     data = []
     if request.POST:
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
@@ -118,11 +117,11 @@ def add_like(request):
                 pub.set_like_pub(len(pub.user_give_me_like.all()))
                 pub.save()
                 response = True
-                statusLike = 1
+                statuslike = 1
 
             except ObjectDoesNotExist:
                 response = False
-                statusLike = 0
+                statuslike = 0
         elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all():
             print ("Decrementando like")
             try:
@@ -130,35 +129,68 @@ def add_like(request):
                 pub.set_like_pub(len(pub.user_give_me_like.all()))
                 pub.save()
                 response = True
-                statusLike = 2
+                statuslike = 2
             except ObjectDoesNotExist:
                 response = False
-                statusLike = 0
+                statuslike = 0
         else:
             response = False
-            statusLike = 0
+            statuslike = 0
     print("Fin like comentario ---> Response" + str(response)
-    + " Estado" + str(statusLike))
-    data = json.dumps({'response': response, 'statusLike': statusLike})
+    + " Estado" + str(statuslike))
+    data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
 
-
-'''def get_mentions(request):
+def add_hate(request):
     response = False
+    statuslike = 0
+    data = []
     if request.POST:
-        slug = request.POST['slug']  # ID del usuario que hace login
+        id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
+        pub = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        # que vamos a incrementar sus likes
+        user_profile = get_object_or_404(
+            get_user_model(),
+            pk=pub.author.id
+        )
 
-        try:
-            user = get_object_or_404(
-            get_user_model(), pk=slug)
-            print('>>>>>> ESTO ES GET_MENTIONS <<<<<<<<<<<')
-            friends = user.profile.get_friends()
-            response = True
-            print(user.username)
-            print(len(friends))
-        except ObjectDoesNotExist:
-            friends = None
+        # Mostrar los usuarios que han dado un me gusta a ese comentario
+        print("(USUARIO PETICIÓN): " + request.user.username)
+        print("(PERFIL DE USUARIO): " + user_profile.username)
+        print("(USERS QUE HICIERON LIKE): ")
+        print(pub.user_give_me_hate.all())
+
+        if request.user.username != user_profile.username and request.user not in pub.user_give_me_hate.all():
+            # Si el escritor del comentario
+            # es el que pulsa el boton de like
+            # no dejamos que incremente el contador
+            # tampoco si el usuario ya ha dado like antes.
+            print ("Incrementando like")
+            try:
+                pub.user_give_me_hate.add(request.user) # add users like
+                pub.set_hate_pub(len(pub.user_give_me_hate.all()))
+                pub.save()
+                response = True
+                statuslike = 1
+
+            except ObjectDoesNotExist:
+                response = False
+                statuslike = 0
+        elif request.user.username != user_profile.username and request.user in pub.user_give_me_hate.all():
+            print ("Decrementando like")
+            try:
+                pub.user_give_me_hate.remove(request.user)
+                pub.set_hate_pub(len(pub.user_give_me_hate.all()))
+                pub.save()
+                response = True
+                statuslike = 2
+            except ObjectDoesNotExist:
+                response = False
+                statuslike = 0
+        else:
             response = False
-
-    data = json.dumps({'response': response, 'friends': list(friends)})
-    return HttpResponse(data, content_type='application/json')'''
+            statuslike = 0
+    print("Fin like comentario ---> Response" + str(response)
+    + " Estado" + str(statuslike))
+    data = json.dumps({'response': response, 'statuslike': statuslike})
+    return HttpResponse(data, content_type='application/json')
