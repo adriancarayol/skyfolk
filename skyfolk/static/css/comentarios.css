@@ -77,7 +77,11 @@ a, a:visited {
   line-height: 1.5rem;
   word-wrap: break-word;
   margin-bottom: 25px; }
-
+.parrafo b {
+  font-weight: bold; }
+.parrafo i {
+  font-style: italic;
+}
 .image {
   float: left;
   position: relative;
