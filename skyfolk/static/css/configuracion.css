@@ -123,8 +123,9 @@ h6 {
   width: 350px;
   margin-right: auto;
   margin-left: auto;
-  margin-top: 20%;
-  height: auto; }
+  margin-top: 30%;
+  height: auto;
+  font-size: 1.4em; }
 
 .nameConfig, .lastConfig, .image-usr, .backimage-usr, .status-usr, .menu-usr {
   position: relative;
