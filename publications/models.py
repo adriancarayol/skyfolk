@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+import re
 # from django.db.models.signals import post_save
 # from django.utils.translation import ugettext as _
 
@@ -28,6 +29,19 @@ class Publication(models.Model):
     def set_hate_pub(self, hates):
         self.hates = hates
 
+    ''' Menciones para comentario '''
+    def getMentions(self):
+        menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
+        for mencion in menciones:
+            if User.objects.filter(username = mencion[1:]):
+                self.content = self.content.replace(mencion, '<a href="/profile/%s">%s</a>' % (mencion[1:], mencion))
+
+
+    ''' Tags para comentario '''
+    def getHashTags(self):
+        hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', self.content)
+        for hashtag in hashtags:
+            self.content = self.content.replace(hashtag, '<a href="/search/">%s</a>' % (hashtag))
 
     def __str__(self):
         return self.content
