@@ -8,7 +8,7 @@ class PublicationForm(ModelForm):
         model = Publication
         exclude = ['image', 'is_response_from', 'created',
                    'author', 'profile', 'likes', 'user_give_me_like', 'hates',
-                   'user_give_me_hate', 'comments', 'parent']  # Excluir atributos en el formulario.
+                   'user_give_me_hate']  # Excluir atributos en el formulario.
 
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
