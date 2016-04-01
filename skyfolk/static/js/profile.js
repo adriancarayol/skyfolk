@@ -828,10 +828,7 @@ function AJAX_submit_publication() {
     dataType: 'json',
     data: $('#page-wrapper').find('#message-form2').serialize(),
     success: function(data) {
-      var content = data.content
       var response = data.response;
-      var username = data.username; // Perfil al que va la publicacion
-      var emittername = data.emittername; // Emisor del mensaje
       if (response == true) {
         swal({
           title: "Success!",

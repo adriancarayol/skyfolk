@@ -4,16 +4,17 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response, get_object_or_404
-from django.utils.safestring import mark_safe
+# from django.utils.safestring import mark_safe
 from emoji import *
-
+import re
 from publications.forms import PublicationForm
 from publications.models import Publication
 
 
+
+
 def publication_form(request):
     print('>>>>>>>> PETICION AJAX PUBLICACION')
-    jsons = []
     pub_id = -1
     content = ''
     if request.POST:
@@ -29,20 +30,16 @@ def publication_form(request):
                 publication.author = emitter.profile
                 publication.profile = userprofile.profile
                 publication.content = Emoji.replace(publication.content)
+                publication.getMentions() # Obtener las menciones de un comentario
+                publication.getHashTags() # Obtener los hashtags de un comentario
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 publication.save()
-                pub_id = publication.id
-                content = publication.content
                 response = True
             except IntegrityError:
                 pass
 
-        username = str(userprofile.username)
-        emittername = str(emitter.username)
-        pub_id = str(pub_id)
-        jsons = json.dumps({'username': username, 'emittername': emittername,
-            'response': response, 'pub_id': pub_id, 'content': content })
+        jsons = json.dumps({'response': response})
         return HttpResponse(jsons, content_type='application/json')
 
 
@@ -71,6 +68,7 @@ def delete_publication(request):
 
 
 def load_publications(request):
+    global publications_next
     print('>>>>>> PETICION AJAX, CARGAR MAS PUBLICACIONES')
     publicationslist = request.session.get('publications_list', None)
     if publicationslist == None:
