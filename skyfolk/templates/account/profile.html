@@ -466,6 +466,7 @@
 
                 <article class="articulo">
                   <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{ item.user__username }}</a> ha publicado:  </h2>
+                    <p>Padre del comentario con ID: {{ item.from_publication__replies }}</p>
                   <div class="parrafo comment">
                     <a target="_blank">{{item.from_publication__created}}</a><br>
                       <div class="wrp-comment">{{ item.from_publication__content|replace_tags_mentions|safe}}</div>
@@ -491,7 +492,8 @@
                         {% else %}
                             <li title="¡Me gusta!"><i id="like-heart" class="fa fa-heart"></i></li>
                         {% endif %}
-                       <li title="Citar"><i class="fa fa-quote-left"></i></li>
+                       <li title="Citar"><i class="fa fa-quote-left">
+                       </i></li>
                        <li title="Responder"><i class="fa fa-reply"></i></li>
                        <li  title="Añadir a mi timeline"><i class="fa fa-tag"></i></li>
                     </ul>
