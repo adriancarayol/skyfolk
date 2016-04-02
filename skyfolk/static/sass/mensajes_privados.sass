@@ -46,7 +46,6 @@ body
 
 
 .compose_table
-  box-sizing: auto
   position: relative
   overflow: hidden
   padding: 10px
@@ -325,7 +324,7 @@ label[for="id_body"]
   opacity:  1
 /* Internet Explorer 10-11 */
 \:-ms-input-placeholder
-  color: 424242
+  color: #424242
 
 
 
@@ -346,6 +345,10 @@ label[for="id_body"]
 .no-msg
   font-size: 1.3em
   color: #212121
+  padding: 7px
+  background-color: #eee
+  text-transform: uppercase
+  line-height: 2em
 
 .messages a
   text-decoration: none
@@ -375,5 +378,27 @@ label[for="id_body"]
   padding-bottom: 10px
   padding-right: 10px
 
+/* VIEW */
 
-/* Compose */
+.wrapper-message
+  width: 80%
+  height: auto
+  min-height: 50px
+  border-radius: 3px
+  background-color: #e8eaf6
+  position: relative
+  padding: 10px
+  display: inline-block
+
+  &:before
+    content: ""
+    position: absolute
+    bottom: 0
+    width: 0
+    height: 0
+    border-bottom: 30px solid #e8eaf6
+    border-left: 20px solid transparent
+    -webkit-transform: rotate(270deg)
+    -moz-transform: rotate(270deg)
+    transform: rotate(270deg)
+    margin: 10px 0 0 -25px

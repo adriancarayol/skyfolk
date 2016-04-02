@@ -258,7 +258,7 @@ msgid ""
 "rely on this feature for long-time storage."
 msgstr ""
 "Los Mensajes Eliminados son borrados de la Papelera a intérvalos irregulares,"
-"no se confíe en esta característica para almacenamiento a largo plazo."
+"no se confíe de esta característica para almacenamiento a largo plazo."
 
 #: templates/messages/view.html:4
 msgid "View Message"

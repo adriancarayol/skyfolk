@@ -33,6 +33,7 @@ class ComposeForm(forms.Form):
         recipients = self.cleaned_data['recipient']
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
+        body = '<div class="wrapper-message">%s</div>' % body
         message_list = []
         for r in recipients:
             msg = Message(
