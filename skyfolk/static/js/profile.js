@@ -49,8 +49,8 @@ $(document).ready(function () {
     $('#tab-comentarios').find('.wrapper').each(function () {
     var text = $(this).find('.wrp-comment').text();
     var show = $(this).find('.show-more a');
-
-    if (text.length < 60)
+    text = text.replace(/\s\s+/g, ' ');
+    if (text.length < 45)
     {
         $(show).css('display','none');
     }
