@@ -17,7 +17,7 @@
         {% block right-sidebar %}
 
         {% endblock %}
-    <blockquote>{{ message.body|linebreaksbr }}</blockquote><br /><br />
+    <blockquote>{{ message.body|safe|linebreaksbr }}</blockquote><br /><br />
     {% ifequal message.recipient.pk user.pk %}
     <a href="{% url 'messages_reply' message.id %}" class="compose-view-button" type="submit" value="{% trans "Send" %} &raquo;"/>{% trans "Reply" %}</a>
     {% endifequal %}

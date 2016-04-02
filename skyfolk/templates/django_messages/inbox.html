@@ -1,6 +1,7 @@
 {% extends "django_messages/base.html" %}
 {% load i18n %}
 {% load url from future %}
+{% load replacetags %}
 {% load app_filters %}
 {% block include_files %}
 {% endblock %}
@@ -32,7 +33,7 @@
                       </h5>
                       <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
                       <br><br>
-                   <blockquote onclick="javascript:location.href='{{message.get_absolute_url }}'" class="grey-text truncate">{{message.body}}</blockquote>
+                   <blockquote onclick="javascript:location.href='{{message.get_absolute_url }}'" class="grey-text truncate">{{message.body|replaceTags}}</blockquote>
               </div>
               <a class="borrar" href="{% url 'messages_delete' message.id %}"><i class="fa fa-trash"></i></a>
             </div>

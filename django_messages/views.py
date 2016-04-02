@@ -21,8 +21,8 @@ from django_messages.utils import format_quote, get_user_model, \
 from user_profile.models import Relationship, LikeProfile, UserProfile
 from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
-
-
+import json
+import re
 User = get_user_model()
 
 if "notification" in settings.INSTALLED_APPS:
@@ -58,7 +58,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
             #request.session['friends_list'] = simplejson.dumps(friends.values())
             #request.session['friends_list'] = list(friends)
             #request.session['friends_list'] = serializers.serialize('json', list(friends))
-            request.session['friends_list'] = simplejson.dumps(list(friends))
+            request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
         else:
@@ -96,7 +96,7 @@ def outbox(request,template_name='django_messages/outbox.html'):
             #request.session['friends_list'] = simplejson.dumps(friends.values())
             #request.session['friends_list'] = list(friends)
             #request.session['friends_list'] = serializers.serialize('json', list(friends))
-            request.session['friends_list'] = simplejson.dumps(list(friends))
+            request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
         else:
@@ -138,7 +138,7 @@ def trash(request,template_name='django_messages/trash.html'):
             #request.session['friends_list'] = simplejson.dumps(friends.values())
             #request.session['friends_list'] = list(friends)
             #request.session['friends_list'] = serializers.serialize('json', list(friends))
-            request.session['friends_list'] = simplejson.dumps(list(friends))
+            request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
         else:
@@ -185,7 +185,7 @@ def compose(request,recipient=None, form_class=ComposeForm,
             #request.session['friends_list'] = simplejson.dumps(friends.values())
             #request.session['friends_list'] = list(friends)
             #request.session['friends_list'] = serializers.serialize('json', list(friends))
-            request.session['friends_list'] = simplejson.dumps(list(friends))
+            request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
         else:
@@ -245,7 +245,7 @@ def reply(request,message_id, form_class=ComposeForm,
             #request.session['friends_list'] = simplejson.dumps(friends.values())
             #request.session['friends_list'] = list(friends)
             #request.session['friends_list'] = serializers.serialize('json', list(friends))
-            request.session['friends_list'] = simplejson.dumps(list(friends))
+            request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
         else:
@@ -267,6 +267,7 @@ def reply(request,message_id, form_class=ComposeForm,
                 success_url = reverse('messages_inbox')
             return HttpResponseRedirect(success_url)
     else:
+        parent.body = re.sub(r'<[^>]*>', r'', parent.body) # eliminamos html tags
         form = form_class(initial={
             'body': quote_helper(parent.sender, parent.body),
             'subject': subject_template % {'subject': parent.subject},
@@ -370,7 +371,7 @@ def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            request.session['friends_list'] = simplejson.dumps(list(friends))
+            request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
         else:
             friends_top12 = friends
