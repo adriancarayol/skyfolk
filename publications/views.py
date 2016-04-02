@@ -15,8 +15,6 @@ from publications.models import Publication
 
 def publication_form(request):
     print('>>>>>>>> PETICION AJAX PUBLICACION')
-    pub_id = -1
-    content = ''
     if request.POST:
         form = PublicationForm(request.POST)
         userprofile = get_object_or_404(get_user_model(), pk=request.POST['userprofileid'])
@@ -29,6 +27,8 @@ def publication_form(request):
                 publication = form.save(commit=False)
                 publication.author = emitter.profile
                 publication.profile = userprofile.profile
+                if publication.content.isspace():
+                    raise IntegrityError('El comentario esta vacio')
                 publication.content = Emoji.replace(publication.content)
                 publication.getMentions() # Obtener las menciones de un comentario
                 publication.getHashTags() # Obtener los hashtags de un comentario
