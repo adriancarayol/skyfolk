@@ -392,7 +392,9 @@
                                         </div>
                                         <div class="controles">
                                             <ul>
+                                                {% if user.username == user_profile.username %}
                                                 <li class="fa fa-trash fa-lg"></li>
+                                                {% endif %}
                                                 <li class="fa fa-heart fa-lg"></li>
                                                 <li class="fa fa-tag fa-lg"></li>
                                                 <li class="fa fa-quote-left fa-lg"></li>
