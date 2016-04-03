@@ -1,7 +1,9 @@
 var countFriendList = 1;
 var countPublicationsList = 1;
 var countTimeLine = 1;
-
+var lastClickHeart = 0;
+var lastClickHate = 0;
+var lastClickTag = 0;
   /* LOADER PARA SKYFOLK */
 $(window).load(function() {
     $("#loader").fadeOut("slow");
@@ -255,15 +257,37 @@ $(document).ready(function () {
     /* Agregar timeline */
     $('.optiones_comentarios').find('.fa-tag').on('click', function() {
         var caja_publicacion = $(this).closest('.wrapper');
-        alert('VAS A AÑADIR EL COMENTARIO A TU TIMELINE');
-        AJAX_add_timeline(caja_publicacion);
+        var tag = this;
+        if (Date.now() - lastClickTag > 1000) {
+            AJAX_add_timeline(caja_publicacion, tag);
+            lastClickTag = Date.now();
+        } else {
+            swal({
+              title: ":/",
+              text: "Debes esperar 1 segundos para volver a pulsar el botón.",
+              timer: 2000,
+              showConfirmButton: true,
+              type: "warning"
+            });
+        }
     });
 
     /* Añadir me gusta a comentario */
     $('.optiones_comentarios').find('#like-heart').on('click', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
-        AJAX_add_like(caja_publicacion, heart);
+        if (Date.now() - lastClickHeart > 1000) {
+            AJAX_add_like(caja_publicacion, heart);
+            lastClickHeart = Date.now();
+        } else {
+            swal({
+              title: ":/",
+              text: "Debes esperar 1 segundos para volver a pulsar el botón.",
+              timer: 2000,
+              showConfirmButton: true,
+              type: "warning"
+            });
+        }
     });
 
     /* Añadir no me gusta a comentario */
@@ -271,7 +295,18 @@ $(document).ready(function () {
     $('.optiones_comentarios').find('#fa-hate').on('click', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
-        AJAX_add_hate(caja_publicacion, heart);
+        if (Date.now() - lastClickHate > 1000) {
+            AJAX_add_hate(caja_publicacion, heart);
+            lastClickHate = Date.now();
+        } else {
+            swal({
+              title: ":/",
+              text: "Debes esperar 1 segundos para volver a pulsar el botón.",
+              timer: 2000,
+              showConfirmButton: true,
+              type: "warning"
+            });
+        }
     });
 
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
@@ -1216,7 +1251,7 @@ function AJAX_add_hate(caja_publicacion, heart) {
 /********** AJAX para agregar al TIMELINE *********/
 /*****************************************************/
 
-function AJAX_add_timeline(caja_publicacion) {
+function AJAX_add_timeline(caja_publicacion, tag) {
   var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
   var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
@@ -1232,7 +1267,7 @@ function AJAX_add_timeline(caja_publicacion) {
     success: function(data) {
         // borrar caja publicacion
         if (data==true) {
-            $(caja_publicacion).css('background-color', 'tomato');
+            $(tag).css('color', '#bbdefb');
         }else{
             swal({
                 title: "Fail",

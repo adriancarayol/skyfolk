@@ -9,7 +9,7 @@ from emoji import *
 import re
 from publications.forms import PublicationForm
 from publications.models import Publication
-
+from timeline.models import Timeline
 
 
 
@@ -57,6 +57,10 @@ def delete_publication(request):
             obj_userprofile.profile.remove_publication(
                 publicationid=request.POST['publication_id']
             )
+            try:
+                t = Timeline.objects.get(publication__pk=request.POST['publication_id']).delete()
+            except ObjectDoesNotExist:
+                pass
 
             response = True
         except ObjectDoesNotExist:
@@ -99,12 +103,12 @@ def add_like(request):
         )
 
         # Mostrar los usuarios que han dado un me gusta a ese comentario
-        print("(USUARIO PETICIÓN): " + request.user.username)
-        print("(PERFIL DE USUARIO): " + user_profile.username)
+        print("(USUARIO PETICIÓN): " + request.user.username + " PK_ID -> " + str(request.user.pk))
+        print("(PERFIL DE USUARIO): " + user_profile.username + " PK_ID -> " + str(user_profile.pk))
         print("(USERS QUE HICIERON LIKE): ")
         print(pub.user_give_me_like.all())
 
-        if request.user.username != user_profile.username and not request.user in pub.user_give_me_like.all()\
+        if request.user.pk != user_profile.pk and not request.user in pub.user_give_me_like.all()\
                 and not request.user in pub.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
@@ -121,7 +125,7 @@ def add_like(request):
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif request.user.username != user_profile.username and request.user in pub.user_give_me_like.all()\
+        elif request.user.pk != user_profile.pk and request.user in pub.user_give_me_like.all()\
                 and not request.user in pub.user_give_me_hate.all():
             print ("Decrementando like")
             try:
@@ -160,7 +164,7 @@ def add_hate(request):
         print("(USERS QUE HICIERON LIKE): ")
         print(pub.user_give_me_hate.all())
 
-        if request.user.username != user_profile.username and request.user not in pub.user_give_me_like.all()\
+        if request.user.pk != user_profile.pk and request.user not in pub.user_give_me_like.all()\
                 and request.user not in pub.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
@@ -177,7 +181,7 @@ def add_hate(request):
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif request.user.username != user_profile.username and request.user in pub.user_give_me_hate.all()\
+        elif request.user.pk != user_profile.pk and request.user in pub.user_give_me_hate.all()\
                 and not request.user in pub.user_give_me_like.all():
             print ("Decrementando like")
             try:
