@@ -20,6 +20,8 @@ from ..utils import (email_address_exists,
                      get_username_max_length,
                      get_current_site)
 
+from django.core.validators import RegexValidator
+
 try:
     from importlib import import_module
 except ImportError:
@@ -200,13 +202,14 @@ def _base_signup_form_class():
 
 
 class BaseSignupForm(_base_signup_form_class()):
+    alphanumeric = RegexValidator(r'^[_0-9a-zA-Z]*$', 'Tu nombre de usuario sólo puede contener letras, números y \"_\".')
     username = forms.CharField(label=_("Username"),
                                max_length=get_username_max_length(),
                                min_length=app_settings.USERNAME_MIN_LENGTH,
                                widget=forms.TextInput(
                                    attrs={'placeholder':
                                           _('Username'),
-                                          'autofocus': 'autofocus'}))
+                                          'autofocus': 'autofocus'}), validators=[alphanumeric])
     email = forms.EmailField(widget=forms.TextInput(
         attrs={'type': 'email',
                'placeholder': _('E-mail address')}))
