@@ -49,15 +49,15 @@ $(document).ready(function () {
     /* Show more - Show less */
 
     $('#tab-comentarios').find('.wrapper').each(function () {
-    var text = $(this).find('.wrp-comment').text();
-    var show = $(this).find('.show-more a');
-    text = text.replace(/\s\s+/g, ' ');
-    if (text.length < 45)
-    {
-        $(show).css('display','none');
-    }
+        var text = $(this).find('.wrp-comment').text();
+        var show = $(this).find('.show-more a');
+        text = text.replace(/\s\s+/g, ' ');
+        if (text.length < 45)
+        {
+            $(show).css('display','none');
+        }
 
-  });
+    });
 
     $(".show-more a").on("click", function() {
 
@@ -82,23 +82,23 @@ $(document).ready(function () {
   });
 
   $('.fa-paw').on('click',function() {
-      $(".info-paw").fadeToggle("fast");
+      $(".info-paw").fadeToggle(50);
   });
 
   $('.info-trof').on('click',function() {
-    $(".trofeos").fadeToggle("fast");
+    $(".trofeos").fadeToggle(50);
   });
 
   $('.info-groups').on('click',function() {
-    $(".grupos").fadeToggle("fast");
+    $(".grupos").fadeToggle(50);
   });
 
   $('#close-trofeos').on('click',function() {
-    $(".trofeos").fadeOut("fast");
+    $(".trofeos").fadeOut(50);
   });
 
   $('#close-grupos').on('click',function() {
-     $(".grupos").fadeOut("fast");
+     $(".grupos").fadeOut(50);
   });
 
   $('#message-form2').on('submit', function(event) {
@@ -439,9 +439,16 @@ $( document ).on('keydown', function(e) {
           }
           // $('#tab-comentarios').load(location.href + " #tab-comentarios");
           //refresca plugin shorten
-          /*$(".comment").shorten({
-            "showChars": 145
-          }); */
+          $('#tab-comentarios').find('.wrapper').each(function () {
+              var text = $(this).find('.wrp-comment').text();
+              var show = $(this).find('.show-more a');
+              text = text.replace(/\s\s+/g, ' ');
+              if (text.length < 45)
+              {
+                  $(show).css('display','none');
+              }
+
+          });
 	    if ($('#tab-comentarios').find('.wrapper').height() > 145) {
 	     $('#tab-comentarios').find('.wrapper').css('height','auto');
 	   }
