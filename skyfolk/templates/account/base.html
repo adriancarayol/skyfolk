@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load i18n %}
 <!DOCTYPE html>
 <html>
   <!-- codigo del modulo allauth -->
@@ -15,10 +16,9 @@
   </head>
   <body>
     {% block body %}
-
     {% if messages %}
-    <div>
-      <strong>Messages:</strong>
+    <div class="div-messages">
+      <strong>{% trans "Messages" %}:</strong>
       <ul>
   {% for message in messages %}
   <li>{{message}}</li>

@@ -5,6 +5,21 @@ body {
   padding: 0;
   font-family: "Open Sans", sans-serif; }
 
+.div-messages {
+  background-color: #eee;
+  border-radius: 3px;
+  position: absolute;
+  display: block;
+  margin-top: 0;
+  margin-left: 1.25%;
+  width: 300px;
+  padding: 10px;
+  height: auto; }
+  .div-messages ul {
+    list-style: none; }
+    .div-messages ul li {
+      display: list-item; }
+
 .wrapper {
   position: relative;
   margin-top: 10%; }
