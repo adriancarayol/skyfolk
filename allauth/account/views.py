@@ -16,7 +16,7 @@ from .adapter import get_adapter
 from .forms import (
     AddEmailForm, ChangePasswordForm,
     LoginForm, ResetPasswordKeyForm,
-    ResetPasswordForm, SetPasswordForm, SignupForm, UserTokenForm, ContactForm)
+    ResetPasswordForm, SetPasswordForm, SignupForm, UserTokenForm)
 from .models import EmailAddress, EmailConfirmation
 from .utils import (get_next_redirect_url, complete_signup,
                     get_login_redirect_url, perform_login,
@@ -24,6 +24,7 @@ from .utils import (get_next_redirect_url, complete_signup,
 from .utils import sync_user_email_addresses
 from ..exceptions import ImmediateHttpResponse
 from ..utils import get_form_class, get_request_param, get_current_site
+from django.shortcuts import render
 
 try:
     from django.contrib.auth import update_session_auth_hash
@@ -309,7 +310,7 @@ confirm_email = ConfirmEmailView.as_view()
 
 
 class EmailView(AjaxCapableProcessFormViewMixin, FormView):
-    template_name = "account/account/account/email.html"
+    template_name = "account/account/email.html"
     form_class = AddEmailForm
     success_url = reverse_lazy('account_email')
 
@@ -542,7 +543,6 @@ password_set = login_required(PasswordSetView.as_view())
 class PasswordResetView(AjaxCapableProcessFormViewMixin, FormView):
     template_name = "account/account/password_reset.html"
     form_class = ResetPasswordForm
-    contact_form = ContactForm
     success_url = reverse_lazy("account_reset_password_done")
 
     def get_form_class(self):
@@ -562,27 +562,6 @@ class PasswordResetView(AjaxCapableProcessFormViewMixin, FormView):
         return ret
 
 password_reset = PasswordResetView.as_view()
-
-class PasswordNeedContact(FormView):
-    template_name = "account/account/password_contact.html"
-    form_class = ContactForm
-    success_url = reverse_lazy("account_reset_password_done")
-
-    def get_form_class(self):
-        return get_form_class(app_settings.FORMS,
-                              'reset_password',
-                              self.form_class)
-
-
-
-    def get_context_data(self, **kwargs):
-        ret = super(PasswordNeedContact, self).get_context_data(**kwargs)
-        # NOTE: For backwards compatibility
-        ret['password_reset_form'] = ret.get('form')
-        # (end NOTE)
-        return ret
-
-password_contact = PasswordNeedContact.as_view()
 
 class PasswordResetDoneView(TemplateView):
     template_name = "account/account/password_reset_done.html"

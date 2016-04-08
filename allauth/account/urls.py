@@ -30,6 +30,4 @@ urlpatterns = [
         name="account_reset_password_from_key"),
     url(r"^password/reset/key/done/$", views.password_reset_from_key_done,
         name="account_reset_password_from_key_done"),
-    url(r"^password/contact/$", views.password_contact,
-        name="account_reset_password_contact"),
 ]
