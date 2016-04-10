@@ -223,7 +223,7 @@ def search(request):
                                   context_instance=RequestContext(request))
 
 
-@login_required(login_url='/')
+'''@login_required(login_url='/')
 def config_changepass(request):
     searchForm = SearchForm()
     publicationForm = PublicationForm()
@@ -236,7 +236,7 @@ def config_privacity(request):
     searchForm = SearchForm()
     publicationForm = PublicationForm()
     return render_to_response('account/cf-privacity.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm},
-                              context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))'''
 
 
 @login_required(login_url='/')
