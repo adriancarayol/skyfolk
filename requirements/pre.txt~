@@ -3,7 +3,6 @@ Pillow==3.0.0
 defusedxml==0.4.1
 django-allauth==0.24.1
 django-emoji==2.0.0
-django-avatar==3.0.0
 django-messages==0.5.1
 djangorestframework==3.3.1
 gunicorn==19.3.0

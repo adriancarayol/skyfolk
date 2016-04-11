@@ -39,5 +39,5 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('image', 'backImage', 'status', 'hiddenMenu')
+        fields = ('backImage', 'status', 'hiddenMenu') # Añadir 'image' si decidimos quitar django-avatar.
         #fields = ('image', 'backImage', 'status')

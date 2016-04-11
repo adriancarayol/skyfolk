@@ -1,5 +1,6 @@
 {% extends 'account/base_search.html' %}
 {% load app_filters %}
+{% load avatar_tags %}
 {% block title %} <title>Búsqueda en Skyfolk.</title> {% endblock %}
 
 
@@ -32,11 +33,14 @@
                 <i class="fa fa-user fa-2x like-him">
                 </i>
                 <div class="bg-user">
+                    {% comment %}
                   {% if item.profile.image %}
-                        <img class="profile-user-bg" src="{{ item.profile.image.url }}" onclick="location.href='/profile/{{ item.username }}'">
+                        <img class="profile-user-bg" src="{{ item.profile.image.url }}" ">
                     {% else %}
                         <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" onclick="location.href='/profile/{{ item.username }}'">
                     {% endif %}
+                    {% endcomment %}
+                    <div onclick="location.href='/profile/{{ item.username }}'" class="profile-user-bg">{% avatar item %}</div>
                 </div>
             </div>
         </div>
@@ -67,11 +71,14 @@
                    <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
                 {% endif %}
                 <div class="bg-user">
+                    {% comment %}
                   {% if pub.profile.image %}
                         <img class="profile-user-bg" src="{{ pub.profile.image.url }}" onclick="location.href='/profile/{{ pub.author.user }}'">
                     {% else %}
-                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" onclick="location.href='/profile/{{ pub.author.user }}'">
+                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" >
                     {% endif %}
+                    {% endcomment %}
+                    <div onclick="location.href='/profile/{{ pub.author.user }}'" class="profile-user-bg">{% avatar pub.author.user %}</div>
                 </div>
             </div>
         </div>

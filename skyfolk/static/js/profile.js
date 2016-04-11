@@ -537,7 +537,7 @@ function addFriendToHtmlList(item) {
     //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
     imageselector = $("#tab-amigos").find("ul.list #friend-" + item.user__id + " img.friend-avatar")
     URL_CHECK = MEDIA_URL + item.user__profile__image;
-    URL_CHANGE = STATIC_URL + 'img/nuevo.png';
+    URL_CHANGE = STATIC_URL + 'img/default.png';
     //Check image URL;
     (function(imageselector, URL_CHECK, URL_CHANGE) {
 
@@ -628,7 +628,7 @@ function addPublicationToHtmlList(item) {
     //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
     imageselector = $("#tab-comentarios").find("#pub-" + item.from_publication__id + " img.pub-avatar");
     URL_CHECK = MEDIA_URL + item.user__profile__image;
-    URL_CHANGE = STATIC_URL + 'img/nuevo.png';
+    URL_CHANGE = STATIC_URL + 'img/default.png';
     //Check image URL
     (function(imageselector, URL_CHECK, URL_CHANGE) {
 
@@ -907,7 +907,7 @@ function showRequest(id_profile, username) {
     // (string | mandatory) the text inside the notification
     text: '',
     // (string | optional) the image to display on the left
-    image: '../../static/img/nuevo.png',
+    image: '../../static/img/default.png',
     // (bool | optional) if you want it to fade out on its own or just sit there
     sticky: true,
     // (int | optional) the time you want it to be alive for before fading out

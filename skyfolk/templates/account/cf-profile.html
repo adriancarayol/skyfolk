@@ -20,11 +20,18 @@
 		{% else %}
 			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{STATIC_URL}}img/backgrounds/5.jpg') no-repeat center center; background-size: cover;">
 		{% endif %}
-			{% if user_profile.profile.image %}
-				<img src="{{user_profile.profile.image.url}}" class="img-profile">
-			{% else %}
-				<img src="{{STATIC_URL}}img/nuevo.png" class="img-profile">
-			{% endif %}
+		{% comment %}
+		{% if user_profile.profile.image %}
+			<img src="{{user_profile.profile.image.url}}" class="img-profile">
+		{% else %}
+			<img src="{{STATIC_URL}}img/nuevo.png" class="img-profile">
+		{% endif %}
+		{% endcomment %}
+		<div class="img-profile">
+			<a href="{% url 'avatar_change' %}">
+			{% avatar user class="img-profile" %}
+			</a>
+		</div>
 		</div>
 		<div class="index-wrapper">
 				<div class="nameConfig">
@@ -37,11 +44,14 @@
 				<p>¿Y tu apellido?</p>
 				<p>{{ user_form.last_name }}</p>
 			</div>
+			{% comment %}
+				Eliminar esto si nos quedamos con Django-Avatar.
 				<div class="image-usr">
 					<p>{{ perfil_form.image.errors }}</p>
 					<p>Elige una imagen de perfil.</p>
 					<p>{{ perfil_form.image }}</p>
 				</div>
+			{% endcomment %}
 
 				<div class="backimage-usr">
 					<p>{{ perfil_form.backImage.errors }}</p>
@@ -62,9 +72,7 @@
 				</div>
 
 				<div class="change-avatar">
-					<a href="{% url 'avatar_change' %}">Cambia tu avatar.</a>
                     <a href="{% url 'avatar_delete' %}">Eliminar avatares</a>
-					{% avatar user %}
 				</div>
 		</div>
 			</div>

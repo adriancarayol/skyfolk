@@ -6,7 +6,6 @@ Django==1.8.6
 django-allauth==0.24.1
 django-appconf==1.0.1
 django-emoji==2.0.0
-django-avatar==3.0.0
 django-extensions==1.5.9
 django-messages==0.5.1
 django-model-utils==2.4
