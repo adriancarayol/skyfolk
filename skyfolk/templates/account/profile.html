@@ -552,7 +552,7 @@
                   {% endif %}
                       usr-img img-responsive
                       {% endcomment %}
-                      <div class="usr-img img-responsive">{% avatar user_profile %}</div>
+                      <div class="usr-img img-responsive">{% avatar item.user__username %}</div>
                   <a class="name" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
                   </li>
                 {% endfor %}
