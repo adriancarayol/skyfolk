@@ -1,6 +1,7 @@
 {% extends "account/base_interface.html" %}
 {% load app_filters %}
 {% load tags_mentions %}
+{% load avatar_tags %}
 {% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
 <!-- Mostrar objetos al hacer scroll -->
@@ -50,13 +51,15 @@
             {% endif %}
             <div class="caja">
              <div class="item">
-
+                 <div class="user-pic">{% avatar user_profile class="user-pic" %}</div>
+          {% comment %}
+                 Eliminar si se decide quedar con django-avatar
         {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
            <img src="{{user_profile.profile.image.url}}" class="user-pic">
         {% else %}
            <img src="{{STATIC_URL}}img/nuevo.png" class="user-pic">
         {% endif %}
-
+    {% endcomment %}
                <!--  <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">-->
 
                <span class="informacion">
@@ -87,11 +90,14 @@
                   <div class="info-paw">
                     <div class="info-nav">
                       <div class="info-wrapper-pic">
+                          {% comment %} Eliminar si nos quedamos con django-avatar...
                       {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
                          <img src="{{user_profile.profile.image.url}}" class="info-user-pic">
                       {% else %}
                          <img src="{{STATIC_URL}}img/nuevo.png" class="info-user-pic">
                       {% endif %}
+                          {% endcomment %}
+                          <div class="info-user-pic">{% avatar user_profile 90 %}</div>
                       </div>
                     <h1 class="info-user-name">{{ user_profile.username }}</h1>
                     <h3 class="info-user-name_last">{{user_profile.first_name}} {{user_profile.last_name}}</h3>
@@ -374,15 +380,19 @@
                             <div class="line" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
                                 <li>
                                     <div data-sr="wait 0.2s then scale up 30%" class="second">
+                                        {% comment %}
+                                        Eliminar si nos quedamos con django-avatar...
                                         {% if user_profile.profile.image %}
-                                        <span class="acontecimiento">
-                                          <img style="border-radius: 100%; width: 100%; height:100%;" src="{{user_profile.profile.image.url}}"> </img>
-                                        </span>
                                         {% else %}
                                         <span class="acontecimiento">
                                           <img style="border-radius: 100%; width: 100%; height:100%;" src="{{STATIC_URL}}img/nuevo.png"> </img>
                                         </span>
                                         {% endif %}
+                                        {% endcomment %}
+
+                                        <span class="acontecimiento">
+                                          {% avatar user_profile %}
+                                        </span>
                                         <span class="head"><a href="/profile/{{item.user__username}}">{{item.user__username}}</a>  <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em></span>
                                         <div id="p" class="parrafo comment">
                                                 {{ item.from_timeline__content|replace_tags_mentions|safe}}
@@ -435,11 +445,15 @@
                       <li><i class="first">{{item.user__first_name}} {{item.user__last_name}}</i></li>
                       <li><a class="name" href="/profile/{{ item.user__username }}" >{{item.user__username}}</a></li>
                     </ul>
+                          {% comment %}
                     {% if item.user__profile__image and item.user__profile__image|file_exists %}
                      <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
                   {% else %}
                      <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
                   {% endif %}
+                          {% endcomment %}
+
+                          <div class="usr-img img-responsive">{% avatar user_profile %}</div>
                       </div>
 
                     <div class="parrafo comment-tab">
@@ -458,11 +472,15 @@
                   </div>
                   </div>
       <div class="image">
+          {% comment %}
+          Eliminar si django-avatar se establece...
         {% if item.user__profile__image and item.user__profile__image|file_exists %}
         <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
           {% else %}
             <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
               {% endif %}
+          {% endcomment %}
+          <div class="usr-img img-responsive">{% avatar user_profile %}</div>
             </div>
 </div>
 
@@ -526,11 +544,15 @@
             <ul class="list">
                 {% for item in friends_top12 %}
                   <li id="friend-{{item.user__id}}">
+                      {% comment %}
                   {% if item.user__profile__image and item.user__profile__image|file_exists %}
                      <img src="{{MEDIA_URL}}{{item.user__profile__image}}" class="usr-img img-responsive">
                   {% else %}
                      <img src="{{STATIC_URL}}img/nuevo.png" class="usr-img img-responsive">
                   {% endif %}
+                      usr-img img-responsive
+                      {% endcomment %}
+                      <div class="usr-img img-responsive">{% avatar user_profile %}</div>
                   <a class="name" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
                   </li>
                 {% endfor %}

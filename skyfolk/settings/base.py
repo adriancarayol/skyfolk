@@ -64,6 +64,7 @@ THIRD_PARTY_APPS = (
     #'achievements',            # achivements       Portando a Python3
     'emoji',
     'notifications',           # siempre último
+    'avatar',                  # Avatares para usuarios.
 )
 
 FIRST_PARTY_APPS = (
@@ -72,8 +73,6 @@ FIRST_PARTY_APPS = (
     'publications',            # publicaciones en el perfil
     'timeline',
     'about',                   # sobre los autores
-    'market',                  # tienda de aplicaciones
-    'relaciones',              # app para controlar las relaciones entre users
     'latest_news',
     #'achievements',            # modulo para los logros del usuario
 )

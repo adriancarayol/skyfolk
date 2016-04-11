@@ -59,10 +59,6 @@ urlpatterns = patterns(
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
     url(r'^about/([^/]+)/$',about),
-    # Market Skyfolk
-    #url(r'^market/$', market_inicio),
-    # Relaciones usuario
-    #url(r'^relations/(?P<username>[\w-]+)/$',relaciones_user),
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
     url(
@@ -72,7 +68,10 @@ urlpatterns = patterns(
             namespace='rest_framework'
         )
     ),
+    # Urls para el modulo emoji
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
+    # Django-avatar
+    (r'^avatar/', include('avatar.urls')),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
     # Página de bienvenida, paso 1.
