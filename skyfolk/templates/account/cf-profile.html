@@ -1,5 +1,6 @@
 {% extends "account/base_cf.html" %}
 {% block additional_files %}
+{% load avatar_tags %}
 
 {% endblock%}
 
@@ -14,7 +15,6 @@
 {% block cf-form %}
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
 	<div class="col-lg-12 col-md-12 col-sm-12 wrapper-profilex">
-
 		{% if user_profile.profile.backImage %}
 			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{user_profile.profile.backImage.url}}') no-repeat center center; background-size: cover;">
 		{% else %}
@@ -59,6 +59,12 @@
 					<p>{{ perfil_form.hiddenMenu.errors }}</p>
 					<p>Menu estático</p>
 					<p>{{ perfil_form.hiddenMenu }}</p>
+				</div>
+
+				<div class="change-avatar">
+					<a href="{% url 'avatar_change' %}">Cambia tu avatar.</a>
+                    <a href="{% url 'avatar_delete' %}">Eliminar avatares</a>
+					{% avatar user %}
 				</div>
 		</div>
 			</div>

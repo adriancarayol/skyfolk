@@ -27,6 +27,7 @@ def profile_view(request, username):
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
 
+    #print(user.email)
     json_requestsToMe = None
     # saber si el usuario que visita el perfil le gusta
     if request.user.username != username:
