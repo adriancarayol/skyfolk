@@ -6,7 +6,7 @@
 	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" author="Skyfolk"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" />
+        <!-- <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/noti.css" /> -->
         <!-- DE MOMENTO NO ES NECESARIO
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}media/bootstrap/css/bootstrap.min.css" />
@@ -16,10 +16,10 @@
         <meta name="keywords" content="skyfolk, social, login, registro, sky, folk," />
         <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css" />
-
-      <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
-      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-      <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/login-signup.css" />
+        <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
       <!--
       <script src="{{STATIC_URL}}js/modernizr.custom.63321.js"></script>
       <script src="{{STATIC_URL}}media/bootstrap/js/bootstrap.js"></script>
@@ -60,7 +60,7 @@
                 <h5><i>S</i>kyfolk.</h5>
                      <img src="{{STATIC_URL}}img/logo.png">
         </div>
-        </div>
+    </div>
 
   <!-- <div id="background_cycler" > --> <!-- Random backgrounds -->
 <!--
@@ -74,7 +74,7 @@
 -->
   <!-- Background con video -->
 
-  <video autoplay loop poster="polina.jpg" id="bgvid">
+  <video autoplay loop poster="{{STATIC_URL}}img/3.jpg" id="bgvid">
     <source src="http://thenewcode.com/assets/videos/polina.webm" type="video/webm">
     <source src="http://thenewcode.com/assets/videos/polina.mp4" type="video/mp4">
   </video>
