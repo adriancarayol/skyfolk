@@ -229,7 +229,6 @@ class UserProfile(models.Model):
         Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FOLLOWING).delete()
 
     # methods followers
-
     def is_follower(self, profile):
         try:
             if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FOLLOWER):
