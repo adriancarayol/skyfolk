@@ -350,7 +350,7 @@ def like_profile(request):
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-
+@login_required(login_url='accounts/login')
 def request_friend(request):
     print('>>>>>>> peticion amistad ')
     response = "null"
