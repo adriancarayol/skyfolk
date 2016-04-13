@@ -189,7 +189,7 @@
             <div class="status">{{ user_profile.profile.status }}</div>
           </header>
           <ul class="stats">
-            <li><a href="/friends/{{ user_profile.username }}"><strong>{{ friends_top12|length }}</strong><span>Seguidores</span></a></li>
+            <li><a href="/friends/{{ user_profile.username }}"><strong>{{ followers }}</strong><span>Seguidores</span></a></li>
             <li><a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a></li>
             <li><a class='inline' href="#inline_content"><strong>48</strong><span>Fotos</span></a></li>
           </ul>
@@ -369,7 +369,7 @@
           <ul class="unstyled table fullwidth links">
             <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">timeline</a></li>
 	    <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
-            <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Amigos</a></li>
+            <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
           </ul>
           <div class="unstyled content" id="hood-tabs">
         <div id="tab-timeline">
