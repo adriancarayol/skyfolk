@@ -391,7 +391,7 @@
                                         {% endcomment %}
 
                                         <span class="acontecimiento">
-                                          {% avatar user_profile %}
+                                          {% avatar item.user__username %}
                                         </span>
                                         <span class="head"><a href="/profile/{{item.user__username}}">{{item.user__username}}</a>  <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em></span>
                                         <div id="p" class="parrafo comment">
@@ -453,7 +453,7 @@
                   {% endif %}
                           {% endcomment %}
 
-                          <div class="usr-img img-responsive">{% avatar user_profile %}</div>
+                          <div class="usr-img img-responsive">{% avatar item.user__username %}</div>
                       </div>
 
                     <div class="parrafo comment-tab">
@@ -480,7 +480,7 @@
             <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
               {% endif %}
           {% endcomment %}
-          <div class="usr-img img-responsive">{% avatar user_profile %}</div>
+          <div class="usr-img img-responsive">{% avatar item.user__username %}</div>
             </div>
 </div>
 
