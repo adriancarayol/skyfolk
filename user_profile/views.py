@@ -82,7 +82,7 @@ def profile_view(request, username):
     # cargar lista de amigos (12 primeros)
     try:
         # friends_4 = request.user.profile.get_friends_next4(1)
-        friends = user_profile.profile.get_friends()
+        friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
@@ -100,6 +100,12 @@ def profile_view(request, username):
         else:
             friends_top12 = friends
 
+    # obtener lista de seguidores
+    try:
+        followers = user_profile.profile.get_followers().count()
+        print("Num de seguidores: >>>>>>>>>>>>>>>>>>>>" + str(followers))
+    except ObjectDoesNotExist:
+        followers = None
 
     # cargar recomendaciones por amigos
     # TODO
@@ -175,7 +181,8 @@ def profile_view(request, username):
                                'user_profile': user_profile, 'searchForm': searchForm,
                                'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes, 'timeline': timeline,
                                'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
-                               'json_requestsToMe': json_requestsToMe}, context_instance=RequestContext(request))
+                               'json_requestsToMe': json_requestsToMe,
+                               'followers':followers}, context_instance=RequestContext(request))
 
 
 @login_required(login_url='accounts/login')
@@ -294,16 +301,19 @@ def add_friend_by_username_or_pin(request):
             except:
                 return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
 
-            if user.is_friend(friend):
+            '''if user.is_friend(friend):
+                return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')'''
+            if user.is_follow(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
-
             try:
-                user.add_friend(friend)
+                #  user.add_friend(friend)
+                user.add_follow(friend)  # X añade a Y como "seguido"
+                friend.add_follower(user)  # Y añade a X como "seguidor"
                 response = 'added_friend'
             except Exception as e:
                 print(e)
 
-        else:  # tipo == username
+        else:  #  tipo == username
             user = request.user
             username = request.POST.get('valor')
             user = UserProfile.objects.get(pk=user.pk)
@@ -314,13 +324,15 @@ def add_friend_by_username_or_pin(request):
             friend = None
             try:
                 friend = UserProfile.objects.get(user__username=username)
-            except:
+            except ObjectDoesNotExist:
                 return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
-            if user.is_friend(friend):
+            if user.is_follow(friend): # if user.is_friend(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
 
             try:
-                user.add_friend(friend)
+                #user.add_friend(friend)
+                user.add_follow(friend)  # X añade a Y como "seguido"
+                friend.add_follower(user)  # Y añade a X como "seguidor"
                 response = 'added_friend'
             except Exception as e:
                 print(e)
@@ -350,7 +362,8 @@ def like_profile(request):
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-
+# Request follow
+@login_required(login_url='accounts/login')
 def request_friend(request):
     print('>>>>>>> peticion amistad ')
     response = "null"
@@ -383,7 +396,7 @@ def request_friend(request):
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-
+# Responde request follow
 def respond_friend_request(request):
     response = "null"
     if request.method == 'POST':
@@ -444,7 +457,7 @@ def friends(request, username):
         else:
             friends_top4 = friends'''
     try:
-        friends_top4 = user_profile.profile.get_friends()
+        friends_top4 = user_profile.profile.get_followers()
     except ObjectDoesNotExist:
         friends_top4 = None
 
