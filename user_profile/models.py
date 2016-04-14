@@ -127,9 +127,11 @@ class UserProfile(models.Model):
 
     # Methods of publications
 
+    @staticmethod
     def get_publication(self, publicationid):
         return publications.models.Publication.objects.get(pk=publicationid)
 
+    @staticmethod
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
 
@@ -158,21 +160,24 @@ class UserProfile(models.Model):
                                                 'from_publication__id', 'to_publication__content',
                                                 'to_publication__created', 'to_publication__likes',
                                                 'to_publication__user_give_me_like').reverse()
+
     # Obtener seguidos
     def get_following(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWING).values('user__id', 'user__username', 'user__first_name',
-                                                                  'user__last_name', 'user__profile__image',
-                                                                  'user__profile__backImage').order_by('id')
+                                                                     'user__last_name', 'user__profile__image',
+                                                                     'user__profile__backImage').order_by('id')
+
     # Obtener seguidores
     def get_followers(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWER).values('user__id', 'user__username', 'user__first_name',
-                                                                  'user__last_name', 'user__profile__image',
-                                                                  'user__profile__backImage').order_by('id')
+                                                                    'user__last_name', 'user__profile__image',
+                                                                    'user__profile__backImage').order_by('id')
 
     def get_friends(self):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name',
                                                                   'user__last_name', 'user__profile__image',
                                                                   'user__profile__backImage').order_by('id')
+
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)
 
@@ -254,12 +259,11 @@ class UserProfile(models.Model):
         except ObjectDoesNotExist:
             return False
 
-
     def add_friend(self, profile):
         print('>>>>>>> add_friend')
         return self.add_relationship(profile, RELATIONSHIP_FRIEND,
-                                    True) # mas adelante cambiar aqui True por False
-                                          # para diferenciar seguidores de seguidos.
+                                     True)  # mas adelante cambiar aqui True por False
+        # para diferenciar seguidores de seguidos.
 
     def get_friends_top12(self):
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values(

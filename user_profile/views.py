@@ -373,7 +373,8 @@ def request_friend(request):
         profileUserId = slug
         print(str(profileUserId))
         try:
-            user_friend = user.profile.is_friend(profileUserId)
+            #  user_friend = user.profile.is_friend(profileUserId)
+            user_friend = user.profile.is_follow(profileUserId) #  Comprobamos YO ya sigo al perfil deseado.
         except ObjectDoesNotExist:
             user_friend = None
 
@@ -417,13 +418,17 @@ def respond_friend_request(request):
 
                 response = "not_added_friend"
                 try:
-                    user_friend = user.profile.is_friend(profileUserId)
+                    #  user_friend = user.profile.is_friend(profileUserId)
+                    user_friend = user.profile.is_follower(profileUserId)
                 except ObjectDoesNotExist:
                     user_friend = None
 
                 if not user_friend:
-                    created = user.profile.add_friend(emitter_profile)
+                    #  created = user.profile.add_friend(emitter_profile)
+                    created = user.profile.add_follower(emitter_profile) #  Me añado como seguidor del perfil que quiero seguir
+                    created_2 = emitter_profile.add_follow(user.profile) #  Añado a mi lista de "seguidos" al peril que quiero seguir
                     created.save()
+                    created_2.save()
                     response = "added_friend"
 
             else:

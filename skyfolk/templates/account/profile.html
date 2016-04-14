@@ -189,9 +189,15 @@
             <div class="status">{{ user_profile.profile.status }}</div>
           </header>
           <ul class="stats">
-            <li><a href="/friends/{{ user_profile.username }}"><strong>{{ followers }}</strong><span>Seguidores</span></a></li>
-            <li><a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a></li>
-            <li><a class='inline' href="#inline_content"><strong>48</strong><span>Fotos</span></a></li>
+            <li>
+                <a href="/friends/{{ user_profile.username }}"><strong>{{ followers }}</strong><span>Seguidores</span></a>
+            </li>
+            <li>
+                <a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a>
+            </li>
+            <li>
+                <a class='inline' href="#inline_content"><strong>48</strong><span>Fotos</span></a>
+            </li>
           </ul>
         </div>
       </div>
