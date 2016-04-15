@@ -900,14 +900,13 @@ function AJAX_submit_publication() {
 
 
 function showRequest(id_profile, username) {
-
   var unique_id = $.gritter.add({
     // (string | mandatory) the heading of the notification
-    title: '<a href="/profile/'+username+'">'+username+'</a>' + ' wants to be your friend!',
+    title: '<a href="/profile/'+username+'">'+username+'</a>' + ' wants to follow you!',
     // (string | mandatory) the text inside the notification
     text: '',
     // (string | optional) the image to display on the left
-    image: '../../static/img/default.png',
+    image: '../../static/img/nuevo.png',
     // (bool | optional) if you want it to fade out on its own or just sit there
     sticky: true,
     // (int | optional) the time you want it to be alive for before fading out
@@ -921,7 +920,7 @@ function showRequest(id_profile, username) {
     height: "85px",
     type: "friendrequest",
     buttons_function: AJAX_respondFriendRequest,
-    id_emitter: id_profile,
+    id_emitter: id_profile
 
   });
 

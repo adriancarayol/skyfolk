@@ -190,7 +190,7 @@
           </header>
           <ul class="stats">
             <li>
-                <a href="/friends/{{ user_profile.username }}"><strong>{{ followers }}</strong><span>Seguidores</span></a>
+                <a href="/followers/{{ user_profile.username }}"><strong>{{ followers }}</strong><span>Seguidores</span></a>
             </li>
             <li>
                 <a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a>
@@ -545,7 +545,7 @@
         <div id="tab-amigos">
             <input class="search" type="search" placeholder="¿A quién buscas?" title="Search">
             <button class="sort" data-sort="name">
-              Sort by name
+              Ordenar
             </button>
             <ul class="list">
                 {% for item in friends_top12 %}
