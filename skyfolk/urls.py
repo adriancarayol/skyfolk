@@ -46,7 +46,7 @@ urlpatterns = patterns(
     url(r'^load_publications/$', 'publications.views.load_publications'),
     #url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
-    url(r'^accounts/password/change', user_profile_views.custom_password_change),
+    url(r'^config/password/change/$', user_profile_views.custom_password_change),
     url(r'^accounts/', include('allauth.urls')),
     # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
@@ -72,7 +72,7 @@ urlpatterns = patterns(
     # Urls para el modulo emoji
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Django-avatar
-    (r'^avatar/', include('avatar.urls')),
+    (r'^/', include('avatar.urls')),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
     # Página de bienvenida, paso 1.
