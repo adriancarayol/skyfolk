@@ -19,11 +19,14 @@
 
 
 {% block content %}
+    {% block nav %}
 <div class="col-lg-12 col-md-12 col-sm-12">
   <nav class="menu-config">
       <a class="perfil" onclick="window.location.href='/config/profile'"><i class="fa fa-user"></i><br>Perfil</a>
       <a class="Contraseña" onclick="window.location.href='/config/password/change/'"><i class="fa fa-lock"></i><br>Contraseña</a>
+      <a class="Contraseña" onclick="window.location.href='{% url 'avatar_change' %}'"><i class="fa fa-camera-retro"></i><br>Imagen de perfil</a>
   </nav>
+{% endblock %}
   <div class="col-lg-7 col-md-7 col-sm-7 wrapper-p">
     <div class="col-lg-12 col-md-12 col-sm-12 wrapper-title">
       {% block cf-title %}{% endblock %}

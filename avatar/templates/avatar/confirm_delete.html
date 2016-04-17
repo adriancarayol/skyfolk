@@ -1,9 +1,35 @@
-{% extends "account/base_interface.html" %}
+{% extends "account/base_cf.html" %}
 {% load i18n %}
 
-{% block content %}
-<div id="change-avatar" class="col-lg-10 col-md-10 col-sm-12 ">
+{% block title %} <title>Configuración - {{ request.user.username }} - Imágenes de perfil.</title> {% endblock %}
+
+{% block extra-css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/avatar.css" />
+{% endblock %}
+
+{% block extra-js %}
+      <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+$(document).ready(function() {
+    $('#delete-avatar').find('img').click(function() {
+        $(this).toggleClass('active');
+    });
+});
+</script>
+{% endblock %}
+
+{% block cf-title %}
+<hgroup>
+	<h4 class="cn"> Imágen de perfil </h4>
+	<h6 class="ch"> Elimina aquellos avatares que no necesites </h6>
+</hgroup>
+{% endblock %}
+{% block cf-form %}
+<div id="delete-avatar" class="col-lg-12 col-md-10 col-sm-12 current-avatar">
+    <div class="delete-avatars">
+    {% if avatars %}
     <p>{% trans "Please select the avatars that you would like to delete." %}</p>
+    {% endif %}
     {% if not avatars %}
         {% url 'avatar_change' as avatar_change_url %}
         <p>{% blocktrans %}You have no avatars to delete. Please <a href="{{ avatar_change_url }}">upload one</a> now.{% endblocktrans %}</p>
@@ -15,5 +41,6 @@
             <p>{% csrf_token %}<input type="submit" value="{% trans "Delete These" %}" /></p>
         </form>
     {% endif %}
+    </div>
 </div>
 {% endblock %}

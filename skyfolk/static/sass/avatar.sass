@@ -1,3 +1,5 @@
+$blueskyfolk: #1e88e5
+
 *
   -webkit-box-sizing: border-box
   -moz-box-sizing: border-box
@@ -11,24 +13,16 @@ body
   color: #555
 
 
-#change-avatar
-  position: fixed
-  right: 0
-  left: 0
-  top: 10%
-  margin-left: auto
-  margin-right: auto
-  height: 100%
-  background-color: #e0e0e0
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
-  color: rgba(66,66,66 ,1)
-  padding: 15px
-  font-size: 1.4em
+.wrapper-p
   & .current-avatar
-    background-color: #eeeeee
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
     min-height: 30%
     height: auto
     padding: 10px
+    font-size: 1.4em
+    & #id_choices
+      & li
+        width: 100%
     & img, p
       margin-left: auto
       margin-right: auto
@@ -37,15 +31,36 @@ body
       display: block
     & p
       margin-bottom: 20px
-
+      border-bottom: 2px solid #bdbdbd
+      padding: 5px
+      width: 80%
+    & img
+      box-shadow: 0 1px 2px $blueskyfolk
   & .options-avatar
-    background-color: #eeeeee
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
     height: auto
     padding: 10px
     margin-top: 15%
+    font-size: 1.4em
+    & input[type="radio"]
+      display: none
+    & #id_avatar
+      overflow: hidden
+      padding: 7px
+      &::-webkit-file-upload-button
+        visibility: hidden
+      &:before
+        content: ''
+        display: inline-block
+        white-space: nowrap
+        -webkit-user-select: none
+    & label[for="id_avatar"]
+      display: none
     & img, label
       position: relative
       display: inline-block
+    & img
+      margin-left: 30px
     & label
       margin-bottom: 20px
     ul
@@ -75,3 +90,44 @@ body
       &:hover
         opacity: 0.8
         background-color: #eee
+    & input[type="submit"]
+      float: left
+
+.active
+  border: 4px solid $blueskyfolk
+
+  /* DELETE AVATAR */
+.delete-avatars
+  & input[type="checkbox"]
+    display: none
+  & img, label
+    position: relative
+  & img
+    margin-left: 30px
+  & label
+    margin-bottom: 20px
+  ul
+    border-radius: 3px
+    & li
+      padding: 5px
+  & input
+    border: medium none
+    border-radius: 2px
+    display: inline-block
+    height: 36px
+    line-height: 36px
+    margin-top: 15px
+    padding: 0px 2rem
+    text-transform: uppercase
+    text-decoration: none
+    color: #1e88e5
+    background-color: transparent
+    text-align: center
+    letter-spacing: 0.5px
+    transition: all 0.2s ease-out 0s
+    cursor: pointer
+    float: right
+    outline: none
+    &:hover
+      opacity: 0.8
+      background-color: #eee

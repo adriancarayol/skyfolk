@@ -37,6 +37,9 @@ $(window).load(function() {
         case "password":
             $('.menu-config').find('a:nth-child(2)').css('color', '#1e88e5');
             break;
+        case "config":
+            $('.menu-config').find('a:nth-child(3)').css('color', '#1e88e5');
+            break;
         default:
             break;
     }
