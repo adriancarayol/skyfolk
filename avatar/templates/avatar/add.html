@@ -2,6 +2,7 @@
 {% load i18n avatar_tags %}
 
 {% block content %}
+<div id="change-avatar" class="col-lg-10 col-md-10 col-sm-12 ">
     <p>{% trans "Your current avatar: " %}</p>
     {% avatar user %}
     {% if not avatars %}
@@ -11,4 +12,5 @@
         {{ upload_avatar_form.as_p }}
         <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
     </form>
+</div>
 {% endblock %}

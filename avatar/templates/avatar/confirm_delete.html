@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block content %}
+<div id="change-avatar" class="col-lg-10 col-md-10 col-sm-12 ">
     <p>{% trans "Please select the avatars that you would like to delete." %}</p>
     {% if not avatars %}
         {% url 'avatar_change' as avatar_change_url %}
@@ -14,4 +15,5 @@
             <p>{% csrf_token %}<input type="submit" value="{% trans "Delete These" %}" /></p>
         </form>
     {% endif %}
+</div>
 {% endblock %}

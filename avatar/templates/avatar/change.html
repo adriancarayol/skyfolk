@@ -1,17 +1,20 @@
 {% extends "account/base_interface.html" %}
 {% load i18n avatar_tags %}
 
-{% block extra-css %}
+{% block title %} <title>Configuración - {{ request.user.username }} - Imágenes de perfil.</title> {% endblock %}{% block extra-css %}
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/avatar.css" />
 {% endblock %}
 
 {% block content %}
-    <div id="change-avatar" class="col-lg-10 col-md-10 col-sm-12 ">
+    <div id="change-avatar" class="col-lg-7 col-md-10 col-sm-12 ">
+        <div class="col-lg-12 col-md-10 col-sm-12 current-avatar">
     <p>{% trans "Your current avatar: " %}</p>
     {% avatar user %}
+        </div>
     {% if not avatars %}
         <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
     {% else %}
+        <div class="col-lg-12 col-md-12 col-sm-12 options-avatar">
         <form method="POST" action="{% url 'avatar_change' %}">
             <ul>
                 {{ primary_avatar_form.as_ul }}
@@ -19,9 +22,11 @@
             <p>{% csrf_token %}<input type="submit" value="{% trans "Choose new Default" %}" /></p>
         </form>
     {% endif %}
+
     <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
         {{ upload_avatar_form.as_p }}
         <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
     </form>
+        </div>
     </div>
 {% endblock %}

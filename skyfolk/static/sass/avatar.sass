@@ -19,9 +19,59 @@ body
   margin-left: auto
   margin-right: auto
   height: 100%
-  background-color: #fafafa
+  background-color: #e0e0e0
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
-  z-index: 9999
   color: rgba(66,66,66 ,1)
   padding: 15px
   font-size: 1.4em
+  & .current-avatar
+    background-color: #eeeeee
+    min-height: 30%
+    height: auto
+    padding: 10px
+    & img, p
+      margin-left: auto
+      margin-right: auto
+      margin-top: 30px
+      text-align: center
+      display: block
+    & p
+      margin-bottom: 20px
+
+  & .options-avatar
+    background-color: #eeeeee
+    height: auto
+    padding: 10px
+    margin-top: 15%
+    & img, label
+      position: relative
+      display: inline-block
+    & label
+      margin-bottom: 20px
+    ul
+      border-radius: 3px
+      & li
+        margin-left: 15px
+        margin-right: 15px
+        padding: 5px
+        display: inline-block
+    & input
+      border: medium none
+      border-radius: 2px
+      display: inline-block
+      height: 36px
+      line-height: 36px
+      padding: 0px 2rem
+      text-transform: uppercase
+      text-decoration: none
+      color: #1e88e5
+      background-color: transparent
+      text-align: center
+      letter-spacing: 0.5px
+      transition: all 0.2s ease-out 0s
+      cursor: pointer
+      float: right
+      outline: none
+      &:hover
+        opacity: 0.8
+        background-color: #eee

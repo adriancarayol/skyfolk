@@ -127,11 +127,11 @@ class UserProfile(models.Model):
 
     # Methods of publications
 
-    @staticmethod
+
     def get_publication(self, publicationid):
         return publications.models.Publication.objects.get(pk=publicationid)
 
-    @staticmethod
+
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
 
