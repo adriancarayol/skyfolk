@@ -1,0 +1,28 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+body {
+  font-size: 11.5px !important;
+  font-style: normal;
+  font-weight: 300;
+  font-family: "Open Sans", sans-serif !important;
+  color: #555; }
+
+#change-avatar {
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+  background-color: #fafafa;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  color: #424242;
+  padding: 15px;
+  font-size: 1.4em; }
+
+/*# sourceMappingURL=avatar.css.map */
