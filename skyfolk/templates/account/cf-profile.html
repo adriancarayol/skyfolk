@@ -37,6 +37,8 @@
 			<a href="{% url 'avatar_change' %}">
 			{% avatar user %}
 			</a>
+                <a href="{% url 'avatar_delete' %}" class="delete-profile-image"><i class="fa fa-trash"></i></a>
+                <a href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
 		</div>
 		</div>
 		<div class="index-wrapper">
