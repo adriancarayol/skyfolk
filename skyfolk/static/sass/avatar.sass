@@ -13,6 +13,24 @@ body
   color: #555
 
 
+.delete-profile-image, .add-profile-image
+  font-size: 2em
+  & .fa-trash, .fa-plus
+    color: #555
+    padding: 7px
+    -webkit-transition: $default-transition
+    -moz-transition: $default-transition
+    transition: $default-transition
+  & .fa-trash
+    float: left
+    margin-left: 7px
+    &:hover
+      color: tomato
+  & .fa-plus
+    float: right
+    margin-right: 7px
+    &:hover
+      color: $blueskyfolk
 .wrapper-p
   & .current-avatar
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)

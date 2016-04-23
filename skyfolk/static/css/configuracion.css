@@ -44,13 +44,15 @@ h6 {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); }
 
 /* Menu horizontal */
+.wrapper-menu-config {
+  position: relative;
+  margin-top: 5%; }
+
 .menu-config {
   position: relative;
   display: block;
-  float: left;
-  width: 20%;
+  width: 100%;
   height: auto;
-  margin-top: 5%;
   background-color: #eeeeee; }
 
 .menu-config a {
@@ -103,12 +105,13 @@ h6 {
   top: 80px; }
 
 .actual, #form-changepass input {
-  padding: 5px 5px;
+  padding: 10px 5px;
   border: none;
   border-bottom: solid 2px #c9c9c9;
   transition: border 0.3s;
   outline: none;
   width: 100%;
+  margin-top: 10px;
   background-color: transparent; }
 
 #form-changepass input {
@@ -260,12 +263,13 @@ label[for="id_backImage"] {
   margin-right: 10px; }
 
 #id_status {
-  padding: 5px 5px;
+  padding: 10px 5px;
   border: none;
   border-bottom: solid 2px #c9c9c9;
   transition: border 0.3s;
   outline: none;
   width: 100%;
+  margin-top: 10px;
   background-color: transparent; }
 
 label[for="id_status"] {
