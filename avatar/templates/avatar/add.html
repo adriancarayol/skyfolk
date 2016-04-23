@@ -18,6 +18,7 @@
 <div id="change-avatar" class="col-lg-12 col-md-10 col-sm-12 current-avatar">
     <p>{% trans "Your current avatar: " %}</p>
     {% avatar user %}
+		<a href="{% url 'avatar_delete' %}" class="delete-profile-image"><i class="fa fa-trash"></i></a>
 </div>
     <div id="option-avatar" class="col-lg-12 col-md-12 col-sm-12 options-avatar">
     {% if not avatars %}

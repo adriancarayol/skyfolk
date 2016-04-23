@@ -126,4 +126,39 @@ body {
     opacity: 0.8;
     background-color: #eee; }
 
+/* IF AVATAR EMPTY */
+#id_avatar {
+  overflow: hidden;
+  padding: 7px; }
+  #id_avatar::-webkit-file-upload-button {
+    visibility: hidden; }
+    #id_avatar::-webkit-file-upload-button:before {
+      content: "";
+      display: inline-block;
+      white-space: nowrap;
+      -webkit-user-select: none; }
+  #id_avatar label[for="id_avatar"] {
+    display: none; }
+
+input {
+  border: medium none;
+  border-radius: 2px;
+  display: inline-block;
+  height: 36px;
+  line-height: 36px;
+  margin-top: 15px;
+  padding: 0px 2rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #1e88e5;
+  background-color: transparent;
+  text-align: center;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease-out 0s;
+  cursor: pointer;
+  outline: none; }
+  input:hover {
+    opacity: 0.8;
+    background-color: #eee; }
+
 /*# sourceMappingURL=avatar.css.map */

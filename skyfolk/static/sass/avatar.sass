@@ -1,5 +1,5 @@
 $blueskyfolk: #1e88e5
-
+$default-transition: all 0.2s ease-out 0s
 *
   -webkit-box-sizing: border-box
   -moz-box-sizing: border-box
@@ -79,11 +79,11 @@ body
       padding: 0px 2rem
       text-transform: uppercase
       text-decoration: none
-      color: #1e88e5
+      color: $blueskyfolk
       background-color: transparent
       text-align: center
       letter-spacing: 0.5px
-      transition: all 0.2s ease-out 0s
+      transition: $default-transition
       cursor: pointer
       float: right
       outline: none
@@ -120,14 +120,49 @@ body
     padding: 0px 2rem
     text-transform: uppercase
     text-decoration: none
-    color: #1e88e5
+    color: $blueskyfolk
     background-color: transparent
     text-align: center
     letter-spacing: 0.5px
-    transition: all 0.2s ease-out 0s
+    transition: $default-transition
     cursor: pointer
     float: right
     outline: none
     &:hover
       opacity: 0.8
       background-color: #eee
+
+/* IF AVATAR EMPTY */
+#id_avatar
+  overflow: hidden
+  padding: 7px
+  &::-webkit-file-upload-button
+    visibility: hidden
+    &:before
+      content: ''
+      display: inline-block
+      white-space: nowrap
+      -webkit-user-select: none
+  & label[for="id_avatar"]
+    display: none
+
+input
+  border: medium none
+  border-radius: 2px
+  display: inline-block
+  height: 36px
+  line-height: 36px
+  margin-top: 15px
+  padding: 0px 2rem
+  text-transform: uppercase
+  text-decoration: none
+  color: $blueskyfolk
+  background-color: transparent
+  text-align: center
+  letter-spacing: 0.5px
+  transition: $default-transition
+  cursor: pointer
+  outline: none
+  &:hover
+    opacity: 0.8
+    background-color: #eee

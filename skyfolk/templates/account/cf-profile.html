@@ -33,12 +33,18 @@
 			<img src="{{STATIC_URL}}img/nuevo.png" class="img-profile">
 		{% endif %}
 		{% endcomment %}
+
+		<!-- Si el usuario tiene imagen, lo redireccionamos a change -->
 		<div class="img-profile">
+			{% if request.user|has_avatar %}
 			<a href="{% url 'avatar_change' %}">
+			{% else %} {% comment %} Si no, le proponemos añadir una nueva imagen {% endcomment %}
+			<a href="{% url 'avatar_add' %}">
+			{% endif %}
 			{% avatar user %}
 			</a>
-                <a href="{% url 'avatar_delete' %}" class="delete-profile-image"><i class="fa fa-trash"></i></a>
-                <a href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
+    	<a href="{% url 'avatar_delete' %}" class="delete-profile-image"><i class="fa fa-trash"></i></a>
+      <a href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
 		</div>
 		</div>
 		<div class="index-wrapper">
