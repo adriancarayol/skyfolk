@@ -10,7 +10,7 @@ $(window).load(function() {
 
     var currentPage = window.location.href.split('/')[3];
     switch (currentPage) {
-              case "friends":
+              case "following":
                 $('.oldMenu').find('li:nth-child(3)').css('border-bottom','3px solid #1e88e5');
                   break;
               case "profile":

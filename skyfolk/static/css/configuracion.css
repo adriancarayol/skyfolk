@@ -185,7 +185,6 @@ label[for="id_password2"] {
   background-color: #fff;
   top: 15%;
   height: 570px;
-  max-height: auto;
   width: 50%;
   border-radius: 7px;
   -webkit-box-shadow: 2px 2px 7px 0px #efefef;
@@ -208,7 +207,7 @@ label[for="id_password2"] {
   height: auto; }
 
 /* Boton salvar cambios */
-button[type="submit"] {
+.wrapper-p button[type="submit"] {
   border: medium none;
   border-radius: 2px;
   display: inline-block;
@@ -227,7 +226,7 @@ button[type="submit"] {
   float: right;
   margin-right: 10%;
   outline: none; }
-  button[type="submit"]:hover {
+  .wrapper-p button[type="submit"]:hover {
     background-color: #eee;
     opacity: 0.8; }
 

@@ -192,7 +192,6 @@ label[for="id_password2"]
   background-color: #fff
   top: 15%
   height: 570px
-  max-height: auto
   width: 50%
   border-radius: 7px
   -webkit-box-shadow: 2px 2px 7px 0px #efefef
@@ -216,29 +215,29 @@ label[for="id_password2"]
 
 
 /* Boton salvar cambios */
-
-button[type="submit"]
-  border: medium none
-  border-radius: 2px
-  display: inline-block
-  height: 36px
-  line-height: 36px
-  padding: 0px 2rem
-  text-transform: uppercase
-  vertical-align: middle
-  text-decoration: none
-  color: $blueskyfolk
-  background-color: transparent
-  text-align: center
-  letter-spacing: 0.5px
-  transition: all 0.2s ease-out 0s
-  cursor: pointer
-  float: right
-  margin-right: 10%
-  outline: none
-  &:hover
-    background-color: #eee
-    opacity: 0.8
+.wrapper-p
+  & button[type="submit"]
+    border: medium none
+    border-radius: 2px
+    display: inline-block
+    height: 36px
+    line-height: 36px
+    padding: 0px 2rem
+    text-transform: uppercase
+    vertical-align: middle
+    text-decoration: none
+    color: $blueskyfolk
+    background-color: transparent
+    text-align: center
+    letter-spacing: 0.5px
+    transition: all 0.2s ease-out 0s
+    cursor: pointer
+    float: right
+    margin-right: 10%
+    outline: none
+    &:hover
+      background-color: #eee
+      opacity: 0.8
 
 #boton-perfil, #btn
   position: relative
