@@ -40,6 +40,8 @@ $(window).load(function() {
         case "config":
             $('.menu-config').find('a:nth-child(3)').css('color', '#1e88e5');
             break;
+        case "email":
+            $('.menu-config').find('a:nth-child(4)').css('color', '#1e88e5');
         default:
             break;
     }

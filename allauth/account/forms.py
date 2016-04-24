@@ -319,7 +319,7 @@ class UserForm(forms.Form):
 
 class AddEmailForm(UserForm):
 
-    email = forms.EmailField(label=_("E-mail"),
+    email = forms.EmailField(label=_(""),
                              required=True,
                              widget=forms.TextInput(attrs={"type": "email",
                                                             "size": "30",

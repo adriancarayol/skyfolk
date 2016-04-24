@@ -37,7 +37,6 @@ h6 {
 
 .wrapper-p {
   margin-top: 5% !important;
-  margin-left: 7% !important;
   background-color: #fafafa;
   padding: 10px;
   border-radius: 8px;
@@ -46,7 +45,8 @@ h6 {
 /* Menu horizontal */
 .wrapper-menu-config {
   position: relative;
-  margin-top: 5%; }
+  margin-top: 5%;
+  margin-right: 60px; }
 
 .menu-config {
   position: relative;

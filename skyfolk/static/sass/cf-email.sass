@@ -4,6 +4,7 @@ $blueskyfolk: #1e88e5
   text-align: center
   font-size: 1.6em
   color: grey
+  margin-bottom: 7px
 
 p
   text-align: center
@@ -14,19 +15,29 @@ strong
   font-family: 'Open Sans', sans-serif
   font-size: 12px
 .email_list
-  background-color: #eee
+  background: transparent
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
   display: block
   position: relative
   margin-bottom: 50px
   margin-top: 30px
+  padding: 10px
   & .buttonHolder
     width: 100%
     margin-top: 60px
   & label
     color: #616161
     display: inline-block
-    font-size: 1.1em
+    font-size: 1.4em
+    padding: 10px
+    width: 100%
+  & .verified, .unverified, .primary
+    top: 0
+    margin-left: 10px
+    background-color: #eee
+    padding: 5px
+    margin-top: auto
+    display: inline-block
   & .verified
     color: #8bc34a
   & .unverified
@@ -40,16 +51,18 @@ strong
     border-radius: 0
     border-bottom: 1px solid #c9c9c9
     color: #212121
-    padding: 1px
+    background: transparent
+    padding: 5px
     padding-bottom: 8px
     height: auto
     box-shadow: none
     font-size: 13px
     margin: 10px 0
-    width: 100%
+    width: 95%
     box-sizing: border-box
     -webkit-user-select: text
     &:focus
       border-color: $blueskyfolk
 
-
+button[name="action_add"], .primaryAction, .secondaryAction
+  margin-right: 0 !important
