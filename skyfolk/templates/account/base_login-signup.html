@@ -27,28 +27,6 @@
       <script src="{{STATIC_URL}}media/bootstrap/js/npm.js"></script>
       -->
       <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <!-- IMPORTANTE PARA CAMBIO DE BACKGROUND -->
-
-    <!-- <script>
-
-      function cycleImages(){
-        var $active = $('#background_cycler .active');
-        var $next = ($('#background_cycler .active').next().length > 0) ? $('#background_cycler .active').next() : $('#background_cycler img:first');
-          $next.css('z-index',2);//move the next image up the pile
-          $active.fadeOut(1500,function(){//fade out the top image
-          $active.css('z-index',1).show().removeClass('active');//reset the z-index and unhide the image
-          $next.css('z-index',3).addClass('active');//make the next image the top one
-      });
-    }
-
-    $(window).load(function(){
-    $('#background_cycler').fadeIn(1500);//fade the background back in once all the images are loaded
-      // run every 7s
-      setInterval('cycleImages()', 7000);
-    })
-  </script> -->
-
-		<!--[if lte IE 7]><style>.main{display:none;} .support-note .note-ie{display:block;}</style><![endif]-->
 
 	{% block extra_head %}
 	{% endblock %}
@@ -62,22 +40,9 @@
         </div>
     </div>
 
-  <!-- <div id="background_cycler" > --> <!-- Random backgrounds -->
-<!--
-      <script type="text/javascript">
-        $('#background_cycler').hide();//hide the background while the images load, ready to fade in later
-      </script>
-
-      <img class="active" src="{{STATIC_URL}}img/backgrounds/3.jpg" alt=""/>
-        <img src="{{STATIC_URL}}img/backgrounds/5.jpg" alt=""/>
+ <div id="background_cycler" > <!-- Random backgrounds -->
+      <img class="active" src="{{STATIC_URL}}img/backgrounds/back.jpg" alt=""/>
   </div>
--->
-  <!-- Background con video -->
-
-  <video autoplay loop poster="{{STATIC_URL}}img/3.jpg" id="bgvid">
-    <source src="http://thenewcode.com/assets/videos/polina.webm" type="video/webm">
-    <source src="http://thenewcode.com/assets/videos/polina.mp4" type="video/mp4">
-  </video>
 
        {% block content %}{% endblock %}
     <div class="footer_base">
