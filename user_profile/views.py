@@ -23,7 +23,6 @@ def profile_view(request, username):
     user = request.user
     # para mostarar el cuadro de busqueda en la pagina:
     searchForm = SearchForm(request.POST)
-
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
 
@@ -175,6 +174,9 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         timeline = None
 
+    # notificaciones
+    notifications_profile = user.notifications.unread()
+    print(notifications_profile)
     return render_to_response('account/profile.html',
                               {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
                                'user_profile': user_profile, 'searchForm': searchForm,

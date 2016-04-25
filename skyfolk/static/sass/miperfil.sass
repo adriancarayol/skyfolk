@@ -2107,10 +2107,12 @@ ul.table > li
         & a, a:visited
           color: #fff
 
-  & .notification-like
+  & li
     height: 110px
     margin-top: 2%
     display: list-item
+    padding: 10px
+    font-size: 1.3em
     background-color: #fff
     opacity: 0.5
     -webkit-transition: all .1s linear
@@ -2119,23 +2121,6 @@ ul.table > li
 
     &:hover
       opacity: 1
-
-    & .hexagon
-      position: relative
-      width: 50px
-      height: 28.87px
-      background-color: #f48fb1
-      margin: 14.43px 0
-      top: 25%
-      margin-left: 5%
-
-      & i
-        position: absolute
-        margin-top: 5px
-        margin-left: 12px
-        font-size: 2em
-        color: #fff
-
 #hover-clear-notify
   display: none
   position: absolute
@@ -2163,58 +2148,6 @@ ul.table > li
     display: block
     &:hover
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
-
-.nav-vertical-and-chat .notification-like .hexagon:before,
-.nav-vertical-and-chat .notification-like .hexagon:after
-  content: ""
-  position: absolute
-  width: 0
-  border-left: 25px solid transparent
-  border-right: 25px solid transparent
-
-
-.nav-vertical-and-chat .notification-like .hexagon:before
-  bottom: 100%
-  border-bottom: 14.43px solid #f48fb1
-
-
-.nav-vertical-and-chat .notification-like .hexagon:after
-  top: 100%
-  width: 0
-  border-top: 14.43px solid #f48fb1
-
-
-.nav-vertical-and-chat .notification-like .notification-content
-  height: 100%
-  float: right
-  margin-right: 2.5%
-  text-align: center
-
-.nav-vertical-and-chat .notification-like .notification-content h4
-  font-size: 1.4em
-  margin-top: 15px
-
-.nav-vertical-and-chat .notification-like .notification-content .notification-show
-  border: medium none
-  border-radius: 3px
-  display: inline-block
-  height: 36px
-  padding: 0px 2rem
-  text-transform: uppercase
-  text-decoration: none
-  color: #212121
-  background-color: #eee
-  text-align: center
-  letter-spacing: 0.5px
-  transition: all 0.2s ease-out 0s
-  cursor: pointer
-  float: right
-  outline: none
-  margin-top: 40px
-
-.nav-vertical-and-chat .notification-like .notification-content .notification-show:hover
-  opacity: 0.8
-  color: #8bc34a
 
 .ctrl
   position: absolute

@@ -10,6 +10,7 @@ import re
 from publications.forms import PublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
+from notifications.signals import notify
 
 
 

@@ -10,7 +10,7 @@ from api import views
 #from relaciones.views import relaciones_user
 from user_profile import views as user_profile_views
 #from user_profile.views import welcomeView, welcomeStep1
-# import notifications
+import notifications
 
 admin.autodiscover()
 
@@ -27,6 +27,8 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^setfirstLogin/', 'user_profile.views.setfirstLogin', name='setfirstLogin'),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
+    # CUSTOM URL EMAIL CONFIG
+    url(r"^config/email/$", 'allauth.account.views.email', name="account_email"),
     url(r'^search/$','user_profile.views.search'),
     #url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
     url(r'^config/profile/$', 'user_profile.views.config_profile'),
@@ -78,7 +80,8 @@ urlpatterns = patterns(
     # Página de bienvenida, paso 1.
     url(r'^step1/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeStep1', name='welcomeStep1'),
     #notificaciones
-    url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
+    #url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
+    url('^inbox/notifications/', include('notifications.urls', namespace='notifications')),
 )
 
 urlpatterns += staticfiles_urlpatterns()
