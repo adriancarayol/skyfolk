@@ -103,6 +103,9 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
 ACCOUNT_SIGNUP_FORM_CLASS = 'user_profile.forms.SignupForm'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
+ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
 # / DJANGO ALL AUTH CONFIG
 
 # CONFIG E-MAIL
@@ -113,7 +116,6 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'skyfolk <no-reply@skyfolk.net>'
-
 # SESSION EXPIRATION
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 # REST FRAMEWORK
@@ -237,5 +239,3 @@ ADMINS = (
 NOTIFICATIONS_SOFT_DELETE = True
 ''' Permite enviar datos arbitrarios en las notificaciones '''
 NOTIFICATIONS_USE_JSONFIELD = True
-
-
