@@ -63,8 +63,8 @@ THIRD_PARTY_APPS = (
     'django_messages',         # mensajes entre usuarios
     #'achievements',            # achivements       Portando a Python3
     'emoji',
-    'notifications',           # siempre último
     'avatar',                  # Avatares para usuarios.
+    'notifications',           # siempre último
 )
 
 FIRST_PARTY_APPS = (
