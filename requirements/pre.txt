@@ -13,7 +13,7 @@ django-avatar==3.0.0
 >>>>>>> work
 django-messages==0.5.1
 django-model-utils==2.4
-django-notifications-hq==1.0
+django-notifications-hq==1.1
 djangorestframework==3.3.1
 gunicorn==19.3.0
 jsonfield==1.0.3

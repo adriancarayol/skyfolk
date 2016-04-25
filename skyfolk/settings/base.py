@@ -74,7 +74,6 @@ FIRST_PARTY_APPS = (
     'timeline',
     'about',                   # sobre los autores
     'latest_news',
-    #'achievements',            # modulo para los logros del usuario
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
