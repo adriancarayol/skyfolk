@@ -1,11 +1,11 @@
 <div class="alert alert-block alert-{{ notice.level }}">
   <a class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
-    <i class="icon-close"></i>
+    <i class="icon-close">Leido</i>
   </a>
   
   <h4>
     <i class="icon-mail{% if notice.unread %}-alt{% endif %}"></i>
-    {{ notice.actor }} 
+    {{ notice.actor }}
     {{ notice.verb }}
     {% if notice.target %}
       of {{ notice.target }}

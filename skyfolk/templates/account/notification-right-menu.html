@@ -3,10 +3,7 @@
 {% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' menu_id='notification-menu' %}
 <!-- MENU VERTICAL CON NOTIFICACIONES  -->
     <div id="notification-menu" class="col-lg-3 col-md-8 col-sm-12 nav-vertical-and-chat">
-        {% live_notify_list list_id='nav'%}
-      <div class="col-lg-12 col-md-12 col-sm-12 nav-vertical-controls">
-        <ul class="controls-notifications">
-          <li class="clear-notify"><a id="clear-notify">Limpiar notificaciones</a></li>
+        <ul id="list-notify">
+        {% live_notify_list %}
         </ul>
-      </div>
     </div>

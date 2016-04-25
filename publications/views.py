@@ -1,4 +1,6 @@
 import json
+from datetime import date
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
@@ -11,7 +13,6 @@ from publications.forms import PublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
 from notifications.signals import notify
-
 
 
 def publication_form(request):
@@ -35,6 +36,7 @@ def publication_form(request):
                 publication.getHashTags() # Obtener los hashtags de un comentario
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
+                notify.send(emitter, recipient=userprofile, verb=u'¡Has recibido un comentario!')
                 publication.save()
                 response = True
             except IntegrityError:

@@ -127,6 +127,8 @@ REST_FRAMEWORK = {
 }
 # /REST FRAMEWORK
 
+#NOTIFICATION
+NOTIFICATIONS_USE_JSONFIELD=True
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
