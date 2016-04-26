@@ -36,7 +36,9 @@ def publication_form(request):
                 publication.getHashTags() # Obtener los hashtags de un comentario
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
-                notify.send(emitter, recipient=userprofile, verb=u'¡Has recibido un comentario!')
+                """ Send notification to userprofile """
+                if userprofile.pk != emitter.pk:
+                    notify.send(emitter, actor=emitter.username, recipient=userprofile, verb=u'¡Tienes un nuevo comentario en tu tablón!', target=emitter)
                 publication.save()
                 response = True
             except IntegrityError:
