@@ -29,7 +29,8 @@
           {% else %}
           <a id="config-avatar" class="Contraseña" onclick="toProfile('{% url 'avatar_add' %}')"><i class="fa fa-camera-retro"></i><br>Imagen de perfil</a>
           {% endif %}
-          <a id="config-email" class="perfil" onclick="window.location.href='/config/email'"><i class="fa fa-envelope"></i><br>Email</a>
+          <a id="config-email" class="perfil" onclick="toProfile('/config/email')"><i class="fa fa-envelope"></i><br>Email</a>
+	  <a id="config-privacity" class="perfil" onclick="toProfile('/config/privacity')"><i class="fa fa-lock"></i><br>Privacidad</a>
       </nav>
   </div>
 {% endblock %}
@@ -40,4 +41,4 @@
     </div>
   </div>
 </div>
-{% endblock%}
+{% endblock %}

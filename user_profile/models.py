@@ -39,7 +39,17 @@ def uploadBackImagePath(instance, filename):
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9
-
+    # OPCIONES DE PRIVACIDAD PARA EL USUARIO
+    ONLYFOLLOWERS = 'OF'
+    ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
+    ALL = 'A'
+    NOTHING = 'N'
+    OPTIONS_PRIVACITY = (
+        (ONLYFOLLOWERS, 'OnlyFo'),
+        (ONLYFOLLOWERSANDFOLLOWS, 'OnlyFAF'),
+        (ALL, 'All'),
+        (NOTHING, 'Nothing'),
+    )
     user = models.OneToOneField(User, unique=True, related_name='profile')
 
     # Other fields here
@@ -60,6 +70,8 @@ class UserProfile(models.Model):
         default=False)  # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto, mostrar configuracion inicial.
     hiddenMenu = models.BooleanField(
         default=True)  # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
+    privacity = models.CharField(max_length=4,
+                                choices=OPTIONS_PRIVACITY, default=ALL) #  Privacidad del usuario (por defecto ALL)
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)

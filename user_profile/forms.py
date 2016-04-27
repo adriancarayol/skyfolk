@@ -41,3 +41,11 @@ class ProfileForm(forms.ModelForm):
         model = UserProfile
         fields = ('backImage', 'status', 'hiddenMenu') # Añadir 'image' si decidimos quitar django-avatar.
         #fields = ('image', 'backImage', 'status')
+
+
+class PrivacityForm(forms.ModelForm):
+   
+    privacity = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'max_length': '4'}), required=True)
+    class Meta:
+        model = UserProfile
+        fields = ('privacity',)

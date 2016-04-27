@@ -12,7 +12,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from publications.forms import PublicationForm
 from publications.models import Publication
-from user_profile.forms import ProfileForm, UserForm, SearchForm
+from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
 from user_profile.models import UserProfile
 
 
@@ -27,6 +27,7 @@ def profile_view(request, username):
         get_user_model(), username__iexact=username)
 
     # print(user.email)
+    print('Privacidad del usuario: ' + user_profile.profile.privacity)
     json_requestsToMe = None
     # saber si el usuario que visita el perfil le gusta
     if request.user.username != username:
@@ -250,6 +251,26 @@ def config_privacity(request):
                               context_instance=RequestContext(request))'''
 
 
+
+@login_required(login_url='/')
+def config_privacity(request):
+    user_profile = request.user
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
+    print('>>>>> PETICION CONFIG')
+    if request.POST:
+        print('>>>> PASO 1')
+        privacity_form = PrivacityForm(data=request.POST, instance=request.user.profile)
+        print('>>>> PASO 1.1')
+        if privacity_form.is_valid():
+            print('>>>>> SAVE')
+            privacity_form.save()
+            return HttpResponseRedirect('/config/privacity')
+    else:
+        privacity_form = PrivacityForm(instance=request.user.profile)
+        print('PASO ULTIMO')
+    return render_to_response('account/cf-privacity.html', {'showPerfilButtons':True, 'searchForm': searchForm, 'publicationForm': publicationForm, 'privacity_form': privacity_form},
+                                context_instance=RequestContext(request))
 @login_required(login_url='/')
 def config_profile(request):
     user_profile = request.user

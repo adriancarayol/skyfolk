@@ -31,14 +31,14 @@ urlpatterns = patterns(
     url(r"^config/email/$", 'allauth.account.views.email', name="account_email"),
     url(r'^search/$','user_profile.views.search'),
     #url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
-    url(r'^config/profile/$', 'user_profile.views.config_profile'),
+    url(r'^config/profile/$', 'user_profile.views.config_profile'), # URL CONFIG PROFILE USER
+    url(r'^config/privacity/$', 'user_profile.views.config_privacity'), # URL CHANGE PRIVACITY
     #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^like_profile/$', 'user_profile.views.like_profile', name='like_profile'),
     url(r'^following/(?P<username>[\w-]+)/$', 'user_profile.views.following'),
     url(r'^followers/(?P<username>[\w-]+)/$', 'user_profile.views.followers'),
     url(r'^respond_friend_request/$', 'user_profile.views.respond_friend_request', name='respond_friend_request'),
     url(r'^load_friends/$', 'user_profile.views.load_friends'),
-    #url(r'^config/privacity/$','user_profile.views.config_privacity'),
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^add_friend_by_pin/$', 'user_profile.views.add_friend_by_username_or_pin'),
     url(r'^publication/$', 'publications.views.publication_form'),
@@ -48,7 +48,7 @@ urlpatterns = patterns(
     url(r'^load_publications/$', 'publications.views.load_publications'),
     #url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
-    url(r'^config/password/change/$', user_profile_views.custom_password_change),
+    url(r'^config/password/change/$', user_profile_views.custom_password_change), # URL CHANGE PASSWORD
     url(r'^accounts/', include('allauth.urls')),
     # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),

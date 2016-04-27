@@ -431,7 +431,7 @@
 
             </div>
   <div id="tab-comentarios">
-  {% if isFriend or user.username == user_profile.username %}
+	  {% if isFriend or user.username == user_profile.username %} {% comment %} Si eres amigo o estas visitando tu propio perfil... {% endcomment %}
   {% if publications_top15|length == 0 %} <!-- Si el usuario no tiene comentarios, proponemos uno -->
     <div class="no-comments">
       <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
