@@ -2,7 +2,7 @@
 {% load avatar_tags %}
 
   <div id="tab-comentarios">
-	  {% if isFriend or user.username == user_profile.username %} {% comment %} Si eres amigo o estas visitando tu propio perfil... {% endcomment %}
+	  {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %} {% comment %} Si eres amigo o estas visitando tu propio perfil... {% endcomment %}
   {% if publications_top15|length == 0 %} <!-- Si el usuario no tiene comentarios, proponemos uno -->
     <div class="no-comments">
       <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
@@ -104,10 +104,14 @@
                 </div>
     </div>
     {% endfor %}
-
-    {% else %}
+    {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
+          <div class="cmt-hidden">
+          <h3>¡Sigue a {{user_profile.username}} para ver sus comentarios!</h3>
+            <br>
+          </div>
+    {% elif privacity == 'N' %}
         <div class="cmt-hidden">
-          <h3>¡Agrega a {{user_profile.username}} para ver sus comentarios!</h3>
+          <h3>¡Éste perfil es privado!</h3>
             <br>
         </div>
     {% endif %}

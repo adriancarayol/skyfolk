@@ -26,6 +26,8 @@ def profile_view(request, username):
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
 
+    privacity = user_profile.profile.get_privacity()
+
     # print(user.email)
     print('Privacidad del usuario: ' + user_profile.profile.privacity)
     json_requestsToMe = None
@@ -53,7 +55,7 @@ def profile_view(request, username):
             # print requestsToMe_result
             json_requestsToMe = json.dumps(requestsToMe_result)
 
-    # saber si el usuario que visita el perfil es amigo
+    # saber si sigo al perfil que visito
     if request.user.username != username:
         isFriend = False
         try:
@@ -63,6 +65,18 @@ def profile_view(request, username):
             isFriend = False
     else:
         isFriend = False
+
+    # saber si el perfil que visito me sigue
+
+    if request.user.username != username:
+        isFollower = False
+        try:
+            if request.user.profile.is_follower(user_profile.profile):
+                isFollower = True
+        except ObjectDoesNotExist:
+            isFollower = False
+    else:
+        isFollower = False
 
     # number of likes to him
     n_likes = len(user_profile.profile.likesToMe.all())
@@ -185,7 +199,8 @@ def profile_view(request, username):
                                'timeline': timeline,
                                'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
                                'json_requestsToMe': json_requestsToMe,
-                               'followers': followers}, context_instance=RequestContext(request))
+                               'followers': followers, 'privacity': privacity,
+                               'isFollower': isFollower}, context_instance=RequestContext(request))
 
 
 @login_required(login_url='accounts/login')

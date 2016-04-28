@@ -97,6 +97,10 @@ class UserProfile(models.Model):
         except:
             pass  # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
+    # Return privacity of user.
+
+    def get_privacity(self):
+        return self.privacity
 
     # Methods of relationships between users
     def add_relationship(self, person, status, symm=False):

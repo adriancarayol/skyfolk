@@ -1003,8 +1003,8 @@ function AJAX_requestfriend(status) {
           } else if (response == "inprogress") {
 
             //alert("peticion en curso");
-            $('<img id = "friend_request_progress" src="../../static/img/friend_request_progress.png">').insertBefore(".caja");
-
+            // $('<img id = "friend_request_progress" src="../../static/img/friend_request_progress.png">').insertBefore(".caja");
+            $('#addfriend').replaceWith('<span class="fa fa-clock-o" title="En proceso">'+' '+'</div>');
           } else {
 
           }

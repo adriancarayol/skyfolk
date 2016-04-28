@@ -4,7 +4,7 @@
 <div id="tab-timeline">
     <div id="section">
         <div class="wrapperx">
-            {% if isFriend == True or user.username == user_profile.username %}
+            {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
                 {% for item in timeline %}
                     <div class="line" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
                         <li>
@@ -33,11 +33,16 @@
                                 </li>
                             </div>
                             {% endfor %}
-                            {% else %}
-                          <div class="cmt-hidden">
-                          <h3>¡Agrega a {{user_profile.username}} para ver sus comentarios!</h3>
-                          <br>
-                          </div>
+    {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
+          <div class="cmt-hidden">
+          <h3>¡Sigue a {{user_profile.username}} para ver sus comentarios!</h3>
+            <br>
+          </div>
+    {% elif privacity == 'N' %}
+        <div class="cmt-hidden">
+          <h3>¡Éste perfil es privado!</h3>
+            <br>
+        </div>
             {% endif %}
         </div>
     </div>
