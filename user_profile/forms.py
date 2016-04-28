@@ -45,7 +45,13 @@ class ProfileForm(forms.ModelForm):
 
 class PrivacityForm(forms.ModelForm):
    
-    privacity = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'max_length': '4'}), required=True)
+    CHOICES = (
+            ('A', 'Todos pueden ver mi perfil y mis publicaciones.'),
+            ('OF', 'Sólo mis seguidores pueden ver mi perfil y mis publicaciones.'),
+            ('OFAF', 'Sólo mis seguidores y aquellas personas que sigo pueden ver mi perfil y mis publicaciones.'),
+            ('N', 'Nadie puede ver ni mi perfil ni mis publicaciones.'),
+            )
+    privacity = forms.ChoiceField(choices=CHOICES, required=True, label='Escoge una opción de privacidad.')
     class Meta:
         model = UserProfile
         fields = ('privacity',)

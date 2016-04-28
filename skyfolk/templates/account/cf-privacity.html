@@ -1,6 +1,9 @@
 {% extends "account/base_cf.html" %}
-{% block additional_files %}
+{% block additional_files %} 
+{% endblock %}
 
+{% block extra-css %}
+<link rel="stylesheet" href="{{STATIC_URL}}css/privacidad.css">
 {% endblock %}
 
 {% block cf-title %}
@@ -13,7 +16,29 @@
 {% block cf-form %}
 <form id='formulario' method='post' enctype='multipart/form-data' action''>{% csrf_token %}
 	{{ privacity_form }}
-	<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
+<div class="col-lg-12 col-md-12 col-sm-12 wrapper-options">
+	<h1><i>¿Qué significa cada opción?</i></h1>
+	<div class="col-lg-12 col-md-12 col-sm-12 options">
+		<ul>
+			<li class="col-lg-12 col-md-12 col-sm-12">
+				<h3>Todos pueden ver mi perfil y mis publicaciones</h3><br>
+				<p>Escoge esta opción para permitir a todo el mundo ver tu perfil y el contenido que publiques.</p>
+			</li>
+			<li class="col-lg-12 col-md-12 col-sm-12">
+				<h3>Sólo mis seguidores pueden ver mi perfil y mis publicaciones"</h3>
+				<p>Escoge esta opción para permitir sólo a tus seguidores ver tu perfil y tu contenido publicado.<br></p>
+			</li>
+			<li class="col-lg-12 col-md-12 col-sm-12">
+				<h3>Sólo mis seguidores y aquellas personas que sigo pueden ver mi perfil y mis publicaciones</h3>
+				<p>Escoge esta opción para permitir sólo a tus seguidores y a las personas a las que sigues ver tu perfil y contenido..</p>
+			</li>
+			<li class="col-lg-12 col-md-12 col-sm-121">
+				<h3>Nadie puede ver ni mi perfil ni mis publicaciones</h3>
+				<p>Ningún perfil puede tu perfil ni el contenido que publiques. <br><br> Esta opción es útil si quieres tener un perfil privado en el que guardar contenido útil para ti.</p>
+			</li>
+		</ul>
+	</div>
+</div>
+<button name='action_add' class="btn btn-info" type="submit">Salvar cambios</button>
 </form>
-
 {% endblock %}
