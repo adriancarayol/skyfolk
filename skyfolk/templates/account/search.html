@@ -7,7 +7,7 @@
 {% block content %}
 <div class="container">
 <div class="col-lg-12 col-md-10 col-sm-12">
-  {% if resultSearch|length = 0 and resultMessages|length = 0 %}
+  {% if resultSearch|length == 0 and resultMessages|length == 0 %}
   <div class="col-sm-4">
   	   <div id="search-noelements">
          <h5 class="">Sin resultados :-(</h5>
@@ -33,13 +33,6 @@
                 <i class="fa fa-user fa-2x like-him">
                 </i>
                 <div class="bg-user">
-                    {% comment %}
-                  {% if item.profile.image %}
-                        <img class="profile-user-bg" src="{{ item.profile.image.url }}" ">
-                    {% else %}
-                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" onclick="location.href='/profile/{{ item.username }}'">
-                    {% endif %}
-                    {% endcomment %}
                     <div onclick="location.href='/profile/{{ item.username }}'" class="profile-user-bg">{% avatar item %}</div>
                 </div>
             </div>
@@ -56,11 +49,12 @@
 {% endfor %}
     </div>
  {% endif %}
-    {% if resultMessages|length = 0 %}
+    {% if resultMessages|length == 0 %}
     {% else %}
     <div class="col-lg-12 col-md-10 col-sm-12">
     <h2 class="messages-search">Publicaciones</h2>
     {% for pub in resultMessages %}
+        {% if request.user.username|check_follow:pub.author.user.username %} {% comment 'Check privacity' %} Comprobamos la privacidad del autor del mensaje {% endcomment %}
    <div class="col-lg-3 col-md-5 col-sm-12 pub-search">
     <div class="personal-card">
         <div class="col-lg-12">
@@ -71,20 +65,13 @@
                    <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
                 {% endif %}
                 <div class="bg-user">
-                    {% comment %}
-                  {% if pub.profile.image %}
-                        <img class="profile-user-bg" src="{{ pub.profile.image.url }}" onclick="location.href='/profile/{{ pub.author.user }}'">
-                    {% else %}
-                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" >
-                    {% endif %}
-                    {% endcomment %}
                     <div onclick="location.href='/profile/{{ pub.author.user }}'" class="profile-user-bg">{% avatar pub.author.user %}</div>
                 </div>
             </div>
         </div>
         <div class="col-lg-12">
             <div class="col-lg-12 col-md-12 col-sm-12 pub-author">
-                <a href="/profile/{{pub.author.user}}">@{{ pub.author.user }}</a>
+                <a href="/profile/{{pub.author.user }}">@{{ pub.author.username }}</a>
                 <i> ({{ pub.author.user.first_name}} {{ pub.author.user.last_name }})</i>
               </div>
             <div class="col-lg-12 col-md-12 col-sm-12 comm">
@@ -92,10 +79,11 @@
             </div>
         </div>
     </div>
-</div>
+</div>{% endif %}
 {% endfor %}
  {% endif %}
  </div>
+{% comment %}
 {% block messages %}
 	<!-- Permite mostrar el form para enviar mensajes -->
 {% if user.is_authenticated %}
@@ -117,6 +105,6 @@
     </form>
   </div>
 {% endif %}
-{% endblock %}
+{% endblock %}{% endcomment %}
 {% endblock %}
 </div>
