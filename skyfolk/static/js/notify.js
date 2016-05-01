@@ -24,13 +24,16 @@ function fill_notification_list(data) {
             console.log(item)
             var message = ""
             if(typeof item.actor !== 'undefined'){
-                message = item.actor;
+                message = '<a href="/profile/' + item.actor + '" >' + item.actor + '</a>';
             }
             if(typeof item.verb !== 'undefined'){
                 message = message + " " + item.verb;
             }
             if(typeof item.target !== 'undefined'){
                 message = message + " " + item.target;
+            }
+            if(typeof item.description !== 'undefined'){
+                message = message + " " + item.description;
             }
             if(typeof item.timestamp !== 'undefined'){
                 message = message + " " + item.timestamp;

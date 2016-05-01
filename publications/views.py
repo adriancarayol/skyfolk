@@ -38,7 +38,7 @@ def publication_form(request):
                 print(str(emitter.profile))
                 """ Send notification to userprofile """
                 if userprofile.pk != emitter.pk:
-                    notify.send(emitter, actor=emitter.username, recipient=userprofile, verb=u'¡Tienes un nuevo comentario en tu tablón!', target=emitter)
+                    notify.send(emitter, actor=emitter.username, recipient=userprofile, verb=u'¡ha publicado un comentario en tu tablón!', description="Contenido: " + publication.content)
                 publication.save()
                 response = True
             except IntegrityError:

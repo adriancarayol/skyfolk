@@ -62,7 +62,6 @@ class NotificationQuerySet(models.query.QuerySet):
 
     def mark_all_as_read(self, recipient=None):
         """Mark as read any unread messages in the current queryset.
-
         Optionally, filter these by recipient first.
         """
         # We want to filter out read ones, as later we will store
@@ -75,7 +74,6 @@ class NotificationQuerySet(models.query.QuerySet):
 
     def mark_all_as_unread(self, recipient=None):
         """Mark as unread any read messages in the current queryset.
-
         Optionally, filter these by recipient first.
         """
         qs = self.read(True)
@@ -123,29 +121,20 @@ class Notification(models.Model):
     Action model describing the actor acting out a verb (on an optional
     target).
     Nomenclature based on http://activitystrea.ms/specs/atom/1.0/
-
     Generalized Format::
-
         <actor> <verb> <time>
         <actor> <verb> <target> <time>
         <actor> <verb> <action_object> <target> <time>
-
     Examples::
-
         <justquick> <reached level 60> <1 minute ago>
         <brosner> <commented on> <pinax/pinax> <2 hours ago>
         <washingtontimes> <started follow> <justquick> <8 minutes ago>
         <mitsuhiko> <closed> <issue 70> on <mitsuhiko/flask> <about 2 hours ago>
-
     Unicode Representation::
-
         justquick reached level 60 1 minute ago
         mitsuhiko closed issue 70 on mitsuhiko/flask 3 hours ago
-
     HTML Representation::
-
         <a href="http://oebfare.com/">brosner</a> commented on <a href="http://github.com/pinax/pinax">pinax/pinax</a> 2 hours ago
-
     """
     LEVELS = Choices('success', 'info', 'warning', 'error')
     level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=20)
