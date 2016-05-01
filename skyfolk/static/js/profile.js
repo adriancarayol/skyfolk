@@ -317,7 +317,7 @@ $(document).ready(function () {
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
 
   $(".fa-bell").click(function(){
-    $(".nav-vertical-and-chat").animate({width: 'toggle'},100);
+    $("#notification-menu").animate({width: 'toggle'}, 100);
   });
 
 
@@ -1053,8 +1053,18 @@ $(document).click(function(event) {
             $('.fa-bars').removeClass('fa-bars-rotate');
         }
     }
-})
+});
 
+$(document).click(function(event) {
+    if (!$(event.target).closest('#notification-menu').length) {
+        if (!$(event.target).closest('.fa-bell').length) {
+            if ($('#notification-menu').is(":visible")) {
+                $('#notification-menu').animate({width: 'toggle'}, 100);
+                $('.fa-bars').removeClass('fa-bars-rotate');
+            }
+        }
+    }
+});
 
 /* Mensaje flotante */
 $(document).ready(function() {
