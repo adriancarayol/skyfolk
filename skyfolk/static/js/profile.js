@@ -1055,6 +1055,7 @@ $(document).click(function(event) {
     }
 });
 
+/* Ocultar menu de notificaciones al hacer click fuera de él */
 $(document).click(function(event) {
     if (!$(event.target).closest('#notification-menu').length) {
         if (!$(event.target).closest('.fa-bell').length) {
