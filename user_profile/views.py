@@ -4,13 +4,14 @@ from allauth.account.views import PasswordChangeView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.serializers.json import DjangoJSONEncoder
+# from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from publications.forms import PublicationForm
+from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
 from user_profile.models import UserProfile
@@ -23,8 +24,16 @@ def profile_view(request, username):
     user = request.user
     # para mostarar el cuadro de busqueda en la pagina:
     searchForm = SearchForm(request.POST)
+<<<<<<< HEAD
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
+=======
+
+    # username es el nombre del perfil visitado, si coincide con user.username
+    # entonces estamos ante el perfil del usuario logueado.
+    user_profile = get_object_or_404(get_user_model(),
+                                     username__iexact=username)
+>>>>>>> issue#11
 
     privacity = user_profile.profile.get_privacity()
 
@@ -162,11 +171,22 @@ def profile_view(request, username):
             print('>>> El usuario ' + user_profile.username + " no tiene ningún estado ańimico")
 
     # mostrar formulario para enviar comentarios/publicaciones
-    publicationForm = PublicationForm()
+    initial = {'author': user.pk, 'board_owner': user_profile.pk}
+    publicationForm = PublicationForm(initial=initial)
+    reply_pub_form = ReplyPublicationForm(initial=initial)
 
     # cargar lista comentarios
     try:
-        publications = user_profile.profile.get_publicationsToMe()
+        # publications = Publication.objects.get_authors_publications(
+        #                                             author_pk=user_profile.pk)
+        if isFriend:
+            publications = Publication.objects.get_friend_profile_publications(
+                                                user_pk=user.pk,
+                                                board_owner_pk=user_profile.pk)
+        else:
+            publications = Publication.objects.get_user_profile_publications(
+                user_pk=user.pk,
+                board_owner_pk=user_profile.pk)
         print('>>>>>>> LISTA PUBLICACIONES: ')
         # print publications
         print(publications)
@@ -174,21 +194,27 @@ def profile_view(request, username):
         publications = None
 
     publications_top15 = None
-    if publications != None:
+    if publications:
         if len(publications) > 15:
-            request.session['publications_list'] = json.dumps(
-                list(publications), cls=DjangoJSONEncoder)
+            # request.session['publications_list'] = \
+            #                       serializers.serialize('json', publications)
             publications_top15 = publications[0:15]
         else:
             publications_top15 = publications
 
+    print('>>>>>>> LISTA PUBLICACIONES TOP 15: ')
+    # print publications
+    print(publications)
+
     # cargar timeline
     print('>>>>>>>>>>> TIMELINE <<<<<<<<<<<')
+    print('views.py line:164 publications_top {}'.format(publications_top15))
     try:
         timeline = user_profile.profile.getTimelineToMe()
     except ObjectDoesNotExist:
         timeline = None
 
+<<<<<<< HEAD
     # notificaciones
     notifications_profile = user.notifications.unread()
     print(notifications_profile)
@@ -201,6 +227,21 @@ def profile_view(request, username):
                                'json_requestsToMe': json_requestsToMe,
                                'followers': followers, 'privacity': privacity,
                                'isFollower': isFollower}, context_instance=RequestContext(request))
+=======
+    return render_to_response('account/profile.html', {
+                                'publications_top15': publications_top15,
+                                'listR': listR, 'friends_top12': friends_top12,
+                                'user_profile': user_profile,
+                                'searchForm': searchForm,
+                                'publicationForm': publicationForm,
+                                'reply_publication_form': reply_pub_form,
+                                'liked': liked, 'n_likes': n_likes,
+                                'timeline': timeline, 'isFriend': isFriend,
+                                'existFriendRequest': existFriendRequest,
+                                'json_requestsToMe': json_requestsToMe},
+                                context_instance=RequestContext(request)
+                              )
+>>>>>>> issue#11
 
 
 @login_required(login_url='accounts/login')

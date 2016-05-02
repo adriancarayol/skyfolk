@@ -60,8 +60,6 @@ class UserProfile(models.Model):
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
-    publications = models.ManyToManyField('self', through='publications.Publication', symmetrical=False,
-                                          related_name='publications_to')
     timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False,
                                       related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')

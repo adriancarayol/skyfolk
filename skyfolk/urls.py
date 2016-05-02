@@ -11,6 +11,9 @@ from api import views
 from user_profile import views as user_profile_views
 #from user_profile.views import welcomeView, welcomeStep1
 import notifications
+# import notifications
+from publications.views import PublicationNewView, PublicationsListView
+
 
 admin.autodiscover()
 
@@ -41,8 +44,10 @@ urlpatterns = patterns(
     url(r'^load_friends/$', 'user_profile.views.load_friends'),
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^add_friend_by_pin/$', 'user_profile.views.add_friend_by_username_or_pin'),
-    url(r'^publication/$', 'publications.views.publication_form'),
+    # url(r'^publication/$', 'publications.views.publication_form'),
+    url(r'^publication/$', PublicationNewView.as_view(), name='new_publication'),
     url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),
+    url(r'^publication/list/$', PublicationsListView.as_view(), name='last_publication'),
     url(r'^publication/add_like/$', 'publications.views.add_like', name='add_like'),
     url(r'^publication/add_hate/$', 'publications.views.add_hate', name='add_hate'),
     url(r'^load_publications/$', 'publications.views.load_publications'),

@@ -769,3 +769,19 @@ a.fontawesome-cog:hover {
   color: grey; }
 
 /*# sourceMappingURL=comentarios.css.map */
+
+/* RESPUESTAS A COMENTARIOS */
+.comment-reply {
+  clear: both;
+  padding: 2%;
+  margin: 1%;
+  background-color: #eff;
+  color: #666;
+  border-right: 2px solid #dff;
+  border-bottom: 1px solid #dff;
+
+}
+
+.hidden {
+	display: none;
+}
