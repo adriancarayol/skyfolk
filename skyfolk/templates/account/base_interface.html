@@ -57,11 +57,14 @@
     <i class="fa fa-paper-plane"> </i>
     <h4>Publicar comentario</h4>
     <h6>Publica un comentario para que el mundo lo vea.</h6>
+      <p></p>
     </div>
     <form id="message-form2" action="" method="post">{% csrf_token %}
-    {{ publicationForm.as_p }}
-      <input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
-      <input type="text" name="emitterid" value="{{ user.pk }}" hidden>
+        {{ publicationForm.csrftoken }}
+        <p>{{ publicationForm.content }}</p>
+        {{ publicationForm.author }}
+        {{ publicationForm.board_owner }}
+        {{ publicationForm.parent }}
         <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"> </i> Enviar</button>
         <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
         <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->

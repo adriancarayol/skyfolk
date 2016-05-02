@@ -4,13 +4,75 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response, get_object_or_404
+from django.views.generic import ListView
+from django.views.generic.edit import CreateView
 # from django.utils.safestring import mark_safe
 from emoji import *
 import re
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications.forms import PublicationForm
 from publications.models import Publication
 
 
+class PublicationNewView(AjaxableResponseMixin, CreateView):
+    form_class = PublicationForm
+    model = Publication
+    http_method_names = [u'post']
+    success_url = '/thanks/'
+
+    def post(self, request, *args, **kwargs):
+        # self.object = None
+        # form = PublicationForm(request.POST)
+        form = self.get_form()
+        emitter = get_object_or_404(get_user_model(),
+                                    pk=request.POST['author'])
+        board_owner = get_object_or_404(get_user_model(),
+                                        pk=request.POST['board_owner'])
+        publication = None
+        print('POST DATA: {}'.format(request.POST))
+        print('tipo emitter: {}'.format(type(emitter)))
+        print('tipo board_owner: {}'.format(type(board_owner)))
+        if form.is_valid():
+            try:
+                publication = form.save(commit=False)
+                publication.author = emitter
+                publication.board_owner = board_owner
+                if publication.content.isspace():
+                    raise IntegrityError('El comentario esta vacio')
+                publication.content = Emoji.replace(publication.content)
+                # Obtener las menciones de un comentario
+                Publication.objects.getMentions(publication)
+                # Obtener los hashtags de un comentario
+                Publication.objects.getHashTags(publication)
+                publication.save()
+                return self.form_valid(form=form)
+            except IntegrityError as e:
+                print("views.py line 48 -> {}".format(e))
+
+        return self.form_invalid(form=form)
+
+
+class PublicationsListView(AjaxableResponseMixin, ListView):
+    model = Publication
+    template_name = 'account/publication.html'
+    http_method_names = ['get']
+    ordering = ['-created']
+    allow_empty = True
+    context_object_name = 'publication_list'
+    paginate_by = 1
+    queryset = Publication.objects.all()
+
+    def get_queryset(self):
+        print(self.request.GET.get('type'))
+        if self.request.GET.get('type') == 'reply':
+            # TODO: pasar el resto de parametros por get
+            self.template_name = 'account/reply.html'
+            return Publication.objects.get_publication_replies(
+                                        self.request.GET.get('user_pk'),
+                                        self.request.GET.get('booar_owner'),
+                                        self.request.GET.get('parent'))
+        else:
+            return self.queryset
 
 
 def publication_form(request):

@@ -1,6 +1,7 @@
 var countFriendList = 1;
 var countPublicationsList = 1;
 var countTimeLine = 1;
+var flag_reply = false
 
   /* LOADER PARA SKYFOLK */
 $(window).load(function() {
@@ -101,8 +102,21 @@ $(document).ready(function () {
 
   $('#message-form2').on('submit', function(event) {
     event.preventDefault();
-    AJAX_submit_publication();
+    var data = $('#page-wrapper').find('#message-form2').serialize()
+    AJAX_submit_publication(data);
   });
+
+  $('button.enviar').on('click', function(event) {
+    event.preventDefault()
+    var parent_pk = $(this).attr('id').split('-')[1]
+    var form = $(this).parent()
+    $(form).find('input[name=parent]').val(parent_pk)
+    var user_pk = $(form).find('input[name=author]').val()
+    var owner_pk = $(form).find('input[name=board_owner]').val()
+    var data = $(form).serialize()
+    var pks = [user_pk, owner_pk, parent_pk]
+    AJAX_submit_publication(data, 'reply', pks)
+  })
 
   $('#atajos-keyboard-profile').find('.atajos-title .fa-close').on('click',function() {
     $('#atajos-keyboard-profile').hide();
@@ -120,8 +134,17 @@ $(document).ready(function () {
 
   /* Abrir respuesta a comentario */
     $('.fa-reply').on('click', function() {
-        var i = $(this).closest('.wrapper');
-        replyComment(i);
+        //var i = $(this).closest('.wrapper');
+        //replyComment(i);
+        var id_ = $(this).attr("id").slice(6)
+        if (flag_reply) {
+            $("#"+id_).slideUp()
+            flag_reply = false
+        }else{
+            $("#"+id_).slideDown()
+            flag_reply = true
+        }
+
     });
 
     function replyComment(caja_pub) {
@@ -534,7 +557,7 @@ function addFriendToHtmlList(item) {
 
 }
 
-function addPublicationToHtmlList(item) {
+function addPublicationToHtmlList(data) {
 
   if (item.user__profile__image) {
     $("#tab-comentarios").append('<div class="wrapper" id="pub-' + item.from_publication__id + '">\
@@ -821,22 +844,41 @@ function AJAX_respondFriendRequest(id_emitter, status) {
 }
 
 
-function AJAX_submit_publication() {
+function addNewPublication(type, user_pk, board_owner_pk, parent) {
+  if (type=="reply") {
+    $.get( "/publication/list/?type=reply&user_pk=" + user_pk + "&board_owner_pk" + board_owner_pk + ",parent="+parent, function(data) {
+      $( "#tab-comentarios" ).prepend(data).fadeIn('slow/400/fast')
+    })
+  } else {
+    $.get( "/publication/list/", function(data) {
+      if ($("#tab-comentarios .no-comments").length) {
+        $("#tab-comentarios .no-comments").remove()
+      }
+      $("#tab-comentarios").prepend(data).fadeIn('slow/400/fast')
+    })
+  }
+}
+
+
+function AJAX_submit_publication(data, type, pks) {
+  type = typeof type !== 'undefined' ? type : "reply"; //default para type
   $.ajax({
     url: '/publication/',
     type: 'POST',
     dataType: 'json',
-    data: $('#page-wrapper').find('#message-form2').serialize(),
+    data: data,
     success: function(data) {
       var response = data.response;
+      console.log('RESPONSE AQUI')
+      console.log(response)
       if (response == true) {
         swal({
-          title: "Success!",
-          text: "You have successfully posted!",
-          type: "success",
-          timer: 900,
-          animation: "slide-from-top",
-          showConfirmButton: false
+            title: "Success!",
+            text: "You have successfully posted!",
+            type: "success",
+            timer: 900,
+            animation: "slide-from-top",
+            showConfirmButton: false
         });
       } else {
         swal({
@@ -845,12 +887,14 @@ function AJAX_submit_publication() {
     type: "error"
         });
       }
-        $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+        $('#page-wrapper').fadeOut("fast") // Ocultamos el DIV al publicar un mensaje.
         },
     error: function(rs, e) {
-      alert('ERROR: ' + rs.responseText + " " + e);
+      alert('ERROR: ' + rs.responseText + " " + e)
     }
-  });
+  }).done(function() {
+    addNewPublication(type, pks[0], pks[1], pks[2])
+  })
 
 
 }
@@ -1254,4 +1298,16 @@ function AJAX_add_timeline(caja_publicacion) {
 function is_numeric(value) {
     var is_number =  /^\d+$/.test(value);
     return is_number;
+}
+
+function serializedToJSON(data) {
+    //from -> http://stackoverflow.com/questions/23287067/converting-serialized-forms-data-to-json-object
+    data = data.split("&")
+    var obj={};
+    for(var key in data)
+    {
+        obj[data[key].split("=")[0]] = data[key].split("=")[1]
+    }
+
+    return obj
 }

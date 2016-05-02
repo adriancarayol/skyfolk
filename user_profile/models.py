@@ -41,8 +41,6 @@ class UserProfile(models.Model):
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
-    publications = models.ManyToManyField('self', through='publications.Publication', symmetrical=False,
-                                          related_name='publications_to')
     timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False,
                                       related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
@@ -115,40 +113,6 @@ class UserProfile(models.Model):
 
     def remove_timeline(self, timeline_id):
         timeline.models.Timeline.objects.get(pk=timeline_id).delete()
-
-    # Methods of publications
-
-    def get_publication(self, publicationid):
-        return publications.models.Publication.objects.get(pk=publicationid)
-
-    def remove_publication(self, publicationid):
-        publications.models.Publication.objects.get(pk=publicationid).delete()
-
-    def get_publicationsToMe(self):
-        return self.publications_to.filter(
-            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
-                                                   'from_publication__id',
-                                                   'from_publication__content', 'from_publication__created',
-                                                   'from_publication__likes', 'user__profile__image',
-                                                   'from_publication__hates', 'from_publication__replies').order_by(
-            'from_publication__created').reverse()
-
-    def get_publicationsToMeTop15(self):
-        return self.publications_to.filter(
-            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
-                                                   'from_publication__id',
-                                                   'from_publication__content', 'from_publication__created',
-                                                   'from_publication__likes',
-                                                   'user__profile__image').order_by(
-            'from_publication__created').reverse()[0:15]
-
-    def get_myPublications(self):
-        return self.publications.filter(
-            to_publication__author=self).values('user__username', 'to_publication__profile', 'user__first_name',
-                                                'user__last_name',
-                                                'from_publication__id', 'to_publication__content',
-                                                'to_publication__created', 'to_publication__likes',
-                                                'to_publication__user_give_me_like').reverse()
 
     def get_following(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWING)
