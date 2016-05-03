@@ -238,7 +238,9 @@ def profile_view(request, username):
                                 'liked': liked, 'n_likes': n_likes,
                                 'timeline': timeline, 'isFriend': isFriend,
                                 'existFriendRequest': existFriendRequest,
-                                'json_requestsToMe': json_requestsToMe},
+                                'json_requestsToMe': json_requestsToMe,
+                                'followers':followers, 'privacity': privacity,
+                                'isFollower': isFollower},
                                 context_instance=RequestContext(request)
                               )
 #>>>>>>> issue#11

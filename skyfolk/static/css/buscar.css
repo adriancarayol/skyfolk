@@ -3,7 +3,7 @@
 /*caja de busqueda*/
 .field > form input[type=text],
 .field > form button {
-  font:1.2em 'Open Sans', sans-serif;;
+  font:1.2em 'Open Sans', sans-serif;
 }
 
 .field > form input[type=text] {
