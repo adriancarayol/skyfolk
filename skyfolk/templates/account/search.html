@@ -54,25 +54,25 @@
     <div class="col-lg-12 col-md-10 col-sm-12">
     <h2 class="messages-search">Publicaciones</h2>
     {% for pub in resultMessages %}
-        {% if request.user.username|check_follow:pub.author.user.username %} {% comment 'Check privacity' %} Comprobamos la privacidad del autor del mensaje {% endcomment %}
+        {% if request.user.username|check_follow:pub.author.username %} {% comment 'Check privacity' %} Comprobamos la privacidad del autor del mensaje {% endcomment %}
    <div class="col-lg-3 col-md-5 col-sm-12 pub-search">
     <div class="personal-card">
         <div class="col-lg-12">
             <div class="header">
-                {% if pub.profile.backImage %}
-                   <img class="back-profile-user" src="{{ pub.profile.backImage.url }}">
+                {% if pub.author.profile.backImage %}
+                   <img class="back-profile-user" src="{{ pub.author.profile.backImage.url }}">
                    {% else %}
                    <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
                 {% endif %}
                 <div class="bg-user">
-                    <div onclick="location.href='/profile/{{ pub.author.user }}'" class="profile-user-bg">{% avatar pub.author.user %}</div>
+                    <div onclick="location.href='/profile/{{ pub.author.username }}'" class="profile-user-bg">{% avatar pub.author %}</div>
                 </div>
             </div>
         </div>
         <div class="col-lg-12">
             <div class="col-lg-12 col-md-12 col-sm-12 pub-author">
-                <a href="/profile/{{pub.author.user }}">@{{ pub.author.username }}</a>
-                <i> ({{ pub.author.user.first_name}} {{ pub.author.user.last_name }})</i>
+                <a href="/profile/{{ pub.author.username }}">@{{ pub.author.username }}</a>
+                <i> ({{ pub.author.first_name}} {{ pub.author.last_name }})</i>
               </div>
             <div class="col-lg-12 col-md-12 col-sm-12 comm">
                     <p class="pub-content">{{ pub.content|safe }}</p>

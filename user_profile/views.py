@@ -276,10 +276,10 @@ def search(request):
                     print('Palabra encontrada -> ' + w)
                     result_messages = Publication.objects.filter(
                         Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
-                        Q(author__user__username__icontains=w) |
-                        Q(author__user__first_name__icontains=w) |
-                        Q(author__user__last_name__icontains=w)).order_by('created').reverse()
-
+                        Q(author__username__icontains=w) |
+                        Q(author__first_name__icontains=w) |
+                        Q(author__last_name__icontains=w)).order_by('created').reverse()
+                
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': resultSearch,
                                                                   'resultMessages': result_messages,
