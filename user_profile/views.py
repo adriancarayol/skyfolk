@@ -24,16 +24,16 @@ def profile_view(request, username):
     user = request.user
     # para mostarar el cuadro de busqueda en la pagina:
     searchForm = SearchForm(request.POST)
-<<<<<<< HEAD
-    user_profile = get_object_or_404(
-        get_user_model(), username__iexact=username)
-=======
+#<<<<<<< HEAD
+#    user_profile = get_object_or_404(
+#        get_user_model(), username__iexact=username)
+#=======
 
     # username es el nombre del perfil visitado, si coincide con user.username
     # entonces estamos ante el perfil del usuario logueado.
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
->>>>>>> issue#11
+#>>>>>>> issue#11
 
     privacity = user_profile.profile.get_privacity()
 
@@ -214,20 +214,20 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         timeline = None
 
-<<<<<<< HEAD
-    # notificaciones
-    notifications_profile = user.notifications.unread()
-    print(notifications_profile)
-    return render_to_response('account/profile.html',
-                              {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
-                               'user_profile': user_profile, 'searchForm': searchForm,
-                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes,
-                               'timeline': timeline,
-                               'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
-                               'json_requestsToMe': json_requestsToMe,
-                               'followers': followers, 'privacity': privacity,
-                               'isFollower': isFollower}, context_instance=RequestContext(request))
-=======
+#<<<<<<< HEAD
+#    # notificaciones
+#    notifications_profile = user.notifications.unread()
+#    print(notifications_profile)
+#    return render_to_response('account/profile.html',
+#                              {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
+#                               'user_profile': user_profile, 'searchForm': searchForm,
+#                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes,
+#                               'timeline': timeline,
+#                               'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
+#                               'json_requestsToMe': json_requestsToMe,
+#                               'followers': followers, 'privacity': privacity,
+#                               'isFollower': isFollower}, context_instance=RequestContext(request))
+#=======
     return render_to_response('account/profile.html', {
                                 'publications_top15': publications_top15,
                                 'listR': listR, 'friends_top12': friends_top12,
@@ -241,7 +241,7 @@ def profile_view(request, username):
                                 'json_requestsToMe': json_requestsToMe},
                                 context_instance=RequestContext(request)
                               )
->>>>>>> issue#11
+#>>>>>>> issue#11
 
 
 @login_required(login_url='accounts/login')
