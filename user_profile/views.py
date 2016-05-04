@@ -279,7 +279,7 @@ def search(request):
                         Q(author__username__icontains=w) |
                         Q(author__first_name__icontains=w) |
                         Q(author__last_name__icontains=w)).order_by('created').reverse()
-                
+
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': resultSearch,
                                                                   'resultMessages': result_messages,

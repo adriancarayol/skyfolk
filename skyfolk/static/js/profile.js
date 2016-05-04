@@ -4,7 +4,7 @@ var countTimeLine = 1;
 var lastClickHeart = 0;
 var lastClickHate = 0;
 var lastClickTag = 0;
-var flag_reply = false
+var flag_reply = false;
 
   /* LOADER PARA SKYFOLK */
 $(window).load(function() {
@@ -899,8 +899,8 @@ function addNewPublication(type, user_pk, board_owner_pk, parent) {
     })
   } else {
     $.get( "/publication/list/", function(data) {
-      if ($("#tab-comentarios .no-comments").length) {
-        $("#tab-comentarios .no-comments").remove()
+      if ($("#tab-comentarios").find(".no-comments").length) {
+        $("#tab-comentarios").find(".no-comments").remove()
       }
       $("#tab-comentarios").prepend(data).fadeIn('slow/400/fast')
     })
