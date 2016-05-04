@@ -2,23 +2,12 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 
-import re
-
-
 class PublicationManager(models.Manager):
     def set_like_pub(self, likes):
         self.likes = likes
 
     def set_hate_pub(self, hates):
         self.hates = hates
-
-    ''' Menciones para comentario '''
-    def getMentions(self, obj_pub):
-        menciones = re.findall('\\@[a-zA-Z0-9_]+', obj_pub.content)
-        for mencion in menciones:
-            if User.objects.filter(username=mencion[1:]):
-                obj_pub.content = obj_pub.content.replace(mencion,
-                '<a href="/profile/%s">%s</a>' % (mencion[1:], mencion))
 
     # Functions of publications
     def get_publication(self, publicationid):
@@ -96,14 +85,6 @@ class PublicationManager(models.Manager):
             'created').reverse()
 
         return pubs
-
-    ''' Tags para comentario '''
-    def getHashTags(self, obj_pub):
-        hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', obj_pub.content)
-        for hashtag in hashtags:
-            obj_pub.content = obj_pub.content.replace(hashtag,
-            '<a href="/search/">%s</a>' % (hashtag))
-
 
 class Publication(models.Model):
     content = models.TextField(blank=False)
