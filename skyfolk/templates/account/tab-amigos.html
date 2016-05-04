@@ -1,4 +1,3 @@
-{% load tags_mentions %}
 {% load avatar_tags %}
 
 <div id="tab-amigos">
@@ -10,14 +9,6 @@
             <ul class="list">
                 {% for item in friends_top12 %}
                   <li id="friend-{{item.user__id}}">
-                      {% comment %}
-                  {% if item.user__profile__image and item.user__profile__image|file_exists %}
-                     <img src="{{MEDIA_URL}}{{item.user__profile__image}}" class="usr-img img-responsive">
-                  {% else %}
-                     <img src="{{STATIC_URL}}img/nuevo.png" class="usr-img img-responsive">
-                  {% endif %}
-                      usr-img img-responsive
-                      {% endcomment %}
                       <div class="usr-img img-responsive">{% avatar item.user__username %}</div>
                   <a class="name" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
                   </li>

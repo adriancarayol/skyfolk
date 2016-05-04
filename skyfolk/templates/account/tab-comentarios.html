@@ -1,4 +1,4 @@
-{% load tags_mentions %}
+{% load decorators %}
 {% load avatar_tags %}
 {% load app_filters %}
   <div id="tab-comentarios">
@@ -27,7 +27,7 @@
 
                     <div class="parrafo comment-tab">
                     <a target="_blank">{{ pub.created }}</a><br><br>
-                        {{ pub.content|replace_tags_mentions|safe }}
+                        {{ pub.content|replace_decorators|safe }}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
@@ -49,7 +49,7 @@
                   <h2 class="h22"><a href="/profile/{{ pub.author.username }}" >{{ pub.author.username }}</a> ha comentado:  </h2>
                   <div class="parrafo comment">
                     <a target="_blank">{{pub.created}}</a><br>
-                      <div class="wrp-comment">{{ pub.content|replace_tags_mentions|safe}}</div>
+                      <div class="wrp-comment">{{ pub.content|replace_decorators|safe}}</div>
                   </div>
                     <div class="show-more">
                         <a href="#">+ Mostrar más</a>

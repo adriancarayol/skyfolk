@@ -3,7 +3,7 @@ import re
 register = template.Library()
 
 
-@register.filter(name='replace_tags_mentions')
+@register.filter(name='replace_decorators')
 def replace_tags(value):
     bold = re.findall('\*[^\*]+\*', value)
     ''' Bold para comentario '''

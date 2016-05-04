@@ -71,6 +71,7 @@ FIRST_PARTY_APPS = (
     'landing',                 # página de inicio
     'user_profile',            # perfil de usuario
     'publications',            # publicaciones en el perfil
+    'text_processor',          # Formatea un texto para incorporar emoticonos, hashtags...
     'timeline',
     'about',                   # sobre los autores
     'latest_news',

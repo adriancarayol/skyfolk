@@ -8,9 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, render_to_response, get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
-# from django.utils.safestring import mark_safe
-from emoji import *
-import re
+from text_processor.format_text import TextProcessor
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications.forms import PublicationForm
 from publications.models import Publication
@@ -43,11 +41,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.board_owner = board_owner
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.content = Emoji.replace(publication.content)
-                # Obtener las menciones de un comentario
-                Publication.objects.getMentions(publication)
-                # Obtener los hashtags de un comentario
-                Publication.objects.getHashTags(publication)
+                publication.content = TextProcessor.get_format_text(publication.content)
                 publication.save()
                 return self.form_valid(form=form)
             except IntegrityError as e:
@@ -95,9 +89,7 @@ def publication_form(request):
                 publication.profile = userprofile.profile
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.content = Emoji.replace(publication.content)
-                publication.getMentions() # Obtener las menciones de un comentario
-                publication.getHashTags() # Obtener los hashtags de un comentario
+                publication.content = TextProcessor.get_format_text(publication.content)
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 """ Send notification to userprofile """

@@ -1,4 +1,4 @@
-{% load tags_mentions %}
+{% load decorators %}
 {% load avatar_tags %}
 
 <div id="tab-timeline">
@@ -14,7 +14,7 @@
                                         </span>
                                         <span class="head"><a href="/profile/{{item.user__username}}">{{item.user__username}}</a>  <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em></span>
                                         <div id="p" class="parrafo comment">
-                                                {{ item.from_timeline__content|replace_tags_mentions|safe}}
+                                                {{ item.from_timeline__content|replace_decorators|safe}}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
