@@ -41,7 +41,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.board_owner = board_owner
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.content = TextProcessor.get_format_text(publication.content)
+                publication.content = TextProcessor.get_format_text(publication.content, emitter)
                 publication.save()
                 return self.form_valid(form=form)
             except IntegrityError as e:
@@ -89,7 +89,7 @@ def publication_form(request):
                 publication.profile = userprofile.profile
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.content = TextProcessor.get_format_text(publication.content)
+                publication.content = TextProcessor.get_format_text(publication.content, emitter)
                 print(str(userprofile.profile))
                 print(str(emitter.profile))
                 """ Send notification to userprofile """

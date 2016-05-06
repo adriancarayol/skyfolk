@@ -44,7 +44,7 @@ a, a:visited {
   margin-top: 20px;
   margin-bottom: 12px; }
 
-.articulo img {
+.articulo img, .comment-reply img {
   width: 20px;
   height: 20px; }
 
@@ -77,9 +77,9 @@ a, a:visited {
   line-height: 1.5rem;
   word-wrap: break-word;
   margin-bottom: 25px; }
-.parrafo b {
+.parrafo b, .comment-reply b {
   font-weight: bold; }
-.parrafo i {
+.parrafo i, .comment-reply i {
   font-style: italic;
 }
 .image {

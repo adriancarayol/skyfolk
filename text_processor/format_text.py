@@ -2,12 +2,17 @@
 from emoji import Emoji
 import re
 from django.contrib.auth.models import User
+from notifications.signals import notify
 
 class TextProcessor():
-    def __get_mentions_text(text):
+    def __get_mentions_text(emitter, text):
         menciones = re.findall('\\@[a-zA-Z0-9_]+', text)
         for mencion in menciones:
             if User.objects.filter(username=mencion[1:]):
+                recipientprofile = User.objects.get(username=mencion[1:])
+                if (emitter.pk != recipientprofile.pk):
+                    notify.send(emitter, actor=emitter.username, recipient=recipientprofile,
+                            verb=u'¡te ha mencionado en su tablón!', description='Mencion')
                 text = text.replace(mencion,
                                     '<a href="/profile/%s">%s</a>' % (mencion[1:], mencion))
         return text
@@ -19,8 +24,8 @@ class TextProcessor():
         return text
 
     @classmethod
-    def get_format_text(cls, text):
+    def get_format_text(cls, text, emitter):
         formatText = Emoji.replace(text)
         formatText = cls.__get_hashtags_text(formatText)
-        formatText = cls.__get_mentions_text(formatText)
+        formatText = cls.__get_mentions_text(emitter, formatText)
         return formatText
