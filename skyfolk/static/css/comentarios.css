@@ -670,64 +670,6 @@ a.fontawesome-cog:hover {
 .optiones_comentarios .fa-trash:hover {
   color: #f44336; }
 
-
-/* Se expande al responder un mensaje... */
-.replay-actual-message {
-  width: 100%;
-  height: 100px;
-  background: #f5f5f5;
-  display: none;
-  border-top: 1px solid #eeeeee;
-  position: relative; }
-
-.replay-actual-message .enviar {
-  float: right;
-  display: inline-block;
-  position: relative;
-  bottom: 55px;
-  margin-right: 10px;
-  border: 1px solid transparent;
-  padding: 7px;
-  border-radius: 3px;
-  outline: none;
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  cursor: pointer; }
-
-.replay-actual-message .enviar:hover {
-  color: #1e88e5;
-  border: 1px solid #1e88e5; }
-
-.reply-actual-message-show {
-  display: inline-block; }
-
-.replay-actual-message .triangle-reply {
-  width: 10px;
-  height: 10px;
-  background-color: #1e88e5;
-  border: 1px solid #1e88e5;
-  position: relative;
-  margin: auto;
-  -webkit-transform: rotate(45deg);
-  -moz-trasnform: rotate(45deg);
-  transform: rotate(45deg);
-  top: 5px; }
-
-.replay-actual-message textarea {
-  margin: auto;
-  position: relative;
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  height: 80px;
-  padding: 7px;
-  border-style: none;
-  overflow: auto;
-  border: 1px solid #e0e0e0;
-  font-family: "Open Sans", sans-serif;
-  resize: none; }
-
 #tab-comentarios .no-comments {
   width: 100%;
   height: 20%;
@@ -771,6 +713,57 @@ a.fontawesome-cog:hover {
 /*# sourceMappingURL=comentarios.css.map */
 
 /* RESPUESTAS A COMENTARIOS */
+.wrapper-reply {
+  clear: both;
+  padding: 1%;
+  margin: 1%;
+  background-color: #f0f0f0;
+}
+
+.wrapper-reply .enviar {
+  float: right;
+  display: inline-block;
+  position: relative;
+  bottom: 55px;
+  margin-right: 10px;
+  border: 1px solid transparent;
+  padding: 7px;
+  border-radius: 3px;
+  outline: none;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  cursor: pointer; }
+
+.wrapper-reply .enviar:hover {
+  color: #1e88e5;
+  border: 1px solid #1e88e5; }
+
+.wrapper-reply .triangle-reply {
+  width: 10px;
+  height: 10px;
+  background-color: #1e88e5;
+  border: 1px solid #1e88e5;
+  position: relative;
+  margin: auto;
+  -webkit-transform: rotate(45deg);
+  -moz-trasnform: rotate(45deg);
+  transform: rotate(45deg);
+  top: -5px; }
+
+.wrapper-reply textarea {
+  margin: auto;
+  position: relative;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  height: 80px;
+  padding: 7px;
+  border-style: none;
+  overflow: auto;
+  border: 1px solid #e0e0e0;
+  font-family: "Open Sans", sans-serif;
+  resize: none; }
 .comment-reply {
   clear: both;
   padding: 2%;
@@ -779,7 +772,6 @@ a.fontawesome-cog:hover {
   color: #666;
   border-right: 2px solid #dff;
   border-bottom: 1px solid #dff;
-
 }
 
 .hidden {

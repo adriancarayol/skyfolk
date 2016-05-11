@@ -79,6 +79,7 @@
                     </ul>
                 </div>
                 </article>
+                <div class="wrapper-reply">
                 {% include "account/new_reply.html" %}
                 <!-- RESPUESTAS A COMENTARIOS -->
                 {% for reply in pub.replies %}
@@ -86,6 +87,7 @@
                   {{ reply|safe|replace_decorators|safe }}
                 </div>
                 {% endfor %}
+                </div>
     </div>
     {% endfor %}
     {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
