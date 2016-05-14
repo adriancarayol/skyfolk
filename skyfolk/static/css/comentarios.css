@@ -44,7 +44,7 @@ a, a:visited {
   margin-top: 20px;
   margin-bottom: 12px; }
 
-.articulo img, .comment-reply img {
+.articulo .emoji, .comment-reply .emoji {
   width: 20px;
   height: 20px; }
 
@@ -715,11 +715,14 @@ a.fontawesome-cog:hover {
 /* RESPUESTAS A COMENTARIOS */
 .wrapper-reply {
   clear: both;
-  padding: 1%;
-  margin: 1%;
-  background-color: #f0f0f0;
+    height: 100%;
+  background-color: transparent;
 }
-
+.wrapper-reply .comment-reply .avatar-reply img:first-child {
+  width: 50px;
+  height: 50px;
+  box-shadow: 0px 0px 5px #1e88e5;
+}
 .wrapper-reply .enviar {
   float: right;
   display: inline-block;
@@ -768,12 +771,48 @@ a.fontawesome-cog:hover {
   clear: both;
   padding: 2%;
   margin: 1%;
-  background-color: #eff;
   color: #666;
-  border-right: 2px solid #dff;
-  border-bottom: 1px solid #dff;
+  border-right: 2px solid #1e88e5;
+  box-shadow: 0 1px 5px #bdbdbd;
+  height: 100%;
 }
-
+.comment-reply .author-reply {
+    position: relative;
+    color: #282828;
+    background-color: #eee;
+    width: 80%;
+    height: 30px;
+    margin-left: 60px;
+    top: -50px;
+    padding: 10px;
+}
+.comment-reply .author-reply .triangle {
+    width: 10px;
+    height: 10px;
+    background-color: #eee;
+    position: relative;
+    display: inline-block;
+    margin-left: -15px;
+    margin-right: 15px;
+    -webkit-transform: rotate(45deg);
+    -moz-trasnform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.comment-reply .author-reply p, .comment-reply .author-reply a {
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: left;
+}
+.comment-reply .content-reply {
+    margin-left: 60px;
+    margin-top: -20px;
+    text-align: left;
+    font-weight: 100;
+    color: #424242;
+    width: 80%;
+    height: 100%;
+    position: relative;
+}
 .hidden {
 	display: none;
 }
