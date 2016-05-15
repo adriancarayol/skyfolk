@@ -325,11 +325,9 @@ hgroup {
     background-color: #eee;
     color: #1e88e5;
     display: inline-block;
-    -webkit-transition: all 0.3s ease-in;
-    -moz-transition: all 0.3s ease-in;
-    transition: all 0.3s ease-in; }
-    .profilex .delete-profile-image:hover, .profilex .add-profile-image:hover {
-      opacity: 0.8; }
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out; }
     .profilex .delete-profile-image:hover > i, .profilex .add-profile-image:hover > i {
       -webkit-transform: scale(1.2);
       -moz-transform: scale(1.2);
@@ -341,9 +339,9 @@ hgroup {
       font-size: 2em; }
   .profilex .add-profile-image {
     left: 0;
-    margin-left: -62px; }
+    margin-left: -60px; }
   .profilex .delete-profile-image {
     right: 0;
-    margin-right: -62px; }
+    margin-right: -60px; }
 
 /*# sourceMappingURL=configuracion.css.map */

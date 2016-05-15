@@ -132,8 +132,8 @@ def profile_view(request, username):
 
     # cargar recomendaciones por amigos
     # TODO
-
     listR = []
+    '''
     try:
         friends = request.user.profile.get_friends()
         if len(friends) < 10:
@@ -146,8 +146,10 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         friends = None
         print("El usuario no tiene amigos")
-
+    '''
+    # TODO
     # Parte emocional - Según el estado, mostrar color, etcétera.
+    '''
     try:
         statusAux = user_profile.profile.status.lower().split()
     except:
@@ -169,7 +171,7 @@ def profile_view(request, username):
             print('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
         else:
             print('>>> El usuario ' + user_profile.username + " no tiene ningún estado ańimico")
-
+    '''
     # mostrar formulario para enviar comentarios/publicaciones
     initial = {'author': user.pk, 'board_owner': user_profile.pk}
     publicationForm = PublicationForm(initial=initial)

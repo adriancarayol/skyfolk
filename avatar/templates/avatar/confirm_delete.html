@@ -38,7 +38,7 @@ $(document).ready(function() {
             <ul>
                 {{ delete_avatar_form.as_ul }}
             </ul>
-            <a href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
+            <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
             <p>{% csrf_token %}<input type="submit" value="{% trans "Delete These" %}" /></p>
         </form>
     {% endif %}
