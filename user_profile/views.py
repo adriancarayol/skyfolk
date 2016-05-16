@@ -261,6 +261,8 @@ def search(request):
             texto_to_search = request.POST['searchText']
             # hacer busqueda si hay texto para buscar, mediante consulta a la
             # base de datos y pasar el resultado
+            if texto_to_search[0] == '/':
+                texto_to_search = texto_to_search[1:]
             if texto_to_search:
                 words = texto_to_search.split()
                 if len(words) == 1:
@@ -280,7 +282,7 @@ def search(request):
                         Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
                         Q(author__username__icontains=w) |
                         Q(author__first_name__icontains=w) |
-                        Q(author__last_name__icontains=w)).order_by('created').reverse()
+                        Q(author__last_name__icontains=w)).order_by('content').order_by('created').reverse() # or .order_by('created').reverse()
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': resultSearch,
