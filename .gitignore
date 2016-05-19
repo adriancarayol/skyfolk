@@ -16,3 +16,8 @@ db.sqlite3
 .metadata/
 .vscode/
 Web.config
+
+# vi temp files
+*~
+*.swp
+*.swo
