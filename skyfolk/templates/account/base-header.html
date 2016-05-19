@@ -1,20 +1,8 @@
-    <nav class="box-tool">
+{% load notifications_tags %}
+<nav class="box-tool">
     <ul class="box-tool-wrapper">
       <li>
-        <div id="toggle">
-          <ul class="menup">
-              {% if request.user.profile.image %}
-                <li onclick="location.href='/profile/{{ request.user }}'" class="profilee"><img src="{{ request.user.profile.image.url }}"><i>{{ request.user.username }}</i></li>
-              {% else %}
-               <li onclick="location.href='/profile/{{ request.user }}'" class="profilee"><img src="{{STATIC_URL}}img/nuevo.png"><i>{{ request.user.username }}</i></li>
-              {% endif %}
-            <li onclick="location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
-            <li onclick="location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
-            <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
-            <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
-            <li onclick="location.href='/about/home'"><i class="fa fa-info-circle"></i> Ayuda</li>
-          </ul>
-        </div>
+        {% include "account/menu-vertical.html" %}
       </li>
 
       <li><div class="field" id="searchform">
@@ -26,66 +14,22 @@
           <div class="logotipo_skyfolk" onclick="location.href='/'"> <i>S</i>kyfolk</div>
         </li>
         <div>
+         <!-- Notificaciones para skyfolk - (Botón campana) -->
         <li class="notification-bell">
           <i class="fa fa-bell fa-lg"></i>
-          <em onclick="contador()">{{n_likes}}</em>
+          <em onclick="contador()">{% live_notify_badge %}</em>
           <button type="submit" id="hover-clear-notify"><i class="fa fa-trash fa-2x"></i></button> <!-- Mostrar "borrar notificaciones" al hacer hover -->
         </li>
-
-      <li><ul class="fa fa-bars fa-lg">
-            {% if user.profile.hiddenMenu == False %} <!-- Elección del usuario el menu a mostrar -->
-        <li class="fa-bars-content">
-          <ul>
-              <li class="fa fa-paper-plane fa-2x" id="publish2"> </li>
-              <li class="fa fa-home fa-2x" onclick="location.href='/'"> </li>
-              <li class="fa fa-users fa-2x" onclick="location.href='/friends/{{ request.user }}'"> </li>
-              <li class="fa fa-sign-out fa-2x" onclick="location.href='{% url 'account_logout' %}'"> </li>
-                {% if request.user.profile.image %}
-                  <li class="profile-user" onclick="location.href='/profile/{{ request.user }}'">
-                    <img src="{{request.user.profile.image.url}}">
-                  </li>
-                {% else %}
-                  <li class="profile-user" onclick="location.href='/profile/{{ request.user }}'">
-                    <img src="{{STATIC_URL}}img/nuevo.png">
-                  </li>
-                {% endif %}
-          </ul>
-        </li>
-        {% endif %}
-      </ul></li>
       {% if showPerfilButtons or user.username == user_profile.username %}
       <!-- BOTONES ESPACIALES PARA EL USUARIO QUE HACE LOGIN, SÓLO VISIBLE POR EL USUARIO QUE INICIA SESIÓN -->
-      {% endif %}
+        {% endif %}
       <!-- Menu principal - horizontal -->
-    </ul>
-    {% if user.profile.hiddenMenu == True %}
-      <ul class="oldMenu">
-        <li onclick="location.href='/'"><i class="fa fa-home" ></i> Inicio</li>
-        <li id="publish2"><i class="fa  fa-paper-plane"> </i> Mensaje</li>
-        <li onclick="location.href='/friends/{{ request.user }}'"><i class="fa fa-users"></i> Seguidos</li>
-        <li id="agregar-amigo"><i class="fa fa-user-plus"> </i> Agregar</li>
-        <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
-      </ul>
-    {% endif %}
-
-    <!-- MENU VERTICAL CON NOTIFICACIONES  -->
-    <div class="col-lg-3 col-md-8 col-sm-12 nav-vertical-and-chat">
-      <div class="col-lg-12 col-md-12 col-sm-12 notification-like">
-        <div class="col-lg-2 col-md-2 col-sm-2 hexagon">
-        <i class="fa fa-heart fa-lg"></i>
-        </div>
-        <div class="col-lg-9 col-md-9 col-sm-9 notification-content">
-          <h4>¡<a>{{ request.user.username }}</a>, has recibido un me gusta!</h4>
-          <button class="fa fa-check notification-show"></button>
-        </div>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 nav-vertical-controls">
-        <ul class="controls-notifications">
-          <li class="clear-notify"><a id="clear-notify">Limpiar notificaciones</a></li>
-        </ul>
-      </div>
-    </div>
-      <div id="loader"></div>
+        <!-- MENU HORIZONTAL - PANEL DE USUARIO -->
+        {% include "account/menu-horizontal.html" %}
+        <!-- MENU VERTICAL CON NOTIFICACIONES  -->
+        {% include "account/notification-right-menu.html" %}
+        <!-- LOADER DE TODA LA PÁGINA -->
+        <div id="loader"></div>
     </nav>
     <script src="{{STATIC_URL}}js/jquery.min.js"></script>
     <script src="{{STATIC_URL}}js/jquery-ui.js"></script>

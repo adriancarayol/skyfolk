@@ -17,19 +17,17 @@ body
   padding: 0
   margin: 0
   width: 100%
+  height: 100%
   position: absolute
   top: 0
   left: 0
   z-index: -1
-  min-height: 100%
-  &img
+  & img
     position: fixed
-    left: 0
-    top: 0
     width: 100%
     min-height: 100%
     z-index: 1
-  &img.active
+  & img.active
     z-index: 3
 
 /* LOGO */
@@ -71,23 +69,6 @@ body
     position: absolute
     top: 12px
     left: 0px
-/* Background con video */
-video#bgvid
-  position: fixed
-  top: 50%
-  left: 50%
-  min-width: 100%
-  min-height: 100%
-  width: auto
-  height: auto
-  z-index: -100
-  -ms-transform: translateX(-50%) translateY(-50%)
-  -moz-transform: translateX(-50%) translateY(-50%)
-  -webkit-transform: translateX(-50%) translateY(-50%)
-  transform: translateX(-50%) translateY(-50%)
-  background: url(polina.jpg) no-repeat
-  background-size: cover
-
 
 .footer_base
   width: 100%
@@ -305,7 +286,7 @@ form
     float: none
 
   #background_cycler
-    height: 115%
+    height: 100%
 
   .footer_base
     display: none

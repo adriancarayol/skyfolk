@@ -1,5 +1,6 @@
 {% extends "account/base_cf.html" %}
 {% block additional_files %}
+{% load i18n avatar_tags %}
 
 {% endblock%}
 
@@ -14,17 +15,24 @@
 {% block cf-form %}
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
 	<div class="col-lg-12 col-md-12 col-sm-12 wrapper-profilex">
-
 		{% if user_profile.profile.backImage %}
 			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{user_profile.profile.backImage.url}}') no-repeat center center; background-size: cover;">
 		{% else %}
 			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{STATIC_URL}}img/backgrounds/5.jpg') no-repeat center center; background-size: cover;">
 		{% endif %}
-			{% if user_profile.profile.image %}
-				<img src="{{user_profile.profile.image.url}}" class="img-profile">
-			{% else %}
-				<img src="{{STATIC_URL}}img/nuevo.png" class="img-profile">
+
+		<!-- Si el usuario tiene imagen, lo redireccionamos a change -->
+		<div data-title="Imágen de perfil" class="img-profile">
+			{% if request.user|has_avatar %}
+			<a href="{% url 'avatar_change' %}">
+			{% else %} {% comment %} Si no, le proponemos añadir una nueva imagen {% endcomment %}
+			<a href="{% url 'avatar_add' %}">
 			{% endif %}
+			{% avatar user %}
+			</a>
+    	<a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i class="fa fa-trash"></i></a>
+        <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
+		</div>
 		</div>
 		<div class="index-wrapper">
 				<div class="nameConfig">
@@ -37,11 +45,6 @@
 				<p>¿Y tu apellido?</p>
 				<p>{{ user_form.last_name }}</p>
 			</div>
-				<div class="image-usr">
-					<p>{{ perfil_form.image.errors }}</p>
-					<p>Elige una imagen de perfil.</p>
-					<p>{{ perfil_form.image }}</p>
-				</div>
 
 				<div class="backimage-usr">
 					<p>{{ perfil_form.backImage.errors }}</p>

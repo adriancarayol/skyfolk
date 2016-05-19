@@ -558,11 +558,10 @@ body > .container {
 
 .user-card .user-avatar .user-pic {
   background: white;
-  padding: 0.1em;
-  border: 1px solid #1e88e5;
+  padding: 0;
   border-radius: 0.3rem;
   margin-top: -16.7em;
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0.35); }
+  box-shadow: 0 0 1px #1e88e5; }
 
 .user-pic {
   width: 120px;
@@ -1472,6 +1471,9 @@ ul.table > li {
   position: relative;
   margin-left: auto;
   margin-right: auto; }
+  .info-paw .info-wrapper-pic img {
+    border-radius: 100%;
+    border: 2px solid #1976d2; }
 
 .info-paw .info-user-ciudad {
   text-align: center;
@@ -1483,10 +1485,9 @@ ul.table > li {
   color: tomato; }
 
 .info-paw .info-user-pic {
-  width: 90px;
-  height: 90px;
-  border-radius: 100%;
-  border: 2px solid #1976d2; }
+  width: 92px;
+  height: 92px;
+  border-radius: 100%; }
 
 .trofeos {
   position: absolute;
@@ -1821,9 +1822,8 @@ ul.table > li {
   background: #fafafa;
   padding: 1em;
   margin: 1em auto;
-  border-top: 4px solid rgba(44, 44, 44, 0.777);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-  border-radius: 7px;
+  border-radius: 1px;
   cursor: default;
   font-family: "Open Sans", sans-serif;
   /*CENTRADO */
@@ -1844,9 +1844,6 @@ ul.table > li {
 
   #message2 {
     font-size: 1.2em !important; } }
-#page-wrapper:hover {
-  border-top: 4px solid #1e88e5; }
-
 #page-wrapper #status {
   font-size: 1.4em;
   margin-bottom: 1rem; }
@@ -2209,7 +2206,7 @@ ul.table > li {
       position: relative;
       list-style-type: none;
       text-align: center; }
-      .nav-vertical-and-chat .nav-vertical-controls .controls-notifications li {
+      .nav-vertical-and-chat .nav-vertical-controls .controls-notifications button {
         border: medium none;
         border-radius: 2px;
         display: inline-block;
@@ -2225,33 +2222,24 @@ ul.table > li {
         cursor: pointer;
         outline: none;
         font-size: 1.3em; }
-        .nav-vertical-and-chat .nav-vertical-controls .controls-notifications li a, .nav-vertical-and-chat .nav-vertical-controls .controls-notifications li a:visited {
-          color: #fff; }
-  .nav-vertical-and-chat .notification-like {
+        .nav-vertical-and-chat .nav-vertical-controls .controls-notifications button #clear-notify, .nav-vertical-and-chat .nav-vertical-controls .controls-notifications button #clear-notify:visited {
+          color: #fefefe;
+          text-decoration: none; }
+          .nav-vertical-and-chat .nav-vertical-controls .controls-notifications button #clear-notify:hover, .nav-vertical-and-chat .nav-vertical-controls .controls-notifications button #clear-notify:visited:hover {
+            opacity: 0.8; }
+  .nav-vertical-and-chat li {
     height: 110px;
     margin-top: 2%;
     display: list-item;
+    padding: 10px;
+    font-size: 1.3em;
     background-color: #fff;
     opacity: 0.5;
     -webkit-transition: all 0.1s linear;
     -moz-transition: all 0.1s linear;
     transition: all 0.1s linear; }
-    .nav-vertical-and-chat .notification-like:hover {
+    .nav-vertical-and-chat li:hover {
       opacity: 1; }
-    .nav-vertical-and-chat .notification-like .hexagon {
-      position: relative;
-      width: 50px;
-      height: 28.87px;
-      background-color: #f48fb1;
-      margin: 14.43px 0;
-      top: 25%;
-      margin-left: 5%; }
-      .nav-vertical-and-chat .notification-like .hexagon i {
-        position: absolute;
-        margin-top: 5px;
-        margin-left: 12px;
-        font-size: 2em;
-        color: #fff; }
 
 #hover-clear-notify {
   display: none;
@@ -2279,55 +2267,6 @@ ul.table > li {
     display: block; }
     .notification-bell:hover > #hover-clear-notify:hover {
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); }
-
-.nav-vertical-and-chat .notification-like .hexagon:before,
-.nav-vertical-and-chat .notification-like .hexagon:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  border-left: 25px solid transparent;
-  border-right: 25px solid transparent; }
-
-.nav-vertical-and-chat .notification-like .hexagon:before {
-  bottom: 100%;
-  border-bottom: 14.43px solid #f48fb1; }
-
-.nav-vertical-and-chat .notification-like .hexagon:after {
-  top: 100%;
-  width: 0;
-  border-top: 14.43px solid #f48fb1; }
-
-.nav-vertical-and-chat .notification-like .notification-content {
-  height: 100%;
-  float: right;
-  margin-right: 2.5%;
-  text-align: center; }
-
-.nav-vertical-and-chat .notification-like .notification-content h4 {
-  font-size: 1.4em;
-  margin-top: 15px; }
-
-.nav-vertical-and-chat .notification-like .notification-content .notification-show {
-  border: medium none;
-  border-radius: 3px;
-  display: inline-block;
-  height: 36px;
-  padding: 0px 2rem;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: #212121;
-  background-color: #eee;
-  text-align: center;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease-out 0s;
-  cursor: pointer;
-  float: right;
-  outline: none;
-  margin-top: 40px; }
-
-.nav-vertical-and-chat .notification-like .notification-content .notification-show:hover {
-  opacity: 0.8;
-  color: #8bc34a; }
 
 .ctrl {
   position: absolute;

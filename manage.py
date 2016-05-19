@@ -2,7 +2,7 @@
 import os
 import subprocess
 import sys
-
+from django.core.management import execute_from_command_line
 
 if __name__ == "__main__":
     #import ipdb;ipdb.set_trace()
@@ -29,17 +29,17 @@ if __name__ == "__main__":
         #print("Despues de extraer parametros: " + str(sys.argv))
     else:
         #develop
-        #os.environ['SECRET_KEY'] = 'develop'
         entorno = "develop"
 
-    print("entorno: " + entorno + " / argv: " + str(sys.argv))
+    print("Lanzando entorno: [" + entorno + " / argv: " + str(sys.argv) + "]")
     if entorno == "master":
-        import manage.manage_master
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.master")
+        execute_from_command_line(sys.argv)
     elif entorno == "pre":
-        import manage.manage_pre
-        # print(manage_pre)
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.pre")
+        execute_from_command_line(sys.argv)
     else:
         #develop
         os.environ['SECRET_KEY'] = 'develop'
-        import manage.manage_develop
-
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
+        execute_from_command_line(sys.argv)

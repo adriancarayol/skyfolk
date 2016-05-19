@@ -1,6 +1,6 @@
 {% extends "account/base_interface.html" %}
 {% load app_filters %}
-{% load tags_mentions %}
+{% load avatar_tags %}
 {% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
 <!-- Mostrar objetos al hacer scroll -->
@@ -25,325 +25,23 @@
 <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
     <div class="container">
     <!-- Para el diseño de la rama develop, se cambia col-md-6 por col-md-12 -->
-      <div class="col-lg-12 col-md-12 col-sm-12">
-        <div class="user-card card">
-          <nav class="ventana-pin">
-            <a><i class="fa fa-times"></i></a>
-            <a><i class="fa fa-expand"></i></a>
-            <a><i class="fa fa-thumb-tack"></i></a>
-          </nav>
-          <div class="user-avatar">
-            {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
-            <img src="{{user_profile.profile.backImage.url}}" class="user-bg">
-            {% else %}
-            <img src="{{STATIC_URL}}img/backgrounds/5.jpg" class="user-bg">
-            {% endif %}
-            <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
-            <!--<input type="checkbox" id="button-menu"  />-->
-            {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
-            <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
-            <script type="text/javascript">
-              $(window).load(function() {
-                  $('#addfriend').replaceWith('<span class="fa fa-clock-o" title="En proceso">'+' '+'</div>');
-              });
-            </script>
-            {% endif %}
-            <div class="caja">
-             <div class="item">
-
-        {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
-           <img src="{{user_profile.profile.image.url}}" class="user-pic">
-        {% else %}
-           <img src="{{STATIC_URL}}img/nuevo.png" class="user-pic">
-        {% endif %}
-
-               <!--  <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">-->
-
-               <span class="informacion">
-                {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
-                <span id="configurationOnProfile" class="fa fa-cog" title="Configuracion"></span>
-                <span onclick="location.href='/friends/{{ user.username }}'" id="conf" class="fa fa-users" title="Grupos"></span>
-                <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
-                {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
-                   <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
-                   <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
-                {% if isFriend %}
-                   <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
-                {% endif %}
-                {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                   <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
-                   <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
-                {% if isFriend %}
-                   <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
-                {% endif %}
-                {% endif %}
-               </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- INFORMACION ADICIONAL DEL USUARIO -->
-                <div class="col-sm-6 col-md-5 col-lg-5">
-                  <div class="info-paw">
-                    <div class="info-nav">
-                      <div class="info-wrapper-pic">
-                      {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
-                         <img src="{{user_profile.profile.image.url}}" class="info-user-pic">
-                      {% else %}
-                         <img src="{{STATIC_URL}}img/nuevo.png" class="info-user-pic">
-                      {% endif %}
-                      </div>
-                    <h1 class="info-user-name">{{ user_profile.username }}</h1>
-                    <h3 class="info-user-name_last">{{user_profile.first_name}} {{user_profile.last_name}}</h3>
-                    <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
-                        <div class="info-event">
-
-                        </div>
-                        <div class="info-groups">
-
-                        </div>
-                        <div class="info-trof">
-
-                        </div>
-                        <div class="info-relations">
-
-                        </div>
-                    </div>
-                </div>
-                </div>
-
-                <!-- Trofeos -->
-                  <div class="col-sm-12 col-md-12 col-lg-10 trofeos">
-                     <span id="close-trofeos" class="fa fa-close fa-2x"></span>
-                      <h3 class="trofeos-title">Logros de {{ user_profile.username }}</h3>
-                      <div class="col-lg-12 col-md-12 col-sm-12 wrapper-trofeos">
-                          <div class="col-sm-3 col-md-3 col-lg-1 trofeo-user">
-                          </div>
-                          <div class="col-sm-3 col-md-3 col-lg-1 trofeo-user">
-                          </div>
-                          <div class="col-sm-3 col-md-3 col-lg-1 trofeo-user">
-                          </div>
-
-                      </div>
-                  </div>
-                <!-- Grupos -->
-
-                  <div class="col-lg-10 col-md-12 col-sm-12 grupos">
-                     <span id="close-grupos" class="fa fa-close fa-2x"></span>
-                      <h3 class="grupos-title">Grupos de {{ user_profile.username }}</h3>
-                      <div class="col-lg-12 col-md-12 col-sm-12 wrapper-grupos">
-                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
-                              <span class="text-description">Nombre del grupo</span>
-                              <i class="fa fa-users"> 50</i>
-                              <i class="fa fa-heart"> 12</i>
-                          </div>
-                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
-                              <span class="text-description">Nombre del grupo</span>
-                              <i class="fa fa-users"> 50</i>
-                              <i class="fa fa-heart"> 12</i>
-                          </div>
-                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
-                              <span class="text-description">Nombre del grupo</span>
-                              <i class="fa fa-users"> 50</i>
-                              <i class="fa fa-heart"> 12</i>
-                          </div>
-                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
-                              <span class="text-description">Nombre del grupo</span>
-                              <i class="fa fa-users"> 50</i>
-                              <i class="fa fa-heart"> 12</i>
-                          </div>
-                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
-                              <span class="text-description">Nombre del grupo</span>
-                              <i class="fa fa-users"> 50</i>
-                              <i class="fa fa-heart"> 12</i>
-                          </div>
-                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
-                              <span class="text-description">Nombre del grupo</span>
-                              <i class="fa fa-users"> 50</i>
-                              <i class="fa fa-heart"> 12</i>
-                          </div>
-                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
-                              <span class="text-description">Nombre del grupo</span>
-                              <i class="fa fa-users"> 50</i>
-                              <i class="fa fa-heart"> 12</i>
-                          </div>
-                      </div>
-
-                  </div>
-
-          <header>
-            <p>@{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
-            <div class="status">{{ user_profile.profile.status }}</div>
-          </header>
-          <ul class="stats">
-            <li><a href="/friends/{{ user_profile.username }}"><strong>{{ friends_top12|length }}</strong><span>Seguidores</span></a></li>
-            <li><a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a></li>
-            <li><a class='inline' href="#inline_content"><strong>48</strong><span>Fotos</span></a></li>
-          </ul>
-        </div>
-      </div>
-      <!-- PIN GRANDE 1 -->
-      <div class="col-lg-6 col-md-12 col-sm-12">
-        <div class="stock card">
-            <nav class="ventana-pin">
-              <a><i class="fa fa-times"></i></a>
-              <a><i class="fa fa-expand"></i></a>
-              <a><i class="fa fa-thumb-tack"></i></a>
-          </nav>
-                  <!-- Widget encuestas -->
-         <div class="wrapper">
-            <div class="widget-wr">
-               <div class="widget-wr-ans">
-              <img src="{{STATIC_URL}}img/2.jpg">
-              <span class="wr-tittle">¿Debería viajar aquí?</span>
-            </div>
-             <div class="widget-options">
-                <button type="submit" class="fa fa-heart widget-ok"></button>
-               <button type="submit" class="fa fa-times widget-no"></button>
-               <span class="widget-result">
-                 <i class="widget-result-no">56</i>
-                 <i class="widget-result-ok">44</i>
-               </span>
-            </div>
-          </div>
-        </div>
-        </div>
-      </div>
+        {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
+      {% include "account/card-user.html" %}
+      {% comment %}
+      PIN ARRIBA IZQUIERDA
+      {% endcomment %}
+        {% include "account/pin-left-top.html" %}
     <!-- PIN PEQUEÑO - 2 -->
-   <div class="col-lg-6 col-md-12 col-sm-12">
-        <div class="stock card">
-            <nav class="ventana-pin">
-              <a><i class="fa fa-times"></i></a>
-              <a><i class="fa fa-expand"></i></a>
-              <a><i class="fa fa-thumb-tack"></i></a>
-          </nav>
-                  <!-- Widget encuestas -->
-         <div class="wrapper">
-            <div class="widget-wr">
-               <div class="widget-wr-ans">
-              <img src="{{STATIC_URL}}img/1.jpg">
-              <span class="wr-tittle">¿Debería viajar aquí?</span>
-            </div>
-             <div class="widget-options">
-                <button type="submit" class="fa fa-heart widget-ok"></button>
-               <button type="submit" class="fa fa-times widget-no"></button>
-               <span class="widget-result">
-                 <i class="widget-result-no">56</i>
-                 <i class="widget-result-ok">44</i>
-               </span>
-            </div>
-          </div>
-        </div>
-        </div>
-      </div>
+        {% comment %}
+        PIN ARRIBA DERECHA
+        {% endcomment %}
+        {% include "account/pin-right-top.html" %}
 
     </div>
-      <!-- Pin Grande -->
-      <div class="video-player card">
-        <div class="vbox">
-            <div class="user-video">
-                <button class="play-user-video"><span class="fa fa-play"></span></button>
-            </div>
-            <div class="user-video">
-                <button class="play-user-video"><span class="fa fa-play"></span></button>
-            </div>
-            <div class="user-video">
-                <button class="play-user-video"><span class="fa fa-play"></span></button>
-            </div>
-            <div class="user-video">
-                <button class="play-user-video"><span class="fa fa-play"></span></button>
-            </div>
-            <div class="user-video">
-                <button class="play-user-video"><span class="fa fa-play"></span></button>
-            </div>
-            <div class="user-video">
-                <button class="play-user-video"><span class="fa fa-play"></span></button>
-            </div>
-            <div class="user-video">
-                <button class="play-user-video"><span class="fa fa-play"></span></button>
-            </div>
-            <div class="user-video">
-                <button class="play-user-video"><span class="fa fa-play"></span></button>
-            </div>
-            </div>
-            <!--
-          <div class="thumbnail"></div>
-          <button class="play-btn"><span class="fa fa-play"></span></button>
-            -->
-        <ul class="unstyled controls table">
-          <li class="play">
-            <button><span class="fa fa-play"></span></button>
-          </li>
-          <li class="timeline">
-            <div class="progress-bar">
-              <div class="bar">
-                <div class="progress">
-                  <div class="value"></div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="volume-ctl">
-            <ul class="unstyled table">
-              <li class="volume-btn">
-                <button><span class="fa fa-volume-up"></span></button>
-              </li>
-              <li class="volume-bar">
-                <div class="progress-bar">
-                  <div class="bar">
-                    <div class="value"></div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-          <li class="fullscreen">
-            <button><span class="fa fa-desktop"></span></button>
-          </li>
-        </ul>
-      </div>
-            <!--
-          <div class="thumbnail"></div>
-          <button class="play-btn"><span class="fa fa-play"></span></button>
-            -->
-        <ul class="unstyled controls table">
-          <li class="play">
-            <button><span class="fa fa-play"></span></button>
-          </li>
-          <li class="timeline">
-            <div class="progress-bar">
-              <div class="bar">
-                <div class="progress">
-                  <div class="value"></div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="volume-ctl">
-            <ul class="unstyled table">
-              <li class="volume-btn">
-                <button><span class="fa fa-volume-up"></span></button>
-              </li>
-              <li class="volume-bar">
-                <div class="progress-bar">
-                  <div class="bar">
-                    <div class="value"></div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-          <li class="fullscreen">
-            <button><span class="fa fa-desktop"></span></button>
-          </li>
-        </ul>
+      {% comment %}
+        PIN ABAJO
+      {% endcomment %}
+    {% include "account/pin-bottom.html" %}
 
     <!-- Contenedor principal -->
     <div class="container">
@@ -363,6 +61,24 @@
           <ul class="unstyled table fullwidth links">
             <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">timeline</a></li>
 	    <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
+            <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
+          </ul>
+          <div class="unstyled content" id="hood-tabs">
+        {% comment %}
+            Incluimos el tab timeline
+        {% endcomment %}
+        {% include "account/tab-timeline.html" %}
+        {% comment %}
+            Incluimos el tab comentarios
+        {% endcomment %}
+        {% include "account/tab-comentarios.html" %}
+        {% comment %}
+            Incluimos el tab amigos
+        {% endcomment %}
+        {% include "account/tab-amigos.html" %}
+          {% comment %}
+          <!-- COMIENZO ISSUE#11 -->
+	          <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
             <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Amigos</a></li>
           </ul>
           <div class="unstyled content" id="hood-tabs">
@@ -392,9 +108,7 @@
                                         </div>
                                         <div class="controles">
                                             <ul>
-                                                {% if user.username == user_profile.username %}
                                                 <li class="fa fa-trash fa-lg"></li>
-                                                {% endif %}
                                                 <li class="fa fa-heart fa-lg"></li>
                                                 <li class="fa fa-tag fa-lg"></li>
                                                 <li class="fa fa-quote-left fa-lg"></li>
@@ -424,27 +138,27 @@
       </a>
     </div>
   {% endif %}
-  {% for item in publications_top15 %}
-  <div class="wrapper" id="pub-{{item.from_publication__id}}" data-id="{{ user.pk }}">
+  {% for pub in publications_top15 %}
+  <div class="wrapper" id="pub-{{ pub.pk }}" data-id="{{ user.pk }}">
             <div class="box">
             <span id="check-{{item.from_publication__id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"> </i></span>
             <!-- Check para ampliar el mensaje... -->
                   <div class="ampliado" id="expand-{{item.from_publication__id}}">
                       <div class="nombre_image">
                     <ul>
-                      <li><i class="first">{{item.user__first_name}} {{item.user__last_name}}</i></li>
-                      <li><a class="name" href="/profile/{{ item.user__username }}" >{{item.user__username}}</a></li>
+                      <li><i class="first">{{pub.author__first_name}} {{pub.author__last_name}}</i></li>
+                      <li><a class="name" href="/profile/{{ item.author__username }}" >{{item.user__username}}</a></li>
                     </ul>
-                    {% if item.user__profile__image and item.user__profile__image|file_exists %}
-                     <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
+                    {% if pub.author__profile__image and pub.author__profile__image|file_exists %}
+                     <img src="{{MEDIA_URL}}{{ pub.author__profile__image }}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
                   {% else %}
                      <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
                   {% endif %}
                       </div>
 
                     <div class="parrafo comment-tab">
-                    <a target="_blank">{{item.from_publication__created}}</a><br><br>
-                        {{ item.from_publication__content|replace_tags_mentions|safe }}
+                    <a target="_blank">{{ pub.created }}</a><br><br>
+                        {{ pub.content|replace_tags_mentions|safe }}
                   </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
@@ -458,7 +172,7 @@
                   </div>
                   </div>
       <div class="image">
-        {% if item.user__profile__image and item.user__profile__image|file_exists %}
+        {% if pub.author__profile__image and pub.author__profile__image|file_exists %}
         <img src="{{MEDIA_URL}}{{item.user__profile__image}}" alt="img" class="usr-img img-responsive"><!-- id es avatar-publication-->
           {% else %}
             <img src="{{STATIC_URL}}img/nuevo.png"  alt="img" class="usr-img img-responsive"> <!-- id es avatar-publication-->
@@ -467,11 +181,11 @@
 </div>
 
                 <article class="articulo">
-                  <h2 class="h22"><a href="/profile/{{ item.user__username }}" >{{ item.user__username }}</a> ha publicado:  </h2>
-                    <p>Padre del comentario con ID: {{ item.from_publication__replies }}</p>
+                  <h2 class="h22"><a href="/profile/{{ pub.author__username }}" >{{ pub.author__username }}</a> ha publicado:  </h2>
+                    <!--<p>Padre del comentario con ID: {{ item.from_publication__replies }}</p>-->
                   <div class="parrafo comment">
-                    <a target="_blank">{{item.from_publication__created}}</a><br>
-                      <div class="wrp-comment">{{ item.from_publication__content|replace_tags_mentions|safe}}</div>
+                    <a target="_blank">{{pub.created}}</a><br>
+                      <div class="wrp-comment">{{ pub.content|replace_tags_mentions|safe}}</div>
                   </div>
                     <div class="show-more">
                         <a href="#">+ Mostrar más</a>
@@ -479,34 +193,35 @@
               <!-- OPCIONES DE COMENTARIOS -->
                 <div class="optiones_comentarios">
                     <ul class="opciones">
-                        {% if user.is_authenticated and user.username == item.user__username %} <!-- Si estamos visitando un perfil que no es el nuestro -->
+                        {% if user.is_authenticated and user.username == pub.author.username %} <!-- Si estamos visitando un perfil que no es el nuestro -->
                              <li title="Borrar comentario"><i class="fa fa-trash"></i></li>
                         {% elif user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
                              <li title="Borrar comentario"><i class="fa fa-trash"></i></li>
                         {% endif %}
-                        {% if item.from_publication__hates > 0 %}
+                        {% if pub.hates > 0 %}
                         <li title="No me gusta" class="fa-broken-heart"><i id="fa-hate" class="fa fa-heartbeat"> {{ item.from_publication__hates }}</i></li>
                         {% else %}
                         <li title="No me gusta" class="fa-broken-heart"><i id="fa-hate" class="fa fa-heartbeat"></i></li>
                         {% endif %}
-                        {% if item.from_publication__likes > 0 %}
+                        {% if pub.likes > 0 %}
                             <li title="¡Me gusta!"><i id="like-heart" class="fa fa-heart"> {{ item.from_publication__likes }} </i></li>
                         {% else %}
                             <li title="¡Me gusta!"><i id="like-heart" class="fa fa-heart"></i></li>
                         {% endif %}
                        <li title="Citar"><i class="fa fa-quote-left">
                        </i></li>
-                       <li title="Responder"><i class="fa fa-reply"></i></li>
+                       <li title="Responder"><i class="fa fa-reply" id="reply-caja-comentario-{{ pub.pk }}"></i></li>
                        <li  title="Añadir a mi timeline"><i class="fa fa-tag"></i></li>
                     </ul>
                 </div>
-
                 </article>
-                <div id="actual-{{item.from_publication__id}}" class="replay-actual-message">
-                  <div class="triangle-reply"></div>
-                  <textarea name="reply-textarea" rows="4" cols="50"></textarea>
-                    <button class="enviar"><i class="fa fa-paper-plane-o"></i></button>
+                {% include "account/new_reply.html" %}
+                <!-- RESPUESTAS A COMENTARIOS -->
+                {% for reply in pub.replies %}
+                <div class="comment-reply">
+                  {{ reply }}
                 </div>
+                {% endfor %}
     </div>
     {% endfor %}
 
@@ -542,7 +257,7 @@
       </div>
       </div>
       </div>
-
+    <!-- FIN ISSUE#11 -->
 
     <!-- <div class="col-lg-12 col-sm-12 col-md-12"> -->
         <!-- <div class="weather card"> -->
@@ -583,67 +298,12 @@
 
           </div>
   </div> -->
+  {% endcomment %}
 <!-- This contains the hidden content for inline calls -->
-<div style='display:none'>
-      <div id='inline_content' style='padding:10px; background:#fff;'>
-        <section>
-  <fieldset class="controls">
-  <ul class="btn">
-    <li><button class="all">Todas</button></li>
-    <li>
-        <select>
-      <option value="choose" selected="selected">Choose...</option>
-      <option value="rec">Recientes</option>
-      <option value="+">Mas Likes</option>
-      <option value="+m">Mas comentadas</option>
-        </select>
-    </li>
-    <li>
-        <select>
-      <option value="choose" selected="selected">Year...</option>
-      <option value="rec">2015</option>
-      <option value="+">2016</option>
-      <option value="+m">2017</option></select>
-    </li>
-  </ul>
-  <ul class="layout">
-    <li><button class="fontawesome-reorder"></button></li>
-    <li><button class="fontawesome-table"></button></li>
-</ul>
-          </fieldset>
-  <ul>
-    <li><div class="photo">
-      <span class="text">
-        <p href="#">Vacaciones en Tenerife.</p>
-        <i class="fontawesome-heart"> 1.031</i>
-        <a class="fontawesome-comment"> 432</a>
-      </span><img src="{{STATIC_URL}}img/1.jpg" alt="Photo">
-   </div></li>
-  <li><div class="photo"><span class="text">
-        <p>Vacaciones en Tenerife.</p>
-        <i class="fontawesome-heart"> 1.031</i>
-        <a class="fontawesome-comment"> 432</a>
-      </span></span><img src="{{STATIC_URL}}img/1.jpg" alt="Photo"></div></li>
-    <li><div class="photo"><span class="text">
-        <p href="#">Vacaciones en Tenerife.</p>
-        <i class="fontawesome-heart"> 1.031</i>
-        <a class="fontawesome-comment"> 432</a>
-      </span><img src="{{STATIC_URL}}img/1.jpg" alt="Photo"></div></li>
-    <li><div class="photo"><span class="text">
-        <p href="#">Vacaciones en Tenerife.</p>
-        <i class="fontawesome-heart"> 1.031</i>
-        <a class="fontawesome-comment"> 432</a>
-      </span><img src="{{STATIC_URL}}img/1.jpg" alt="Photo"></div></li>
-    <li><div class="photo"><span class="text">
-        <p href="#">Vacaciones en Tenerife.</p>
-        <i class="fontawesome-heart"> 1.031</i>
-        <a class="fontawesome-comment"> 432</a>
-      </span><img src="{{STATIC_URL}}img/1.jpg" alt="Photo"></div></li>
-  </ul>
-</section>
-
-      </div>
-</div>
+          {% comment %}
+          GALERIA DE IMÁGENES DEL PERFIL
+          {% endcomment %}
+{% include "account/profile-gallery.html" %}
 
 <!-- IGNORAR, SOLO MUESTRA OBJETOS AL HACER SCROLL -->
     <script>

@@ -2,20 +2,29 @@ import publications
 import timeline
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
 # from publications.models import Publication
 # from _overlapped import NULL
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_BLOCKED = 2
 RELATIONSHIP_FRIEND = 3
+RELATIONSHIP_FOLLOWER = 4
 RELATIONSHIP_STATUSES = (
     (RELATIONSHIP_FOLLOWING, 'Following'),
     (RELATIONSHIP_BLOCKED, 'Blocked'),
     (RELATIONSHIP_FRIEND, 'Friend'),
+    (RELATIONSHIP_FOLLOWER, 'Follower'),
 )
 
 REQUEST_FRIEND = 1
+REQUEST_FOLLOWING = 2
+REQUEST_FOLLOWER = 3
+REQUEST_BLOCKED = 4
 REQUEST_STATUSES = (
+    (REQUEST_FRIEND, 'Friend'),
+    (REQUEST_FOLLOWING, 'Following'),
+    (REQUEST_FOLLOWER, 'Follower'),
     (REQUEST_FRIEND, 'Friend'),
 )
 
@@ -30,7 +39,17 @@ def uploadBackImagePath(instance, filename):
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9
-
+    # OPCIONES DE PRIVACIDAD PARA EL USUARIO
+    ONLYFOLLOWERS = 'OF'
+    ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
+    ALL = 'A'
+    NOTHING = 'N'
+    OPTIONS_PRIVACITY = (
+        (ONLYFOLLOWERS, 'OnlyFo'),
+        (ONLYFOLLOWERSANDFOLLOWS, 'OnlyFAF'),
+        (ALL, 'All'),
+        (NOTHING, 'Nothing'),
+    )
     user = models.OneToOneField(User, unique=True, related_name='profile')
 
     # Other fields here
@@ -41,8 +60,6 @@ class UserProfile(models.Model):
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
-    publications = models.ManyToManyField('self', through='publications.Publication', symmetrical=False,
-                                          related_name='publications_to')
     timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False,
                                       related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
@@ -51,6 +68,8 @@ class UserProfile(models.Model):
         default=False)  # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto, mostrar configuracion inicial.
     hiddenMenu = models.BooleanField(
         default=True)  # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
+    privacity = models.CharField(max_length=4,
+                                choices=OPTIONS_PRIVACITY, default=ALL) #  Privacidad del usuario (por defecto ALL)
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
@@ -76,6 +95,10 @@ class UserProfile(models.Model):
         except:
             pass  # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
+    # Return privacity of user.
+
+    def get_privacity(self):
+        return self.privacity
 
     # Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
@@ -118,8 +141,10 @@ class UserProfile(models.Model):
 
     # Methods of publications
 
+
     def get_publication(self, publicationid):
         return publications.models.Publication.objects.get(pk=publicationid)
+
 
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
@@ -150,19 +175,22 @@ class UserProfile(models.Model):
                                                 'to_publication__created', 'to_publication__likes',
                                                 'to_publication__user_give_me_like').reverse()
 
+    # Obtener seguidos
     def get_following(self):
-        return self.get_relationships(RELATIONSHIP_FOLLOWING)
+        return self.get_relationships(RELATIONSHIP_FOLLOWING).values('user__id', 'user__username', 'user__first_name',
+                                                                     'user__last_name', 'user__profile__image',
+                                                                     'user__profile__backImage').order_by('id')
 
+    # Obtener seguidores
     def get_followers(self):
-        return self.get_related_to(RELATIONSHIP_FOLLOWING)
+        return self.get_relationships(RELATIONSHIP_FOLLOWER).values('user__id', 'user__username', 'user__first_name',
+                                                                    'user__last_name', 'user__profile__image',
+                                                                    'user__profile__backImage').order_by('id')
 
     def get_friends(self):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name',
                                                                   'user__last_name', 'user__profile__image',
                                                                   'user__profile__backImage').order_by('id')
-
-    def get_username_friends(self):
-        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__username').order_by('id')
 
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)
@@ -181,20 +209,75 @@ class UserProfile(models.Model):
     def has_like(self, profile):
         return LikeProfile.objects.get(from_like=self, to_like=profile)
 
-    # methods friends
-    def add_friend(self, profile):
-        print('>>>>>>> add_friend')
-        return self.add_relationship(profile, RELATIONSHIP_FRIEND,
-                                     True)  # mas adelante cambiar aqui True por False, para diferenciar seguidores de seguidos.
+    # methods following
 
+    def is_follow(self, profile):
+        try:
+            if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FOLLOWING):
+                return True
+            else:
+                return False
+        except ObjectDoesNotExist:
+            return False
+
+    # Add following
+    def add_follow(self, profile):
+        print('>>>>>> add_follow')
+        return self.add_relationship(profile, RELATIONSHIP_FOLLOWING,
+                                     False)
+
+    def get_follow_top12(self):
+        return self.relationships.filter(to_people__status=RELATIONSHIP_FOLLOWING, to_people__from_person=self).values(
+            'user__username', 'user__first_name', 'user__last_name').order_by('id')[0:12]
+
+    def get_follow_objectlist(self):
+        return self.relationships.filter(to_people__status=RELATIONSHIP_FOLLOWING, to_people__from_person=self).values(
+            'user__username', 'user__first_name', 'user__last_name').order_by('id')
+
+    def add_follow_request(self, profile):
+        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
+        return obj
+
+    def get_follow_request(self, profile):
+        return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
+
+    def get_received_follow_requests(self):
+        return self.requestsToMe.filter(from_request__status=2, from_request__receiver=self)
+
+    def remove_received_follow_request(self, profile):
+        Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FOLLOWING).delete()
+
+    # methods followers
+    def is_follower(self, profile):
+        try:
+            if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FOLLOWER):
+                return True
+            else:
+                return False
+        except ObjectDoesNotExist:
+            return False
+
+    # add follower
+    def add_follower(self, profile):
+        print('>>>>> add_follower')
+        return self.add_relationship(profile, RELATIONSHIP_FOLLOWER,
+                                     False)
+
+    # methods friends
     def is_friend(self, profile):
         try:
             if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND):
                 return True
             else:
                 return False
-        except:
+        except ObjectDoesNotExist:
             return False
+
+    def add_friend(self, profile):
+        print('>>>>>>> add_friend')
+        return self.add_relationship(profile, RELATIONSHIP_FRIEND,
+                                     True)  # mas adelante cambiar aqui True por False
+        # para diferenciar seguidores de seguidos.
 
     def get_friends_top12(self):
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values(

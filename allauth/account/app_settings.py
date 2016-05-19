@@ -198,7 +198,7 @@ class AppSettings(object):
         """
         Automatically log the user in immediately after resetting their password.
         """
-        return self._setting('LOGIN_ON_PASSWORD_RESET', False)
+        return self._setting('LOGIN_ON_PASSWORD_RESET', True)
 
     @property
     def LOGOUT_REDIRECT_URL(self):

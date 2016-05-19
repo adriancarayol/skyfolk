@@ -30,6 +30,7 @@
 <div class="logotipo_skyfolk" onclick="location.href='/'"> <h5><i>S</i>kyfolk</h5> <h6>Restablecimiento de contraseña</h6></div>
 
 </div>
+     {% block menu %}
     <div class="menu">
       <strong>¿No necesitas recuperar o restablecer tu contraseña?</strong>
       <ul>
@@ -42,6 +43,7 @@
   {% endif %}
       </ul>
     </div>
+     {% endblock %}
     {% block content %}
     {% endblock %}
     {% endblock %}

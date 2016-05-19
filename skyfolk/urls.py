@@ -10,7 +10,10 @@ from api import views
 #from relaciones.views import relaciones_user
 from user_profile import views as user_profile_views
 #from user_profile.views import welcomeView, welcomeStep1
+import notifications
 # import notifications
+from publications.views import PublicationNewView, PublicationsListView
+
 
 admin.autodiscover()
 
@@ -27,25 +30,30 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^setfirstLogin/', 'user_profile.views.setfirstLogin', name='setfirstLogin'),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
+    # CUSTOM URL EMAIL CONFIG
+    url(r"^config/email/$", 'allauth.account.views.email', name="account_email"),
     url(r'^search/$','user_profile.views.search'),
     #url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
-    url(r'^config/profile/$', 'user_profile.views.config_profile'),
+    url(r'^config/profile/$', 'user_profile.views.config_profile'), # URL CONFIG PROFILE USER
+    url(r'^config/privacity/$', 'user_profile.views.config_privacity'), # URL CHANGE PRIVACITY
     #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^like_profile/$', 'user_profile.views.like_profile', name='like_profile'),
-    url(r'^friends/(?P<username>[\w-]+)/$', 'user_profile.views.friends'),
+    url(r'^following/(?P<username>[\w-]+)/$', 'user_profile.views.following'),
+    url(r'^followers/(?P<username>[\w-]+)/$', 'user_profile.views.followers'),
     url(r'^respond_friend_request/$', 'user_profile.views.respond_friend_request', name='respond_friend_request'),
     url(r'^load_friends/$', 'user_profile.views.load_friends'),
-    #url(r'^config/privacity/$','user_profile.views.config_privacity'),
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^add_friend_by_pin/$', 'user_profile.views.add_friend_by_username_or_pin'),
-    url(r'^publication/$', 'publications.views.publication_form'),
+    # url(r'^publication/$', 'publications.views.publication_form'),
+    url(r'^publication/$', PublicationNewView.as_view(), name='new_publication'),
     url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),
+    url(r'^publication/list/$', PublicationsListView.as_view(), name='last_publication'),
     url(r'^publication/add_like/$', 'publications.views.add_like', name='add_like'),
     url(r'^publication/add_hate/$', 'publications.views.add_hate', name='add_hate'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
     #url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
-    url(r'^accounts/password/change', user_profile_views.custom_password_change),
+    url(r'^config/password/change/$', user_profile_views.custom_password_change), # URL CHANGE PASSWORD
     url(r'^accounts/', include('allauth.urls')),
     # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
@@ -59,10 +67,6 @@ urlpatterns = patterns(
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
     url(r'^about/([^/]+)/$',about),
-    # Market Skyfolk
-    #url(r'^market/$', market_inicio),
-    # Relaciones usuario
-    #url(r'^relations/(?P<username>[\w-]+)/$',relaciones_user),
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
     url(
@@ -72,13 +76,17 @@ urlpatterns = patterns(
             namespace='rest_framework'
         )
     ),
+    # Urls para el modulo emoji
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
+    # Django-avatar
+    (r'^/', include('avatar.urls')),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
     # Página de bienvenida, paso 1.
     url(r'^step1/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeStep1', name='welcomeStep1'),
     #notificaciones
-    url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
+    #url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
+    url('^inbox/notifications/', include('notifications.urls', namespace='notifications')),
 )
 
 urlpatterns += staticfiles_urlpatterns()

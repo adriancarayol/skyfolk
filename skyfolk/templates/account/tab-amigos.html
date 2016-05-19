@@ -1,0 +1,28 @@
+{% load avatar_tags %}
+
+<div id="tab-amigos">
+    {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
+            <input class="search" type="search" placeholder="¿A quién buscas?" title="Search">
+            <button class="sort" data-sort="name">
+              Ordenar
+            </button>
+            <ul class="list">
+                {% for item in friends_top12 %}
+                  <li id="friend-{{item.user__id}}">
+                      <div class="usr-img img-responsive">{% avatar item.user__username %}</div>
+                  <a class="name" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
+                  </li>
+                {% endfor %}
+            </ul>
+    {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
+          <div class="cmt-hidden">
+          <h3>¡Sigue a {{user_profile.username}} para ver sus comentarios!</h3>
+            <br>
+          </div>
+    {% elif privacity == 'N' %}
+        <div class="cmt-hidden">
+          <h3>¡Éste perfil es privado!</h3>
+            <br>
+        </div>
+    {% endif %}
+</div>

@@ -46,7 +46,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
      # cargar lista de amigos (12 primeros)
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
-        friends = user_profile.profile.get_friends()
+        friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
@@ -84,7 +84,7 @@ def outbox(request,template_name='django_messages/outbox.html'):
      # cargar lista de amigos (12 primeros)
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
-        friends = user_profile.profile.get_friends()
+        friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
@@ -126,7 +126,7 @@ def trash(request,template_name='django_messages/trash.html'):
      # cargar lista de amigos (12 primeros)
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
-        friends = user_profile.profile.get_friends()
+        friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
@@ -173,7 +173,7 @@ def compose(request,recipient=None, form_class=ComposeForm,
      # cargar lista de amigos (12 primeros)
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
-        friends = user_profile.profile.get_friends()
+        friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
@@ -233,7 +233,7 @@ def reply(request,message_id, form_class=ComposeForm,
      # cargar lista de amigos (12 primeros)
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
-        friends = user_profile.profile.get_friends()
+        friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:
@@ -362,7 +362,7 @@ def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
      # cargar lista de amigos (12 primeros)
     try:
         #friends_4 = request.user.profile.get_friends_next4(1)
-        friends = user_profile.profile.get_friends()
+        friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
     except ObjectDoesNotExist:

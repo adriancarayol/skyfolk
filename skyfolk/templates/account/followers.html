@@ -1,0 +1,61 @@
+{% extends 'account/base_interface.html' %}
+{% load app_filters %}
+{% load avatar_tags %}
+{% block title %} <title>Seguidores {{ request.user.username }}</title> {% endblock %}
+
+{% block extra-css %}
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
+    <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+<div class="col-lg-12 col-md-10 col-sm-12">
+{% for item in friends_top4 %}
+<div class="col-lg-3 col-md-10 col-sm-12">
+    <div class="personal-card">
+        <div class="col-lg-12">
+            <div class="header">
+               {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
+                   <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user__profile__backImage }}">
+                   {% else %}
+                   <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
+                {% endif %}
+                <i class="fa fa-user fa-2x like-him">
+                </i>
+                <div class="bg-user">
+                    {% comment %}
+                    {% if item.user__profile__image and item.user__profile__image|file_exists %}
+                        <img class="profile-user-bg" src="{{MEDIA_URL}}{{item.user__profile__image}}" onclick="location.href='/profile/{{ item.user__username }}'">
+                    {% else %}
+                        <img class="profile-user-bg" src="{{ STATIC_URL }}img/nuevo.png" onclick="location.href='/profile/{{ item.user__username }}'">
+                    {% endif %}
+                    {% endcomment %}
+                     <div onclick="location.href='/profile/{{ item.user__username }}'" class="profile-user-bg">{% avatar item.user__username %}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="name-friend">
+            <a href="/profile/{{ item.user__username }}">@{{ item.user__username }} </a><br><br>
+                <p>{{ item.user__first_name }} {{item.user__last_name}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+    </div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<!--
+<center><img id="loader-ajax" src="{{STATIC_URL}}img/loading.gif"></center>
+
+<center><button id="button-more-friends" type="button" onclick="AJAX_loadFriends()">More!</button></center>
+-->
+</div>
+{% endblock %}
+
+{% block extra-js %}
+    <script src="{{STATIC_URL}}js/friends.js"></script>
+{% endblock %}

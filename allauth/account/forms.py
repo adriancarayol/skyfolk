@@ -319,7 +319,7 @@ class UserForm(forms.Form):
 
 class AddEmailForm(UserForm):
 
-    email = forms.EmailField(label=_("E-mail"),
+    email = forms.EmailField(label=_(""),
                              required=True,
                              widget=forms.TextInput(attrs={"type": "email",
                                                             "size": "30",
@@ -333,6 +333,7 @@ class AddEmailForm(UserForm):
                               " with this account."),
             "different_account": _("This e-mail address is already associated"
                                    " with another account."),
+            "limit_of_adress": _("You have yet two accounts registered"),
         }
         users = filter_users_by_email(value)
         on_this_account = [u for u in users if u.pk == self.user.pk]

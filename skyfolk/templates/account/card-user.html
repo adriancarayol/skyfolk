@@ -1,0 +1,178 @@
+{% load app_filters %}
+{% load avatar_tags %}
+
+<div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="user-card card">
+          <nav class="ventana-pin">
+            <a><i class="fa fa-times"></i></a>
+            <a><i class="fa fa-expand"></i></a>
+            <a><i class="fa fa-thumb-tack"></i></a>
+          </nav>
+          <div class="user-avatar">
+            {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
+            <img src="{{user_profile.profile.backImage.url}}" class="user-bg">
+            {% else %}
+            <img src="{{STATIC_URL}}img/backgrounds/5.jpg" class="user-bg">
+            {% endif %}
+            <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
+            <!--<input type="checkbox" id="button-menu"  />-->
+            {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
+            <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
+            <script type="text/javascript">
+              $(window).load(function() {
+                  $('#addfriend').replaceWith('<span class="fa fa-clock-o" title="En proceso">'+' '+'</div>');
+              });
+            </script>
+            {% endif %}
+            <div class="caja">
+             <div class="item">
+                 <div class="user-pic">{% avatar user_profile class="user-pic" %}</div>
+          {% comment %}
+                 Eliminar si se decide quedar con django-avatar
+        {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
+           <img src="{{user_profile.profile.image.url}}" class="user-pic">
+        {% else %}
+           <img src="{{STATIC_URL}}img/nuevo.png" class="user-pic">
+        {% endif %}
+    {% endcomment %}
+               <!--  <img src="{{STATIC_URL}}img/bola/2.jpg" class="user-pic">-->
+
+               <span class="informacion">
+                {% if user.is_authenticated and user.username == user_profile.username %} <!-- Si el usuario esta visitando su propio perfil -->
+                <span id="configurationOnProfile" class="fa fa-cog" title="Configuracion"></span>
+                <span onclick="location.href='/friends/{{ user.username }}'" id="conf" class="fa fa-users" title="Grupos"></span>
+                <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
+                {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
+                   <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
+                   <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
+                {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
+                   <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
+                {% endif %}
+                {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
+                   <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
+                   <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
+                {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
+                   <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
+                {% endif %}
+                {% endif %}
+               </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- INFORMACION ADICIONAL DEL USUARIO -->
+                <div class="col-sm-6 col-md-5 col-lg-5">
+                  <div class="info-paw">
+                    <div class="info-nav">
+                      <div class="info-wrapper-pic">
+                          {% comment %} Eliminar si nos quedamos con django-avatar...
+                      {% if user_profile.profile.image and user_profile.profile.image|file_exists %}
+                         <img src="{{user_profile.profile.image.url}}" class="info-user-pic">
+                      {% else %}
+                         <img src="{{STATIC_URL}}img/nuevo.png" class="info-user-pic">
+                      {% endif %}
+                          {% endcomment %}
+                          <div class="info-user-pic">{% avatar user_profile 90 %}</div>
+                      </div>
+                    <h1 class="info-user-name">{{ user_profile.username }}</h1>
+                    <h3 class="info-user-name_last">{{user_profile.first_name}} {{user_profile.last_name}}</h3>
+                    <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
+                        <div class="info-event">
+
+                        </div>
+                        <div class="info-groups">
+
+                        </div>
+                        <div class="info-trof">
+
+                        </div>
+                        <div class="info-relations">
+
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Trofeos -->
+                  <div class="col-sm-12 col-md-12 col-lg-10 trofeos">
+                     <span id="close-trofeos" class="fa fa-close fa-2x"></span>
+                      <h3 class="trofeos-title">Logros de {{ user_profile.username }}</h3>
+                      <div class="col-lg-12 col-md-12 col-sm-12 wrapper-trofeos">
+                          <div class="col-sm-3 col-md-3 col-lg-1 trofeo-user">
+                          </div>
+                          <div class="col-sm-3 col-md-3 col-lg-1 trofeo-user">
+                          </div>
+                          <div class="col-sm-3 col-md-3 col-lg-1 trofeo-user">
+                          </div>
+
+                      </div>
+                  </div>
+                <!-- Grupos -->
+
+                  <div class="col-lg-10 col-md-12 col-sm-12 grupos">
+                     <span id="close-grupos" class="fa fa-close fa-2x"></span>
+                      <h3 class="grupos-title">Grupos de {{ user_profile.username }}</h3>
+                      <div class="col-lg-12 col-md-12 col-sm-12 wrapper-grupos">
+                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
+                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
+                              <span class="text-description">Nombre del grupo</span>
+                              <i class="fa fa-users"> 50</i>
+                              <i class="fa fa-heart"> 12</i>
+                          </div>
+                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
+                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
+                              <span class="text-description">Nombre del grupo</span>
+                              <i class="fa fa-users"> 50</i>
+                              <i class="fa fa-heart"> 12</i>
+                          </div>
+                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
+                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
+                              <span class="text-description">Nombre del grupo</span>
+                              <i class="fa fa-users"> 50</i>
+                              <i class="fa fa-heart"> 12</i>
+                          </div>
+                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
+                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
+                              <span class="text-description">Nombre del grupo</span>
+                              <i class="fa fa-users"> 50</i>
+                              <i class="fa fa-heart"> 12</i>
+                          </div>
+                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
+                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
+                              <span class="text-description">Nombre del grupo</span>
+                              <i class="fa fa-users"> 50</i>
+                              <i class="fa fa-heart"> 12</i>
+                          </div>
+                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
+                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
+                              <span class="text-description">Nombre del grupo</span>
+                              <i class="fa fa-users"> 50</i>
+                              <i class="fa fa-heart"> 12</i>
+                          </div>
+                          <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
+                              <img src="{{STATIC_URL}}img/2.jpg"  alt="img-group">
+                              <span class="text-description">Nombre del grupo</span>
+                              <i class="fa fa-users"> 50</i>
+                              <i class="fa fa-heart"> 12</i>
+                          </div>
+                      </div>
+
+                  </div>
+
+          <header>
+            <p>@{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
+            <div class="status">{{ user_profile.profile.status }}</div>
+          </header>
+          <ul class="stats">
+            <li>
+                <a href="/followers/{{ user_profile.username }}"><strong>{{ followers }}</strong><span>Seguidores</span></a>
+            </li>
+            <li>
+                <a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a>
+            </li>
+            <li>
+                <a class='inline' href="#inline_content"><strong>48</strong><span>Fotos</span></a>
+            </li>
+          </ul>
+        </div>
+</div>

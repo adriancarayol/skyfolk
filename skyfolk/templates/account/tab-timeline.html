@@ -1,0 +1,49 @@
+{% load decorators %}
+{% load avatar_tags %}
+
+<div id="tab-timeline">
+    <div id="section">
+        <div class="wrapperx">
+            {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
+                {% for item in timeline %}
+                    <div class="line" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
+                        <li>
+                            <div data-sr="wait 0.2s then scale up 30%" class="second">
+                                <span class="acontecimiento">
+                                    {% avatar item.user__username %}
+                                        </span>
+                                        <span class="head"><a href="/profile/{{item.user__username}}">{{item.user__username}}</a>  <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em></span>
+                                        <div id="p" class="parrafo comment">
+                                                {{ item.from_timeline__content|replace_decorators|safe}}
+                                        </div>
+                                        <div class="contenidoadicional">
+                                            <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
+                                        </div>
+                                        <div class="controles">
+                                            <ul>
+                                                {% if user.username == user_profile.username %}
+                                                <li class="fa fa-trash fa-lg"></li>
+                                                {% endif %}
+                                                <li class="fa fa-heart fa-lg"></li>
+                                                <li class="fa fa-tag fa-lg"></li>
+                                                <li class="fa fa-quote-left fa-lg"></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                            </div>
+                            {% endfor %}
+    {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
+          <div class="cmt-hidden">
+          <h3>¡Sigue a {{user_profile.username}} para ver sus comentarios!</h3>
+            <br>
+          </div>
+    {% elif privacity == 'N' %}
+        <div class="cmt-hidden">
+          <h3>¡Éste perfil es privado!</h3>
+            <br>
+        </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

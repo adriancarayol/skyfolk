@@ -1,0 +1,186 @@
+$blueskyfolk: #1e88e5
+$default-transition: all 0.2s ease-out 0s
+*
+  -webkit-box-sizing: border-box
+  -moz-box-sizing: border-box
+  box-sizing: border-box
+
+body
+  font-size: 11.5px !important
+  font-style: normal
+  font-weight: 300
+  font-family: 'Open Sans', sans-serif !important
+  color: #555
+
+
+.delete-profile-image, .add-profile-image
+  font-size: 2em
+  & .fa-trash, .fa-plus
+    color: #555
+    padding: 7px
+    -webkit-transition: $default-transition
+    -moz-transition: $default-transition
+    transition: $default-transition
+  & .fa-trash
+    float: left
+    margin-left: 7px
+    &:hover
+      color: tomato
+  & .fa-plus
+    float: right
+    margin-right: 7px
+    &:hover
+      color: $blueskyfolk
+.wrapper-p
+  & .current-avatar
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+    min-height: 30%
+    height: auto
+    padding: 10px
+    font-size: 1.4em
+    & #id_choices
+      & li
+        width: 100%
+    & img, p
+      margin-left: auto
+      margin-right: auto
+      margin-top: 30px
+      text-align: center
+      display: block
+    & p
+      margin-bottom: 20px
+      border-bottom: 2px solid #bdbdbd
+      padding: 5px
+      width: 80%
+    & img
+      box-shadow: 0 1px 2px $blueskyfolk
+  & .options-avatar
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+    height: auto
+    padding: 10px
+    margin-top: 15%
+    font-size: 1.4em
+    & input[type="radio"]
+      display: none
+    & #id_avatar
+      overflow: hidden
+      padding: 7px
+      &::-webkit-file-upload-button
+        visibility: hidden
+      &:before
+        content: ''
+        display: inline-block
+        white-space: nowrap
+        -webkit-user-select: none
+    & label[for="id_avatar"]
+      display: none
+    & img, label
+      position: relative
+      display: inline-block
+    & img
+      margin-left: 30px
+    & label
+      margin-bottom: 20px
+    ul
+      border-radius: 3px
+      & li
+        margin-left: 15px
+        margin-right: 15px
+        padding: 5px
+        display: inline-block
+    & input
+      border: medium none
+      border-radius: 2px
+      display: inline-block
+      height: 36px
+      line-height: 36px
+      padding: 0px 2rem
+      text-transform: uppercase
+      text-decoration: none
+      color: $blueskyfolk
+      background-color: transparent
+      text-align: center
+      letter-spacing: 0.5px
+      transition: $default-transition
+      cursor: pointer
+      float: right
+      outline: none
+      &:hover
+        opacity: 0.8
+        background-color: #eee
+    & input[type="submit"]
+      float: left
+
+.active
+  border: 4px solid $blueskyfolk
+
+  /* DELETE AVATAR */
+.delete-avatars
+  & input[type="checkbox"]
+    display: none
+  & img, label
+    position: relative
+  & img
+    margin-left: 30px
+  & label
+    margin-bottom: 20px
+  ul
+    border-radius: 3px
+    & li
+      padding: 5px
+  & input
+    border: medium none
+    border-radius: 2px
+    display: inline-block
+    height: 36px
+    line-height: 36px
+    margin-top: 15px
+    padding: 0px 2rem
+    text-transform: uppercase
+    text-decoration: none
+    color: $blueskyfolk
+    background-color: transparent
+    text-align: center
+    letter-spacing: 0.5px
+    transition: $default-transition
+    cursor: pointer
+    float: right
+    outline: none
+    &:hover
+      opacity: 0.8
+      background-color: #eee
+
+/* IF AVATAR EMPTY */
+#id_avatar
+  overflow: hidden
+  padding: 7px
+  &::-webkit-file-upload-button
+    visibility: hidden
+    &:before
+      content: ''
+      display: inline-block
+      white-space: nowrap
+      -webkit-user-select: none
+  & label[for="id_avatar"]
+    display: none
+
+input
+  border: medium none
+  border-radius: 2px
+  display: inline-block
+  height: 36px
+  line-height: 36px
+  margin-top: 15px
+  padding: 0px 2rem
+  text-transform: uppercase
+  text-decoration: none
+  color: $blueskyfolk
+  background-color: transparent
+  text-align: center
+  letter-spacing: 0.5px
+  transition: $default-transition
+  cursor: pointer
+  outline: none
+  &:hover
+    opacity: 0.8
+    background-color: #eee

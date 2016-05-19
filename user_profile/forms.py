@@ -6,7 +6,7 @@ from django.forms import ModelForm
 from django.utils.translation import pgettext, ugettext_lazy as _, ugettext
 
 from user_profile.models import UserProfile
-
+from django.core.validators import RegexValidator
 
 class SearchForm(forms.Form):
 
@@ -14,10 +14,11 @@ class SearchForm(forms.Form):
 
 
 class SignupForm(forms.Form):
-    #first_name = forms.CharField(max_length=30, label='Voornaam')
-    #last_name = forms.CharField(max_length=30, label='Achternaam')
-    first_name = forms.CharField(label=_('Firstname'), help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Firstname')}))
-    last_name = forms.CharField(label=_('Lastname'), help_text="",required=True,widget=forms.TextInput(attrs={'placeholder':_('Lastname')}))
+    alphanumeric = RegexValidator(r'^[a-zA-Z]*$', 'Tu nombre/apellido sólo puede contener letras.')
+    first_name = forms.CharField(label=_('Nombre'), min_length=1, max_length=30, help_text="",
+                                 required=True, widget=forms.TextInput(attrs={'placeholder':_('Nombre')}), validators=[alphanumeric])
+    last_name = forms.CharField(label=_('Apellido'), min_length=1, max_length=30, help_text="",
+                                required=True, widget=forms.TextInput(attrs={'placeholder':_('Apellido')}), validators=[alphanumeric])
     def save(self, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
@@ -39,5 +40,19 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('image', 'backImage', 'status', 'hiddenMenu')
+        fields = ('backImage', 'status', 'hiddenMenu') # Añadir 'image' si decidimos quitar django-avatar.
         #fields = ('image', 'backImage', 'status')
+
+
+class PrivacityForm(forms.ModelForm):
+
+    CHOICES = (
+            ('A', 'Todos pueden ver mi perfil y mis publicaciones.'),
+            ('OF', 'Sólo mis seguidores pueden ver mi perfil y mis publicaciones.'),
+            ('OFAF', 'Sólo mis seguidores y aquellas personas que sigo pueden ver mi perfil y mis publicaciones.'),
+            ('N', 'Nadie puede ver ni mi perfil ni mis publicaciones.'),
+            )
+    privacity = forms.ChoiceField(choices=CHOICES, required=True, label='Escoge una opción de privacidad.')
+    class Meta:
+        model = UserProfile
+        fields = ('privacity',)

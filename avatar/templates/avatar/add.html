@@ -1,0 +1,39 @@
+{% extends "account/base_cf.html" %}
+{% load i18n avatar_tags %}
+
+{% block title %} <title>Configuración - {{ request.user.username }} - Imágenes de perfil.</title> {% endblock %}
+
+{% block extra-css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/avatar.css" />
+{% endblock %}
+
+{% block cf-title %}
+<hgroup>
+	<h4 class="cn"> Imágen de perfil </h4>
+	<h6 class="ch"> Añade una foto de perfil </h6>
+</hgroup>
+{% endblock %}
+
+{% block cf-form %}
+<div id="change-avatar" class="col-lg-12 col-md-10 col-sm-12 current-avatar">
+    <p>{% trans "Your current avatar: " %}</p>
+	{% if avatars %}
+	<a href="{% url 'avatar_change' %}">
+    {% avatar user %}
+	</a>
+	{% else %}
+	{% avatar user %}
+	{% endif %}
+		<a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i class="fa fa-trash"></i></a>
+</div>
+    <div id="option-avatar" class="col-lg-12 col-md-12 col-sm-12 options-avatar">
+    {% if not avatars %}
+        <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
+    {% endif %}
+    <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
+        {{ upload_avatar_form.as_p }}
+        <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
+    </form>
+    </div>
+    </div>
+{% endblock %}
