@@ -1,13 +1,6 @@
 {% load avatar_tags %}
 <div id="toggle">
     <ul class="menup">
-        {% comment %}
-        {% if request.user.profile.image %}
-        <li onclick="location.href='/profile/{{ request.user }}'" class="profilee"><img src="{{ request.user.profile.image.url }}"><i>{{ request.user.username }}</i></li>
-        {% else %}
-        <li onclick="location.href='/profile/{{ request.user }}'" class="profilee"><img src="{{STATIC_URL}}img/nuevo.png"><i>{{ request.user.username }}</i></li>
-        {% endif %}
-        {% endcomment %}
         <li onclick="location.href='/profile/{{ request.user }}'" class="profilee">{% avatar user %}<i>{{ request.user.username }}</i></li>
         <li onclick="location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
         <li onclick="location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>

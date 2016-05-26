@@ -38,7 +38,6 @@ body {
     position: relative;
     z-index: 3;
     height: 100%;
-    vertical-align: top;
     width: 38px;
     -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright: 0px;
@@ -74,7 +73,6 @@ body {
     font-family: Open Sans;
     font-weight: 400;
     border-left: 1px solid #fff;
-    border-left: 1px solid rgba(255,255,255,0.35);
     color: #fff;
     font-size: 16px;
     left: 0;
