@@ -1,6 +1,8 @@
+{% comment %}
+  Template para las publicaciones
+{% endcomment %}
 {% load app_filters %}
 {% load tags_mentions %}
-
 {% for pub in publication_list %}
 <div class="wrapper" id="pub-{{ pub.pk }}" data-id="{{ pub.author.pk }}">
           <div class="box">

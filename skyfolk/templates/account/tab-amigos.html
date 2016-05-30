@@ -1,5 +1,7 @@
+{% comment %}
+  Pestaña de amigos en el perfil
+{% endcomment %}
 {% load avatar_tags %}
-
 <div id="tab-amigos">
     {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
             <input class="search" type="search" placeholder="¿A quién buscas?" title="Search">

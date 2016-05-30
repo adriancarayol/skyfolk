@@ -2,14 +2,11 @@
 {% load app_filters %}
 {% load avatar_tags %}
 {% block title %} <title>Seguidores {{ request.user.username }}</title> {% endblock %}
-
 {% block extra-css %}
     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
     <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
 {% endblock %}
-
 {% block content %}
-
 <div class="container">
 <div class="col-lg-12 col-md-10 col-sm-12">
 {% for item in friends_top4 %}
@@ -40,7 +37,6 @@
 {% endfor %}
     </div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
 <!--
 <center><img id="loader-ajax" src="{{STATIC_URL}}img/loading.gif"></center>
 
@@ -48,7 +44,6 @@
 -->
 </div>
 {% endblock %}
-
 {% block extra-js %}
     <script src="{{STATIC_URL}}js/friends.js"></script>
 {% endblock %}

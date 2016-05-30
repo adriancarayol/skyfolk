@@ -1,6 +1,8 @@
+{% comment %}
+  Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.html)
+{% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
-
 <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="user-card card">
           <nav class="ventana-pin">
@@ -49,7 +51,6 @@
               </div>
             </div>
           </div>
-
           <!-- INFORMACION ADICIONAL DEL USUARIO -->
                 <div class="col-sm-6 col-md-5 col-lg-5">
                   <div class="info-paw">
@@ -61,21 +62,16 @@
                     <h3 class="info-user-name_last">{{user_profile.first_name}} {{user_profile.last_name}}</h3>
                     <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
                         <div class="info-event">
-
                         </div>
                         <div class="info-groups">
-
                         </div>
                         <div class="info-trof">
-
                         </div>
                         <div class="info-relations">
-
                         </div>
                     </div>
                 </div>
                 </div>
-
                 <!-- Trofeos -->
                   <div class="col-sm-12 col-md-12 col-lg-10 trofeos">
                      <span id="close-trofeos" class="fa fa-close fa-2x"></span>
@@ -87,11 +83,9 @@
                           </div>
                           <div class="col-sm-3 col-md-3 col-lg-1 trofeo-user">
                           </div>
-
                       </div>
                   </div>
                 <!-- Grupos -->
-
                   <div class="col-lg-10 col-md-12 col-sm-12 grupos">
                      <span id="close-grupos" class="fa fa-close fa-2x"></span>
                       <h3 class="grupos-title">Grupos de {{ user_profile.username }}</h3>
@@ -139,9 +133,7 @@
                               <i class="fa fa-heart"> 12</i>
                           </div>
                       </div>
-
                   </div>
-
           <header>
             <p>@{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
             <div class="status">{{ user_profile.profile.status }}</div>
