@@ -1,4 +1,7 @@
 {% extends 'account/base_search.html' %}
+{% comment %}
+  Template para las busquedas
+{% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
 {% block title %} <title>Búsqueda en Skyfolk.</title> {% endblock %}
@@ -9,7 +12,7 @@
 <div class="col-lg-12 col-md-10 col-sm-12">
   {% if resultSearch|length == 0 and resultMessages|length == 0 %}
   <div class="col-sm-4">
-  	   <div id="search-noelements">
+  	   <div class="noelements-search" id="search-noelements">
          <h5 class="">Sin resultados :-(</h5>
          <i class="not-query">No se obtuvo ningún resultado para:
            {% for word in words %}
