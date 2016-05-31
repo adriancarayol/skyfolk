@@ -51,19 +51,19 @@ $(window).load(function() {
 
 $(document).ready(function () {
 
-
-
     /* Show more - Show less */
 
     $('#tab-comentarios').find('.wrapper').each(function () {
-        var text = $(this).find('.wrp-comment').text();
+        var showLimitChar = 45;
+        var comment = $(this).find('.wrp-comment');
+        var commentValue = comment.text();
+        var text = comment.text();
         var show = $(this).find('.show-more a');
         text = text.replace(/\s\s+/g, ' ');
-        if (text.length < 45)
-        {
+
+        if (text.length < showLimitChar) {
             $(show).css('display','none');
         }
-
     });
 
     $(".show-more a").on("click", function() {
@@ -79,8 +79,7 @@ $(document).ready(function () {
         linkText = "+ Mostrar más";
         $content.css('height', '3em');
     }
-
-    $this.text(linkText);
+        $this.text(linkText);
 });
 
   $('#page-wrapper').find('#close').on('click', function(event) {
@@ -1280,15 +1279,17 @@ function AJAX_add_hate(caja_publicacion, heart) {
     dataType: 'json',
     data: data,
     success: function(data) {
+      var statusOk = 1;
+      var statusNo = 2;
       var response = data.response;
       var status = data.statuslike;
       var numLikes = heart;
       var countLikes = numLikes.innerHTML;
         if (response==true) {
             $(heart).css('color','#ba68c8');
-            if (status == 1) {
+            if (status == statusOk) {
               countLikes++;
-            } else if (status == 2) {
+            } else if (status == statusNo) {
               $(heart).css('color','#555');
               countLikes--;
             }

@@ -24,7 +24,7 @@ a, a:visited {
 .comment {
   overflow: hidden;
   line-height: 1em;
-  height: 3em; }
+  height: auto; }
 
 .comment-tab {
   height: auto; }
