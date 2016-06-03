@@ -69,7 +69,7 @@ $(document).ready(function () {
     $(".show-more a").on("click", function() {
 
     var $this = $(this);
-    var $content = $this.parent().prev("div.comment");
+    var $content = $this.parent().prev("div.comment").find(".wrp-comment");
     var linkText = $this.text().toUpperCase();
 
     if(linkText === "+ MOSTRAR MÁS"){
@@ -77,7 +77,7 @@ $(document).ready(function () {
         $content.css('height', 'auto');
     } else {
         linkText = "+ Mostrar más";
-        $content.css('height', '3em');
+        $content.css('height', '1.3em');
     }
         $this.text(linkText);
 });

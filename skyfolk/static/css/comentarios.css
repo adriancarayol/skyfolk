@@ -25,6 +25,9 @@ a, a:visited {
   overflow: hidden;
   line-height: 1em;
   height: auto; }
+.comment .wrp-comment {
+  height: 1.3em;
+}
 
 .comment-tab {
   height: auto; }
