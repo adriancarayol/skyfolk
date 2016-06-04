@@ -33,7 +33,11 @@ body {
   color: #1e88e5;
   font-family: "Open Sans", sans-serif;
   text-align: center;
-  font-size: 30px; }
+  font-size: 30px;
+  margin-top: 2%; }
+  .no_messages .create-new:link, .no_messages .create-new:visited {
+    text-decoration: none;
+    color: #616161; }
 
 .no_mess {
   width: 140px;
@@ -114,7 +118,7 @@ label[for="id_body"] {
   letter-spacing: 0.5px;
   transition: all 0.2s ease-out 0s;
   cursor: pointer;
-  margin-top: -45px;
+  margin-top: -10%;
   margin-right: 10px;
   position: relative;
   float: right;
@@ -192,26 +196,6 @@ label[for="id_body"] {
   padding: 10px;
   font-size: 1.3em;
   color: #212121; }
-
-#compose-button-message {
-  float: right;
-  position: fixed;
-  right: 2%;
-  top: 90%;
-  text-align: center;
-  background-color: #1e88e5;
-  color: white;
-  border-radius: 100%;
-  cursor: pointer;
-  padding-top: 25px;
-  width: 70px;
-  height: 70px;
-  transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -webkit-transition: all 0.2s ease-in-out; }
-
-#compose-button-message:hover {
-  opacity: 0.7; }
 
 .menu-messages {
   position: relative;

@@ -1,3 +1,6 @@
+{% comment %}
+  Base para la interfaz en comun de todo usuario "lo comun" a todas las paginas
+{% endcomment %}
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -11,17 +14,11 @@
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" />
     <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
-
     {% block title %} <title>Skyfolk - Bienvenido.</title> {% endblock %}
-
     {% block extra-js %}{% endblock %}
     <!-- bloques de estilos para cada pagina -->
     {% block extra-css %}{% endblock %}
-
-
-
     {% block include_files %}{% endblock %}
-
     <script>
       window.moveTo(0,0);
       if (document.all) {
@@ -45,7 +42,6 @@
     <!-- Contenido de cada pagina por separado -->
     {% endblock %}
     <!-- bloque de js para cada pagina -->
-
     <!-- Form para nuevo mensaje -->
   {% if user.is_authenticated %}
   <div id="page-wrapper" style="display:none;">
@@ -69,9 +65,7 @@
         <button class="fontawesome-map-marker"><i class="fa fa-map-marker"> </i> Añadir localización</button>
     </form>
   </div>
-
   <!-- Atajos del usuario -->
-
   <div id="atajos-keyboard-profile">
     <table class="modal-table" summary="Atajos para acciones comunes.">
       <div class="atajos-title">

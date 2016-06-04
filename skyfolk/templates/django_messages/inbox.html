@@ -39,9 +39,9 @@
             </div>
         {% endfor %}
   {% else %}
-  <p class="no_messages">{% trans "¡No tienes mensajes!" %}<br>
-  <img class="no_mess" src="{{STATIC_URL}}img/logo.png" title="no_messages" alt="no_messages"></p>
-
+  <p class="no_messages">{% trans "¡No tienes mensajes!" %}<br><br>
+    <a class="create-new" href="{% url 'messages_compose' %}">Crea uno nuevo.</a>
+  </p>
   {% endif %}
 </div>
 {% endblock %}

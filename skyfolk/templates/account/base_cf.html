@@ -1,5 +1,7 @@
 {% extends 'account/base_interface.html' %}
-
+{% comment %}
+  Template base para templates de configuracion.
+{% endcomment %}
 {% block include_files %}
     <script src="{{STATIC_URL}}js/config.js"></script>
     <link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
@@ -7,16 +9,11 @@
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
     <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
 {% endblock%}
-
 {% load i18n avatar_tags %}
-
-
-
-    {% block title %} <title>Configuración - {{ request.user.username }}.</title> {% endblock %}
+{% block title %} <title>Configuración - {{ request.user.username }}.</title> {% endblock %}
 	<!--[if IE 7]>
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome-ie7.min.css" rel="stylesheet" />
 	<![endif]-->
-
 {% block content %}
     {% block nav %}
 <div class="col-lg-12 col-md-12 col-sm-12">

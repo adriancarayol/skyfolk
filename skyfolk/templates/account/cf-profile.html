@@ -1,17 +1,16 @@
 {% extends "account/base_cf.html" %}
+{% comment %}
+	Template para la configuracion del perfil de usuario
+{% endcomment %}
 {% block additional_files %}
 {% load i18n avatar_tags %}
-
 {% endblock%}
-
 {% block cf-title %}
 <hgroup>
 	<h4 class="cn"> Perfil </h4>
 	<h6 class="ch"> Cambia datos de tu perfil</h6>
 </hgroup>
 {% endblock %}
-
-
 {% block cf-form %}
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
 	<div class="col-lg-12 col-md-12 col-sm-12 wrapper-profilex">
@@ -20,7 +19,6 @@
 		{% else %}
 			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{STATIC_URL}}img/backgrounds/5.jpg') no-repeat center center; background-size: cover;">
 		{% endif %}
-
 		<!-- Si el usuario tiene imagen, lo redireccionamos a change -->
 		<div data-title="Imágen de perfil" class="img-profile">
 			{% if request.user|has_avatar %}
@@ -45,19 +43,16 @@
 				<p>¿Y tu apellido?</p>
 				<p>{{ user_form.last_name }}</p>
 			</div>
-
 				<div class="backimage-usr">
 					<p>{{ perfil_form.backImage.errors }}</p>
 					<p>Elige una imagen de fondo.</p>
 					<p>{{ perfil_form.backImage }}</p>
 				</div>
-
 				<div class="status-usr">
 					<p>{{ perfil_form.status.errors }}</p>
 					<p>Introduce un estado ;-).</p>
 					<p>{{ perfil_form.status }}</p>
 				</div>
-
 				<div class="menu-usr">
 					<p>{{ perfil_form.hiddenMenu.errors }}</p>
 					<p>Menu estático</p>
@@ -68,6 +63,9 @@
 				<button class="btn btn-info" id="boton-perfil" type="submit">Salvar cambios</button>
 		</div>
 	</form>
+	{% comment %}
+		Para evitar cadenas de texto muy largas (a la hora de mostrar el nombre del fichero)
+	{% endcomment %}
 	<script>
 		jQuery("a").each(function(i, value) {
 	   var hyperlink = jQuery(value);

@@ -1,5 +1,11 @@
 $blueskyfolk: #1e88e5
 $default-transition: all 0.2s ease-out 0s
+$grayColor: #555
+$shadowColor: rgba(0, 0, 0, 0.15)
+$tomatoColor: tomato
+$lightGray: #bdbdbd
+$whiteDarkColor: #eee
+
 *
   -webkit-box-sizing: border-box
   -moz-box-sizing: border-box
@@ -10,13 +16,13 @@ body
   font-style: normal
   font-weight: 300
   font-family: 'Open Sans', sans-serif !important
-  color: #555
+  color: $grayColor
 
 
 .delete-profile-image, .add-profile-image
   font-size: 2em
   & .fa-trash, .fa-plus
-    color: #555
+    color: $grayColor
     padding: 7px
     -webkit-transition: $default-transition
     -moz-transition: $default-transition
@@ -25,7 +31,7 @@ body
     float: left
     margin-left: 7px
     &:hover
-      color: tomato
+      color: $tomatoColor
   & .fa-plus
     float: right
     margin-right: 7px
@@ -33,7 +39,7 @@ body
       color: $blueskyfolk
 .wrapper-p
   & .current-avatar
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+    box-shadow: 0 1px 5px $shadowColor
     min-height: 30%
     height: auto
     padding: 10px
@@ -49,13 +55,13 @@ body
       display: block
     & p
       margin-bottom: 20px
-      border-bottom: 2px solid #bdbdbd
+      border-bottom: 2px solid $lightGray
       padding: 5px
       width: 80%
     & img
       box-shadow: 0 1px 2px $blueskyfolk
   & .options-avatar
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+    box-shadow: 0 1px 5px $shadowColor
     height: auto
     padding: 10px
     margin-top: 15%
@@ -107,7 +113,7 @@ body
       outline: none
       &:hover
         opacity: 0.8
-        background-color: #eee
+        background-color: $whiteDarkColor
     & input[type="submit"]
       float: left
 
@@ -148,7 +154,7 @@ body
     outline: none
     &:hover
       opacity: 0.8
-      background-color: #eee
+      background-color: $whiteDarkColor
 
 /* IF AVATAR EMPTY */
 #id_avatar
@@ -183,4 +189,4 @@ input
   outline: none
   &:hover
     opacity: 0.8
-    background-color: #eee
+    background-color: $whiteDarkColor

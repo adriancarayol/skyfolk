@@ -1,17 +1,16 @@
 {% extends "account/base_login-signup.html" %}
-
+{% comment %}
+	Template para el registro
+{% endcomment %}
 {% load url from future %}
 {% load i18n %}
-
 {% block head_title %}{% trans "Signup" %}{% endblock %}
-
 {% block extra_head %}
 <!--<link rel="stylesheet" type="text/css" href=".../static/css/login-signup.css" />-->
 {% endblock %}
-
 {% block content %}
 
-<!-- 
+<!--
 <h1>{% trans "Sign Up" %}</h1>
 -->
 
@@ -31,5 +30,3 @@
 </div>
 
 {% endblock %}
-
-

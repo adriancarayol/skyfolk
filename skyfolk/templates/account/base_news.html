@@ -1,26 +1,22 @@
+{% comment %}
+	Template base para las noticias de los usuarios a los que sigues (Pagina de bienvenida con noticas)
+{% endcomment %}
 <!DOCTYPE html>
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
 		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/main.css" />
 		<link href='http://fonts.googleapis.com/css?family=Cherry+Swash' rel='stylesheet' type='text/css'>
-	    <link rel="stylesheet" href="{{STATIC_URL}}css/columnas.css" type="text/css" media="all">
-        <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
-
+	  <link rel="stylesheet" href="{{STATIC_URL}}css/columnas.css" type="text/css" media="all">
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
 </head>
-
     <nav class="box-tool">
       <li><div class="logo"></div></li>
       <li class="chat"><div></div></li>
     </nav>
-
-
     <div class="container">
 			<h3>Novedades</h3>
-
-
 <!--
 				<li>
 					<figure>
@@ -46,7 +42,6 @@ src="http://www.youtube.com/embed/XGSy3_Czz8k">
 					</figure>
 				</li>
 -->
-
                   <div class="preloader-wrapper big active">
                     <div class="spinner-layer spinner-blue-only">
                       <div class="circle-clipper left">
@@ -58,9 +53,7 @@ src="http://www.youtube.com/embed/XGSy3_Czz8k">
                       </div>
                     </div>
                   </div>
-
         <div class="row">
-
             {% for i in publications %}
 	             <div class="col s12 m12 l3 z-depth-1 comm">
 	             <div class="img">
@@ -72,19 +65,15 @@ src="http://www.youtube.com/embed/XGSy3_Czz8k">
                   </div>
                 </div>
             {% endfor %}
-
             </div>
         </div>
-        
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
        	<script type="text/javascript" src="{{STATIC_URL}}js/video.js"></script>
-
         <script type="text/javascript">
             $(window).load(function() {
              $('.preloader-wrapper').addClass('loaderOut');
             });
         </script>
-        
 	</body>
 </html>
