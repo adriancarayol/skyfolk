@@ -15,7 +15,7 @@ from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
 from user_profile.models import UserProfile
-
+from notifications.signals import notify
 
 # allauth
 # Create your views here.
@@ -391,6 +391,23 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')'''
             if user.is_follow(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+
+        # enviamos peticion de amistad
+            try:
+                friend_request = user.get_friend_request(
+                    UserProfile.objects.get(pk=friend))
+                response = 'in_progress'
+            except ObjectDoesNotExist:
+                friend_request = None
+
+            if not friend_request:
+                created = user.add_friend_request(
+                    UserProfile.objects.get(pk=friend))
+                created.save()
+
+                response = 'new_petition'
+
+            '''
             try:
                 #  user.add_friend(friend)
                 user.add_follow(friend)  # X añade a Y como "seguido"
@@ -398,6 +415,7 @@ def add_friend_by_username_or_pin(request):
                 response = 'added_friend'
             except Exception as e:
                 print(e)
+            '''
 
         else:  # tipo == username
             user = request.user
@@ -414,7 +432,24 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
             if user.is_follow(friend):  # if user.is_friend(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+            # enviamos peticion de amistad
+            try:
+                friend_request = user.get_friend_request(
+                    UserProfile.objects.get(user__username=username))
+                response = 'in_progress'
+            except ObjectDoesNotExist:
+                friend_request = None
 
+            if not friend_request:
+                created = user.add_friend_request(
+                    UserProfile.objects.get(user__username=username))
+                created.save()
+                response = 'new_petition'
+                # TODO terminar notificaciones al enviar peticiones de amistad
+                notify.send(user, actor=User.objects.get(pk=user.pk).username, recipient=User.objects.get(pk=user.pk),
+                            verb=u'¡Nueva peticion de amistad!')
+
+            '''
             try:
                 # user.add_friend(friend)
                 user.add_follow(friend)  # X añade a Y como "seguido"
@@ -422,6 +457,7 @@ def add_friend_by_username_or_pin(request):
                 response = 'added_friend'
             except Exception as e:
                 print(e)
+            '''
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -461,7 +497,7 @@ def request_friend(request):
         print(str(profileUserId))
         try:
             #  user_friend = user.profile.is_friend(profileUserId)
-            user_friend = user.profile.is_follow(profileUserId)  # Comprobamos YO ya sigo al perfil deseado.
+            user_friend = user.profile.is_follow(profileUserId)  # Comprobamos si YO ya sigo al perfil deseado.
         except ObjectDoesNotExist:
             user_friend = None
 

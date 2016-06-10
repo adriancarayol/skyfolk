@@ -402,12 +402,13 @@ $(document).keypress(function(e){
 
 $( document ).on('keydown', function(e) {
     if ( e.keyCode === 27 ) { // escape
+        var messageWrapper = document.getElementById('page-wrapper');
 
-        $('#page-wrapper').find('#message2').blur(); // Focus del textarea off.
-        $('#page-wrapper').hide();  // Oculta from para crear comentario.
+        $(messageWrapper).find('#message2').blur(); // Focus del textarea off.
+        $(messageWrapper).hide();  // Oculta from para crear comentario.
         $('#atajos-keyboard-profile').hide(); // Oculta atajos de teclado.
         $('.ampliado').hide(); // Oculta mensaje ampliado.
-
+        $('.user-card .info-paw').hide(); // Oculta informacion personal
     }
 });
 
@@ -843,6 +844,20 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
           swal({
               title: "We have a problem",
               text: "This username or pin no exists.",
+              timer: 4000,
+              showConfirmButton: true
+            });
+      } else if (response == 'in_progress'){
+          swal({
+              title: "Request in progress",
+              text: "Your request is to confirm!.",
+              timer: 4000,
+              showConfirmButton: true
+            });
+      } else if (response == 'new_petition'){
+          swal({
+              title: "New petition sent!",
+              text: "Wait to confirm!.",
               timer: 4000,
               showConfirmButton: true
             });
