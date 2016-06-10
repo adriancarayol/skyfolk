@@ -1,26 +1,20 @@
 $blueskyfolk: #1e88e5
-$grayColor: #555
-$whiteColor: #fff
-$grayLightColor: #e0e0e0
-$transparentGrayColor: rgba(0, 0, 0, 0.4)
-$tomatoColor: tomato
-
-*
-  -webkit-box-sizing: border-box
-  -moz-box-sizing: border-box
-  box-sizing: border-box
-
+$graycolor: #555
+$whitecolor: #fff
+$graylightcolor: #e0e0e0
+$transparentgraycolor: rgba(0, 0, 0, 0.4)
+$tomatocolor: #ff6347
 
 html, body
-  color: $grayColor !important
+  color: $graycolor !important
   font-family: 'Open Sans', sans-serif !important
   font-size: 11.5px !important
 
 
 .account-search, .messages-search
   font-size: 3em
-  color: $grayColor
-  border-bottom: 2px solid $grayLightColor
+  color: $graycolor
+  border-bottom: 2px solid $graylightcolor
   padding: 10px
   display: block
 
@@ -30,11 +24,11 @@ html, body
   margin-bottom: 20px
 
 .container .personal-card
-  background-color: $whiteColor
+  background-color: $whitecolor
   width: 100%
   margin-top: 20px
   height: 300px
-  box-shadow: 0 1px 5px $transparentGrayColor
+  box-shadow: 0 1px 5px $transparentgraycolor
 
 
 .container .header
@@ -62,7 +56,6 @@ html, body
   box-shadow: 0 1px 5px $blueskyfolk
   cursor: pointer
   -webkit-transition: all .3s ease-in
-  -moz-transition: all .3s ease-in
   transition: all .3s ease-in
 
   & img
@@ -82,7 +75,7 @@ html, body
   float: right
   margin-right: 20px
   background-color: $blueskyfolk
-  color: $whiteColor
+  color: $whitecolor
   border-radius: 100%
   width: 50px
   margin-left: 300px
@@ -100,18 +93,18 @@ html, body
   text-align: center
   border-radius: 7px
   padding: 10px
-  color: $grayColor
-  background-color: $grayLightColor
+  color: $graycolor
+  background-color: $graylightcolor
 
 .container .personal-card .name-friend a:first-child
   color: $blueskyfolk
   text-decoration: none
 
 .container .personal-card .name-friend p:last-child
-  color: $grayColor
+  color: $graycolor
 
 .pub-search
-  box-shadow: 0 1px 5px $transparentGrayColor
+  box-shadow: 0 1px 5px $transparentgraycolor
   margin-top: 20px
   border-radius: 3px
   overflow: hidden
@@ -129,7 +122,7 @@ html, body
 
   & i
     font-size: 1.4em
-    color: $grayColor
+    color: $graycolor
 
   & .pub-author
     padding-top: 10px
@@ -159,9 +152,9 @@ html, body
 .comm
   font-size: 1.25em
   font-family: 'Open Sans', sans-serif
-  color: $grayColor
+  color: $graycolor
   padding: 7px
-  border-left: 3px solid $tomatoColor
+  border-left: 3px solid $tomatocolor
   overflow: hidden
   height: auto
 
@@ -171,10 +164,6 @@ html, body
   margin: auto
   left: 15px
 
-
-
-/* No items - Search */
-
 .noelements-search
   position: relative
   display: block
@@ -183,10 +172,10 @@ html, body
 
   & .not-query
     font-size: 0.8em
-    color: $grayColor
+    color: $graycolor
     font-family: 'Open Sans', sans-serif
 
   & h5
-    color: $grayColor
+    color: $graycolor
     font-family: 'Open Sans', sans-serif
     font-size: 2em
