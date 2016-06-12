@@ -369,6 +369,16 @@ def config_profile(request):
     # {'showPerfilButtons':True,'searchForm':searchForm,
     # 'user_form':user_form}, context_instance=RequestContext(request))
 
+@login_required(login_url='/')
+def config_pincode(request):
+    pin = UserProfile.objects.get(pk=request.user.pk).pin
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
+
+    return render_to_response('account/cf-pincode.html', {'showPerfilButtons':True, 'searchForm': searchForm,
+                                                          'publicationForm': publicationForm, 'pin': pin},
+                              context_instance=RequestContext(request))
+
 
 @login_required(login_url='accounts/login')
 def add_friend_by_username_or_pin(request):
