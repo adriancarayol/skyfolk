@@ -1,13 +1,3 @@
-
-$(document).ready(function(){
-
-	/*addProfileCard("pepe");
-	addProfileCard("juan");
-	addProfileCard("eufrasio");
-	addProfileCard("condemor");*/
-});
-
-
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
 	function getCookie(name) {
         var cookieValue = null;
@@ -38,46 +28,57 @@ $(document).ready(function(){
         }
     });
 
-
-
 function addProfileCard(username){
-	//$(".container").append('<div class="personal-card"><div class="col-lg-12"><div class="header"><div class="inner_head"><a href="#"><span class="entypo-plus"></span><i>Agregar</i></a><a href="#"><span class="entypo-chat"></span><i>Chat</i></a><a href="#"><span class="entypo-star"></span><i>Favorito</i></a><a href="#"><span class="entypo-heart-empty"></span><i>Me gusta</i></a></div></div><div class="perfil"><div class="foto_perfil"></div><div class="inner_content"><h2 class="nomb" id="nomb">' + username + '</h2><span id="desc"><p class="descripcion" id="desc_one">Profunder</p><p class="descripcion" id="desc_two">Mensaje de texto de prueba </p></span><div class="social_links"><ul><li ><a id="Enviar..." href="/" class="button"><span class="entypo-forward"></span></a></li><li ><a id="Notificar..." href="/"  class="button"><span class="entypo-bell"></span></a></li> <li ><a id="Bloquear..." href="/"  class="button"><span class="entypo-block"></span></a></li> </ul></div></div></div></div></div>');
-    $(".container").append('<div class="col-lg-3 col-md-10 col-sm-12"><div class="personal-card"><div class="col-lg-12"><div class="header"><img class="back-profile-user"><i class="fa fa-user fa-2x like-him"></i><div class="bg-user"></div><img class="profile-user-bg"></div><div class="col-lg-12"></div><div class="col-lg-12"></div><div class="name-friend"></div><p>'+ username + '</p><br><p>xxd</p></div></div></div></div>')
+    $(".container").append('<a>Amigo: ' + username + '</a>');
 }
 
-
-/*PETICION AJAX PARA CARGAR + AMIGOS*/
-    function AJAX_loadFriends(){
-
-                $.ajax({
-                        type: "POST",
-                        url: "/load_friends/",
-                        data: {'slug': 4, 'csrfmiddlewaretoken': csrftoken},
-                        dataType: "json",
-                        success: function(response) {
+/*PETICION AJAX PARA CARGAR + FOLLOWRS */
+function AJAX_loadFollowers(){
+    $.ajax({
+        type: "POST",
+        url: "/load_followers/",
+        data: {'slug': 2, 'csrfmiddlewaretoken': csrftoken},
+        dataType: "json",
+        success: function(response) {
                           
-                        	// load friends
-                        	alert("CARGANDO AMIGOS");
+            // load friends
+            console.log("Loading followers");
+            for (i=0;i<response.length;i++){
+                console.log(response[i].user__username);
+                addProfileCard(response[i].user__username);
+            }
+        },
+        error: function(rs, e) {
+            console.log(rs.responseText);
+            console.log(e);
+            response = JSON.parse(response);
+            for (i=0;i<response.length;x++){
+                addProfileCard(response[i].user__username);
+            }
+        }});
+}
 
-                        	response = JSON.parse(response)
-                        	for (i=0;i<response.length;x++){
-        						addProfileCard(response[i].user.username);
+function AJAX_loadFollows(){
+    $.ajax({
+        type: "POST",
+        url: "/load_follows/",
+        data: {'slug': 2, 'csrfmiddlewaretoken': csrftoken},
+        dataType: "json",
+        success: function(response) {
 
-							}
-
-
-                        },
-                        error: function(rs, e) {
-                           alert(rs.responseText);
-
-                         	response = JSON.parse(response)
-                        	for (i=0;i<response.length;x++){
-        						addProfileCard(response[i].user.username);
-
-							}
-
-                        }
-                });            
-
-      
-    }    
+            // load friends
+            console.log("Loading follows");
+            for (i=0;i<response.length;i++){
+                console.log(response[i].user__username);
+                addProfileCard(response[i].user__username);
+            }
+        },
+        error: function(rs, e) {
+            console.log(rs.responseText);
+            console.log(e);
+            response = JSON.parse(response);
+            for (i=0;i<response.length;x++){
+                addProfileCard(response[i].user__username);
+            }
+        }});
+}

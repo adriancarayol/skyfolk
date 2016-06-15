@@ -42,7 +42,8 @@ urlpatterns = patterns(
     url(r'^following/(?P<username>[\w-]+)/$', 'user_profile.views.following'),
     url(r'^followers/(?P<username>[\w-]+)/$', 'user_profile.views.followers'),
     url(r'^respond_friend_request/$', 'user_profile.views.respond_friend_request', name='respond_friend_request'),
-    url(r'^load_friends/$', 'user_profile.views.load_friends'),
+    url(r'^load_followers/$', 'user_profile.views.load_followers'), # Cargar mas followers
+    url(r'^load_follows/$', 'user_profile.views.load_follows'), # Cargar mas follows
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^add_friend_by_pin/$', 'user_profile.views.add_friend_by_username_or_pin'),
     # url(r'^publication/$', 'publications.views.publication_form'),

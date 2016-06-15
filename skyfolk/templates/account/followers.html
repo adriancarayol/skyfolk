@@ -8,6 +8,7 @@
 {% block extra-css %}
     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
     <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
+    <script src="{{STATIC_URL}}js/friends.js"></script>
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -40,11 +41,11 @@
 {% endfor %}
     </div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<!--
-<center><img id="loader-ajax" src="{{STATIC_URL}}img/loading.gif"></center>
 
-<center><button id="button-more-friends" type="button" onclick="AJAX_loadFriends()">More!</button></center>
--->
+<center><button id="button-more-friends" type="button" onclick="AJAX_loadFollowers()">More!</button></center><br><br>
+<div class="target-try">
+
+</div>
 </div>
 {% endblock %}
 {% block extra-js %}
