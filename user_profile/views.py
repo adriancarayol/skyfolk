@@ -585,8 +585,8 @@ def following(request, username):
     except ObjectDoesNotExist:
         friends = None
 
-    if len(friends) > 2:
-        friends_top4 = friends[0:2]
+    if len(friends) > 12:
+        friends_top4 = friends[0:12]
     else:
         friends_top4 = friends
     return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm,
@@ -605,9 +605,9 @@ def load_followers(request):
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
             print('>>>>>>> SLUG: ' + slug)
-            n = int(slug) * 2
+            n = int(slug) * 12
             # devolvera None si esta fuera de rango?
-            friends_next = friendslist[n - 2:n]
+            friends_next = friendslist[n - 12:n]
             print('>>>>>>> LISTA: ')
             print(friends_next)
         else:
@@ -626,9 +626,9 @@ def load_follows(request):
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
             print('>>>>>>> SLUG: ' + slug)
-            n = int(slug) * 2
+            n = int(slug) * 12
             # devolvera None si esta fuera de rango?
-            friends_next = friendslist[n - 2:n]
+            friends_next = friendslist[n - 12:n]
             print('>>>>>>> LISTA: ')
             print(friends_next)
         else:
@@ -647,8 +647,8 @@ def followers(request, username):
     except ObjectDoesNotExist:
         friends = None
 
-    if (len(friends) > 2):
-        friends_top4 = friends[0:2]
+    if (len(friends) > 12):
+        friends_top4 = friends[0:12]
     else:
         friends_top4 = friends
     return render_to_response('account/followers.html',

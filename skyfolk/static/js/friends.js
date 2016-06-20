@@ -27,12 +27,28 @@
             }
         }
     });
-//<h2 class="h22"><a href="/profile/' + item.user__username + '" >' + item.user__username + '</a> mentioned you</h2>\
-function addProfileCard(username, firstname, lastname){
+
+
+
+/* Comprueba si la URL de la imagen de usuario existe */
+function isEmpty(str) {
+    return (!str || 0 === str.length);
+}
+
+function addProfileCard(username, firstname, lastname, backImage){
+    var MEDIA_URL = '/media/';
+    var STATIC_URL = '/static/';
+    var userImage;
+    if (isEmpty(backImage)) {
+        userImage = STATIC_URL + '/img/nuevo.png';
+    } else {
+        userImage = MEDIA_URL + backImage;
+    }
     $(".container .container-responsive").append('<div class="col-lg-3 col-md-10 col-sm-12">' +
         '<div class="personal-card">' +
             '<div class="col-lg-12">' +
                 '<div class="header">' +
+                    '<img class="back-profile-user" src="' + userImage +'">' +
                     '<i class="fa fa-user fa-2x like-him">' +
                     '</i>' +
                     '<div class="bg-user">' +
@@ -54,7 +70,7 @@ function AJAX_loadFollowers(){
     $.ajax({
         type: "POST",
         url: "/load_followers/",
-        data: {'slug': 2, 'csrfmiddlewaretoken': csrftoken},
+        data: {'slug': 12, 'csrfmiddlewaretoken': csrftoken},
         dataType: "json",
         success: function(response) {
                           
@@ -65,7 +81,7 @@ function AJAX_loadFollowers(){
                 console.log(response[i].user__first_name +
                 console.log(response[i].user__last_name)));
                 addProfileCard(response[i].user__username,
-                    response[i].user__first_name, response[i].user__last_name);
+                    response[i].user__first_name, response[i].user__last_name, response[i].user__profile__backImage);
             }
         },
         error: function(rs, e) {
@@ -74,7 +90,7 @@ function AJAX_loadFollowers(){
             var response = JSON.parse(response);
             for (var i=0;i<response.length;x++){
                 addProfileCard(response[i].user__username,
-                    response[i].user__firstname, response[i].user__lastname);
+                    response[i].user__firstname, response[i].user__lastname, response[i].user__profile__backImage);
             }
         }});
 }

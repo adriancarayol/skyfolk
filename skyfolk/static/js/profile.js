@@ -583,7 +583,7 @@ function addFriendToHtmlList(item) {
 
           setTimeout(function() {
 
-            //forma chula1
+            //forma chula
             imageselector.fadeOut("slow", function() {
               imageselector.attr("src", URL_CHANGE);
             });
