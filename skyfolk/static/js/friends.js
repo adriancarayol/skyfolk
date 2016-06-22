@@ -99,15 +99,18 @@ function AJAX_loadFollows(){
     $.ajax({
         type: "POST",
         url: "/load_follows/",
-        data: {'slug': 2, 'csrfmiddlewaretoken': csrftoken},
+        data: {'slug': 12, 'csrfmiddlewaretoken': csrftoken},
         dataType: "json",
         success: function(response) {
 
             // load friends
             console.log("Loading follows");
             for (var i=0;i<response.length;i++){
-                console.log(response[i].user__username);
-                addProfileCard(response[i].user__username);
+                console.log(response[i].user__username +
+                console.log(response[i].user__first_name +
+                console.log(response[i].user__last_name)));
+                addProfileCard(response[i].user__username,
+                    response[i].user__first_name, response[i].user__last_name, response[i].user__profile__backImage);
             }
         },
         error: function(rs, e) {
@@ -115,7 +118,8 @@ function AJAX_loadFollows(){
             console.log(e);
             var response = JSON.parse(response);
             for (var i=0;i<response.length;x++){
-                addProfileCard(response[i].user__username);
+                addProfileCard(response[i].user__username,
+                    response[i].user__firstname, response[i].user__lastname, response[i].user__profile__backImage);
             }
         }});
 }

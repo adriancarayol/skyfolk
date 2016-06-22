@@ -37,12 +37,20 @@
 </div>
 {% endfor %}
     </div>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
-<center><button id="button-more-friends" type="button" onclick="AJAX_loadFollows()">More!</button></center>
-
 </div>
 {% endblock %}
 {% block extra-js %}
-    <script src="{{STATIC_URL}}js/friends.js"></script>
+        <script src="{{STATIC_URL}}js/friends.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.min.js"></script>
+     <script type="text/javascript" language="javascript">
+         $(function () {
+             var $win = $(window);
+             $win.scroll(function () {
+                 if ($win.height() + $win.scrollTop() == $(document).height()) {
+                     console.log("Scroll to bottom");
+                     AJAX_loadFollows();
+                 }
+             });
+         });
+    </script>
 {% endblock %}
