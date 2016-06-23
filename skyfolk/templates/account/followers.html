@@ -11,7 +11,7 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-<div class="col-lg-12 col-md-10 col-sm-12">
+<div class="col-lg-12 col-md-10 col-sm-12 container-responsive">
 {% for item in friends_top4 %}
 <div class="col-lg-3 col-md-10 col-sm-12">
     <div class="personal-card">
@@ -38,15 +38,21 @@
     </div>
 </div>
 {% endfor %}
-    </div>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<!--
-<center><img id="loader-ajax" src="{{STATIC_URL}}img/loading.gif"></center>
-
-<center><button id="button-more-friends" type="button" onclick="AJAX_loadFriends()">More!</button></center>
--->
+</div>
 </div>
 {% endblock %}
 {% block extra-js %}
     <script src="{{STATIC_URL}}js/friends.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.min.js"></script>
+     <script type="text/javascript" language="javascript">
+         $(function () {
+             var $win = $(window);
+             $win.scroll(function () {
+                 if ($win.height() + $win.scrollTop() == $(document).height()) {
+                     console.log("Scroll to bottom");
+                     AJAX_loadFollowers();
+                 }
+             });
+         });
+    </script>
 {% endblock %}

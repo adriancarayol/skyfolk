@@ -580,40 +580,28 @@ def following(request, username):
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
 
-    '''try:
-        # friends_4 = request.user.profile.get_friends_next(1)
-        friends = user_profile.profile.get_friends()
+    try:
+        friends = user_profile.profile.get_following()
     except ObjectDoesNotExist:
         friends = None
 
-    friends_top4 = None
-    if friends != None:
-        if len(friends) > 4:
-            # request.session['friends_list'] = json.dumps(friends.values())
-            # request.session['friends_list'] = list(friends)
-            # request.session['friends_list'] = serializers.serialize('json', list(friends))
-            request.session['friends_list'] = json.dumps(list(friends))
-            friends_top4 = friends[0:4]
-
-        else:
-            friends_top4 = friends'''
-    try:
-        friends_top4 = user_profile.profile.get_following()
-    except ObjectDoesNotExist:
-        friends_top4 = None
-
+    if len(friends) > 12:
+        friends_top4 = friends[0:12]
+    else:
+        friends_top4 = friends
     return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm,
                                                       'publicationForm': publicationForm},
                               context_instance=RequestContext(request))
 
-
-def load_friends(request):
+# Load followers
+def load_followers(request):
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
-    friendslist = request.session.get('friends_list', None)
+    friendslist = request.user.profile.get_followers()
+
     if friendslist == None:
         friends_next = None
     else:
-        friendslist = json.loads(friendslist)
+        #friendslist = json.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
             print('>>>>>>> SLUG: ' + slug)
@@ -622,9 +610,30 @@ def load_friends(request):
             friends_next = friendslist[n - 12:n]
             print('>>>>>>> LISTA: ')
             print(friends_next)
-
+        else:
+            friends_next = None
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
 
+# Load follows
+def load_follows(request):
+    print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
+    friendslist = request.user.profile.get_following()
+
+    if friendslist == None:
+        friends_next = None
+    else:
+        #friendslist = json.loads(friendslist)
+        if request.method == 'POST':
+            slug = request.POST.get('slug', None)
+            print('>>>>>>> SLUG: ' + slug)
+            n = int(slug) * 12
+            # devolvera None si esta fuera de rango?
+            friends_next = friendslist[n - 12:n]
+            print('>>>>>>> LISTA: ')
+            print(friends_next)
+        else:
+            friends_next = None
+    return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
 
 @login_required(login_url='/')
 def followers(request, username):
@@ -633,28 +642,15 @@ def followers(request, username):
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=username)
 
-    '''try:
-        # friends_4 = request.user.profile.get_friends_next(1)
-        friends = user_profile.profile.get_friends()
+    try:
+        friends = user_profile.profile.get_followers()
     except ObjectDoesNotExist:
         friends = None
 
-    friends_top4 = None
-    if friends != None:
-        if len(friends) > 4:
-            # request.session['friends_list'] = json.dumps(friends.values())
-            # request.session['friends_list'] = list(friends)
-            # request.session['friends_list'] = serializers.serialize('json', list(friends))
-            request.session['friends_list'] = json.dumps(list(friends))
-            friends_top4 = friends[0:4]
-
-        else:
-            friends_top4 = friends'''
-    try:
-        friends_top4 = user_profile.profile.get_followers()
-    except ObjectDoesNotExist:
-        friends_top4 = None
-
+    if (len(friends) > 12):
+        friends_top4 = friends[0:12]
+    else:
+        friends_top4 = friends
     return render_to_response('account/followers.html',
                               {'friends_top4': friends_top4, 'searchForm': searchForm,
                                'publicationForm': publicationForm},

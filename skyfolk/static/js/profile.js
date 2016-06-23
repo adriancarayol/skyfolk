@@ -11,39 +11,69 @@ $(window).load(function() {
     $("#loader").fadeOut("slow");
 
     var currentPage = window.location.href.split('/')[3];
+    var menu = document.getElementById('hor-menu');
+    var inputSearch = document.getElementById('id_searchText');
+    var verticalMenu = document.getElementById('ver-menu');
     switch (currentPage) {
               case "following":
-                $('.oldMenu').find('li:nth-child(3)').css('border-bottom','3px solid #1e88e5');
+                $(menu).find('li:nth-child(3)').css('border-bottom','3px solid #1e88e5');
                   break;
               case "profile":
-                  $('.oldMenu').find('li:nth-child(1)').css('border-bottom','3px solid #1e88e5');
+                  $(menu).find('li:nth-child(1)').css('border-bottom','3px solid #1e88e5');
                   break;
               case "search":
-                  $('#id_searchText').css('border','1px solid #1e88e5');
+                  $(inputSearch).css('border','1px solid #1e88e5');
                   break;
               case "config":
-                $('.menup').find('li:nth-child(2)').css('color','#1e88e5');
+                $(verticalMenu).find('li:nth-child(2)').css('color','#1e88e5');
                 break;
               case "messages":
-                $('.menup').find(' li:nth-child(3)').css('color','#1e88e5');
+                $(verticalMenu).find(' li:nth-child(3)').css('color','#1e88e5');
                 break;
         default:
             break;
     }
     /* Dar color a la opcion activa en el menu, template configuracion. */
     var conf = window.location.href.split('/')[4];
+    var menuConfig = document.getElementsByClassName('menu-config');
     switch (conf) {
         case "profile":
-            $('.menu-config').find('a:first-child').css('color','#1e88e5');
+            $(menuConfig).find('a:first-child').css('color','#1e88e5');
             break;
         case "password":
-            $('.menu-config').find('a:nth-child(2)').css('color', '#1e88e5');
+            $(menuConfig).find('a:nth-child(2)').css('color', '#1e88e5');
             break;
         case "config":
-            $('.menu-config').find('a:nth-child(3)').css('color', '#1e88e5');
+            $(menuConfig).find('a:nth-child(3)').css('color', '#1e88e5');
             break;
         case "email":
-            $('.menu-config').find('a:nth-child(4)').css('color', '#1e88e5');
+            $(menuConfig).find('a:nth-child(4)').css('color', '#1e88e5');
+            break;
+        case "privacity":
+            $(menuConfig).find('a:nth-child(5)').css('color', '#1e88e5');
+            break;
+        case "pincode":
+            $(menuConfig).find('a:nth-child(6)').css('color', '#1e88e5');
+            break;
+        default:
+            break;
+    }
+
+        /* Dar color a la opcion activa en el menu, template mensajes privados. */
+    var private_mess = window.location.href.split('/')[4];
+    switch (private_mess) {
+        case "inbox":
+            $('.menu-messages').find('a:first-child').css('color','#1e88e5');
+            break;
+        case "compose":
+            $('.menu-messages').find('a:nth-child(2)').css('color', '#1e88e5');
+            break;
+        case "outbox":
+            $('.menu-messages').find('a:nth-child(3)').css('color', '#1e88e5');
+            break;
+        case "trash":
+            $('.menu-messages').find('a:nth-child(4)').css('color', '#1e88e5');
+            break;
         default:
             break;
     }
@@ -583,7 +613,7 @@ function addFriendToHtmlList(item) {
 
           setTimeout(function() {
 
-            //forma chula1
+            //forma chula
             imageselector.fadeOut("slow", function() {
               imageselector.attr("src", URL_CHANGE);
             });

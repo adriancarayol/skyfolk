@@ -1,13 +1,3 @@
-
-$(document).ready(function(){
-
-	/*addProfileCard("pepe");
-	addProfileCard("juan");
-	addProfileCard("eufrasio");
-	addProfileCard("condemor");*/
-});
-
-
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
 	function getCookie(name) {
         var cookieValue = null;
@@ -40,44 +30,96 @@ $(document).ready(function(){
 
 
 
-function addProfileCard(username){
-	//$(".container").append('<div class="personal-card"><div class="col-lg-12"><div class="header"><div class="inner_head"><a href="#"><span class="entypo-plus"></span><i>Agregar</i></a><a href="#"><span class="entypo-chat"></span><i>Chat</i></a><a href="#"><span class="entypo-star"></span><i>Favorito</i></a><a href="#"><span class="entypo-heart-empty"></span><i>Me gusta</i></a></div></div><div class="perfil"><div class="foto_perfil"></div><div class="inner_content"><h2 class="nomb" id="nomb">' + username + '</h2><span id="desc"><p class="descripcion" id="desc_one">Profunder</p><p class="descripcion" id="desc_two">Mensaje de texto de prueba </p></span><div class="social_links"><ul><li ><a id="Enviar..." href="/" class="button"><span class="entypo-forward"></span></a></li><li ><a id="Notificar..." href="/"  class="button"><span class="entypo-bell"></span></a></li> <li ><a id="Bloquear..." href="/"  class="button"><span class="entypo-block"></span></a></li> </ul></div></div></div></div></div>');
-    $(".container").append('<div class="col-lg-3 col-md-10 col-sm-12"><div class="personal-card"><div class="col-lg-12"><div class="header"><img class="back-profile-user"><i class="fa fa-user fa-2x like-him"></i><div class="bg-user"></div><img class="profile-user-bg"></div><div class="col-lg-12"></div><div class="col-lg-12"></div><div class="name-friend"></div><p>'+ username + '</p><br><p>xxd</p></div></div></div></div>')
+/* Comprueba si la URL de la imagen de usuario existe */
+function isEmpty(str) {
+    return (!str || 0 === str.length);
 }
 
+function addProfileCard(username, firstname, lastname, backImage){
+    var MEDIA_URL = '/media/';
+    var STATIC_URL = '/static/';
+    var userImage;
+    if (isEmpty(backImage)) {
+        userImage = STATIC_URL + '/img/nuevo.png';
+    } else {
+        userImage = MEDIA_URL + backImage;
+    }
+    $(".container .container-responsive").append('<div class="col-lg-3 col-md-10 col-sm-12">' +
+        '<div class="personal-card">' +
+            '<div class="col-lg-12">' +
+                '<div class="header">' +
+                    '<img class="back-profile-user" src="' + userImage +'">' +
+                    '<i class="fa fa-user fa-2x like-him">' +
+                    '</i>' +
+                    '<div class="bg-user">' +
+                     '</div>' +
+                '</div>' +
+            '</div>' +
+        '<div class="col-lg-12">' +
+            '<div class="name-friend">' +
+            '<a href="/profile/' + username + '">' + username + '</a><br><br>' +
+            '<p>'+ firstname + ' ' + lastname + '</p>' +
+            '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>');
+}
 
-/*PETICION AJAX PARA CARGAR + AMIGOS*/
-    function AJAX_loadFriends(){
-
-                $.ajax({
-                        type: "POST",
-                        url: "/load_friends/",
-                        data: {'slug': 4, 'csrfmiddlewaretoken': csrftoken},
-                        dataType: "json",
-                        success: function(response) {
+/*PETICION AJAX PARA CARGAR + FOLLOWRS */
+function AJAX_loadFollowers(){
+    $.ajax({
+        type: "POST",
+        url: "/load_followers/",
+        data: {'slug': 12, 'csrfmiddlewaretoken': csrftoken},
+        dataType: "json",
+        success: function(response) {
                           
-                        	// load friends
-                        	alert("CARGANDO AMIGOS");
+            // load friends
+            console.log("Loading followers");
+            for (var i=0;i<response.length;i++){
+                console.log(response[i].user__username +
+                console.log(response[i].user__first_name +
+                console.log(response[i].user__last_name)));
+                addProfileCard(response[i].user__username,
+                    response[i].user__first_name, response[i].user__last_name, response[i].user__profile__backImage);
+            }
+        },
+        error: function(rs, e) {
+            console.log(rs.responseText);
+            console.log(e);
+            var response = JSON.parse(response);
+            for (var i=0;i<response.length;x++){
+                addProfileCard(response[i].user__username,
+                    response[i].user__firstname, response[i].user__lastname, response[i].user__profile__backImage);
+            }
+        }});
+}
 
-                        	response = JSON.parse(response)
-                        	for (i=0;i<response.length;x++){
-        						addProfileCard(response[i].user.username);
+function AJAX_loadFollows(){
+    $.ajax({
+        type: "POST",
+        url: "/load_follows/",
+        data: {'slug': 12, 'csrfmiddlewaretoken': csrftoken},
+        dataType: "json",
+        success: function(response) {
 
-							}
-
-
-                        },
-                        error: function(rs, e) {
-                           alert(rs.responseText);
-
-                         	response = JSON.parse(response)
-                        	for (i=0;i<response.length;x++){
-        						addProfileCard(response[i].user.username);
-
-							}
-
-                        }
-                });            
-
-      
-    }    
+            // load friends
+            console.log("Loading follows");
+            for (var i=0;i<response.length;i++){
+                console.log(response[i].user__username +
+                console.log(response[i].user__first_name +
+                console.log(response[i].user__last_name)));
+                addProfileCard(response[i].user__username,
+                    response[i].user__first_name, response[i].user__last_name, response[i].user__profile__backImage);
+            }
+        },
+        error: function(rs, e) {
+            console.log(rs.responseText);
+            console.log(e);
+            var response = JSON.parse(response);
+            for (var i=0;i<response.length;x++){
+                addProfileCard(response[i].user__username,
+                    response[i].user__firstname, response[i].user__lastname, response[i].user__profile__backImage);
+            }
+        }});
+}

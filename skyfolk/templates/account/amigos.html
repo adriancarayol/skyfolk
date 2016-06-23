@@ -5,6 +5,7 @@
 {% block extra-css %}
     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
     <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
+    <script src="{{STATIC_URL}}js/friends.js"></script>
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -36,14 +37,20 @@
 </div>
 {% endfor %}
     </div>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<!--
-<center><img id="loader-ajax" src="{{STATIC_URL}}img/loading.gif"></center>
-
-<center><button id="button-more-friends" type="button" onclick="AJAX_loadFriends()">More!</button></center>
--->
 </div>
 {% endblock %}
 {% block extra-js %}
-    <script src="{{STATIC_URL}}js/friends.js"></script>
+        <script src="{{STATIC_URL}}js/friends.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.min.js"></script>
+     <script type="text/javascript" language="javascript">
+         $(function () {
+             var $win = $(window);
+             $win.scroll(function () {
+                 if ($win.height() + $win.scrollTop() == $(document).height()) {
+                     console.log("Scroll to bottom");
+                     AJAX_loadFollows();
+                 }
+             });
+         });
+    </script>
 {% endblock %}

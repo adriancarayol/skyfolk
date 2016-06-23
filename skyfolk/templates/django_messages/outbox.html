@@ -4,8 +4,8 @@
 
 {% block body %}
 <h3 class="outbox_title">{% trans "Sent Messages" %}</h3>
-{% if message_list %}
 <div class="col-lg-6 col-md-12 col-sm-12">
+{% if message_list %}
 <table class="messages">
     <thead>
         <tr><th>{% trans "Recipient" %}</th><th>{% trans "Subject" %}</th><th>{% trans "Sent" %}</th><th>{% trans "Action" %}</th></tr>

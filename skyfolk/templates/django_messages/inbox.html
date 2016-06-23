@@ -3,6 +3,7 @@
 {% load url from future %}
 {% load replacetags %}
 {% load app_filters %}
+{% load avatar_tags %}
 {% block include_files %}
 {% endblock %}
   {% block body %}
@@ -11,13 +12,10 @@
      {% for message in message_list %}
               <div class="col-sm-12 col-md-12 col-lg-12 card">
               <div class="col-lg-3 col-md-12 col-sm-12">
-                  {% if user_profile.profile.image %}
-                      <img class="image-user" id="image_user" src="{{user_profile.profile.image.url}}">
-                      <span class="blue-text">{{ message.sender }}</span>
-                  {% else %}
-                      <img class="image-user" id="image_user" src="{{STATIC_URL}}img/generic-avatar.png">
-                      <span class="blue-text">{{ message.sender }}</span>
-                  {% endif %}
+                      <div class="image-user" id="image-user">
+                          {% avatar message.sender %}
+                      </div>
+                    <span class="blue-text">{{ message.sender }}</span>
                   {% if message.new %}
                     <span title="¡Nuevo mensaje!" class="new-message"><i class="fa fa-bell-o"></i></span>
                   {% endif %}
