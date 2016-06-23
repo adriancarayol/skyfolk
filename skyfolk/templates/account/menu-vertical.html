@@ -3,7 +3,7 @@
 {% endcomment %}
 {% load avatar_tags %}
 <div id="toggle">
-    <ul class="menup">
+    <ul id="ver-menu" class="menup">
         <li onclick="location.href='/profile/{{ request.user }}'" class="profilee">{% avatar user %}<i>{{ request.user.username }}</i></li>
         <li onclick="location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
         <li onclick="location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
