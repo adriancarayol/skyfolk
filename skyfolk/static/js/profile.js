@@ -84,7 +84,7 @@ $(document).ready(function () {
     /* Show more - Show less */
 
     $('#tab-comentarios').find('.wrapper').each(function () {
-        var showLimitChar = 45;
+        var showLimitChar = 90;
         var comment = $(this).find('.wrp-comment');
         var commentValue = comment.text();
         var text = comment.text();
@@ -107,7 +107,7 @@ $(document).ready(function () {
         $content.css('height', 'auto');
     } else {
         linkText = "+ Mostrar más";
-        $content.css('height', '1.3em');
+        $content.css('height', '2.6em');
     }
         $this.text(linkText);
 });
