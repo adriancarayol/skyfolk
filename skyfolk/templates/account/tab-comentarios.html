@@ -23,15 +23,25 @@
                       <div class="nombre_image">
                     <ul>
                       <li><i class="first">{{pub.author.first_name}} {{pub.author.last_name}}</i></li>
-                      <li><a class="name" href="/profile/{{ pub.author.username }}" >{{pub.user.username}}</a></li>
+                      <li><a class="name" href="/profile/{{ pub.author.username }}">{{pub.author.username}}</a></li>
                     </ul>
                     <div class="usr-img img-responsive">{% avatar pub.author %}</div>
                       </div>
-
                     <div class="parrafo comment-tab">
-                    <a target="_blank">{{ pub.created }}</a><br><br>
+                     <a href="/profile/{{ pub.author.username }}">{{pub.author.username}}</a>
+                        <a target="_blank">{{ pub.created }}</a><br><br>
                         {{ pub.content|replace_decorators|safe }}
-                  </div>
+                    </div>
+                      <div class="wrapper-reply">
+                        <!-- RESPUESTAS A COMENTARIOS -->
+                        {% for reply in pub.replies %}
+                        <div class="comment-reply">
+                        <div class="avatar-reply">{% avatar reply.author %}</div>
+                            <div class="author-reply"><span class="triangle"> </span><a href="/profile/{{ reply.author }}">{{ reply.author }}</a></div>
+                              <div class="content-reply">{{ reply|safe|replace_decorators|safe }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
                   <div class="text_area">
                       <textarea placeholder="Escribe tu mensaje..."></textarea>
                        <div class="botones_ampliado">
