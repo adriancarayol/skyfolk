@@ -9,17 +9,6 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
-#Cargamos SECRET_KEY
-def get_env_variable(var_name):
-    '''Intenta leer una variable de entorno'''
-    try:
-        return os.environ[var_name]
-    except KeyError:
-        error_msg = "Set the %s environment variable" % var_name
-        raise ImproperlyConfigured(error_msg)
-
-SECRET_KEY = get_env_variable('SECRET_KEY')
-
 DEBUG = False
 ALLOWED_HOSTS = ['.skyfolk.net','127.0.0.1']
 
