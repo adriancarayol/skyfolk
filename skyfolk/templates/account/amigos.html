@@ -18,7 +18,7 @@
                {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
                    <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user__profile__backImage }}">
                    {% else %}
-                   <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
+                   <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                 {% endif %}
                 <i class="fa fa-user fa-2x like-him">
                 </i>

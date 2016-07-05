@@ -113,7 +113,7 @@ $(document).ready(function () {
 });
 
   $('#page-wrapper').find('#close').on('click', function(event) {
-
+    $('#page-wrapper').find('#message2').val('');
     $('#page-wrapper').hide();
   });
 
@@ -139,21 +139,21 @@ $(document).ready(function () {
 
   $('#message-form2').on('submit', function(event) {
     event.preventDefault();
-    var data = $('#page-wrapper').find('#message-form2').serialize()
+    var data = $('#page-wrapper').find('#message-form2').serialize();
     AJAX_submit_publication(data);
   });
 
   $('button.enviar').on('click', function(event) {
-    event.preventDefault()
-    var parent_pk = $(this).attr('id').split('-')[1]
-    var form = $(this).parent()
-    $(form).find('input[name=parent]').val(parent_pk)
-    var user_pk = $(form).find('input[name=author]').val()
-    var owner_pk = $(form).find('input[name=board_owner]').val()
-    var data = $(form).serialize()
-    var pks = [user_pk, owner_pk, parent_pk]
-    AJAX_submit_publication(data, 'reply', pks)
-  })
+    event.preventDefault();
+    var parent_pk = $(this).attr('id').split('-')[1];
+    var form = $(this).parent();
+    $(form).find('input[name=parent]').val(parent_pk);
+    var user_pk = $(form).find('input[name=author]').val();
+    var owner_pk = $(form).find('input[name=board_owner]').val();
+    var data = $(form).serialize();
+    var pks = [user_pk, owner_pk, parent_pk];
+    AJAX_submit_publication(data, 'reply', pks);
+  });
 
   $('#atajos-keyboard-profile').find('.atajos-title .fa-close').on('click',function() {
     $('#atajos-keyboard-profile').hide();
@@ -173,12 +173,12 @@ $(document).ready(function () {
     $('.fa-reply').on('click', function() {
         //var i = $(this).closest('.wrapper');
         //replyComment(i);
-        var id_ = $(this).attr("id").slice(6)
+        var id_ = $(this).attr("id").slice(6);
         if (flag_reply) {
-            $("#"+id_).slideUp()
+            $("#"+id_).slideUp();
             flag_reply = false
         }else{
-            $("#"+id_).slideDown()
+            $("#"+id_).slideDown();
             flag_reply = true
         }
 
@@ -407,13 +407,15 @@ $(document).ready(function () {
 /* Abre nuevo mensaje "m" */
 
   $(document).keypress(function(e){
+    var page_wrapper = document.getElementById('page-wrapper');
     var key = e.which;
-    if (key == 109 && ($('#page-wrapper').is(':hidden')) &&
+    if (key == 109 && ((page_wrapper).is(':hidden')) &&
     !($('input').is(":focus")) &&
     !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
         // Si presionas el char 'm' mostará el div para escribir un mensaje.
-        $('#page-wrapper').toggle();
-        $('#page-wrapper').find('#message2').focus();
+        (page_wrapper).val('');
+        (page_wrapper).toggle();
+        (page_wrapper).find('#message2').focus();
     }
   });
 /* Abre atajos "a" */
@@ -1406,7 +1408,7 @@ function is_numeric(value) {
 
 function serializedToJSON(data) {
     //from -> http://stackoverflow.com/questions/23287067/converting-serialized-forms-data-to-json-object
-    data = data.split("&")
+    data = data.split("&");
     var obj={};
     for(var key in data)
     {
