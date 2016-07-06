@@ -12,9 +12,9 @@ class AvatarConf(AppConf):
     GRAVATAR_BASE_URL = 'https://www.gravatar.com/avatar/'
     GRAVATAR_FIELD = 'email'
     GRAVATAR_BACKUP = True
-    GRAVATAR_DEFAULT = None
+    GRAVATAR_DEFAULT = 'http://pre.skyfolk.net/static/img/nuevo.png'
     AVATAR_GRAVATAR_FORCEDEFAULT = False
-    DEFAULT_URL = 'avatar/img/default.jpg'
+    DEFAULT_URL = '/img/nuevo.png'
     MAX_AVATARS_PER_USER = 5
     MAX_SIZE = 1024 * 1024
     THUMB_FORMAT = 'GIF' # Cambiar a jpeg si no se desean movimientos.
@@ -30,7 +30,7 @@ class AvatarConf(AppConf):
     FACEBOOK_BACKUP = False
     FACEBOOK_GET_ID = None
     CACHE_ENABLED = True
-    RANDOMIZE_HASHES = False
+    RANDOMIZE_HASHES = True
 
     def configure_auto_generate_avatar_sizes(self, value):
         return value or getattr(settings, 'AVATAR_AUTO_GENERATE_SIZES',

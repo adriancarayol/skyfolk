@@ -139,7 +139,7 @@ form {
   font-width: 100;
   left: 30px; }
 
-/* Estilos para el botón ¿olvido su contraseña? */
+/* Estilos para el bot├│n ┬┐olvido su contrase├▒a? */
 .forgot_pswd {
   position: absolute;
   display: block;
@@ -218,7 +218,7 @@ form {
   font-weight: 100;
   font-family: "Open Sans", sans-serif; }
 
-/* Muestra los mensajes de error, por ejemplo -> "Contraseña incorrecta en los forms" */
+/* Muestra los mensajes de error, por ejemplo -> "Contrase├▒a incorrecta en los forms" */
 .errorlist li {
   color: #f44336;
   display: inline-block;

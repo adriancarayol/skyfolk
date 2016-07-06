@@ -14,7 +14,7 @@
             {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
             <img src="{{user_profile.profile.backImage.url}}" class="user-bg">
             {% else %}
-            <img src="{{STATIC_URL}}img/backgrounds/5.jpg" class="user-bg">
+            <img src="{{STATIC_URL}}img/nuevo_back.png" class="user-bg">
             {% endif %}
             <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
             <!--<input type="checkbox" id="button-menu"  />-->

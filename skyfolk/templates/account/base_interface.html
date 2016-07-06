@@ -46,9 +46,14 @@
   {% if user.is_authenticated %}
   <div id="page-wrapper" style="display:none;">
     <div id="status">
-    <i class="fa fa-paper-plane"> </i>
-    <h4>Publicar comentario</h4>
-    <h6>Publica un comentario para que el mundo lo vea.</h6>
+        <i class="fa fa-paper-plane"> </i>
+        {% if user == user_profile %}
+                <h4>Publicar comentario</h4>
+                <h6>Publica un comentario para que el mundo lo vea.</h6>
+        {% else %}
+                <h4>Escribe algo a: {{ user_profile.username }}</h4>
+                <h6>Escribe un mensaje en el tablón de {{ user_profile.username }}.</h6>
+        {% endif %}
       <p></p>
     </div>
     <form id="message-form2" action="" method="post">{% csrf_token %}

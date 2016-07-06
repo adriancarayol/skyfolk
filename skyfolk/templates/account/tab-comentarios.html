@@ -71,24 +71,35 @@
                 <div class="optiones_comentarios">
                     <ul class="opciones">
                         {% if user.is_authenticated and user.username == pub.author.username %} <!-- Si estamos visitando un perfil que no es el nuestro -->
-                             <li title="Borrar comentario"><i class="fa fa-trash"></i></li>
-                        {% elif user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
-                             <li title="Borrar comentario"><i class="fa fa-trash"></i></li>
+                             <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
+                        {% elif user.is_authenticated and user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
+                             <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
                         {% endif %}
                         {% if pub.hates > 0 %}
-                        <li title="No me gusta" class="fa-broken-heart"><i id="fa-hate" class="fa fa-heartbeat"> {{ pub.hates }}</i></li>
+                            <li title="No me gusta" class="fa-stack hate-with-values" id="fa-hate">
+                                <span class="hate-comment">
+                                    <i class="fa fa-heart fa-stack-1x hate-comment"></i>
+                                    <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
+                                    <i class="fa hate-value"> {{ pub.hates }} </i>
+                                </span>
+                            </li>
                         {% else %}
-                        <li title="No me gusta" class="fa-broken-heart"><i id="fa-hate" class="fa fa-heartbeat"></i></li>
+                            <li title="No me gusta" class="fa-stack" id="fa-hate">
+                                <span class="hate-comment">
+                                    <i class="fa fa-heart fa-stack-1x"></i>
+                                    <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </li>
                         {% endif %}
                         {% if pub.likes > 0 %}
-                            <li title="¡Me gusta!"><i id="like-heart" class="fa fa-heart"> {{ pub.likes }} </i></li>
+                            <li title="¡Me gusta!" class="like-comment"><i id="like-heart" class="fa fa-heart"> {{ pub.likes }} </i></li>
                         {% else %}
-                            <li title="¡Me gusta!"><i id="like-heart" class="fa fa-heart"></i></li>
+                            <li title="¡Me gusta!" class="like-comment"><i id="like-heart" class="fa fa-heart"></i></li>
                         {% endif %}
-                       <li title="Citar"><i class="fa fa-quote-left">
+                       <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
                        </i></li>
-                       <li title="Responder"><i class="fa fa-reply" id="reply-caja-comentario-{{ pub.pk }}"></i></li>
-                       <li  title="Añadir a mi timeline"><i class="fa fa-tag"></i></li>
+                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-{{ pub.pk }}"></i></li>
+                       <li title="Añadir a mi timeline" class="add-timeline"><i class="fa fa-tag"></i></li>
                     </ul>
                 </div>
                 </article>
