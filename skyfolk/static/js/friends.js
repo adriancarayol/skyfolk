@@ -70,7 +70,7 @@ function AJAX_loadFollowers(){
     $.ajax({
         type: "POST",
         url: "/load_followers/",
-        data: {'slug': 12, 'csrfmiddlewaretoken': csrftoken},
+        data: {'slug': 2, 'csrfmiddlewaretoken': csrftoken},
         dataType: "json",
         success: function(response) {
                           
@@ -99,7 +99,7 @@ function AJAX_loadFollows(){
     $.ajax({
         type: "POST",
         url: "/load_follows/",
-        data: {'slug': 12, 'csrfmiddlewaretoken': csrftoken},
+        data: {'slug': 2, 'csrfmiddlewaretoken': csrftoken},
         dataType: "json",
         success: function(response) {
 
