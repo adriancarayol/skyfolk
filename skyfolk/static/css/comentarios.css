@@ -21,7 +21,7 @@ a, a:visited {
   overflow: hidden;
   height: auto; }
 
-.comment {
+.comment {l
   overflow: hidden;
   line-height: 1em;
   height: auto; }
@@ -144,7 +144,7 @@ input[type="checkbox"] {
   border-radius: 3px;
   position: absolute;
   z-index: 9999;
-  width: 60%;
+  width: 70%;
   background: white;
   top: 200px;
   height: 586px;
@@ -192,6 +192,7 @@ input[type="checkbox"] {
   position: relative;
   display: inline-block;
   margin-top: 3px;
+  float: right;
   margin-left: 17px; }
 
 .ampliado ul {
@@ -352,6 +353,16 @@ input[type="checkbox"] {
   border: 1px solid #1e88e5;
   resize: none; }
 
+  /* Respuestas en comentario ampliado */
+  .ampliado .wrapper-reply {
+    clear: both;
+    height: auto;
+    width: 90%;
+    background-color: transparent;
+  }
+.ampliado .triangle-reply {
+  display: none;
+}
   /* Responder - Me gusta - Añadir */
   span[class*="fa-paper-plane"] {
     cursor:pointer;

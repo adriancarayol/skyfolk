@@ -175,10 +175,10 @@ $(document).ready(function () {
         //replyComment(i);
         var id_ = $(this).attr("id").slice(6);
         if (flag_reply) {
-            $("#"+id_).slideUp();
+            $("#"+id_).slideUp("fast");
             flag_reply = false
         }else{
-            $("#"+id_).slideDown();
+            $("#"+id_).slideDown("fast");
             flag_reply = true
         }
 
