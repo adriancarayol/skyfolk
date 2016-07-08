@@ -40,7 +40,7 @@ function addProfileCard(username, firstname, lastname, backImage){
     var STATIC_URL = '/static/';
     var userImage;
     if (isEmpty(backImage)) {
-        userImage = STATIC_URL + '/img/nuevo.png';
+        userImage = STATIC_URL + 'img/nuevo_back.png';
     } else {
         userImage = MEDIA_URL + backImage;
     }

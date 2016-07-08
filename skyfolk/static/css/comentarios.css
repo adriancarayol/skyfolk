@@ -21,7 +21,7 @@ a, a:visited {
   overflow: hidden;
   height: auto; }
 
-.comment {l
+.comment {
   overflow: hidden;
   line-height: 1em;
   height: auto; }
@@ -89,7 +89,7 @@ a, a:visited {
   top: 9px;
   left: 9px;
   cursor: pointer;
-  box-shadow: 0 1px 5px #1976d2;
+  box-shadow: 0 1px 1px #1e88e5;
   border: 1px solid #eee;
   padding: 0 0;
   width: 120px;
@@ -136,18 +136,18 @@ input[type="checkbox"] {
   opacity: 0; }
 
 .ampliado {
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overfloy-x: hidden;
+  overflow-y: auto;
   font-family: "Open Sans", sans-serif;
-  display: none;
-  box-shadow: 0 1px 5px #1976d2;
+  box-shadow: 0 1px 5px #000;
+  outline: none;
   border-radius: 3px;
   position: absolute;
   z-index: 9999;
   width: 70%;
   background: white;
   top: 200px;
-  height: 586px;
+  height: 70%;
   display: none;
   margin-left: auto;
   margin-right: auto;
@@ -216,143 +216,16 @@ input[type="checkbox"] {
   text-decoration: none;
   color: #787878; }
 
-.ampliado .text_area {
-  position: relative;
-  top: 220px;
-  width: 90%;
-  margin: auto;
-  height: 130px; }
-
-.ampliado .botones_ampliado {
-  position: relative;
-  top: 30px;
-  width: 100%;
-  height: 30px; }
-
-.ampliado .botones_ampliado .enviar_ampliado {
-  border: medium none;
-  border-radius: 2px;
-  display: inline-block;
-  height: 36px;
-  line-height: 36px;
-  padding: 0 2rem;
-  text-transform: uppercase;
-  vertical-align: middle;
-  text-decoration: none;
-  color: #1e88e5;
-  background-color: transparent;
-  text-align: center;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease-out 0s;
-  cursor: pointer;
-  float: right; }
-
-.ampliado .botones_ampliado .enviar_ampliado:hover {
-  opacity: 0.8;
-  background-color: #eee;
-  color: grey; }
-
-.ampliado .botones_ampliado .cerrar_ampliado {
-  border: medium none;
-  border-radius: 2px;
-  display: inline-block;
-  height: 36px;
-  line-height: 36px;
-  padding: 0 2rem;
-  text-transform: uppercase;
-  vertical-align: middle;
-  text-decoration: none;
-  color: #212121;
-  background-color: transparent;
-  text-align: center;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease-out 0s;
-  cursor: pointer;
-  float: right;
-  margin-right: 7px;
-  outline: none; }
-
-.ampliado .botones_ampliado .cerrar_ampliado:hover {
-  opacity: 0.8;
-  background-color: #eee; }
-
-.ampliado .botones_ampliado .cerrar_ampliado .fa-close {
-  margin-right: 6px; }
-
-.ampliado .botones_ampliado .localizacion_ampliado {
-  background: transparent;
-  display: inline-block;
-  border-radius: 3px;
-  border: none;
-  font-size: 1.1rem;
-  padding: 1rem 1em;
-  float: left;
-  color: #1e88e5;
-  top: 10px;
-  cursor: pointer;
-  margin: 0 0.25rem;
-  text-align: center; }
-
-.ampliado .botones_ampliado .difundir_ampliado {
-  background: transparent;
-  display: inline-block;
-  border-radius: 3px;
-  border: none;
-  font-size: 1.1rem;
-  padding: 1rem 1em;
-  float: left;
-  color: #1e88e5;
-  top: 10px;
-  margin: 0 0.25rem;
-  cursor: pointer;
-  text-align: center; }
-
-.ampliado .difundir_ampliado:hover, .foto_ampliado:hover, .localizacion_ampliado:hover {
-  box-shadow: 0 1px 5px #1976d2; }
-
-.ampliado .botones_ampliado .foto_ampliado {
-  background: transparent;
-  display: inline-block;
-  border-radius: 3px;
-  border: none;
-  font-size: 1.1rem;
-  padding: 1rem 1em;
-  float: left;
-  color: #1e88e5;
-  top: 10px;
-  margin: 0 0.25rem;
-  cursor: pointer;
-  text-align: center; }
-
-.ampliado .botones_ampliado .enviar_ampliado .fa-paper-plane {
-  margin-right: 6px; }
-
-.ampliado .text_area ul {
-  position: relative;
-  top: 30px;
-  height: 20px;
-  width: 80%;
-  margin: auto; }
-
-.ampliado .text_area ul li {
-  margin-left: 60px;
-  position: relative;
-  display: inline-block; }
-
-.ampliado textarea {
-  overflow: hidden;
-  background: #fff;
-  padding: 10px;
-  width: 90%;
-  height: 80px;
-  font-size: 14px;
-  margin: 50px auto;
-  display: block;
-  border-radius: 2px;
-  color: black;
-  border: 1px solid #1e88e5;
-  resize: none; }
-
+.ampliado .fa-close {
+    float: right;
+    font-size: 1.32em;
+    margin: 1.25%;
+    position: relative;
+    cursor: pointer;
+    z-index: 9999;}
+.ampliado .fa-close:hover {
+    opacity: 0.9;
+}
   /* Respuestas en comentario ampliado */
   .ampliado .wrapper-reply {
     clear: both;

@@ -31,7 +31,7 @@
                 {% if item.profile.backImage %}
                 <img class="back-profile-user" src="{{ item.profile.backImage.url }}">
                    {% else %}
-                   <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
+                   <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                 {% endif %}
                 <i class="fa fa-user fa-2x like-him">
                 </i>
@@ -65,7 +65,7 @@
                 {% if pub.author.profile.backImage %}
                    <img class="back-profile-user" src="{{ pub.author.profile.backImage.url }}">
                    {% else %}
-                   <img class="back-profile-user" src="{{ STATIC_URL }}img/backgrounds/5.jpg">
+                   <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                 {% endif %}
                 <div class="bg-user">
                     <div onclick="location.href='/profile/{{ pub.author.username }}'" class="profile-user-bg">{% avatar pub.author %}</div>
