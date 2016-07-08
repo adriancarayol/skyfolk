@@ -82,7 +82,6 @@ $(window).load(function() {
 $(document).ready(function () {
 
     /* Show more - Show less */
-
     $('#tab-comentarios').find('.wrapper').each(function () {
         var showLimitChar = 90;
         var comment = $(this).find('.wrp-comment');
@@ -181,7 +180,6 @@ $(document).ready(function () {
             $("#"+id_).slideDown("fast");
             flag_reply = true
         }
-
     });
 
     function replyComment(caja_pub) {
@@ -409,13 +407,12 @@ $(document).ready(function () {
   $(document).keypress(function(e){
     var page_wrapper = document.getElementById('page-wrapper');
     var key = e.which;
-    if (key == 109 && ((page_wrapper).is(':hidden')) &&
+    if (key == 109 && ($(page_wrapper).is(':hidden')) &&
     !($('input').is(":focus")) &&
     !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
         // Si presionas el char 'm' mostará el div para escribir un mensaje.
-        (page_wrapper).val('');
-        (page_wrapper).toggle();
-        (page_wrapper).find('#message2').focus();
+        $(page_wrapper).toggle();
+        $(page_wrapper).find('#message2').focus();
     }
   });
 /* Abre atajos "a" */
@@ -585,9 +582,25 @@ $('#tab-timeline').bind('scroll', function() {
 
 
   });
-
-/* FIN DOCUMENT READY */
+    $('#clear-notify').on('click', function() {
+        AJAX_mark_all_read();
+    });
+    /* FIN DOCUMENT READY */
 });
+/* Para marcar las publicaciones de un usuario como leidas */
+function AJAX_mark_all_read() {
+  $.ajax({
+    url: '/inbox/notifications/mark-all-as-read/',
+    type: 'POST',
+    success: function() {
+        $('#notification-menu').find('li').fadeOut();
+        $("#live_notify_badge").html(0);
+    },
+    error: function(rs, e) {
+      alert('ERROR: ' + rs.responseText + e);
+    }
+  });
+}
 
 function addFriendToHtmlList(item) {
 
@@ -963,8 +976,8 @@ function AJAX_submit_publication(data, type, pks) {
     data: data,
     success: function(data) {
       var response = data.response;
-      console.log('RESPONSE AQUI')
-      console.log(response)
+      console.log('RESPONSE AQUI');
+      console.log(response);
       if (response == true) {
         swal({
             title: "Success!",
@@ -981,7 +994,10 @@ function AJAX_submit_publication(data, type, pks) {
     type: "error"
         });
       }
-        $('#page-wrapper').fadeOut("fast") // Ocultamos el DIV al publicar un mensaje.
+        if (type != "reply")
+         $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+        else if (type == "reply")
+            $("#caja-comentario-"+pks[2]).slideUp();
         },
     error: function(rs, e) {
       alert('ERROR: ' + rs.responseText + " " + e)

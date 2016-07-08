@@ -58,7 +58,7 @@ class UnreadNotificationsList(NotificationViewList):
 @login_required
 def mark_all_as_read(request):
     request.user.notifications.mark_all_as_read()
-
+    print('Usuario: ' + str(request.user) + ' va a borrar todas las notificaciones')
     _next = request.GET.get('next')
 
     if _next:

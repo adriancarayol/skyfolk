@@ -21,8 +21,8 @@ function fill_notification_list(data) {
         menu.innerHTML = "";
         for (var i=0; i < data.unread_list.length; i++) {
             var item = data.unread_list[i];
-            console.log(item)
-            var message = ""
+            console.log(item);
+            var message = "";
             if(typeof item.actor !== 'undefined'){
                 message = item.actor;
             }
@@ -61,7 +61,7 @@ function fetch_api_data() {
                     func(JSON.parse(r.responseText));
                 }
             }
-        }
+        };
         r.send();
     }
     if (consecutive_misfires < 10) {
@@ -74,5 +74,6 @@ function fetch_api_data() {
         }
     }
 }
+
 
 setTimeout(fetch_api_data,1000);
