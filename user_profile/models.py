@@ -3,6 +3,7 @@ import timeline
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import URLValidator
 
 # from publications.models import Publication
 # from _overlapped import NULL
@@ -56,7 +57,7 @@ class UserProfile(models.Model):
     # accepted_eula = models.BooleanField()
     # favorite_animal = models.CharField(max_length=20, default="Dragons.")
     backImage = models.ImageField(upload_to=uploadBackImagePath, verbose_name='BackImage', blank=True, null=True)
-    image = models.ImageField(upload_to=uploadAvatarPath, verbose_name='Image', blank=True, null=True)
+    # image = models.ImageField(upload_to=uploadAvatarPath, verbose_name='Image', blank=True, null=True)
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
@@ -85,7 +86,7 @@ class UserProfile(models.Model):
                 return result[0].verified
         return False
     """
-
+    """
     def save(self, *args, **kwargs):
         # delete old image when replacing by updating the file
         try:
@@ -95,8 +96,9 @@ class UserProfile(models.Model):
         except:
             pass  # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
-    # Return privacity of user.
+    """
 
+    # Return privacity of user.
     def get_privacity(self):
         return self.privacity
 
@@ -154,7 +156,7 @@ class UserProfile(models.Model):
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
                                                    'from_publication__content', 'from_publication__created',
-                                                   'from_publication__likes', 'user__profile__image',
+                                                   'from_publication__likes',
                                                    'from_publication__hates', 'from_publication__replies').order_by(
             'from_publication__created').reverse()
 
@@ -163,8 +165,7 @@ class UserProfile(models.Model):
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
                                                    'from_publication__content', 'from_publication__created',
-                                                   'from_publication__likes',
-                                                   'user__profile__image').order_by(
+                                                   'from_publication__likes').order_by(
             'from_publication__created').reverse()[0:15]
 
     def get_myPublications(self):
@@ -178,18 +179,18 @@ class UserProfile(models.Model):
     # Obtener seguidos
     def get_following(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWING).values('user__id', 'user__username', 'user__first_name',
-                                                                     'user__last_name', 'user__profile__image',
+                                                                     'user__last_name',
                                                                      'user__profile__backImage').order_by('id')
 
     # Obtener seguidores
     def get_followers(self):
         return self.get_relationships(RELATIONSHIP_FOLLOWER).values('user__id', 'user__username', 'user__first_name',
-                                                                    'user__last_name', 'user__profile__image',
+                                                                    'user__last_name',
                                                                     'user__profile__backImage').order_by('id')
 
     def get_friends(self):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name',
-                                                                  'user__last_name', 'user__profile__image',
+                                                                  'user__last_name',
                                                                   'user__profile__backImage').order_by('id')
 
     def get_blockeds(self):

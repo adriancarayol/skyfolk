@@ -20,6 +20,7 @@
             <span id="check-{{pub.id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"> </i></span>
             <!-- Check para ampliar el mensaje... -->
                   <div class="ampliado" id="expand-{{pub.id}}">
+                      <div class="cerrar_ampliado"><i class="fa fa-close"></i></div>
                       <div class="nombre_image">
                     <ul>
                       <li><i class="first">{{pub.author.first_name}} {{pub.author.last_name}}</i></li>
@@ -33,6 +34,9 @@
                         {{ pub.content|replace_decorators|safe }}
                     </div>
                       <div class="wrapper-reply">
+                        {% comment %}
+                        {% include "account/new_reply.html" %}
+                        {% endcomment %}
                         <!-- RESPUESTAS A COMENTARIOS -->
                         {% for reply in pub.replies %}
                         <div class="comment-reply">
@@ -42,16 +46,6 @@
                         </div>
                         {% endfor %}
                     </div>
-                  <div class="text_area">
-                      <textarea placeholder="Escribe tu mensaje..."></textarea>
-                       <div class="botones_ampliado">
-                        <button class="enviar_ampliado"><i class="fa fa-paper-plane"></i>Enviar</button>
-                        <button class="cerrar_ampliado"><i class="fa fa-close"></i><label for="check-{{pub.id}}">Cerrar</label></button>
-                        <button class="difundir_ampliado"><i class="fa fa-bullhorn"></i> Difundir mensaje</button>
-                        <button class="foto_ampliado"><i class="fa fa-paperclip"></i> Añadir archivo</button>
-                        <button class="localizacion_ampliado"><i class="fa fa-map-marker"></i> Añadir localización</button>
-                       </div>
-                  </div>
                   </div>
       <div class="image">
         <div class="usr-img img-responsive">{% avatar pub.author %}</div>

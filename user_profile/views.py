@@ -34,7 +34,6 @@ def profile_view(request, username):
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
 #>>>>>>> issue#11
-
     privacity = user_profile.profile.get_privacity()
 
     # print(user.email)
@@ -522,6 +521,8 @@ def request_friend(request):
                 friend_request = None
 
             if not friend_request:
+                notify.send(user, actor=User.objects.get(pk=user.pk).username, recipient=User.objects.get(pk=user.pk),
+                            verb=u'¡Nueva peticion de amistad!')
                 created = user.profile.add_friend_request(
                     UserProfile.objects.get(pk=slug))
                 created.save()
@@ -573,6 +574,49 @@ def respond_friend_request(request):
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
+# Load followers
+def load_followers(request):
+    print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
+    friendslist = request.user.profile.get_followers()
+
+    if friendslist == None:
+        friends_next = None
+    else:
+        #friendslist = json.loads(friendslist)
+        if request.method == 'POST':
+            slug = request.POST.get('slug', None)
+            print('>>>>>>> SLUG: ' + slug)
+            n = int(slug) * 2
+            # devolvera None si esta fuera de rango?
+            friends_next = friendslist[n - 2:n]
+            print('>>>>>>> LISTA: ')
+            print(friends_next)
+        else:
+            friends_next = None
+    return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
+
+@login_required(login_url='/')
+def followers(request, username):
+    searchForm = SearchForm()
+    publicationForm = PublicationForm()
+    user_profile = get_object_or_404(
+        get_user_model(), username__iexact=username)
+
+    try:
+        friends = user_profile.profile.get_followers()
+    except ObjectDoesNotExist:
+        friends = None
+
+    if (len(friends) > 1):
+        friends_top4 = friends[0:1]
+    else:
+        friends_top4 = friends
+    return render_to_response('account/followers.html',
+                              {'friends_top4': friends_top4, 'searchForm': searchForm,
+                               'publicationForm': publicationForm},
+                              context_instance=RequestContext(request))
+
+
 @login_required(login_url='/')
 def following(request, username):
     searchForm = SearchForm()
@@ -592,27 +636,6 @@ def following(request, username):
     return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm,
                                                       'publicationForm': publicationForm},
                               context_instance=RequestContext(request))
-
-# Load followers
-def load_followers(request):
-    print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
-    friendslist = request.user.profile.get_followers()
-
-    if friendslist == None:
-        friends_next = None
-    else:
-        #friendslist = json.loads(friendslist)
-        if request.method == 'POST':
-            slug = request.POST.get('slug', None)
-            print('>>>>>>> SLUG: ' + slug)
-            n = int(slug) * 4
-            # devolvera None si esta fuera de rango?
-            friends_next = friendslist[n - 4:n]
-            print('>>>>>>> LISTA: ')
-            print(friends_next)
-        else:
-            friends_next = None
-    return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
 
 # Load follows
 def load_follows(request):
@@ -634,27 +657,6 @@ def load_follows(request):
         else:
             friends_next = None
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
-
-@login_required(login_url='/')
-def followers(request, username):
-    searchForm = SearchForm()
-    publicationForm = PublicationForm()
-    user_profile = get_object_or_404(
-        get_user_model(), username__iexact=username)
-
-    try:
-        friends = user_profile.profile.get_followers()
-    except ObjectDoesNotExist:
-        friends = None
-
-    if (len(friends) > 4):
-        friends_top4 = friends[0:4]
-    else:
-        friends_top4 = friends
-    return render_to_response('account/followers.html',
-                              {'friends_top4': friends_top4, 'searchForm': searchForm,
-                               'publicationForm': publicationForm},
-                              context_instance=RequestContext(request))
 
 
 class CustomPasswordChangeView(PasswordChangeView):
