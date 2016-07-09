@@ -994,10 +994,10 @@ function AJAX_submit_publication(data, type, pks) {
     type: "error"
         });
       }
-        if (type != "reply")
-         $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
-        else if (type == "reply")
-            $("#caja-comentario-"+pks[2]).slideUp();
+        if (type == "reply") {
+          $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+          $("#caja-comentario-"+pks[2]).slideUp(); // Ocultamos textarea de respuesta
+        }
         },
     error: function(rs, e) {
       alert('ERROR: ' + rs.responseText + " " + e)
