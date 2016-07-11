@@ -38,7 +38,7 @@ function fill_notification_list(data) {
             if(typeof item.timestamp !== 'undefined'){
                 message = message + " " + item.timestamp;
             }
-            message = message + " " + '<a href="/inbox/notifications/mark-as-read/' + item.slug + '"/>' + item.slug + '';
+            message = message + " " + '<a href="/inbox/notifications/mark-as-read/' + item.slug + '"/>' + "ELIMINAR" + '</a>';
             menu.innerHTML = menu.innerHTML + "<li>"+ message + "</li>";
         }
     }

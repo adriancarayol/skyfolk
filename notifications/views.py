@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
-from .utils import slug2id, id2slug
+from .utils import slug2id
 from .models import Notification
 
 from distutils.version import StrictVersion
@@ -68,7 +68,7 @@ def mark_all_as_read(request):
 
 @login_required
 def mark_as_read(request, slug=None):
-    id = slug2id(slug) # En este caso slug es el id real de la notificacion
+    id = slug2id(slug)
     notification = get_object_or_404(
         Notification, recipient=request.user, id=id)
     notification.mark_as_read()
@@ -120,7 +120,7 @@ def delete(request, slug=None):
 
 def live_unread_notification_count(request):
     if not request.user.is_authenticated():
-        data = {'unread_count':0}
+        data = {'unread_count': 0}
     else:
         data = {
             'unread_count': request.user.notifications.unread().count(),
@@ -131,8 +131,8 @@ def live_unread_notification_count(request):
 def live_unread_notification_list(request):
     if not request.user.is_authenticated():
         data = {
-           'unread_count':0,
-           'unread_list':[]
+           'unread_count': 0,
+           'unread_list': []
         }
         return JsonResponse(data)
 
@@ -154,6 +154,7 @@ def live_unread_notification_list(request):
             struct['target'] = str(n.target)
         if n.action_object:
             struct['action_object'] = str(n.action_object)
+        struct['slug'] = n.slug  # por defecto no tenemos el slug
         unread_list.append(struct)
         # print(n.slug)
     data = {
