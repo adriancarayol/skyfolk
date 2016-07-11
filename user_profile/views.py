@@ -502,11 +502,10 @@ def request_friend(request):
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
-        profileUserId = slug
-        print(str(profileUserId))
+        print(str(slug)) # slug = profile id
         try:
             #  user_friend = user.profile.is_friend(profileUserId)
-            user_friend = user.profile.is_follow(profileUserId)  # Comprobamos si YO ya sigo al perfil deseado.
+            user_friend = user.profile.is_follow(slug)  # Comprobamos si YO ya sigo al perfil deseado.
         except ObjectDoesNotExist:
             user_friend = None
 
@@ -521,7 +520,8 @@ def request_friend(request):
                 friend_request = None
 
             if not friend_request:
-                notify.send(user, actor=User.objects.get(pk=user.pk).username, recipient=User.objects.get(pk=user.pk),
+                notify.send(user, actor=User.objects.get(pk=user.pk).username,
+                            recipient=UserProfile.objects.get(pk=slug).user,
                             verb=u'¡Nueva peticion de amistad!')
                 created = user.profile.add_friend_request(
                     UserProfile.objects.get(pk=slug))

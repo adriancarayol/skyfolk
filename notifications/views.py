@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
-from .utils import slug2id
+from .utils import slug2id, id2slug
 from .models import Notification
 
 from distutils.version import StrictVersion
@@ -58,7 +58,7 @@ class UnreadNotificationsList(NotificationViewList):
 @login_required
 def mark_all_as_read(request):
     request.user.notifications.mark_all_as_read()
-    print('Usuario: ' + str(request.user) + ' va a borrar todas las notificaciones')
+    # print('Usuario: ' + str(request.user) + ' va a borrar todas las notificaciones')
     _next = request.GET.get('next')
 
     if _next:
@@ -68,8 +68,7 @@ def mark_all_as_read(request):
 
 @login_required
 def mark_as_read(request, slug=None):
-    id = slug2id(slug)
-
+    id = slug2id(slug) # En este caso slug es el id real de la notificacion
     notification = get_object_or_404(
         Notification, recipient=request.user, id=id)
     notification.mark_as_read()
@@ -156,6 +155,7 @@ def live_unread_notification_list(request):
         if n.action_object:
             struct['action_object'] = str(n.action_object)
         unread_list.append(struct)
+        # print(n.slug)
     data = {
         'unread_count': request.user.notifications.unread().count(),
         'unread_list': unread_list

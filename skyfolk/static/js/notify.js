@@ -21,10 +21,10 @@ function fill_notification_list(data) {
         menu.innerHTML = "";
         for (var i=0; i < data.unread_list.length; i++) {
             var item = data.unread_list[i];
-            console.log(item)
-            var message = ""
+            console.log(item);
+            var message = "";
             if(typeof item.actor !== 'undefined'){
-                message = '<a href="/profile/' + item.actor + '" >' + item.actor + '</a>';
+                message = message + " " + '<a href="/profile/' + item.actor + '" >' + item.actor + '</a>';
             }
             if(typeof item.verb !== 'undefined'){
                 message = message + " " + item.verb;
@@ -38,7 +38,7 @@ function fill_notification_list(data) {
             if(typeof item.timestamp !== 'undefined'){
                 message = message + " " + item.timestamp;
             }
-
+            message = message + " " + '<a href="/inbox/notifications/mark-as-read/' + item.slug + '"/>' + item.slug + '';
             menu.innerHTML = menu.innerHTML + "<li>"+ message + "</li>";
         }
     }
