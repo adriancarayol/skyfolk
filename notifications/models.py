@@ -14,6 +14,7 @@ from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.six import text_type
 from .utils import id2slug
+from datetime import datetime
 
 from .signals import notify
 
@@ -158,7 +159,7 @@ class Notification(models.Model):
     action_object_object_id = models.CharField(max_length=255, blank=True, null=True)
     action_object = GenericForeignKey('action_object_content_type', 'action_object_object_id')
 
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=datetime.now)
 
     public = models.BooleanField(default=True)
     deleted = models.BooleanField(default=False)
@@ -234,7 +235,7 @@ def notify_handler(verb, **kwargs):
     ]
     public = bool(kwargs.pop('public', True))
     description = kwargs.pop('description', None)
-    timestamp = kwargs.pop('timestamp', timezone.now())
+    timestamp = kwargs.pop('timestamp', None)
     level = kwargs.pop('level', Notification.LEVELS.info)
 
     # Check if User or Group

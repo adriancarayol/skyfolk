@@ -64,7 +64,7 @@ function fetch_api_data() {
                     func(JSON.parse(r.responseText));
                 }
             }
-        }
+        };
         r.send();
     }
     if (consecutive_misfires < 10) {

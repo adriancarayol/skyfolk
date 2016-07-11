@@ -522,7 +522,7 @@ def request_friend(request):
             if not friend_request:
                 notify.send(user, actor=User.objects.get(pk=user.pk).username,
                             recipient=UserProfile.objects.get(pk=slug).user,
-                            verb=u'¡Nueva peticion de amistad!')
+                            verb=u'quiere seguirte.')
                 created = user.profile.add_friend_request(
                     UserProfile.objects.get(pk=slug))
                 created.save()
