@@ -136,7 +136,7 @@ class Notification(models.Model):
     HTML Representation::
         <a href="http://oebfare.com/">brosner</a> commented on <a href="http://github.com/pinax/pinax">pinax/pinax</a> 2 hours ago
     """
-    LEVELS = Choices('success', 'info', 'warning', 'error')
+    LEVELS = Choices('success', 'info', 'warning', 'error', 'friendrequest')
     level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=20)
 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, related_name='notifications')

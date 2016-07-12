@@ -37,7 +37,7 @@ def profile_view(request, username):
     privacity = user_profile.profile.get_privacity()
 
     # print(user.email)
-    print('Privacidad del usuario: ' + user_profile.profile.privacity)
+    print('Privacidad del usuario: ' + username + " id: " + str(user_profile.pk) + " " + user_profile.profile.privacity)
     json_requestsToMe = None
     # saber si el usuario que visita el perfil le gusta
     if request.user.username != username:
@@ -381,7 +381,7 @@ def config_pincode(request):
 
 @login_required(login_url='accounts/login')
 def add_friend_by_username_or_pin(request):
-    reponse = 'no_added_friend'
+    response = 'no_added_friend'
     if request.method == 'POST':
         if request.POST.get('tipo') == 'pin':
             user = request.user
@@ -522,7 +522,7 @@ def request_friend(request):
             if not friend_request:
                 notify.send(user, actor=User.objects.get(pk=user.pk).username,
                             recipient=UserProfile.objects.get(pk=slug).user,
-                            verb=u'quiere seguirte.')
+                            verb=u'quiere seguirte.', level='friendrequest')
                 created = user.profile.add_friend_request(
                     UserProfile.objects.get(pk=slug))
                 created.save()
@@ -539,9 +539,9 @@ def respond_friend_request(request):
         user = request.user
         profileUserId = request.POST.get('slug', None)
         request_status = request.POST.get('status', None)
-
+        print('Respond friend request: ' + profileUserId + ' estado: ' + request_status)
         try:
-            emitter_profile = UserProfile.objects.get(pk=profileUserId)
+            emitter_profile = User.objects.get(pk=profileUserId).profile
         except ObjectDoesNotExist:
             emitter_profile = None
 
@@ -550,7 +550,6 @@ def respond_friend_request(request):
             user.profile.remove_received_friend_request(emitter_profile)
 
             if request_status == 'accept':
-
                 response = "not_added_friend"
                 try:
                     #  user_friend = user.profile.is_friend(profileUserId)

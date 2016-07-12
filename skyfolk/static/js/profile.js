@@ -934,21 +934,16 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
 
 
 function AJAX_respondFriendRequest(id_emitter, status) {
-
-
-
   $.ajax({
-
     type: "POST",
     url: "/respond_friend_request/",
     data: {
-      'slug': id_emitter,
+      'slug': parseInt(id_emitter),
       'status': status,
       'csrfmiddlewaretoken': csrftoken
     },
     dataType: "json",
     success: function(response) {
-
       if (response == "added_friend") {
         addItemToFriendList('Nuevo','nuevo');
         sweetAlert("You have added a friend!");

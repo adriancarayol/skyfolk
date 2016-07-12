@@ -2090,7 +2090,7 @@ ul.table > li
         display: inline-block
         height: 36px
         line-height: 36px
-        padding: 0px 2rem
+        padding: 0 2rem
         text-transform: uppercase
         text-decoration: none
         background-color: #1e88e5
@@ -2117,6 +2117,28 @@ ul.table > li
     -webkit-transition: all .1s linear
     -moz-transition: all .1s linear
     transition: all .1s linear
+    & .accept-response
+      border: medium none
+      border-radius: 2px
+      height: 36px
+      line-height: 36px
+      padding: 0 2rem
+      display: inline-block
+      text-transform: uppercase
+      vertical-align: middle
+      text-decoration: none
+      color: #1e88e5
+      background-color: transparent
+      text-align: center
+      letter-spacing: 0.5px
+      transition: all 0.2s ease-out 0s
+      cursor: pointer
+      float: right
+      margin-top: 15%
+      outline: none
+      &:hover
+        opacity: 0.8
+        background-color: #eee
     & i
       position: relative
       display: inline-block
@@ -2135,10 +2157,7 @@ ul.table > li
       font-weight: 800
     & .fa-remove
       position: relative
-      display: block
       float: right
-      margin: auto
-      top: -50%
       color: #616161
       &:hover
         opacity: 0.8

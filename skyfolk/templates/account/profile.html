@@ -327,7 +327,7 @@
       window.sr = new scrollReveal( config );
 
     </script>
-
+        {% comment %}
     <script type="text/javascript">
 
 
@@ -338,14 +338,13 @@
    var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
    var stopRequests = false;
    var idRequestsTimer = null;
-
    if(requests){
       idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
 
     }
 
 </script>
-
+{% endcomment %}
 <!-- Esto es para las menciones a usuarios -->
     <!--
 <script type="text/javascript">

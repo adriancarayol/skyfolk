@@ -22,7 +22,10 @@ function fill_notification_list(data) {
         for (var i=0; i < data.unread_list.length; i++) {
             var item = data.unread_list[i];
             console.log(item);
-            var message = "";
+            var message = '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + item.slug + '"/></a>';
+            if (typeof item.level !== 'undefined' && item.level == 'friendrequest') {
+                message = message + " " + '<button onclick="AJAX_respondFriendRequest(\'' + item.actor_object_id + '\',\'' + "accept" + '\')" class="accept-response"><i class="fa fa-check"> </i> Aceptar</button>';
+            }
             if(typeof item.actor !== 'undefined'){
                 message = message + " " + '<a href="/profile/' + item.actor + '" >' + item.actor + '</a>';
             }
@@ -35,13 +38,12 @@ function fill_notification_list(data) {
             if(typeof item.target !== 'undefined'){
                 message = message + " " + item.target;
             }
-            if(typeof item.description !== 'undefined'){
+            if(typeof item.description !== 'undefined' && item.description != null){
                 message = message + " " + item.description;
             }
             if(typeof item.timestamp !== 'undefined'){
-                message = message + " " + item.timestamp;
+                message = message + " " + '<br><i>' + item.timestamp + '</i>';
             }
-            message = message + " " + '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + item.slug + '"/></a>';
             menu.innerHTML = menu.innerHTML + "<li>"+ message + "</li>";
         }
     }
