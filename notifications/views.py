@@ -155,7 +155,6 @@ def live_unread_notification_list(request):
         if n.action_object:
             struct['action_object'] = str(n.action_object)
         struct['slug'] = n.slug  # por defecto no tenemos el slug
-        print(n.timesince)
         unread_list.append(struct)
     data = {
         'unread_count': request.user.notifications.unread().count(),

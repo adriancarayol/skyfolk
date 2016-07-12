@@ -1,6 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300)
 
 $blueskyfolk: #1e88e5
+$followcolor: #64b5f6
 *
   -webkit-box-sizing: border-box
   -moz-box-sizing: border-box
@@ -2106,6 +2107,7 @@ ul.table > li
             opacity: 0.8
   & li
     height: 110px
+    width: 100%
     margin-top: 2%
     display: list-item
     padding: 10px
@@ -2115,7 +2117,24 @@ ul.table > li
     -webkit-transition: all .1s linear
     -moz-transition: all .1s linear
     transition: all .1s linear
-
+    & a,i
+      position: relative
+      display: inline-block
+      margin-top: 5%
+    & a
+      color: $blueskyfolk
+    & .notification-img
+      width: 58px
+      height: 58px
+      position: relative
+      border-radius: 100%
+      float: left
+      display: inline-block
+      border: 3px solid #64b5f6
+      margin-right: 5%
+    & .notification-verb
+      color: $followcolor
+      font-weight: 800
     &:hover
       opacity: 1
 

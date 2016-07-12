@@ -103,7 +103,11 @@
                 {% for reply in pub.replies %}
                 <div class="comment-reply">
                 <div class="avatar-reply">{% avatar reply.author %}</div>
-                    <div class="author-reply"><span class="triangle"> </span><a href="/profile/{{ reply.author }}">{{ reply.author }}</a></div>
+                    <div class="author-reply">
+                      <span class="triangle"></span>
+                      <a href="/profile/{{ reply.author }}">{{ reply.author }}</a>
+                      <i class="reply-created">{{reply.created}}</i>
+                    </div>
                       <div class="content-reply">{{ reply|safe|replace_decorators|safe }}</div>
                 </div>
                 {% endfor %}

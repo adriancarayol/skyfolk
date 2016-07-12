@@ -2229,6 +2229,7 @@ ul.table > li {
             opacity: 0.8; }
   .nav-vertical-and-chat li {
     height: 110px;
+    width: 100%;
     margin-top: 2%;
     display: list-item;
     padding: 10px;
@@ -2238,6 +2239,24 @@ ul.table > li {
     -webkit-transition: all 0.1s linear;
     -moz-transition: all 0.1s linear;
     transition: all 0.1s linear; }
+    .nav-vertical-and-chat li a, .nav-vertical-and-chat li i {
+      position: relative;
+      display: inline-block;
+      margin-top: 5%; }
+    .nav-vertical-and-chat li a {
+      color: #1e88e5; }
+    .nav-vertical-and-chat li .notification-img {
+      width: 58px;
+      height: 58px;
+      position: relative;
+      border-radius: 100%;
+      float: left;
+      display: inline-block;
+      border: 3px solid #64b5f6;
+      margin-right: 5%; }
+    .nav-vertical-and-chat li .notification-verb {
+      color: #64b5f6;
+      font-weight: 800; }
     .nav-vertical-and-chat li:hover {
       opacity: 1; }
 

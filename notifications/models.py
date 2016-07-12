@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django import get_version
 from django.utils import timezone
-
+from avatar.models import Avatar
 from distutils.version import StrictVersion
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
@@ -14,7 +14,6 @@ from django.db import models
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.six import text_type
 from .utils import id2slug
-from datetime import datetime
 
 from .signals import notify
 
@@ -71,7 +70,7 @@ class NotificationQuerySet(models.query.QuerySet):
         if recipient:
             qs = qs.filter(recipient=recipient)
 
-        qs.update(unread=False)
+        return qs.update(unread=False)
 
     def mark_all_as_unread(self, recipient=None):
         """Mark as unread any read messages in the current queryset.
@@ -82,7 +81,7 @@ class NotificationQuerySet(models.query.QuerySet):
         if recipient:
             qs = qs.filter(recipient=recipient)
 
-        qs.update(unread=True)
+        return qs.update(unread=True)
 
     def deleted(self):
         """Return only deleted items in the current queryset"""
@@ -103,7 +102,7 @@ class NotificationQuerySet(models.query.QuerySet):
         if recipient:
             qs = qs.filter(recipient=recipient)
 
-        qs.update(deleted=True)
+        return qs.update(deleted=True)
 
     def mark_all_as_active(self, recipient=None):
         """Mark current queryset as active(un-deleted).
@@ -114,7 +113,7 @@ class NotificationQuerySet(models.query.QuerySet):
         if recipient:
             qs = qs.filter(recipient=recipient)
 
-        qs.update(deleted=False)
+        return qs.update(deleted=False)
 
 
 class Notification(models.Model):
@@ -146,6 +145,7 @@ class Notification(models.Model):
     actor_content_type = models.ForeignKey(ContentType, related_name='notify_actor')
     actor_object_id = models.CharField(max_length=255)
     actor = GenericForeignKey('actor_content_type', 'actor_object_id')
+    actor_avatar = models.CharField(max_length=255, blank=True, null=True)
 
     verb = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
@@ -159,7 +159,7 @@ class Notification(models.Model):
     action_object_object_id = models.CharField(max_length=255, blank=True, null=True)
     action_object = GenericForeignKey('action_object_content_type', 'action_object_object_id')
 
-    timestamp = models.DateTimeField(default=datetime.now)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     public = models.BooleanField(default=True)
     deleted = models.BooleanField(default=False)
@@ -178,7 +178,8 @@ class Notification(models.Model):
             'verb': self.verb,
             'action_object': self.action_object,
             'target': self.target,
-            'timesince': self.timesince()
+            'timesince': self.timesince(),
+            'actor_avatar': self.actor_avatar
         }
         if self.target:
             if self.action_object:
@@ -235,7 +236,7 @@ def notify_handler(verb, **kwargs):
     ]
     public = bool(kwargs.pop('public', True))
     description = kwargs.pop('description', None)
-    timestamp = kwargs.pop('timestamp', None)
+    timestamp = kwargs.pop('timestamp', timezone.now())
     level = kwargs.pop('level', Notification.LEVELS.info)
 
     # Check if User or Group
@@ -245,10 +246,14 @@ def notify_handler(verb, **kwargs):
         recipients = [recipient]
 
     for recipient in recipients:
+        actor_avatar = None
+        if Avatar.objects.filter(user=actor).exists():
+            actor_avatar = Avatar.objects.get(user=actor).get_absolute_url()
         newnotify = Notification(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),
             actor_object_id=actor.pk,
+            actor_avatar=actor_avatar, # URL del avatar del usuario que hace la peticion
             verb=text_type(verb),
             public=public,
             description=description,

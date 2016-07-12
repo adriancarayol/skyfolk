@@ -936,8 +936,6 @@ function AJAX_respondFriendRequest(id_emitter, status) {
       if (response == "added_friend") {
         addItemToFriendList('Nuevo','nuevo');
         sweetAlert("You have added a friend!");
-
-
       } else {
 
       }

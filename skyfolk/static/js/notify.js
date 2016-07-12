@@ -26,8 +26,11 @@ function fill_notification_list(data) {
             if(typeof item.actor !== 'undefined'){
                 message = message + " " + '<a href="/profile/' + item.actor + '" >' + item.actor + '</a>';
             }
+            if (item.actor_avatar !== null && typeof item.actor_avatar !== 'undefined') {
+                message = message + " " + '<img class="notification-img" src="' + item.actor_avatar + '"/>';
+            }
             if(typeof item.verb !== 'undefined'){
-                message = message + " " + item.verb;
+                message = message + " " + '<i class="notification-verb"/>' + item.verb + '</i>';
             }
             if(typeof item.target !== 'undefined'){
                 message = message + " " + item.target;
