@@ -246,7 +246,7 @@ def notify_handler(verb, **kwargs):
         recipients = [recipient]
 
     for recipient in recipients:
-        actor_avatar = None
+        actor_avatar = settings.STATIC_URL + 'img/nuevo.png' # por defecto
         if Avatar.objects.filter(user=actor).exists():
             actor_avatar = Avatar.objects.get(user=actor).get_absolute_url()
         newnotify = Notification(

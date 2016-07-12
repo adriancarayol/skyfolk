@@ -572,16 +572,15 @@ $('#tab-timeline').bind('scroll', function() {
   });
 
 
-
+/* Para el manejo del tablon de comentarios/seguidores */
   $('#tab-container').easytabs({
-
         defaultTab: "#li-tab-comentarios",
         animate: true,
         animationSpeed: "fast",
         updateHash: false
-
-
   });
+
+    /* Marcar todas las publicaciones como leidas */
     $('#clear-notify').on('click', function() {
         AJAX_mark_all_read();
     });
@@ -593,7 +592,7 @@ function AJAX_mark_all_read() {
     url: '/inbox/notifications/mark-all-as-read/',
     type: 'POST',
     success: function() {
-        $('#notification-menu').find('li').fadeOut();
+        $('#notification-menu').find('li').fadeOut("fast");
         $("#live_notify_badge").html(0);
     },
     error: function(rs, e) {
@@ -601,7 +600,24 @@ function AJAX_mark_all_read() {
     }
   });
 }
-
+/* Para marcar una notificacion como leida */
+function AJAX_mark_read(obj) {
+    var slug = obj.getAttribute('data-notification');
+    var url_ = '/inbox/notifications/mark-as-read/' + slug + '/';
+  $.ajax({
+    url: url_,
+    type: 'POST',
+    success: function() {
+        $(obj).parent().fadeOut("fast");
+        var currentValue = document.getElementById('live_notify_badge');
+        if (parseInt($(currentValue).html()) > 0)
+            $(currentValue).html(parseInt($(currentValue).html())-1);
+    },
+    error: function(rs, e) {
+      alert('ERROR: ' + rs.responseText + e);
+    }
+  });
+}
 function addFriendToHtmlList(item) {
 
   if (item.user__profile__image) {
