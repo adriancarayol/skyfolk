@@ -89,17 +89,17 @@ def profile_view(request, username):
     # number of likes to him
     n_likes = len(user_profile.profile.likesToMe.all())
 
-    try:
+    '''try:
         friend_request = user.profile.get_friend_request(user_profile.profile)
     except ObjectDoesNotExist:
-        friend_request = None
+        friend_request = None'''
 
-    if friend_request:
+    '''if friend_request:
         existFriendRequest = True
         print(True)
     else:
         existFriendRequest = False
-        print(False)
+        print(False)'''
 
     # cargar lista de amigos (12 primeros)
     try:
@@ -238,7 +238,7 @@ def profile_view(request, username):
                                 'reply_publication_form': reply_pub_form,
                                 'liked': liked, 'n_likes': n_likes,
                                 'timeline': timeline, 'isFriend': isFriend,
-                                'existFriendRequest': existFriendRequest,
+                                #'existFriendRequest': existFriendRequest,
                                 'json_requestsToMe': json_requestsToMe,
                                 'followers':followers, 'privacity': privacity,
                                 'isFollower': isFollower},
@@ -403,14 +403,14 @@ def add_friend_by_username_or_pin(request):
 
         # enviamos peticion de amistad
             try:
-                friend_request = user.get_friend_request(
+                friend_request = user.get_follow_request(
                     UserProfile.objects.get(pk=friend))
                 response = 'in_progress'
             except ObjectDoesNotExist:
                 friend_request = None
 
             if not friend_request:
-                created = user.add_friend_request(
+                created = user.add_follow_request(
                     UserProfile.objects.get(pk=friend))
                 created.save()
 
@@ -443,14 +443,14 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
             # enviamos peticion de amistad
             try:
-                friend_request = user.get_friend_request(
+                friend_request = user.get_follow_request(
                     UserProfile.objects.get(user__username=username))
                 response = 'in_progress'
             except ObjectDoesNotExist:
                 friend_request = None
 
             if not friend_request:
-                created = user.add_friend_request(
+                created = user.add_follow_request(
                     UserProfile.objects.get(user__username=username))
                 created.save()
                 response = 'new_petition'
@@ -514,7 +514,7 @@ def request_friend(request):
         else:
             response = "inprogress"
             try:
-                friend_request = user.profile.get_friend_request(
+                friend_request = user.profile.get_follow_request(
                     UserProfile.objects.get(pk=slug))
             except ObjectDoesNotExist:
                 friend_request = None
@@ -523,7 +523,7 @@ def request_friend(request):
                 notify.send(user, actor=User.objects.get(pk=user.pk).username,
                             recipient=UserProfile.objects.get(pk=slug).user,
                             verb=u'quiere seguirte.', level='friendrequest')
-                created = user.profile.add_friend_request(
+                created = user.profile.add_follow_request(
                     UserProfile.objects.get(pk=slug))
                 created.save()
 
@@ -547,7 +547,7 @@ def respond_friend_request(request):
 
         if emitter_profile:
             # user.profile.get_received_friends_requests().delete()
-            user.profile.remove_received_friend_request(emitter_profile)
+            user.profile.remove_received_follow_request(emitter_profile)
 
             if request_status == 'accept':
                 response = "not_added_friend"
@@ -577,7 +577,8 @@ def remove_relationship(request):
     response = None
     user = request.user
     slug = request.POST.get('slug', None)
-    print("REMOVE RELATIONSHIPT SLUG(%s)" % str(slug))
+    profile_user = UserProfile.objects.get(pk=slug)
+
     if request.method == 'POST':
         try:
             user_friend = user.profile.is_follow(slug)  # Comprobamos si YO ya sigo al perfil deseado.
@@ -585,7 +586,8 @@ def remove_relationship(request):
             user_friend = None
 
         if user_friend:
-            user.profile.remove_relationship(slug, 2)
+            user.profile.remove_relationship(slug, 1)
+            profile_user.remove_relationship(user.profile, 2)
             response = True
         else:
             response = False

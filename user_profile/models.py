@@ -8,25 +8,21 @@ from django.core.validators import URLValidator
 # from publications.models import Publication
 # from _overlapped import NULL
 RELATIONSHIP_FOLLOWING = 1
-RELATIONSHIP_BLOCKED = 2
-RELATIONSHIP_FRIEND = 3
-RELATIONSHIP_FOLLOWER = 4
+RELATIONSHIP_FOLLOWER = 2
+RELATIONSHIP_BLOCKED = 3
 RELATIONSHIP_STATUSES = (
     (RELATIONSHIP_FOLLOWING, 'Following'),
-    (RELATIONSHIP_BLOCKED, 'Blocked'),
-    (RELATIONSHIP_FRIEND, 'Friend'),
     (RELATIONSHIP_FOLLOWER, 'Follower'),
+    (RELATIONSHIP_BLOCKED, 'Blocked'),
 )
 
-REQUEST_FRIEND = 1
-REQUEST_FOLLOWING = 2
-REQUEST_FOLLOWER = 3
-REQUEST_BLOCKED = 4
+REQUEST_FOLLOWING = 1
+REQUEST_FOLLOWER = 2
+REQUEST_BLOCKED = 3
 REQUEST_STATUSES = (
-    (REQUEST_FRIEND, 'Friend'),
     (REQUEST_FOLLOWING, 'Following'),
     (REQUEST_FOLLOWER, 'Follower'),
-    (REQUEST_FRIEND, 'Friend'),
+    (REQUEST_BLOCKED, 'Blocked'),
 )
 
 
@@ -188,10 +184,10 @@ class UserProfile(models.Model):
                                                                     'user__last_name',
                                                                     'user__profile__backImage').order_by('id')
 
-    def get_friends(self):
+    '''def get_friends(self):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name',
                                                                   'user__last_name',
-                                                                  'user__profile__backImage').order_by('id')
+                                                                  'user__profile__backImage').order_by('id')'''
 
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)
@@ -265,41 +261,41 @@ class UserProfile(models.Model):
                                      False)
 
     # methods friends
-    def is_friend(self, profile):
+    '''def is_friend(self, profile):
         try:
             if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND):
                 return True
             else:
                 return False
         except ObjectDoesNotExist:
-            return False
+            return False'''
 
-    def add_friend(self, profile):
+    '''def add_friend(self, profile):
         print('>>>>>>> add_friend')
         return self.add_relationship(profile, RELATIONSHIP_FRIEND,
                                      True)  # mas adelante cambiar aqui True por False
-        # para diferenciar seguidores de seguidos.
+        # para diferenciar seguidores de seguidos.'''
 
-    def get_friends_top12(self):
+    '''def get_friends_top12(self):
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values(
-            'user__username', 'user__first_name', 'user__last_name').order_by('id')[0:12]
+            'user__username', 'user__first_name', 'user__last_name').order_by('id')[0:12]'''
 
-    def get_friends_objectlist(self):
+    '''def get_friends_objectlist(self):
         return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values(
-            'user__username', 'user__first_name', 'user__last_name').order_by('id')
+            'user__username', 'user__first_name', 'user__last_name').order_by('id')'''
 
-    def add_friend_request(self, profile):
+    '''def add_friend_request(self, profile):
         obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FRIEND)
-        return obj
+        return obj'''
 
-    def get_friend_request(self, profile):
-        return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FRIEND)
+    '''def get_friend_request(self, profile):
+        return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FRIEND)'''
 
     def get_received_friends_requests(self):
         return self.requestsToMe.filter(from_request__status=1, from_request__receiver=self)
 
-    def remove_received_friend_request(self, profile):
-        Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FRIEND).delete()
+    '''def remove_received_follow_request(self, profile):
+        Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FOLLOWING).delete()'''
 
     """
         def get_friends_next4(self, next):
