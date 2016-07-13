@@ -2117,7 +2117,14 @@ ul.table > li
     -webkit-transition: all .1s linear
     -moz-transition: all .1s linear
     transition: all .1s linear
-    & .accept-response
+    & .notification-body, .notification-buttons
+      position: relative
+      display: block
+      width: 90%
+      height: auto
+    & .notification-buttons
+      margin-top: 2.5%
+    & .accept-response, .rejected-response
       border: medium none
       border-radius: 2px
       height: 36px
@@ -2127,22 +2134,25 @@ ul.table > li
       text-transform: uppercase
       vertical-align: middle
       text-decoration: none
-      color: #1e88e5
       background-color: transparent
       text-align: center
       letter-spacing: 0.5px
       transition: all 0.2s ease-out 0s
       cursor: pointer
       float: right
-      margin-top: 15%
       outline: none
+      width: 45%
       &:hover
         opacity: 0.8
         background-color: #eee
+    & .accept-response
+      color: #4caf50
+    & .rejected-response
+      color: #f44336
     & i
       position: relative
       display: inline-block
-      margin-top: 5%
+      margin-top: 2.5%
     & .notification-img
       width: 58px
       height: 58px

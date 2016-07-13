@@ -618,6 +618,24 @@ function AJAX_mark_read(obj) {
     }
   });
 }
+/* Para eliminar una notificacion */
+function AJAX_delete_notification(obj) {
+    var slug = obj.getAttribute('data-notification');
+    var url_ = '/inbox/notifications/delete/' + slug + '/';
+  $.ajax({
+    url: url_,
+    type: 'POST',
+    success: function() {
+        $(obj).parent().fadeOut("fast");
+        var currentValue = document.getElementById('live_notify_badge');
+        if (parseInt($(currentValue).html()) > 0)
+            $(currentValue).html(parseInt($(currentValue).html())-1);
+    },
+    error: function(rs, e) {
+      alert('ERROR: ' + rs.responseText + e);
+    }
+  });
+}
 function addFriendToHtmlList(item) {
 
   if (item.user__profile__image) {
@@ -933,7 +951,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
 }
 
 
-function AJAX_respondFriendRequest(id_emitter, status) {
+function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
   $.ajax({
     type: "POST",
     url: "/respond_friend_request/",
@@ -947,8 +965,9 @@ function AJAX_respondFriendRequest(id_emitter, status) {
       if (response == "added_friend") {
         addItemToFriendList('Nuevo','nuevo');
         sweetAlert("You have added a friend!");
+        $('li[data-id='+obj_data+']').fadeOut("fast");
       } else {
-
+          $('li[data-id='+obj_data+']').fadeOut("fast");
       }
     },
     error: function(rs, e) {

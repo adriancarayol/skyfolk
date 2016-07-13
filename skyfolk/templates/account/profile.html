@@ -322,14 +322,13 @@
         delay:  'once',
         vFactor: 0.60,
           viewport: document.getElementById('tab-timeline')
-      }
+      };
 
       window.sr = new scrollReveal( config );
 
     </script>
-        {% comment %}
+    {% comment %}
     <script type="text/javascript">
-
 
    //first set the value you will be using.
    var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
@@ -342,7 +341,6 @@
       idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
 
     }
-
 </script>
 {% endcomment %}
 <!-- Esto es para las menciones a usuarios -->

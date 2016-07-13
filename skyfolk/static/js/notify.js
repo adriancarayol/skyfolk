@@ -23,11 +23,8 @@ function fill_notification_list(data) {
             var item = data.unread_list[i];
             console.log(item);
             var message = '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + item.slug + '"/></a>';
-            if (typeof item.level !== 'undefined' && item.level == 'friendrequest') {
-                message = message + " " + '<button onclick="AJAX_respondFriendRequest(\'' + item.actor_object_id + '\',\'' + "accept" + '\')" class="accept-response"><i class="fa fa-check"> </i> Aceptar</button>';
-            }
             if(typeof item.actor !== 'undefined'){
-                message = message + " " + '<a href="/profile/' + item.actor + '" >' + item.actor + '</a>';
+                message = message + " " + '<div class="notification-body"><a href="/profile/' + item.actor + '" >' + item.actor + '</a>';
             }
             if (item.actor_avatar !== null && typeof item.actor_avatar !== 'undefined') {
                 message = message + " " + '<img class="notification-img" src="' + item.actor_avatar + '"/>';
@@ -42,9 +39,15 @@ function fill_notification_list(data) {
                 message = message + " " + item.description;
             }
             if(typeof item.timestamp !== 'undefined'){
-                message = message + " " + '<br><i>' + item.timestamp + '</i>';
+                message = message + " " + '<br><i>' + item.timestamp + '</i></div>';
             }
-            menu.innerHTML = menu.innerHTML + "<li>"+ message + "</li>";
+            if (typeof item.level !== 'undefined' && item.level == 'friendrequest') {
+                message = message + " " + '<div class="notification-buttons">\<' +
+                    'button data-notification="' + item.slug + '" onclick="AJAX_respondFriendRequest(\'' + item.actor_object_id + '\',\'' + "accept" + '\',\'' + item.id + '\'); AJAX_delete_notification(this)" class="accept-response"><i class="fa fa-check"> </i> Aceptar</button>\<' +
+                    'button data-notification="' + item.slug + '" onclick="AJAX_respondFriendRequest(\'' + item.actor_object_id + '\',\'' + "rejected" + '\',\'' + item.id + '\'); AJAX_delete_notification(this)" class="rejected-response"><i class="fa fa-close"> </i> Rechazar</button>\<' +
+                    '/div>';
+            }
+            menu.innerHTML = menu.innerHTML + '<li data-id="' + item.id + '">'+ message + '</li>';
         }
     }
 }
