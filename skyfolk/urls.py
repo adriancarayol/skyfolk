@@ -45,6 +45,7 @@ urlpatterns = patterns(
     url(r'^load_followers/$', 'user_profile.views.load_followers'), # Cargar mas followers
     url(r'^load_follows/$', 'user_profile.views.load_follows'), # Cargar mas follows
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
+    url(r'^remove_relationship/$', 'user_profile.views.remove_relationship'),
     url(r'^add_friend_by_pin/$', 'user_profile.views.add_friend_by_username_or_pin'),
     # url(r'^publication/$', 'publications.views.publication_form'),
     url(r'^publication/$', PublicationNewView.as_view(), name='new_publication'),

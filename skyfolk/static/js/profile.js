@@ -81,6 +81,78 @@ $(window).load(function() {
 
 $(document).ready(function () {
 
+    /* Mensaje flotante */
+      $("#publish2, #compose-new-no-comments, #publish").click(function()  {
+        $("#page-wrapper").each(function() {
+          displaying = $(this).css("display");
+          $("#page-wrapper").find("#message2").val('');
+          if (displaying == "none") {
+            $(this).fadeOut('slow', function() {
+              $(this).css("display", "block");
+            });
+              $(this).find('#message2').focus();
+          } else {
+              $(this).find('#message2').blur();
+            $(this).fadeIn('slow', function() {
+              $(this).css("display", "none");
+            });
+          }
+        });
+    });
+    /* DISPLAY MENU */
+      $(".fa-bars").on("click", function(event) {
+        if ( !$(event.target).is( "li" )) {
+        $("#toggle").each(function() {
+          displaying = $(this).css("display");
+          $("#toggle").val('');
+          if (displaying == "none") {
+            $(this).fadeToggle('fast',function() {
+              $(".fa-bars").addClass('fa-bars-rotate'); // Cambiamos el color de "fa-bars" para saber que el menu vertical está abierto.
+              $(this).css("display", "block");
+            });
+          } else {
+            $(this).fadeToggle('fast',function() {
+              $(".fa-bars").removeClass('fa-bars-rotate'); // Si esta oculto, fa-bars estará en su estado normal.
+              $(this).css("display", "none");
+            });
+          }
+        });
+        }
+  });
+
+      //Examples of how to assign the ColorBox event to elements (Galeria)
+      $(".inline").colorbox({
+        inline: true,
+        width: "80%"
+      });
+      $(".callbacks").colorbox({
+        onOpen: function() {
+          alert('onOpen: colorbox is about to open');
+        },
+        onLoad: function() {
+          alert('onLoad: colorbox has started to load the targeted content');
+        },
+        onComplete: function() {
+          alert('onComplete: colorbox has displayed the loaded content');
+        },
+        onCleanup: function() {
+          alert('onCleanup: colorbox has begun the close process');
+        },
+        onClosed: function() {
+          alert('onClosed: colorbox has completely closed');
+        }
+      });
+
+      //Example of preserving a JavaScript event for inline calls.
+      $("#click").click(function() {
+        $('#click').css({
+          "background-color": "#f00",
+          "color": "#fff",
+          "cursor": "inherit"
+        }).text("Open this window again and this message will still be here.");
+        return false;
+      });
+
     /* Show more - Show less */
     $('#tab-comentarios').find('.wrapper').each(function () {
         var showLimitChar = 90;
@@ -473,7 +545,6 @@ $( document ).on('keydown', function(e) {
 
         }
       });
-
     }
   });
 
@@ -590,6 +661,9 @@ $('#tab-timeline').bind('scroll', function() {
 function AJAX_mark_all_read() {
   $.ajax({
     url: '/inbox/notifications/mark-all-as-read/',
+    data: {
+        'csrfmiddlewaretoken': csrftoken
+    },
     type: 'POST',
     success: function() {
         $('#notification-menu').find('li').fadeOut("fast");
@@ -606,6 +680,9 @@ function AJAX_mark_read(obj) {
     var url_ = '/inbox/notifications/mark-as-read/' + slug + '/';
   $.ajax({
     url: url_,
+    data: {
+        'csrfmiddlewaretoken': csrftoken
+    },
     type: 'POST',
     success: function() {
         $(obj).parent().fadeOut("fast");
@@ -624,6 +701,9 @@ function AJAX_delete_notification(obj) {
     var url_ = '/inbox/notifications/delete/' + slug + '/';
   $.ajax({
     url: url_,
+    data: {
+        'csrfmiddlewaretoken': csrftoken
+    },
     type: 'POST',
     success: function() {
         $(obj).parent().fadeOut("fast");
@@ -1038,7 +1118,7 @@ function AJAX_submit_publication(data, type, pks) {
 }
 
 
-
+/*
 function showRequest(id_profile, username) {
   var unique_id = $.gritter.add({
     // (string | mandatory) the heading of the notification
@@ -1065,81 +1145,39 @@ function showRequest(id_profile, username) {
   });
 
 }
-
-$(document).ready(function() {
-  //Examples of how to assign the ColorBox event to elements
-  $(".inline").colorbox({
-    inline: true,
-    width: "80%"
-  });
-  $(".callbacks").colorbox({
-    onOpen: function() {
-      alert('onOpen: colorbox is about to open');
-    },
-    onLoad: function() {
-      alert('onLoad: colorbox has started to load the targeted content');
-    },
-    onComplete: function() {
-      alert('onComplete: colorbox has displayed the loaded content');
-    },
-    onCleanup: function() {
-      alert('onCleanup: colorbox has begun the close process');
-    },
-    onClosed: function() {
-      alert('onClosed: colorbox has completely closed');
-    }
-  });
-
-  //Example of preserving a JavaScript event for inline calls.
-  $("#click").click(function() {
-    $('#click').css({
-      "background-color": "#f00",
-      "color": "#fff",
-      "cursor": "inherit"
-    }).text("Open this window again and this message will still be here.");
-    return false;
-  });
-});
-
-
+*/
 
 /*PETICION AJAX PARA AGREGAR AMIGO*/
 function AJAX_requestfriend(status) {
-    //alert($("#likes strong").html());
-
+    var slug = $("#profileId").html();
     if (status == "noabort") {
       $.ajax({
         type: "POST",
         url: "/request_friend/",
         data: {
-          'slug': $("#profileId").html(),
+          'slug': slug,
           'csrfmiddlewaretoken': csrftoken
         },
         //data: {'slug': $("#profileId").html()},
         dataType: "json",
         success: function(response) {
-          /*
-           if (response == "friend"){
-
-                $("#addfriend").css('color', '#29b203');
-
-           }else if(response == "nofriend"){
-
-                $("#addfriend").css('color', '#46494c');
-
-           }else{
-
-           }
-           */
           if (response == "isfriend") {
-
-            alert("Ya es amigo tuyo");
-
+              swal({
+                title: "¡Ya es tu amigo!",
+                type: "warning",
+                animation: "slide-from-top",
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Unfollow",
+                cancelButtonText: "Ok, fine!",
+                closeOnConfirm: true
+            },
+              function() {
+                  AJAX_remove_relationship(slug);
+              });
           } else if (response == "inprogress") {
-
-            //alert("peticion en curso");
-            // $('<img id = "friend_request_progress" src="../../static/img/friend_request_progress.png">').insertBefore(".caja");
-            $('#addfriend').replaceWith('<span class="fa fa-clock-o" title="En proceso">'+' '+'</div>');
+                $('#addfriend').replaceWith('<span class="fa fa-clock-o" title="En proceso">'+' '+'</div>');
           } else {
 
           }
@@ -1151,33 +1189,28 @@ function AJAX_requestfriend(status) {
     } else if (status == "anonymous") {
       alert("Debe estar registrado");
     }
-
-
-
-  }
-  /* DISPLAY MENU */
-
-$(document).ready(function() {
-  $(".fa-bars").on("click", function(event) {
-    if ( !$(event.target).is( "li" )) {
-    $("#toggle").each(function() {
-      displaying = $(this).css("display");
-      $("#toggle").val('');
-      if (displaying == "none") {
-        $(this).fadeToggle('fast',function() {
-          $(".fa-bars").addClass('fa-bars-rotate'); // Cambiamos el color de "fa-bars" para saber que el menu vertical está abierto.
-          $(this).css("display", "block");
-        });
-      } else {
-        $(this).fadeToggle('fast',function() {
-          $(".fa-bars").removeClass('fa-bars-rotate'); // Si esta oculto, fa-bars estará en su estado normal.
-          $(this).css("display", "none");
-        });
-      }
+}
+/* Eliminar relacion entre dos usuarios */
+function AJAX_remove_relationship(slug) {
+    $.ajax({
+        type: 'POST',
+        url: '/remove_relationship/',
+        data: {
+          'slug': slug,
+          'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response == true) {
+                setTimeout(function(){
+                    swal("You have unfollow this profile!");
+                }, 2000);
+            }
+        }, error: function(rs, e) {
+            swal(rs.responseText + " " + e);
+        }
     });
-      }
-  });
-});
+}
 
 /* Ocultar menu vertical al hacer click fuera de el */
 
@@ -1200,27 +1233,6 @@ $(document).click(function(event) {
             }
         }
     }
-});
-
-/* Mensaje flotante */
-$(document).ready(function() {
-  $("#publish2, #compose-new-no-comments, #publish").click(function()  {
-    $("#page-wrapper").each(function() {
-      displaying = $(this).css("display");
-      $("#page-wrapper").find("#message2").val('');
-      if (displaying == "none") {
-        $(this).fadeOut('slow', function() {
-          $(this).css("display", "block");
-        });
-          $(this).find('#message2').focus();
-      } else {
-          $(this).find('#message2').blur();
-        $(this).fadeIn('slow', function() {
-          $(this).css("display", "none");
-        });
-      }
-    });
-  });
 });
 
 function addItemToFriendList(name, lastname) {

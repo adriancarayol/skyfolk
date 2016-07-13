@@ -502,7 +502,7 @@ def request_friend(request):
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
-        print(str(slug)) # slug = profile id
+        # print(str(slug)) # slug = profile id
         try:
             #  user_friend = user.profile.is_friend(profileUserId)
             user_friend = user.profile.is_follow(slug)  # Comprobamos si YO ya sigo al perfil deseado.
@@ -572,6 +572,24 @@ def respond_friend_request(request):
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
+# Elimina relación entre dos usuarios
+def remove_relationship(request):
+    response = None
+    user = request.user
+    slug = request.POST.get('slug', None)
+    print("REMOVE RELATIONSHIPT SLUG(%s)" % str(slug))
+    if request.method == 'POST':
+        try:
+            user_friend = user.profile.is_follow(slug)  # Comprobamos si YO ya sigo al perfil deseado.
+        except ObjectDoesNotExist:
+            user_friend = None
+
+        if user_friend:
+            user.profile.remove_relationship(slug, 2)
+            response = True
+        else:
+            response = False
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 # Load followers
 def load_followers(request):
