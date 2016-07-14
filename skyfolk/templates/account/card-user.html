@@ -18,7 +18,7 @@
             {% endif %}
             <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
             <!--<input type="checkbox" id="button-menu"  />-->
-            {% if user.is_authenticated and user.username != user_profile.username and existFriendRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
+            {% if user.is_authenticated and user.username != user_profile.username and existFollowRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
             <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
             <script type="text/javascript">
               $(window).load(function() {
@@ -138,9 +138,9 @@
             <p>@{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
             <div class="status">{{ user_profile.profile.status }}</div>
           </header>
-          <ul class="stats">
+          <ul id="user-stats" class="stats">
             <li>
-                <a href="/followers/{{ user_profile.username }}"><strong>{{ followers }}</strong><span>Seguidores</span></a>
+                <a href="/followers/{{ user_profile.username }}"><strong id="followers-stats" strong>{{ followers }}</strong><span>Seguidores</span></strong>
             </li>
             <li>
                 <a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a>

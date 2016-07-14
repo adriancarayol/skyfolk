@@ -89,17 +89,17 @@ def profile_view(request, username):
     # number of likes to him
     n_likes = len(user_profile.profile.likesToMe.all())
 
-    '''try:
-        friend_request = user.profile.get_friend_request(user_profile.profile)
+    try:
+        friend_request = user.profile.get_follow_request(user_profile.profile)
     except ObjectDoesNotExist:
-        friend_request = None'''
+        friend_request = None
 
-    '''if friend_request:
-        existFriendRequest = True
+    if friend_request:
+        existFollowRequest = True
         print(True)
     else:
-        existFriendRequest = False
-        print(False)'''
+        existFollowRequest = False
+        print(False)
 
     # cargar lista de amigos (12 primeros)
     try:
@@ -238,7 +238,7 @@ def profile_view(request, username):
                                 'reply_publication_form': reply_pub_form,
                                 'liked': liked, 'n_likes': n_likes,
                                 'timeline': timeline, 'isFriend': isFriend,
-                                #'existFriendRequest': existFriendRequest,
+                                'existFollowRequest': existFollowRequest,
                                 'json_requestsToMe': json_requestsToMe,
                                 'followers':followers, 'privacity': privacity,
                                 'isFollower': isFollower},

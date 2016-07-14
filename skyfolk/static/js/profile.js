@@ -1202,9 +1202,10 @@ function AJAX_remove_relationship(slug) {
         dataType: 'json',
         success: function(response) {
             if (response == true) {
-                setTimeout(function(){
-                    swal("You have unfollow this profile!");
-                }, 2000);
+                var currentValue = document.getElementById('followers-stats');
+                $(currentValue).html(parseInt($(currentValue).html())-1);
+            } else if (response == false) {
+                swal("Un error ha sucedido, inténtalo de nuevo más tarde :-(");
             }
         }, error: function(rs, e) {
             swal(rs.responseText + " " + e);
