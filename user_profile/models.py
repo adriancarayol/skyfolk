@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import URLValidator
+from notifications.models import Notification
 
 # from publications.models import Publication
 # from _overlapped import NULL
@@ -231,8 +232,8 @@ class UserProfile(models.Model):
         return self.relationships.filter(to_people__status=RELATIONSHIP_FOLLOWING, to_people__from_person=self).values(
             'user__username', 'user__first_name', 'user__last_name').order_by('id')
 
-    def add_follow_request(self, profile):
-        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
+    def add_follow_request(self, profile, notify):
+        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING, notification=notify)
         return obj
 
     def get_follow_request(self, profile):
@@ -242,7 +243,9 @@ class UserProfile(models.Model):
         return self.requestsToMe.filter(from_request__status=2, from_request__receiver=self)
 
     def remove_received_follow_request(self, profile):
-        Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FOLLOWING).delete()
+        request = Request.objects.get(emitter=profile, receiver=self, status=REQUEST_FOLLOWING)
+        request.notification.delete() # Eliminamos la notificacion
+        request.delete()
 
     # methods followers
     def is_follower(self, profile):
@@ -357,6 +360,6 @@ class Request(models.Model):
     receiver = models.ForeignKey(UserProfile, related_name='to_request')
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
-
+    notification = models.ForeignKey(Notification, related_name='request_notification')
     class Meta:
         unique_together = ('emitter', 'receiver', 'status')

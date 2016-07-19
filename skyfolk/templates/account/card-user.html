@@ -22,7 +22,7 @@
             <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
             <script type="text/javascript">
               $(window).load(function() {
-                  $('#addfriend').replaceWith('<span class="fa fa-clock-o" title="En proceso">'+' '+'</div>');
+                  $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>'+' '+'</div>');
               });
             </script>
             {% endif %}
@@ -35,14 +35,14 @@
                 <span onclick="location.href='/friends/{{ user.username }}'" id="conf" class="fa fa-users" title="Grupos"></span>
                 <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
                 {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
-                   <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('anonymous')></span>
+                   <span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend('anonymous');></span>
                    <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
                 {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
                    <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
                 {% endif %}
                 {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                   <span id="addfriend" class="fa fa-plus" title="Agregar" onclick=AJAX_requestfriend('noabort')></span>
-                   <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort')></span>
+                   <span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend('noabort');></span>
+                   <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort');></span>
                 {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
                    <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
                 {% endif %}
@@ -140,7 +140,7 @@
           </header>
           <ul id="user-stats" class="stats">
             <li>
-                <a href="/followers/{{ user_profile.username }}"><strong id="followers-stats" strong>{{ followers }}</strong><span>Seguidores</span></strong>
+                <a href="/followers/{{ user_profile.username }}"><strong id="followers-stats" strong>{{ followers }}</strong><span>Seguidores</span></a>
             </li>
             <li>
                 <a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a>

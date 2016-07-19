@@ -16,7 +16,7 @@ from publications.models import Publication
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
 from user_profile.models import UserProfile
 from notifications.signals import notify
-
+from notifications.models import Notification
 # allauth
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -384,9 +384,9 @@ def add_friend_by_username_or_pin(request):
     response = 'no_added_friend'
     if request.method == 'POST':
         if request.POST.get('tipo') == 'pin':
-            user = request.user
+            user_request = request.user
             pin = request.POST.get('valor')
-            user = UserProfile.objects.get(pk=user.pk)
+            user = UserProfile.objects.get(pk=user_request.pk)
             if user.pin == pin:
                 return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
 
@@ -398,23 +398,29 @@ def add_friend_by_username_or_pin(request):
 
             '''if user.is_friend(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')'''
+
             if user.is_follow(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
-
-        # enviamos peticion de amistad
+            # enviamos peticion de amistad
             try:
-                friend_request = user.get_follow_request(
-                    UserProfile.objects.get(pk=friend))
-                response = 'in_progress'
+                friend_request = user.get_follow_request(friend)
             except ObjectDoesNotExist:
                 friend_request = None
 
             if not friend_request:
-                created = user.add_follow_request(
-                    UserProfile.objects.get(pk=friend))
-                created.save()
-
-                response = 'new_petition'
+                notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
+                            recipient=friend.user,
+                            verb=u'quiere seguirte.', level='friendrequest')
+                try:
+                    notification = Notification.objects.get(actor_object_id=user_request.pk,
+                                                            recipient=friend.user,
+                                                            level='friendrequest') # .filter (aunque solo deberia devolver 1 fila)
+                    created = user.add_follow_request(
+                        friend, notification)
+                    created.save()
+                    response = 'new_petition'
+                except ObjectDoesNotExist:
+                    response = "no_added_friend"
 
             '''
             try:
@@ -427,9 +433,9 @@ def add_friend_by_username_or_pin(request):
             '''
 
         else:  # tipo == username
-            user = request.user
+            user_request = request.user
             username = request.POST.get('valor')
-            user = UserProfile.objects.get(pk=user.pk)
+            user = UserProfile.objects.get(pk=user_request.pk)
 
             if user.user.username == username:
                 return HttpResponse(json.dumps('your_own_username'), content_type='application/javascript')
@@ -450,13 +456,19 @@ def add_friend_by_username_or_pin(request):
                 friend_request = None
 
             if not friend_request:
-                created = user.add_follow_request(
-                    UserProfile.objects.get(user__username=username))
-                created.save()
-                response = 'new_petition'
-                # TODO terminar notificaciones al enviar peticiones de amistad
-                notify.send(user, actor=User.objects.get(pk=user.pk).username, recipient=User.objects.get(pk=user.pk),
-                            verb=u'¡Nueva peticion de amistad!')
+                notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
+                            recipient=friend.user,
+                            verb=u'quiere seguirte.', level='friendrequest')
+                try:
+                    notification = Notification.objects.get(actor_object_id=user_request.pk,
+                                                            recipient=friend.user,
+                                                            level='friendrequest')  # .filter (aunque solo deberia devolver 1 fila)
+                    created = user.add_follow_request(
+                        friend, notification)
+                    created.save()
+                    response = 'new_petition'
+                except ObjectDoesNotExist:
+                    response = "no_added_friend"
 
             '''
             try:
@@ -523,9 +535,15 @@ def request_friend(request):
                 notify.send(user, actor=User.objects.get(pk=user.pk).username,
                             recipient=UserProfile.objects.get(pk=slug).user,
                             verb=u'quiere seguirte.', level='friendrequest')
-                created = user.profile.add_follow_request(
-                    UserProfile.objects.get(pk=slug))
-                created.save()
+                try:
+                    notification = Notification.objects.get(actor_object_id=user.pk,
+                                         recipient=UserProfile.objects.get(pk=slug).user,
+                                         level='friendrequest')
+                    created = user.profile.add_follow_request(
+                        UserProfile.objects.get(pk=slug), notification)
+                    created.save()
+                except ObjectDoesNotExist:
+                    response = "no_added_friend"
 
         print(response)
 
@@ -591,6 +609,23 @@ def remove_relationship(request):
             response = True
         else:
             response = False
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+# Elimina la peticion existente para seguir a un perfil
+def remove_request_follow(request):
+    response = None
+    user = request.user
+    slug = request.POST.get('slug', None)
+    status = request.POST.get('status', None)
+    profile_user = UserProfile.objects.get(pk=slug)
+
+    if request.method == 'POST':
+        if status == 'cancel':
+            profile_user.remove_received_follow_request(user.profile)
+            response = True
+        else:
+            response = False
+
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 # Load followers

@@ -1177,7 +1177,7 @@ function AJAX_requestfriend(status) {
                   AJAX_remove_relationship(slug);
               });
           } else if (response == "inprogress") {
-                $('#addfriend').replaceWith('<span class="fa fa-clock-o" title="En proceso">'+' '+'</div>');
+                $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">'+' '+'</div>');
           } else {
 
           }
@@ -1205,7 +1205,31 @@ function AJAX_remove_relationship(slug) {
                 var currentValue = document.getElementById('followers-stats');
                 $(currentValue).html(parseInt($(currentValue).html())-1);
             } else if (response == false) {
-                swal("Un error ha sucedido, inténtalo de nuevo más tarde :-(");
+                swal("Ha surgido un error, inténtalo de nuevo más tarde :-(");
+            }
+        }, error: function(rs, e) {
+            swal(rs.responseText + " " + e);
+        }
+    });
+}
+
+/* Eliminar peticion de amistad */
+function AJAX_remove_request_friend() {
+    var slug = $("#profileId").html();
+    $.ajax({
+        type: 'POST',
+        url: '/remove_request_follow/',
+        data: {
+          'slug': slug,
+          'status': 'cancel',
+          'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response == true) {
+                $('#follow_request').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend("noabort");></span>');
+            } else if (response == false) {
+                swal("Ha surgido un error, inténtalo de nuevo más tarde :-(");
             }
         }, error: function(rs, e) {
             swal(rs.responseText + " " + e);
@@ -1214,7 +1238,6 @@ function AJAX_remove_relationship(slug) {
 }
 
 /* Ocultar menu vertical al hacer click fuera de el */
-
 $(document).click(function(event) {
     if(!$(event.target).closest('#toggle').length) {
         if($('#toggle').is(":visible")) {
