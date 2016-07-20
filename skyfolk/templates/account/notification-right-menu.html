@@ -1,8 +1,8 @@
 {% comment %}
-  Menu de notificaciones verticales 
+  Menu de notificaciones verticales
 {% endcomment %}
 {% load notifications_tags %}
-<script async src="{{STATIC_URL}}js/notify.js" type="text/javascript"></script>
+<script src="{{STATIC_URL}}js/notify.js" type="text/javascript"></script>
 {% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' menu_id='list-notify' %}
 <!-- MENU VERTICAL CON NOTIFICACIONES  -->
 <div id="notification-menu" class="col-lg-3 col-md-8 col-sm-12 nav-vertical-and-chat">
