@@ -360,6 +360,6 @@ class Request(models.Model):
     receiver = models.ForeignKey(UserProfile, related_name='to_request')
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
-    notification = models.ForeignKey(Notification, related_name='request_notification')
+    notification = models.ForeignKey(Notification, related_name='request_notification', null=True)
     class Meta:
         unique_together = ('emitter', 'receiver', 'status')
