@@ -9,17 +9,17 @@
     <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/buscar.css" onload="if(media!='all')media='all'">
     <!-- <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jquery.gritter.css" /> -->
-    <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css" onload="if(media!='all')media='all'">
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
     {% block title %} <title>Skyfolk - Bienvenido.</title> {% endblock %}
     {% block extra-js %}{% endblock %}
     <!-- bloques de estilos para cada pagina -->
     {% block extra-css %}{% endblock %}
     {% block include_files %}{% endblock %}
-    <script>
+    <script async>
       window.moveTo(0,0);
       if (document.all) {
         top.window.resizeTo(screen.availWidth,screen.availHeight);

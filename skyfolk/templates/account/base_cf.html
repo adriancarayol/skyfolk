@@ -3,11 +3,11 @@
   Template base para templates de configuracion.
 {% endcomment %}
 {% block include_files %}
-    <script src="{{STATIC_URL}}js/config.js"></script>
-    <link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all">
-    <link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' />
+    <script async src="{{STATIC_URL}}js/config.js"></script>
+    <link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all" onload="if(media!='all')media='all'">
+    <link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' onload="if(media!='all')media='all'">
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-    <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/font-awesome.min.css" onload="if(media!='all')media='all'">
 {% endblock%}
 {% load i18n avatar_tags %}
 {% block title %} <title>Configuración - {{ request.user.username }}.</title> {% endblock %}

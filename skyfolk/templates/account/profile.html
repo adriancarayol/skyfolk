@@ -11,15 +11,15 @@
 {% endblock %}
 
 {% block extra-js %}
-  <script src="{{STATIC_URL}}js/scrollReveal.js"></script>
-  <script src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
-  <script src="{{STATIC_URL}}js/list.min.js"></script>
+  <script async src="{{STATIC_URL}}js/scrollReveal.js"></script>
+  <script async src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+  <script async src="{{STATIC_URL}}js/list.min.js"></script>
 {% endblock %}
 
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" />
-    <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" /> <!-- Estilos para la galeria de fotos -->
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" onload="if(media!='all')media='all'"> <!-- Estilos para la galeria de fotos -->
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" onload="if(media!='all')media='all'">
 {% endblock %}
 
 {% block content %}
@@ -309,13 +309,13 @@
 {% include "account/profile-gallery.html" %}
 
 <!-- IGNORAR, SOLO MUESTRA OBJETOS AL HACER SCROLL -->
-    <script>
+    <script async>
 
       window.sr = new scrollReveal(config);
 
     </script>
 
-     <script>
+     <script async>
       var config = {
         easing: 'hustle',
         reset:  true,
@@ -380,7 +380,7 @@ $(document).ready(function() {
 
 </script> -->
 <!-- Busqueda en tab-amigos -->
-<script>
+<script async>
   var options = {
     valueNames: [ 'name' ],
     indexAsync : true

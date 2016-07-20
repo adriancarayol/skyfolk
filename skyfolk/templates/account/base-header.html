@@ -33,14 +33,14 @@
         <li id="loader"></li>
     </ul>
     </nav>
-    <script src="{{STATIC_URL}}js/jquery.min.js"></script>
-    <script src="{{STATIC_URL}}js/jquery-ui.js"></script>
-    <script src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
-    <script src="{{STATIC_URL}}js/jquery.gritter.js"></script>
-    <script src="{{STATIC_URL}}js/profile.js"></script>
-    <script src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
-    <script src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
-    <script src="{{STATIC_URL}}js/jquery.textcomplete.js"></script>
+    <script async src="{{STATIC_URL}}js/jquery.min.js"></script>
+    <script async src="{{STATIC_URL}}js/jquery-ui.js"></script>
+    <script async src="{{STATIC_URL}}js/jquery.easytabs.js"></script>
+    <script async src="{{STATIC_URL}}js/jquery.gritter.js"></script>
+    <script async src="{{STATIC_URL}}js/profile.js"></script>
+    <script async src="{{STATIC_URL}}js/jquery.colorbox.js"></script>
+    <script async src="{{STATIC_URL}}js/jquery.shorten.1.0.js"></script>
+    <!-- <script async src="{{STATIC_URL}}js/jquery.textcomplete.js"></script> -->
     <!-- Mentions -->
     <!--
     <script src="{{STATIC_URL}}js/mentions/bootstrap-typeahead.js"></script>
@@ -48,6 +48,6 @@
   -->
 <!-- Sweet Alert -->
 
-    <link rel="stylesheet" href="{{STATIC_URL}}dist/sweetalert.css">
-    <link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css">
-    <script src="{{STATIC_URL}}dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="{{STATIC_URL}}dist/sweetalert.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css" onload="if(media!='all')media='all'">
+    <script async src="{{STATIC_URL}}dist/sweetalert.min.js"></script>

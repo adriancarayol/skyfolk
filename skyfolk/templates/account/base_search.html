@@ -5,7 +5,7 @@
 {% load app_filters %}
 {% block title %} <title>Buscar contactos</title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css" onload="if(media!='all')media='all'">
 {% endblock %}
 
 {% block content %}

@@ -3,9 +3,9 @@
 {% load avatar_tags %}
 {% block title %} <title>Seguidores {{ request.user.username }}</title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css"/>
-    <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css"/>
-    <script src="{{STATIC_URL}}js/friends.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/miperfil.css" onload="if(media!='all')media='all'">
+    <script async src="{{STATIC_URL}}js/friends.js"></script>
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -40,9 +40,9 @@
 </div>
 {% endblock %}
 {% block extra-js %}
-        <script src="{{STATIC_URL}}js/friends.js"></script>
-    <script src="{{STATIC_URL}}js/jquery.min.js"></script>
-     <script type="text/javascript" language="javascript">
+    <script async src="{{STATIC_URL}}js/friends.js"></script>
+    <script async src="{{STATIC_URL}}js/jquery.min.js"></script>
+     <script async type="text/javascript" language="javascript">
          $(function () {
              var $win = $(window);
              $win.scroll(function () {

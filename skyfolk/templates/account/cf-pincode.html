@@ -6,7 +6,7 @@
 {% load i18n avatar_tags %}
 {% endblock%}
 {% block extra-css %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/pincode.css">
+<link rel="stylesheet" href="{{STATIC_URL}}css/pincode.css" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block cf-title %}
 <hgroup>
@@ -21,7 +21,7 @@
             <button id="show-code" class="show-personal-code">ver pincode</button>
         </div>
     </div>
-    <script>
+    <script async>
         $('#show-code').click(function () {
             $('#pincode').show();
         });
