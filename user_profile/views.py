@@ -260,8 +260,6 @@ def search(request):
             texto_to_search = request.POST['searchText']
             # hacer busqueda si hay texto para buscar, mediante consulta a la
             # base de datos y pasar el resultado
-            if texto_to_search[0] == '/':
-                texto_to_search = texto_to_search[1:]
             if texto_to_search:
                 words = texto_to_search.split()
                 if len(words) == 1:

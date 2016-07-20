@@ -454,18 +454,6 @@ $(document).ready(function () {
   });
 
 
-
-  /* Abrir crear/cerrar grupo en search.html */
-
-  $('.btn-floating').on('click', function () {
-        $('.crear-grupo').toggle("fast",function() {
-    });
-  });
-
-  $('#cerrar_grupo').on('click',function() {
-    $('.crear-grupo').hide();
-  });
-
   /* Abrir - Cerrar lista de atajos */
 
   $('.menup .shortcut-keyboard').on('click',function() {
@@ -487,8 +475,8 @@ $(document).ready(function () {
         $(page_wrapper).find('#message2').focus();
     }
   });
-/* Abre atajos "a" */
 
+/* Abre atajos "a" */
 $(document).keypress(function(e){
     var key = e.which;
     if (key == 97 && ($('#atajos-keyboard-profile').is(':hidden')) &&
@@ -501,23 +489,29 @@ $(document).keypress(function(e){
 
 /* Cierra todas las ventajas emergentes. */
 
-$( document ).on('keydown', function(e) {
-    if ( e.keyCode === 27 ) { // escape
+$(document).on('keydown', function(e) {
+    if (e.keyCode === 27) { // escape
         var messageWrapper = document.getElementById('page-wrapper');
-
+        var ampliado = document.getElementsByClassName('ampliado');
+        var atj = document.getElementById('atajos-keyboard-profile');
+        var personalInfo = document.getElementsByClassName('info-paw');
+        var searchInput = document.getElementById('id_searchText');
         $(messageWrapper).find('#message2').blur(); // Focus del textarea off.
         $(messageWrapper).hide();  // Oculta from para crear comentario.
-        $('#atajos-keyboard-profile').hide(); // Oculta atajos de teclado.
-        $('.ampliado').hide(); // Oculta mensaje ampliado.
-        $('.user-card .info-paw').hide(); // Oculta informacion personal
+        $(atj).hide(); // Oculta atajos de teclado.
+        $(ampliado).hide(); // Oculta mensaje ampliado.
+        $(personalInfo).hide(); // Oculta informacion personal
+        $(searchInput).val("");
+        $(searchInput).blur();
     }
 });
 
-    $( document ).on('keydown', function(e) {
-    if ( e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) &&
+    $(document).on('keydown', function(e) {
+    if (e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) &&
     !($('input').is(":focus")) &&
     !($('textarea').is(":focus"))) { // escape
-        $('#id_searchText').focus(); // Focus del textarea off.
+      $('#id_searchText').focus(); // Focus del textarea off.
+      return false;
     }
 });
 
