@@ -8,8 +8,8 @@ from django.shortcuts import get_object_or_404, render
 from publications.models import Publication
 from timeline.models import Timeline
 
-# TODO
-def addToTimeline(request):
+
+def add_to_timeline(request):
     response = False
     print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
     if request.POST:
@@ -21,9 +21,8 @@ def addToTimeline(request):
 
         try:
             pub_to_add = Publication.objects.get(pk=obj_pub)
-            t, created = Timeline.objects.get_or_create(publication=pub_to_add, author=pub_to_add.author,
-                                                        profile=obj_userprofile.profile,
-                                                        content=pub_to_add.content)
+            t, created = Timeline.objects.get_or_create(publication=pub_to_add, author=pub_to_add.author.profile,
+                                                        profile=obj_userprofile.profile)
             print(t.users_add_me.all())
             if created:
                 print('Añadir nuevo timelime')
@@ -40,26 +39,24 @@ def addToTimeline(request):
 
         return HttpResponse(json.dumps(response), content_type='application/json')
 
-def removeTimeline(request):
+def remove_timeline(request):
     print('>>>>>>>> PETICION AJAX BORRAR TIMELINE')
     if request.POST:
-        # print request.POST['userprofile_id']
-        # print request.POST['publication_id']
+        profile_id = request.POST['userprofile_id']
         obj_userprofile = get_object_or_404(
             get_user_model(),
-            pk=request.POST['userprofile_id']
+            pk=profile_id
         )
-        print(obj_userprofile.pk)
-        print(request.user.pk)
         try:
+            print('timeline id: ' + request.POST['timeline_id'])
             obj_userprofile.profile.remove_timeline(
                 timeline_id=request.POST['timeline_id']
             )
+            print(request.POST['timeline_id'])
             response = True
-
         except ObjectDoesNotExist:
             response = False
 
         return HttpResponse(json.dumps(response),
                     content_type='application/json'
-                )
+        )

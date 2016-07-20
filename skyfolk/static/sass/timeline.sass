@@ -1,5 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400)
 
+$blueskyfolk: #1e88e5
 /* NOTA IMPORTANTE: LOS COMENTARIOS DENTRO DE LOS ESTILOS SON PARA EL TIMELINE DE ABAJO */
 
 #section .wrapperx
@@ -17,11 +18,10 @@
 
   & .line
     left: 30px
-    background-color: #f5f5f5
+    background-color: $blueskyfolk
     box-shadow: 0.1px 0.1px grey
     width: 10px
     height: 300px
-    max-height: auto
     position: relative
     display: block
 
@@ -164,3 +164,8 @@
 
   & .line .second .controles ul li:nth-child(3):hover  /*Boton responder (flecha izquierda */
     color: rgb(144,189,207)
+  & .line .second .controles ul li .hate-with-values
+    display: inline-block
+    margin-top: -5%
+    position: relative
+

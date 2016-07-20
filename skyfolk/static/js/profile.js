@@ -1261,41 +1261,6 @@ function addItemToFriendList(name, lastname) {
 
 
 /*****************************************************/
-/********** AJAX para borrado de timeline ***********/
-/****************************************************/
-
-function AJAX_delete_timeline(div_timeline) {
-  var id_pub = $(div_timeline).attr('id').split('-')[1];  // obtengo id
-  var id_user = $(div_timeline).data('id'); // obtengo id
-  var data = {
-           userprofile_id: id_user,
-           timeline_id: id_pub
-       };
-  //alert("id pub: " + id_pub + " id_user: " + id_user);
-  //event.preventDefault(); //stop submit
-  $.ajax({
-    url: '/timeline/removeTimeline/',
-    type: 'POST',
-    dataType: 'json',
-    data: data,
-    success: function(data) {
-        // borrar caja timeline
-        if (data==true) {
-            $(div_timeline).fadeToggle("fast");
-        }else{
-            swal({
-                title: "Fail",
-                text: "Failed to delete publish.",
-                type: "error"
-            });
-        }
-    },
-    error: function(rs, e) {
-      alert('ERROR: ' + rs.responseText + " " + e);
-    }
-  });
-}
-/*****************************************************/
 /********** AJAX para botones de comentarios *********/
 /*****************************************************/
 
@@ -1304,7 +1269,8 @@ function AJAX_delete_publication(caja_publicacion) {
   var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
-           publication_id: id_pub
+           publication_id: id_pub,
+           'csrfmiddlewaretoken': csrftoken
        };
   //event.preventDefault(); //stop submit
   $.ajax({
@@ -1339,7 +1305,8 @@ function AJAX_add_like(caja_publicacion, heart) {
   var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
-           publication_id: id_pub
+           publication_id: id_pub,
+           'csrfmiddlewaretoken': csrftoken
         };
   //event.preventDefault(); //stop submit
   $.ajax({
@@ -1391,7 +1358,8 @@ function AJAX_add_hate(caja_publicacion, heart) {
   var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
-           publication_id: id_pub
+           publication_id: id_pub,
+           'csrfmiddlewaretoken': csrftoken
         };
   //event.preventDefault(); //stop submit
   $.ajax({
@@ -1445,11 +1413,12 @@ function AJAX_add_timeline(caja_publicacion, tag) {
   var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
-           publication_id: id_pub
+           publication_id: id_pub,
+           'csrfmiddlewaretoken': csrftoken
        };
   //event.preventDefault(); //stop submit
   $.ajax({
-    url: '/timeline/addToTimeline/',
+    url: '/timeline/add_to_timeline/',
     type: 'POST',
     dataType: 'json',
     data: data,
@@ -1467,6 +1436,43 @@ function AJAX_add_timeline(caja_publicacion, tag) {
     },
     error: function(rs, e) {
       alert('ERROR: ' + rs.responseText + e);
+    }
+  });
+}
+
+/*****************************************************/
+/********** AJAX para borrado de timeline ***********/
+/****************************************************/
+
+function AJAX_delete_timeline(div_timeline) {
+  var id_pub = $(div_timeline).attr('id').split('-')[1];  // obtengo id
+  var id_user = $(div_timeline).data('id'); // obtengo id
+  var data = {
+           userprofile_id: id_user,
+           timeline_id: id_pub,
+           'csrfmiddlewaretoken': csrftoken
+       };
+  //alert("id pub: " + id_pub + " id_user: " + id_user);
+  //event.preventDefault(); //stop submit
+  $.ajax({
+    url: '/timeline/remove_timeline/',
+    type: 'POST',
+    dataType: 'json',
+    data: data,
+    success: function(data) {
+        // borrar caja timeline
+        if (data==true) {
+            $(div_timeline).fadeToggle("fast");
+        }else{
+            swal({
+                title: "Fail",
+                text: "Failed to delete publish.",
+                type: "error"
+            });
+        }
+    },
+    error: function(rs, e) {
+      alert('ERROR: ' + rs.responseText + " " + e);
     }
   });
 }

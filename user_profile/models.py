@@ -130,16 +130,15 @@ class UserProfile(models.Model):
 
     def getTimelineToMe(self):
         return self.timeline_to.filter(
-            from_timeline__profile=self).values('user__username', 'user__first_name', 'user__last_name',
-                                                'from_timeline__id',
-                                                'from_timeline__content', 'from_timeline__insertion_date').order_by(
+            from_timeline__profile=self).values('user__username', 'from_timeline__publication__content',
+                                                'from_timeline__id', 'from_timeline__publication__author__username',
+                                                'from_timeline__insertion_date').order_by(
             'from_timeline__insertion_date').reverse()
 
     def remove_timeline(self, timeline_id):
         timeline.models.Timeline.objects.get(pk=timeline_id).delete()
 
     # Methods of publications
-
 
     def get_publication(self, publicationid):
         return publications.models.Publication.objects.get(pk=publicationid)

@@ -14,11 +14,10 @@
     list-style-type: none; }
   #section .wrapperx .line {
     left: 30px;
-    background-color: #f5f5f5;
+    background-color: #1e88e5;
     box-shadow: 0.1px 0.1px grey;
     width: 10px;
     height: 300px;
-    max-height: auto;
     position: relative;
     display: block; }
   #section .wrapperx .line .second {
@@ -138,5 +137,9 @@
     color: #fff; }
   #section .wrapperx .line .second .controles ul li:nth-child(3):hover {
     color: #90bdcf; }
+  #section .wrapperx .line .second .controles ul li .hate-with-values {
+    display: inline-block;
+    margin-top: -5%;
+    position: relative; }
 
 /*# sourceMappingURL=timeline.css.map */

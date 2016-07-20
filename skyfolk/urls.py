@@ -62,9 +62,9 @@ urlpatterns = patterns(
     # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # url add to timeline
-    url(r'^timeline/addToTimeline/$', 'timeline.views.addToTimeline', name='add_timeline'),
+    url(r'^timeline/add_to_timeline/$', 'timeline.views.add_to_timeline', name='add_to_timeline'),
     # url remove timeline
-    url(r'^timeline/removeTimeline/$', 'timeline.views.removeTimeline', name='remove_timeline'),
+    url(r'^timeline/remove_timeline/$', 'timeline.views.remove_timeline', name='remove_timeline'),
     # url novedades e inicio
     url(r'^inicio/mypublications/','latest_news.views.news_and_updates'),
     # url mensajes privados
