@@ -16,6 +16,7 @@
 
 <!--<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>-->
 <div class="block-form block-formregister">
+    <a class="reco-passwd" title="Consejos para una buena contraseña." href="/tips/password/"><i class="fa fa-lock"></i></a>
 	<form class="signup form-3" id="signup_form" method="post" action="{% url 'account_signup' %}">
 	<div class="form-group">
 	  {% csrf_token %}
@@ -25,7 +26,7 @@
 	  {% endif %}
 	  </div>
 	  <button id="sign_in_register" class="waves-effect waves-light btn blue lighten-2" type="submit">{% trans "Sign In" %}</button>
-	  <button id="sign_up_register" type="button" class="waves-effect waves-light btn blue lighten-2" onclick="javascript:location.href='{{ signup_url }}'"><!--{% trans "Sign Up" %}-->Limpiar</button>
+	  <button id="sign_up_register" type="button" class="waves-effect waves-light btn blue lighten-2" onclick="location.href='{{ signup_url }}'"><!--{% trans "Sign Up" %}-->Limpiar</button>
 	</form>
 </div>
 

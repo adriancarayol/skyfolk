@@ -7,16 +7,15 @@
       <li>
         {% include "account/menu-vertical.html" %}
       </li>
-
       <li><div class="field" id="searchform">
         <form method='post' action='/search/'>{% csrf_token %}
           {{searchForm}}
         </form>
         <!-- Logotipo que re-direcciona a la pagina principal -->
+         </div></li>
         <li>
           <div class="logotipo_skyfolk" onclick="location.href='/'"> <i>S</i>kyfolk</div>
         </li>
-        <div>
          <!-- Notificaciones para skyfolk - (Botón campana) -->
         <li class="notification-bell">
           <i class="fa fa-bell fa-lg"></i>
@@ -31,7 +30,8 @@
         <!-- MENU VERTICAL CON NOTIFICACIONES  -->
         {% include "account/notification-right-menu.html" %}
         <!-- LOADER DE TODA LA PÁGINA -->
-        <div id="loader"></div>
+        <li id="loader"></li>
+    </ul>
     </nav>
     <script src="{{STATIC_URL}}js/jquery.min.js"></script>
     <script src="{{STATIC_URL}}js/jquery-ui.js"></script>

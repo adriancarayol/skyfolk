@@ -1,8 +1,9 @@
-from django.shortcuts import render_to_response, get_object_or_404, render
-from django.template import RequestContext, loader
+from django.shortcuts import render
+from django.views.generic import TemplateView
 
 
-def about(request,view):
+def about(request, view):
+    plantilla = None
     if view == 'home':
         plantilla = 'about/aboutSkyfolk.html'
     elif view == 'us':

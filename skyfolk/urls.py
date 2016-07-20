@@ -13,7 +13,7 @@ from user_profile import views as user_profile_views
 import notifications
 # import notifications
 from publications.views import PublicationNewView, PublicationsListView
-
+from django.views.generic import TemplateView
 
 admin.autodiscover()
 
@@ -70,7 +70,9 @@ urlpatterns = patterns(
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
-    url(r'^about/([^/]+)/$',about),
+    url(r'^about/([^/]+)/$', about),
+    # Recomendacion password para usuarios
+    url(r'^tips/password/$', TemplateView.as_view(template_name='about/password_recommendation.html')),
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
     url(
