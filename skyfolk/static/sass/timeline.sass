@@ -5,28 +5,30 @@ $blueskyfolk: #1e88e5
 
 #section .wrapperx
   position: relative
-  max-width: 100%
+  width: 2%
   float: left
-  left: 0px
+  left: 0
   height: auto
-  background: 0
-  border: 0
-  box-shadow: 0
-
-  & .line li
-    list-style-type: none
-
-  & .line
-    left: 30px
+  background: transparent
+  &:before
+    content: ''
     background-color: $blueskyfolk
-    box-shadow: 0.1px 0.1px grey
     width: 10px
-    height: 300px
+    height: 100%
+    position: absolute
+    top: 0
+    left: 40px
+    opacity: 0.8
+  & .timeline-pub
+    margin-left: 30px
+    width: 10px
     position: relative
     display: block
+    & li
+      list-style-type: none
 
   /* Second */
-  & .line .second
+  & .timeline-pub .second
     position: relative
     min-width: 350px
     max-width: 100%
@@ -38,7 +40,7 @@ $blueskyfolk: #1e88e5
     margin-top: 10px
     box-shadow: 0.1px 0.1px grey
 
-  & .line .second .head
+  & .timeline-pub .second .head
     background-color: #1e88e5
     width: 100%
     height: 30px
@@ -49,7 +51,7 @@ $blueskyfolk: #1e88e5
     color: white
     font-weight: 100
 
-  & .line .second .head em
+  & .timeline-pub .second .head em
     float: left
     width: 10px
     height: 10px
@@ -61,14 +63,14 @@ $blueskyfolk: #1e88e5
     -moz-transform: rotate(45deg)
     -webkit-transform: rotate(45deg)
 
-  & .line .head a
+  & .timeline-pub .head a
     position: relative
     top: 5px
     font-style: normal
     text-decoration: none
     color: white
 
-  & .line .second #p
+  & .timeline-pub .second #p
     position: relative
     display: inline-block
     top: 40px
@@ -80,18 +82,18 @@ $blueskyfolk: #1e88e5
     width: 100%
     color: #000
 
-  & .line #p img
+  & .timeline-pub #p img
     width: 20px
     height: 20px
     z-index: 9999
 
-  & .line .second .head .fecha_
+  & .timeline-pub .second .head .fecha_
     font-size: 10px
     float: right
     position: relative
     display: inline-block
 
-  & .line .second .contenidoadicional
+  & .timeline-pub .second .contenidoadicional
     width: 100%
     height: auto
     position: relative
@@ -99,7 +101,7 @@ $blueskyfolk: #1e88e5
     margin-top: 30px
     border-top: 1px solid #ccc
 
-  & .line .second .contenidoadicional img
+  & .timeline-pub .second .contenidoadicional img
     width: 80%
     border-radius: 7px
     position: relative
@@ -108,27 +110,25 @@ $blueskyfolk: #1e88e5
     margin-top: 30px
 
 
-  & .line .second .acontecimiento
-    width: 40px
-    height: 40px
+  & .timeline-pub .second .acontecimiento
+    width: 45px
+    height: 45px
     background-size: 100%
     background-repeat: no-repeat
     background-position: center
     background-color: #fff
-    border-radius: 100%
     border: 1px solid #1e88e5
-    position: absolute
+    position: relative
     display: inline-block
+    margin: 0 10px 0 -55px
     top: -7px
-    right: 372.5px
 
     & img
-      border-radius: 100%
       width: 100%
       height: 100%
 
 
-  & .line .second .controles
+  & .timeline-pub .second .controles
     position: relative
     display: inline-block
     margin: auto
@@ -137,7 +137,7 @@ $blueskyfolk: #1e88e5
     margin-top: 10px
 
 
-  & .line .second .controles ul
+  & .timeline-pub .second .controles ul
     margin: auto
     position: relative
     width: 100%
@@ -145,27 +145,36 @@ $blueskyfolk: #1e88e5
     text-align: center
 
 
-  & .line .second .controles ul li
-    margin: 10px
-    color: #ccc
+    & li
+      margin: 10px
+      color: #555
+      display: inline-block
+      cursor: pointer
+      padding: 10px 7px
+      &:nth-child(1):hover
+        color: #BBDEFB
+      &:nth-child(2):hover
+        color: #1E88E5
+      &:nth-child(3):hover
+        color: #808080
+      &:nth-child(4):hover
+        color: #F06292
+      &:nth-child(5):hover
+        color: #3F51B5
+      &:nth-child(6):hover
+        color: tomato
+  & .timeline-pub .second .controles ul .timeline-hate-with-values
     display: inline-block
-    transition: all .3s linear
-    -webkit-transition: all .3s linear
-    -moz-transition: all .3s linear
-    cursor: pointer
-    padding: 10px 7px
-
-
-  & .line .second .controles ul li:nth-child(1):hover  /* Boton me gusta (corazon) */
-    color: tomato
-
-  & .line .second .controles ul li:nth-child(2):hover /* Boton compartir (flecha hacia derecha) */
-    color: #fff
-
-  & .line .second .controles ul li:nth-child(3):hover  /*Boton responder (flecha izquierda */
-    color: rgb(144,189,207)
-  & .line .second .controles ul li .hate-with-values
-    display: inline-block
-    margin-top: -5%
+    margin-top: -1.25%
     position: relative
+  & .timeline-pub .second .controles ul li .timeline-hate-value
+    position: relative
+    float: right
+    left: 16px
+    font-size: 1.1em
+  & .timeline-pub .second .controles ul .fa-heart i
+    font-size: 0.855em
+    position: relative
+    float: right
+    left: 6px
 

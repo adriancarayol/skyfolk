@@ -8,7 +8,7 @@
         <div class="wrapperx">
             {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
                 {% for item in timeline %}
-                    <div class="line" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
+                    <div class="timeline-pub" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
                         <li>
                             <div data-sr="wait 0.2s then scale up 30%" class="second">
                                 <span class="acontecimiento">
@@ -19,7 +19,7 @@
                                             <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em>
                                         </span>
                                         <div id="p" class="parrafo comment">
-                                                {{ item.from_timeline__publication__content|replace_decorators|safe}}
+                                            {{ item.from_timeline__publication__content|replace_decorators|safe}}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
@@ -29,12 +29,12 @@
                                                 <li class="fa fa-tag fa-lg"></li>
                                                 <li class="fa fa-reply fa-lg"></li>
                                                 <li class="fa fa-quote-left fa-lg"></li>
-                                                <li class="fa fa-heart fa-lg"></li>
-                                                <li title="No me gusta" class="fa-stack hate-with-values" id="fa-hate">
-                                                    <span class="hate-comment">
-                                                        <i class="fa fa-heart fa-stack-1x fa-lg hate-comment"></i>
+                                                <li class="fa fa-heart fa-lg"><i class="fa">{{ item.from_timeline__publication__likes }}</i></li>
+                                                <li title="No me gusta" class="fa-stack timeline-hate-with-values" id="fa-hate">
+                                                    <span class="timeline-hate-comment">
+                                                        <i class="fa fa-heart fa-stack-1x fa-lg"></i>
                                                         <i class="fa fa-bolt fa-stack-1x fa-lg fa-inverse"></i>
-                                                        <i class="fa hate-value"> {{ pub.hates }} </i>
+                                                        <i class="fa timeline-hate-value"> {{ item.from_timeline__publication__hates }} </i>
                                                     </span>
                                                 </li>
                                                 {% if user.username == user_profile.username %}

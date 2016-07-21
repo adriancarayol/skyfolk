@@ -329,7 +329,7 @@ $(document).ready(function () {
   /* Borrar timeline */
 
   $('#tab-timeline').find('.controles .fa-trash').on('click', function() {
-    var div_timeline = $(this).closest('.line');
+    var div_timeline = $(this).closest('.timeline-pub');
     swal({
       title: "Are you sure?",
       text: "You will not be able to recover this history!",

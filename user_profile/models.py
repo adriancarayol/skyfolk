@@ -132,6 +132,7 @@ class UserProfile(models.Model):
         return self.timeline_to.filter(
             from_timeline__profile=self).values('user__username', 'from_timeline__publication__content',
                                                 'from_timeline__id', 'from_timeline__publication__author__username',
+                                                'from_timeline__publication__likes', 'from_timeline__publication__hates',
                                                 'from_timeline__insertion_date').order_by(
             'from_timeline__insertion_date').reverse()
 
