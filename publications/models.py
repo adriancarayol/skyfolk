@@ -99,6 +99,8 @@ class Publication(models.Model):
                                                     related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                     related_name='hates_me')
+    user_share_me = models.ManyToManyField(User, blank=True,
+                                           related_name='share_me')
     parent = models.ForeignKey('self', blank=True, null=True,
                                                     related_name='reply')
     objects = PublicationManager()

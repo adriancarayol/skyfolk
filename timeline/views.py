@@ -23,17 +23,16 @@ def add_to_timeline(request):
             pub_to_add = Publication.objects.get(pk=obj_pub)
             t, created = Timeline.objects.get_or_create(publication=pub_to_add, author=pub_to_add.author.profile,
                                                         profile=obj_userprofile.profile)
-            print(t.users_add_me.all())
+
             if created:
-                print('Añadir nuevo timelime')
-                t.users_add_me.add(request.user)
-                t.save()
+                print('Añadir nuevo timelime al perfil del usuario')
+                pub_to_add.user_share_me.add(request.user)
+                pub_to_add.save()
                 response = True
             elif not created:
-                print('Eliminar timeline')
-                t.users_add_me.remove(request.user)
-                t.save()
+                print('Ya existe en el timeline del usuario')
                 response = True
+            print('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.user_share_me.count()))
         except ObjectDoesNotExist:
             response = False
 

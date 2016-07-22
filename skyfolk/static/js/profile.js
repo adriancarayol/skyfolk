@@ -387,7 +387,7 @@ $(document).ready(function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         if (Date.now() - lastClickTag > 1000) {
-            AJAX_add_timeline(caja_publicacion, tag);
+            AJAX_add_timeline(caja_publicacion, tag, "publication");
             lastClickTag = Date.now();
         } else {
             swal({
@@ -405,7 +405,7 @@ $(document).ready(function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         if (Date.now() - lastClickHeart > 1000) {
-            AJAX_add_like(caja_publicacion, heart);
+            AJAX_add_like(caja_publicacion, heart, "publication");
             lastClickHeart = Date.now();
         } else {
             swal({
@@ -419,12 +419,11 @@ $(document).ready(function () {
     });
 
     /* Añadir no me gusta a comentario */
-
     $('.optiones_comentarios').find('#fa-hate').on('click', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         if (Date.now() - lastClickHate > 1000) {
-            AJAX_add_hate(caja_publicacion, heart);
+            AJAX_add_hate(caja_publicacion, heart, "publication");
             lastClickHate = Date.now();
         } else {
             swal({
@@ -437,12 +436,61 @@ $(document).ready(function () {
         }
     });
 
+    /* Añadir publicacion de timeline a mi timeline */
+        $('#wrapperx-timeline').find('#controls-timeline').find('#add-timeline').on('click', function() {
+        var caja_publicacion = $(this).closest('.timeline-pub');
+        var tag = this;
+        if (Date.now() - lastClickTag > 1000) {
+            AJAX_add_timeline(caja_publicacion, tag, "timeline");
+            lastClickTag = Date.now();
+        } else {
+            swal({
+              title: ":/",
+              text: "Debes esperar 1 segundos para volver a pulsar el botón.",
+              timer: 2000,
+              showConfirmButton: true,
+              type: "warning"
+            });
+        }
+    });
+    /* Añadir me gusta a comentario en timeline */
+    $('#wrapperx-timeline').find('#controls-timeline').find('#like-heart-timeline').on('click', function() {
+        var caja_publicacion = $(this).closest('.timeline-pub');
+        var heart = this;
+        if (Date.now() - lastClickHate > 1000) {
+            AJAX_add_like(caja_publicacion, heart, "timeline");
+            lastClickHate = Date.now();
+        } else {
+            swal({
+              title: ":/",
+              text: "Debes esperar 1 segundos para volver a pulsar el botón.",
+              timer: 2000,
+              showConfirmButton: true,
+              type: "warning"
+            });
+        }
+    });
+    /* Añadir no me gusta a comentario en timeline */
+        $('#wrapperx-timeline').find('#controls-timeline').find('#fa-hate-timeline').on('click', function() {
+        var caja_publicacion = $(this).closest('.timeline-pub');
+        var heart = this;
+        if (Date.now() - lastClickHate > 1000) {
+            AJAX_add_hate(caja_publicacion, heart, "timeline");
+            lastClickHate = Date.now();
+        } else {
+            swal({
+              title: ":/",
+              text: "Debes esperar 1 segundos para volver a pulsar el botón.",
+              timer: 2000,
+              showConfirmButton: true,
+              type: "warning"
+            });
+        }
+    });
 /* Mostramos y ocultamos notificaciones y chat por la derecha */
-
   $(".fa-bell").click(function(){
     $("#notification-menu").animate({width: 'toggle'}, 100);
   });
-
 
   /* Atajo para enviar comentarios mas rapido */
 
@@ -1300,8 +1348,13 @@ function AJAX_delete_publication(caja_publicacion) {
 /********** AJAX para añadir me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_like(caja_publicacion, heart) {
-  var id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+function AJAX_add_like(caja_publicacion, heart, type) {
+  var id_pub;
+  if (type.localeCompare("publication") == 0) {
+      id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+  } else if (type.localeCompare("timeline") == 0) {
+      id_pub = $(caja_publicacion).data('publication'); // obtengo id
+  }
   var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
@@ -1353,8 +1406,13 @@ function AJAX_add_like(caja_publicacion, heart) {
 /******* AJAX para añadir no me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_hate(caja_publicacion, heart) {
-  var id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+function AJAX_add_hate(caja_publicacion, heart, type) {
+  var id_pub;
+  if (type.localeCompare("publication") == 0) {
+      id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+  } else if (type.localeCompare("timeline") == 0) {
+      id_pub = $(caja_publicacion).data('publication'); // obtengo id
+  }
   var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
@@ -1408,8 +1466,13 @@ function AJAX_add_hate(caja_publicacion, heart) {
 /********** AJAX para agregar al TIMELINE *********/
 /*****************************************************/
 
-function AJAX_add_timeline(caja_publicacion, tag) {
-  var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
+function AJAX_add_timeline(caja_publicacion, tag, type) {
+  var id_pub;
+  if (type.localeCompare("publication") == 0) {
+      id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+  } else if (type.localeCompare("timeline") == 0) {
+      id_pub = $(caja_publicacion).data('publication'); // obtengo id
+  }
   var id_user = $(caja_publicacion).data('id'); // obtengo id
   var data = {
            userprofile_id: id_user,
