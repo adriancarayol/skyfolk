@@ -132,7 +132,6 @@ class UserProfile(models.Model):
         return self.timeline_to.filter(
             from_timeline__profile=self).values('user__username', 'from_timeline__publication__content',
                                                 'from_timeline__id', 'from_timeline__publication__author__username',
-                                                'from_timeline__publication__likes', 'from_timeline__publication__hates',
                                                 'from_timeline__insertion_date', 'from_timeline__publication__id').order_by(
             'from_timeline__insertion_date').reverse()
 
@@ -153,16 +152,14 @@ class UserProfile(models.Model):
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
                                                    'from_publication__content', 'from_publication__created',
-                                                   'from_publication__likes',
-                                                   'from_publication__hates', 'from_publication__replies').order_by(
+                                                   'from_publication__replies').order_by(
             'from_publication__created').reverse()
 
     def get_publicationsToMeTop15(self):
         return self.publications_to.filter(
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
-                                                   'from_publication__content', 'from_publication__created',
-                                                   'from_publication__likes').order_by(
+                                                   'from_publication__content', 'from_publication__created').order_by(
             'from_publication__created').reverse()[0:15]
 
     def get_myPublications(self):
@@ -170,8 +167,7 @@ class UserProfile(models.Model):
             to_publication__author=self).values('user__username', 'to_publication__profile', 'user__first_name',
                                                 'user__last_name',
                                                 'from_publication__id', 'to_publication__content',
-                                                'to_publication__created', 'to_publication__likes',
-                                                'to_publication__user_give_me_like').reverse()
+                                                'to_publication__created', 'to_publication__user_give_me_like').reverse()
 
     # Obtener seguidos
     def get_following(self):

@@ -178,7 +178,6 @@ def add_like(request):
             print ("Incrementando like")
             try:
                 pub.user_give_me_like.add(request.user) # add users like
-                pub.set_like_pub(len(pub.user_give_me_like.all()))
                 pub.save()
                 response = True
                 statuslike = 1
@@ -191,7 +190,6 @@ def add_like(request):
             print ("Decrementando like")
             try:
                 pub.user_give_me_like.remove(request.user)
-                pub.set_like_pub(len(pub.user_give_me_like.all()))
                 pub.save()
                 response = True
                 statuslike = 2
@@ -234,7 +232,6 @@ def add_hate(request):
             print ("Incrementando like")
             try:
                 pub.user_give_me_hate.add(request.user) # add users like
-                pub.set_hate_pub(len(pub.user_give_me_hate.all()))
                 pub.save()
                 response = True
                 statuslike = 1
@@ -247,7 +244,6 @@ def add_hate(request):
             print ("Decrementando like")
             try:
                 pub.user_give_me_hate.remove(request.user)
-                pub.set_hate_pub(len(pub.user_give_me_hate.all()))
                 pub.save()
                 response = True
                 statuslike = 2

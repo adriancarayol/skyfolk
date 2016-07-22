@@ -28,3 +28,18 @@ def total_shares(pub):
         return total
     else:
         return ""
+
+# Devuelve el numero total de me gustas
+@register.filter(name='total_likes')
+def total_likes(pub):
+    total = Publication.objects.get(pk=pub).user_give_me_like.count()
+    if total > 0:
+        return total
+    else:
+        return ""
+
+# Devuelve el numero total de no me gusta
+@register.filter(name='total_hates')
+def total_hates(pub):
+    total = Publication.objects.get(pk=pub).user_give_me_hate.count()
+    return total

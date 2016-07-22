@@ -3,11 +3,6 @@ from django.db import models
 from django.db.models import Q
 
 class PublicationManager(models.Manager):
-    def set_like_pub(self, likes):
-        self.likes = likes
-
-    def set_hate_pub(self, hates):
-        self.hates = hates
 
     # Functions of publications
     def get_publication(self, publicationid):
@@ -93,8 +88,6 @@ class Publication(models.Model):
     image = models.ImageField(upload_to='publicationimages',
                                 verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
-    likes = models.IntegerField(default=0, blank=True, null=True)
-    hates = models.IntegerField(default=0, blank=True, null=True)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                     related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
