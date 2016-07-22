@@ -151,7 +151,7 @@
     float: right;
     left: 16px;
     font-size: 1.1em; }
-  #section .wrapperx .timeline-pub .second .controles ul .fa-heart i {
+  #section .wrapperx .timeline-pub .second .controles ul .fa-heart i, #section .wrapperx .fa-tag i {
     font-size: 0.855em;
     position: relative;
     float: right;

@@ -26,7 +26,7 @@
                                         </div>
                                         <div class="controles" id="controls-timeline">
                                             <ul>
-                                                <li id="add-timeline" class="fa fa-tag fa-lg"></li>
+                                                <li id="add-timeline" class="fa fa-tag fa-lg"><i class="fa">{{ item.from_timeline__publication__id|total_shares }}</i></li>
                                                 <li class="fa fa-reply fa-lg"></li>
                                                 <li class="fa fa-quote-left fa-lg"></li>
                                                 {% if item.from_timeline__publication__likes > 0 %}
