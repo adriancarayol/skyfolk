@@ -659,8 +659,8 @@ def followers(request, username):
     except ObjectDoesNotExist:
         friends = None
 
-    if (len(friends) > 1):
-        friends_top4 = friends[0:1]
+    if (len(friends) > 12):
+        friends_top4 = friends[0:12]
     else:
         friends_top4 = friends
     return render_to_response('account/followers.html',
@@ -681,8 +681,8 @@ def following(request, username):
     except ObjectDoesNotExist:
         friends = None
 
-    if len(friends) > 4:
-        friends_top4 = friends[0:4]
+    if len(friends) > 12:
+        friends_top4 = friends[0:12]
     else:
         friends_top4 = friends
     return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm,

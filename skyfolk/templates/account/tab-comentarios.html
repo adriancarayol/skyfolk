@@ -52,7 +52,7 @@
       </div>
 </div>
 
-                <article class="articulo">
+                <div class="articulo">
                   <h2 class="h22"><a href="/profile/{{ pub.author.username }}" >{{ pub.author.username }}</a> ha comentado:  </h2>
                   <div class="parrafo comment">
                     <a target="_blank">{{pub.created}}</a><br>
@@ -94,7 +94,7 @@
                        <li title="Añadir a mi timeline" class="add-timeline"><i class="fa fa-tag"> {{ pub.id|total_shares }}</i></li>
                     </ul>
                 </div>
-                </article>
+                </div>
                 <div class="wrapper-reply">
                 {% include "account/new_reply.html" %}
                 <!-- RESPUESTAS A COMENTARIOS -->
@@ -102,7 +102,6 @@
                 <div class="comment-reply">
                 <div class="avatar-reply">{% avatar reply.author %}</div>
                     <div class="author-reply">
-                      <span class="triangle"></span>
                       <a href="/profile/{{ reply.author }}">{{ reply.author }}</a>
                       <i class="reply-created">{{reply.created}}</i>
                     </div>
