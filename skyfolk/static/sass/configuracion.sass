@@ -1,33 +1,30 @@
 $blueskyfolk: #1e88e5
-
-*
-  -webkit-box-sizing: border-box
-  -moz-box-sizing: border-box
-  box-sizing: border-box
+$greycolor: #555
+$greyblue: #66757f
 
 body
-  font-size: 11.5px !important
+  color: $greycolor
+  font-family: 'Open Sans', sans-serif
+  font-size: 11.5px
   font-style: normal
   font-weight: 300
-  font-family: 'Open Sans', sans-serif !important
-  color: #555
 
 hgroup
+  border-bottom: 1px solid $greyblue
   margin-bottom: 70px
-  position: relative
-  border-bottom: 1px solid #66757F
   padding: 10px 0
+  position: relative
 
 span
+  left: 0
   position: relative
   top: 40px
-  left: 0
 
 h4
-  display: block
   color: #66757F
+  display: block
   font-weight: 100
-  font-size: 22px !important
+  font-size: 22px
 
 h6
   display: inline-block
@@ -70,8 +67,6 @@ h6
   background-color: #fff
   margin-bottom: 5px
   transition: all .3s linear
-  -webkit-transition: all .3s linear
-  -moz-transition: all .3s linear
 
 .menu-config a:hover
   color: $blueskyfolk
@@ -87,15 +82,16 @@ h6
 #recent, #new, #new2
   display: list-item
 
-#form-changepass
+.password_change
   position: relative
   display: block
-  margin-left: 27%
+  width: 90%
+  margin-left: 1%
 
-#form-changepass label
+.password_change label
   font-size: 1.2em
 
-#form-changepass #btn
+.password_change #btn
   margin-top: 40px
 
 .img-profile
@@ -194,8 +190,6 @@ label[for="id_password2"]
   height: 570px
   width: 50%
   border-radius: 7px
-  -webkit-box-shadow: 2px 2px 7px 0 #efefef
-  -moz-box-shadow: 2px 2px 7px 0 #efefef
   box-shadow: 2px 2px 7px 0 #efefef
   border: 1px solid #e0e0e0
 
@@ -209,10 +203,6 @@ label[for="id_password2"]
   margin-top: 10px
   height: 100%
   width: 100%
-
-#form-changepass
-  height: auto
-
 
 /* Boton salvar cambios */
 .wrapper-p
@@ -229,15 +219,15 @@ label[for="id_password2"]
     color: $blueskyfolk
     background-color: transparent
     text-align: center
-    letter-spacing: 0.5px
-    transition: all 0.2s ease-out 0s
+    letter-spacing: .5px
+    transition: all .2s ease-out 0s
     cursor: pointer
     float: right
     margin-right: 10%
     outline: none
     &:hover
       background-color: #eee
-      opacity: 0.8
+      opacity: .8
 
 #boton-perfil, #btn
   position: relative
@@ -247,6 +237,7 @@ label[for="id_password2"]
   float: right
   line-height: 2px
   font-size: 1.3em
+  left: 12%
   display: block
 
 #id_image
@@ -302,7 +293,7 @@ hgroup
 
 .cn
   font-size: 20px
-  text-shadow: #ccc 0.5px 0.5px 0.5px
+  text-shadow: #ccc .5px .5px .5px
   color: #424242
   font-family: 'Open Sans', sans-serif
   margin-left: 17px
@@ -310,7 +301,7 @@ hgroup
 
 .ch
   font-size: 12px
-  text-shadow: #ccc 0.2px 0.2px 0.2px
+  text-shadow: #ccc .2px .2px .2px
   color: #424242
   margin-left: 20px
   margin-top: 20px
@@ -331,26 +322,22 @@ hgroup
     text-align: center
     top: 30px
     padding: 20px
-    background-color: #eee
+    background-color: #fff
     color: $blueskyfolk
     display: inline-block
-    -webkit-transition: all .2s ease-in-out
-    -moz-transition: all .2s ease-in-out
-    transition: all .2s ease-in-out
+    transition: .2s ease-in-out
+    border-radius: 3px
     &:hover > i
-      -webkit-transform: scale(1.2)
-      -moz-transform: scale(1.2)
-      transform: scale(1.2)
+      opacity: .7
     & i
-      -webkit-transition: all .2s ease-in-out
-      -moz-transition: all .2s ease-in-out
-      transition: all .2s ease-in-out
       font-size: 2em
+      transition: .2s ease-in-out
+
 
   & .add-profile-image
     left: 0
     margin-left: -60px
 
   & .delete-profile-image
-    right: 0
     margin-right: -60px
+    right: 0

@@ -138,9 +138,7 @@ html, body {
   padding: 7px;
   border-left: 3px solid #ff6347;
   overflow: hidden;
-  height: auto; }
-
-.comm img {
+  height: auto;
   width: 20px;
   height: 20px;
   margin: auto;

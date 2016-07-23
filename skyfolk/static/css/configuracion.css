@@ -1,31 +1,26 @@
-* {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box; }
-
 body {
-  font-size: 11.5px !important;
+  color: #555;
+  font-family: "Open Sans", sans-serif;
+  font-size: 11.5px;
   font-style: normal;
-  font-weight: 300;
-  font-family: "Open Sans", sans-serif !important;
-  color: #555; }
+  font-weight: 300; }
 
 hgroup {
+  border-bottom: 1px solid #66757f;
   margin-bottom: 70px;
-  position: relative;
-  border-bottom: 1px solid #66757F;
-  padding: 10px 0; }
+  padding: 10px 0;
+  position: relative; }
 
 span {
+  left: 0;
   position: relative;
-  top: 40px;
-  left: 0; }
+  top: 40px; }
 
 h4 {
-  display: block;
   color: #66757F;
+  display: block;
   font-weight: 100;
-  font-size: 22px !important; }
+  font-size: 22px; }
 
 h6 {
   display: inline-block;
@@ -65,9 +60,7 @@ h6 {
   border-right: 2px solid #1e88e5;
   background-color: #fff;
   margin-bottom: 5px;
-  transition: all 0.3s linear;
-  -webkit-transition: all 0.3s linear;
-  -moz-transition: all 0.3s linear; }
+  transition: all 0.3s linear; }
 
 .menu-config a:hover {
   color: #1e88e5;
@@ -83,15 +76,16 @@ h6 {
 #recent, #new, #new2 {
   display: list-item; }
 
-#form-changepass {
+.password_change {
   position: relative;
   display: block;
-  margin-left: 27%; }
+  width: 90%;
+  margin-left: 1%; }
 
-#form-changepass label {
+.password_change label {
   font-size: 1.2em; }
 
-#form-changepass #btn {
+.password_change #btn {
   margin-top: 40px; }
 
 .img-profile {
@@ -187,8 +181,6 @@ label[for="id_password2"] {
   height: 570px;
   width: 50%;
   border-radius: 7px;
-  -webkit-box-shadow: 2px 2px 7px 0 #efefef;
-  -moz-box-shadow: 2px 2px 7px 0 #efefef;
   box-shadow: 2px 2px 7px 0 #efefef;
   border: 1px solid #e0e0e0; }
 
@@ -202,9 +194,6 @@ label[for="id_password2"] {
   margin-top: 10px;
   height: 100%;
   width: 100%; }
-
-#form-changepass {
-  height: auto; }
 
 /* Boton salvar cambios */
 .wrapper-p button[type="submit"] {
@@ -238,6 +227,7 @@ label[for="id_password2"] {
   float: right;
   line-height: 2px;
   font-size: 1.3em;
+  left: 12%;
   display: block; }
 
 #id_image {
@@ -322,26 +312,21 @@ hgroup {
     text-align: center;
     top: 30px;
     padding: 20px;
-    background-color: #eee;
+    background-color: #fff;
     color: #1e88e5;
     display: inline-block;
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out; }
+    transition: 0.2s ease-in-out;
+    border-radius: 3px; }
     .profilex .delete-profile-image:hover > i, .profilex .add-profile-image:hover > i {
-      -webkit-transform: scale(1.2);
-      -moz-transform: scale(1.2);
-      transform: scale(1.2); }
+      opacity: 0.7; }
     .profilex .delete-profile-image i, .profilex .add-profile-image i {
-      -webkit-transition: all 0.2s ease-in-out;
-      -moz-transition: all 0.2s ease-in-out;
-      transition: all 0.2s ease-in-out;
-      font-size: 2em; }
+      font-size: 2em;
+      transition: 0.2s ease-in-out; }
   .profilex .add-profile-image {
     left: 0;
     margin-left: -60px; }
   .profilex .delete-profile-image {
-    right: 0;
-    margin-right: -60px; }
+    margin-right: -60px;
+    right: 0; }
 
 /*# sourceMappingURL=configuracion.css.map */

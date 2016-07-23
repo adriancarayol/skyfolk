@@ -1,37 +1,25 @@
 $blueskyfolk: #1e88e5
-$default-transition: all 0.2s ease-out 0s
-$grayColor: #555
-$shadowColor: rgba(0, 0, 0, 0.15)
-$tomatoColor: tomato
-$lightGray: #bdbdbd
-$whiteDarkColor: #eee
+$default-transition: all .2s ease-out 0s
+$graycolor: #555
+$shadowcolor: rgba(0, 0, 0, .15)
+$tomatocolor: #ff6347
+$lightgray: #bdbdbd
+$whitedarkcolor: #eee
+$whitewithopacity: rgba(255, 255, 255, .8)
 
-*
-  -webkit-box-sizing: border-box
-  -moz-box-sizing: border-box
-  box-sizing: border-box
-
-body
-  font-size: 11.5px !important
-  font-style: normal
-  font-weight: 300
-  font-family: 'Open Sans', sans-serif !important
-  color: $grayColor
-
-
-.delete-profile-image, .add-profile-image
+.delete-profile-image,
+.add-profile-image
   font-size: 2em
-  & .fa-trash, .fa-plus
-    color: $grayColor
+  & .fa-trash,
+  .fa-plus
+    color: $graycolor
     padding: 7px
-    -webkit-transition: $default-transition
-    -moz-transition: $default-transition
     transition: $default-transition
   & .fa-trash
     float: left
     margin-left: 7px
     &:hover
-      color: $tomatoColor
+      color: $tomatocolor
   & .fa-plus
     float: right
     margin-right: 7px
@@ -39,7 +27,7 @@ body
       color: $blueskyfolk
 .wrapper-p
   & .current-avatar
-    box-shadow: 0 1px 5px $shadowColor
+    box-shadow: 0 1px 5px $shadowcolor
     min-height: 30%
     height: auto
     padding: 10px
@@ -47,21 +35,20 @@ body
     & #id_choices
       & li
         width: 100%
-    & img, p
-      margin-left: auto
-      margin-right: auto
-      margin-top: 30px
+    & img,
+    p
+      margin: 30px auto 0 auto
       text-align: center
       display: block
     & p
       margin-bottom: 20px
-      border-bottom: 2px solid $lightGray
+      border-bottom: 2px solid $lightgray
       padding: 5px
       width: 80%
     & img
       box-shadow: 0 1px 2px $blueskyfolk
   & .options-avatar
-    box-shadow: 0 1px 5px $shadowColor
+    box-shadow: 0 1px 5px $shadowcolor
     height: auto
     padding: 10px
     margin-top: 15%
@@ -113,7 +100,7 @@ body
       outline: none
       &:hover
         opacity: 0.8
-        background-color: $whiteDarkColor
+        background-color: $whitedarkcolor
     & input[type="submit"]
       float: left
 
@@ -154,7 +141,7 @@ body
     outline: none
     &:hover
       opacity: 0.8
-      background-color: $whiteDarkColor
+      background-color: $whitedarkcolor
 
 /* IF AVATAR EMPTY */
 #id_avatar
@@ -171,22 +158,22 @@ body
     display: none
 
 input
+  background-color: transparent
   border: medium none
   border-radius: 2px
   display: inline-block
+  cursor: pointer
   height: 36px
+  color: $blueskyfolk
   line-height: 36px
   margin-top: 15px
-  padding: 0px 2rem
+  letter-spacing: .5px
+  text-align: center
+  padding: 0 2rem
+  outline: none
+  transition: $default-transition
   text-transform: uppercase
   text-decoration: none
-  color: $blueskyfolk
-  background-color: transparent
-  text-align: center
-  letter-spacing: 0.5px
-  transition: $default-transition
-  cursor: pointer
-  outline: none
+
   &:hover
-    opacity: 0.8
-    background-color: $whiteDarkColor
+    background-color: $whitewithopacity
