@@ -8,6 +8,7 @@
         <div class="wrapperx" id="wrapperx-timeline">
             {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
                 {% for item in timeline %}
+                    {% if item.from_timeline__type == "publication" %}
                     <div class="timeline-pub" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}" data-publication="{{ item.from_timeline__publication__id }}">
                         <li>
                             <div data-sr="wait 0.2s then scale up 30%" class="second">
@@ -19,7 +20,7 @@
                                             <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em>
                                         </span>
                                         <div id="p" class="parrafo comment">
-                                            {{ item.from_timeline__publication__content|replace_decorators|safe}}
+                                            {{ item.from_timeline__publication__content|replace_decorators|safe }}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
@@ -53,7 +54,28 @@
                                     </div>
                                 </li>
                             </div>
-                            {% endfor %}
+                        {% elif item.from_timeline__type == "new_relation" %}
+                        <div class="timeline-pub">
+                        <li>
+                            <div data-sr="wait 0.2s then scale up 30%" class="second">
+                                <span class="acontecimiento">
+                                    {% avatar item.user__username %}
+                                        </span>
+                                        <span class="head">
+                                            <a href="/profile/{{item.user__username}}">{{item.user__username}}</a>
+                                            <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em>
+                                        </span>
+                                        <div id="p" class="parrafo comment">
+                                            {{ item.from_timeline__verb }}
+                                        </div>
+                                        <div class="contenidoadicional">
+                                            <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
+                                        </div>
+                                    </div>
+                                </li>
+                            </div>
+                        {% endif %}
+                {% endfor %}
     {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
           <div class="cmt-hidden">
           <h3>¡Sigue a {{user_profile.username}} para ver sus comentarios!</h3>

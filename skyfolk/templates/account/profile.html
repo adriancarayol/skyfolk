@@ -63,7 +63,7 @@
         <div class="sidebar card" id="tab-container">
           <ul class="unstyled table fullwidth links">
             <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">timeline</a></li>
-	    <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
+	        <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
             <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
           </ul>
           <div class="unstyled content" id="hood-tabs">
@@ -402,7 +402,7 @@ $(document).ready(function() {
   {% endif %}
 
   {% if isFriend == True %}
-    <script type="text/javascript">
+    <script async type="text/javascript">
     $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</div>');
     </script>
   {% endif %}

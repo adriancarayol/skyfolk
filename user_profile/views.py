@@ -17,6 +17,8 @@ from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
 from user_profile.models import UserProfile
 from notifications.signals import notify
 from notifications.models import Notification
+from timeline.models import Timeline
+
 # allauth
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -581,6 +583,11 @@ def respond_friend_request(request):
                         user.profile)  # Añado a mi lista de "seguidos" al peril que quiero seguir
                     created.save()
                     created_2.save()
+                    Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
+                                                   verb=u'¡%s ahora sigue a %s!' % (emitter_profile.user.username, user.username), type='new_relation')
+                    Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
+                                                   verb=u'¡%s tiene un nuevo seguidor %s!' % (
+                                                       user.username, emitter_profile.user.username), type='new_relation')
                     response = "added_friend"
 
             else:
