@@ -1215,8 +1215,10 @@ function AJAX_requestfriend(status) {
                 cancelButtonText: "Ok, fine!",
                 closeOnConfirm: true
             },
-              function() {
+              function(isConfirm) {
+                if (isConfirm) {
                   AJAX_remove_relationship(slug);
+                }
               });
           } else if (response == "inprogress") {
                 $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">'+' '+'</div>');
@@ -1245,7 +1247,9 @@ function AJAX_remove_relationship(slug) {
         success: function(response) {
             if (response == true) {
                 var currentValue = document.getElementById('followers-stats');
+                var addFriendButton = document.getElementById('addfriend');
                 $(currentValue).html(parseInt($(currentValue).html())-1);
+                $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>'+' '+'</div>');
             } else if (response == false) {
                 swal("Ha surgido un error, inténtalo de nuevo más tarde :-(");
             }

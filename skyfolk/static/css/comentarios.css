@@ -117,7 +117,7 @@ input[type="checkbox"] {
   opacity: 0; }
 
 .ampliado {
-  overfloy-x: hidden;
+  overflow-x: hidden;
   overflow-y: auto;
   font-family: "Open Sans", sans-serif;
   box-shadow: 0 1px 5px #000;
@@ -218,7 +218,7 @@ input[type="checkbox"] {
   display: none;
 }
   /* Responder - Me gusta - Añadir */
-  span[class*="fa-paper-plane"] {
+.informacion span[class*="fa-paper-plane"] {
     cursor:pointer;
     float:left;
     display: block;
@@ -230,8 +230,8 @@ input[type="checkbox"] {
     opacity: 1;
     z-index:2;
     position: relative;
-  }
-  span[class*="fa-cog"] {
+}
+.informacion span[class*="fa-cog"] {
     cursor:pointer;
     float:left;
     display: block;
@@ -244,8 +244,8 @@ input[type="checkbox"] {
     opacity:1;
     z-index:2;
     position: relative;
-  }
-  span[class*="fa-users"] {
+}
+.informacion span[class*="fa-users"] {
     cursor:pointer;
     float:left;
     display: block;
@@ -257,9 +257,9 @@ input[type="checkbox"] {
     opacity:1;
     z-index:2;
     position: relative;
-  }
+}
 
-  span[class*="fa-plus"] {
+.informacion span[class*="fa-plus"] {
     cursor:pointer;
     float:left;
     display: block;
@@ -271,9 +271,9 @@ input[type="checkbox"] {
     opacity:1;
     z-index: 2;
     position: relative;
-  }
+}
 
-  span[class*="fa-heart"] {
+.informacion span[class*="fa-heart"] {
     cursor:pointer;
     float:left;
     display: block;
@@ -286,8 +286,8 @@ input[type="checkbox"] {
     opacity:1;
     z-index: 2;
     position: relative;
-  }
-  span[class*="fa-clock-o"] {
+}
+.informacion span[class*="fa-clock-o"] {
     cursor:pointer;
     float:left;
     display: block;
@@ -299,7 +299,20 @@ input[type="checkbox"] {
     opacity:1;
     z-index: 2;
     position: relative;
-  }
+}
+.informacion span[class*="fa-remove"] {
+    cursor:pointer;
+    float:left;
+    display: block;
+    font-size: 2em;
+    height: 100%;
+    text-align: center;
+    width: 70px;
+    padding: 30px 20px;
+    opacity:1;
+    z-index: 2;
+    position: relative;
+}
 .fa-clock-o {background:#c8e6c9 }
 .fa-clock-o:hover {background:#a5d6a7;}
 

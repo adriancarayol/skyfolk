@@ -402,12 +402,9 @@ $(document).ready(function() {
   {% endif %}
 
   {% if isFriend == True %}
-
-    <style type="text/css">
-        #addfriend {
-            color: #29b203;
-        }
-    </style>
+    <script type="text/javascript">
+    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</div>');
+    </script>
   {% endif %}
 
 {% endblock %}
