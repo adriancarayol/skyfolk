@@ -124,12 +124,16 @@ def profile_view(request, username):
         else:
             friends_top12 = friends
 
-    # obtener lista de seguidores
+    # obtener num de seguidores
     try:
         followers = user_profile.profile.get_followers().count()
-        print("Num de seguidores: >>>>>>>>>>>>>>>>>>>>" + str(followers))
     except ObjectDoesNotExist:
         followers = None
+    # obtener num de seguidos
+    try:
+        following = user_profile.profile.get_following().count()
+    except ObjectDoesNotExist:
+        following = None
 
     # cargar recomendaciones por amigos
     # TODO
@@ -242,10 +246,11 @@ def profile_view(request, username):
                                 'timeline': timeline, 'isFriend': isFriend,
                                 'existFollowRequest': existFollowRequest,
                                 'json_requestsToMe': json_requestsToMe,
-                                'followers':followers, 'privacity': privacity,
-                                'isFollower': isFollower},
-                                context_instance=RequestContext(request)
-                              )
+                                'followers': followers,
+                                'privacity': privacity,
+                                'isFollower': isFollower,
+                                'following': following},
+                            context_instance=RequestContext(request))
 #>>>>>>> issue#11
 
 
