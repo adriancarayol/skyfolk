@@ -23,16 +23,20 @@
 {% endblock %}
 
 {% block content %}
+    <script async src="{{STATIC_URL}}js/jquery.colorbox.js" type="text/javascript"></script>
+    <script async src="{{STATIC_URL}}js/profile.js" type="text/javascript"></script>
+    <script async src="{{STATIC_URL}}js/jquery.easytabs.js" type="text/javascript"></script>
+    <script async src="{{STATIC_URL}}js/jquery.hashchange.min.js" type="text/javascript"></script>
 <div class="container">
   <div class="col-lg-8 col-md-6 col-sm-12">
 <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
     <div class="container">
     <!-- Para el diseño de la rama develop, se cambia col-md-6 por col-md-12 -->
         {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
-      {% include "account/card-user.html" %}
-      {% comment %}
-      PIN ARRIBA IZQUIERDA
-      {% endcomment %}
+        {% include "account/card-user.html" %}
+        {% comment %}
+         PIN ARRIBA IZQUIERDA
+        {% endcomment %}
         {% include "account/pin-left-top.html" %}
     <!-- PIN PEQUEÑO - 2 -->
         {% comment %}
@@ -46,9 +50,6 @@
       {% endcomment %}
     {% include "account/pin-bottom.html" %}
 
-    <!-- Contenedor principal -->
-    <div class="container">
-    </div>
   </div>
 
   <div class="col-lg-4 col-md-6 col-sm-12">
@@ -79,6 +80,9 @@
             Incluimos el tab amigos
         {% endcomment %}
         {% include "account/tab-amigos.html" %}
+              </div>
+            </div>
+          </div>
           {% comment %}
           <!-- COMIENZO ISSUE#11 -->
 	          <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
@@ -307,6 +311,10 @@
           GALERIA DE IMÁGENES DEL PERFIL
           {% endcomment %}
 {% include "account/profile-gallery.html" %}
+        </div>
+    </div>
+  </div>
+</div>
 
 <!-- IGNORAR, SOLO MUESTRA OBJETOS AL HACER SCROLL -->
     <script async>
