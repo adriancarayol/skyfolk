@@ -386,12 +386,15 @@ def config_pincode(request):
 
 @login_required(login_url='accounts/login')
 def add_friend_by_username_or_pin(request):
+    print('ADD FRIEND BY USERNAME OR PIN')
     response = 'no_added_friend'
     if request.method == 'POST':
         if request.POST.get('tipo') == 'pin':
+            print('STEP 1')
             user_request = request.user
             pin = request.POST.get('valor')
-            user = UserProfile.objects.get(pk=user_request.pk)
+            user = user_request.profile
+            print('STEP 2')
             if user.pin == pin:
                 return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
 
@@ -440,7 +443,7 @@ def add_friend_by_username_or_pin(request):
         else:  # tipo == username
             user_request = request.user
             username = request.POST.get('valor')
-            user = UserProfile.objects.get(pk=user_request.pk)
+            user = user_request.profile
 
             if user.user.username == username:
                 return HttpResponse(json.dumps('your_own_username'), content_type='application/javascript')
