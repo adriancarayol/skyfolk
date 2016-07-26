@@ -440,16 +440,6 @@ $('#tab-timeline').bind('scroll', function() {
       "overflow": "auto"
     });
   });
-
-
-/* Para el manejo del tablon de comentarios/seguidores */
-  $('#tab-container').easytabs({
-        defaultTab: "#li-tab-comentarios",
-        animate: true,
-        animationSpeed: "fast",
-        updateHash: false
-  });
-
     /* FIN DOCUMENT READY */
 });
 
