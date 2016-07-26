@@ -4,20 +4,18 @@ from allauth.account.views import PasswordChangeView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-# from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from notifications.models import Notification
+from notifications.signals import notify
 from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
+from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
 from user_profile.models import UserProfile
-from notifications.signals import notify
-from notifications.models import Notification
-from timeline.models import Timeline
 
 # allauth
 # Create your views here.
