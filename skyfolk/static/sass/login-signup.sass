@@ -1,5 +1,16 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600)
-@import url(http://fonts.googleapis.com/css?family=Pacifico)
+@font-face
+  font-family: 'Open Sans'
+  font-weight: 400
+  font-style: normal
+  src: url('../fonts/Open-Sans-regular/Open-Sans-regular.eot')
+  src: url('../fonts/Open-Sans-regular/Open-Sans-regular.eot?#iefix') format('embedded-opentype'),local('Open Sans'),local('Open-Sans-regular'),url('../fonts/Open-Sans-regular/Open-Sans-regular.woff2') format('woff2'),url('../fonts/Open-Sans-regular/Open-Sans-regular.woff') format('woff'),url('../fonts/Open-Sans-regular/Open-Sans-regular.ttf') format('truetype'),url('../fonts/Open-Sans-regular/Open-Sans-regular.svg#OpenSans') format('svg')
+
+@font-face
+  font-family: 'Pacifico'
+  font-weight: 400
+  font-style: normal
+  src: url('../fonts/Pacifico-regular/Pacifico-regular.eot')
+  src: url('../fonts/Pacifico-regular/Pacifico-regular.eot?#iefix') format('embedded-opentype'), local('Pacifico Regular'), local('Pacifico-regular'), url('../fonts/Pacifico-regular/Pacifico-regular.woff2') format('woff2'), url('../fonts/Pacifico-regular/Pacifico-regular.woff') format('woff'), url('../fonts/Pacifico-regular/Pacifico-regular.ttf') format('truetype'), url('../fonts/Pacifico-regular/Pacifico-regular.svg#Pacifico') format('svg')
 
 
 $bluebuttons: #64B5F6
@@ -141,7 +152,7 @@ form
   position: relative
   text-align: center
   font-family: 'Open Sans', sans-serif
-  font-width: 100
+  font-weight: 100
   left: 30px
 
 /* Estilos para el botón ¿olvido su contraseña? */
@@ -203,10 +214,7 @@ form
 .form-3 input[type=password]
   width: 70%
   position: relative
-  margin-left: auto
-  margin-bottom: auto
-  margin-right: auto
-  margin-top: 20px
+  margin: 20px auto auto
   outline: none
   -webkit-transition: all .3s linear
   -moz-transition: all .3s linear
@@ -221,11 +229,10 @@ form
   position: absolute
   left: 0
   text-align: center
-  margin: auto
   color: #757575
   border-bottom: 1px solid #bdbdbd
   width: 100%
-  margin-bottom: 10px
+  margin: auto auto 10px
   font-weight: 100
   font-family: 'Open Sans', sans-serif
 
@@ -259,17 +266,14 @@ form
   & #sign_in_register, #sign_up_register
     position: relative
     display: inline-block
-    margin: auto
     width: 135px
-    margin-left: 7px
-    margin-top: 3px
+    margin: 3px auto auto 7px
     z-index: 0
 
 
   & #iniciar_sesion, & #registrar
     position: relative
-    margin: auto
-    margin-top: -20px
+    margin: -20px auto auto
     display: inline-block
 
   & .reco-passwd
