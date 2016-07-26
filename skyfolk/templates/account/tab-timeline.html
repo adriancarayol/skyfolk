@@ -5,8 +5,8 @@
 {% load avatar_tags %}
 <div id="tab-timeline">
     <div id="section">
+        {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
         <div class="wrapperx" id="wrapperx-timeline">
-            {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
                 {% for item in timeline %}
                     {% if item.from_timeline__type == "publication" %}
                     <div class="timeline-pub" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}" data-publication="{{ item.from_timeline__publication__id }}">
@@ -55,7 +55,7 @@
                                 </li>
                             </div>
                         {% elif item.from_timeline__type == "new_relation" %}
-                        <div class="timeline-pub">
+                        <div class="timeline-pub" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
                         <li>
                             <div data-sr="wait 0.2s then scale up 30%" class="second">
                                 <span class="acontecimiento">
@@ -71,21 +71,30 @@
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
                                         </div>
+                                        <div class="controles" id="controls-timeline">
+                                            <ul>
+                                                {% if user.username == user_profile.username %}
+                                                    <li class="fa fa-trash fa-lg"></li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
                                     </div>
                                 </li>
                             </div>
                         {% endif %}
                 {% endfor %}
-    {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
-          <div class="cmt-hidden">
-          <h3>¡Sigue a {{user_profile.username}} para ver sus comentarios!</h3>
-            <br>
-          </div>
-    {% elif privacity == 'N' %}
-        <div class="cmt-hidden">
-          <h3>¡Éste perfil es privado!</h3>
-            <br>
-        </div>
+            {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
+                <div class="wrapperx-hidden" id="wrapperx-timeline">
+                  <div class="cmt-hidden">
+                  <h3>¡Sigue a {{user_profile.username}} para ver su timeline!</h3>
+                    <br>
+                  </div>
+            {% elif privacity == 'N' %}
+                <div class="wrapperx-hidden" id="wrapperx-timeline">
+                    <div class="cmt-hidden">
+                      <h3>¡Éste perfil es privado!</h3>
+                        <br>
+                    </div>
             {% endif %}
         </div>
     </div>

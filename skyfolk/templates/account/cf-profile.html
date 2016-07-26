@@ -6,10 +6,10 @@
 {% load i18n avatar_tags %}
 {% endblock%}
 {% block cf-title %}
-<hgroup>
+<div class="hgroup">
 	<h4 class="cn"> Perfil </h4>
 	<h6 class="ch"> Cambia datos de tu perfil</h6>
-</hgroup>
+</div>
 {% endblock %}
 {% block cf-form %}
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}

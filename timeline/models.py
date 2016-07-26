@@ -13,7 +13,7 @@ class Timeline(models.Model):
     publication = models.ForeignKey(Publication, null=True, related_name='publications')
     author = models.ForeignKey(UserProfile, related_name='from_timeline', null=True)
     profile = models.ForeignKey(UserProfile, related_name='to_timeline')
-    insertion_date = models.DateField(auto_now_add=True)
+    insertion_date = models.DateTimeField(auto_now_add=True)
     verb = models.CharField(max_length=255, null=True)
     TYPES = Choices('publication', 'new_relation')
     type = models.CharField(choices=TYPES, default=TYPES.publication, max_length=20)

@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 
-class PublicationManager(models.Manager):
 
+class PublicationManager(models.Manager):
     # Functions of publications
     def get_publication(self, publicationid):
         return self.objects.get(pk=publicationid)
@@ -17,7 +17,7 @@ class PublicationManager(models.Manager):
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(author=author_pk, parent=None).order_by(
-                                                        'created').reverse()
+            'created').reverse()
 
         print('>>>>pubs: {}'.format(pubs))
 
@@ -36,8 +36,8 @@ class PublicationManager(models.Manager):
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(Q(author=user_pk) | Q(board_owner=board_owner_pk),
-                           author=user_pk, parent=None).order_by('created')\
-                            .reverse()
+                           author=user_pk, parent=None).order_by('created') \
+            .reverse()
 
         print('>>>>pubs: {}'.format(pubs))
 
@@ -57,7 +57,7 @@ class PublicationManager(models.Manager):
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(Q(author=user_pk) & Q(board_owner=board_owner_pk),
                            board_owner=board_owner_pk, parent=None).order_by(
-                            'created').reverse()
+            'created').reverse()
 
         print('>>>>pubs: {}'.format(pubs))
 
@@ -81,22 +81,26 @@ class PublicationManager(models.Manager):
 
         return pubs
 
+
 class Publication(models.Model):
     content = models.TextField(blank=False)
     author = models.ForeignKey(User, related_name='publications')
     board_owner = models.ForeignKey(User, related_name='board_owner')
     image = models.ImageField(upload_to='publicationimages',
-                                verbose_name='Image', blank=True, null=True)
+                              verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     user_give_me_like = models.ManyToManyField(User, blank=True,
-                                                    related_name='likes_me')
+                                               related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
-                                                    related_name='hates_me')
+                                               related_name='hates_me')
     user_share_me = models.ManyToManyField(User, blank=True,
                                            related_name='share_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                                                    related_name='reply')
+                               related_name='reply')
     objects = PublicationManager()
+
+    class Meta:
+        ordering = ('-created',)
 
     def __str__(self):
         return self.content

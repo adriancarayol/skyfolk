@@ -43,6 +43,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     raise IntegrityError('El comentario esta vacio')
                 publication.content = TextProcessor.get_format_text(publication.content, emitter)
                 publication.save()
+                t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
+                                                            profile=publication.board_owner.profile)
                 return self.form_valid(form=form)
             except IntegrityError as e:
                 print("views.py line 48 -> {}".format(e))

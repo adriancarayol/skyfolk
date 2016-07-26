@@ -36,10 +36,10 @@ def profile_view(request, username):
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
 #>>>>>>> issue#11
-    privacity = user_profile.profile.get_privacity()
+    privacity = user_profile.profile.privacity
 
     # print(user.email)
-    print('Privacidad del usuario: ' + username + " id: " + str(user_profile.pk) + " " + user_profile.profile.privacity)
+    print('Privacidad del usuario: ' + username + " id: " + str(user_profile.pk) + " " + privacity)
     json_requestsToMe = None
     # saber si el usuario que visita el perfil le gusta
     if request.user.username != username:
@@ -375,7 +375,7 @@ def config_profile(request):
 
 @login_required(login_url='/')
 def config_pincode(request):
-    pin = UserProfile.objects.get(pk=request.user.pk).pin
+    pin = request.user.profile.pin
     publicationForm = PublicationForm()
     searchForm = SearchForm()
 

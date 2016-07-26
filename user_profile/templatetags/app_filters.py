@@ -36,10 +36,10 @@ def check_follow(request, author):
         get_user_model(), username__iexact=author)
 
     # Si el perfil es privado, directamente no se puede ver...
-    if user_profile.profile.get_privacity() == 'N':
+    if user_profile.profile.privacity == 'N':
         return False
     # Si el perfil es público, directamente se puede ver...
-    elif user_profile.profile.get_privacity() == 'A':
+    elif user_profile.profile.privacity == 'A':
         return True
 
     request = get_object_or_404(
@@ -68,10 +68,10 @@ def check_follow(request, author):
             isFollower = False
 
     # Si sigo al autor de la publicacion y tiene la privacidad "OF"...
-    if isFriend and user_profile.profile.get_privacity() == 'OF':
+    if isFriend and user_profile.profile.privacity == 'OF':
         return True
     # Si sigo al autor de la publicacion o él me sigue a mi, y tiene la privacidad OFAF...
-    elif (isFriend and user_profile.profile.get_privacity() == 'OFAF') or (isFollower and user_profile.profile.get_privacity() == 'OFAF'):
+    elif (isFriend and user_profile.profile.privacity == 'OFAF') or (isFollower and user_profile.profile.privacity == 'OFAF'):
         return True
     # Si no cumple ningun caso...
     else:

@@ -1,9 +1,9 @@
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+
 import publications
 import timeline
-from django.contrib.auth.models import User
-from django.db import models
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.validators import URLValidator
 from notifications.models import Notification
 
 # from publications.models import Publication
@@ -63,11 +63,13 @@ class UserProfile(models.Model):
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
     ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
     firstLogin = models.BooleanField(
-        default=False)  # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto, mostrar configuracion inicial.
+        default=False)  # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto,
+    # mostrar configuracion inicial.
     hiddenMenu = models.BooleanField(
         default=True)  # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
     privacity = models.CharField(max_length=4,
-                                choices=OPTIONS_PRIVACITY, default=ALL) #  Privacidad del usuario (por defecto ALL)
+                                 choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
+
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
@@ -94,10 +96,6 @@ class UserProfile(models.Model):
             pass  # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
     """
-
-    # Return privacity of user.
-    def get_privacity(self):
-        return self.privacity
 
     # Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
@@ -137,13 +135,14 @@ class UserProfile(models.Model):
             'from_timeline__insertion_date').reverse()
 
     def remove_timeline(self, timeline_id):
-        timeline.models.Timeline.objects.get(pk=timeline_id).delete()
+        t = timeline.models.Timeline.objects.get(pk=timeline_id)
+        t.publication.user_share_me.remove(self.user)
+        t.delete()
 
     # Methods of publications
 
     def get_publication(self, publicationid):
         return publications.models.Publication.objects.get(pk=publicationid)
-
 
     def remove_publication(self, publicationid):
         publications.models.Publication.objects.get(pk=publicationid).delete()
@@ -153,22 +152,20 @@ class UserProfile(models.Model):
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
                                                    'from_publication__content', 'from_publication__created',
-                                                   'from_publication__replies').order_by(
-            'from_publication__created').reverse()
+                                                   'from_publication__replies')
 
     def get_publicationsToMeTop15(self):
         return self.publications_to.filter(
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
-                                                   'from_publication__content', 'from_publication__created').order_by(
-            'from_publication__created').reverse()[0:15]
+                                                   'from_publication__content', 'from_publication__created')[0:15]
 
     def get_myPublications(self):
         return self.publications.filter(
             to_publication__author=self).values('user__username', 'to_publication__profile', 'user__first_name',
                                                 'user__last_name',
                                                 'from_publication__id', 'to_publication__content',
-                                                'to_publication__created', 'to_publication__user_give_me_like').reverse()
+                                                'to_publication__created', 'to_publication__user_give_me_like')
 
     # Obtener seguidos
     def get_following(self):
@@ -230,7 +227,8 @@ class UserProfile(models.Model):
             'user__username', 'user__first_name', 'user__last_name').order_by('id')
 
     def add_follow_request(self, profile, notify):
-        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING, notification=notify)
+        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING,
+                                                     notification=notify)
         return obj
 
     def get_follow_request(self, profile):
@@ -241,7 +239,7 @@ class UserProfile(models.Model):
 
     def remove_received_follow_request(self, profile):
         request = Request.objects.get(emitter=profile, receiver=self, status=REQUEST_FOLLOWING)
-        request.notification.delete() # Eliminamos la notificacion
+        request.notification.delete()  # Eliminamos la notificacion
         request.delete()
 
     # methods followers
@@ -358,5 +356,6 @@ class Request(models.Model):
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
     notification = models.ForeignKey(Notification, related_name='request_notification', null=True)
+
     class Meta:
         unique_together = ('emitter', 'receiver', 'status')
