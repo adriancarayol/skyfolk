@@ -594,7 +594,7 @@ def respond_friend_request(request):
                     Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
                                                    verb=u'¡%s ahora sigue a %s!' % (emitter_profile.user.username, user.username), type='new_relation')
                     Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
-                                                   verb=u'¡%s tiene un nuevo seguidor %s!' % (
+                                                   verb=u'¡%s tiene un nuevo seguidor, %s!' % (
                                                        user.username, emitter_profile.user.username), type='new_relation')
                     response = "added_friend"
 

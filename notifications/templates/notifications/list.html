@@ -1,5 +1,19 @@
-<ul class="notifications">
-  {% for notice in notifications %}
-    {% include 'notifications/notice.html' %}
-  {% endfor %}
-</ul>
+{% extends 'account/base_interface.html' %}
+{% block include_files %}
+    <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/notifications.css" type="text/css" media="all" onload="if(media!='all')media='all'">
+{% endblock %}
+{% block content %}
+    <div class="container">
+    <div class="all-notifications-options">
+        <a class="mark-all-as-read-template" href="{% url 'notifications:mark_all_as_read' %}">Todas leídas</a>
+        <a class="mark-all-as-unread-template" href="{% url 'notifications:mark_all_as_unread' %}">Todas sin leer</a>
+        <a class="mark-all-as-deleted-template" href="{% url 'notifications:mark_all_as_deleted' %}">Eliminar todas</a>
+    </div>
+        <ul class="notifications">
+          {% for notice in notifications %}
+            <li class="col-sm-12 col-md-12 col-lg-3">{% include 'notifications/notice.html' %}</li>
+          {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

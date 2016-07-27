@@ -5,10 +5,12 @@ from django.forms import model_to_dict
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-
+from user_profile.forms import SearchForm
+from publications.forms import PublicationForm
 from .utils import slug2id
 from .models import Notification
-
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from distutils.version import StrictVersion
 if StrictVersion(get_version()) >= StrictVersion('1.7.0'):
     from django.http import JsonResponse
@@ -29,12 +31,21 @@ else:
 class NotificationViewList(ListView):
     template_name = 'notifications/list.html'
     context_object_name = 'notifications'
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(NotificationViewList, self).dispatch(
             request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        ctx = super(NotificationViewList, self).get_context_data(**kwargs)
+        ctx['publicationForm'] = self.publicationForm
+        ctx['searchForm'] = self.searchForm
+        ctx['showPerfilButtons'] = True
+
+        return ctx
 
 class AllNotificationsList(NotificationViewList):
     """
@@ -65,6 +76,14 @@ def mark_all_as_read(request):
         return redirect(_next)
     return redirect('notifications:all')
 
+@login_required
+def mark_all_as_deleted(request):
+    request.user.notifications.mark_all_as_deleted()
+    _next = request.GET.get('next')
+
+    if _next:
+        return redirect(_next)
+    return redirect('notifications:all')
 
 @login_required
 def mark_as_read(request, slug=None):
@@ -80,7 +99,14 @@ def mark_as_read(request, slug=None):
 
     return redirect('notifications:all')
 
+@login_required
+def mark_all_as_unread(request):
+    request.user.notifications.mark_all_as_unread()
+    _next = request.GET.get('next')
 
+    if _next:
+        return redirect(_next)
+    return redirect('notifications:all')
 @login_required
 def mark_as_unread(request, slug=None):
     id = slug2id(slug)
