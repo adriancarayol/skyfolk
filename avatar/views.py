@@ -12,7 +12,10 @@ from avatar.signals import avatar_updated
 from avatar.utils import (get_primary_avatar, get_default_avatar_url,
                           invalidate_cache)
 
-
+from publications.forms import PublicationForm
+from user_profile.forms import SearchForm
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 def _get_next(request):
     """
     The part that's the least straightforward about views in this module is
@@ -58,6 +61,8 @@ def _get_avatars(user):
 @login_required
 def add(request, extra_context=None, next_override=None,
         upload_form=UploadAvatarForm, *args, **kwargs):
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
@@ -78,15 +83,20 @@ def add(request, extra_context=None, next_override=None,
         'avatars': avatars,
         'upload_avatar_form': upload_avatar_form,
         'next': next_override or _get_next(request),
+        'publicationForm': publicationForm,
+        'searchForm': searchForm,
+        'showPerfilButtons': True
     }
     context.update(extra_context)
+    # return render(request, 'avatar/add.html',{'publicationForm': publicationForm, 'searchForm': searchForm},context)
     return render(request, 'avatar/add.html', context)
-
 
 @login_required
 def change(request, extra_context=None, next_override=None,
            upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
            *args, **kwargs):
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
@@ -117,7 +127,10 @@ def change(request, extra_context=None, next_override=None,
         'avatars': avatars,
         'upload_avatar_form': upload_avatar_form,
         'primary_avatar_form': primary_avatar_form,
-        'next': next_override or _get_next(request)
+        'next': next_override or _get_next(request),
+        'publicationForm': publicationForm,
+        'searchForm': searchForm,
+        'showPerfilButtons': True
     }
     context.update(extra_context)
     return render(request, 'avatar/change.html', context)
@@ -125,6 +138,8 @@ def change(request, extra_context=None, next_override=None,
 
 @login_required
 def delete(request, extra_context=None, next_override=None, *args, **kwargs):
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
@@ -153,6 +168,9 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         'avatars': avatars,
         'delete_avatar_form': delete_avatar_form,
         'next': next_override or _get_next(request),
+        'publicationForm': publicationForm,
+        'searchForm': searchForm,
+        'showPerfilButtons': True
     }
     context.update(extra_context)
 

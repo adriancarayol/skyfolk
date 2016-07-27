@@ -2,7 +2,7 @@ $blueskyfolk: #1e88e5
 $greycolor: #555
 $greyblue: #66757f
 
-body
+html
   color: $greycolor
   font-family: 'Open Sans', sans-serif
   font-size: 11.5px
@@ -15,24 +15,24 @@ body
   padding: 10px 0
   position: relative
 
+  & h4
+    color: #66757F
+    display: block
+    font-weight: 100
+    font-size: 22px
+
+  & h6
+    display: inline-block
+    margin-top: 7px
+    margin-left: 18px !important
+    color: #66757F
+    font-weight: 100
+    font-size: 15px !important
+
 span
   left: 0
   position: relative
   top: 40px
-
-h4
-  color: #66757F
-  display: block
-  font-weight: 100
-  font-size: 22px
-
-h6
-  display: inline-block
-  margin-top: 7px
-  margin-left: 15px !important
-  color: #66757F
-  font-weight: 100
-  font-size: 15px !important
 
 .wrapper-p
   margin-top: 5% !important
@@ -336,3 +336,7 @@ label[for="id_hiddenMenu"]
   & .delete-profile-image
     margin-right: -60px
     right: 0
+
+/* Message password reset done */
+.password-reset-done
+  margin-left: 1.5%

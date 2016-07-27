@@ -318,7 +318,6 @@ def config_privacity(request):
 
 @login_required(login_url='/')
 def config_privacity(request):
-    user_profile = request.user
     publicationForm = PublicationForm()
     searchForm = SearchForm()
     print('>>>>> PETICION CONFIG')
@@ -488,7 +487,7 @@ def add_friend_by_username_or_pin(request):
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-
+@login_required(login_url='/')
 def like_profile(request):
     response = "null"
     if request.method == 'POST':
@@ -557,6 +556,7 @@ def request_friend(request):
 
 
 # Responde request follow
+@login_required(login_url='/')
 def respond_friend_request(request):
     response = "null"
     if request.method == 'POST':
@@ -602,6 +602,7 @@ def respond_friend_request(request):
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 # Elimina relación entre dos usuarios
+@login_required(login_url='/')
 def remove_relationship(request):
     response = None
     user = request.user
@@ -623,6 +624,7 @@ def remove_relationship(request):
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 # Elimina la peticion existente para seguir a un perfil
+@login_required(login_url='/')
 def remove_request_follow(request):
     response = None
     user = request.user
@@ -640,6 +642,7 @@ def remove_request_follow(request):
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 # Load followers
+@login_required(login_url='/')
 def load_followers(request):
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.user.profile.get_followers()
@@ -703,6 +706,7 @@ def following(request, username):
                               context_instance=RequestContext(request))
 
 # Load follows
+@login_required(login_url='/')
 def load_follows(request):
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.user.profile.get_following()
@@ -732,7 +736,7 @@ class CustomPasswordChangeView(PasswordChangeView):
 
 custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
-
+@login_required(login_url='/')
 def changepass_confirmation(request):
     return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))
 
