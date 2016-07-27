@@ -16,6 +16,8 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
 from user_profile.models import UserProfile
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic.base import TemplateView
 
 # allauth
 # Create your views here.
@@ -728,11 +730,36 @@ def load_follows(request):
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
 
 
-class CustomPasswordChangeView(PasswordChangeView):
-    @property
-    def success_url(self):
-        return '/accounts/password/change/confirmation/'
+class PassWordChangeDone(TemplateView):
+    template_name = 'account/confirmation_changepass.html'
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
 
+    def get(self, request, *args, **kwargs):
+        context = locals()
+        context['publicationForm'] = self.publicationForm
+        context['searchForm'] = self.searchForm
+        context['showPerfilButtons'] = True
+
+        return render_to_response(self.template_name, context, context_instance=RequestContext(request))
+
+
+password_done = login_required(PassWordChangeDone.as_view())
+
+class CustomPasswordChangeView(PasswordChangeView):
+    success_url = reverse_lazy("account_done_password")
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
+
+    def get_context_data(self, **kwargs):
+        ret = super(PasswordChangeView, self).get_context_data(**kwargs)
+        # NOTE: For backwards compatibility
+        ret['password_change_form'] = ret.get('form')
+        ret['publicationForm'] = self.publicationForm
+        ret['searchForm'] = self.searchForm
+        ret['showPerfilButtons'] = True
+        # (end NOTE)
+        return ret
 
 custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
