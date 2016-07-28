@@ -4,7 +4,7 @@ from allauth.account.views import PasswordChangeView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
@@ -424,7 +424,7 @@ def add_friend_by_username_or_pin(request):
                         friend, notification)
                     created.save()
                     response = 'new_petition'
-                except ObjectDoesNotExist:
+                except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
                     response = "no_added_friend"
 
 
@@ -467,7 +467,7 @@ def add_friend_by_username_or_pin(request):
 
                     created.save()
                     response = 'new_petition'
-                except ObjectDoesNotExist:
+                except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
                     response = "no_added_friend"
 
 
@@ -533,7 +533,7 @@ def request_friend(request):
                     created = user.profile.add_follow_request(
                         UserProfile.objects.get(pk=slug), notification)
                     created.save()
-                except ObjectDoesNotExist:
+                except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
                     response = "no_added_friend"
 
         print(response)
