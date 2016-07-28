@@ -512,7 +512,7 @@ body > .container
       position: relative
       list-style-type: none
       text-align: center
-      & button
+      & .nav-button-notifications
         border: medium none
         border-radius: 2px
         display: inline-block
@@ -521,15 +521,15 @@ body > .container
         padding: 0 2rem
         text-transform: uppercase
         text-decoration: none
-        background-color: #1e88e5
+        background-color: $blueskyfolk
         text-align: center
         letter-spacing: 0.5px
         transition: all 0.2s ease-out 0s
         cursor: pointer
         outline: none
         font-size: 1.3em
-        & #clear-notify, #clear-notify:visited
-          color: #fefefe
+        & a, a:visited
+          color: #fff
           text-decoration: none
           &:hover
             opacity: 0.8

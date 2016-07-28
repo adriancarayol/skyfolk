@@ -365,7 +365,9 @@ function AJAX_delete_notification(slug, id) {
     },
     type: 'POST',
     success: function() {
-        $("ul").find("[data-id='" + id + "']").fadeOut("fast");
+        $("ul.list-notifications").find("[data-id='" + id + "']").each(function () {
+            $(this).hide();
+        });
         var currentValue = document.getElementById('live_notify_badge');
         if (parseInt($(currentValue).html()) > 0)
             $(currentValue).html(parseInt($(currentValue).html())-1);

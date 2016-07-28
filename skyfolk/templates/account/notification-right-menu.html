@@ -6,12 +6,13 @@
 {% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' menu_id='list-notify' %}
 <!-- MENU VERTICAL CON NOTIFICACIONES  -->
 <div id="notification-menu" class="col-lg-3 col-md-8 col-sm-12 nav-vertical-and-chat">
-    <ul id="list-notify">
+    <ul id="list-notify" class="list-notifications">
     {% live_notify_list %}
     </ul>
     <div class="col-lg-12 col-md-12 col-sm-12 nav-vertical-controls">
         <div class="controls-notifications">
-          <button class="clear-notify"><a id="clear-notify">Limpiar notificaciones</a></button>
+            <button class="nav-button-notifications"><a id="clear-notify">Limpiar</a></button>
+            <button class="nav-button-notifications"><a href="/inbox/notifications/">Todas</a></button>
       </div>
       </div>
 </div>

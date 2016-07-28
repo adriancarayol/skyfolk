@@ -403,8 +403,6 @@ def add_friend_by_username_or_pin(request):
             except:
                 return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
 
-            '''if user.is_friend(friend):
-                return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')'''
 
             if user.is_follow(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
@@ -429,15 +427,7 @@ def add_friend_by_username_or_pin(request):
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-            '''
-            try:
-                #  user.add_friend(friend)
-                user.add_follow(friend)  # X añade a Y como "seguido"
-                friend.add_follower(user)  # Y añade a X como "seguidor"
-                response = 'added_friend'
-            except Exception as e:
-                print(e)
-            '''
+
 
         else:  # tipo == username
             user_request = request.user
@@ -452,6 +442,7 @@ def add_friend_by_username_or_pin(request):
                 friend = UserProfile.objects.get(user__username=username)
             except ObjectDoesNotExist:
                 return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
+
             if user.is_follow(friend):  # if user.is_friend(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
             # enviamos peticion de amistad
@@ -469,23 +460,16 @@ def add_friend_by_username_or_pin(request):
                 try:
                     notification = Notification.objects.get(actor_object_id=user_request.pk,
                                                             recipient=friend.user,
-                                                            level='friendrequest')  # .filter (aunque solo deberia devolver 1 fila)
+                                                            level='friendrequest') # .filter (aunque solo deberia devolver 1 fila)
+
                     created = user.add_follow_request(
                         friend, notification)
+
                     created.save()
                     response = 'new_petition'
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-            '''
-            try:
-                # user.add_friend(friend)
-                user.add_follow(friend)  # X añade a Y como "seguido"
-                friend.add_follower(user)  # Y añade a X como "seguidor"
-                response = 'added_friend'
-            except Exception as e:
-                print(e)
-            '''
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
