@@ -36,7 +36,8 @@ a, a:visited {
 
 .show-more {
   padding: 10px 0;
-  text-align: center; }
+  text-align: center;
+  margin-right: 10%; }
 
 .articulo {
   float: left;

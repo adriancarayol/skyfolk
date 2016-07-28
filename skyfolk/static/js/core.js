@@ -356,8 +356,7 @@ function AJAX_mark_read(obj) {
   });
 }
 /* Para eliminar una notificacion */
-function AJAX_delete_notification(obj) {
-    var slug = obj.getAttribute('data-notification');
+function AJAX_delete_notification(slug, id) {
     var url_ = '/inbox/notifications/delete/' + slug + '/';
   $.ajax({
     url: url_,
@@ -366,7 +365,7 @@ function AJAX_delete_notification(obj) {
     },
     type: 'POST',
     success: function() {
-        $(obj).parent().fadeOut("fast");
+        $("ul").find("[data-id='" + id + "']").fadeOut("fast");
         var currentValue = document.getElementById('live_notify_badge');
         if (parseInt($(currentValue).html()) > 0)
             $(currentValue).html(parseInt($(currentValue).html())-1);
@@ -471,7 +470,7 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
         sweetAlert("You have added a friend!");
         $('li[data-id='+obj_data+']').fadeOut("fast");
       } else {
-          $('li[data-id='+obj_data+']').fadeOut("fast");
+        $('li[data-id='+obj_data+']').fadeOut("fast");
       }
     },
     error: function(rs, e) {

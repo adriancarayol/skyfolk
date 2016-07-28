@@ -545,6 +545,9 @@ body > .container
     -webkit-transition: all .1s linear
     -moz-transition: all .1s linear
     transition: all .1s linear
+    & a, a:visited
+      color: $blueskyfolk
+      text-decoration: none
     & .notification-body, .notification-buttons
       position: relative
       display: block
@@ -552,6 +555,7 @@ body > .container
       height: auto
     & .notification-buttons
       margin-top: 2.5%
+      text-align: center
     & .accept-response, .rejected-response
       border: medium none
       border-radius: 2px
@@ -567,9 +571,7 @@ body > .container
       letter-spacing: 0.5px
       transition: all 0.2s ease-out 0s
       cursor: pointer
-      float: right
       outline: none
-      width: 45%
       &:hover
         opacity: 0.8
         background-color: #eee

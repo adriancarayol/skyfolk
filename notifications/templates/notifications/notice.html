@@ -16,10 +16,15 @@
       of {{ notice.target }}
     {% endif %}
   </h4>
-  
   <p class="notice-timesince">{{ notice.timesince }} ago</p>
   {% if notice.description %}
     of <p class="notice-description">{{ notice.description|linebreaksbr }}</p>
+  {% endif %}
+  {% if notice.level == "friendrequest" %}
+    <div class="notification-buttons">
+        <button data-notification="{{ notice.slug }}" onclick="AJAX_respondFriendRequest({{ notice.actor_object_id }}, 'rejected', {{ notice.id }}); AJAX_delete_notification({{ notice.slug }}, {{ notice.id }});" class="accept-response">Rechazar</button>
+        <button data-notification="{{ notice.slug }}" onclick="AJAX_respondFriendRequest({{ notice.actor_object_id }}, 'accept', {{ notice.id }}); AJAX_delete_notification({{ notice.slug }}, {{ notice.id }});" class="rejected-response">Aceptar</button>
+    </div>
   {% endif %}
   <div class="notice-actions">
     {% for action in notice.data.actions %}
