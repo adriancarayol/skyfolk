@@ -277,6 +277,8 @@ def notify_handler(verb, **kwargs):
 
         newnotify.save()
 
+        return newnotify # add by adrian
+
 
 # connect the signal
 notify.connect(notify_handler, dispatch_uid='notifications.models.notification')

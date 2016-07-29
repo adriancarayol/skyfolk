@@ -413,18 +413,25 @@ def add_friend_by_username_or_pin(request):
                 friend_request = None
 
             if not friend_request:
-                notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
+                # Eliminamos posibles notificaciones residuales
+                Notification.objects.filter(actor_object_id=user_request.pk,
+                                         recipient=friend.user,
+                                         level='friendrequest').delete()
+                # Enviamos la notificacion
+                notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
                             recipient=friend.user,
                             verb=u'quiere seguirte.', level='friendrequest')
                 try:
-                    notification = Notification.objects.get(actor_object_id=user_request.pk,
-                                                            recipient=friend.user,
-                                                            level='friendrequest') # .filter (aunque solo deberia devolver 1 fila)
+                    notification = notification[0][1]
+                except IndexError:
+                    notification = None
+                # Enlazamos notificacion con peticion de amistad
+                try:
                     created = user.add_follow_request(
                         friend, notification)
                     created.save()
                     response = 'new_petition'
-                except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
+                except ObjectDoesNotExist:
                     response = "no_added_friend"
 
 
@@ -454,20 +461,25 @@ def add_friend_by_username_or_pin(request):
                 friend_request = None
 
             if not friend_request:
-                notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
-                            recipient=friend.user,
-                            verb=u'quiere seguirte.', level='friendrequest')
+                # Eliminamos posibles notificaciones residuales
+                Notification.objects.filter(actor_object_id=user_request.pk,
+                                         recipient=friend.user,
+                                         level='friendrequest').delete()
+                # Enviamos nueva notificacion
+                notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
+                                           recipient=friend.user,
+                                           verb=u'quiere seguirte.', level='friendrequest')
                 try:
-                    notification = Notification.objects.get(actor_object_id=user_request.pk,
-                                                            recipient=friend.user,
-                                                            level='friendrequest') # .filter (aunque solo deberia devolver 1 fila)
-
+                    notification = notification[0][1]
+                except IndexError:
+                    notification = None
+                # Enlazamos notificacion y peticion de amistad
+                try:
                     created = user.add_follow_request(
                         friend, notification)
-
                     created.save()
                     response = 'new_petition'
-                except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
+                except ObjectDoesNotExist:
                     response = "no_added_friend"
 
 
@@ -523,17 +535,24 @@ def request_friend(request):
                 friend_request = None
 
             if not friend_request:
-                notify.send(user, actor=User.objects.get(pk=user.pk).username,
-                            recipient=UserProfile.objects.get(pk=slug).user,
-                            verb=u'quiere seguirte.', level='friendrequest')
-                try:
-                    notification = Notification.objects.get(actor_object_id=user.pk,
+                # Eliminamos posibles notificaciones residuales
+                Notification.objects.filter(actor_object_id=user.pk,
                                          recipient=UserProfile.objects.get(pk=slug).user,
-                                         level='friendrequest')
+                                         level='friendrequest').delete()
+                # Creamos y enviamos la nueva notificacion
+                notification = notify.send(user, actor=User.objects.get(pk=user.pk).username,
+                                           recipient=UserProfile.objects.get(pk=slug).user,
+                                           verb=u'quiere seguirte.', level='friendrequest')
+                try:
+                    notification = notification[0][1]
+                except IndexError:
+                    notification = None
+                # Enlazamos notificacion con peticion de amistad
+                try:
                     created = user.profile.add_follow_request(
                         UserProfile.objects.get(pk=slug), notification)
                     created.save()
-                except (ObjectDoesNotExist, MultipleObjectsReturned) as e:
+                except ObjectDoesNotExist:
                     response = "no_added_friend"
 
         print(response)
