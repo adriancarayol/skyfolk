@@ -1,6 +1,6 @@
 import json
 
-from allauth.account.views import PasswordChangeView
+from allauth.account.views import PasswordChangeView, EmailView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -16,7 +16,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
 from user_profile.models import UserProfile
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.views.generic.base import TemplateView
 
 # allauth
@@ -748,7 +748,7 @@ class PassWordChangeDone(TemplateView):
 
 
 password_done = login_required(PassWordChangeDone.as_view())
-
+# Modificacion del formulario para cambiar contraseña
 class CustomPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy("account_done_password")
     publicationForm = PublicationForm()
@@ -765,6 +765,26 @@ class CustomPasswordChangeView(PasswordChangeView):
         return ret
 
 custom_password_change = login_required(CustomPasswordChangeView.as_view())
+
+# Modificacion del formulario para manejar los emails
+class CustomEmailView(EmailView):
+    success_url = reverse_lazy("config_email")
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
+
+
+    def get_context_data(self, **kwargs):
+        ret = super(EmailView, self).get_context_data(**kwargs)
+        # NOTE: For backwards compatibility
+        ret['add_email_form'] = ret.get('form')
+        ret['publicationForm'] = self.publicationForm
+        ret['searchForm'] = self.searchForm
+        ret['showPerfilButtons'] = True
+        # (end NOTE)
+        return ret
+
+
+custom_email = login_required(CustomEmailView.as_view())
 
 @login_required(login_url='/')
 def changepass_confirmation(request):

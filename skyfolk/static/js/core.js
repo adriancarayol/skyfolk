@@ -37,7 +37,7 @@ $(window).load(function() {
         case "config":
             $(menuConfig).find('a:nth-child(3)').css('color', '#1e88e5');
             break;
-        case "email":
+        case "emails":
             $(menuConfig).find('a:nth-child(4)').css('color', '#1e88e5');
             break;
         case "privacity":

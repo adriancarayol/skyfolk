@@ -58,6 +58,7 @@ urlpatterns = patterns(
     #url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
     url(r'^config/password/change/$', user_profile_views.custom_password_change), # URL CHANGE PASSWORD
+    url(r'^config/emails/$', user_profile_views.custom_email, name='config_email'), # MANAGE EMAILS
     url(r"^config/password/done/$", user_profile_views.password_done, name="account_done_password"),
     url(r'^accounts/', include('allauth.urls')),
     # url django-photologe(galeria de fotos)
