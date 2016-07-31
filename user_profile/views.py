@@ -39,13 +39,14 @@ def profile_view(request, username):
     privacity = user_profile.profile.privacity
 
     # print(user.email)
-    print('Privacidad del usuario: ' + username + " id: " + str(user_profile.pk) + " " + privacity)
+    # print('Privacidad del usuario: ' + username + " id: " + str(user_profile.pk) + " " + privacity)
     json_requestsToMe = None
     # saber si el usuario que visita el perfil le gusta
     if request.user.username != username:
         liked = True
         try:
-            # LikeProfile.objects.get(from_like=request.user.profile.id, to_like=user_profile.profile)
+            '''LikeProfile.objects.get(from_like=request.user.profile.id,
+            to_like=user_profile.profile)'''
             request.user.profile.has_like(user_profile.profile)
         except ObjectDoesNotExist:
             liked = False
@@ -57,10 +58,11 @@ def profile_view(request, username):
             requestsToMe_result = list()
             for item in requestsToMe:
                 print(item)
-                print(
-                    str(item.pk) + " " + item.user.username + " " + item.user.email)
+                print(str(item.pk) + " " +
+                    item.user.username + " " + 
+                    item.user.email)
                 requestsToMe_result.append(
-                    {'id_profile': item.pk, 'username': item.user.username,})
+                    {'id_profile': item.pk, 'username': item.user.username, })
 
             # print requestsToMe_result
             json_requestsToMe = json.dumps(requestsToMe_result)

@@ -512,7 +512,7 @@ body > .container
       position: relative
       list-style-type: none
       text-align: center
-      & .nav-button-notifications
+      & .nav-button-notifications, .nav-button-notifications:visited
         border: medium none
         border-radius: 2px
         display: inline-block
@@ -528,11 +528,10 @@ body > .container
         cursor: pointer
         outline: none
         font-size: 1.3em
-        & a, a:visited
-          color: #fff
-          text-decoration: none
-          &:hover
-            opacity: 0.8
+        color: #fff
+        text-decoration: none
+        &:hover
+          opacity: 0.8
   & li
     height: 110px
     width: 100%
