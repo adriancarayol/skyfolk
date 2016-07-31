@@ -28,10 +28,9 @@ urlpatterns = patterns(
     # Importamos las URLS del resto de apps:
     url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('allauth.urls')), # django-allauth
     url(r'^setfirstLogin/', 'user_profile.views.setfirstLogin', name='setfirstLogin'),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
-    # CUSTOM URL EMAIL CONFIG
-    url(r"^config/email/$", 'allauth.account.views.email', name="account_email"),
     url(r'^search/$','user_profile.views.search'),
     #url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
     url(r'^config/profile/$', 'user_profile.views.config_profile'), # URL CONFIG PROFILE USER
@@ -55,12 +54,10 @@ urlpatterns = patterns(
     url(r'^publication/add_like/$', 'publications.views.add_like', name='add_like'),
     url(r'^publication/add_hate/$', 'publications.views.add_hate', name='add_hate'),
     url(r'^load_publications/$', 'publications.views.load_publications'),
-    #url(r'^load_publications/$', 'publications.views.load_publications'),
     url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
-    url(r'^config/password/change/$', user_profile_views.custom_password_change), # URL CHANGE PASSWORD
-    url(r'^config/emails/$', user_profile_views.custom_email, name='config_email'), # MANAGE EMAILS
-    url(r"^config/password/done/$", user_profile_views.password_done, name="account_done_password"),
-    url(r'^accounts/', include('allauth.urls')),
+    url(r'^config/password/change/$', 'user_profile.views.custom_password_change'), # URL CHANGE PASSWORD
+    url(r'^config/email/$', 'user_profile.views.custom_email', name='account_email'), # MANAGE EMAILS
+    url(r"^config/password/done/$", 'user_profile.views.password_done', name="account_done_password"),
     # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # url add to timeline

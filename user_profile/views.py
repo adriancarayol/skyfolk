@@ -768,10 +768,8 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
 # Modificacion del formulario para manejar los emails
 class CustomEmailView(EmailView):
-    success_url = reverse_lazy("config_email")
     publicationForm = PublicationForm()
     searchForm = SearchForm()
-
 
     def get_context_data(self, **kwargs):
         ret = super(EmailView, self).get_context_data(**kwargs)
@@ -793,13 +791,13 @@ def changepass_confirmation(request):
 
 def welcomeView(request, username):
     newUser = username
-    return render_to_response("account/nuevosusuarios.html",
+    return render_to_response('account/nuevosusuarios.html',
                               context_instance=RequestContext(request, {'newUser': newUser}))
 
 
 def welcomeStep1(request, username):
     newUser = request.user.username
-    return render_to_response("account/welcomestep1.html",
+    return render_to_response('account/welcomestep1.html',
                               context_instance=RequestContext(request, {'newUser': newUser}))
 
 

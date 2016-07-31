@@ -30,10 +30,6 @@ html
     font-weight: 100
     font-size: 15px !important
 
-span
-  left: 0
-  position: relative
-  top: 40px
 
 .wrapper-p
   margin-top: 5% !important
@@ -41,6 +37,25 @@ span
   padding: 10px
   border-radius: 8px
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+
+  & span
+    left: 0
+    position: relative
+    top: 40px
+  & .div-messages
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+    position: relative
+    display: block
+    margin-bottom: 2%
+    padding: 10px
+    & strong
+      color: $greycolor
+    & ul
+      position: relative
+      margin-top: 2%
+      color: #424242
+      & li
+        margin-top: 1.25%
 
 
 
@@ -224,22 +239,10 @@ label[for="id_password2"]
     transition: all .2s ease-out 0s
     cursor: pointer
     float: right
-    margin-right: 10%
     outline: none
     &:hover
       background-color: #eee
       opacity: .8
-
-#boton-perfil, #btn
-  position: relative
-  padding: 10px 7px
-  width: auto
-  height: 30px
-  float: right
-  line-height: 2px
-  font-size: 1.3em
-  left: 12%
-  display: block
 
 #id_image
   display: list-item

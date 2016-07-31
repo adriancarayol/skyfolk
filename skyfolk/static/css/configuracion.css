@@ -3,7 +3,8 @@ html {
   font-family: "Open Sans", sans-serif;
   font-size: 11.5px;
   font-style: normal;
-  font-weight: 300; }
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased; }
 
 .hgroup {
   border-bottom: 1px solid #66757f;
@@ -23,17 +24,30 @@ html {
     font-weight: 100;
     font-size: 15px !important; }
 
-span {
-  left: 0;
-  position: relative;
-  top: 40px; }
-
 .wrapper-p {
   margin-top: 5% !important;
   background-color: #fafafa;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); }
+  .wrapper-p span {
+    left: 0;
+    position: relative;
+    top: 40px; }
+  .wrapper-p .div-messages {
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    position: relative;
+    display: block;
+    margin-bottom: 2%;
+    padding: 10px; }
+    .wrapper-p .div-messages strong {
+      color: #555; }
+    .wrapper-p .div-messages ul {
+      position: relative;
+      margin-top: 2%;
+      color: #424242; }
+      .wrapper-p .div-messages ul li {
+        margin-top: 1.25%; }
 
 /* Menu horizontal */
 .wrapper-menu-config {
@@ -211,22 +225,10 @@ label[for="id_password2"] {
   transition: all 0.2s ease-out 0s;
   cursor: pointer;
   float: right;
-  margin-right: 10%;
   outline: none; }
   .wrapper-p button[type="submit"]:hover {
     background-color: #eee;
     opacity: 0.8; }
-
-#boton-perfil, #btn {
-  position: relative;
-  padding: 10px 7px;
-  width: auto;
-  height: 30px;
-  float: right;
-  line-height: 2px;
-  font-size: 1.3em;
-  left: 12%;
-  display: block; }
 
 #id_image {
   display: list-item;
