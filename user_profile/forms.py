@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.forms import ModelForm
 from django.utils.translation import pgettext, ugettext_lazy as _, ugettext
-
 from user_profile.models import UserProfile
 from django.core.validators import RegexValidator
 
@@ -55,3 +54,13 @@ class PrivacityForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('privacity',)
+
+
+class DeactivateUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['is_active']
+
+    def clean_is_active(self):
+        is_active = not(self.cleaned_data["is_active"])
+        return is_active

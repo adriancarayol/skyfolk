@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/setup.css" />
     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
   </head>
@@ -27,7 +27,7 @@
     </div>
     {% endif %}
 <div class="display-info-reset-password">
-<div class="logotipo_skyfolk" onclick="location.href='/'"> <h5><i>S</i>kyfolk</h5> <h6>Restablecimiento de contraseña</h6></div>
+<div class="logotipo_skyfolk" onclick="location.href='/'"> <h5><i>S</i>kyfolk</h5> <h6>{% block head-text %}Restablecimiento de contraseña{% endblock %}</h6></div>
 
 </div>
      {% block menu %}

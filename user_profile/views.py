@@ -1,10 +1,10 @@
 import json
 
-from allauth.account.views import PasswordChangeView, EmailView
+from allauth.account.views import PasswordChangeView, EmailView, AccountInactiveView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
@@ -14,9 +14,9 @@ from notifications.signals import notify
 from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
-from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm
+from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
 from user_profile.models import UserProfile
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import TemplateView
 
 # allauth
@@ -37,7 +37,7 @@ def profile_view(request, username):
                                      username__iexact=username)
 #>>>>>>> issue#11
     privacity = user_profile.profile.privacity
-
+    print('ESTADO DE LA CUENTA: ' + str(user.is_active))
     # print(user.email)
     # print('Privacidad del usuario: ' + username + " id: " + str(user_profile.pk) + " " + privacity)
     json_requestsToMe = None
@@ -790,6 +790,14 @@ custom_email = login_required(CustomEmailView.as_view())
 def changepass_confirmation(request):
     return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))
 
+
+# Modificacion del template para desactivar una cuenta
+from django.views.generic.edit import FormMixin
+
+class DeactivateAccount(AccountInactiveView):
+    pass
+
+custom_delete_account = login_required(DeactivateAccount.as_view())
 
 def welcomeView(request, username):
     newUser = username

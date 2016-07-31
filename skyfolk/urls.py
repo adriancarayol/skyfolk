@@ -36,6 +36,7 @@ urlpatterns = patterns(
     url(r'^config/profile/$', 'user_profile.views.config_profile'), # URL CONFIG PROFILE USER
     url(r'^config/privacity/$', 'user_profile.views.config_privacity'), # URL CHANGE PRIVACITY
     url(r'^config/pincode/$', 'user_profile.views.config_pincode'),  # CONSULTAR PINCODE
+    url(r'^config/delete_account/$', 'user_profile.views.custom_delete_account'),  # ELIMINAR CUENTA DE SKYFOLK
     #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^like_profile/$', 'user_profile.views.like_profile', name='like_profile'),
     url(r'^following/(?P<username>[\w-]+)/$', 'user_profile.views.following'),

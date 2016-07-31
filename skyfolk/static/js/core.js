@@ -46,6 +46,9 @@ $(window).load(function() {
         case "pincode":
             $(menuConfig).find('a:nth-child(6)').css('color', '#1e88e5');
             break;
+        case "delete_account":
+            $(menuConfig).find('a:nth-child(7)').css('color', '#FF6347');
+            break;
         default:
             break;
     }
