@@ -1,0 +1,44 @@
+{% extends "account/base_cf.html" %}
+
+{% load url from future %}
+{% load i18n %}
+{% load account %}
+
+{% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
+{% block title %} <title>Configuración - {% trans "Confirm E-mail Address" %}</title> {% endblock %}
+
+{% block extra-css %}
+    <style>
+        .information-text {
+            font-size: 1.3em;
+        }
+    </style>
+{% endblock %}
+{% block cf-title %}
+    <div class="hgroup">
+	<h4 class="cn"> Email </h4>
+	<h6 class="ch"> {% trans "Confirm E-mail Address" %} </h6>
+</div>
+{% endblock %}
+
+{% block cf-form %}
+
+{% if confirmation %}
+
+{% user_display confirmation.email_address.user as user_display %}
+        
+<p class="information-text">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{email}}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+
+<form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+{% csrf_token %}
+    <button type="submit">{% trans 'Confirm' %}</button>
+</form>
+
+{% else %}
+
+{% url 'account_email' as email_url %}
+
+<p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url}}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+
+{% endif %}
+{% endblock %}

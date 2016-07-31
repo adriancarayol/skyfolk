@@ -1,0 +1,27 @@
+{% extends "account/base_cf.html" %}
+
+{% load i18n %}
+
+{% block title %} <title>Configuración - Confirmar Email.</title> {% endblock %}
+
+{% block extra-css %}
+    <style>
+        .information-text {
+            font-size: 1.3em;
+        }
+    </style>
+{% endblock %}
+
+{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+
+{% block cf-title %}
+<div class="hgroup">
+	<h4 class="cn"> Email </h4>
+	<h6 class="ch"> {% trans "Verify Your E-mail Address" %} </h6>
+</div>
+{% endblock %}
+{% block cf-form %}
+    <h1>{% trans "Verify Your E-mail Address" %}</h1>
+    <br><br>
+    <p class="information-text">{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+{% endblock %}
