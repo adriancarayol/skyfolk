@@ -1,6 +1,6 @@
 import json
 
-from allauth.account.views import PasswordChangeView, EmailView, AccountInactiveView
+from allauth.account.views import PasswordChangeView, EmailView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -18,11 +18,13 @@ from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm,
 from user_profile.models import UserProfile
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
 
 # allauth
 # Create your views here.
 @login_required(login_url='accounts/login')
 def profile_view(request, username):
+
     user = request.user
     # para mostarar el cuadro de busqueda en la pagina:
     searchForm = SearchForm(request.POST)
@@ -266,6 +268,7 @@ def search(request):
 
     if request.method == 'POST':
         if searchForm.is_valid:
+            result_messages = None
             texto_to_search = request.POST['searchText']
             # hacer busqueda si hay texto para buscar, mediante consulta a la
             # base de datos y pasar el resultado
@@ -273,22 +276,21 @@ def search(request):
                 words = texto_to_search.split()
                 if len(words) == 1:
                     resultSearch = User.objects.filter(Q(first_name__icontains=texto_to_search) | Q(
-                        last_name__icontains=texto_to_search) | Q(username__icontains=texto_to_search))
+                        last_name__icontains=texto_to_search) | Q(username__icontains=texto_to_search), is_active=True)
 
                 elif len(words) == 2:
                     resultSearch = User.objects.filter(
-                        first_name__icontains=words[0], last_name__icontains=words[1])
+                        first_name__icontains=words[0], last_name__icontains=words[1], is_active=True)
                 else:
                     resultSearch = User.objects.filter(
-                        first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2])
+                        first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2], is_active=True)
 
                 for w in words:
-                    print('Palabra encontrada -> ' + w)
                     result_messages = Publication.objects.filter(
                         Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
                         Q(author__username__icontains=w) |
                         Q(author__first_name__icontains=w) |
-                        Q(author__last_name__icontains=w)).order_by('content').order_by('created').reverse() # or .order_by('created').reverse()
+                        Q(author__last_name__icontains=w), author__is_active=True).order_by('content').order_by('created').reverse() # or .order_by('created').reverse()
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': resultSearch,
@@ -792,10 +794,42 @@ def changepass_confirmation(request):
 
 
 # Modificacion del template para desactivar una cuenta
-from django.views.generic.edit import FormMixin
+class DeactivateAccount(FormView):
+    template_name = 'account/account_inactive.html'
+    form_class = DeactivateUserForm
+    success_url = reverse_lazy('account_logout')
 
-class DeactivateAccount(AccountInactiveView):
-    pass
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context['form'] = self.form_class
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form(self.form_class)
+        user = request.user
+
+        if user.is_authenticated():
+            if form.is_valid():
+                user.is_active = form.clean_is_active()
+                user.save()
+                if user.is_active:
+                    return self.form_valid(form=form, **kwargs)
+                else:
+                    return HttpResponseRedirect(self.success_url)
+            else:
+                return self.form_invalid(form=form, **kwargs)
+        else:
+            raise PermissionError
+
+    def form_valid(self, form, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context['form'] = form
+        return self.render_to_response(context)
+
+    def form_invalid(self, form, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context['form'] = form
+        return self.render_to_response(context)
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
 

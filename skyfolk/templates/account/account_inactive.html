@@ -3,7 +3,14 @@
 {% load i18n %}
 
 {% block head_title %}{% trans "Account Inactive" %}{% endblock %}
-
+{% block extra-css %}
+    <style>
+        .account-dissable {
+            text-align: center;
+            font-size: 2em;
+        }
+    </style>
+{% endblock %}
 {% block cf-title %}
 <div class="hgroup">
 	<h4 class="cn"> Eliminar cuenta </h4>
@@ -12,10 +19,15 @@
 {% endblock %}
 
 {% block cf-form %}
-<div class="wrapper">
+<div class="wrapper disable-account-wrapper">
+{% if not user.is_active %}
+    <p class="account-dissable">{% trans "Account Inactive" %}</p>
+{% endif %}
 <form action="." method="POST">{% csrf_token %}
-    {{ delete_form.as_p }}
-    <button class="btn btn-primary" type="submit" name="action">{% trans "Confirm" %}</button>
+    {{ form.as_p }}
+    {% if user.is_active %}
+        <button class="btn btn-primary" type="submit" name="action">{% trans "Confirm" %}</button>
+    {% endif %}
 </form>
 </div>
 {% endblock %}

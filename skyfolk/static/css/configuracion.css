@@ -30,10 +30,6 @@ html {
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); }
-  .wrapper-p span {
-    left: 0;
-    position: relative;
-    top: 40px; }
   .wrapper-p .div-messages {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
     position: relative;
@@ -327,5 +323,17 @@ label[for="id_hiddenMenu"] {
 /* Message password reset done */
 .password-reset-done {
   margin-left: 1.5%; }
+
+/* Account disabled */
+.disable-account-wrapper p {
+  font-size: 1.3em;
+  color: #555;
+  display: block;
+  text-align: center;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  margin-bottom: 5%;
+  padding: 10px; }
+  .disable-account-wrapper p label, .disable-account-wrapper p input {
+    float: left; }
 
 /*# sourceMappingURL=configuracion.css.map */
