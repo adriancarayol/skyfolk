@@ -20,24 +20,24 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
+
 # allauth
 # Create your views here.
 @login_required(login_url='accounts/login')
 def profile_view(request, username):
-
     user = request.user
     # para mostarar el cuadro de busqueda en la pagina:
     searchForm = SearchForm(request.POST)
-#<<<<<<< HEAD
-#    user_profile = get_object_or_404(
-#        get_user_model(), username__iexact=username)
-#=======
+    # <<<<<<< HEAD
+    #    user_profile = get_object_or_404(
+    #        get_user_model(), username__iexact=username)
+    # =======
 
     # username es el nombre del perfil visitado, si coincide con user.username
     # entonces estamos ante el perfil del usuario logueado.
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
-#>>>>>>> issue#11
+    # >>>>>>> issue#11
     privacity = user_profile.profile.privacity
     print('ESTADO DE LA CUENTA: ' + str(user.is_active))
     # print(user.email)
@@ -61,10 +61,10 @@ def profile_view(request, username):
             for item in requestsToMe:
                 print(item)
                 print(str(item.pk) + " " +
-                    item.user.username + " " + 
-                    item.user.email)
+                      item.user.username + " " +
+                      item.user.email)
                 requestsToMe_result.append(
-                    {'id_profile': item.pk, 'username': item.user.username, })
+                    {'id_profile': item.pk, 'username': item.user.username,})
 
             # print requestsToMe_result
             json_requestsToMe = json.dumps(requestsToMe_result)
@@ -192,8 +192,8 @@ def profile_view(request, username):
         #                                             author_pk=user_profile.pk)
         if isFriend:
             publications = Publication.objects.get_friend_profile_publications(
-                                                user_pk=user.pk,
-                                                board_owner_pk=user_profile.pk)
+                user_pk=user.pk,
+                board_owner_pk=user_profile.pk)
         else:
             publications = Publication.objects.get_user_profile_publications(
                 user_pk=user.pk,
@@ -225,37 +225,39 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         timeline = None
 
-#<<<<<<< HEAD
-#    # notificaciones
-#    notifications_profile = user.notifications.unread()
-#    print(notifications_profile)
-#    return render_to_response('account/profile.html',
-#                              {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
-#                               'user_profile': user_profile, 'searchForm': searchForm,
-#                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes,
-#                               'timeline': timeline,
-#                               'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
-#                               'json_requestsToMe': json_requestsToMe,
-#                               'followers': followers, 'privacity': privacity,
-#                               'isFollower': isFollower}, context_instance=RequestContext(request))
-#=======
+    # <<<<<<< HEAD
+    #    # notificaciones
+    #    notifications_profile = user.notifications.unread()
+    #    print(notifications_profile)
+    #    return render_to_response('account/profile.html',
+    #                              {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
+    #                               'user_profile': user_profile, 'searchForm': searchForm,
+    #                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes,
+    #                               'timeline': timeline,
+    #                               'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
+    #                               'json_requestsToMe': json_requestsToMe,
+    #                               'followers': followers, 'privacity': privacity,
+    #                               'isFollower': isFollower}, context_instance=RequestContext(request))
+    # =======
     return render_to_response('account/profile.html', {
-                                'publications_top15': publications_top15,
-                                'listR': listR, 'friends_top12': friends_top12,
-                                'user_profile': user_profile,
-                                'searchForm': searchForm,
-                                'publicationForm': publicationForm,
-                                'reply_publication_form': reply_pub_form,
-                                'liked': liked, 'n_likes': n_likes,
-                                'timeline': timeline, 'isFriend': isFriend,
-                                'existFollowRequest': existFollowRequest,
-                                'json_requestsToMe': json_requestsToMe,
-                                'followers': followers,
-                                'privacity': privacity,
-                                'isFollower': isFollower,
-                                'following': following},
-                            context_instance=RequestContext(request))
-#>>>>>>> issue#11
+        'publications_top15': publications_top15,
+        'listR': listR, 'friends_top12': friends_top12,
+        'user_profile': user_profile,
+        'searchForm': searchForm,
+        'publicationForm': publicationForm,
+        'reply_publication_form': reply_pub_form,
+        'liked': liked, 'n_likes': n_likes,
+        'timeline': timeline, 'isFriend': isFriend,
+        'existFollowRequest': existFollowRequest,
+        'json_requestsToMe': json_requestsToMe,
+        'followers': followers,
+        'privacity': privacity,
+        'isFollower': isFollower,
+        'following': following},
+                              context_instance=RequestContext(request))
+
+
+# >>>>>>> issue#11
 
 
 @login_required(login_url='accounts/login')
@@ -290,7 +292,8 @@ def search(request):
                         Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
                         Q(author__username__icontains=w) |
                         Q(author__first_name__icontains=w) |
-                        Q(author__last_name__icontains=w), author__is_active=True).order_by('content').order_by('created').reverse() # or .order_by('created').reverse()
+                        Q(author__last_name__icontains=w), author__is_active=True).order_by('content').order_by(
+                        'created').reverse()  # or .order_by('created').reverse()
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': resultSearch,
@@ -321,7 +324,6 @@ def config_privacity(request):
                               context_instance=RequestContext(request))'''
 
 
-
 @login_required(login_url='/')
 def config_privacity(request):
     publicationForm = PublicationForm()
@@ -338,8 +340,12 @@ def config_privacity(request):
     else:
         privacity_form = PrivacityForm(instance=request.user.profile)
         print('PASO ULTIMO')
-    return render_to_response('account/cf-privacity.html', {'showPerfilButtons':True, 'searchForm': searchForm, 'publicationForm': publicationForm, 'privacity_form': privacity_form},
-                                context_instance=RequestContext(request))
+    return render_to_response('account/cf-privacity.html',
+                              {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm,
+                               'privacity_form': privacity_form},
+                              context_instance=RequestContext(request))
+
+
 @login_required(login_url='/')
 def config_profile(request):
     user_profile = request.user
@@ -376,13 +382,14 @@ def config_profile(request):
     # {'showPerfilButtons':True,'searchForm':searchForm,
     # 'user_form':user_form}, context_instance=RequestContext(request))
 
+
 @login_required(login_url='/')
 def config_pincode(request):
     pin = request.user.profile.pin
     publicationForm = PublicationForm()
     searchForm = SearchForm()
 
-    return render_to_response('account/cf-pincode.html', {'showPerfilButtons':True, 'searchForm': searchForm,
+    return render_to_response('account/cf-pincode.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                           'publicationForm': publicationForm, 'pin': pin},
                               context_instance=RequestContext(request))
 
@@ -407,7 +414,6 @@ def add_friend_by_username_or_pin(request):
             except:
                 return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
 
-
             if user.is_follow(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
             # enviamos peticion de amistad
@@ -419,12 +425,12 @@ def add_friend_by_username_or_pin(request):
             if not friend_request:
                 # Eliminamos posibles notificaciones residuales
                 Notification.objects.filter(actor_object_id=user_request.pk,
-                                         recipient=friend.user,
-                                         level='friendrequest').delete()
+                                            recipient=friend.user,
+                                            level='friendrequest').delete()
                 # Enviamos la notificacion
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
-                            recipient=friend.user,
-                            verb=u'quiere seguirte.', level='friendrequest')
+                                           recipient=friend.user,
+                                           verb=u'quiere seguirte.', level='friendrequest')
                 try:
                     notification = notification[0][1]
                 except IndexError:
@@ -467,8 +473,8 @@ def add_friend_by_username_or_pin(request):
             if not friend_request:
                 # Eliminamos posibles notificaciones residuales
                 Notification.objects.filter(actor_object_id=user_request.pk,
-                                         recipient=friend.user,
-                                         level='friendrequest').delete()
+                                            recipient=friend.user,
+                                            level='friendrequest').delete()
                 # Enviamos nueva notificacion
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
                                            recipient=friend.user,
@@ -486,8 +492,8 @@ def add_friend_by_username_or_pin(request):
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-
     return HttpResponse(json.dumps(response), content_type='application/javascript')
+
 
 @login_required(login_url='/')
 def like_profile(request):
@@ -541,8 +547,8 @@ def request_friend(request):
             if not friend_request:
                 # Eliminamos posibles notificaciones residuales
                 Notification.objects.filter(actor_object_id=user.pk,
-                                         recipient=UserProfile.objects.get(pk=slug).user,
-                                         level='friendrequest').delete()
+                                            recipient=UserProfile.objects.get(pk=slug).user,
+                                            level='friendrequest').delete()
                 # Creamos y enviamos la nueva notificacion
                 notification = notify.send(user, actor=User.objects.get(pk=user.pk).username,
                                            recipient=UserProfile.objects.get(pk=slug).user,
@@ -599,16 +605,20 @@ def respond_friend_request(request):
                     created.save()
                     created_2.save()
                     Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
-                                                   verb=u'¡%s ahora sigue a %s!' % (emitter_profile.user.username, user.username), type='new_relation')
+                                                   verb=u'¡%s ahora sigue a %s!' % (
+                                                       emitter_profile.user.username, user.username),
+                                                   type='new_relation')
                     Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
                                                    verb=u'¡%s tiene un nuevo seguidor, %s!' % (
-                                                       user.username, emitter_profile.user.username), type='new_relation')
+                                                       user.username, emitter_profile.user.username),
+                                                   type='new_relation')
                     response = "added_friend"
 
             else:
                 response = "rejected"
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
+
 
 # Elimina relación entre dos usuarios
 @login_required(login_url='/')
@@ -632,6 +642,7 @@ def remove_relationship(request):
             response = False
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
+
 # Elimina la peticion existente para seguir a un perfil
 @login_required(login_url='/')
 def remove_request_follow(request):
@@ -650,6 +661,7 @@ def remove_request_follow(request):
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
+
 # Load followers
 @login_required(login_url='/')
 def load_followers(request):
@@ -659,7 +671,7 @@ def load_followers(request):
     if friendslist == None:
         friends_next = None
     else:
-        #friendslist = json.loads(friendslist)
+        # friendslist = json.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
             print('>>>>>>> SLUG: ' + slug)
@@ -671,6 +683,7 @@ def load_followers(request):
         else:
             friends_next = None
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
+
 
 @login_required(login_url='/')
 def followers(request, username):
@@ -714,6 +727,7 @@ def following(request, username):
                                                       'publicationForm': publicationForm},
                               context_instance=RequestContext(request))
 
+
 # Load follows
 @login_required(login_url='/')
 def load_follows(request):
@@ -723,7 +737,7 @@ def load_follows(request):
     if friendslist == None:
         friends_next = None
     else:
-        #friendslist = json.loads(friendslist)
+        # friendslist = json.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
             print('>>>>>>> SLUG: ' + slug)
@@ -752,6 +766,8 @@ class PassWordChangeDone(TemplateView):
 
 
 password_done = login_required(PassWordChangeDone.as_view())
+
+
 # Modificacion del formulario para cambiar contraseña
 class CustomPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy("account_done_password")
@@ -768,7 +784,9 @@ class CustomPasswordChangeView(PasswordChangeView):
         # (end NOTE)
         return ret
 
+
 custom_password_change = login_required(CustomPasswordChangeView.as_view())
+
 
 # Modificacion del formulario para manejar los emails
 class CustomEmailView(EmailView):
@@ -787,6 +805,7 @@ class CustomEmailView(EmailView):
 
 
 custom_email = login_required(CustomEmailView.as_view())
+
 
 @login_required(login_url='/')
 def changepass_confirmation(request):
@@ -811,10 +830,10 @@ class DeactivateAccount(FormView):
         if user.is_authenticated():
             if form.is_valid():
                 user.is_active = form.clean_is_active()
-                user.save()
                 if user.is_active:
                     return self.form_valid(form=form, **kwargs)
                 else:
+                    user.delete()
                     return HttpResponseRedirect(self.success_url)
             else:
                 return self.form_invalid(form=form, **kwargs)
@@ -831,7 +850,9 @@ class DeactivateAccount(FormView):
         context['form'] = form
         return self.render_to_response(context)
 
+
 custom_delete_account = login_required(DeactivateAccount.as_view())
+
 
 def welcomeView(request, username):
     newUser = username

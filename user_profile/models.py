@@ -183,6 +183,11 @@ class UserProfile(models.Model):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name',
                                                                   'user__last_name',
                                                                   'user__profile__backImage').order_by('id')'''
+    # methods blocks
+    def add_block(self, profile):
+        print('block_user')
+        return self.add_relationship(profile, RELATIONSHIP_BLOCKED,
+                                     False)
 
     def get_blockeds(self):
         return self.get_related_to(RELATIONSHIP_BLOCKED)
