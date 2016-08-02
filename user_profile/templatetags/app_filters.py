@@ -77,7 +77,7 @@ def check_follow(request, author):
     else:
         return False
 
-@register.filter(name='check_block')
+@register.filter(name='check_blocked')
 def check_blocked(request, author):
     user_profile = get_object_or_404(
         get_user_model(), username__iexact=author)
@@ -93,3 +93,5 @@ def check_blocked(request, author):
         return True
     else:
         return False
+
+    return false

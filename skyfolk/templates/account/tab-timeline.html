@@ -3,8 +3,10 @@
 {% endcomment %}
 {% load decorators %}
 {% load avatar_tags %}
+{% load app_filters %}
 <div id="tab-timeline">
     <div id="section">
+      {% if not user_profile.username|check_blocked:user.username %}
         {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
         <div class="wrapperx" id="wrapperx-timeline">
                 {% for item in timeline %}
@@ -97,5 +99,11 @@
                     </div>
             {% endif %}
         </div>
+        {% else %}
+        <div class="cmt-hidden">
+          <h3>{{user_profile.username}} te ha bloqueado.</h3>
+            <br>
+        </div>
+        {% endif %}
     </div>
 </div>

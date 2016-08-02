@@ -57,7 +57,7 @@
     <div class="col-lg-12 col-md-10 col-sm-12">
     <h2 class="messages-search">Publicaciones</h2>
     {% for pub in resultMessages %}
-        {% if request.user.username|check_follow:pub.author.username %} {% comment 'Check privacity' %} Comprobamos la privacidad del autor del mensaje {% endcomment %}
+        {% if user.username|check_follow:pub.author.username and not user.username|check_blocked:pub.author.username %} {% comment 'Check privacity' %} Comprobamos la privacidad del autor del mensaje {% endcomment %}
    <div class="col-lg-3 col-md-5 col-sm-12 pub-search">
     <div class="personal-card">
         <div class="col-lg-12">

@@ -553,10 +553,18 @@ def request_friend(request):
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
-        # print(str(slug)) # slug = profile id
+        profile = UserProfile.objects.get(pk=slug)
+        try:
+            is_blocked = profile.is_blocked(user.profile)
+        except ObjectDoesNotExist:
+            is_blocked = None
+        if is_blocked:
+            response = "user_blocked"
+            return HttpResponse(json.dumps(response), content_type='application/javascript')
+
         try:
             #  user_friend = user.profile.is_friend(profileUserId)
-            user_friend = user.profile.is_follow(slug)  # Comprobamos si YO ya sigo al perfil deseado.
+            user_friend = user.profile.is_follow(profile)  # Comprobamos si YO ya sigo al perfil deseado.
         except ObjectDoesNotExist:
             user_friend = None
 
@@ -565,19 +573,18 @@ def request_friend(request):
         else:
             response = "inprogress"
             try:
-                friend_request = user.profile.get_follow_request(
-                    UserProfile.objects.get(pk=slug))
+                friend_request = user.profile.get_follow_request(profile)
             except ObjectDoesNotExist:
                 friend_request = None
 
             if not friend_request:
                 # Eliminamos posibles notificaciones residuales
                 Notification.objects.filter(actor_object_id=user.pk,
-                                            recipient=UserProfile.objects.get(pk=slug).user,
+                                            recipient=profile.user,
                                             level='friendrequest').delete()
                 # Creamos y enviamos la nueva notificacion
                 notification = notify.send(user, actor=User.objects.get(pk=user.pk).username,
-                                           recipient=UserProfile.objects.get(pk=slug).user,
+                                           recipient=profile.user,
                                            verb=u'quiere seguirte.', level='friendrequest')
                 try:
                     notification = notification[0][1]
@@ -586,7 +593,7 @@ def request_friend(request):
                 # Enlazamos notificacion con peticion de amistad
                 try:
                     created = user.profile.add_follow_request(
-                        UserProfile.objects.get(pk=slug), notification)
+                        profile, notification)
                     created.save()
                 except ObjectDoesNotExist:
                     response = "no_added_friend"

@@ -586,6 +586,15 @@ function AJAX_requestfriend(status) {
               });
           } else if (response == "inprogress") {
                 $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">'+' '+'</span>');
+          } else if (response == "user_blocked"){
+            swal({
+                title: "Petición denegada.",
+                text: "El usuario te ha bloqueado.",
+                type: "error",
+                timer: 2000,
+                animation: "slide-from-top",
+                showConfirmButton: false
+            });
           } else {
 
           }
