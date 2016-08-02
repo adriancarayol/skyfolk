@@ -440,6 +440,15 @@ def add_friend_by_username_or_pin(request):
 
             if user.is_follow(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+
+            try:
+                is_blocked = friend.is_blocked(user)
+            except ObjectDoesNotExist:
+                is_blocked = None
+            if is_blocked:
+                response = "user_blocked"
+                return HttpResponse(json.dumps(response), content_type='application/javascript')
+
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(friend)
@@ -486,6 +495,14 @@ def add_friend_by_username_or_pin(request):
 
             if user.is_follow(friend):  # if user.is_friend(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+
+            try:
+                is_blocked = friend.is_blocked(user)
+            except ObjectDoesNotExist:
+                is_blocked = None
+            if is_blocked:
+                response = "user_blocked"
+                return HttpResponse(json.dumps(response), content_type='application/javascript')
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(

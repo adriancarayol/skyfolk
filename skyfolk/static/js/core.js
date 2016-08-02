@@ -458,6 +458,15 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
               timer: 4000,
               showConfirmButton: true
             });
+      } else if (response == 'user_blocked') {
+        swal({
+            title: "Petición denegada.",
+            text: "El usuario te ha bloqueado.",
+            type: "error",
+            timer: 2000,
+            animation: "slide-from-top",
+            showConfirmButton: false
+        });
       }
     },
     error: function(rs, e) {
