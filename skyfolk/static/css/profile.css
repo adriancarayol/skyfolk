@@ -144,12 +144,12 @@
 .user-card header p {
   color: #717a7e;
   font-size: 1.2em;
-  margin-top: 0;
-  margin-bottom: 0.5em; }
+  margin-top: 0; }
 
-.user-card .status {
+.user-card .status, .user-profile-name {
   color: #75787b;
-  font-size: 0.98em; }
+  font-size: 0.98em;
+  display: inline; }
 
 .user-card .stats {
   margin-bottom: 0;
@@ -911,123 +911,86 @@ ul.table > li {
   transform: rotate(15deg) scale(1.3); }
 
 .info-paw {
-  width: 50%;
-  left: 25.55502%;
+  right: 0;
+  left: 0;
+  top: 30%;
   display: none;
   height: auto;
   background-color: transparent;
-  position: absolute;
+  position: fixed;
   margin: auto;
   z-index: 9999; }
-
-.info-paw .info-nav {
-  width: 300px;
-  height: 300px;
-  border-radius: 100%;
-  background-color: #fff;
-  -webkit-box-shadow: 0 0 5px 0 #1976d2;
-  -moz-box-shadow: 0 0 5px 0 #1976d2;
-  box-shadow: 0 0 5px 0 #1976d2;
-  position: relative;
-  margin: auto; }
-
-.info-paw .info-nav .info-event {
-  width: 50px;
-  height: 50px;
-  float: right;
-  right: 0;
-  position: absolute;
-  background-size: 80%;
-  background: #fff no-repeat center;
-  border: 1px solid #eee;
-  border-radius: 100%;
-  margin-right: -25px;
-  margin-top: -25px;
-  display: inline;
-  transition: all 0.3s ease-in-out;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out; }
-
-.info-paw .info-nav .info-trof {
-  width: 50px;
-  height: 50px;
-  float: right;
-  right: 0;
-  position: absolute;
-  background-size: 80%;
-  border: 1px solid #eee;
-  background: #fff no-repeat center;
-  border-radius: 100%;
-  margin-right: 75px;
-  margin-top: 75px;
-  display: inline;
-  transition: all 0.3s ease-in-out;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out; }
-
-.info-paw .info-nav .info-groups {
-  width: 50px;
-  height: 50px;
-  float: right;
-  border: 1px solid #eee;
-  background-size: 80%;
-  background: #fff no-repeat center;
-  border-radius: 100%;
-  margin-right: 15px;
-  margin-top: 25px;
-  display: inline;
-  transition: all 0.3s ease-in-out;
-  -webkit-transition: all 0.3s ease-in-out;
-  -moz-transition: all 0.3s ease-in-out; }
-
-.info-paw .info-nav .info-groups:hover, .info-event:hover, .info-trof:hover {
-  opacity: 0.8;
-  cursor: pointer; }
-
-.info-paw .info-user-name {
-  text-align: center;
-  font-size: 1.5em;
-  margin-top: 10px; }
-
-.info-paw .info-user-name_last {
-  text-align: center;
-  font-size: 1.1em;
-  margin-top: 7px; }
-
-.info-paw .info-wrapper-pic {
-  width: 90px;
-  height: 90px;
-  margin-top: 50px;
-  border-radius: 100%;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto; }
-
-.info-paw .info-user-stats {
-  text-align: center;
-  font-size: 1.1em;
-  margin-top: 10px; }
-  .info-paw .info-user-stats img {
-    border-radius: 100%;
-    border: 2px solid #1976d2; }
-
-.info-paw .info-user-ciudad {
-  text-align: center;
-  font-size: 1em;
-  margin-top: 10px; }
-
-.info-paw .info-user-ciudad .fa-map-marker {
-  margin-right: 5px;
-  color: tomato; }
-
-.info-paw .info-user-pic {
-  width: 92px;
-  height: 92px;
-  border-radius: 100%; }
-  .info-paw .info-user-pic img {
-    border-radius: 100%;
+  .info-paw .info-nav {
     width: 100%;
-    height: 100%; }
+    height: auto;
+    background-color: #fff;
+    box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
+    border-radius: 7px;
+    position: relative;
+    margin: auto;
+    padding: 10px; }
+  .info-paw .info-user-name {
+    text-align: center;
+    font-size: 1.5em;
+    margin-top: 10px;
+    color: #1e88e5; }
+  .info-paw .info-user-name_last {
+    text-align: center;
+    font-size: 1.3em;
+    margin-top: 7px;
+    font-weight: 600; }
+  .info-paw .info-wrapper-pic {
+    width: 90px;
+    height: 90px;
+    margin-top: 10px;
+    border-radius: 100%;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto; }
+  .info-paw .info-user-stats {
+    text-align: center;
+    font-size: 1.1em;
+    margin-top: 10px; }
+    .info-paw .info-user-stats img {
+      border-radius: 100%;
+      border: 2px solid #1976d2; }
+  .info-paw .info-user-ciudad {
+    text-align: center;
+    font-size: 1em;
+    margin-top: 10px; }
+  .info-paw .info-user-ciudad .fa-map-marker {
+    margin-right: 5px;
+    color: tomato; }
+  .info-paw .info-user-pic {
+    width: 92px;
+    height: 92px;
+    border-radius: 100%; }
+    .info-paw .info-user-pic img {
+      border-radius: 100%;
+      width: 100%;
+      height: 100%; }
+  .info-paw .personal-card-controls {
+    position: relative;
+    display: block;
+    min-height: 30px;
+    height: auto;
+    background-color: #f7f7f7;
+    margin-top: 10px;
+    padding: 10px; }
+    .info-paw .personal-card-controls li {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      margin-left: 2%;
+      background-color: #fff;
+      cursor: pointer;
+      padding: 5px; }
+      .info-paw .personal-card-controls li:hover {
+        opacity: 0.8; }
+      .info-paw .personal-card-controls li i {
+        display: block;
+        text-align: center;
+        font-size: 1.4em; }
 
 .trofeos {
   position: absolute;

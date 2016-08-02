@@ -76,3 +76,20 @@ def check_follow(request, author):
     # Si no cumple ningun caso...
     else:
         return False
+
+@register.filter(name='check_block')
+def check_blocked(request, author):
+    user_profile = get_object_or_404(
+        get_user_model(), username__iexact=author)
+    request = get_object_or_404(
+        get_user_model(), username__iexact=request)
+
+    try:
+        blocked = request.profile.is_blocked(user_profile.profile)
+    except ObjectDoesNotExist:
+        return False
+
+    if blocked:
+        return True
+    else:
+        return False

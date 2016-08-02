@@ -185,12 +185,23 @@ class UserProfile(models.Model):
                                                                   'user__profile__backImage').order_by('id')'''
     # methods blocks
     def add_block(self, profile):
-        print('block_user')
         return self.add_relationship(profile, RELATIONSHIP_BLOCKED,
                                      False)
 
     def get_blockeds(self):
-        return self.get_related_to(RELATIONSHIP_BLOCKED)
+        return self.get_relationships(RELATIONSHIP_BLOCKED).values('user__id', 'user__username', 'user__first_name',
+                                                                    'user__last_name',
+                                                                    'user__profile__backImage',
+                                                                   'user__profile__pk').order_by('id')
+
+    def is_blocked(self, profile):
+        try:
+            if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_BLOCKED):
+                return True
+            else:
+                return False
+        except ObjectDoesNotExist:
+            return False
 
     # methods likes
     def add_like(self, profile):
@@ -243,9 +254,12 @@ class UserProfile(models.Model):
         return self.requestsToMe.filter(from_request__status=2, from_request__receiver=self)
 
     def remove_received_follow_request(self, profile):
-        request = Request.objects.get(emitter=profile, receiver=self, status=REQUEST_FOLLOWING)
-        request.notification.delete()  # Eliminamos la notificacion
-        request.delete()
+        try:
+            request = Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
+            request.notification.delete()  # Eliminamos la notificacion
+            request.delete()
+        except ObjectDoesNotExist:
+            return False
 
     # methods followers
     def is_follower(self, profile):

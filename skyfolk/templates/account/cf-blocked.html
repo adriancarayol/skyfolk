@@ -1,0 +1,49 @@
+{% extends "account/base_cf.html" %}
+{% load app_filters %}
+{% load avatar_tags %}
+{% comment %}
+	Template para la configuracion del perfil de usuario
+{% endcomment %}
+{% block additional_files %}
+{% load i18n avatar_tags %}
+{% endblock%}
+{% block extra-css %}
+<link rel="stylesheet" href="{{STATIC_URL}}css/blocked.css" onload="if(media!='all')media='all'">
+{% endblock %}
+{% block cf-title %}
+<div class="hgroup">
+	<h4 class="cn"> Usuarios bloqueados </h4>
+	<h6 class="ch"> Administra a los usuarios que actualmente tienes bloqueados. </h6>
+</div>
+{% endblock %}
+{% block cf-form %}
+    <div class="col-lg-12 col-md-12 col-sm-12 wrapper-profilex">
+    <ul>
+        {% for item in blocked %}
+            <li class="bloq-user col-lg-3 col-md-12 col-sm-12" data-id="{{ item.user__profile__pk }}">
+                <div class="col-lg-12">
+                    <div class="header">
+                       {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
+                           <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user__profile__backImage }}">
+                           {% else %}
+                           <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                        {% endif %}
+                        <div class="bg-user">
+                             <div onclick="location.href='/profile/{{ item.user__username }}'" class="profile-user-bg">{% avatar item.user__username %}</div>
+                        </div>
+                    </div>
+            </div>
+                <div class="col-lg-12">
+                    <div class="name-friend">
+                    <a href="/profile/{{ item.user__username }}">@{{ item.user__username }} </a><br><br>
+                        <p>{{ item.user__first_name }} {{item.user__last_name}}</p>
+                    </div>
+                    <div class="col-lg-12 unblock-user-div">
+                        <span class="unblock-user" data-id="{{ item.user__profile__pk }}" onclick="AJAX_remove_bloq_from_config(this)">Desbloquear</span>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    </div>
+{% endblock %}

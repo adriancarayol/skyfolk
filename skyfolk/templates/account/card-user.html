@@ -22,11 +22,18 @@
                 <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }} - ¡Te sigue!" style="color: #1e88e5"></span>
             {% endif %}
             <!--<input type="checkbox" id="button-menu"  />-->
-            {% if user.is_authenticated and user.username != user_profile.username and existFollowRequest == True %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
+            {% if user.is_authenticated and user.username != user_profile.username %}  <!-- si es usuario esta visitando un perfil que no es el suyo -->
             <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
             <script async type="text/javascript">
               $(window).load(function() {
-                  $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>'+' '+'</div>');
+                  {% if isFriend == True %}
+                      $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
+                  {% elif isBlocked == True %}
+                      $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
+                      $('#bloq-user').css('color', '#FF6347');
+                  {% elif existFollowRequest == True %}
+                      $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>'+' '+'</div>');
+                  {% endif %}
               });
             </script>
             {% endif %}
@@ -56,27 +63,27 @@
             </div>
           </div>
           <!-- INFORMACION ADICIONAL DEL USUARIO -->
-                <div class="col-sm-6 col-md-5 col-lg-5">
-                  <div class="info-paw">
+        <div class="col-sm-12 col-md-12 col-lg-12"></div> <!-- separate div -->
+                  <div class="col-sm-10 col-md-10 col-lg-3 info-paw" id="personal-card-info">
                     <div class="info-nav">
                       <div class="info-wrapper-pic">
                           <div class="info-user-pic">{% avatar user_profile 90 %}</div>
                       </div>
-                    <h1 class="info-user-name">{{ user_profile.username }}</h1>
-                    <h3 class="info-user-name_last">{{user_profile.first_name}} {{user_profile.last_name}}</h3>
-                    <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
-                    <h4 class="info-user-stats">Seguidores: {{followers}}</h4>
-                    <h4 class="info-user-stats">Seguidos: {{following}} </h4>
-                        <div class="info-event">
+                        <div class="personal-info">
+                            <h1 id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.username }}">@{{ user_profile.username }}</h1>
+                            <h3 class="info-user-name_last">{{user_profile.first_name}} {{user_profile.last_name}}</h3>
+                            <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
+                            <h4 class="info-user-stats">Seguidores: {{followers}}</h4>
+                            <h4 class="info-user-stats">Seguidos: {{following}} </h4>
                         </div>
-                        <div class="info-groups">
-                        </div>
-                        <div class="info-trof">
-                        </div>
-                        <div class="info-relations">
-                        </div>
+                        <ul class="personal-card-controls">
+                            {% if user.is_authenticated and user.username != user_profile.username %}
+                                <li id="bloq-user"><i class="fa fa-ban" aria-hidden="true"></i></li>
+                            {% endif %}
+                            <li class="info-groups"><i class="fa fa-users" aria-hidden="true"></i></li>
+                            <li class="info-trof"><i class="fa fa-trophy" aria-hidden="true"></i></li>
+                        </ul>
                     </div>
-                </div>
                 </div>
                 <!-- Trofeos -->
                   <div class="col-sm-12 col-md-12 col-lg-10 trofeos">
@@ -141,8 +148,11 @@
                       </div>
                   </div>
           <header>
-            <p>@{{ user_profile.username }}</p><p id="profileId" hidden>{{ user_profile.profile.id }}</p>
-            <div class="status">{{ user_profile.profile.status }}</div>
+                <p class="user-profile-name">@{{ user_profile.username }}</p>
+                <p id="profileId" hidden>{{ user_profile.profile.id }}</p>
+              {% if user_profile.profile.status != None %}
+                  <p class="status"> - {{ user_profile.profile.status }}</p>
+              {% endif %}
           </header>
           <ul id="user-stats" class="stats">
             <li>

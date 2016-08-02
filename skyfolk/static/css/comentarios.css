@@ -303,6 +303,19 @@ input[type="checkbox"] {
     z-index: 2;
     position: relative;
 }
+.informacion span[class*="fa-ban"] {
+    cursor:pointer;
+    float:left;
+    display: block;
+    font-size: 2em;
+    height: 100%;
+    text-align: center;
+    width: 70px;
+    padding: 30px 20px;
+    opacity:1;
+    z-index: 2;
+    position: relative;
+}
 .informacion span[class*="fa-remove"] {
     cursor:pointer;
     float:left;
@@ -316,11 +329,14 @@ input[type="checkbox"] {
     z-index: 2;
     position: relative;
 }
-.fa-clock-o {background:#c8e6c9 }
-.fa-clock-o:hover {background:#a5d6a7;}
+.informacion .fa-clock-o {background:#c8e6c9;}
+.informacion .fa-clock-o:hover {background:#a5d6a7;}
 
-.fa-plus {background:#e1f5fe;}
-.fa-plus:hover {background: rgba(48,164,209,0.3); }
+.informacion .fa-ban {background:#FF6347;}
+.informacion .fa-ban:hover {background:#e57373;}
+
+.informacion .fa-plus {background:#e1f5fe;}
+.informacion .fa-plus:hover {background: rgba(48,164,209,0.3); }
 
   span[class*="paper-plane"] {background:#b3e5fc;}
   span[class*="paper-plane"]:hover {

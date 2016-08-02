@@ -21,6 +21,13 @@
     <link rel="stylesheet" href="{{STATIC_URL}}css/colorbox.css" onload="if(media!='all')media='all'"> <!-- Estilos para la galeria de fotos -->
     <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" onload="if(media!='all')media='all'">
     <link rel="stylesheet" href="{{STATIC_URL}}css/profile.css" onload="if(media!='all')media='all'">
+    {% if liked == True %}
+    <style type="text/css">
+        #ilike_profile {
+            color: #ec407a;
+        }
+    </style>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -183,22 +190,7 @@ Para el manejo de las pestañas del usuario
 
 </script>
 
-  {% if liked == True %}
 
-    <style type="text/css">
-        #ilike_profile {
-            color: #ec407a;
-        }
-    </style>
-
-
-  {% endif %}
-
-  {% if isFriend == True %}
-    <script async type="text/javascript">
-    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</div>');
-    </script>
-  {% endif %}
         {% else %}
         <h1 class="account-disabled">Cuenta desactivada.</h1>
 {% endif %}

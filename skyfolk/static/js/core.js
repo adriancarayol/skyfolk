@@ -48,6 +48,7 @@ $(window).load(function() {
             break;
         case "blocked":
             $(menuConfig).find('a:nth-child(7)').css('color', '#1e88e5');
+            break;
         case "delete_account":
             $(menuConfig).find('a:nth-child(8)').css('color', '#FF6347');
             break;
@@ -422,6 +423,13 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
               timer: 4000,
               showConfirmButton: true
             });
+      } else if (response == 'its_blocked') {
+          swal({
+              title: "Espera un momento!",
+              text: "Tienes bloqueado este perfil!",
+              timer: 4000,
+              showConfirmButton: true
+            });
       } else if (response == 'no_added_friend'){
           swal({
               title: "We have a problem",
@@ -577,7 +585,7 @@ function AJAX_requestfriend(status) {
                 }
               });
           } else if (response == "inprogress") {
-                $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">'+' '+'</div>');
+                $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">'+' '+'</span>');
           } else {
 
           }
@@ -605,7 +613,7 @@ function AJAX_remove_relationship(slug) {
                 var currentValue = document.getElementById('followers-stats');
                 var addFriendButton = document.getElementById('addfriend');
                 $(currentValue).html(parseInt($(currentValue).html())-1);
-                $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>'+' '+'</div>');
+                $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
             } else if (response == false) {
                 swal("Ha surgido un error, inténtalo de nuevo más tarde :-(");
             }
@@ -639,6 +647,32 @@ function AJAX_remove_request_friend() {
     });
 }
 
+function AJAX_remove_bloq_from_config(obj) {
+    var userid = $(obj).data('id');
+    $.ajax({
+        type: 'POST',
+        url: '/remove_blocked/',
+        data: {
+            'slug': userid,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response == true) {
+                $("ul").find("[data-id='" + userid + "']").hide();
+            } else {
+                swal({
+                  title: "Tenemos un problema...",
+                  text: "Hubo un problema con su petición.",
+                  timer: 4000,
+                  showConfirmButton: true
+                });
+            }
+        }, error: function (rs, e) {
+            alert(rs.responseText + " " + e);
+        }
+    });
+}
 /*****************************************************/
 /**********              UTIL                *********/
 /*****************************************************/

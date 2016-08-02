@@ -37,6 +37,7 @@ urlpatterns = patterns(
     url(r'^config/privacity/$', 'user_profile.views.config_privacity'), # URL CHANGE PRIVACITY
     url(r'^config/pincode/$', 'user_profile.views.config_pincode'),  # CONSULTAR PINCODE
     url(r'^config/delete_account/$', 'user_profile.views.custom_delete_account'),  # DESACTIVAR CUENTA DE SKYFOLK
+    url(r'^config/blocked/$', 'user_profile.views.config_blocked'),  # Lista de bloqueados
     #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     url(r'^like_profile/$', 'user_profile.views.like_profile', name='like_profile'),
     url(r'^following/(?P<username>[\w-]+)/$', 'user_profile.views.following'),
@@ -46,8 +47,10 @@ urlpatterns = patterns(
     url(r'^load_follows/$', 'user_profile.views.load_follows'), # Cargar mas follows
     url(r'^request_friend/$', 'user_profile.views.request_friend'),
     url(r'^remove_relationship/$', 'user_profile.views.remove_relationship'),
+    url(r'^remove_blocked/$', 'user_profile.views.remove_blocked'),
     url(r'^remove_request_follow/$', 'user_profile.views.remove_request_follow'),
     url(r'^add_friend_by_pin/$', 'user_profile.views.add_friend_by_username_or_pin'),
+    url(r'^bloq_user/$', 'user_profile.views.bloq_user'),
     # url(r'^publication/$', 'publications.views.publication_form'),
     url(r'^publication/$', PublicationNewView.as_view(), name='new_publication'),
     url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),

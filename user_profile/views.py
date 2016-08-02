@@ -17,9 +17,9 @@ from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
 from user_profile.models import UserProfile
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic.base import TemplateView
+from django.views.generic import TemplateView, DetailView
 from django.views.generic.edit import FormView
-
+from django.http import JsonResponse
 
 # allauth
 # Create your views here.
@@ -69,6 +69,8 @@ def profile_view(request, username):
             # print requestsToMe_result
             json_requestsToMe = json.dumps(requestsToMe_result)
 
+    print('LIKED? ' + str(liked))
+
     # saber si sigo al perfil que visito
     if request.user.username != username:
         isFriend = False
@@ -92,6 +94,18 @@ def profile_view(request, username):
     else:
         isFollower = False
 
+    # saber si el perfil que visito esta bloqueado
+    if request.user.username != username:
+        isBlocked = False
+        try:
+            if request.user.profile.is_blocked(user_profile.profile):
+                isBlocked = True
+        except ObjectDoesNotExist:
+            isBlocked = False
+    else:
+        isBlocked = False
+
+    print('IS BLOCKED? ' + str(isBlocked))
     # number of likes to him
     n_likes = len(user_profile.profile.likesToMe.all())
 
@@ -102,10 +116,10 @@ def profile_view(request, username):
 
     if friend_request:
         existFollowRequest = True
-        print(True)
+        print('Exist follow request? ' + str(True))
     else:
         existFollowRequest = False
-        print(False)
+        print('Exist follow request? ' + str(False))
 
     # cargar lista de amigos (12 primeros)
     try:
@@ -253,7 +267,8 @@ def profile_view(request, username):
         'followers': followers,
         'privacity': privacity,
         'isFollower': isFollower,
-        'following': following},
+        'following': following,
+        'isBlocked': isBlocked},
                               context_instance=RequestContext(request))
 
 
@@ -393,6 +408,15 @@ def config_pincode(request):
                                                           'publicationForm': publicationForm, 'pin': pin},
                               context_instance=RequestContext(request))
 
+@login_required(login_url='/')
+def config_blocked(request):
+    list_blocked = request.user.profile.get_blockeds()
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
+
+    return render_to_response('account/cf-blocked.html', {'showPerfilButtons': True, 'searchForm': searchForm,
+                                                          'publicationForm': publicationForm, 'blocked': list_blocked},
+                              context_instance=RequestContext(request))
 
 @login_required(login_url='accounts/login')
 def add_friend_by_username_or_pin(request):
@@ -501,9 +525,10 @@ def like_profile(request):
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
-        profileUserId = slug
+        actual_profile = UserProfile.objects.get(pk=slug)
+
         try:
-            user_liked = user.profile.has_like(profileUserId)
+            user_liked = user.profile.has_like(actual_profile)
         except ObjectDoesNotExist:
             user_liked = None
 
@@ -512,10 +537,11 @@ def like_profile(request):
             response = "nolike"
         else:
             print(str(slug))
-            created = user.profile.add_like(UserProfile.objects.get(pk=slug))
+            created = user.profile.add_like(actual_profile)
             created.save()
             response = "like"
-
+    print('%s da like a %s' % (user.username, actual_profile.user.username))
+    print("Response: " + response)
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
@@ -604,16 +630,21 @@ def respond_friend_request(request):
                         user.profile)  # Añado a mi lista de "seguidos" al peril que quiero seguir
                     created.save()
                     created_2.save()
-                    Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
+                    t, created = Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
                                                    verb=u'¡%s ahora sigue a %s!' % (
                                                        emitter_profile.user.username, user.username),
                                                    type='new_relation')
-                    Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
+                    t_, created_ = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
                                                    verb=u'¡%s tiene un nuevo seguidor, %s!' % (
                                                        user.username, emitter_profile.user.username),
                                                    type='new_relation')
+                    emitter_profile.remove_received_follow_request(user.profile)
+
                     response = "added_friend"
 
+            elif request_status == 'rejected':
+                emitter_profile.remove_received_follow_request(user.profile)
+                response = "rejected"
             else:
                 response = "rejected"
 
@@ -630,12 +661,12 @@ def remove_relationship(request):
 
     if request.method == 'POST':
         try:
-            user_friend = user.profile.is_follow(slug)  # Comprobamos si YO ya sigo al perfil deseado.
+            user_friend = user.profile.is_follow(profile_user)  # Comprobamos si YO ya sigo al perfil deseado.
         except ObjectDoesNotExist:
             user_friend = None
 
         if user_friend:
-            user.profile.remove_relationship(slug, 1)
+            user.profile.remove_relationship(profile_user, 1)
             profile_user.remove_relationship(user.profile, 2)
             response = True
         else:
@@ -643,22 +674,43 @@ def remove_relationship(request):
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
-# Elimina la peticion existente para seguir a un perfil
 @login_required(login_url='/')
-def remove_request_follow(request):
+def remove_blocked(request):
     response = None
     user = request.user
     slug = request.POST.get('slug', None)
-    status = request.POST.get('status', None)
     profile_user = UserProfile.objects.get(pk=slug)
-
+    print('%s ya no bloquea a %s' % (user.username, profile_user.user.username))
+    print('>>>>> %s' % slug)
     if request.method == 'POST':
-        if status == 'cancel':
-            profile_user.remove_received_follow_request(user.profile)
+        try:
+            blocked = user.profile.is_blocked(profile_user)
+        except ObjectDoesNotExist:
+            blocked = None
+
+        if blocked:
+            user.profile.remove_relationship(profile_user, 3)
             response = True
         else:
             response = False
 
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
+# Elimina la peticion existente para seguir a un perfil
+@login_required(login_url='/')
+def remove_request_follow(request):
+    response = False
+    user = request.user
+    slug = request.POST.get('slug', None)
+    status = request.POST.get('status', None)
+    profile_user = UserProfile.objects.get(pk=slug)
+    print('REMOVE REQUEST FOLLOW')
+    if request.method == 'POST':
+        if status == 'cancel':
+            user.profile.remove_received_follow_request(profile_user)
+            response = True
+        else:
+            response = False
+    print('Response -> ' + str(response))
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
@@ -853,6 +905,44 @@ class DeactivateAccount(FormView):
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
 
+
+def bloq_user(request):
+    user = request.user
+    haslike = "noliked"
+    if request.method == 'POST':
+        profileUserId = request.POST.get('id_user', None)
+        try:
+            emitter_profile = UserProfile.objects.get(pk=profileUserId)
+        except ObjectDoesNotExist:
+            response = False
+            data = {'response': response, 'haslike': haslike}
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+        # Eliminar me gusta al perfil que se va a bloquear
+
+        try:
+            user_liked = user.profile.has_like(emitter_profile)
+        except ObjectDoesNotExist:
+            user_liked = None
+
+        if user_liked:
+            user_liked.delete()
+            haslike = "liked"
+
+        user.profile.remove_received_follow_request(emitter_profile)  # Eliminar peticion follow (profile -> user)
+
+        emitter_profile.remove_received_follow_request(user.profile)  # Eliminar peticion follow (user -> profile)
+
+        user.profile.remove_relationship(emitter_profile, 1) # Eliminar relacion follow
+        emitter_profile.remove_relationship(user.profile, 2) # Eliminar relacion follower
+
+        created = user.profile.add_block(emitter_profile) # Añadir profile a lista de bloqueados
+        created.save()
+        response = True
+
+        print('response: %s, haslike: %s' % (response, haslike))
+        data = {'response': response, 'haslike': haslike}
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 def welcomeView(request, username):
     newUser = username

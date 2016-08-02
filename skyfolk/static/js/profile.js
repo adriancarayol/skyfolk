@@ -74,23 +74,23 @@ $(document).ready(function () {
 });
 
   $('.fa-paw').on('click',function() {
-      $(".info-paw").fadeToggle(50);
+      $(".info-paw").show();
   });
 
   $('.info-trof').on('click',function() {
-    $(".trofeos").fadeToggle(50);
+    $(".trofeos").show();
   });
 
   $('.info-groups').on('click',function() {
-    $(".grupos").fadeToggle(50);
+    $(".grupos").show();
   });
 
   $('#close-trofeos').on('click',function() {
-    $(".trofeos").fadeOut(50);
+    $(".trofeos").hide();
   });
 
   $('#close-grupos').on('click',function() {
-     $(".grupos").fadeOut(50);
+     $(".grupos").hide();
   });
 
 
@@ -440,6 +440,38 @@ $('#tab-timeline').bind('scroll', function() {
       "overflow": "auto"
     });
   });
+
+    $('#personal-card-info').find('#bloq-user').on('click', function () {
+        var obj = document.getElementById('info-user-name-profile'),
+            username = obj.getAttribute('data-id'),
+            buttonBan = $(this);
+        swal({
+          title: "Bloquear a " + username,
+          text: username + " no podrá seguirte, enviarte mensajes ni ver tu contenido.",
+          type: "warning",
+          animation: "slide-from-top",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Bloquear",
+          cancelButtonText: "Cancelar",
+          closeOnConfirm: true
+        }, function(isConfirm) {
+          if (isConfirm) {
+            AJAX_bloq_user(buttonBan);
+          }
+        });
+    });
+
+    $(this).click(function(event) {
+        if (!$(event.target).closest('#personal-card-info').length) {
+            if (!$(event.target).closest('.fa-paw').length) {
+                if ($('#personal-card-info').is(":visible")) {
+                    $('#personal-card-info').hide();
+                }
+            }
+        }
+    });
     /* FIN DOCUMENT READY */
 });
 
@@ -603,7 +635,6 @@ function addPublicationToHtmlList(data) {
 
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/
 function AJAX_likeprofile(status) {
-  //alert($("#likes strong").html());
   if (status == "noabort") $.ajax({
       type: "POST",
       url: "/like_profile/",
@@ -611,28 +642,26 @@ function AJAX_likeprofile(status) {
           'slug': $("#profileId").html(),
           'csrfmiddlewaretoken': csrftoken
       },
-      //data: {'slug': $("#profileId").html()},
       dataType: "json",
       success: function (response) {
-
           if (response == "like") {
-
               $("#ilike_profile").css('color', '#ec407a');
-
-              //Aumentamos el valor del campo
               $("#likes").find("strong").html(parseInt($("#likes").find("strong").html()) + 1);
-
           } else if (response == "nolike") {
-
               $("#ilike_profile").css('color', '#46494c');
-
               if ($("#likes").find("strong").html() > 0) {
-                  //Decrementar
                   $("#likes").find("strong").html(parseInt($("#likes").find("strong").html()) - 1);
               }
-
+          } else if (response == "blocked") {
+              swal({
+                  title: "Vaya... algo no está bien.",
+                  text: "Si quieres dar un like, antes debes desbloquear este perfil.",
+                  timer: 4000,
+                  showConfirmButton: true,
+                  type: "error"
+            });
           } else {
-
+            console.log("...");
           }
       },
       error: function (rs, e) {
@@ -875,6 +904,68 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
   });
 }
 
+/***** AJAX PARA BLOQUEAR USUARIO *****/
+function AJAX_bloq_user(buttonBan) {
+    var id_user = $("#profileId").html();
+    $.ajax({
+        type: 'POST',
+        url: '/bloq_user/',
+        data: {
+            'id_user': id_user,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: "json",
+        success: function (data) {
+            if (data.response == true) {
+                $(buttonBan).css('color', '#FF6347');
+                $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
+            } else {
+                swal({
+                  title: "Tenemos un problema...",
+                  text: "Hubo un problema con su petición.",
+                  timer: 4000,
+                  showConfirmButton: true
+                });
+            }
+            if (data.haslike == "liked") {
+                $("#ilike_profile").css('color', '#46494c');
+                var obj_likes = document.getElementById('likes');
+                if ($(obj_likes).find("strong").html() > 0) {
+                    $(obj_likes).find("strong").html(parseInt($(obj_likes).find("strong").html()) - 1);
+                }
+            }
+        }, error: function (rs, e) {
+            alert(rs.responseText + " " + e);
+        }
+    });
+}
+
+function AJAX_remove_bloq() {
+    $.ajax({
+        type: 'POST',
+        url: '/remove_blocked/',
+        data: {
+            'slug': $("#profileId").html(),
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response == true) {
+                $('#bloq-user-span').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
+                $('#bloq-user').css('color', '#555');
+            } else {
+                swal({
+                  title: "Tenemos un problema...",
+                  text: "Hubo un problema con su petición.",
+                  timer: 4000,
+                  showConfirmButton: true
+                });
+            }
+        }, error: function (rs, e) {
+            alert(rs.responseText + " " + e);
+        }
+    });
+}
 /*****************************************************/
 /********** AJAX para borrado de timeline ***********/
 /****************************************************/
