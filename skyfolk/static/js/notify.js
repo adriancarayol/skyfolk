@@ -23,7 +23,7 @@ function fill_notification_list(data) {
             var item = data.unread_list[i];
             console.log(item);
             var message = '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + item.slug + '"/></a>';
-            if(typeof item.actor !== 'undefined'){
+            if(typeof item.actor !== 'undefined' && item.level !== 'new_follow'){
                 message = message + " <div class=\"notification-body\"><a href=\"/profile/" + item.actor + '" >' + item.actor + '</a>';
             }
             if (item.actor_avatar !== null && typeof item.actor_avatar !== 'undefined') {

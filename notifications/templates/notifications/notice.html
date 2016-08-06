@@ -10,8 +10,8 @@
   </a>
   <h4>
     {% if notice.unread %}<i class="fa fa-bell" aria-hidden="true"></i>{% endif %}
-    <a href="/profile/{{ notice.actor }}">{{ notice.actor }}</a>
-    <b>{{ notice.verb }}</b>
+    {% if not notice.level == "new_follow" %}<a href="/profile/{{ notice.actor }}">{{ notice.actor }}</a>{% endif %}
+    <b>{{ notice.verb|safe }}</b>
     {% if notice.target %}
       of {{ notice.target }}
     {% endif %}

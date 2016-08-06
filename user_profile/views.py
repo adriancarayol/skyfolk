@@ -671,15 +671,21 @@ def respond_friend_request(request):
                         user.profile)  # Añado a mi lista de "seguidos" al peril que quiero seguir
                     created.save()
                     created_2.save()
+
                     t, created = Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
-                                                   verb=u'¡%s ahora sigue a %s!' % (
-                                                       emitter_profile.user.username, user.username),
+                                                   verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                       emitter_profile.user.username, emitter_profile.user.username, user.username, user.username),
                                                    type='new_relation')
                     t_, created_ = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
-                                                   verb=u'¡%s tiene un nuevo seguidor, %s!' % (
-                                                       user.username, emitter_profile.user.username),
+                                                   verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                       user.username, user.username, emitter_profile.user.username, emitter_profile.user.username),
                                                    type='new_relation')
-                    emitter_profile.remove_received_follow_request(user.profile)
+
+                    # enviamos notificacion informando del evento
+                    notify.send(user, actor=user.username,
+                                recipient=emitter_profile.user,
+                                verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (user.username, user.username), level='new_follow')
+                    emitter_profile.remove_received_follow_request(user.profile) # ya podemos borrar la peticion de amistad
 
                     response = "added_friend"
 

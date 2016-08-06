@@ -64,11 +64,10 @@
                                     {% avatar item.user__username %}
                                         </span>
                                         <span class="head">
-                                            <a href="/profile/{{item.user__username}}">{{item.user__username}}</a>
                                             <a class="fecha_" target="_blank">{{item.from_timeline__insertion_date}}</a><em></em>
                                         </span>
                                         <div id="p" class="parrafo comment">
-                                            {{ item.from_timeline__verb }}
+                                            {{ item.from_timeline__verb|safe }}
                                         </div>
                                         <div class="contenidoadicional">
                                             <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
