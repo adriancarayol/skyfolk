@@ -918,7 +918,18 @@ function AJAX_bloq_user(buttonBan) {
         success: function (data) {
             if (data.response == true) {
                 $(buttonBan).css('color', '#FF6347');
-                $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
+                if (data.status == "none" || data.status == "isfollow") {
+                    $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
+                } else if (data.status == "inprogress") {
+                    $('#follow_request').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
+                }
+                if (data.haslike == "liked") {
+                    $("#ilike_profile").css('color', '#46494c');
+                    var obj_likes = document.getElementById('likes');
+                    if ($(obj_likes).find("strong").html() > 0) {
+                        $(obj_likes).find("strong").html(parseInt($(obj_likes).find("strong").html()) - 1);
+                }
+                }
             } else {
                 swal({
                   title: "Tenemos un problema...",
@@ -926,13 +937,6 @@ function AJAX_bloq_user(buttonBan) {
                   timer: 4000,
                   showConfirmButton: true
                 });
-            }
-            if (data.haslike == "liked") {
-                $("#ilike_profile").css('color', '#46494c');
-                var obj_likes = document.getElementById('likes');
-                if ($(obj_likes).find("strong").html() > 0) {
-                    $(obj_likes).find("strong").html(parseInt($(obj_likes).find("strong").html()) - 1);
-                }
             }
         }, error: function (rs, e) {
             alert(rs.responseText + " " + e);

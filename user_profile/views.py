@@ -440,7 +440,7 @@ def add_friend_by_username_or_pin(request):
 
             if user.is_follow(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
-
+            # Me tienen bloqueado
             try:
                 is_blocked = friend.is_blocked(user)
             except ObjectDoesNotExist:
@@ -448,7 +448,14 @@ def add_friend_by_username_or_pin(request):
             if is_blocked:
                 response = "user_blocked"
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
-
+            # Yo tengo bloqueado al perfil
+            try:
+                blocked_profile = user.is_blocked(friend)
+            except ObjectDoesNotExist:
+                blocked_profile = None
+            if blocked_profile:
+                response = "blocked_profile"
+                return HttpResponse(json.dumps(response), content_type='application/javascript')
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(friend)
@@ -496,6 +503,7 @@ def add_friend_by_username_or_pin(request):
             if user.is_follow(friend):  # if user.is_friend(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
 
+            # Me tienen bloqueado
             try:
                 is_blocked = friend.is_blocked(user)
             except ObjectDoesNotExist:
@@ -503,6 +511,15 @@ def add_friend_by_username_or_pin(request):
             if is_blocked:
                 response = "user_blocked"
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
+            # Yo tengo bloqueado al perfil
+            try:
+                blocked_profile = user.is_blocked(friend)
+            except ObjectDoesNotExist:
+                blocked_profile = None
+            if blocked_profile:
+                response = "blocked_profile"
+                return HttpResponse(json.dumps(response), content_type='application/javascript')
+
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(
@@ -933,8 +950,10 @@ custom_delete_account = login_required(DeactivateAccount.as_view())
 def bloq_user(request):
     user = request.user
     haslike = "noliked"
+    status = "none"
     if request.method == 'POST':
         profileUserId = request.POST.get('id_user', None)
+
         try:
             emitter_profile = UserProfile.objects.get(pk=profileUserId)
         except ObjectDoesNotExist:
@@ -953,19 +972,49 @@ def bloq_user(request):
             user_liked.delete()
             haslike = "liked"
 
-        user.profile.remove_received_follow_request(emitter_profile)  # Eliminar peticion follow (profile -> user)
+        # Ver si hay una peticion de "seguir" pendiente
+        try:
+            follow_request = user.profile.get_follow_request(emitter_profile)
+        except ObjectDoesNotExist:
+            follow_request = None
 
-        emitter_profile.remove_received_follow_request(user.profile)  # Eliminar peticion follow (user -> profile)
+        if follow_request:
+            user.profile.remove_received_follow_request(emitter_profile) # Eliminar peticion follow (user -> profile)
+            status = "inprogress"
 
-        user.profile.remove_relationship(emitter_profile, 1) # Eliminar relacion follow
-        emitter_profile.remove_relationship(user.profile, 2) # Eliminar relacion follower
+        # Ver si seguimos al perfil que vamos a bloquear
+        is_follow = user.profile.is_follow(emitter_profile)
+
+        if is_follow:
+            user.profile.remove_relationship(emitter_profile, 1)  # Eliminar relacion follow
+            emitter_profile.remove_relationship(user.profile, 2)  # Eliminar relacion follower
+            status = "isfollow"
+
+        # Ver si hay una peticion de "seguir" pendiente (al perfil contrario)
+        try:
+            follow_request_reverse = emitter_profile.get_follow_request(user.profile)
+        except ObjectDoesNotExist:
+            follow_request_reverse = None
+
+        if follow_request_reverse:
+            emitter_profile.remove_received_follow_request(user.profile)  # Eliminar peticion follow (profile -> user)
+
+        # Ver si seguimos al perfil que vamos a bloquear
+        try:
+            is_follower = user.profile.is_follower(emitter_profile)
+        except ObjectDoesNotExist:
+            is_follower = None
+
+        if is_follower:
+            emitter_profile.remove_relationship(user.profile, 1)  # Eliminar relacion follow
+            user.profile.remove_relationship(emitter_profile, 2) # Eliminar relacion follower
 
         created = user.profile.add_block(emitter_profile) # Añadir profile a lista de bloqueados
         created.save()
         response = True
 
-        print('response: %s, haslike: %s' % (response, haslike))
-        data = {'response': response, 'haslike': haslike}
+        print('response: %s, haslike: %s, status: %s' % (response, haslike, status))
+        data = {'response': response, 'haslike': haslike, 'status': status}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 def welcomeView(request, username):

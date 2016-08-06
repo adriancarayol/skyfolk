@@ -467,6 +467,15 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
             animation: "slide-from-top",
             showConfirmButton: false
         });
+      } else if (response == 'blocked_profile') {
+          swal({
+            title: "Petición denegada.",
+            text: "Tienes bloqueado a este perfil.",
+            type: "error",
+            timer: 2000,
+            animation: "slide-from-top",
+            showConfirmButton: false
+          });
       }
     },
     error: function(rs, e) {

@@ -26,13 +26,14 @@
             <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
             <script async type="text/javascript">
               $(window).load(function() {
+                  var addFriend = document.getElementById('addfriend');
                   {% if isFriend == True %}
-                      $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
+                      $(addFriend).replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
                   {% elif isBlocked == True %}
-                      $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
+                      $(addFriend).replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
                       $('#bloq-user').css('color', '#FF6347');
                   {% elif existFollowRequest == True %}
-                      $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>'+' '+'</div>');
+                      $(addFriend).replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>'+' '+'</div>');
                   {% endif %}
               });
             </script>
