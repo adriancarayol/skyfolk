@@ -8,7 +8,36 @@
 
 
 {% block content %}
+    <script async>
+        $(document).ready(function () {
+            $('li.list-vertical:nth-child(6)').on('click', function (e) {
+                if (e.target !== this) return;
+                $(this).find('.dropdown-options').toggleClass('dropdown-options-open');
+            });
+        });
+    </script>
 <div class="container">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <ul class="query-options">
+            <li class="list-vertical">Destacados</li>
+            <li class="list-vertical">Cuentas</li>
+            <li class="list-vertical">Publicaciones</li>
+            <li class="list-vertical">Imágenes</li>
+            <li class="list-vertical">Videos</li>
+            <li class="list-vertical">Más opciones <i class="fa-caret-down" aria-hidden="true"></i>
+                <div class="dropdown-options">
+                    <ul class="dropdown-ul">
+                        <li>Todo</li>
+                        <li>Nuevo</li>
+                        <li>De todos</li>
+                        <li>Personas que sigues</li>
+                        <li>Personas que te siguen</li>
+                        <li>Búsqueda avanzada</li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
 <div class="col-lg-12 col-md-10 col-sm-12">
   {% if resultSearch|length == 0 and resultMessages|length == 0 %}
   <div class="col-sm-4">
@@ -86,28 +115,5 @@
 {% endfor %}
  {% endif %}
  </div>
-{% comment %}
-{% block messages %}
-	<!-- Permite mostrar el form para enviar mensajes -->
-{% if user.is_authenticated %}
-  <div id="page-wrapper" style="display:none;">
-      <h1> </h1>
-    <div id="status">to {{ user_profile.username }}</div>
-    <form id="message-form2" action="" method="post">{% csrf_token %}
-
-      {{publicationForm.as_p}}
-      <input type="text" name="userprofileid" value="{{ user_profile.pk }}" hidden>
-      <input type="text" name="emitterid" value="{{ user.pk }}" hidden>
-        <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"> </i> Enviar</button>
-        <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
-        <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
-        <button class="fontawesome-bullhorn"><i class="fa fa-bullhorn"> </i></button>
-        <button class="fontawesome-camera"><i class="fa fa-camera"> </i></button>
-        <button class="fontawesome-map-marker"><i class="fa fa-map-marker"> </i></button>
-
-    </form>
-  </div>
-{% endif %}
-{% endblock %}{% endcomment %}
 {% endblock %}
 </div>

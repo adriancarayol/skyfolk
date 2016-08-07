@@ -9,7 +9,8 @@ from django.core.validators import RegexValidator
 
 class SearchForm(forms.Form):
 
-    searchText = forms.CharField(label="", help_text="",required=False,widget=forms.TextInput(attrs={'placeholder' : '¿Que es lo que quieres buscar?'}))
+    searchText = forms.CharField(label="", help_text="",required=False,widget=forms.TextInput(attrs={'placeholder' : '¿Que es lo que quieres buscar?', 'pattern': '.{1,}',
+                                                                                                     'required title': '1 character minimum'}))
 
 
 class SignupForm(forms.Form):

@@ -301,7 +301,7 @@ def search(request):
                 else:
                     resultSearch = User.objects.filter(
                         first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2], is_active=True)
-
+                # usamos la expresion regular para descartar las imagenes de los comentarios
                 for w in words:
                     result_messages = Publication.objects.filter(
                         Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |

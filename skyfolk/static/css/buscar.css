@@ -427,3 +427,56 @@
     left: 200px; } }
 
 /*# sourceMappingURL=buscar.css.map */
+
+.query-options {
+    margin-top: 2.5%;
+    text-align: center;
+    border-bottom: 2px solid #e0e0e0;
+    font-size: 1.3em;
+    height: auto;
+    position: relative;
+    display: block;
+    z-index: 9999;
+}
+
+.query-options .list-vertical {
+    margin-left: 2%;
+    transition: all .1s ease-in-out;
+    cursor: pointer;
+    display: inline-block;
+    clear: both;
+    height: 33px;
+    box-sizing: border-box;
+    padding: 0 1%;
+}
+
+.query-options .list-vertical:hover {
+    color: #1e88e5;
+    border-bottom: 3px solid #1e88e5;
+}
+
+.query-options .dropdown-options {
+    position: relative;
+    height: auto;
+    display: none;
+    max-width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    color: #555 !important;
+    margin-top: 10%;
+}
+.query-options .dropdown-options-open {
+    display: block;
+}
+.query-options li .dropdown-options ul li {
+    display: table;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    font-size: 0.9em;
+    margin-top: 5%;
+}
+.query-options li .dropdown-options ul li:hover {
+    background-color: #1e88e5;
+    color: #fff;
+}
