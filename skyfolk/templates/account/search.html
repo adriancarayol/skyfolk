@@ -6,16 +6,8 @@
 {% load avatar_tags %}
 {% block title %} <title>Búsqueda en Skyfolk.</title> {% endblock %}
 
-
 {% block content %}
-    <script async>
-        $(document).ready(function () {
-            $('li.list-vertical:nth-child(6)').on('click', function (e) {
-                if (e.target !== this) return;
-                $(this).find('.dropdown-options').toggleClass('dropdown-options-open');
-            });
-        });
-    </script>
+
 <div class="container">
     <div class="col-lg-12 col-md-12 col-sm-12">
         <ul class="query-options">
@@ -25,7 +17,7 @@
             <li class="list-vertical">Imágenes</li>
             <li class="list-vertical">Videos</li>
             <li class="list-vertical">Más opciones <i class="fa-caret-down" aria-hidden="true"></i>
-                <div class="dropdown-options">
+                <div id="dropdown-search" class="dropdown-options">
                     <ul class="dropdown-ul">
                         <li>Todo</li>
                         <li>Nuevo</li>
@@ -115,5 +107,6 @@
 {% endfor %}
  {% endif %}
  </div>
+    <script async src="{{STATIC_URL}}js/search.js"></script>
 {% endblock %}
 </div>

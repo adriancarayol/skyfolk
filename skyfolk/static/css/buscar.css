@@ -5,6 +5,10 @@
   src: url('../fonts/Pacifico-regular/Pacifico-regular.eot');
   src: url('../fonts/Pacifico-regular/Pacifico-regular.eot?#iefix') format('embedded-opentype'), local('Pacifico Regular'), local('Pacifico-regular'), url('../fonts/Pacifico-regular/Pacifico-regular.woff2') format('woff2'), url('../fonts/Pacifico-regular/Pacifico-regular.woff') format('woff'), url('../fonts/Pacifico-regular/Pacifico-regular.ttf') format('truetype'), url('../fonts/Pacifico-regular/Pacifico-regular.svg#Pacifico') format('svg')
 }
+
+.container {
+    margin-top: 3em !important;
+}
 /*caja de busqueda*/
 .field > form input[type=text],
 .field > form button {
@@ -448,6 +452,12 @@
     height: 33px;
     box-sizing: border-box;
     padding: 0 1%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .query-options .list-vertical:hover {
@@ -456,14 +466,14 @@
 }
 
 .query-options .dropdown-options {
-    position: relative;
+    position: absolute;
     height: auto;
     display: none;
-    max-width: 100%;
     background-color: #ffffff;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
     color: #555 !important;
-    margin-top: 10%;
+    top: 100%;
+    margin-left: -1%;
 }
 .query-options .dropdown-options-open {
     display: block;
