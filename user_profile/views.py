@@ -278,7 +278,6 @@ def profile_view(request, username):
 @login_required(login_url='accounts/login')
 def search(request):
     # para mostarar tambien el cuadro de busqueda en la pagina
-
     searchForm = SearchForm(request.POST)
     # mostrar formulario para enviar comentarios/publicaciones
     publicationForm = PublicationForm()
@@ -338,6 +337,20 @@ def config_privacity(request):
     return render_to_response('account/cf-privacity.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm},
                               context_instance=RequestContext(request))'''
 
+# TODO
+class AvanzedView(TemplateView):
+    template_name = "account/search-avanzed.html"
+
+    def get(self, request, *args, **kwargs):
+        publicationForm = PublicationForm()
+        searchForm = SearchForm(request.POST)
+
+        return render_to_response(self.template_name,
+                                  {'publicationForm': publicationForm,
+                                   'searchForm': searchForm},
+                                  context_instance=RequestContext(request))
+
+avanzed_view = login_required(AvanzedView.as_view())
 
 @login_required(login_url='/')
 def config_privacity(request):

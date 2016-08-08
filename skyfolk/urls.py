@@ -32,6 +32,7 @@ urlpatterns = patterns(
     url(r'^setfirstLogin/', 'user_profile.views.setfirstLogin', name='setfirstLogin'),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
     url(r'^search/$','user_profile.views.search'),
+    url(r'^search-avanzed/$', 'user_profile.views.avanzed_view', name='avanzed_view'),
     #url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
     url(r'^config/profile/$', 'user_profile.views.config_profile'), # URL CONFIG PROFILE USER
     url(r'^config/privacity/$', 'user_profile.views.config_privacity'), # URL CHANGE PRIVACITY

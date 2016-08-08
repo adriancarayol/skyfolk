@@ -465,6 +465,10 @@
     border-bottom: 3px solid #1e88e5;
 }
 
+.query-options .list-vertical:nth-child(6) {
+  padding: 0 0 2%;
+}
+
 .query-options .dropdown-options {
     position: absolute;
     height: auto;

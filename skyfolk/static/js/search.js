@@ -18,4 +18,8 @@ $(document).ready(function () {
             $(messageWrapper).removeClass('dropdown-options-open');
         }
     });
+
+    $('#dropdown-search').find('#search-avanzed').on('click', function () {
+        document.location.href = '/search-avanzed/'
+    });
 });
