@@ -5,10 +5,14 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
+
 from notifications.models import Notification
 from notifications.signals import notify
 from publications.forms import PublicationForm, ReplyPublicationForm
@@ -16,10 +20,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
 from user_profile.models import UserProfile
-from django.core.urlresolvers import reverse_lazy
-from django.views.generic import TemplateView, DetailView
-from django.views.generic.edit import FormView
-from django.http import JsonResponse
+
 
 # allauth
 # Create your views here.
@@ -133,9 +134,6 @@ def profile_view(request, username):
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            # request.session['friends_list'] = json.dumps(friends.values())
-            # request.session['friends_list'] = list(friends)
-            # request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
@@ -239,20 +237,6 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         timeline = None
 
-    # <<<<<<< HEAD
-    #    # notificaciones
-    #    notifications_profile = user.notifications.unread()
-    #    print(notifications_profile)
-    #    return render_to_response('account/profile.html',
-    #                              {'publications_top15': publications_top15, 'listR': listR, 'friends_top12': friends_top12,
-    #                               'user_profile': user_profile, 'searchForm': searchForm,
-    #                               'publicationForm': publicationForm, 'liked': liked, 'n_likes': n_likes,
-    #                               'timeline': timeline,
-    #                               'isFriend': isFriend, 'existFriendRequest': existFriendRequest,
-    #                               'json_requestsToMe': json_requestsToMe,
-    #                               'followers': followers, 'privacity': privacity,
-    #                               'isFollower': isFollower}, context_instance=RequestContext(request))
-    # =======
     return render_to_response('account/profile.html', {
         'publications_top15': publications_top15,
         'listR': listR, 'friends_top12': friends_top12,
@@ -322,21 +306,6 @@ def search(request):
                                   context_instance=RequestContext(request))
 
 
-'''@login_required(login_url='/')
-def config_changepass(request):
-    searchForm = SearchForm()
-    publicationForm = PublicationForm()
-    return render_to_response('account/cf-changepass.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm},
-                              context_instance=RequestContext(request))
-
-
-@login_required(login_url='/')
-def config_privacity(request):
-    searchForm = SearchForm()
-    publicationForm = PublicationForm()
-    return render_to_response('account/cf-privacity.html', {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm},
-                              context_instance=RequestContext(request))'''
-
 # TODO
 class AdvancedView(TemplateView):
     template_name = "account/search-avanzed.html"
@@ -350,7 +319,9 @@ class AdvancedView(TemplateView):
                                    'searchForm': searchForm},
                                   context_instance=RequestContext(request))
 
+
 advanced_view = login_required(AdvancedView.as_view())
+
 
 @login_required(login_url='/')
 def config_privacity(request):
@@ -421,6 +392,7 @@ def config_pincode(request):
                                                           'publicationForm': publicationForm, 'pin': pin},
                               context_instance=RequestContext(request))
 
+
 @login_required(login_url='/')
 def config_blocked(request):
     list_blocked = request.user.profile.get_blockeds()
@@ -430,6 +402,7 @@ def config_blocked(request):
     return render_to_response('account/cf-blocked.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                           'publicationForm': publicationForm, 'blocked': list_blocked},
                               context_instance=RequestContext(request))
+
 
 @login_required(login_url='accounts/login')
 def add_friend_by_username_or_pin(request):
@@ -686,19 +659,25 @@ def respond_friend_request(request):
                     created_2.save()
 
                     t, created = Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
-                                                   verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                       emitter_profile.user.username, emitter_profile.user.username, user.username, user.username),
-                                                   type='new_relation')
+                                                                verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                                    emitter_profile.user.username,
+                                                                    emitter_profile.user.username, user.username,
+                                                                    user.username),
+                                                                type='new_relation')
                     t_, created_ = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
-                                                   verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                       user.username, user.username, emitter_profile.user.username, emitter_profile.user.username),
-                                                   type='new_relation')
+                                                                  verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                                      user.username, user.username,
+                                                                      emitter_profile.user.username,
+                                                                      emitter_profile.user.username),
+                                                                  type='new_relation')
 
                     # enviamos notificacion informando del evento
                     notify.send(user, actor=user.username,
                                 recipient=emitter_profile.user,
-                                verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (user.username, user.username), level='new_follow')
-                    emitter_profile.remove_received_follow_request(user.profile) # ya podemos borrar la peticion de amistad
+                                verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (user.username, user.username),
+                                level='new_follow')
+                    emitter_profile.remove_received_follow_request(
+                        user.profile)  # ya podemos borrar la peticion de amistad
 
                     response = "added_friend"
 
@@ -755,6 +734,8 @@ def remove_blocked(request):
             response = False
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+
 # Elimina la peticion existente para seguir a un perfil
 @login_required(login_url='/')
 def remove_request_follow(request):
@@ -998,7 +979,7 @@ def bloq_user(request):
             follow_request = None
 
         if follow_request:
-            user.profile.remove_received_follow_request(emitter_profile) # Eliminar peticion follow (user -> profile)
+            user.profile.remove_received_follow_request(emitter_profile)  # Eliminar peticion follow (user -> profile)
             status = "inprogress"
 
         # Ver si seguimos al perfil que vamos a bloquear
@@ -1026,15 +1007,16 @@ def bloq_user(request):
 
         if is_follower:
             emitter_profile.remove_relationship(user.profile, 1)  # Eliminar relacion follow
-            user.profile.remove_relationship(emitter_profile, 2) # Eliminar relacion follower
+            user.profile.remove_relationship(emitter_profile, 2)  # Eliminar relacion follower
 
-        created = user.profile.add_block(emitter_profile) # Añadir profile a lista de bloqueados
+        created = user.profile.add_block(emitter_profile)  # Añadir profile a lista de bloqueados
         created.save()
         response = True
 
         print('response: %s, haslike: %s, status: %s' % (response, haslike, status))
         data = {'response': response, 'haslike': haslike, 'status': status}
         return HttpResponse(json.dumps(data), content_type='application/json')
+
 
 def welcomeView(request, username):
     newUser = username
