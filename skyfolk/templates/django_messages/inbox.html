@@ -14,8 +14,8 @@
               <div class="col-lg-3 col-md-12 col-sm-12">
                       <div class="image-user" id="image-user">
                           {% avatar message.sender %}
+                          <span class="blue-text"><a href="/profile/{{ message.sender }}">{{ message.sender }}</a></span>
                       </div>
-                    <span class="blue-text">{{ message.sender }}</span>
                   {% if message.new %}
                     <span title="¡Nuevo mensaje!" class="new-message"><i class="fa fa-bell-o"></i></span>
                   {% endif %}
@@ -33,7 +33,7 @@
                       <br><br>
                    <blockquote onclick="javascript:location.href='{{message.get_absolute_url }}'" class="grey-text truncate">{{message.body|replaceTags}}</blockquote>
               </div>
-              <a class="borrar" href="{% url 'messages_delete' message.id %}"><i class="fa fa-trash"></i></a>
+              <a class="borrar" title="Eliminar mensaje" href="{% url 'messages_delete' message.id %}"><i class="fa fa-trash"></i></a>
             </div>
         {% endfor %}
   {% else %}

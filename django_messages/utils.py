@@ -27,7 +27,7 @@ def format_quote(sender, body):
 
     return ugettext(u"%(sender)s wrote:\n%(body)s") % {
         'sender': sender,
-        'body': body
+        'body': quote
     }
 
 def format_subject(subject):

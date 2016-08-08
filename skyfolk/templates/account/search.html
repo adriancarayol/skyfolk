@@ -9,7 +9,21 @@
 {% block content %}
 
 <div class="container">
-    <div class="col-lg-12 col-md-12 col-sm-12">
+
+<div class="col-lg-12 col-md-10 col-sm-12">
+  {% if resultSearch|length == 0 and resultMessages|length == 0 %}
+  <div class="col-sm-4">
+  	   <div class="noelements-search" id="search-noelements">
+         <h5 class="">Sin resultados :-(</h5>
+         <i class="not-query">No se obtuvo ningún resultado para:
+           {% for word in words %}
+            {{ word }}
+           {% endfor %}
+        </i>
+      </div>
+    </div>
+  {% else %}
+      <div class="col-lg-12 col-md-12 col-sm-12">
         <ul class="query-options">
             <li class="list-vertical">Destacados</li>
             <li class="list-vertical">Cuentas</li>
@@ -30,19 +44,6 @@
             </li>
         </ul>
     </div>
-<div class="col-lg-12 col-md-10 col-sm-12">
-  {% if resultSearch|length == 0 and resultMessages|length == 0 %}
-  <div class="col-sm-4">
-  	   <div class="noelements-search" id="search-noelements">
-         <h5 class="">Sin resultados :-(</h5>
-         <i class="not-query">No se obtuvo ningún resultado para:
-           {% for word in words %}
-            {{ word }}
-           {% endfor %}
-        </i>
-      </div>
-    </div>
-  {% else %}
   <h2 class="account-search">Cuentas</h2>
   {% for item in resultSearch %}
 <div class="col-lg-3 col-md-5 col-sm-12">

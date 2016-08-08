@@ -30,7 +30,7 @@ if "notification" in settings.INSTALLED_APPS:
 else:
     notification = None
 
-@login_required
+@login_required(login_url='/')
 def inbox(request, template_name='django_messages/inbox.html'):
     """
     Displays a list of received messages for the current user.
@@ -55,9 +55,6 @@ def inbox(request, template_name='django_messages/inbox.html'):
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            #request.session['friends_list'] = simplejson.dumps(friends.values())
-            #request.session['friends_list'] = list(friends)
-            #request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
@@ -68,7 +65,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
         'message_list': message_list, 'friends_top12': friends_top12,
     'publicationForm' :publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
 
-@login_required
+@login_required(login_url='/')
 def outbox(request,template_name='django_messages/outbox.html'):
     """
     Displays a list of sent messages by the current user.
@@ -93,9 +90,6 @@ def outbox(request,template_name='django_messages/outbox.html'):
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            #request.session['friends_list'] = simplejson.dumps(friends.values())
-            #request.session['friends_list'] = list(friends)
-            #request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
@@ -108,7 +102,7 @@ def outbox(request,template_name='django_messages/outbox.html'):
         'message_list': message_list, 'friends_top12': friends_top12,
 'publicationForm': publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
 
-@login_required
+@login_required(login_url='/')
 def trash(request,template_name='django_messages/trash.html'):
     """
     Displays a list of deleted messages.
@@ -135,9 +129,6 @@ def trash(request,template_name='django_messages/trash.html'):
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            #request.session['friends_list'] = simplejson.dumps(friends.values())
-            #request.session['friends_list'] = list(friends)
-            #request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
@@ -150,7 +141,7 @@ def trash(request,template_name='django_messages/trash.html'):
         'message_list': message_list, 'friends_top12' : friends_top12,
 'searchForm': searchForm, 'publicationForm': publicationForm}, context_instance=RequestContext(request))
 
-@login_required
+@login_required(login_url='/')
 def compose(request,recipient=None, form_class=ComposeForm,
         template_name='django_messages/compose.html', success_url=None, recipient_filter=None):
     """
@@ -182,9 +173,6 @@ def compose(request,recipient=None, form_class=ComposeForm,
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            #request.session['friends_list'] = simplejson.dumps(friends.values())
-            #request.session['friends_list'] = list(friends)
-            #request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
@@ -210,9 +198,58 @@ def compose(request,recipient=None, form_class=ComposeForm,
             form.fields['recipient'].initial = recipients
     return render_to_response(template_name, {
         'form': form, 'friends_top12': friends_top12,
-    'publicationForm': publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
+    'publicationForm': publicationForm, 'searchForm': searchForm, 'message_list': message_list}, context_instance=RequestContext(request))
 
-@login_required
+@login_required(login_url='/')
+def compose_username(request, recipient=None, form_class=ComposeForm,
+                     recipient_filter=None, template_name='django_messages/compose.html',
+                     success_url=None):
+    user = request.user
+
+    searchForm = SearchForm(request.POST) # Cuadro de búsqueda
+    publicationForm = PublicationForm() # Mostrar formulario para enviar mensajes.
+
+    user_profile = user
+     # cargar lista de amigos (12 primeros)
+    try:
+        #friends_4 = request.user.profile.get_friends_next4(1)
+        friends = user_profile.profile.get_following()
+        print('>>>>>>> LISTA: ')
+        print(friends)
+    except ObjectDoesNotExist:
+        friends = None
+
+    friends_top12 = None
+    if friends != None:
+        if len(friends) > 12:
+            request.session['friends_list'] = json.dumps(list(friends))
+            friends_top12 = friends[0:12]
+
+        else:
+            friends_top12 = friends
+        message_list = Message.objects.inbox_for(request.user)
+
+        if request.method == "POST":
+            sender = request.user
+            form = form_class(request.POST, recipient_filter=recipient_filter)
+            if form.is_valid():
+                form.save(sender=request.user)
+                messages.info(request, _(u"Message successfully sent."))
+                if success_url is None:
+                    success_url = reverse('messages_inbox')
+                if 'next' in request.GET:
+                    success_url = request.GET['next']
+                return HttpResponseRedirect(success_url)
+        else:
+            form = form_class()
+            if recipient is not None:
+                form.fields['recipient'].initial = recipient
+        return render_to_response(template_name, {
+            'form': form, 'friends_top12': friends_top12,
+            'publicationForm': publicationForm, 'searchForm': searchForm, 'message_list': message_list},
+                                  context_instance=RequestContext(request))
+
+@login_required(login_url='/')
 def reply(request,message_id, form_class=ComposeForm,
         template_name='django_messages/compose.html', success_url=None,
         recipient_filter=None, quote_helper=format_quote,
@@ -242,9 +279,6 @@ def reply(request,message_id, form_class=ComposeForm,
     friends_top12 = None
     if friends != None:
         if len(friends) > 12:
-            #request.session['friends_list'] = simplejson.dumps(friends.values())
-            #request.session['friends_list'] = list(friends)
-            #request.session['friends_list'] = serializers.serialize('json', list(friends))
             request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
 
@@ -269,15 +303,17 @@ def reply(request,message_id, form_class=ComposeForm,
     else:
         parent.body = re.sub(r'<[^>]*>', r'', parent.body) # eliminamos html tags
         form = form_class(initial={
-            'body': quote_helper(parent.sender, parent.body),
+            # 'body': quote_helper(parent.sender, parent.body),
             'subject': subject_template % {'subject': parent.subject},
-            'recipient': [parent.sender,]
+            'recipient': parent.sender.username, # [parent.sender ,]
             })
     return render_to_response(template_name, {
         'form': form, 'friends_top12': friends_top12,
-    'searchForm': searchForm, 'publicationForm': publicationForm}, context_instance=RequestContext(request))
+    'searchForm': searchForm, 'publicationForm': publicationForm,
+    'parent_body': parent.body,
+    'parent_username': parent.sender.username}, context_instance=RequestContext(request))
 
-@login_required
+@login_required(login_url='/')
 def delete(request, message_id, success_url=None):
     """
     Marks a message as deleted by sender or recipient. The message is not
@@ -312,7 +348,7 @@ def delete(request, message_id, success_url=None):
         return HttpResponseRedirect(success_url)
     raise Http404
 
-@login_required
+@login_required(login_url='/')
 def undelete(request, message_id, success_url=None):
     """
     Recovers a message from trash. This is achieved by removing the
@@ -339,7 +375,7 @@ def undelete(request, message_id, success_url=None):
         return HttpResponseRedirect(success_url)
     raise Http404
 
-@login_required
+@login_required(login_url='/')
 def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
         subject_template=_(u"Re: %(subject)s"),
         template_name='django_messages/view.html'):
