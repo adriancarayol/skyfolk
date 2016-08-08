@@ -338,7 +338,7 @@ def config_privacity(request):
                               context_instance=RequestContext(request))'''
 
 # TODO
-class AvanzedView(TemplateView):
+class AdvancedView(TemplateView):
     template_name = "account/search-avanzed.html"
 
     def get(self, request, *args, **kwargs):
@@ -350,7 +350,7 @@ class AvanzedView(TemplateView):
                                    'searchForm': searchForm},
                                   context_instance=RequestContext(request))
 
-avanzed_view = login_required(AvanzedView.as_view())
+advanced_view = login_required(AdvancedView.as_view())
 
 @login_required(login_url='/')
 def config_privacity(request):
