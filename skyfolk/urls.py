@@ -6,13 +6,12 @@ from rest_framework import routers, viewsets, routers
 
 from about.views import about
 from api import views
-#from market.views import market_inicio
-#from relaciones.views import relaciones_user
+# from market.views import market_inicio
+# from relaciones.views import relaciones_user
 from user_profile import views as user_profile_views
-#from user_profile.views import welcomeView, welcomeStep1
+# from user_profile.views import welcomeView, welcomeStep1
 import notifications
 # import notifications
-from publications.views import PublicationNewView, PublicationsListView
 from django.views.generic import TemplateView
 
 admin.autodiscover()
@@ -24,53 +23,23 @@ router.register(r'api/groups', views.GroupViewSet)
 
 urlpatterns = patterns(
     '',
-
     # Importamos las URLS del resto de apps:
     url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/', include('allauth.urls')), # django-allauth
-    url(r'^setfirstLogin/', 'user_profile.views.setfirstLogin', name='setfirstLogin'),
-    url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view', name='profile'),
-    url(r'^search/$','user_profile.views.search'),
-    url(r'^search-avanzed/$', 'user_profile.views.advanced_view', name='advanced_view'),
-    #url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
-    url(r'^config/profile/$', 'user_profile.views.config_profile'), # URL CONFIG PROFILE USER
-    url(r'^config/privacity/$', 'user_profile.views.config_privacity'), # URL CHANGE PRIVACITY
-    url(r'^config/pincode/$', 'user_profile.views.config_pincode'),  # CONSULTAR PINCODE
-    url(r'^config/delete_account/$', 'user_profile.views.custom_delete_account'),  # DESACTIVAR CUENTA DE SKYFOLK
-    url(r'^config/blocked/$', 'user_profile.views.config_blocked'),  # Lista de bloqueados
-    #url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    url(r'^like_profile/$', 'user_profile.views.like_profile', name='like_profile'),
-    url(r'^following/(?P<username>[\w-]+)/$', 'user_profile.views.following'),
-    url(r'^followers/(?P<username>[\w-]+)/$', 'user_profile.views.followers'),
-    url(r'^respond_friend_request/$', 'user_profile.views.respond_friend_request', name='respond_friend_request'),
-    url(r'^load_followers/$', 'user_profile.views.load_followers'), # Cargar mas followers
-    url(r'^load_follows/$', 'user_profile.views.load_follows'), # Cargar mas follows
-    url(r'^request_friend/$', 'user_profile.views.request_friend'),
-    url(r'^remove_relationship/$', 'user_profile.views.remove_relationship'),
-    url(r'^remove_blocked/$', 'user_profile.views.remove_blocked'),
-    url(r'^remove_request_follow/$', 'user_profile.views.remove_request_follow'),
-    url(r'^add_friend_by_pin/$', 'user_profile.views.add_friend_by_username_or_pin'),
-    url(r'^bloq_user/$', 'user_profile.views.bloq_user'),
+    url(r'^accounts/', include('allauth.urls')),  # django-allauth
+    # urls user_profile
+    url(r'^', include('user_profile.urls'), name="user_profile  "),
+    # url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
+    # url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    # url publications
+    url(r'^', include('publications.urls'), name="publications"),
     # url(r'^publication/$', 'publications.views.publication_form'),
-    url(r'^publication/$', PublicationNewView.as_view(), name='new_publication'),
-    url(r'^publication/delete/$', 'publications.views.delete_publication', name='delete_publication'),
-    url(r'^publication/list/$', PublicationsListView.as_view(), name='last_publication'),
-    url(r'^publication/add_like/$', 'publications.views.add_like', name='add_like'),
-    url(r'^publication/add_hate/$', 'publications.views.add_hate', name='add_hate'),
-    url(r'^load_publications/$', 'publications.views.load_publications'),
-    url(r'^accounts/password/change/confirmation', 'user_profile.views.changepass_confirmation'),
-    url(r'^config/password/change/$', 'user_profile.views.custom_password_change'), # URL CHANGE PASSWORD
-    url(r'^config/email/$', 'user_profile.views.custom_email', name='account_email'), # MANAGE EMAILS
-    url(r"^config/password/done/$", 'user_profile.views.password_done', name="account_done_password"),
     # url django-photologe(galeria de fotos)
     # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
-    # url add to timeline
-    url(r'^timeline/add_to_timeline/$', 'timeline.views.add_to_timeline', name='add_to_timeline'),
-    # url remove timeline
-    url(r'^timeline/remove_timeline/$', 'timeline.views.remove_timeline', name='remove_timeline'),
+    # urls timeline
+    url(r'^', include('timeline.urls'), name="timeline"),
     # url novedades e inicio
-    url(r'^inicio/mypublications/','latest_news.views.news_and_updates'),
+    url(r'^', include('latest_news.urls'), name="news"),
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
@@ -90,12 +59,8 @@ urlpatterns = patterns(
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Django-avatar
     (r'^/', include('avatar.urls')),
-    # Página de bienvenida a nuevos usuarios.
-    url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
-    # Página de bienvenida, paso 1.
-    url(r'^step1/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeStep1', name='welcomeStep1'),
-    #notificaciones
-    #url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
+    # notificaciones
+    # url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
     url('^inbox/notifications/', include('notifications.urls', namespace='notifications')),
 )
 

@@ -3,10 +3,13 @@ html, body {
   font-family: "Open Sans", sans-serif !important;
   font-size: 11.5px !important; }
 
+.container-responsive {
+  margin-top: 4em; }
+
 .account-search, .messages-search {
   font-size: 3em;
   color: #555;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid #f9f9f9;
   padding: 10px;
   display: block; }
 
@@ -81,7 +84,7 @@ html, body {
   border-radius: 7px;
   padding: 10px;
   color: #555;
-  background-color: #e0e0e0;
+  background-color: #f9f9f9;
   clear: both; }
 
 .container .personal-card .name-friend a:first-child {

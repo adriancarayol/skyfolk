@@ -2,9 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-
-from user_profile import models
-from user_profile.models import Relationship, LikeProfile, UserProfile
+from publications.models import PublicationManager, Publication
 
 
 def news_and_updates(request):
@@ -17,7 +15,7 @@ def news_and_updates(request):
     print ('>>>>>>>>> NAME OF USER ' + user_profile.username)
 
     try:
-        publications = user_profile.profile.get_myPublications()
+        publications = Publication.objects.get_authors_publications(user_profile)
     except ObjectDoesNotExist:
         publications = None
 

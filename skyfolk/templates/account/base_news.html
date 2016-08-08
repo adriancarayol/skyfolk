@@ -1,79 +1,24 @@
-{% comment %}
-	Template base para las noticias de los usuarios a los que sigues (Pagina de bienvenida con noticas)
-{% endcomment %}
-<!DOCTYPE html>
-<html lang="es">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/main.css" />
-		<link href='http://fonts.googleapis.com/css?family=Cherry+Swash' rel='stylesheet' type='text/css'>
-	  <link rel="stylesheet" href="{{STATIC_URL}}css/columnas.css" type="text/css" media="all">
-    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
-</head>
-    <nav class="box-tool">
-      <li><div class="logo"></div></li>
-      <li class="chat"><div></div></li>
-    </nav>
+{% extends "account/base_interface.html" %}
+{% load avatar_tags %}
+{% block title %} <title>Skyfolk</title> {% endblock %}
+{% block extra-css %}
+        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/news.css" />
+{% endblock %}
+
+{% block content %}
     <div class="container">
-			<h3>Novedades</h3>
-<!--
-				<li>
-					<figure>
-						<div><img src="images/proyecto1.jpg" alt="music image"></div>
-						<figcaption>
-							<h4>Pedro Picapiedra ha publicado un mensaje.</h4>
-							<span>Lorem Ipsum is simply dummy text of the printing and typesetting industry. </span>
-							<a href="" class="btn_hover">Visitar</a>
-						</figcaption>
-					</figure>
-				</li>
-				<li>
-					<figure>
-						<div><img src="images/proyecto2.jpg" alt="portfolio images"></div>
-						<figcaption>
-							<h4>Pedro ha publicado un vídeo.</h4>
-							<span>Nuevo video de Factor X.  </span>
-							<iframe width="200" height="125"
-src="http://www.youtube.com/embed/XGSy3_Czz8k">
-</iframe>
-							<a href="" class="btn_hover">Visitar</a>
-						</figcaption>
-					</figure>
-				</li>
--->
-                  <div class="preloader-wrapper big active">
-                    <div class="spinner-layer spinner-blue-only">
-                      <div class="circle-clipper left">
-                        <div class="circle"></div>
-                      </div><div class="gap-patch">
-                        <div class="circle"></div>
-                      </div><div class="circle-clipper right">
-                        <div class="circle"></div>
-                      </div>
-                    </div>
-                  </div>
-        <div class="row">
-            {% for i in publications %}
-	             <div class="col s12 m12 l3 z-depth-1 comm">
-	             <div class="img">
-	             <img src="http://ar.cdn01.mundotkm.com/2013/01/jennifer-lawrence-oscar-ppal.jpg">
-	             </div>
-                    <div class="contenido">
-                   <h6>{{i.to_publication__created}}</h6>
-                   <span><blockquote>{{i.to_publication__content}}</blockquote></span>
-                  </div>
-                </div>
-            {% endfor %}
+    <div class="col-lg-12 col-md-12 col-sm-12 wrapper-news">
+    {% for pub in publications %}
+        <div class="col-lg-3 col-md-12 col-sm-12 notice-item">
+            <div class="col-lg-3 col-md-2 col-sm-3 img">
+	                {% avatar pub.author.username %}
+            </div>
+            <div class="col-lg-7 col-md-8 col-sm-7 contenido">
+                <a href="/profile/{{ pub.author.username }}">{{ pub.author.username }}</a>
+                <span><blockquote>{{pub.content}}</blockquote></span>
             </div>
         </div>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
-       	<script type="text/javascript" src="{{STATIC_URL}}js/video.js"></script>
-        <script type="text/javascript">
-            $(window).load(function() {
-             $('.preloader-wrapper').addClass('loaderOut');
-            });
-        </script>
-	</body>
-</html>
+    {% endfor %}
+    </div>
+    </div>
+{% endblock %}

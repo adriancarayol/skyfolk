@@ -1,0 +1,27 @@
+$blueskyfolk: #1e88e5
+$graycolor: #555
+$whitecolor: #fff
+$graylightcolor: #f9f9f9
+$transparentgraycolor: rgba(0, 0, 0, 0.4)
+$tomatocolor: #ff6347
+$boxshadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+
+html, body
+  color: $graycolor !important
+  font-family: 'Open Sans', sans-serif !important
+  font-size: 11.5px !important
+
+.wrapper-news
+  background-color: $graylightcolor
+  margin-top: 3%
+  & .notice-item
+    background-color: $whitecolor
+    box-shadow: $boxshadow
+    padding: 10px
+    margin: 0.95%
+    & .img
+      border-radius: 3px
+      box-shadow: 0 1px 5px $blueskyfolk
+      & img
+        width: 100%
+        height: 100%
