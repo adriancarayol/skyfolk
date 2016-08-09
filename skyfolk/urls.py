@@ -28,9 +28,10 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
     # urls user_profile
-    url(r'^', include('user_profile.urls'), name="user_profile  "),
+    url(r'^', include('user_profile.urls'), name="user_profile"),
     # url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
-    # url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    # url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+    # {'document_root': settings.MEDIA_ROOT}),
     # url publications
     url(r'^', include('publications.urls'), name="publications"),
     # url(r'^publication/$', 'publications.views.publication_form'),
@@ -45,7 +46,8 @@ urlpatterns = patterns(
     # About skyfolk
     url(r'^about/([^/]+)/$', about),
     # Recomendacion password para usuarios
-    url(r'^tips/password/$', TemplateView.as_view(template_name='about/password_recommendation.html')),
+    url(r'^tips/password/$', TemplateView.as_view(
+        template_name='about/password_recommendation.html')),
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
     url(
@@ -60,8 +62,10 @@ urlpatterns = patterns(
     # Django-avatar
     (r'^/', include('avatar.urls')),
     # notificaciones
-    # url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls', namespace='notifications')),
-    url('^inbox/notifications/', include('notifications.urls', namespace='notifications')),
+    # url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls',
+    # namespace='notifications')),
+    url('^inbox/notifications/', include('notifications.urls',
+        namespace='notifications')),
 )
 
 urlpatterns += staticfiles_urlpatterns()
