@@ -12,7 +12,6 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-
 from notifications.models import Notification
 from notifications.signals import notify
 from publications.forms import PublicationForm, ReplyPublicationForm

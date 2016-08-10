@@ -17,5 +17,19 @@ html, body {
       .wrapper-news .notice-item .img img {
         width: 100%;
         height: 100%; }
+    .wrapper-news .notice-item .contenido {
+      padding-left: 10px;
+      display: block; }
+    .wrapper-news .notice-item .author {
+      display: block;
+      padding-left: 10px;
+      margin-bottom: 2%; }
+      .wrapper-news .notice-item .author a {
+        text-decoration: none;
+        color: #1e88e5;
+        font-weight: 600;
+        margin-right: 2%; }
+      .wrapper-news .notice-item .author i {
+        color: #555; }
 
 /*# sourceMappingURL=news.css.map */

@@ -13,9 +13,11 @@
             <div class="col-lg-3 col-md-2 col-sm-3 img">
 	                {% avatar pub.author.username %}
             </div>
-            <div class="col-lg-7 col-md-8 col-sm-7 contenido">
-                <a href="/profile/{{ pub.author.username }}">{{ pub.author.username }}</a>
-                <span><blockquote>{{pub.content}}</blockquote></span>
+            <div class="col-lg-8 col-md-9 col-sm-8 author">
+                <a href="/profile/{{ pub.author.username }}">@{{ pub.author.username }}</a><i>{{ pub.author.first_name }} {{ pub.author.last_name }}</i>
+            </div>
+            <div class="col-lg-9 col-md-10 col-sm-9 contenido">
+                <p>{{pub.content}}</p>
             </div>
         </div>
     {% endfor %}

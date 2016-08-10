@@ -19,7 +19,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#dropdown-search').find('#search-avanzed').on('click', function () {
-        document.location.href = '/search-avanzed/'
+    $('#dropdown-search').find('#search-advanced').on('click', function () {
+        document.location.href = '/search-advanced/'
     });
 });
