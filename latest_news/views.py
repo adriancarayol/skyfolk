@@ -7,7 +7,7 @@ from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
-
+from timeline.models import Timeline
 
 
 class News(TemplateView):
@@ -23,9 +23,10 @@ class News(TemplateView):
             get_user_model(), username__iexact=username)
 
         try:
-            publications = Publication.objects.get_authors_publications(user_profile)
+            publications = Publication.objects.get_friend_publications(user_profile.profile)
         except ObjectDoesNotExist:
             publications = None
+
 
         return render_to_response('account/base_news.html', {'publications': publications,
                                                              'publicationForm': publicationForm,

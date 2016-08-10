@@ -6,8 +6,17 @@ from model_utils import Choices
 
 # TODO
 class TimelineManager(models.Manager):
-    pass
+    # Funciones timeline
+    def get_timeline(self, timelinepk):
+        return self.objects.get(pk=timelinepk)
 
+    def remove_timeline(self, timelinepk):
+        self.objects.get(pk=timelinepk).delete()
+
+    def get_author_timeline(self, authorpk):
+        timeline = self.filter(author=authorpk).order_by('insertion_date').reverse()
+
+        return timeline
 
 class Timeline(models.Model):
     publication = models.ForeignKey(Publication, null=True, related_name='publications')

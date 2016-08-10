@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
-
+from user_profile.models import Relationship
 
 class PublicationManager(models.Manager):
     # Functions of publications
@@ -79,6 +79,12 @@ class PublicationManager(models.Manager):
                            board_owner=board_owner_pk, parent=parent).order_by(
             'created').reverse()
 
+        return pubs
+
+    def get_friend_publications(self, user_pk):
+        # Obtiene las publicaciones de todos los seguidos por un usuario
+        relation = Relationship.objects.filter(Q(from_person=user_pk) & Q(status=1))
+        pubs = self.filter(author__profile__to_people__in=relation).order_by('created').reverse()
         return pubs
 
 
