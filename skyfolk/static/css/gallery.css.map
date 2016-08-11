@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAEA,cAAc,CACZ,OAAO,CAAE,IAAI,CACb,OAAO,CAAE,IAAI,CACb,gBAAgB,CALD,OAAO,CAMtB,QAAQ,CAAE,QAAQ,CAClB,iBAAiB,CAAE,qBAAqB,CACxC,cAAc,CAAE,qBAAqB,CACrC,aAAa,CAAE,qBAAqB,CACpC,YAAY,CAAE,qBAAqB,CACnC,SAAS,CAAE,qBAAqB,CAChC,GAAG,CAAE,GAAG,CACR,IAAI,CAAE,GAAG",
+"sources": ["../sass/gallery.sass"],
+"names": [],
+"file": "gallery.css"
+}
