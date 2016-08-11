@@ -81,8 +81,11 @@
                             {% if user.is_authenticated and user.username != user_profile.username %}
                                 <li id="bloq-user"><i class="fa fa-ban" aria-hidden="true"></i></li>
                             {% endif %}
-                            <li class="info-groups"><i class="fa fa-users" aria-hidden="true"></i></li>
-                            <li class="info-trof"><i class="fa fa-trophy" aria-hidden="true"></i></li>
+                            <li class="info-groups" title="Grupos de {{ user_profile.username }}"><i class="fa fa-users" aria-hidden="true"></i></li>
+                            <li class="info-trof" title="Logros de {{ user_profile.username }}"><i class="fa fa-trophy" aria-hidden="true"></i></li>
+                            {% if user.is_authenticated and user.username == user_profile.username %}
+                            <li class="info-content" title="Mis publicaciones"><i class="fa fa-at" aria-hidden="true"></i></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>

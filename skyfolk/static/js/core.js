@@ -9,7 +9,7 @@ $(window).load(function() {
               case "following":
                 $(menu).find('li:nth-child(3)').css('border-bottom','3px solid #1e88e5');
                   break;
-              case "profile":
+              case "inicio":
                   $(menu).find('li:nth-child(1)').css('border-bottom','3px solid #1e88e5');
                   break;
               case "search":
