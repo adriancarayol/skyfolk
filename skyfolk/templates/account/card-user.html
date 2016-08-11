@@ -160,13 +160,13 @@
           </header>
           <ul id="user-stats" class="stats">
             <li>
-                <a href="/followers/{{ user_profile.username }}"><strong id="followers-stats" strong>{{ followers }}</strong><span>Seguidores</span></a>
+                <a href="/followers/{{ user_profile.username }}"><strong id="followers-stats">{{ followers }}</strong><span>Seguidores</span></a>
             </li>
             <li>
-                <a id="likes"><strong>{{n_likes}}</strong><span value="me gusta" onclick="contador()">Me gusta</span></a>
+                <a id="likes"><strong>{{n_likes}}</strong><span title="me gusta" onclick="contador()">Me gusta</span></a>
             </li>
             <li>
-                <a class="to_gallery""><strong>48</strong><span>Fotos</span></a>
+                <a class="to_gallery" href="/gallery/{{ user_profile.username }}"><strong>48</strong><span>Fotos</span></a>
             </li>
           </ul>
         </div>

@@ -49,6 +49,8 @@ urlpatterns = [
         name='account_email'),
     url(r"^config/password/done/$", 'user_profile.views.password_done',
         name="account_done_password"),
+    url(r'^gallery/(?P<username>[\w-]+)/$',
+        'user_profile.views.user_gallery'),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
     # Página de bienvenida, paso 1.

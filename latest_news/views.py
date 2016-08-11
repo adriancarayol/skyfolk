@@ -28,7 +28,7 @@ class News(TemplateView):
             publications = None
 
 
-        return render_to_response('account/base_news.html', {'publications': publications,
+        return render_to_response(self.template_name, {'publications': publications,
                                                              'publicationForm': publicationForm,
                                                              'searchForm': searchForm},
                                   context_instance=RequestContext(request))

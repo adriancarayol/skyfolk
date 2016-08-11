@@ -9,11 +9,6 @@ var flag_reply = false;
 
 
 $(document).ready(function () {
-
-    /* Display gallery */
-    $('.to_gallery').on('click', function () {
-        $("#gallery").toggle();
-    });
     /* Show more - Show less */
     $('#tab-comentarios').find('.wrapper').each(function () {
         var showLimitChar = 90;

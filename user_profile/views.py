@@ -945,6 +945,18 @@ class DeactivateAccount(FormView):
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
 
+class GalleryTemplate(TemplateView):
+    template_name = "account/photo_gallery.html"
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
+
+    def get(self, request, *args, **kwargs):
+        return render_to_response(self.template_name,
+                                  {'publicationForm': self.publicationForm,
+                                   'searchForm': self.searchForm},
+                                  context_instance=RequestContext(request))
+
+user_gallery = login_required(GalleryTemplate.as_view())
 
 def bloq_user(request):
     user = request.user
