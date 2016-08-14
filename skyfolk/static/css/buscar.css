@@ -490,6 +490,10 @@
     font-size: 0.9em;
     margin-top: 5%;
 }
+.query-options a {
+  color: #555;
+  text-decoration: none;
+}
 .query-options li .dropdown-options ul li:hover {
     background-color: #1e88e5;
     color: #fff;
