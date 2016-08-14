@@ -258,51 +258,81 @@ def profile_view(request, username):
 # >>>>>>> issue#11
 
 
+'''
+    Se añade una variable 'option' inicializada a None, para que por defecto
+    busque las palabras en usuarios y publicaciones, pero que si tiene algún
+    valor, haga la búsqueda únicamente por ese campo.
+'''
 @login_required(login_url='accounts/login')
-def search(request):
+def search(request, option=None):
     # para mostarar tambien el cuadro de busqueda en la pagina
     searchForm = SearchForm(request.POST)
     # mostrar formulario para enviar comentarios/publicaciones
     publicationForm = PublicationForm()
+    info = request.method
 
-    if request.method == 'POST':
+    if request.method == 'GET' and option is None:
+        return render_to_response('account/search.html',
+                                  {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': (
+                                  ), 'publicationForm': publicationForm, 'message': info},
+                                  context_instance=RequestContext(request))
+    # if request.method == 'POST':
+    else:
         if searchForm.is_valid:
+            resultSearch = None
             result_messages = None
-            texto_to_search = request.POST['searchText']
+            try:
+                texto_to_search = request.POST['searchText']
+                request.session['searchText'] = request.POST['searchText']
+            except:
+                texto_to_search = request.session['searchText']
             # hacer busqueda si hay texto para buscar, mediante consulta a la
             # base de datos y pasar el resultado
             if texto_to_search:
                 words = texto_to_search.split()
-                if len(words) == 1:
-                    resultSearch = User.objects.filter(Q(first_name__icontains=texto_to_search) | Q(
-                        last_name__icontains=texto_to_search) | Q(username__icontains=texto_to_search), is_active=True)
 
-                elif len(words) == 2:
-                    resultSearch = User.objects.filter(
-                        first_name__icontains=words[0], last_name__icontains=words[1], is_active=True)
-                else:
-                    resultSearch = User.objects.filter(
-                        first_name__icontains=words[0], last_name__icontains=words[1] + ' ' + words[2], is_active=True)
-                # usamos la expresion regular para descartar las imagenes de los comentarios
-                for w in words:
-                    result_messages = Publication.objects.filter(
-                        Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
-                        Q(author__username__icontains=w) |
-                        Q(author__first_name__icontains=w) |
-                        Q(author__last_name__icontains=w), author__is_active=True).order_by('content').order_by(
-                        'created').reverse()  # or .order_by('created').reverse()
+                # Búsqueda predeterminada o de cuentas.
+                if option is None or option == '1':
+                    if len(words) == 1:
+                        resultSearch = User.objects.filter(Q(first_name__icontains=texto_to_search) |
+                                                           Q(last_name__icontains=texto_to_search) |
+                                                           Q(username__icontains=texto_to_search),
+                                                           is_active=True)
+
+                    elif len(words) == 2:
+                        resultSearch = User.objects.filter(first_name__icontains=words[0],
+                                                           last_name__icontains=words[1],
+                                                           is_active=True)
+                    else:
+                        resultSearch = User.objects.filter(first_name__icontains=words[0],
+                                                           last_name__icontains=words[1] + ' ' + words[2],
+                                                           is_active=True)
+                # usamos la expresion regular para descartar las imagenes de los comentarios.
+                # Búsqueda predeterminada o de publicaciones.
+                if option is None or option == '2':
+                    for w in words:
+                        result_messages = Publication.objects.filter(
+                            Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
+                            Q(author__username__icontains=w) |
+                            Q(author__first_name__icontains=w) |
+                            Q(author__last_name__icontains=w), author__is_active=True).order_by('content').order_by(
+                            'created').reverse()  # or .order_by('created').reverse()
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': resultSearch,
                                                                   'resultMessages': result_messages,
-                                                                  'words': words},
+                                                                  'words': words,
+                                                                  'message': info},
                                           context_instance=RequestContext(request))
 
-    else:
-        return render_to_response('account/search.html',
-                                  {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': (
-                                  ), 'publicationForm': publicationForm},
-                                  context_instance=RequestContext(request))
+    # else:
+    #     info = request.session['searchText']
+    #     return render_to_response('account/search.html',
+    #                               {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': (
+    #                               ), 'publicationForm': publicationForm, 'message': info},
+    #                               context_instance=RequestContext(request))
+
+
 
 
 # TODO

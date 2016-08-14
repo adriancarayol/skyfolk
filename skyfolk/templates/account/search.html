@@ -9,7 +9,6 @@
 {% block content %}
 
 <div class="container">
-
 <div class="col-lg-12 col-md-10 col-sm-12">
   {% if resultSearch|length == 0 and resultMessages|length == 0 %}
   <div class="col-sm-4">
@@ -26,8 +25,8 @@
       <div class="col-lg-12 col-md-12 col-sm-12">
         <ul class="query-options">
             <li class="list-vertical">Destacados</li>
-            <li class="list-vertical">Cuentas</li>
-            <li class="list-vertical">Publicaciones</li>
+            <li class="list-vertical"><a href="/search/1">Cuentas</a></li>
+            <li class="list-vertical"><a href="/search/2">Publicaciones</a></li>
             <li class="list-vertical">Imágenes</li>
             <li class="list-vertical">Videos</li>
             <li class="list-vertical">Más opciones <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -44,6 +43,7 @@
             </li>
         </ul>
     </div>
+    {% if resultSearch|length != 0 %}
   <h2 class="account-search">Cuentas</h2>
   {% for item in resultSearch %}
 <div class="col-lg-3 col-md-5 col-sm-12">
@@ -72,7 +72,7 @@
     </div>
 </div>
 {% endfor %}
-    </div>
+    </div>{% endif %}
  {% endif %}
     {% if resultMessages|length != 0 %}
     <div class="col-lg-12 col-md-10 col-sm-12">
