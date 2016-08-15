@@ -35,7 +35,7 @@ class PublicationManager(models.Manager):
         # filtros: from_publication__profile=self -> retorna los comentarios
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
-        pubs = self.filter(Q(author=user_pk) | Q(board_owner=board_owner_pk),
+        pubs = self.filter(Q(author=user_pk) & Q(board_owner=user_pk),
                            author=user_pk, parent=None).order_by('created') \
             .reverse()
 
@@ -55,7 +55,7 @@ class PublicationManager(models.Manager):
         # filtros: from_publication__profile=self -> retorna los comentarios
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
-        pubs = self.filter(Q(author=user_pk) & Q(board_owner=board_owner_pk),
+        pubs = self.filter(Q(author=user_pk) | Q(board_owner=board_owner_pk),
                            board_owner=board_owner_pk, parent=None).order_by(
             'created').reverse()
 

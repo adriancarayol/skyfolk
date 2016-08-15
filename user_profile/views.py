@@ -201,9 +201,9 @@ def profile_view(request, username):
     try:
         # publications = Publication.objects.get_authors_publications(
         #                                             author_pk=user_profile.pk)
-        if isFriend:
+        if user_profile.username == username:
             publications = Publication.objects.get_friend_profile_publications(
-                user_pk=user.pk,
+                user_pk=user_profile.pk,
                 board_owner_pk=user_profile.pk)
         else:
             publications = Publication.objects.get_user_profile_publications(
