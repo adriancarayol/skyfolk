@@ -48,9 +48,7 @@ def remove_timeline(request):
         )
         try:
             timeline = request.POST['timeline_id']
-            obj_userprofile.profile.remove_timeline(
-                timeline_id=timeline
-            )
+            Timeline.objects.remove_timeline(timeline, obj_userprofile)
             response = True
         except ObjectDoesNotExist:
             response = False

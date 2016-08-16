@@ -134,6 +134,7 @@ class UserProfile(models.Model):
                                                 'from_timeline__type', 'from_timeline__verb').order_by(
             'from_timeline__insertion_date').reverse()
 
+    # Old (Mejor usar TimelineManager)
     def remove_timeline(self, timeline_id):
         t = timeline.models.Timeline.objects.get(pk=timeline_id)
         t.publication.user_share_me.remove(self.user)

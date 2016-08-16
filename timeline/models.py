@@ -3,15 +3,23 @@ from django.contrib.auth.models import User
 from user_profile.models import UserProfile
 from publications.models import Publication
 from model_utils import Choices
+from django.core.exceptions import ObjectDoesNotExist
 
 # TODO
 class TimelineManager(models.Manager):
     # Funciones timeline
     def get_timeline(self, timelinepk):
-        return self.objects.get(pk=timelinepk)
+        return self.get(pk=timelinepk)
 
-    def remove_timeline(self, timelinepk):
-        self.objects.get(pk=timelinepk).delete()
+    def remove_timeline(self, timelinepk, userpk):
+        timeline = self.get(pk=timelinepk)
+        try:
+            pub = timeline.publication
+        except ObjectDoesNotExist:
+            pub = None
+        if pub:
+            pub.user_share_me.remove(userpk)
+        timeline.delete()
 
     def get_author_timeline(self, authorpk):
         timeline = self.filter(author=authorpk).order_by('insertion_date').reverse()
