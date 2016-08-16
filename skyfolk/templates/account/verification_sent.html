@@ -6,7 +6,24 @@
 
 {% block extra-css %}
     <style>
+        body {
+            background-color: #b0bec5;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+        }
         .information-text {
+            font-size: 1.3em;
+        }
+        .email-info {
+            padding: 10px;
+        }
+        .email-info > h1 {
+            font-size: 2em;
+        }
+        .email-info > p {
             font-size: 1.3em;
         }
     </style>
@@ -14,14 +31,22 @@
 
 {% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
 
-{% block cf-title %}
-<div class="hgroup">
-	<h4 class="cn"> Email </h4>
-	<h6 class="ch"> {% trans "Verify Your E-mail Address" %} </h6>
-</div>
-{% endblock %}
-{% block cf-form %}
-    <h1>{% trans "Verify Your E-mail Address" %}</h1>
-    <br><br>
-    <p class="information-text">{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+{% block barra_navegacion %}{% comment %} No debe aparecer, ya que no estamos registrados aun {% endcomment %}{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="container">
+            <div class="col-lg-12 col-sm-12 col-md-12 hgroup">
+                <h4 class="cn"> Email </h4>
+                <h6 class="ch"> {% trans "Verify Your E-mail Address" %} </h6>
+            </div>
+            <div class="col-lg-12 col-sm-12 col-md-12 email-info">
+                <h1><i class="fa fa-envelope-o" aria-hidden="true"></i> {% trans "Verify Your E-mail Address" %}</h1>
+                <br><br>
+                <p class="information-text">
+                    {% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}
+                </p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
