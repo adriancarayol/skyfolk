@@ -40,8 +40,9 @@ def profile_view(request, username):
     # >>>>>>> issue#11
     privacity = user_profile.profile.privacity
     print('ESTADO DE LA CUENTA: ' + str(user.is_active))
-    # print(user.email)
-    # print('Privacidad del usuario: ' + username + " id: " + str(user_profile.pk) + " " + privacity)
+    is_visible = user_profile.profile.is_visible(user.profile)
+    print('>>> Visibilidad del perfil ' + str(is_visible))
+
     json_requestsToMe = None
     # saber si el usuario que visita el perfil le gusta
     if request.user.username != username:

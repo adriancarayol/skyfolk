@@ -70,7 +70,6 @@ class UserProfile(models.Model):
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
 
-
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
 
@@ -124,6 +123,45 @@ class UserProfile(models.Model):
             from_people__status=status,
             from_people__to_person=self)
 
+    def is_visible(self, user_pk):
+        """
+        Devuelve si el perfil que estamos visitando
+        es visible por nosotros.
+        :param user_pk:
+        :return booleano que determina si el perfil es visible:
+        """
+
+        # Si el perfil esta bloqueado
+        if self.is_blocked(user_pk):
+            return False
+
+        # Si el nivel de privacidad es TODOS
+        if self.privacity == UserProfile.ALL:
+            return True
+
+        # Recuperamos la relacion de "seguir"
+        try:
+            relation_follow = Relationship.objects.filter(from_person=self, to_person=user_pk, status=RELATIONSHIP_FOLLOWING)
+        except ObjectDoesNotExist:
+            relation_follow = None
+
+        # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
+        if self.privacity == UserProfile.ONLYFOLLOWERS and relation_follow:
+            return True
+
+        # Recuperamos la relacion de "seguidor"
+        try:
+            relation_follower = Relationship.objects.filter(from_person=self, to_person=user_pk, status=RELATIONSHIP_FOLLOWER)
+        except ObjectDoesNotExist:
+            relation_follower = None
+
+        # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
+        if self.privacity == UserProfile.ONLYFOLLOWERSANDFOLLOWS and \
+                (relation_follower or relation_follow):
+            return True
+
+        # else...
+        return False
     # Methods of timeline
 
     def getTimelineToMe(self):
