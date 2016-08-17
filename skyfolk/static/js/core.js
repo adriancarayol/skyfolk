@@ -540,8 +540,7 @@ function AJAX_submit_publication(data, type, pks) {
     data: data,
     success: function(data) {
       var response = data.response;
-      console.log('RESPONSE AQUI');
-      console.log(response);
+      console.log('RESPONSE AQUI: ' + response);
       if (response == true) {
         swal({
             title: "Success!",
@@ -555,21 +554,24 @@ function AJAX_submit_publication(data, type, pks) {
         swal({
           title: "",
           text: "Failed to publish",
-    type: "error"
+          type: "error"
         });
       }
-        if (type == "reply") {
+      if (type == "reply") {
           $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
-          $("#caja-comentario-"+pks[2]).slideUp(); // Ocultamos textarea de respuesta
-        }
-        },
+          var caja_comentarios = $('#caja-comentario-'+pks[2]);
+          $(caja_comentarios).slideUp();
+          $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
+      }
+    },
     error: function(rs, e) {
       alert('ERROR: ' + rs.responseText + " " + e)
     }
   }).done(function() {
-    addNewPublication(type, pks[0], pks[1], pks[2])
+      addNewPublication(type, pks[0], pks[1], pks[2]);
   })
 }
+
 
 /*PETICION AJAX PARA AGREGAR AMIGO*/
 function AJAX_requestfriend(status) {
