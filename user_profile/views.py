@@ -265,6 +265,12 @@ def profile_view(request, username):
 '''
 @login_required(login_url='accounts/login')
 def search(request, option=None):
+    """
+    View principal para realizar una busqueda en la web.
+    :param request:
+    :param option:
+    :return resultados de la busqueda:
+    """
     # para mostarar tambien el cuadro de busqueda en la pagina
     searchForm = SearchForm(request.POST)
     # mostrar formulario para enviar comentarios/publicaciones
@@ -279,7 +285,7 @@ def search(request, option=None):
     # if request.method == 'POST':
     else:
         if searchForm.is_valid:
-            resultSearch = None
+            result_search = None
             result_messages = None
             try:
                 texto_to_search = request.POST['searchText']
@@ -294,19 +300,24 @@ def search(request, option=None):
                 # Búsqueda predeterminada o de cuentas.
                 if option is None or option == '1':
                     if len(words) == 1:
-                        resultSearch = User.objects.filter(Q(first_name__icontains=texto_to_search) |
-                                                           Q(last_name__icontains=texto_to_search) |
-                                                           Q(username__icontains=texto_to_search),
-                                                           is_active=True)
+                        result_search = User.objects.filter(Q(first_name__icontains=texto_to_search) |
+                                                            Q(last_name__icontains=texto_to_search) |
+                                                            Q(username__icontains=texto_to_search),
+                                                            Q(is_active=True),
+                                                            ~Q(username=request.user.username),
+                                                            ~Q(profile__privacity='N'))
 
                     elif len(words) == 2:
-                        resultSearch = User.objects.filter(first_name__icontains=words[0],
-                                                           last_name__icontains=words[1],
-                                                           is_active=True)
+                        result_search = User.objects.filter(Q(first_name__icontains=words[0]),
+                                                            Q(last_name__icontains=words[1]),
+                                                            Q(is_active=True),
+                                                            ~Q(username=request.user.username),
+                                                            ~Q(profile__privacity='N'))
                     else:
-                        resultSearch = User.objects.filter(first_name__icontains=words[0],
-                                                           last_name__icontains=words[1] + ' ' + words[2],
-                                                           is_active=True)
+                        result_search = User.objects.filter(Q(first_name__icontains=words[0]),
+                                                            Q(last_name__icontains=words[1] + ' ' + words[2]),
+                                                            Q(is_active=True),
+                                                            ~Q(profile__privacity='N'))
                 # usamos la expresion regular para descartar las imagenes de los comentarios.
                 # Búsqueda predeterminada o de publicaciones.
                 if option is None or option == '2':
@@ -315,24 +326,17 @@ def search(request, option=None):
                             Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
                             Q(author__username__icontains=w) |
                             Q(author__first_name__icontains=w) |
-                            Q(author__last_name__icontains=w), author__is_active=True).order_by('content').order_by(
+                            Q(author__last_name__icontains=w), Q(author__is_active=True),
+                            ~Q(author__username__icontains=request.user.username),
+                            ~Q(author__profile__privacity='N')).order_by('content').order_by(
                             'created').reverse()  # or .order_by('created').reverse()
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                                  'resultSearch': resultSearch,
+                                                                  'resultSearch': result_search,
                                                                   'resultMessages': result_messages,
                                                                   'words': words,
                                                                   'message': info},
                                           context_instance=RequestContext(request))
-
-    # else:
-    #     info = request.session['searchText']
-    #     return render_to_response('account/search.html',
-    #                               {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': (
-    #                               ), 'publicationForm': publicationForm, 'message': info},
-    #                               context_instance=RequestContext(request))
-
-
 
 
 # TODO
