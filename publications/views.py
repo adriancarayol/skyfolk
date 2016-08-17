@@ -54,7 +54,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
 class PublicationsListView(AjaxableResponseMixin, ListView):
     model = Publication
-    template_name = 'account/publication.html'
+    template_name = 'account/tab-comentarios.html'
     http_method_names = ['get']
     ordering = ['-created']
     allow_empty = True
@@ -66,7 +66,7 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
         print(self.request.GET.get('type'))
         if self.request.GET.get('type') == 'reply':
             # TODO: pasar el resto de parametros por get
-            self.template_name = 'account/reply.html'
+            self.template_name = 'account/tab-comentarios.html'
             return Publication.objects.get_publication_replies(
                                         self.request.GET.get('user_pk'),
                                         self.request.GET.get('booar_owner'),

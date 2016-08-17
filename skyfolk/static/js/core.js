@@ -129,7 +129,7 @@ $(document).ready(function () {
     $('#message-form2').on('submit', function(event) {
         event.preventDefault();
         var data = $('#page-wrapper').find('#message-form2').serialize();
-        AJAX_submit_publication(data);
+        AJAX_submit_publication(data, 'publication');
     });
 
 
@@ -514,14 +514,15 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
 
 }
 
-
 function addNewPublication(type, user_pk, board_owner_pk, parent) {
   if (type=="reply") {
+      console.log(type + " " + user_pk + " " + board_owner_pk + " " + parent);
     $.get( "/publication/list/?type=reply&user_pk=" + user_pk + "&board_owner_pk" + board_owner_pk + ",parent="+parent, function(data) {
-      $( "#tab-comentarios" ).prepend(data).fadeIn('slow/400/fast')
+        console.log(data);
+        $("#tab-comentarios").prepend(data).fadeIn('slow/400/fast');
     })
   } else {
-    $.get( "/publication/list/", function(data) {
+    $.get("/publication/list/", function(data) {
       if ($("#tab-comentarios").find(".no-comments").length) {
         $("#tab-comentarios").find(".no-comments").remove()
       }
@@ -540,7 +541,7 @@ function AJAX_submit_publication(data, type, pks) {
     data: data,
     success: function(data) {
       var response = data.response;
-      console.log('RESPONSE AQUI: ' + response);
+      console.log('RESPONSE AQUI: ' + response + " type: " + type);
       if (response == true) {
         swal({
             title: "Success!",
@@ -558,10 +559,10 @@ function AJAX_submit_publication(data, type, pks) {
         });
       }
       if (type == "reply") {
-          $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
           var caja_comentarios = $('#caja-comentario-'+pks[2]);
-          $(caja_comentarios).slideUp();
           $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
+      } else if (type == "publication") {
+          $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
       }
     },
     error: function(rs, e) {

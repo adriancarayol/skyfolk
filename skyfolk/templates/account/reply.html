@@ -2,7 +2,7 @@
   Template para las respuestas
 {% endcomment %}
 {% load app_filters %}
-{% load tags_mentions %}
+{% load decorators %}
 {% for pub in publication_list %}
 <div class="wrapper" id="pub-{{ pub.pk }}" data-id="{{ pub.author.pk }}">
           <div class="box">
@@ -23,7 +23,7 @@
 
                   <div class="parrafo comment-tab">
                   <a target="_blank">{{ pub.created }}</a><br><br>
-                      {{ pub.content|replace_tags_mentions|safe }}
+                      {{ pub.content|replace_decorators|safe }}
                 </div>
                 <div class="text_area">
                     <textarea placeholder="Escribe tu mensaje..."></textarea>
@@ -50,7 +50,7 @@
                   <!--<p>Padre del comentario con ID: {{ item.from_publication__replies }}</p>-->
                 <div class="parrafo comment">
                   <a target="_blank">{{pub.created}}</a><br>
-                    <div class="wrp-comment">{{ pub.content|replace_tags_mentions|safe}}</div>
+                    <div class="wrp-comment">{{ pub.content|replace_decorators|safe}}</div>
                 </div>
                   <div class="show-more">
                       <a href="#">+ Mostrar más</a>
