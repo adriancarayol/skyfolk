@@ -27,7 +27,7 @@ class SignupForm(forms.Form):
     el cual sólo permite introducir letras minúsculas/maýusculas, separadas
     por espacios.
     """
-    alphanumeric = RegexValidator(regex='^[^\W\d]*$', message='Tu nombre/apellido sólo puede contener letras.')
+    alphanumeric = RegexValidator(r'^(\s*[^\W\d_]+(([\'\-\+\s]\s*[^\W\d_])?[^\W\d_]*)\s*)+$', message='Tu nombre/apellido sólo puede contener letras.')
     first_name = forms.CharField(label=_('Nombre'), min_length=1, max_length=35, help_text="",
                                  required=True,
                                  widget=forms.TextInput(attrs={'placeholder': _('Nombre')}), validators=[alphanumeric])
@@ -90,7 +90,7 @@ class PrivacityForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('privacity',)
+        fields = ('privacity', 'need_follow_confirmation', )
 
 
 class DeactivateUserForm(forms.ModelForm):

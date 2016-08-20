@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-
 import publications
 import timeline
 from notifications.models import Notification
@@ -27,6 +26,7 @@ REQUEST_STATUSES = (
 )
 
 
+
 def uploadAvatarPath(instance, filename):
     return '%s/avatar/%s' % (instance.user.username, filename)
 
@@ -37,7 +37,10 @@ def uploadBackImagePath(instance, filename):
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9
-    # OPCIONES DE PRIVACIDAD PARA EL USUARIO
+
+    """
+    Diferentes opciones de privacidad para el usuario
+    """
     ONLYFOLLOWERS = 'OF'
     ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
     ALL = 'A'
@@ -48,13 +51,9 @@ class UserProfile(models.Model):
         (ALL, 'All'),
         (NOTHING, 'Nothing'),
     )
-    user = models.OneToOneField(User, unique=True, related_name='profile')
 
-    # Other fields here
-    # accepted_eula = models.BooleanField()
-    # favorite_animal = models.CharField(max_length=20, default="Dragons.")
+    user = models.OneToOneField(User, unique=True, related_name='profile')
     backImage = models.ImageField(upload_to=uploadBackImagePath, verbose_name='BackImage', blank=True, null=True)
-    # image = models.ImageField(upload_to=uploadAvatarPath, verbose_name='Image', blank=True, null=True)
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
@@ -62,13 +61,17 @@ class UserProfile(models.Model):
                                       related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
     ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
-    firstLogin = models.BooleanField(
-        default=False)  # Para ver si el usuario ha realizado su primer login en la web, y por lo tanto,
-    # mostrar configuracion inicial.
     hiddenMenu = models.BooleanField(
         default=True)  # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
+    """
+        El usuario decide si es necesario recibir una solicitud
+        de seguimiento, o directamente se puede añadir como seguido
+        por otro usuario.
+    """
+    need_follow_confirmation = models.BooleanField(default=True)
+
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
@@ -269,6 +272,11 @@ class UserProfile(models.Model):
 
     # Add following
     def add_follow(self, profile):
+        """
+        Añade una relacion de "seguido"
+        :param profile perfil del usuario que se quiere seguir:
+        :return a follow relation:
+        """
         print('>>>>>> add_follow')
         return self.add_relationship(profile, RELATIONSHIP_FOLLOWING,
                                      False)
@@ -315,6 +323,46 @@ class UserProfile(models.Model):
         print('>>>>> add_follower')
         return self.add_relationship(profile, RELATIONSHIP_FOLLOWER,
                                      False)
+
+    def add_direct_relationship(self, profile):
+        """
+        Añade una relacion directamente, sin necesidad de enviar
+        peticion de seguimiento.
+        :param profile:
+        :return True -> relacion creada con exito, False -> creacion de relación fallida:
+        """
+        try:
+            created_follower = profile.add_follower(self)
+        except ObjectDoesNotExist:
+            return False
+        try:
+            created_follow = self.add_follow(profile)
+        except ObjectDoesNotExist:
+            return False
+
+        created_follower.save()
+        created_follow.save()
+
+        t, created = timeline.models.Timeline.objects.get_or_create(author=self, profile=profile,
+                                       verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                           profile.user.username,
+                                           profile.user.username, self.user.username,
+                                           self.user.username),
+                                       type='new_relation')
+        t_, created_ = timeline.models.Timeline.objects.get_or_create(author=profile, profile=self,
+                                                      verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                          self.user.username, self.user.username,
+                                                          profile.user.username,
+                                                          profile.user.username),
+                                                      type='new_relation')
+        if not created:
+            t.save()
+        if not created_:
+            t.save()
+
+        return True
+
+
 
     # methods friends
     '''def is_friend(self, profile):
@@ -390,6 +438,12 @@ User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 
 class Relationship(models.Model):
+    """
+    Relaciones entre usuarios:
+        <<from_person>> y <<to_person>>: Las dos personas que componen la relación.
+        <<status>>: Estado de la relación, a escoger entre RELATIONSHIP_STATUSES
+        <<created>>: Fecha de creación de la relación.
+    """
     from_person = models.ForeignKey(UserProfile, related_name='from_people')
     to_person = models.ForeignKey(UserProfile, related_name='to_people')
     status = models.IntegerField(choices=RELATIONSHIP_STATUSES)
@@ -400,6 +454,12 @@ class Relationship(models.Model):
 
 
 class LikeProfile(models.Model):
+    """
+    Modelo que relaciona a dos usuarios al dar "me gusta" al otro perfil.
+        <<from_like>>: Persona que da like
+        <<to_like>>: Persona que recibe el like
+        <<created>>: Fecha de creación del like
+    """
     from_like = models.ForeignKey(UserProfile, related_name='from_likeprofile')
     to_like = models.ForeignKey(UserProfile, related_name='to_likeprofile')
     created = models.DateTimeField(auto_now_add=True)
@@ -409,6 +469,14 @@ class LikeProfile(models.Model):
 
 
 class Request(models.Model):
+    """
+        Modelo que gestiona las peticiones de amistad:
+            <<emitter>>: Emisor de la petición
+            <<receiver>>: Receptor de la petición
+            <<status>>: Estado en el que se encuentra la petición
+            <<created>>: Fecha en la que se creó la petición
+            <<notification>>: Notificación asociada a la petición
+    """
     emitter = models.ForeignKey(UserProfile, related_name='from_request')
     receiver = models.ForeignKey(UserProfile, related_name='to_request')
     status = models.IntegerField(choices=REQUEST_STATUSES)

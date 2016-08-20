@@ -616,7 +616,15 @@ function AJAX_requestfriend(status) {
                 animation: "slide-from-top",
                 showConfirmButton: false
             });
-          } else {
+          } else if (response == "added_friend") {
+              swal({
+                  title: "Success!",
+                  text: "You have added a friend!",
+                  timer: 4000,
+                  showConfirmButton: true
+            });
+          }
+          else {
 
           }
         },

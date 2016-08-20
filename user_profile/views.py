@@ -460,22 +460,28 @@ def add_friend_by_username_or_pin(request):
 
             if user.is_follow(friend):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+
             # Me tienen bloqueado
-            try:
-                is_blocked = friend.is_blocked(user)
-            except ObjectDoesNotExist:
-                is_blocked = None
+            is_blocked = friend.is_blocked(user)
+
             if is_blocked:
                 response = "user_blocked"
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
+
             # Yo tengo bloqueado al perfil
-            try:
-                blocked_profile = user.is_blocked(friend)
-            except ObjectDoesNotExist:
-                blocked_profile = None
+            blocked_profile = user.is_blocked(friend)
+
             if blocked_profile:
                 response = "blocked_profile"
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+            # Comprobamos si el usuario necesita peticion de amistad
+            need_petition = friend.need_follow_confirmation
+            if not need_petition:
+                created = user.add_direct_relationship(profile=friend)
+                if created:
+                    response = "added_friend"
+                    return HttpResponse(json.dumps(response), content_type='application/javascript')
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(friend)
@@ -524,22 +530,28 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
 
             # Me tienen bloqueado
-            try:
-                is_blocked = friend.is_blocked(user)
-            except ObjectDoesNotExist:
-                is_blocked = None
+            is_blocked = friend.is_blocked(user)
+
             if is_blocked:
                 response = "user_blocked"
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
+
             # Yo tengo bloqueado al perfil
-            try:
-                blocked_profile = user.is_blocked(friend)
-            except ObjectDoesNotExist:
-                blocked_profile = None
+            blocked_profile = user.is_blocked(friend)
+
             if blocked_profile:
                 response = "blocked_profile"
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
 
+            # Comprobamos si el usuario necesita peticion de amistad
+            need_petition = friend.need_follow_confirmation
+            if not need_petition:
+                need_petition = friend.need_follow_confirmation
+                if not need_petition:
+                    created = user.add_direct_relationship(profile=friend)
+                    if created:
+                        response = "added_friend"
+                        return HttpResponse(json.dumps(response), content_type='application/javascript')
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(
@@ -608,16 +620,15 @@ def request_friend(request):
         user = request.user
         slug = request.POST.get('slug', None)
         profile = UserProfile.objects.get(pk=slug)
-        try:
-            is_blocked = profile.is_blocked(user.profile)
-        except ObjectDoesNotExist:
-            is_blocked = None
+
+        # El perfil me ha bloqueado
+        is_blocked = profile.is_blocked(user.profile)
+
         if is_blocked:
             response = "user_blocked"
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         try:
-            #  user_friend = user.profile.is_friend(profileUserId)
             user_friend = user.profile.is_follow(profile)  # Comprobamos si YO ya sigo al perfil deseado.
         except ObjectDoesNotExist:
             user_friend = None
@@ -625,6 +636,15 @@ def request_friend(request):
         if user_friend:
             response = "isfriend"
         else:
+            # Comprobamos si el perfil necesita peticion de amistad
+            need_petition = profile.need_follow_confirmation
+            if not need_petition:
+                need_petition = profile.need_follow_confirmation
+                if not need_petition:
+                    created = user.profile.add_direct_relationship(profile=profile)
+                    if created:
+                        response = "added_friend"
+                        return HttpResponse(json.dumps(response), content_type='application/javascript')
             response = "inprogress"
             try:
                 friend_request = user.profile.get_follow_request(profile)

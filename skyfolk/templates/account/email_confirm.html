@@ -4,29 +4,71 @@
 {% load i18n %}
 {% load account %}
 
-{% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
 {% block title %} <title>Configuración - {% trans "Confirm E-mail Address" %}</title> {% endblock %}
 
 {% block extra-css %}
     <style>
+        body {
+            background-color: #b0bec5;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+        }
         .information-text {
             font-size: 1.3em;
         }
+        .email-info {
+            padding: 10px;
+        }
+        .email-info > h1 {
+            font-size: 2em;
+        }
+        .email-info > p {
+            font-size: 1.3em;
+        }
+        button {
+            border: medium none;
+            border-radius: 2px;
+            display: block;
+            height: 36px;
+            line-height: 36px;
+            padding: 0 2rem;
+            margin-top: 2%;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #1e88e5;
+            background-color: transparent;
+            text-align: center;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease-out 0s;
+            cursor: pointer;
+            float: right;
+            outline: none;
+        }
+        button:hover {
+            background-color: #eee;
+                opacity: 0.8;
+        }
     </style>
 {% endblock %}
-{% block cf-title %}
-    <div class="hgroup">
-	<h4 class="cn"> Email </h4>
-	<h6 class="ch"> {% trans "Confirm E-mail Address" %} </h6>
+{% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
+
+{% block barra_navegacion %}{% comment %} No debe aparecer, ya que no estamos registrados aun {% endcomment %}{% endblock %}
+
+{% block content %}
+<div class="col-lg-12 col-sm-12 col-md-12">
+<div class="container">
+<div class="col-lg-12 col-sm-12 col-md-12 hgroup">
+    <h4 class="cn"> Email </h4>
+    <h6 class="ch"> {% trans "Confirm E-mail Address" %} </h6>
 </div>
-{% endblock %}
-
-{% block cf-form %}
-
+<div class="col-lg-12 col-sm-12 col-md-12 email-info">
 {% if confirmation %}
 
 {% user_display confirmation.email_address.user as user_display %}
-        
+
 <p class="information-text">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{email}}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
 
 <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
@@ -38,7 +80,9 @@
 
 {% url 'account_email' as email_url %}
 
-<p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url}}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
-
+<p class="information-text">{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url}}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
 {% endif %}
+</div>
+</div>
+</div>
 {% endblock %}
