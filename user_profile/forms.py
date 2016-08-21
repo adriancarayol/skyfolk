@@ -27,7 +27,8 @@ class SignupForm(forms.Form):
     el cual sólo permite introducir letras minúsculas/maýusculas, separadas
     por espacios.
     """
-    alphanumeric = RegexValidator(r'^(\s*[^\W\d_]+(([\'\-\+\s]\s*[^\W\d_])?[^\W\d_]*)\s*)+$', message='Tu nombre/apellido sólo puede contener letras.')
+    alphanumeric = RegexValidator(r'^(\s*[^\W\d_]+(([\'\-\+\s]\s*[^\W\d_])?[^\W\d_]*)\s*)+$',
+                                  message='Tu nombre/apellido sólo puede contener letras.')
     first_name = forms.CharField(label=_('Nombre'), min_length=1, max_length=35, help_text="",
                                  required=True,
                                  widget=forms.TextInput(attrs={'placeholder': _('Nombre')}), validators=[alphanumeric])
@@ -46,8 +47,12 @@ class UserForm(forms.ModelForm):
     Formulario usado en la configuración del usuario,
     permite cambiar el nombre/apellido del usuario.
     """
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'maxlength': '30'}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'maxlength': '30'}))
+    alphanumeric = RegexValidator(r'^(\s*[^\W\d_]+(([\'\-\+\s]\s*[^\W\d_])?[^\W\d_]*)\s*)+$',
+                                  message='Tu nombre/apellido sólo puede contener letras.')
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'maxlength': '30'}),
+                                 validators=[alphanumeric])
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'actual', 'maxlength': '30'}),
+                                validators=[alphanumeric])
 
     class Meta:
         model = User

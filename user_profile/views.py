@@ -37,8 +37,24 @@ def profile_view(request, username):
     # entonces estamos ante el perfil del usuario logueado.
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
+
+    # mostrar formulario para enviar comentarios/publicaciones
+    initial = {'author': user.pk, 'board_owner': user_profile.pk}
+    publicationForm = PublicationForm(initial=initial)
+    reply_pub_form = ReplyPublicationForm(initial=initial)
+
     # >>>>>>> issue#11
     privacity = user_profile.profile.privacity
+    if privacity == UserProfile.NOTHING:
+        template = 'account/private_profile.html'
+        return render_to_response(template, {
+            'user_profile': user_profile,
+            'searchForm': searchForm,
+            'publicationForm': publicationForm,},
+                                  context_instance=RequestContext(request))
+    else:
+        template = 'account/profile.html'
+
     print('ESTADO DE LA CUENTA: ' + str(user.is_active))
     is_visible = user_profile.profile.is_visible(user.profile)
     print('>>> Visibilidad del perfil ' + str(is_visible))
@@ -193,10 +209,7 @@ def profile_view(request, username):
         else:
             print('>>> El usuario ' + user_profile.username + " no tiene ningún estado ańimico")
     '''
-    # mostrar formulario para enviar comentarios/publicaciones
-    initial = {'author': user.pk, 'board_owner': user_profile.pk}
-    publicationForm = PublicationForm(initial=initial)
-    reply_pub_form = ReplyPublicationForm(initial=initial)
+
 
     # cargar lista comentarios
     try:
@@ -237,7 +250,7 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         timeline = None
 
-    return render_to_response('account/profile.html', {
+    return render_to_response(template, {
         'publications_top15': publications_top15,
         'listR': listR, 'friends_top12': friends_top12,
         'user_profile': user_profile,
