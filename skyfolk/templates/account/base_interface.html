@@ -1,5 +1,5 @@
 {% comment %}
-  Base para la interfaz en comun de todo usuario "lo comun" a todas las paginas
+  Base para la interfaz en comun de todos los usuarios.
 {% endcomment %}
 <!DOCTYPE html>
 <html lang="es">
@@ -36,11 +36,9 @@
     {% block barra_navegacion %}
       {% include "account/base-header.html" %}
     {% endblock %}
-
     {% block content %}
     <!-- Contenido de cada pagina por separado -->
     {% endblock %}
-    <!-- bloque de js para cada pagina -->
     <!-- Form para nuevo mensaje -->
   {% if user.is_authenticated %}
   <div id="page-wrapper" style="display:none;">

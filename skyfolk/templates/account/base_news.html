@@ -1,6 +1,7 @@
 {% extends "account/base_interface.html" %}
 {% load avatar_tags %}
 {% block title %} <title>Skyfolk</title> {% endblock %}
+
 {% block extra-css %}
         <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/news.css" />
 {% endblock %}
@@ -8,6 +9,7 @@
 {% block content %}
     <div class="container">
     <div class="col-lg-12 col-md-12 col-sm-12 wrapper-news">
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/news.css" />
     {% for pub in publications %}
         <div class="col-lg-3 col-md-12 col-sm-12 notice-item">
             <div class="col-lg-3 col-md-2 col-sm-3 img">
