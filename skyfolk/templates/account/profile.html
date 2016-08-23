@@ -11,9 +11,8 @@
 {% endblock %}
 
 {% block extra-js %}
-  <script async src="{{STATIC_URL}}js/scrollReveal.js"></script>
-  <script async src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
-  <script async src="{{STATIC_URL}}js/list.min.js"></script>
+    <script async src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
+    <script src="{{STATIC_URL}}js/list.min.js"></script>
 {% endblock %}
 
 {% block extra-css %}
@@ -95,12 +94,6 @@
   </div>
 </div>
 <!-- IGNORAR, SOLO MUESTRA OBJETOS AL HACER SCROLL -->
-    <script async>
-
-      window.sr = new scrollReveal(config);
-
-    </script>
-
      <script async>
       var config = {
         easing: 'hustle',
@@ -110,7 +103,7 @@
           viewport: document.getElementById('tab-timeline')
       };
 
-      window.sr = new scrollReveal( config );
+      window.sr = new scrollReveal(config);
 
     </script>
     {% comment %}
@@ -177,18 +170,20 @@ Para el manejo de las pestañas del usuario
   });
 </script>
 <!-- Busqueda en tab-amigos -->
-<script async>
+<script>
   var options = {
     valueNames: [ 'name' ],
     indexAsync : true
   };
-
   var userList = new List('tab-amigos', options);
-
 </script>
-
-
-        {% else %}
+        <script src="{{ STATIC_URL }}js/socket.js"></script>
+        <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+        <script>
+           UTILS.init([{{ user.pk }}]);
+           UTILS.conn_socket();
+        </script>
+    {% else %}
         <h1 class="account-disabled">Cuenta desactivada.</h1>
 {% endif %}
 {% endblock %}

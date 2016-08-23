@@ -4,6 +4,7 @@
 {% load decorators %}
 {% load avatar_tags %}
 {% load app_filters %}
+{% load humanize %}
   <div id="tab-comentarios">
     {% if not user_profile.username|check_blocked:user.username %}
 	  {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %} {% comment %} Si eres amigo o estas visitando tu propio perfil... {% endcomment %}
@@ -18,9 +19,9 @@
   {% for pub in publications_top15 %}
   <div class="wrapper" id="pub-{{ pub.pk }}" data-id="{{ user.pk }}">
             <div class="box">
-            <span id="check-{{pub.id}}" class="zoom-pub"><i class="fa fa-expand fa-lg"> </i></span>
+            <span id="check-{{pub.pk}}" class="zoom-pub"><i class="fa fa-expand fa-lg"> </i></span>
             <!-- Check para ampliar el mensaje... -->
-                  <div class="ampliado" id="expand-{{pub.id}}">
+                  <div class="ampliado" id="expand-{{pub.pk}}">
                       <div class="cerrar_ampliado"><i class="fa fa-close"></i></div>
                       <div class="nombre_image">
                     <ul>
@@ -31,7 +32,7 @@
                       </div>
                     <div class="parrafo comment-tab">
                      <a href="/profile/{{ pub.author.username }}">{{pub.author.username}}</a>
-                        <a target="_blank">{{ pub.created }}</a><br><br>
+                        <a target="_blank">{{ pub.created|naturaltime }}</a><br><br>
                         {{ pub.content|replace_decorators|safe }}
                     </div>
                       <div class="wrapper-reply">
@@ -56,7 +57,7 @@
                 <div class="articulo">
                   <h2 class="h22"><a href="/profile/{{ pub.author.username }}" >{{ pub.author.username }}</a> ha comentado:  </h2>
                   <div class="parrafo comment">
-                    <a target="_blank">{{pub.created}}</a><br>
+                    <a target="_blank">{{pub.created|naturaltime}}</a><br>
                       <div class="wrp-comment">{{ pub.content|replace_decorators|safe }}</div>
                   </div>
                     <div class="show-more">
@@ -70,7 +71,7 @@
                         {% elif user.is_authenticated and user.username == user_profile.username %} <!-- Si estamos visitando nuestro propio perfil -->
                              <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
                         {% endif %}
-                        {% with hates=pub.id|total_hates %}
+                        {% with hates=pub.pk|total_hates %}
                         {% if hates > 0 %}
                             <li title="No me gusta" class="fa-stack hate-with-values" id="fa-hate">
                                 <span class="hate-comment">
@@ -88,11 +89,11 @@
                             </li>
                         {% endif %}
                     {% endwith %}
-                        <li title="¡Me gusta!" class="like-comment"><i id="like-heart" class="fa fa-heart">{{ pub.id|total_likes }}</i></li>
+                        <li title="¡Me gusta!" class="like-comment"><i id="like-heart" class="fa fa-heart">{{ pub.pk|total_likes }}</i></li>
                        <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
                        </i></li>
                        <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-{{ pub.pk }}"></i></li>
-                       <li title="Añadir a mi timeline" class="add-timeline"><i class="fa fa-tag"> {{ pub.id|total_shares }}</i></li>
+                       <li title="Añadir a mi timeline" class="add-timeline"><i class="fa fa-tag"> {{ pub.pk|total_shares }}</i></li>
                     </ul>
                 </div>
                 </div>

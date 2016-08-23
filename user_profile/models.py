@@ -79,6 +79,13 @@ class UserProfile(models.Model):
     class Meta:
         db_table = 'user_profile'
 
+
+    @property
+    def group_name(self):
+        """
+        Devuelve el nombre del canal para enviar las notificaciones
+        """
+        return "users-%s" % self.pk
     """
     def account_verified(self):
         if self.user.is_authenticated:

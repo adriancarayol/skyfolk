@@ -22,6 +22,7 @@ DEFAULT_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.admindocs',
+    'django.contrib.humanize',
 )
 
 # Third Party Applications
@@ -36,6 +37,7 @@ THIRD_PARTY_APPS = (
     #'achievements',            # achivements       Portando a Python3
     'emoji',
     'avatar',                  # Avatares para usuarios.
+    'channels',                # django-channels
     'notifications',           # siempre último
 )
 
@@ -144,6 +146,20 @@ TEMPLATES = [
         },
     },
 ]
+
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
+
+# https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(redis_host, 6379)],
+        },
+        "ROUTING": "skyfolk.routing.channel_routing",
+    },
+}
 
 WSGI_APPLICATION = 'skyfolk.wsgi.application'
 
