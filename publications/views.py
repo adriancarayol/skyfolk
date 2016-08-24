@@ -42,7 +42,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
                 publication.content = TextProcessor.get_format_text(publication.content, emitter)
-                publication.save()
+                publication.save(new_comment=True)
                 t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
                                                             profile=publication.board_owner.profile)
                 return self.form_valid(form=form)
@@ -75,7 +75,7 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
             return self.queryset
 
 
-def publication_form(request):
+'''def publication_form(request):
     print('>>>>>>>> PETICION AJAX PUBLICACION')
     if request.POST:
         form = PublicationForm(request.POST)
@@ -103,7 +103,7 @@ def publication_form(request):
                 pass
 
         jsons = json.dumps({'response': response})
-        return HttpResponse(jsons, content_type='application/json')
+        return HttpResponse(jsons, content_type='application/json')'''
 
 
 def delete_publication(request):

@@ -97,14 +97,16 @@ class PublicationManager(models.Manager):
         """
         Devuelve el avatar del autor de la publicacion pasada como parametro
         """
-        actor_avatar = ''
+        actor_avatar = settings.STATIC_URL + 'img/nuevo.png'
         try:
             avatars = Avatar.objects.filter(user=authorpk)
+        except Avatar.DoesNotExist:
+            avatars = None
+
+        if avatars:
             for avatar in avatars:
                 if avatar.primary:
                     actor_avatar = avatar.get_absolute_url()
-        except Avatar.DoesNotExist:
-            actor_avatar = settings.STATIC_URL + 'img/nuevo.png' # default avatar
 
         return actor_avatar
 
@@ -150,8 +152,11 @@ class Publication(models.Model):
                 "text": json.dumps(notification)
             })
 
-    def save(self, *args, **kwargs):
-        print('NOTIFICACION ENVIADA POR EL SOCKET...')
-        result = super(Publication, self).save(*args, **kwargs)
-        self.send_notification()
-        return result
+    def save(self, new_comment=False, *args, **kwargs):
+        if new_comment:
+            print('NOTIFICACION ENVIADA POR EL SOCKET...')
+            result = super(Publication, self).save(*args, **kwargs)
+            self.send_notification()
+            return result
+        else:
+            super(Publication, self).save(*args, **kwargs)
