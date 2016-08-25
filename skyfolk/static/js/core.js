@@ -569,7 +569,7 @@ function AJAX_submit_publication(data, type, pks) {
       alert('ERROR: ' + rs.responseText + " " + e)
     }
   }).done(function() {
-      addNewPublication(type, pks[0], pks[1], pks[2]);
+      //addNewPublication(type, pks[0], pks[1], pks[2]);
   })
 }
 

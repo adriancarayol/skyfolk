@@ -133,7 +133,7 @@ class Publication(models.Model):
     def __str__(self):
         return self.content
 
-    def send_notification(self):
+    def send_notification(self, type="pub"):
         """
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
@@ -146,6 +146,8 @@ class Publication(models.Model):
             "author_first_name": self.author.first_name,
             "author_last_name": self.author.last_name,
             "created": naturaltime(self.created),
+            "type": type,
+            "parent": self.parent.pk,
         }
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
@@ -156,7 +158,10 @@ class Publication(models.Model):
         if new_comment:
             print('NOTIFICACION ENVIADA POR EL SOCKET...')
             result = super(Publication, self).save(*args, **kwargs)
-            self.send_notification()
+            if not self.parent:
+                self.send_notification()
+            else:
+                self.send_notification(type="reply")
             return result
         else:
             super(Publication, self).save(*args, **kwargs)
