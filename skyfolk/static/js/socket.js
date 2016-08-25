@@ -70,14 +70,14 @@ var UTILS = UTILS || (function(){
                     content += "                                <span class=\"hate-comment\">";
                     content += "                                    <i class=\"fa fa-heart fa-stack-1x\"><\/i>";
                     content += "                                    <i class=\"fa fa-bolt fa-stack-1x fa-inverse\"><\/i>";
-                    content += "                                    <i class=\"fa hate-value\"> 0<\/i>";
+                    content += "                                    <i class=\"fa hate-value\"> <\/i>";
                     content += "                                </span>";
                     content += "                            </li>";
-                    content += "                        <li title=\"¡Me gusta!\" class=\"like-comment\"><i id=\"like-heart\" class=\"fa fa-heart\"> 0<\/i><\/li>";
+                    content += "                        <li title=\"¡Me gusta!\" class=\"like-comment\"><i id=\"like-heart\" class=\"fa fa-heart\"> <\/i><\/li>";
                     content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
                     content += "                       <\/i><\/li>";
                     content += "                       <li title=\"Responder\" class=\"reply-comment\"><i class=\"fa fa-reply\" id=\"reply-caja-comentario-{{ pub.pk }}\"><\/i><\/li>";
-                    content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> 0<\/i><\/li>";
+                    content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
                     content += "                    </ul>";
                     content += "                </div>";
                     content += "                </div>";

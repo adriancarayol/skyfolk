@@ -138,6 +138,11 @@ class Publication(models.Model):
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
+        if type == "pub":
+            id_parent = ''
+        else:
+            id_parent = self.parent.id
+
         notification = {
             "id": self.pk,
             "content": self.content,
@@ -147,7 +152,7 @@ class Publication(models.Model):
             "author_last_name": self.author.last_name,
             "created": naturaltime(self.created),
             "type": type,
-            "parent": self.parent.pk,
+            "parent": id_parent,
         }
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({

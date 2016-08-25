@@ -135,7 +135,7 @@ $(document).ready(function () {
 
 */
     /* Borrar publicacion */
-  $('.optiones_comentarios .fa-trash').on('click',function() {
+  $(document).on('click', '.optiones_comentarios .fa-trash', function() {
     var caja_publicacion = $(this).closest('.wrapper');
     //alert($(caja_comentario).html());
     swal({
@@ -180,7 +180,7 @@ $(document).ready(function () {
 
 
     /* Agregar timeline */
-    $('.optiones_comentarios').find('.fa-tag').on('click', function() {
+    $(document).on('click', '.optiones_comentarios .fa-tag', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         if (Date.now() - lastClickTag > 1000) {
@@ -198,7 +198,7 @@ $(document).ready(function () {
     });
 
     /* Añadir me gusta a comentario */
-    $('.optiones_comentarios').find('#like-heart').on('click', function() {
+    $(document).on('click', '.optiones_comentarios #like-heart', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         if (Date.now() - lastClickHeart > 1000) {
@@ -216,7 +216,7 @@ $(document).ready(function () {
     });
 
     /* Añadir no me gusta a comentario */
-    $('.optiones_comentarios').find('#fa-hate').on('click', function() {
+    $(document).on('click', '.optiones_comentarios #fa-hate', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         if (Date.now() - lastClickHate > 1000) {
@@ -800,8 +800,9 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
       var numLikes = heart;
       var countLikes = numLikes.innerHTML;
         if (response==true) {
-            $(heart).css('color','#ba68c8');
             if (status == statusOk) {
+              $(heart).css('color','#ba68c8');
+
               countLikes++;
             } else if (status == statusNo) {
               $(heart).css('color','#555');
