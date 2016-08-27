@@ -38,6 +38,7 @@ THIRD_PARTY_APPS = (
     'channels',                # django-channels
     'photologue',
     'sortedm2m',
+    'taggit',
     'notifications',           # siempre último
 )
 
@@ -101,6 +102,9 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
 # /REST FRAMEWORK
+
+# django-taggit
+TAGGIT_CASE_INSENSITIVE = True
 
 #NOTIFICATION
 NOTIFICATIONS_USE_JSONFIELD=True

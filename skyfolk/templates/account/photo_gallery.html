@@ -1,6 +1,6 @@
 {% extends 'account/base_interface.html' %}
 {% load avatar_tags %}
-{% block title %} <title>Galería de {{ request.user.username }}</title> {% endblock %}
+{% block title %} <title>Galería de {{ user_gallery }}</title> {% endblock %}
 {% load humanize %}
 
 {% block include_files %}
@@ -30,5 +30,6 @@
                 {% endfor %}
             {% endif %}
         </div> <!-- end container-gallery -->
+    {{ form.as_p }}
 </div> <!-- end wrapper -->
 {% endblock %}

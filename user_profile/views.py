@@ -22,6 +22,7 @@ from user_profile.models import UserProfile
 from django.views.generic.list import ListView
 from photologue.models import Photo
 
+
 # allauth
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -1014,6 +1015,7 @@ class DeactivateAccount(FormView):
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
 
+
 class GalleryTemplate(ListView):
     template_name = "account/photo_gallery.html"
     paginate_by = 20
@@ -1030,8 +1032,9 @@ class GalleryTemplate(ListView):
         context['publicationForm'] = self.publicationForm
         context['searchForm'] = self.searchForm
         context['object_list'] = self.get_queryset()
-        return context
+        context['user_gallery'] = self.username
 
+        return context
 
 user_gallery = login_required(GalleryTemplate.as_view())
 
