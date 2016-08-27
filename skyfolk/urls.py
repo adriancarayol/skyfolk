@@ -66,6 +66,8 @@ urlpatterns = patterns(
     # namespace='notifications')),
     url('^inbox/notifications/', include('notifications.urls',
         namespace='notifications')),
+    # django-photologue
+    url(r'^photologue/', include('photologue.urls', namespace='photologue')),
 )
 
 urlpatterns += staticfiles_urlpatterns()

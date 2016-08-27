@@ -28,8 +28,6 @@ DEFAULT_APPS = (
 # Third Party Applications
 THIRD_PARTY_APPS = (
     'allauth',
-    # 'photologue',            # Galeria photologue.
-    # 'sortedm2m',             # Galeria photologue.
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',          # REST framework
@@ -38,6 +36,8 @@ THIRD_PARTY_APPS = (
     'emoji',
     'avatar',                  # Avatares para usuarios.
     'channels',                # django-channels
+    'photologue',
+    'sortedm2m',
     'notifications',           # siempre último
 )
 

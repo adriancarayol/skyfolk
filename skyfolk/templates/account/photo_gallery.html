@@ -1,6 +1,7 @@
 {% extends 'account/base_interface.html' %}
 {% load avatar_tags %}
 {% block title %} <title>Galería de {{ request.user.username }}</title> {% endblock %}
+{% load humanize %}
 
 {% block include_files %}
     <link rel="stylesheet" href="{{STATIC_URL}}css/gallery.css" onload="if(media!='all')media='all'"> <!-- Estilos para la galeria de fotos -->
@@ -9,21 +10,25 @@
 {% block content %}
     <div class="wrapper">
         <div class="col-lg-12 col-md-12 col-sm-12 container-gallery">
-            <div class="col-lg-2 col-md-12 col-sm-12 container-image">
-                <div class="col-lg-12 principal-content">
-                    <img src="{{ STATIC_URL }}img/nuevo_back.png">
-                </div>
-                <div class="col-lg-12 legend-content">
-                    <div class="legend-user-image">
-                        {% avatar user %}
+            {% if object_list %}
+                {% for photo in object_list %}
+                    <div class="col-lg-2 col-md-12 col-sm-12 container-image">
+                        <div class="col-lg-12 principal-content">
+                            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" title="{{ photo.title }}">
+                        </div>
+                        <div class="col-lg-12 legend-content">
+                            <div class="legend-user-image">
+                                {% avatar photo.owner.username %}
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 legend-user-data">
+                                <a href="/profile/{{ photo.owner.username }}">@{{ photo.owner.username }}</a>
+                                <i class="photo-title">{{ photo.title }}</i>
+                                <i class="fa-clock-o" aria-hidden="true"> {{ photo.date_added|naturaltime }}</i>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-8 col-md-8 col-sm-8 legend-user-data">
-                        <a href="/profile/{{ user.username }}">@{{ user.username }}</a>
-                        <i>{{ user.first_name }} {{ user.last_name }}</i>
-                        <i class="fa-clock-o" aria-hidden="true"> Hace 10 minutos.</i>
-                    </div>
-                </div>
-            </div>
+                {% endfor %}
+            {% endif %}
         </div> <!-- end container-gallery -->
 </div> <!-- end wrapper -->
 {% endblock %}

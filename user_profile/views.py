@@ -19,7 +19,8 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
 from user_profile.models import UserProfile
-
+from django.views.generic.list import ListView
+from photologue.models import Photo
 
 # allauth
 # Create your views here.
@@ -45,7 +46,7 @@ def profile_view(request, username):
 
     # >>>>>>> issue#11
     privacity = user_profile.profile.privacity
-    if privacity == UserProfile.NOTHING:
+    if privacity == UserProfile.NOTHING and user.username != user_profile.username:
         template = 'account/private_profile.html'
         return render_to_response(template, {
             'user_profile': user_profile,
@@ -1013,16 +1014,24 @@ class DeactivateAccount(FormView):
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
 
-class GalleryTemplate(TemplateView):
+class GalleryTemplate(ListView):
     template_name = "account/photo_gallery.html"
+    paginate_by = 20
     publicationForm = PublicationForm()
     searchForm = SearchForm()
 
-    def get(self, request, *args, **kwargs):
-        return render_to_response(self.template_name,
-                                  {'publicationForm': self.publicationForm,
-                                   'searchForm': self.searchForm},
-                                  context_instance=RequestContext(request))
+    def get_queryset(self):
+        self.username = self.kwargs['username'][:-1]
+        queryset = Photo.objects.filter(owner__username=self.username)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(GalleryTemplate, self).get_context_data(**kwargs)
+        context['publicationForm'] = self.publicationForm
+        context['searchForm'] = self.searchForm
+        context['object_list'] = self.get_queryset()
+        return context
+
 
 user_gallery = login_required(GalleryTemplate.as_view())
 
