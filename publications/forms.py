@@ -14,7 +14,7 @@ class PublicationForm(forms.ModelForm):
         super(PublicationForm, self).__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({
                 'placeholder': 'Escribe tu mensaje aqui...',
-                'id': 'message2'
+                'id': 'message2', 'contenteditable': 'true',
             })
         self.fields['content'].label = ''
         self.fields['author'].widget = forms.HiddenInput()
