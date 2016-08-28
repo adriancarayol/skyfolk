@@ -416,6 +416,11 @@ class UserProfile(models.Model):
             return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[n-4:n]
     """
 
+    def get_num_multimedia(self):
+        """
+        Devuelve el numero de contenido multimedia de un perfil.
+        """
+        return PhotoExtended.objects.filter(owner=self.user).count()
     @property
     def pin(self):
         # PIN format: pk + token + diff

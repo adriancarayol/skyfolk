@@ -18,7 +18,7 @@ from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
-from user_profile.models import UserProfile
+from user_profile.models import UserProfile, PhotoExtended
 from django.views.generic.list import ListView
 from photologue.models import Photo
 
@@ -169,49 +169,6 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         following = None
 
-    # cargar recomendaciones por amigos
-    # TODO
-    listR = []
-    '''
-    try:
-        friends = request.user.profile.get_friends()
-        if len(friends) < 10:
-            print("El usuario tiene menos de 10 amigos")
-            listR = User.objects.all()
-        else:
-            print("El usuario tiene mas o igual a 10 amigos")
-            listR = friends
-        print("Obteniendo recomendaciones del usuario" + request.user.username)
-    except ObjectDoesNotExist:
-        friends = None
-        print("El usuario no tiene amigos")
-    '''
-    # TODO
-    # Parte emocional - Según el estado, mostrar color, etcétera.
-    '''
-    try:
-        statusAux = user_profile.profile.status.lower().split()
-    except:
-        statusAux = None
-
-    def compList(list1, list2):
-        for i in list1:
-            if i in list2:
-                return True
-            else:
-                return False
-
-    estados = {'feliz': 1, 'triste': 2, 'cabreado': 3, 'enojado': 4, 'sorprendido': 5,
-               'somnoliento': 6, 'cansado': 7, 'pensativo': 8, 'saludable': 9,
-               'enfermo': 10, 'hambriento': 11, 'asustado': 12, 'aburrido': 13, 'apenado': 14}
-
-    if statusAux != None:
-        if compList(statusAux, estados):
-            print('>>>>>>>>>>>>>>>>>>>>>>>>' + user_profile.profile.status)
-        else:
-            print('>>> El usuario ' + user_profile.username + " no tiene ningún estado ańimico")
-    '''
-
 
     # cargar lista comentarios
     try:
@@ -252,9 +209,11 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         timeline = None
 
+    multimedia_count = user_profile.profile.get_num_multimedia()
+
     return render_to_response(template, {
         'publications_top15': publications_top15,
-        'listR': listR, 'friends_top12': friends_top12,
+        'friends_top12': friends_top12,
         'user_profile': user_profile,
         'searchForm': searchForm,
         'publicationForm': publicationForm,
@@ -267,7 +226,7 @@ def profile_view(request, username):
         'privacity': privacity,
         'isFollower': isFollower,
         'following': following,
-        'isBlocked': isBlocked},
+        'isBlocked': isBlocked, 'multimedia_count': multimedia_count},
                               context_instance=RequestContext(request))
 
 
@@ -1024,7 +983,7 @@ class GalleryTemplate(ListView):
 
     def get_queryset(self):
         self.username = self.kwargs['username'][:-1]
-        queryset = Photo.objects.filter(owner__username=self.username)
+        queryset = PhotoExtended.objects.filter(owner__username=self.username)
         return queryset
 
     def get_context_data(self, **kwargs):
