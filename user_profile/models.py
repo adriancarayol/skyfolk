@@ -421,6 +421,7 @@ class UserProfile(models.Model):
         Devuelve el numero de contenido multimedia de un perfil.
         """
         return PhotoExtended.objects.filter(owner=self.user).count()
+
     @property
     def pin(self):
         # PIN format: pk + token + diff

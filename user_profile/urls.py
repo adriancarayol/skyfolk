@@ -40,8 +40,9 @@ urlpatterns = [
     url(r'^add_friend_by_pin/$',
         'user_profile.views.add_friend_by_username_or_pin'),
     url(r'^bloq_user/$', 'user_profile.views.bloq_user'),
-    # gallery
-    url(r'^gallery/(?P<username>[\w-]+/$)', 'user_profile.views.user_gallery'),
+    # custom url photologue
+    url(r'^media/(?P<username>[\w-]+/$)', 'user_profile.views.user_gallery', name='photo-list'),
+    url(r'^media/photo/(?P<slug>[\-\d\w]+)', 'user_profile.views.photo_detail', name='pl-photo'),
     url(r'^accounts/password/change/confirmation',
         'user_profile.views.changepass_confirmation'),
     # URL CHANGE PASSWORD
