@@ -9,7 +9,7 @@
     {% if not user_profile.username|check_blocked:user.username %}
 	  {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %} {% comment %} Si eres amigo o estas visitando tu propio perfil... {% endcomment %}
   {% if publications_top15|length == 0 %} <!-- Si el usuario no tiene comentarios, proponemos uno -->
-    <div class="no-comments">
+    <div class="no-comments" id="without-comments">
       <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
       <a id="compose-new-no-comments" class="no-comments-new-comment">
         <i class="fa fa-paper-plane fa-lg"></i>
@@ -64,7 +64,7 @@
                         <a href="#">+ Mostrar más</a>
                     </div>
               <!-- OPCIONES DE COMENTARIOS -->
-                <div class="optiones_comentarios">
+                <div class="options_comentarios" id="options-comments">
                     <ul class="opciones">
                         {% if user.is_authenticated and user.username == pub.author.username %} <!-- Si estamos visitando un perfil que no es el nuestro -->
                              <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>

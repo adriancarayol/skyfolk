@@ -71,7 +71,7 @@ $(document).ready(function () {
   });
 
     /* Abrir respuesta a comentario */
-    $('.fa-reply').on('click', function() {
+    $('#options-comments').on('click', '.fa-reply', function() {
         //var i = $(this).closest('.wrapper');
         //replyComment(i);
         var id_ = $(this).attr("id").slice(6);
@@ -135,7 +135,7 @@ $(document).ready(function () {
 
 */
     /* Borrar publicacion */
-  $(document).on('click', '.optiones_comentarios .fa-trash', function() {
+  $('#tab-comentarios').on('click', '#options-comments .fa-trash', function() {
     var caja_publicacion = $(this).closest('.wrapper');
     //alert($(caja_comentario).html());
     swal({
@@ -180,7 +180,7 @@ $(document).ready(function () {
 
 
     /* Agregar timeline */
-    $(document).on('click', '.optiones_comentarios .fa-tag', function() {
+    $(document).on('click', '#options-comments .fa-tag', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         if (Date.now() - lastClickTag > 1000) {
@@ -198,7 +198,7 @@ $(document).ready(function () {
     });
 
     /* Añadir me gusta a comentario */
-    $(document).on('click', '.optiones_comentarios #like-heart', function() {
+    $(document).on('click', '#options-comments #like-heart', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         if (Date.now() - lastClickHeart > 1000) {
@@ -216,7 +216,7 @@ $(document).ready(function () {
     });
 
     /* Añadir no me gusta a comentario */
-    $(document).on('click', '.optiones_comentarios #fa-hate', function() {
+    $(document).on('click', '#options-comments #fa-hate', function() {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         if (Date.now() - lastClickHate > 1000) {
@@ -530,7 +530,7 @@ function addPublicationToHtmlList(data) {
               <div class="show-more">\
                 <a href="#">+ Mostrar más</a>\
               </div>\
-              <div class="optiones_comentarios">\
+              <div class="options_comentarios">\
               </div>\
             </article>\
         </div>');
@@ -583,7 +583,7 @@ function addPublicationToHtmlList(data) {
               <div class="parrafo comment">\
                 <a target="_blank">' + item.from_publication__created + '</a><br><br>' + item.from_publication__content + '\
               </div>\
-              <div class="optiones_comentarios">\
+              <div class="options_comentarios">\
                 <ul class="opciones">\
 		       <li><i class="fa fa-trash"></i></li>\
                        <li><i class="fa fa-heart"></i></li>\

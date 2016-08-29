@@ -62,7 +62,7 @@ var UTILS = UTILS || (function(){
                     content += "                        <a href=\"#\">+ Mostrar más<\/a>";
                     content += "                    </div>";
                     content += "              <!-- OPCIONES DE COMENTARIOS -->";
-                    content += "                <div class=\"optiones_comentarios\">";
+                    content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
                     content += "                    <ul class=\"opciones\">";
                     content += "        ";
                     content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
@@ -76,28 +76,18 @@ var UTILS = UTILS || (function(){
                     content += "                        <li title=\"¡Me gusta!\" class=\"like-comment\"><i id=\"like-heart\" class=\"fa fa-heart\"> <\/i><\/li>";
                     content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
                     content += "                       <\/i><\/li>";
-                    content += "                       <li title=\"Responder\" class=\"reply-comment\"><i class=\"fa fa-reply\" id=\"reply-caja-comentario-{{ pub.pk }}\"><\/i><\/li>";
+                    content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-'+data.id+'"><\/i><\/li>';
                     content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
                     content += "                    </ul>";
                     content += "                </div>";
                     content += "                </div>";
-                    content += "                <div class=\"wrapper-reply\">";
-                    content += "";
-                    content += "                <!-- RESPUESTAS A COMENTARIOS -->";
-                    content += "";
-                    content += "                <div class=\"comment-reply\">";
-                    content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"><\/div>';
-                    content += "                    <div class=\"author-reply\">";
-                    content += "                      <a href=\"\/profile\/{{ reply.author }}\">author_reply<\/a>";
-                    content += "                      <i class=\"reply-created\">created_reply<\/i>";
-                    content += "                    </div>";
-                    content += "                      <div class=\"content-reply\">reply_content<\/div>";
-                    content += "                </div>";
-                    content += "";
-                    content += "                </div>";
                     content += "    </div>";
                     // See if there's a div to replace it in, or if we should add a new one
                     var existing = $('#pub-'+data.id);
+                    var no_comments = $('#without-comments');
+                    if ($(no_comments).is(':visible')) {
+                        $(no_comments).fadeOut();
+                    }
                     if (existing.length) {
                         existing.html(content);
                     } else {
