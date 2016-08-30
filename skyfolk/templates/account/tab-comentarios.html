@@ -60,7 +60,7 @@
                     <a target="_blank">{{pub.created|naturaltime}}</a><br>
                       <div class="wrp-comment">{{ pub.content|replace_decorators|safe }}</div>
                   </div>
-                    <div class="show-more">
+                    <div class="show-more" id="show-comment-{{ pub.pk }}">
                         <a href="#">+ Mostrar más</a>
                     </div>
               <!-- OPCIONES DE COMENTARIOS -->

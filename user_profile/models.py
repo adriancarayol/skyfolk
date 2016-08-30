@@ -6,6 +6,9 @@ import timeline
 from notifications.models import Notification
 from photologue.models import Gallery, Photo
 from taggit.managers import TaggableManager
+from avatar.conf import settings
+import hashlib
+from django.utils.http import urlencode
 
 # from publications.models import Publication
 # from _overlapped import NULL
@@ -447,6 +450,19 @@ class UserProfile(models.Model):
             diff = int(pin[-1:])
             return pin[:-(diff + 1)]
         return None
+
+    @property
+    def gravatar(self, size=120):
+        """
+        Devuelve el gravatar por defecto asociado al email
+        del usuario
+        :param size => tamaño de la imagen:
+        :return url con el gravatar del usuario, o la imagen por defecto de skyfolk:
+        """
+        default = 'http://pre.skyfolk.net/static/img/nuevo.png'
+        return "https://www.gravatar.com/avatar/%s?%s" % (
+            hashlib.md5(str(self.user.email.lower()).encode('utf-8')).hexdigest(),
+            urlencode({'d': default, 's': str(size).encode('utf-8')}))
 
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

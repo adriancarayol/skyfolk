@@ -1,28 +1,29 @@
 import binascii
 import datetime
-import os
-import hashlib
-from PIL import Image
 
-from django.db import models
+import os
+
+from PIL import Image
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
+from django.db import models
+from django.db.models import signals
+from django.utils import six
+from django.utils.encoding import force_text
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext as _
-from django.utils.encoding import force_text
-from django.utils import six
-from django.db.models import signals
 
-from avatar.conf import settings
+
 from avatar.utils import get_username, force_bytes, invalidate_cache
+from django.conf import settings
 
 try:
     from django.utils.timezone import now
 except ImportError:
     now = datetime.datetime.now
 
-
+import hashlib
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
 
@@ -142,7 +143,6 @@ class Avatar(models.Model):
             size=size,
             ext=ext
         )
-
 
 def invalidate_avatar_cache(sender, instance, **kwargs):
     invalidate_cache(instance.user)

@@ -6,14 +6,11 @@ var lastClickHate = 0;
 var lastClickTag = 0;
 var flag_reply = false;
 
-
-
 $(document).ready(function () {
     /* Show more - Show less */
     $('#tab-comentarios').find('.wrapper').each(function () {
         var showLimitChar = 90;
         var comment = $(this).find('.wrp-comment');
-        var commentValue = comment.text();
         var text = comment.text();
         var show = $(this).find('.show-more a');
         text = text.replace(/\s\s+/g, ' ');
@@ -23,21 +20,21 @@ $(document).ready(function () {
         }
     });
 
-    $(".show-more a").on("click", function() {
+    $("#tab-comentarios").on('click', '.show-more a', function() {
+        var $this = $(this);
+        var $content = $this.parent().prev("div.comment").find(".wrp-comment");
+        var linkText = $this.text().toUpperCase();
 
-    var $this = $(this);
-    var $content = $this.parent().prev("div.comment").find(".wrp-comment");
-    var linkText = $this.text().toUpperCase();
-
-    if(linkText === "+ MOSTRAR MÁS"){
-        linkText = "- Mostrar menos";
-        $content.css('height', 'auto');
-    } else {
-        linkText = "+ Mostrar más";
-        $content.css('height', '2.6em');
-    }
+        if(linkText === "+ MOSTRAR MÁS"){
+            linkText = "- Mostrar menos";
+            $content.css('height', 'auto');
+        } else {
+            linkText = "+ Mostrar más";
+            $content.css('height', '2.6em');
+        }
         $this.text(linkText);
-});
+        return false;
+    });
 
   $('.fa-paw').on('click',function() {
       $(".info-paw").show();

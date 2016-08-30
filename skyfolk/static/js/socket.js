@@ -1,6 +1,6 @@
 var UTILS = UTILS || (function(){
     var _args = {};
-
+    var _showLimitChar = 90;
     return {
         init : function(args) {
             _args = args;
@@ -58,7 +58,7 @@ var UTILS = UTILS || (function(){
                     content += '                    <a target="_blank">' + data.created + '<\/a><br>';
                     content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
                     content += "                  </div>";
-                    content += "                    <div class=\"show-more\">";
+                    content += '                    <div class="show-more" id="show-comment-'+data.id+'">';
                     content += "                        <a href=\"#\">+ Mostrar más<\/a>";
                     content += "                    </div>";
                     content += "              <!-- OPCIONES DE COMENTARIOS -->";
@@ -85,13 +85,22 @@ var UTILS = UTILS || (function(){
                     // See if there's a div to replace it in, or if we should add a new one
                     var existing = $('#pub-'+data.id);
                     var no_comments = $('#without-comments');
-                    if ($(no_comments).is(':visible')) {
-                        $(no_comments).fadeOut();
-                    }
+                    var comment_length = data.content.replace(/\s\s+/g, ' ');
+                    /* Comprobamos si el elemento existe, si es asi lo modifcamos */
                     if (existing.length) {
                         existing.html(content);
                     } else {
                         $("#tab-comentarios").prepend(content);
+                    }
+                    var show = $('div#pub-'+data.id+'').find('#show-comment-'+data.id+'');
+                    /* Eliminamos el div de "Este perfil no tiene comentarios" */
+                    if ($(no_comments).is(':visible')) {
+                        $(no_comments).fadeOut();
+                    }
+
+                    /* Comprobamos la longitud del nuevo comentario */
+                    if (comment_length.length < _showLimitChar) {
+                        $(show).css('display','none');
                     }
                 }
                 else

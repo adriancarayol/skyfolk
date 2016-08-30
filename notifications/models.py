@@ -4,7 +4,7 @@ from django import get_version
 from django.utils import timezone
 from avatar.models import Avatar
 from distutils.version import StrictVersion
-
+from .utils import get_author_avatar
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
 else:
@@ -221,6 +221,7 @@ if EXTRA_DATA is None:
     EXTRA_DATA = getattr(settings, 'NOTIFICATIONS_USE_JSONFIELD', False)
 
 
+
 def notify_handler(verb, **kwargs):
     """
     Handler function to create Notification instance upon action signal call.
@@ -246,13 +247,7 @@ def notify_handler(verb, **kwargs):
         recipients = [recipient]
 
     for recipient in recipients:
-        actor_avatar = settings.STATIC_URL + 'img/nuevo.png' # por defecto
-        if Avatar.objects.filter(user=actor).exists():
-            avatars = Avatar.objects.filter(user=actor)
-            for avatar in avatars:
-                if avatar.primary:
-                    actor_avatar = avatar.get_absolute_url()
-
+        actor_avatar = get_author_avatar(authorpk=actor)
         newnotify = Notification(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),
