@@ -4,14 +4,14 @@ from django.db import models
 import publications
 import timeline
 from notifications.models import Notification
-from photologue.models import Gallery, Photo
-from taggit.managers import TaggableManager
-from avatar.conf import settings
+
 import hashlib
 from django.utils.http import urlencode
 
 # from publications.models import Publication
 # from _overlapped import NULL
+from photologue_custom.models import PhotoExtended
+
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_FOLLOWER = 2
 RELATIONSHIP_BLOCKED = 3
@@ -516,39 +516,3 @@ class Request(models.Model):
 
     class Meta:
         unique_together = ('emitter', 'receiver', 'status')
-
-
-class GalleryExtended(models.Model):
-    """
-    Galeria de fotos para un usuario
-    """
-    # Link back to Photologue's Gallery model.
-    gallery = models.OneToOneField(Gallery, related_name='gallery_extended')
-
-    # This is the important bit - where we add in the tags.
-    tags = TaggableManager(blank=True)
-
-    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_gallery')
-
-    class Meta:
-        verbose_name = u'Extra fields'
-
-    def __str__(self):
-        return self.gallery.title
-
-class PhotoExtended(models.Model):
-    """
-    Imagenes de un usuario
-    """
-
-    photo = models.OneToOneField(Photo, related_name='photo_extended')
-
-    tags = TaggableManager(blank=True)
-
-    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_photos')
-
-    class Meta:
-        verbose_name = u'Extra fields'
-
-    def __str__(self):
-        return self.photo.title

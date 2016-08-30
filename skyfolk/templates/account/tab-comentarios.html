@@ -105,7 +105,7 @@
                 <div class="avatar-reply">{% avatar reply.author %}</div>
                     <div class="author-reply">
                       <a href="/profile/{{ reply.author }}">{{ reply.author }}</a>
-                      <i class="reply-created">{{reply.created}}</i>
+                      <i class="reply-created">{{reply.created|naturaltime}}</i>
                     </div>
                       <div class="content-reply">{{ reply|safe|replace_decorators|safe }}</div>
                 </div>

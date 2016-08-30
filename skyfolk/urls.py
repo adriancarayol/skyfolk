@@ -6,12 +6,6 @@ from rest_framework import routers, viewsets, routers
 
 from about.views import about
 from api import views
-# from market.views import market_inicio
-# from relaciones.views import relaciones_user
-from user_profile import views as user_profile_views
-# from user_profile.views import welcomeView, welcomeStep1
-import notifications
-# import notifications
 from django.views.generic import TemplateView
 
 admin.autodiscover()
@@ -34,9 +28,6 @@ urlpatterns = patterns(
     # {'document_root': settings.MEDIA_ROOT}),
     # url publications
     url(r'^', include('publications.urls'), name="publications"),
-    # url(r'^publication/$', 'publications.views.publication_form'),
-    # url django-photologe(galeria de fotos)
-    # url(r'^photologue/', include('photologue.urls', namespace='photologue')),
     # urls timeline
     url(r'^', include('timeline.urls'), name="timeline"),
     # url novedades e inicio
@@ -67,7 +58,8 @@ urlpatterns = patterns(
     url('^inbox/notifications/', include('notifications.urls',
         namespace='notifications')),
     # django-photologue
-    url(r'^photologue/', include('photologue.urls', namespace='photologue')),
+    (r'^', include('photologue_custom.urls')), # custom photologue
+    url(r'^', include('photologue.urls', namespace='photologue')), # original photologue
 )
 
 urlpatterns += staticfiles_urlpatterns()

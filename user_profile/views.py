@@ -18,9 +18,7 @@ from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
-from user_profile.models import UserProfile, PhotoExtended
-from photologue.views import PhotoListView, PhotoDetailView
-
+from user_profile.models import UserProfile
 
 # allauth
 # Create your views here.
@@ -973,34 +971,6 @@ class DeactivateAccount(FormView):
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
 
-
-class PhotoList(PhotoListView):
-    template_name = "account/photo_gallery.html"
-    paginate_by = 20
-    queryset = None
-    publicationForm = PublicationForm()
-    searchForm = SearchForm()
-
-    def get_queryset(self):
-        self.username = self.kwargs['username'][:-1]
-        queryset = PhotoExtended.objects.filter(owner__username=self.username)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(PhotoList, self).get_context_data(**kwargs)
-        context['publicationForm'] = self.publicationForm
-        context['searchForm'] = self.searchForm
-        context['object_list'] = self.get_queryset()
-        context['user_gallery'] = self.username
-
-        return context
-
-user_gallery = login_required(PhotoList.as_view())
-
-class PhotoDetail(PhotoDetailView):
-    template_name = "account/photo_detail.html"
-
-photo_detail = login_required(PhotoDetail.as_view())
 
 def bloq_user(request):
     user = request.user
