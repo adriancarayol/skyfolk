@@ -1,6 +1,7 @@
 from django import forms
 from .models import PhotoExtended
 from photologue.models import Photo
+from django.forms.models import inlineformset_factory
 
 class UploadNewPhotoExtended(forms.ModelForm):
 
@@ -22,3 +23,6 @@ class UploadNewPhoto(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UploadNewPhoto, self).__init__(*args, **kwargs)
+
+
+UploadNewPhotoFormSet = inlineformset_factory(Photo, PhotoExtended, form=UploadNewPhotoExtended)
