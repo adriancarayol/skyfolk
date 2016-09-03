@@ -11,7 +11,6 @@
 {% endblock %}
 
 {% block extra-js %}
-    <script async src="{{STATIC_URL}}js/scrollReveal.min.js"></script>
     <script src="{{STATIC_URL}}js/list.min.js"></script>
 {% endblock %}
 
@@ -95,18 +94,6 @@
   </div>
 </div>
 <!-- IGNORAR, SOLO MUESTRA OBJETOS AL HACER SCROLL -->
-     <script async>
-      var config = {
-        easing: 'hustle',
-        reset:  true,
-        delay:  'once',
-        vFactor: 0.60,
-          viewport: document.getElementById('tab-timeline')
-      };
-
-      window.sr = new scrollReveal(config);
-
-    </script>
     {% comment %}
     <script type="text/javascript">
 

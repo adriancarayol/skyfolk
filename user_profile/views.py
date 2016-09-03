@@ -27,10 +27,6 @@ def profile_view(request, username):
     user = request.user
     # para mostarar el cuadro de busqueda en la pagina:
     searchForm = SearchForm(request.POST)
-    # <<<<<<< HEAD
-    #    user_profile = get_object_or_404(
-    #        get_user_model(), username__iexact=username)
-    # =======
 
     # username es el nombre del perfil visitado, si coincide con user.username
     # entonces estamos ante el perfil del usuario logueado.
@@ -42,21 +38,30 @@ def profile_view(request, username):
     publicationForm = PublicationForm(initial=initial)
     reply_pub_form = ReplyPublicationForm(initial=initial)
 
-    # >>>>>>> issue#11
-    privacity = user_profile.profile.privacity
-    if privacity == UserProfile.NOTHING and user.username != user_profile.username:
-        template = 'account/private_profile.html'
+    # Vamos a comprobar la visibilidad del perfil que visitamos
+    privacity = user_profile.profile.is_visible(user.profile, user.pk)
+    template = 'account/profile.html'
+
+    if privacity == "all":
+        template = 'account/profile.html'
+
+    elif privacity == "nothing":
+        template = 'account/privacity/private_profile.html'
         return render_to_response(template, {
             'user_profile': user_profile,
             'searchForm': searchForm,
-            'publicationForm': publicationForm,},
+            'privacity': privacity, },
                                   context_instance=RequestContext(request))
-    else:
-        template = 'account/profile.html'
 
-    print('ESTADO DE LA CUENTA: ' + str(user.is_active))
-    is_visible = user_profile.profile.is_visible(user.profile)
-    print('>>> Visibilidad del perfil ' + str(is_visible))
+    elif privacity == "block":
+        template = 'account/privacity/block_profile.html'
+        return render_to_response(template, {
+            'user_profile': user_profile,
+            'searchForm': searchForm,
+            'privacity': privacity, },
+                                  context_instance=RequestContext(request))
+    print('>>> Estado de la cuenta: ' + str(user.is_active))
+    print('>>> Visibilidad: ' + str(privacity))
 
     json_requestsToMe = None
     # saber si el usuario que visita el perfil le gusta
@@ -166,6 +171,38 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         following = None
 
+    multimedia_count = user_profile.profile.get_num_multimedia()
+
+    if privacity == "followers":
+        template = 'account/privacity/need_confirmation_profile.html'
+        return render_to_response(template, {
+        'friends_top12': friends_top12,
+        'user_profile': user_profile,
+        'searchForm': searchForm,
+        'liked': liked, 'n_likes': n_likes,
+        'existFollowRequest': existFollowRequest,
+        'json_requestsToMe': json_requestsToMe,
+        'followers': followers,
+        'privacity': privacity,
+        'isFollower': isFollower,
+        'following': following,
+        'isBlocked': isBlocked, 'multimedia_count': multimedia_count},
+                                  context_instance=RequestContext(request))
+    elif privacity == "both":
+        template = 'account/privacity/need_confirmation_profile.html'
+        return render_to_response(template, {
+        'friends_top12': friends_top12,
+        'user_profile': user_profile,
+        'searchForm': searchForm,
+        'liked': liked, 'n_likes': n_likes,
+        'existFollowRequest': existFollowRequest,
+        'json_requestsToMe': json_requestsToMe,
+        'followers': followers,
+        'privacity': privacity,
+        'isFollower': isFollower,
+        'following': following,
+        'isBlocked': isBlocked, 'multimedia_count': multimedia_count},
+                                  context_instance=RequestContext(request))
 
     # cargar lista comentarios
     try:
@@ -206,7 +243,6 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         timeline = None
 
-    multimedia_count = user_profile.profile.get_num_multimedia()
 
     return render_to_response(template, {
         'publications_top15': publications_top15,

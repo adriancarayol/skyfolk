@@ -49,15 +49,11 @@
                 {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
                    <span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend('anonymous');></span>
                    <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('anonymous')></span>
-                {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
                    <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
-                {% endif %}
                 {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
                    <span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend('noabort');></span>
                    <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!" onclick=AJAX_likeprofile('noabort');></span>
-                {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
                    <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
-                {% endif %}
                 {% endif %}
                </span>
               </div>

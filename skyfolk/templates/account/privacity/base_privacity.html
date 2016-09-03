@@ -1,0 +1,39 @@
+{% extends "account/base_interface.html" %}
+{% comment %}
+  Template para un perfil privado.
+{% endcomment %}
+{% block extra-css %}
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/profile.css" onload="if(media!='all')media='all'">
+    <style type="text/css">
+        .title-wrapper {
+            display: block;
+            clear: both;
+            width: 100%;
+            background-color: #fafafa;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            margin-top: 10%;
+            border-radius: 3px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.6em;
+        }
+        h1 strong {
+            font-weight: 600;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="title-wrapper">
+                {% block content-text %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

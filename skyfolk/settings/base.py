@@ -37,7 +37,6 @@ THIRD_PARTY_APPS = (
     'avatar',                  # Avatares para usuarios.
     'channels',                # django-channels
     'photologue',               # photologue original
-    'photologue_custom',        # photologue modificado
     'sortedm2m',
     'taggit',                   # para etiquetas
     'notifications',           # siempre último

@@ -10,7 +10,7 @@ from django.utils.http import urlencode
 
 # from publications.models import Publication
 # from _overlapped import NULL
-from photologue_custom.models import PhotoExtended
+from photologue.models import Photo
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_FOLLOWER = 2
@@ -138,45 +138,62 @@ class UserProfile(models.Model):
             from_people__status=status,
             from_people__to_person=self)
 
-    def is_visible(self, user_pk):
+    def is_visible(self, user_profile, user_pk):
         """
         Devuelve si el perfil que estamos visitando
         es visible por nosotros.
-        :param user_pk:
-        :return booleano que determina si el perfil es visible:
+        :param user_pk, user_profile:
+        :return template que determina si el perfil es visible:
         """
 
+        # Si estoy visitando mi propio perfil
+        if self.user.pk == user_pk:
+            return "all"
+
+        # Si el perfil es privado
+        if self.user.pk != user_pk and\
+                        self.privacity == UserProfile.NOTHING:
+            return "nothing"
+
         # Si el perfil esta bloqueado
-        if self.is_blocked(user_pk):
-            return False
+        if self.user.pk != user_pk and\
+                self.is_blocked(user_profile):
+            return "block"
 
-        # Si el nivel de privacidad es TODOS
-        if self.privacity == UserProfile.ALL:
-            return True
-
-        # Recuperamos la relacion de "seguir"
-        try:
-            relation_follow = Relationship.objects.filter(from_person=self, to_person=user_pk, status=RELATIONSHIP_FOLLOWING)
-        except ObjectDoesNotExist:
-            relation_follow = None
-
-        # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
-        if self.privacity == UserProfile.ONLYFOLLOWERS and relation_follow:
-            return True
 
         # Recuperamos la relacion de "seguidor"
         try:
-            relation_follower = Relationship.objects.filter(from_person=self, to_person=user_pk, status=RELATIONSHIP_FOLLOWER)
+            relation_follower = Relationship.objects.filter(from_person=self,
+                                                            to_person=user_profile,
+                                                            status=RELATIONSHIP_FOLLOWER)
         except ObjectDoesNotExist:
             relation_follower = None
 
-        # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
-        if self.privacity == UserProfile.ONLYFOLLOWERSANDFOLLOWS and \
-                (relation_follower or relation_follow):
-            return True
+        # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
+        if self.user.pk != user_pk and\
+                                    self.privacity == UserProfile.ONLYFOLLOWERS and not relation_follower:
+            return "followers"
 
+
+        # Recuperamos la relacion de "seguir"
+        try:
+            relation_follow = Relationship.objects.filter(from_person=self,
+                                                          to_person=user_profile,
+                                                          status=RELATIONSHIP_FOLLOWING)
+        except ObjectDoesNotExist:
+            relation_follow = None
+
+        # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
+        if self.user.pk != user_pk and\
+                        self.privacity == UserProfile.ONLYFOLLOWERSANDFOLLOWS and not\
+                        (relation_follower or relation_follow):
+            return "both"
+
+        # Si el nivel de privacidad es TODOS
+        if self.privacity == UserProfile.ALL:
+            return "all"
         # else...
-        return False
+        return None
     # Methods of timeline
 
     def getTimelineToMe(self):
@@ -423,7 +440,7 @@ class UserProfile(models.Model):
         """
         Devuelve el numero de contenido multimedia de un perfil.
         """
-        return PhotoExtended.objects.filter(owner=self.user).count()
+        return Photo.objects.filter(owner=self.user).count()
 
     @property
     def pin(self):

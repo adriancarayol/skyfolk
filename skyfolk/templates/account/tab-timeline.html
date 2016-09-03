@@ -6,13 +6,11 @@
 {% load app_filters %}
 <div id="tab-timeline">
     <div id="section">
-      {% if not user_profile.username|check_blocked:user.username %}
-        {% if privacity == 'A' or isFriend and privacity == 'OF' or user.username == user_profile.username or privacity == 'OFAF' and isFriend or isFollower and privacity == 'OFAF' %}
         <div class="wrapperx" id="wrapperx-timeline">
                 {% for item in timeline %}
                     {% if item.from_timeline__type == "publication" %}
                     <div class="timeline-pub" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}" data-publication="{{ item.from_timeline__publication__id }}">
-                            <div data-sr="wait 0.2s then scale up 30%" class="second">
+                            <div class="second">
                                 <span class="acontecimiento">
                                     {% avatar item.user__username %}
                                         </span>
@@ -56,7 +54,7 @@
                             </div>
                         {% elif item.from_timeline__type == "new_relation" %}
                         <div class="timeline-pub" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
-                            <div data-sr="wait 0.2s then scale up 30%" class="second">
+                            <div class="second">
                                 <span class="acontecimiento">
                                     {% avatar item.user__username %}
                                 </span>
@@ -80,27 +78,6 @@
                         </div>
                         {% endif %}
                 {% endfor %}
-            {% elif privacity == 'OF' or privacity == 'OFAF' and isFriend == False %}
-                <div class="wrapperx-hidden" id="wrapperx-timeline">
-                  <div class="cmt-hidden">
-                  <h3>¡Sigue a {{user_profile.username}} para ver su timeline!</h3>
-                    <br>
-                  </div>
-                </div>
-            {% elif privacity == 'N' %}
-                <div class="wrapperx-hidden" id="wrapperx-timeline">
-                    <div class="cmt-hidden">
-                      <h3>¡Éste perfil es privado!</h3>
-                        <br>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-        {% else %}
-        <div class="cmt-hidden">
-          <h3>{{user_profile.username}} te ha bloqueado.</h3>
-            <br>
-        </div>
-        {% endif %}
     </div>
+</div>
 </div>

@@ -58,7 +58,6 @@ urlpatterns = patterns(
     url('^inbox/notifications/', include('notifications.urls',
         namespace='notifications')),
     # django-photologue
-    (r'^', include('photologue_custom.urls')), # custom photologue
     url(r'^', include('photologue.urls', namespace='photologue')), # original photologue
 )
 
