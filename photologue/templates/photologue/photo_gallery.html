@@ -36,13 +36,6 @@
                 {% endfor %}
             {% endif %}
         </div> <!-- end container-gallery -->
-        <form id="upload_new_photo" action="" method="post">{% csrf_token %}
-            {% for form in uploadSetForm %}
-                {{ form.id }}
-            {% endfor %}
-            <button type="submit" id="upload_photo"><i class="fa fa-paper-plane"> </i> Enviar</button>
-            <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
-        </form>
 </div> <!-- end wrapper -->
     <script async src="{{STATIC_URL}}js/photo_gallery.js" type="text/javascript"></script>
 {% endblock %}

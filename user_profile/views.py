@@ -312,20 +312,17 @@ def search(request, option=None):
                                                             Q(last_name__icontains=texto_to_search) |
                                                             Q(username__icontains=texto_to_search),
                                                             Q(is_active=True),
-                                                            ~Q(username=request.user.username),
-                                                            ~Q(profile__privacity='N'))
+                                                            ~Q(username=request.user.username))
 
                     elif len(words) == 2:
                         result_search = User.objects.filter(Q(first_name__icontains=words[0]),
                                                             Q(last_name__icontains=words[1]),
                                                             Q(is_active=True),
-                                                            ~Q(username=request.user.username),
-                                                            ~Q(profile__privacity='N'))
+                                                            ~Q(username=request.user.username))
                     else:
                         result_search = User.objects.filter(Q(first_name__icontains=words[0]),
                                                             Q(last_name__icontains=words[1] + ' ' + words[2]),
-                                                            Q(is_active=True),
-                                                            ~Q(profile__privacity='N'))
+                                                            Q(is_active=True))
                 # usamos la expresion regular para descartar las imagenes de los comentarios.
                 # Búsqueda predeterminada o de publicaciones.
                 if option is None or option == '2':
@@ -335,8 +332,7 @@ def search(request, option=None):
                             Q(author__username__icontains=w) |
                             Q(author__first_name__icontains=w) |
                             Q(author__last_name__icontains=w), Q(author__is_active=True),
-                            ~Q(author__username__icontains=request.user.username),
-                            ~Q(author__profile__privacity='N')).order_by('content').order_by(
+                            ~Q(author__username__icontains=request.user.username)).order_by('content').order_by(
                             'created').reverse()  # or .order_by('created').reverse()
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
