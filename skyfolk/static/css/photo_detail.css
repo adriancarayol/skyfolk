@@ -1,0 +1,64 @@
+.container-photo {
+  padding: 10px;
+  position: relative;
+  display: block;
+  text-align: center;
+  margin-top: 2.7%; }
+  .container-photo .photo {
+    padding: 10px;
+    color: #555; }
+    .container-photo .photo .photo-body {
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); }
+    .container-photo .photo .photo-details {
+      background-color: #f9f9f9;
+      display: block;
+      clear: both;
+      padding: 10px;
+      border-top: 3px solid #95a5a6; }
+      .container-photo .photo .photo-details .tags-content {
+        position: relative;
+        display: block;
+        height: auto;
+        clear: both; }
+        .container-photo .photo .photo-details .tags-content blockquote {
+          display: inline-block;
+          color: #1e88e5;
+          border-radius: 3px;
+          background-color: rgba(255, 255, 255, 0.15);
+          transition: all 0.1s ease-in-out;
+          padding: 10px;
+          margin-top: 2%; }
+          .container-photo .photo .photo-details .tags-content blockquote:hover {
+            background-color: white; }
+      .container-photo .photo .photo-details .legend-user-image {
+        width: 10%;
+        height: 10%;
+        display: inline-block;
+        float: left;
+        margin-right: 2%; }
+        .container-photo .photo .photo-details .legend-user-image img {
+          width: 100%;
+          height: 100%;
+          border-radius: 3px;
+          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); }
+      .container-photo .photo .photo-details .legend-user-data {
+        text-align: left; }
+        .container-photo .photo .photo-details .legend-user-data a {
+          text-decoration: none;
+          color: #1e88e5;
+          font-weight: 600;
+          display: block; }
+        .container-photo .photo .photo-details .legend-user-data .photo-title {
+          font-weight: 600;
+          margin-top: 10px;
+          display: block; }
+        .container-photo .photo .photo-details .legend-user-data .photo-date {
+          clear: both;
+          display: block;
+          margin-top: 1.5%;
+          color: #95a5a6; }
+    .container-photo .photo img {
+      max-width: 100%;
+      max-height: 100%; }
+
+/*# sourceMappingURL=photo_detail.css.map */
