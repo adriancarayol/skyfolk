@@ -1,15 +1,6 @@
 $(window).ready(function() {
     $("#loader").fadeOut("slow");
 
-    $('li').click(function(e) {
-            var url = $(this).data('href');
-            window.history.pushState({}, '', url);
-            $('body').load(url);
-            return false;
-        });
-
-
-
     var currentPage = window.location.href.split('/')[3];
     console.log('current_page: ' + currentPage);
     var menu = document.getElementById('hor-menu');
