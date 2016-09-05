@@ -26,9 +26,9 @@
 </li>
 {% if user.profile.hiddenMenu == True %}
       <li><ul id="hor-menu" class="oldMenu">
-        <li data-href="/inicio"><i class="fa fa-home" ></i> Inicio</li>
+        <li onclick="location.href='/inicio'"><i class="fa fa-home" ></i> Inicio</li>
         <li id="publish2"><i class="fa  fa-paper-plane"> </i> Mensaje</li>
-        <li data-href="/following/{{ request.user }}"><i class="fa fa-user"></i> Seguidos</li>
+        <li onclick="location.href='/following/{{ request.user.username }}'"><i class="fa fa-user"></i> Seguidos</li>
         <li id="agregar-amigo"><i class="fa fa-user-plus"> </i> Agregar</li>
         <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
       </ul></li>

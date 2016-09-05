@@ -2,7 +2,6 @@ $(window).ready(function() {
     $("#loader").fadeOut("slow");
 
     var currentPage = window.location.href.split('/')[3];
-    console.log('current_page: ' + currentPage);
     var menu = document.getElementById('hor-menu');
     var inputSearch = document.getElementById('id_searchText');
     var verticalMenu = document.getElementById('ver-menu');

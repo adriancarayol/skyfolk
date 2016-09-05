@@ -10,6 +10,8 @@ from django.core.urlresolvers import reverse
 from .models import Photo, Gallery
 from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
+from django.contrib.auth import get_user_model
+from django.shortcuts import  get_object_or_404
 
 # Gallery views.
 
@@ -60,7 +62,9 @@ class PhotoListView(ListView):
 
 
     def get_queryset(self):
-        self.username = self.kwargs['username'][:-1]
+        self.username = self.kwargs['username']
+        user = get_object_or_404(get_user_model(),
+                                         username__iexact=self.username)
         queryset = Photo.objects.filter(owner__username=self.username)
         return queryset
 
@@ -75,7 +79,17 @@ class PhotoListView(ListView):
 
 
 class PhotoDetailView(DetailView):
-    queryset = Photo.objects.on_site().is_public()
+    """
+    Modificado por @adriancarayol.
+    Cogemos el parametro de la url (para mostrar los detalles de la foto)
+    """
+    template_name = 'photologue/photo_detail.html'
+    model = Photo
+
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return Photo.objects.filter(slug=slug)
+
 
 
 class PhotoDateView(object):
