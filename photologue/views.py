@@ -13,6 +13,8 @@ from user_profile.forms import SearchForm
 from django.contrib.auth import get_user_model
 from django.shortcuts import  get_object_or_404
 
+from django.views.generic import CreateView
+
 # Gallery views.
 
 
@@ -91,6 +93,15 @@ class PhotoDetailView(DetailView):
         return Photo.objects.filter(slug=slug)
 
 
+
+class UploadPhoto(CreateView):
+    """
+    Permite al usuario subir una nueva foto a su galeria.
+    """
+    model = Photo
+    template_name = 'photologue/photo_form.html'
+    fields = '__all__'
+    success_url = '/upload/photo/'
 
 class PhotoDateView(object):
     queryset = Photo.objects.on_site().is_public()

@@ -201,6 +201,7 @@
 .box-tool {
   width: 100%;
   height: 40px;
+  display: block;
   background-color: #fff;
   box-shadow: 1px 1px 1px #f0f0f0;
   list-style-type: none;

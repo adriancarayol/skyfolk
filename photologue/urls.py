@@ -7,11 +7,10 @@ from .views import PhotoListView, PhotoDetailView, GalleryListView, \
     PhotoYearArchiveView, PhotoMonthArchiveView, GalleryArchiveIndexView, GalleryYearArchiveView, \
     GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
-    PhotoDayArchiveOldView, PhotoMonthArchiveOldView
+    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, UploadPhoto
 
 
-from django.views.generic import CreateView
-from photologue.models import Photo
+
 
 """NOTE: the url names are changing. In the long term, I want to remove the 'pl-'
 prefix on all urls, and instead rely on an application namespace 'photologue'.
@@ -74,9 +73,7 @@ urlpatterns = [
         PhotoListView.as_view(),
         name='photo-list'),
 
-    url(r'^upload/photo/$', CreateView.as_view(model=Photo,
-                                               template_name='photologue/photo_form.html',
-                                               fields='__all__', success_url='/upload/photo/'),
+    url(r'^upload/photo/$', UploadPhoto.as_view(),
         name='add-photo'),
 
     # Deprecated URLs.
