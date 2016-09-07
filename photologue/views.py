@@ -14,7 +14,8 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import  get_object_or_404
 
 from django.views.generic import CreateView
-
+from .forms import UploadFormPhoto
+from django.http import HttpResponseRedirect 
 # Gallery views.
 
 
@@ -97,11 +98,16 @@ class PhotoDetailView(DetailView):
 class UploadPhoto(CreateView):
     """
     Permite al usuario subir una nueva foto a su galeria.
-    """
-    model = Photo
+    """   
+    form_class = UploadFormPhoto
     template_name = 'photologue/photo_form.html'
-    fields = '__all__'
     success_url = '/upload/photo/'
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.owner = self.request.user
+        obj.save()
+        return HttpResponseRedirect(self.success_url)
 
 class PhotoDateView(object):
     queryset = Photo.objects.on_site().is_public()

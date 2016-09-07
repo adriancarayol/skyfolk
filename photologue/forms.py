@@ -179,3 +179,10 @@ class UploadZipForm(forms.Form):
                              _('The photos have been added to gallery "{0}".').format(
                                  gallery.title),
                              fail_silently=True)
+
+
+class UploadFormPhoto(forms.ModelForm):
+    class Meta:
+        model = Photo
+        exclude = ('owner', )
+
