@@ -6,6 +6,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
 from django.core.urlresolvers import reverse
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 
 from .models import Photo, Gallery
 from publications.forms import PublicationForm
@@ -15,7 +16,9 @@ from django.shortcuts import  get_object_or_404
 
 from django.views.generic import CreateView
 from .forms import UploadFormPhoto
-from django.http import HttpResponseRedirect 
+from django.http import HttpResponseRedirect
+
+
 # Gallery views.
 
 
@@ -56,15 +59,19 @@ class GalleryYearArchiveView(GalleryDateView, YearArchiveView):
 # Photo views.
 
 
-class PhotoListView(ListView):
+class PhotoListView(ListView, CreateView):
     template_name = "photologue/photo_gallery.html"
     paginate_by = 20
     queryset = None
     publicationForm = PublicationForm()
     searchForm = SearchForm()
-
+    form_class = UploadFormPhoto
+    success_url = '/'
 
     def get_queryset(self):
+        """
+        Obtenemos la galeria del usuario
+        """
         self.username = self.kwargs['username']
         user = get_object_or_404(get_user_model(),
                                          username__iexact=self.username)
@@ -72,13 +79,31 @@ class PhotoListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        self.object = None
         context = super(PhotoListView, self).get_context_data(**kwargs)
         context['publicationForm'] = self.publicationForm
         context['searchForm'] = self.searchForm
         context['object_list'] = self.get_queryset()
         context['user_gallery'] = self.username
 
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        context['form'] = form
+
+        kwargs.update({'object_list': self.object_list, 'form': form})
+
         return context
+
+    def form_valid(self, form):
+        """
+        Para peticiones POST
+        """
+        response = super(AjaxableResponseMixin)
+        obj = form.save(commit=False)
+        obj.owner = self.request.user
+        obj.save()
+        form.save_m2m() # Para guardar los tags de la foto
+        return HttpResponseRedirect(self.success_url)
 
 
 class PhotoDetailView(DetailView):
@@ -92,24 +117,6 @@ class PhotoDetailView(DetailView):
     def get_queryset(self):
         slug = self.kwargs['slug']
         return Photo.objects.filter(slug=slug)
-
-
-
-class UploadPhoto(CreateView):
-    """
-    Permite al usuario subir una nueva foto a su galeria.
-    """   
-    model = Photo
-    form_class = UploadFormPhoto
-    template_name = 'photologue/photo_form.html'
-    success_url = '/upload/photo/'
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.owner = self.request.user
-        obj.save()
-        form.save_m2m()
-        return HttpResponseRedirect(self.success_url)
 
 class PhotoDateView(object):
     queryset = Photo.objects.on_site().is_public()

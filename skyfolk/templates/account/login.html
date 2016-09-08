@@ -30,9 +30,8 @@ for a {{site_name}} account and sign in below:{% endblocktrans %}</p>
 {% endif %}
 <div id="login" class="row white z-depth-2">
 	<h5>Iniciar sesion</h5>
-	<form class="login form-3" method="POST" action="{% url 'account_login' %}">
+	<form class="login form-3" method="POST" action="{% url 'account_login' %}">{% csrf_token %}
 		<div class="form-group">
-	  {% csrf_token %}
 	  {{ form.as_p }}
 	  {% if redirect_field_value %}
 	  <input class="form-control" type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />

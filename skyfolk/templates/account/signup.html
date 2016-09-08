@@ -17,9 +17,8 @@
 <!--<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>-->
 <div class="block-form block-formregister">
     <a class="reco-passwd" title="Consejos para una buena contraseña." href="/tips/password/"><i class="fa fa-lock"></i></a>
-	<form class="signup form-3" id="signup_form" method="post" action="{% url 'account_signup' %}">
+	<form class="signup form-3" id="signup_form" method="post" action="{% url 'account_signup' %}">{% csrf_token %}
 	<div class="form-group">
-	  {% csrf_token %}
 	  {{ form.as_p }}
 	  {% if redirect_field_value %}
 	  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />

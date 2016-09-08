@@ -7,7 +7,7 @@ from .views import PhotoListView, PhotoDetailView, GalleryListView, \
     PhotoYearArchiveView, PhotoMonthArchiveView, GalleryArchiveIndexView, GalleryYearArchiveView, \
     GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
-    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, UploadPhoto
+    PhotoDayArchiveOldView, PhotoMonthArchiveOldView
 
 
 
@@ -72,9 +72,6 @@ urlpatterns = [
     url(r'^media/(?P<username>[\w-]+)/$',
         PhotoListView.as_view(),
         name='photo-list'),
-
-    url(r'^upload/photo/$', UploadPhoto.as_view(),
-        name='add-photo'),
 
     # Deprecated URLs.
     url(r'^gallery/(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
