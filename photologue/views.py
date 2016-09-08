@@ -99,6 +99,7 @@ class UploadPhoto(CreateView):
     """
     Permite al usuario subir una nueva foto a su galeria.
     """   
+    model = Photo
     form_class = UploadFormPhoto
     template_name = 'photologue/photo_form.html'
     success_url = '/upload/photo/'
@@ -107,6 +108,7 @@ class UploadPhoto(CreateView):
         obj = form.save(commit=False)
         obj.owner = self.request.user
         obj.save()
+        form.save_m2m()
         return HttpResponseRedirect(self.success_url)
 
 class PhotoDateView(object):
