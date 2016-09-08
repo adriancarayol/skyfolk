@@ -556,8 +556,7 @@ class Photo(ImageModel):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.slug is None:
-            self.slug = slugify(self.title)
+        self.slug = slugify(self.title + 'by' + str(self.owner.username)  + str(self.date_added.timestamp()))
         super(Photo, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -581,6 +580,7 @@ class Photo(ImageModel):
             if photo == self:
                 return previous
             previous = photo
+
 
     def get_next_in_gallery(self, gallery):
         """Find the neighbour of this photo in the supplied gallery.

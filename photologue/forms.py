@@ -184,5 +184,5 @@ class UploadZipForm(forms.Form):
 class UploadFormPhoto(forms.ModelForm):
     class Meta:
         model = Photo
-        exclude = ('owner', )
+        exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug', 'is_public', )
 
