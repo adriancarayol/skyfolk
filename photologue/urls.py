@@ -2,12 +2,12 @@ from django.conf.urls import url
 from django.views.generic import RedirectView
 from django.core.urlresolvers import reverse_lazy
 
-from .views import PhotoListView, PhotoDetailView, GalleryListView, \
+from .views import PhotoDetailView, GalleryListView, \
     GalleryDetailView, PhotoArchiveIndexView, PhotoDateDetailView, PhotoDayArchiveView, \
     PhotoYearArchiveView, PhotoMonthArchiveView, GalleryArchiveIndexView, GalleryYearArchiveView, \
     GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
-    PhotoDayArchiveOldView, PhotoMonthArchiveOldView
+    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list
 
 
 
@@ -70,7 +70,7 @@ urlpatterns = [
         name='pl-photo'),
 
     url(r'^media/(?P<username>[\w-]+)/$',
-        PhotoListView.as_view(),
+        photo_list,
         name='photo-list'),
 
     # Deprecated URLs.

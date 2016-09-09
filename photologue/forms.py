@@ -182,6 +182,10 @@ class UploadZipForm(forms.Form):
 
 
 class UploadFormPhoto(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(UploadFormPhoto, self).__init__(*args, **kwargs)
+
     class Meta:
         model = Photo
         exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug', 'is_public', )
