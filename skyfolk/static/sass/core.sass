@@ -139,10 +139,10 @@ body > .container
 
 #loader
   display: inline-block
-  position: relative
+  position: fixed
   height: 4px
   width: 100%
-  margin-top: 11px
+  margin-top: 0
   background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), -webkit-linear-gradient(left, #1e88e5, #1e88e5)
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), linear-gradient(to right, #1e88e5, #1e88e5)
 
@@ -178,16 +178,6 @@ body > .container
 
 /* NOTIFICACIONES - CHAT MENU VERTICAL */
 .nav-vertical-and-chat
-  position: fixed
-  right: -1.2%
-  display: none
-  top: 40px
-  background-color: rgba(189, 189, 189, 0.7)
-  height: 100%
-  z-index: 9998
-  font-family: 'Open Sans', sans-serif
-  overflow: hidden
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
   & .nav-vertical-controls
     position: absolute
     display: block

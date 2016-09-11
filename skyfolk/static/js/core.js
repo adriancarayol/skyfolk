@@ -80,6 +80,12 @@ $(window).ready(function() {
 $(document).ready(function () {
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
+        menuWidth: 300,
+    });
+
+    $(".button-right-notify").sideNav({
+        edge: 'right', // Choose the horizontal origin
+        menuWidth: 300,
     });
 
     var page_wrapper = document.getElementById('page-wrapper');
@@ -101,26 +107,6 @@ $(document).ready(function () {
           }
         });
     });
-      /* DISPLAY MENU */
-      $("#vertical-menu").on("click", function(event) {
-          if ( !$(event.target).is( "li" )) {
-            $("#toggle").each(function() {
-            var displaying = $(this).css("display");
-            $("#toggle").val('');
-          if (displaying == "none") {
-            $(this).fadeToggle('fast',function() {
-              $("#vertical-menu").addClass('fa-bars-rotate'); // Cambiamos el color de "fa-bars" para saber que el menu vertical está abierto.
-              $(this).css("display", "block");
-            });
-          } else {
-            $(this).fadeToggle('fast',function() {
-              $("#vertical-menu").removeClass('fa-bars-rotate'); // Si esta oculto, fa-bars estará en su estado normal.
-              $(this).css("display", "none");
-            });
-          }
-        });
-          }
-      });
 
     /* Close page-wrapper (mensaje) */
     $(page_wrapper).find('#close').on('click', function(event) {
@@ -155,11 +141,6 @@ $(document).ready(function () {
         $('#atajos-keyboard-profile').hide();
       });
 
-      /* Mostramos y ocultamos notificaciones y chat por la derecha */
-      $("#notifications-menu").click(function(){
-        $("#notification-menu").animate({width: 'toggle'}, 100);
-      });
-
       /* Atajo para enviar comentarios mas rapido */
       $('#page-wrapper').find('#message2').keypress(function(event) {
         //tecla ENTER presinada + Shift
@@ -170,8 +151,8 @@ $(document).ready(function () {
 
 
       /* Abrir - Cerrar lista de atajos */
-      $('.menup .shortcut-keyboard').on('click',function() {
-        $('#atajos-keyboard-profile').fadeToggle("fast");
+      $('#mobile-menu').find('.shortcut-keyboard').on('click',function() {
+        $('#atajos-keyboard-profile').toggle();
       });
 
 
@@ -236,27 +217,6 @@ $(document).ready(function () {
         AJAX_mark_all_read();
     });
 
-    /* Ocultar menu vertical al hacer click fuera de el */
-    $(this).click(function(event) {
-        if(!$(event.target).closest('#toggle').length) {
-            if($('#toggle').is(":visible")) {
-                $('#toggle').hide();
-                $('#vertical-menu').removeClass('fa-bars-rotate');
-            }
-        }
-    });
-
-    /* Ocultar menu de notificaciones al hacer click fuera de él */
-    $(this).click(function(event) {
-        if (!$(event.target).closest('#notification-menu').length) {
-            if (!$(event.target).closest('#notifications-menu').length) {
-                if ($('#notification-menu').is(":visible")) {
-                    $('#notification-menu').animate({width: 'toggle'}, 100);
-                    $('#vertical-menu').removeClass('fa-bars-rotate');
-                }
-            }
-        }
-    });
   /* Agregar Amigo por medio de PIN */
   $('#agregar-amigo').on('click', function() {
       swal({

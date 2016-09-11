@@ -5,18 +5,38 @@
 {% load app_filters %}
 <style>
     .userView {
-        overflow: hidden;
-        position: relative;
-        padding: 32px 32px 0;
-        margin-bottom: 8px;
+overflow: hidden;
+    position: relative;
+    padding: 32px 32px 0;
+    margin-bottom: 8px;
     }
+
     .userView a {
         height: auto;
         padding: 0;
     }
-    .userView:hover, a:hover {
-        background-color: transparent;
+    .side-nav a {
+        color: rgba(0, 0, 0, 0.87);
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        height: 48px;
+        line-height: 48px;
+        padding: 0 32px;
     }
+    .side-nav li {
+        float: none;
+    padding: 0 15px;
+    line-height: 64px;
+    }
+    .side-nav li > a > i, .side-nav li > a > [class^="mdi-"], .side-nav li > a > [class*="mdi-"], .side-nav li > a > i.material-icons {
+        color: rgba(0, 0, 0, 0.54);
+        float: left;
+        line-height: 48px;
+        margin: 0 42px 0 0;
+        width: 14px;
+    }
+
     .background {
         position: absolute;
         top: 0;
@@ -25,24 +45,10 @@
         left: 0;
         z-index: -1;
     }
-    a img {
-        height: 64px;
-        width: 64px;
-        display: block;
-        border-radius: 50%;
-        border: 0
+    img {
+        border: 0;
     }
 </style>
-<div id="toggle">
-    <ul id="ver-menu" class="menup">
-        <li onclick="location.href='/profile/{{ request.user }}'" class="profilee">{% avatar user %}<i>{{ request.user.username }}</i></li>
-        <li onclick="location.href='/config/profile'"><i class="fa fa-cog fa-lg"></i> Configuracion </li>
-        <li onclick="location.href='/messages/inbox/'"><i class="fa fa-inbox fa-lg"></i> Mensajes privados </li>
-        <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
-        <li class="shortcut-keyboard"><i class="fa fa-keyboard-o"></i> Atajos</li>
-        <li onclick="location.href='/about/home'"><i class="fa fa-info-circle"></i> Ayuda</li>
-    </ul>
-</div>
 
 <ul id="mobile-menu" class="side-nav">
     <li><div class="userView">
@@ -55,10 +61,10 @@
         <a href="#!name"><span class="white-text name">{{ request.user.username }}</span></a>
         <a href="#!email"><span class="white-text email">{{ request.user.first_name }}</span></a>
     </div></li>
-    <li><a href="#!"><i class="material-icons">cloud</i>Configuración</a></li>
-    <li><a href="#!">Mensajes privados</a></li>
+    <li><a href="/config/profile/"><i class="material-icons">settings</i>Configuración</a></li>
+    <li><a href="/messages/inbox/">Mensajes privados</a></li>
     <li><div class="divider"></div></li>
-    <li><a class="subheader">Salir</a></li>
-    <li><a class="waves-effect" href="#!">Atajos</a></li>
-    <li><a class="waves-effect" href="#!">Ayuda</a></li>
+    <li><a href="{% url 'account_logout' %}" class="subheader">Salir</a></li>
+    <li><a class="waves-effect shortcut-keyboard">Atajos</a></li>
+    <li><a href="/about/home/" class="waves-effect" href="#!">Ayuda</a></li>
 </ul>
