@@ -78,8 +78,11 @@ $(window).ready(function() {
 });
 
 $(document).ready(function () {
-    var page_wrapper = document.getElementById('page-wrapper');
+    $(".button-menu-left").sideNav({
+        edge: 'left', // Choose the horizontal origin
+    });
 
+    var page_wrapper = document.getElementById('page-wrapper');
     /* Mensaje flotante */
     $("#publish2, #compose-new-no-comments, #publish").click(function()  {
         $(page_wrapper).each(function() {
@@ -99,19 +102,19 @@ $(document).ready(function () {
         });
     });
       /* DISPLAY MENU */
-      $(".fa-bars").on("click", function(event) {
+      $("#vertical-menu").on("click", function(event) {
           if ( !$(event.target).is( "li" )) {
             $("#toggle").each(function() {
             var displaying = $(this).css("display");
             $("#toggle").val('');
           if (displaying == "none") {
             $(this).fadeToggle('fast',function() {
-              $(".fa-bars").addClass('fa-bars-rotate'); // Cambiamos el color de "fa-bars" para saber que el menu vertical está abierto.
+              $("#vertical-menu").addClass('fa-bars-rotate'); // Cambiamos el color de "fa-bars" para saber que el menu vertical está abierto.
               $(this).css("display", "block");
             });
           } else {
             $(this).fadeToggle('fast',function() {
-              $(".fa-bars").removeClass('fa-bars-rotate'); // Si esta oculto, fa-bars estará en su estado normal.
+              $("#vertical-menu").removeClass('fa-bars-rotate'); // Si esta oculto, fa-bars estará en su estado normal.
               $(this).css("display", "none");
             });
           }
@@ -153,7 +156,7 @@ $(document).ready(function () {
       });
 
       /* Mostramos y ocultamos notificaciones y chat por la derecha */
-      $(".fa-bell").click(function(){
+      $("#notifications-menu").click(function(){
         $("#notification-menu").animate({width: 'toggle'}, 100);
       });
 
@@ -238,7 +241,7 @@ $(document).ready(function () {
         if(!$(event.target).closest('#toggle').length) {
             if($('#toggle').is(":visible")) {
                 $('#toggle').hide();
-                $('.fa-bars').removeClass('fa-bars-rotate');
+                $('#vertical-menu').removeClass('fa-bars-rotate');
             }
         }
     });
@@ -246,10 +249,10 @@ $(document).ready(function () {
     /* Ocultar menu de notificaciones al hacer click fuera de él */
     $(this).click(function(event) {
         if (!$(event.target).closest('#notification-menu').length) {
-            if (!$(event.target).closest('.fa-bell').length) {
+            if (!$(event.target).closest('#notifications-menu').length) {
                 if ($('#notification-menu').is(":visible")) {
                     $('#notification-menu').animate({width: 'toggle'}, 100);
-                    $('.fa-bars').removeClass('fa-bars-rotate');
+                    $('#vertical-menu').removeClass('fa-bars-rotate');
                 }
             }
         }

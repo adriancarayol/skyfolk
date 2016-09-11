@@ -2,6 +2,37 @@
   Menu vertical
 {% endcomment %}
 {% load avatar_tags %}
+{% load app_filters %}
+<style>
+    .userView {
+        overflow: hidden;
+        position: relative;
+        padding: 32px 32px 0;
+        margin-bottom: 8px;
+    }
+    .userView a {
+        height: auto;
+        padding: 0;
+    }
+    .userView:hover, a:hover {
+        background-color: transparent;
+    }
+    .background {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+    }
+    a img {
+        height: 64px;
+        width: 64px;
+        display: block;
+        border-radius: 50%;
+        border: 0
+    }
+</style>
 <div id="toggle">
     <ul id="ver-menu" class="menup">
         <li onclick="location.href='/profile/{{ request.user }}'" class="profilee">{% avatar user %}<i>{{ request.user.username }}</i></li>
@@ -12,3 +43,22 @@
         <li onclick="location.href='/about/home'"><i class="fa fa-info-circle"></i> Ayuda</li>
     </ul>
 </div>
+
+<ul id="mobile-menu" class="side-nav">
+    <li><div class="userView">
+        {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
+            <img class="background" src="{{user_profile.profile.backImage.url}}" class="user-bg">
+            {% else %}
+            <img class="background" src="{{STATIC_URL}}img/nuevo_back.png" class="user-bg">
+        {% endif %}
+        <a href="/profile/{{ request.user }}">{% avatar user %}</a>
+        <a href="#!name"><span class="white-text name">{{ request.user.username }}</span></a>
+        <a href="#!email"><span class="white-text email">{{ request.user.first_name }}</span></a>
+    </div></li>
+    <li><a href="#!"><i class="material-icons">cloud</i>Configuración</a></li>
+    <li><a href="#!">Mensajes privados</a></li>
+    <li><div class="divider"></div></li>
+    <li><a class="subheader">Salir</a></li>
+    <li><a class="waves-effect" href="#!">Atajos</a></li>
+    <li><a class="waves-effect" href="#!">Ayuda</a></li>
+</ul>

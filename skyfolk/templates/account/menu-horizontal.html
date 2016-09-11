@@ -25,11 +25,13 @@
       </ul>
 </li>
 {% if user.profile.hiddenMenu == True %}
-      <li><ul id="hor-menu" class="oldMenu">
-        <li onclick="location.href='/inicio'"><i class="fa fa-home" ></i> Inicio</li>
-        <li id="publish2"><i class="fa  fa-paper-plane"> </i> Mensaje</li>
-        <li onclick="location.href='/following/{{ request.user.username }}'"><i class="fa fa-user"></i> Seguidos</li>
-        <li id="agregar-amigo"><i class="fa fa-user-plus"> </i> Agregar</li>
-        <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> Salir</li>
-      </ul></li>
+      <li>
+          <ul id="hor-menu" class="oldMenu">
+            <li onclick="location.href='/inicio'"><i class="fa fa-home" ></i> <a>Inicio</a></li>
+            <li id="publish2"><i class="fa  fa-paper-plane"> </i> <a>Mensaje</a></li>
+            <li onclick="location.href='/following/{{ request.user.username }}'"><i class="fa fa-user"></i><a> Seguidos</a></li>
+            <li id="agregar-amigo"><i class="fa fa-user-plus"> </i> <a>Agregar</a></li>
+            <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> <a>Salir</a></li>
+        </ul>
+      </li>
 {% endif %}
