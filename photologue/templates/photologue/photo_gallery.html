@@ -9,34 +9,40 @@
 {% endblock %}
 
 {% block content %}
-    <div class="wrapper">
-        <div class="col-lg-12 col-md-12 col-sm-12 container-gallery">
-        <button class="btn-upload-photo" title="¡Subir una foto!" id="btn-upload-photo"><i class="fa fa-camera-retro" aria-hidden="true"></i></button>
-            {% if object_list %}
-                {% for photo in object_list %}
-                    <div class="col-lg-2 col-md-12 col-sm-12 container-image">
-                        <div class="col-lg-12 principal-content">
-                            <div class="tags-content">
-                            {% for tag in photo.tags.all %}
-                                <blockquote>{{ tag.name }}</blockquote>
-                            {% endfor %}
+    <div class="container">
+        <div class="row">
+            <div class="col l12 m12 s12 container-gallery">
+            <button class="btn-upload-photo" title="¡Subir una foto!" id="btn-upload-photo"><i class="fa fa-camera-retro" aria-hidden="true"></i></button>
+                {% if object_list %}
+                    <div class="row">
+                    {% for photo in object_list %}
+                        <div class="col l2 m12 s12 image-div">
+                            <div class="container-image">
+                                <div class="col l12 principal-content">
+                                    <div class="tags-content">
+                                    {% for tag in photo.tags.all %}
+                                        <blockquote>{{ tag.name }}</blockquote>
+                                    {% endfor %}
+                                    </div>
+                                    <img src="{{ photo.image.url }}" alt="{{ photo.title }}" title="{{ photo.title }}" onclick="location.href='{{ photo.get_absolute_url }}'">
+                                </div>
+                                <div class="col l12 legend-content">
+                                    <div class="legend-user-image">
+                                        {% avatar photo.owner.username %}
+                                    </div>
+                                    <div class="col l8 m8 s8 legend-user-data">
+                                        <a href="/profile/{{ photo.owner.username }}">@{{ photo.owner.username }}</a>
+                                        <i class="photo-title">{{ photo.title }}</i>
+                                        <i class="photo-date"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ photo.date_added|naturaltime }}</i>
+                                    </div>
+                                </div>
                             </div>
-                            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" title="{{ photo.title }}" onclick="location.href='{{ photo.get_absolute_url }}'">
                         </div>
-                        <div class="col-lg-12 legend-content">
-                            <div class="legend-user-image">
-                                {% avatar photo.owner.username %}
-                            </div>
-                            <div class="col-lg-8 col-md-8 col-sm-8 legend-user-data">
-                                <a href="/profile/{{ photo.owner.username }}">@{{ photo.owner.username }}</a>
-                                <i class="photo-title">{{ photo.title }}</i>
-                                <i class="photo-date"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ photo.date_added|naturaltime }}</i>
-                            </div>
-                        </div>
+                    {% endfor %}
                     </div>
-                {% endfor %}
-            {% endif %}
-        </div> <!-- end container-gallery -->
+                {% endif %}
+            </div> <!-- end container-gallery -->
+        </div>
     <div class="upload_form" id="upload_photo">
         <form action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">{% csrf_token %}
             {{ form.as_p }}

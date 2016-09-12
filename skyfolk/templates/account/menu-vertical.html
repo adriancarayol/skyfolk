@@ -3,69 +3,17 @@
 {% endcomment %}
 {% load avatar_tags %}
 {% load app_filters %}
-<style>
-    .userView {
-overflow: hidden;
-    position: relative;
-    padding: 32px 32px 0;
-    margin-bottom: 8px;
-    }
 
-    .userView a {
-        height: auto;
-        padding: 0;
-    }
-    ul#mobile-menu a {
-        color: rgba(0, 0, 0, 0.87);
-        display: block;
-        font-size: 14px;
-        font-weight: 500;
-        height: 48px;
-        line-height: 48px;
-        padding: 0 32px;
-    }
-    ul#mobile-menu li {
-        float: none;
-    padding: 0 15px;
-    line-height: 64px;
-    }
-    ul#mobile-menu li:hover > a {
-        color: #1e88e5;
-    }
-    ul#mobile-menu li:hover > a > i {
-        color: #1e88e5 !important;
-    }
-    ul#mobile-menu li > a > i, ul#mobile-menu li > a > [class^="mdi-"], ul#mobile-menu li > a > [class*="mdi-"], ul#mobile-menu li > a > i.material-icons {
-        color: rgba(0, 0, 0, 0.54);
-        float: left;
-        line-height: 48px;
-        margin: 0 42px 0 0;
-        width: 14px;
-    }
-
-    .background {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: -1;
-    }
-    img {
-        border: 0;
-    }
-</style>
-
-<ul id="mobile-menu" class="side-nav">
+<ul id="vertical-menu" class="side-nav">
     <li><div class="userView">
         {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
-            <img class="background" src="{{user_profile.profile.backImage.url}}" class="user-bg">
+            <img class="background" src="{{user_profile.profile.backImage.url}}">
             {% else %}
-            <img class="background" src="{{STATIC_URL}}img/nuevo_back.png" class="user-bg">
+            <img class="background" src="{{STATIC_URL}}img/nuevo_back.png">
         {% endif %}
-        <a href="/profile/{{ request.user }}">{% avatar user %}</a>
-        <a href="#!name"><span class="white-text name">{{ request.user.username }}</span></a>
-        <a href="#!email"><span class="white-text email">{{ request.user.first_name }}</span></a>
+        <a href="/profile/{{ request.user }}">{% avatar user 64 %}</a>
+        <a href="/profile/{{ request.user }}"><span class="white-text name">{{ request.user.username }}</span></a>
+        <a><span class="white-text email">{{ request.user.first_name }}</span></a>
     </div></li>
     <li><a href="/config/profile/"><i class="material-icons">settings</i>Configuración</a></li>
     <li><a href="/messages/inbox/"><i class="material-icons">email</i>Mensajes privados</a></li>

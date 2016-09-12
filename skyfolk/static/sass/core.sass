@@ -527,7 +527,7 @@ textarea:focus
 .nav-wrapper .button-right-notify > i
   display: inline-block
 .nav-wrapper .button-right-notify > span
-  background-color: tomato
+  background-color: #f44336
   font-size: 10px
   padding: 5px 5px
   line-height: 10px
@@ -535,3 +535,56 @@ textarea:focus
   border-radius: 10px 100% 100% 100%
   display: inline-block
   color: white
+
+// RIGHT VERTICAL MENU
+
+ul#vertical-menu
+  .userView
+    overflow: hidden
+    position: relative
+    padding: 32px 32px 0
+    margin-bottom: 8px
+    a
+      height: auto
+      padding: 0
+  a
+    color: rgba(0, 0, 0, 0.87)
+    font-size: 14px
+    font-weight: 600
+  li
+    &:not(:first-child) a
+      height: 48px
+      line-height: 48px
+    float: none
+    padding: 0
+    line-height: 64px
+    &:nth-child(1):hover
+      background-color: transparent
+    &:hover > a
+      color: #1e88e5
+      > i
+        color: #1e88e5 !important
+    > a >
+      i, [class^="mdi-"], [class*="mdi-"], i.material-icons
+        color: rgba(0, 0, 0, 0.54)
+        float: left
+        line-height: 48px
+        margin: 0 42px 0 0
+        width: 14px
+  .userView a img
+    border-radius: 3px
+    display: block
+
+.side-nav .userView
+  .name, .email
+    display: block
+
+ul#vertical-menu .userView .background
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  height: 100%
+  width: 100%
+  z-index: -1

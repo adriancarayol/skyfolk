@@ -58,7 +58,8 @@ class UserProfile(models.Model):
     )
 
     user = models.OneToOneField(User, unique=True, related_name='profile')
-    backImage = models.ImageField(upload_to=uploadBackImagePath, verbose_name='BackImage', blank=True, null=True)
+    backImage = models.ImageField(upload_to=uploadBackImagePath, verbose_name='BackImage',
+                                  blank=True, null=True)
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
