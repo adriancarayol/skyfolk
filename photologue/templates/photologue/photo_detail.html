@@ -12,46 +12,48 @@
 
 {% block content %}
 <div class="container">
-    <div class="col-lg-12 col-md-12 col-sm-12 container-photo">
-        <div class="photo">
-                <div class="col-lg-8 col-md-12 col-sm-12 photo-body">
-                 <a href="{{ object.image.url }}">
-                     <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
-                 </a>
-                    <div class="col-lg-12 photo-details">
-                            <div class="legend-user-image">
-                                {% avatar object.owner.username %}
-                            </div>
-                            <div class="col-lg-8 col-md-8 col-sm-8 legend-user-data">
-                                <a href="/profile/{{ object.owner.username }}">@{{ object.owner.username }}</a>
-                                <i class="photo-title">{{ object.title }}{% if object.caption %}<p>{{ object.caption|safe }} </p>{% endif %}</i>
-                                <i class="photo-date"><i class="fa fa-clock-o" aria-hidden="true"></i> {% trans "Published" %} {{ object.date_added|naturaltime }}</i>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 tags-content">
-                                {% for tag in photo.tags.all %}
-                                        <blockquote>{{ tag.name }}</blockquote>
-                                {% endfor %}
-                            </div>
+<div class="row">
+        <div class="col l12 m12 s12 container-photo">
+            <div class="photo">
+                    <div class="col l8 m12 s12 photo-body">
+                     <a href="{{ object.image.url }}">
+                         <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
+                     </a>
+                        <div class="col l12 photo-details">
+                                <div class="legend-user-image">
+                                    {% avatar object.owner.username %}
+                                </div>
+                                <div class="col l8 m8 s8 legend-user-data">
+                                    <a href="/profile/{{ object.owner.username }}">@{{ object.owner.username }}</a>
+                                    <i class="photo-title">{{ object.title }}{% if object.caption %}<p>{{ object.caption|safe }} </p>{% endif %}</i>
+                                    <i class="photo-date"><i class="fa fa-clock-o" aria-hidden="true"></i> {% trans "Published" %} {{ object.date_added|naturaltime }}</i>
+                                </div>
+                                <div class="col l12 m12 s12 tags-content">
+                                    {% for tag in photo.tags.all %}
+                                            <blockquote>{{ tag.name }}</blockquote>
+                                    {% endfor %}
+                                </div>
+                        </div>
                     </div>
-                </div>
-                <div class="gallery-details">
-                  {% if object.public_galleries %}
-                        <p>{% trans "This photo is found in the following galleries" %}:</p>
-                        <table>
-                            {% for gallery in object.public_galleries %}
-                                <tr>
-                                    <td>{% previous_in_gallery object gallery %}</td>
-                                    <td class="text-center"><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></td>
-                                    <td>{% next_in_gallery object gallery %}</td>
-                                </tr>
-                    {% endfor %}
-                </table>
-            {% endif %}
-                </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 photo-messages">
-            <h1>Comentarios</h1>
+                    <div class="gallery-details">
+                      {% if object.public_galleries %}
+                            <p>{% trans "This photo is found in the following galleries" %}:</p>
+                            <table>
+                                {% for gallery in object.public_galleries %}
+                                    <tr>
+                                        <td>{% previous_in_gallery object gallery %}</td>
+                                        <td class="text-center"><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></td>
+                                        <td>{% next_in_gallery object gallery %}</td>
+                                    </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+                    </div>
+            <div class="col l4 m12 s12 photo-messages">
+                <h1>Comentarios</h1>
+            </div>
+            </div>
         </div>
-        </div>
-    </div>
+</div>
 </div>
 {% endblock %}

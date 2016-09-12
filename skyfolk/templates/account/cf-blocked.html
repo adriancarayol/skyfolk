@@ -17,11 +17,11 @@
 </div>
 {% endblock %}
 {% block cf-form %}
-    <div class="col-lg-12 col-md-12 col-sm-12 wrapper-profilex">
+    <div class="col l12 m12 s12 wrapper-profilex">
     <ul>
         {% for item in blocked %}
-            <li class="bloq-user col-lg-3 col-md-12 col-sm-12" data-id="{{ item.user__profile__pk }}">
-                <div class="col-lg-12">
+            <li class="bloq-user col l3 m12 s12" data-id="{{ item.user__profile__pk }}">
+                <div class="col l12">
                     <div class="header">
                        {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
                            <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user__profile__backImage }}">
@@ -33,12 +33,12 @@
                         </div>
                     </div>
             </div>
-                <div class="col-lg-12">
+                <div class="col l12">
                     <div class="name-friend">
                     <a href="/profile/{{ item.user__username }}">@{{ item.user__username }} </a><br><br>
                         <p>{{ item.user__first_name }} {{item.user__last_name}}</p>
                     </div>
-                    <div class="col-lg-12 unblock-user-div">
+                    <div class="col l12 unblock-user-div">
                         <span class="unblock-user" data-id="{{ item.user__profile__pk }}" onclick="AJAX_remove_bloq_from_config(this)">Desbloquear</span>
                     </div>
                 </div>

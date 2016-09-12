@@ -6,11 +6,11 @@
 <div class="row">
 <div class="col l12 m12 s12">
         <div class="user-card card">
-          <nav class="ventana-pin">
+          <div class="ventana-pin">
             <a><i class="fa fa-times"></i></a>
             <a><i class="fa fa-expand"></i></a>
             <a><i class="fa fa-thumb-tack"></i></a>
-          </nav>
+          </div>
           <div class="user-avatar">
             {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
             <img src="{{user_profile.profile.backImage.url}}" class="user-bg">

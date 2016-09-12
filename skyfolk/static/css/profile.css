@@ -80,13 +80,13 @@
   margin-bottom: 1em; }
 
 /* Ventana para las opciones de cada pin */
-* .ventana-pin {
+.ventana-pin {
   width: 100%;
   height: auto;
   display: none;
   border-radius: 3px; }
 
-* .ventana-pin a {
+.ventana-pin a {
   float: right;
   font-size: 17px;
   margin-right: 14px; }

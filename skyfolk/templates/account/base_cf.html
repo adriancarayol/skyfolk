@@ -6,7 +6,7 @@
     <script async src="{{STATIC_URL}}js/config.js"></script>
     <link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all" onload="if(media!='all')media='all'">
     <link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' onload="if(media!='all')media='all'">
-    <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+    <meta name="viewport" content="width=device-width, maximum-scale=1, minimum-scale=0.5">
 {% endblock%}
 {% load i18n avatar_tags %}
 {% block title %} <title>Configuración - {{ request.user.username }}.</title> {% endblock %}
@@ -14,30 +14,36 @@
 	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome-ie7.min.css" rel="stylesheet" />
 	<![endif]-->
 {% block content %}
+    <div class="container">
     {% block nav %}
-<div class="col-lg-12 col-md-12 col-sm-12">
-    <div class="col-lg-3 col-md-12 col-sm-12 wrapper-menu-config">
-      <nav class="menu-config">
-          <a id="config-profile" class="perfil" onclick="toProfile('/config/profile')"><i class="fa fa-user"></i><br>Perfil</a>
-          <a id="config-password" class="Contraseña" onclick="toProfile('/config/password/change')"><i class="fa fa-lock"></i><br>Contraseña</a>
-          {% if request.user|has_avatar %}
-          <a id="config-avatar" class="Contraseña" onclick="toProfile('{% url 'avatar_change' %}')"><i class="fa fa-camera-retro"></i><br>Imagen de perfil</a>
-          {% else %}
-          <a id="config-avatar" class="Contraseña" onclick="toProfile('{% url 'avatar_add' %}')"><i class="fa fa-camera-retro"></i><br>Imagen de perfil</a>
-          {% endif %}
-          <a id="config-email" class="perfil" onclick="toProfile('/config/email')"><i class="fa fa-envelope"></i><br>Email</a>
-          <a id="config-privacity" class="perfil" onclick="toProfile('/config/privacity')"><i class="fa fa-lock"></i><br>Privacidad</a>
-          <a id="config-personal-pin" class="perfil" onclick="toProfile('/config/pincode')"><i class="fa fa-asterisk"></i><br>Pin personal</a>
-          <a id="config-black-list" class="perfil" onclick="toProfile('/config/blocked')"><i class="fa fa-ban" aria-hidden="true"></i><br>Usuarios bloqueados</a>
-          <a id="config-delete-account" class="perfil" onclick="toProfile('/config/delete_account')"><i class="fa fa-minus" aria-hidden="true"></i><br>Eliminar cuenta</a>
-      </nav>
-  </div>
-    {% endblock %}
-  <div class="col-lg-7 col-md-12 col-sm-12 wrapper-p">
-    <div class="col-lg-12 col-md-12 col-sm-12 wrapper-title">
-      {% block cf-title %}{% endblock %}
-      {% block cf-form %}{% endblock %}
+        <div class="row">
+            <div class="col l12 m12 s12">
+                <div class="col l2 m12 s12 wrapper-config-menu">
+                  <ul class="menu-config">
+                      <li id="config-profile" onclick="toProfile('/config/profile')">Perfil<i class="material-icons right">person</i></li>
+                      <li id="config-password" onclick="toProfile('/config/password/change')">Contraseña<i class="material-icons right">lock</i></li>
+                      {% if request.user|has_avatar %}
+                      <li id="config-avatar" onclick="toProfile('{% url 'avatar_change' %}')">Imagen de perfil<i class="material-icons right">camera_front</i></li>
+                      {% else %}
+                      <li id="config-avatar" onclick="toProfile('{% url 'avatar_add' %}')">Imagen de perfil<i class="material-icons right">camera_front</i></li>
+                      {% endif %}
+                      <li id="config-email" onclick="toProfile('/config/email')">Email<i class="material-icons right">email</i></li>
+                      <li id="config-privacity" onclick="toProfile('/config/privacity')">Privacidad<i class="material-icons right">security</i></li>
+                      <li id="config-personal-pin" onclick="toProfile('/config/pincode')">Pin personal<i class="material-icons right">person_pin</i></li>
+                      <li id="config-black-list" onclick="toProfile('/config/blocked')">Usuarios bloqueados<i class="material-icons right">block</i></li>
+                      <li id="config-delete-account" onclick="toProfile('/config/delete_account')">Eliminar cuenta<i class="material-icons right">delete</i></li>
+                  </ul>
+              </div>
+                {% endblock %}
+                <div class="row">
+                  <div class="col l7 m12 s12 wrapper-p">
+                    <div class="col l12 m12 s12 wrapper-title">
+                      {% block cf-title %}{% endblock %}
+                      {% block cf-form %}{% endblock %}
+                    </div>
+                  </div>
+                </div>
+                </div>
+        </div>
     </div>
-  </div>
-</div>
 {% endblock %}

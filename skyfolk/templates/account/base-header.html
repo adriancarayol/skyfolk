@@ -44,6 +44,12 @@
           {% include "account/menu-horizontal.html" %}
           <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span id="live_notify_badge">0</span></a>
       </div>
+        <div class="field" id="searchform">
+        <form method='post' action='/search/'>{% csrf_token %}
+          {{searchForm}}
+        </form>
+        <!-- Logotipo que re-direcciona a la pagina principal -->
+         </div><
     </nav>
     {% include "account/menu-vertical.html" %}
     {% include "account/notification-right-menu.html" %}

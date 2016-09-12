@@ -29,28 +29,28 @@ $(window).ready(function() {
     var menuConfig = document.getElementsByClassName('menu-config');
     switch (conf) {
         case "profile":
-            $(menuConfig).find('a:first-child').css('color','#1e88e5');
+            $(menuConfig).find('li:first-child').css('color','#1e88e5');
             break;
         case "password":
-            $(menuConfig).find('a:nth-child(2)').css('color', '#1e88e5');
+            $(menuConfig).find('li:nth-child(2)').css('color', '#1e88e5');
             break;
         case "config":
-            $(menuConfig).find('a:nth-child(3)').css('color', '#1e88e5');
+            $(menuConfig).find('li:nth-child(3)').css('color', '#1e88e5');
             break;
         case "email":
-            $(menuConfig).find('a:nth-child(4)').css('color', '#1e88e5');
+            $(menuConfig).find('li:nth-child(4)').css('color', '#1e88e5');
             break;
         case "privacity":
-            $(menuConfig).find('a:nth-child(5)').css('color', '#1e88e5');
+            $(menuConfig).find('li:nth-child(5)').css('color', '#1e88e5');
             break;
         case "pincode":
-            $(menuConfig).find('a:nth-child(6)').css('color', '#1e88e5');
+            $(menuConfig).find('li:nth-child(6)').css('color', '#1e88e5');
             break;
         case "blocked":
-            $(menuConfig).find('a:nth-child(7)').css('color', '#1e88e5');
+            $(menuConfig).find('li:nth-child(7)').css('color', '#1e88e5');
             break;
         case "delete_account":
-            $(menuConfig).find('a:nth-child(8)').css('color', '#FF6347');
+            $(menuConfig).find('li:nth-child(8)').css('color', '#FF6347');
             break;
         default:
             break;

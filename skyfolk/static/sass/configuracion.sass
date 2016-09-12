@@ -14,7 +14,6 @@ html
   border-bottom: 1px solid $greyblue
   margin-bottom: 70px
   padding: 10px 0
-  position: relative
 
   & h4
     color: #66757F
@@ -32,9 +31,9 @@ html
 
 
 .wrapper-p
-  margin-top: 5% !important
   background-color: #fafafa
   padding: 10px
+  margin-top: 1.3em
   border-radius: 8px
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
 
@@ -57,32 +56,32 @@ html
 
 /* Menu horizontal */
 
-.wrapper-menu-config
+.wrapper-config-menu
   position: relative
-  margin-top: 5%
-  margin-right: 60px
+  margin-right: 10%
 .menu-config
   position: relative
   display: block
   width: 100%
   height: auto
-  background-color: #eeeeee
+  border: 1px solid #e1e8ed
+  border-radius: 5px
+  margin-top: 1.3em
 
-.menu-config a
-  flex: 1
-  text-decoration: none
-  color: grey
-  text-align: center
+
+
+.menu-config li
+  color: #555
+  text-align: left
   height: 40px
   display: block
-  border-right: 2px solid $blueskyfolk
   background-color: #fff
-  margin-bottom: 5px
-  transition: all .3s linear
+  border-top: 1px solid #e1e8ed
+  padding: 8px 12px
 
-.menu-config a:hover
+.menu-config li:hover
   color: $blueskyfolk
-  border-right: 10px solid #eee
+  background-color: #f5f8fa
 
 .wr
   position: relative
@@ -103,9 +102,6 @@ html
 .password_change label
   font-size: 1.2em
 
-.password_change #btn
-  margin-top: 40px
-
 .img-profile
   width: 120px
   height: 120px
@@ -116,22 +112,6 @@ html
   margin: auto
   top: 80px
 
-.actual, #form-changepass input
-  padding: 10px 5px
-  border: none
-  border-bottom: solid 2px #c9c9c9
-  transition: border 0.3s
-  outline: none
-  width: 100%
-  margin-top: 10px
-  background-color: transparent
-
-#form-changepass input
-  width: 30%
-
-.actual:focus, #form-changepass input:focus, #id_status:focus
-  border-bottom: solid 2px $blueskyfolk
-
 
 .index-wrapper
   position: relative
@@ -139,7 +119,7 @@ html
   width: 350px
   margin-right: auto
   margin-left: auto
-  margin-top: 25%
+  margin-top: 2.6em
   height: auto
   font-size: 1.4em
 
@@ -163,32 +143,7 @@ html
   border-radius: 8px 8px 8px 8px
   box-shadow: rgb(196, 196, 196) 5px 5px
 
-input[type="password"]
-  position: relative
-  display: list-item
-  border: 1px solid rgb(196, 196, 196)
-  width: 120px
-  height: 30px
-  padding: 10px 5px
-  left: 220px
 
-label[for="id_oldpassword"]
-  color: #212121
-  font-weight: 100
-  position: relative
-  top: 25px
-
-label[for="id_password1"]
-  color: #212121
-  font-weight: 100
-  position: relative
-  top: 25px
-
-label[for="id_password2"]
-  color: #212121
-  font-weight: 100
-  position: relative
-  top: 25px
 
 #contra
   position: absolute
@@ -219,26 +174,9 @@ label[for="id_password2"]
 /* Boton salvar cambios */
 .wrapper-p
   & button[type="submit"]
-    border: medium none
-    border-radius: 2px
-    display: inline-block
-    height: 36px
-    line-height: 36px
-    padding: 0 2rem
-    text-transform: uppercase
-    vertical-align: middle
-    text-decoration: none
-    color: $blueskyfolk
-    background-color: transparent
-    text-align: center
-    letter-spacing: .5px
-    transition: all .2s ease-out 0s
-    cursor: pointer
-    float: right
-    outline: none
-    &:hover
-      background-color: #eee
-      opacity: .8
+    margin-bottom: 5px
+  & .btn-password
+    margin-right: -10%
 
 #id_image
   display: list-item
@@ -277,22 +215,12 @@ label[for="id_status"]
   font-weight: 100
   position: relative
 
-#id_hiddenMenu
-  opacity: 1
-
-label[for="id_hiddenMenu"]
-  top: 0
-  font-family: 'Open Sans', sans-serif
-  font-weight: 100
-  position: relative
-
 .cn
   font-size: 20px
   text-shadow: #ccc .5px .5px .5px
   color: #424242
   font-family: 'Open Sans', sans-serif
   margin-left: 17px
-  margin-top: -14px
 
 .ch
   font-size: 12px
