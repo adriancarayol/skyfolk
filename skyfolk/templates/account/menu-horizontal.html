@@ -1,37 +1,7 @@
-{% comment %}
-  Template para el menu horizontal del perfil
-{% endcomment %}
-<li>
-  <ul class="fa fa-bars fa-lg">
-    {% if user.profile.hiddenMenu == False %} <!-- Elección del usuario el menu a mostrar -->
-        <li class="fa-bars-content">
-          <ul>
-              <li class="fa fa-paper-plane fa-2x" id="publish2"> </li>
-              <li class="fa fa-home fa-2x" onclick="location.href='/'"> </li>
-              <li class="fa fa-users fa-2x" onclick="location.href='/following/{{ request.user }}'"> </li>
-              <li class="fa fa-sign-out fa-2x" onclick="location.href='{% url 'account_logout' %}'"> </li>
-                {% if request.user.profile.image %}
-                  <li class="profile-user" onclick="location.href='/profile/{{ request.user }}'">
-                    <img src="{{request.user.profile.image.url}}">
-                  </li>
-                {% else %}
-                  <li class="profile-user" onclick="location.href='/profile/{{ request.user }}'">
-                    <img src="{{STATIC_URL}}img/nuevo.png">
-                  </li>
-                {% endif %}
-          </ul>
-        </li>
-        {% endif %}
-      </ul>
-</li>
-{% if user.profile.hiddenMenu == True %}
-      <li>
-          <ul id="hor-menu" class="oldMenu">
-            <li onclick="location.href='/inicio'"><i class="fa fa-home" ></i> <a>Inicio</a></li>
-            <li id="publish2"><i class="fa  fa-paper-plane"> </i> <a>Mensaje</a></li>
-            <li onclick="location.href='/following/{{ request.user.username }}'"><i class="fa fa-user"></i><a> Seguidos</a></li>
-            <li id="agregar-amigo"><i class="fa fa-user-plus"> </i> <a>Agregar</a></li>
-            <li onclick="location.href='{% url 'account_logout' %}'"><i class="fa fa-sign-out"></i> <a>Salir</a></li>
-        </ul>
-      </li>
-{% endif %}
+<ul class="left hide-on-med-and-down">
+                <li><a href="/inicio" class="blue-text text-darken-1"> <i class="material-icons">home</i></a></li>
+                <li id="publish2"><a class="blue-text text-darken-1"><i class="material-icons">message</i></a></li>
+                <li><a href="/following/{{ request.user.username }}" class="blue-text text-darken-1"><i class="material-icons">people</i></a></li>
+                <li id="agregar-amigo"> <a class="blue-text text-darken-1"><i class="material-icons">add</i></a></li>
+                <li><a href="{% url 'account_logout' %}" class="blue-text text-darken-1"><i class="material-icons">exit_to_app</i></a></li>
+</ul>

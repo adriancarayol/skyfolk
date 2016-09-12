@@ -183,30 +183,18 @@ body > .container
     display: block
     height: 120px
     bottom: 0
+    width: 100%
     & .controls-notifications
       position: relative
       list-style-type: none
       text-align: center
       & .nav-button-notifications, .nav-button-notifications:visited
-        border: medium none
-        border-radius: 2px
         display: inline-block
         height: 36px
         line-height: 36px
         padding: 0 2rem
         text-transform: uppercase
-        text-decoration: none
-        background-color: $blueskyfolk
-        text-align: center
-        letter-spacing: 0.5px
-        transition: all 0.2s ease-out 0s
-        cursor: pointer
-        outline: none
         font-size: 1.3em
-        color: #fff
-        text-decoration: none
-        &:hover
-          opacity: 0.8
   & li
     height: 110px
     width: 100%
@@ -222,37 +210,29 @@ body > .container
     & a, a:visited
       color: $blueskyfolk
       text-decoration: none
+      padding: 0
+      display: inline-block
+      height: 0
+      line-height: 0
+      font-size: 1em
     & .notification-body, .notification-buttons
       position: relative
       display: block
       width: 90%
       height: auto
     & .notification-buttons
-      margin-top: 2.5%
+      margin-top: 5.25%
       text-align: center
     & .accept-response, .rejected-response
-      border: medium none
-      border-radius: 2px
       height: 36px
-      line-height: 36px
       padding: 0 2rem
+      margin-right: 5%
       display: inline-block
-      text-transform: uppercase
       vertical-align: middle
-      text-decoration: none
-      background-color: transparent
-      text-align: center
-      letter-spacing: 0.5px
-      transition: all 0.2s ease-out 0s
       cursor: pointer
-      outline: none
       &:hover
         opacity: 0.8
         background-color: #eee
-    & .accept-response
-      color: #4caf50
-    & .rejected-response
-      color: #f44336
     & i
       position: relative
       display: inline-block
@@ -272,6 +252,8 @@ body > .container
     & .fa-remove
       position: relative
       float: right
+      margin-top: -10px
+      right: -10px
       color: #616161
       &:hover
         opacity: 0.8
@@ -541,3 +523,15 @@ textarea
 
 textarea:focus
   border: 1px solid grey
+
+.nav-wrapper .button-right-notify > i
+  display: inline-block
+.nav-wrapper .button-right-notify > span
+  background-color: tomato
+  font-size: 10px
+  padding: 5px 5px
+  line-height: 10px
+  text-decoration: none
+  border-radius: 10px 100% 100% 100%
+  display: inline-block
+  color: white

@@ -85,7 +85,7 @@ $(document).ready(function () {
 
     $(".button-right-notify").sideNav({
         edge: 'right', // Choose the horizontal origin
-        menuWidth: 300,
+        menuWidth: 340,
     });
 
     var page_wrapper = document.getElementById('page-wrapper');

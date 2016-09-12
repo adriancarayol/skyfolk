@@ -35,19 +35,14 @@
     </ul>
     </nav>
     {% endcomment %}
+
 <div class="navbar-fixed">
     <nav>
       <div class="nav-wrapper white z-depth-1">
           <a href="/profile/{{ request.user }}/" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
           <a data-activates="mobile-menu" class="btn-flat left button-menu-left blue-text text-darken-1"><i class="material-icons">menu</i></a>
-          <ul class="left hide-on-med-and-down">
-                <li><a href="/inicio" class="blue-text text-darken-1"> <i class="material-icons">home</i></a></li>
-                <li id="publish2"><a class="blue-text text-darken-1"><i class="material-icons">message</i></a></li>
-                <li><a href="/following/{{ request.user.username }}" class="blue-text text-darken-1"><i class="material-icons">people</i></a></li>
-                <li id="agregar-amigo"> <a class="blue-text text-darken-1"><i class="material-icons">add</i></a></li>
-                <li><a href="{% url 'account_logout' %}" class="blue-text text-darken-1"><i class="material-icons">exit_to_app</i></a></li>
-          </ul>
-          <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span id="live_notify_badge" class="">0</span></a>
+          {% include "account/menu-horizontal.html" %}
+          <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span id="live_notify_badge">0</span></a>
       </div>
     </nav>
     {% include "account/menu-vertical.html" %}

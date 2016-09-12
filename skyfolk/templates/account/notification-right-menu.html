@@ -7,15 +7,15 @@
 <!-- MENU VERTICAL CON NOTIFICACIONES  -->
 {% comment %}
  {% endcomment %}
-<ul id="notification-menu" class="side-nav nav-vertical-and-chat">
-    <ul id="list-notify" class="list-notifications">
-    {% live_notify_list %}
+<div id="notification-menu" class="side-nav nav-vertical-and-chat">
+    <ul id="list-notify" class="collection">
+        {% live_notify_list %}
     </ul>
-    <li><div class="divider"></div></li>
-        <div class="col l12 m12 s12 nav-vertical-controls">
+    <div class="nav-vertical-controls">
+        <div class="divider"></div>
         <div class="controls-notifications">
-            <a id="clear-notify" class="nav-button-notifications">Limpiar</a>
-            <a href="/inbox/notifications/" class="nav-button-notifications">Todas</a>
-      </div>
-      </div>
-</ul>
+            <a id="clear-notify" class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
+            <a href="/inbox/notifications/" id="clear-notify" class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Todas</a>
+        </div>
+    </div>
+</div>

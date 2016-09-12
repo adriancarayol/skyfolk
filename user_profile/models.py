@@ -66,8 +66,6 @@ class UserProfile(models.Model):
                                       related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
     ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
-    hiddenMenu = models.BooleanField(
-        default=True)  # Para que el usuario decida que menu le gustaria tener, si el oculto o el estático.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     """

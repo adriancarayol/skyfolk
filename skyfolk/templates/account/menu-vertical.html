@@ -15,7 +15,7 @@ overflow: hidden;
         height: auto;
         padding: 0;
     }
-    .side-nav a {
+    ul#mobile-menu a {
         color: rgba(0, 0, 0, 0.87);
         display: block;
         font-size: 14px;
@@ -24,12 +24,18 @@ overflow: hidden;
         line-height: 48px;
         padding: 0 32px;
     }
-    .side-nav li {
+    ul#mobile-menu li {
         float: none;
     padding: 0 15px;
     line-height: 64px;
     }
-    .side-nav li > a > i, .side-nav li > a > [class^="mdi-"], .side-nav li > a > [class*="mdi-"], .side-nav li > a > i.material-icons {
+    ul#mobile-menu li:hover > a {
+        color: #1e88e5;
+    }
+    ul#mobile-menu li:hover > a > i {
+        color: #1e88e5 !important;
+    }
+    ul#mobile-menu li > a > i, ul#mobile-menu li > a > [class^="mdi-"], ul#mobile-menu li > a > [class*="mdi-"], ul#mobile-menu li > a > i.material-icons {
         color: rgba(0, 0, 0, 0.54);
         float: left;
         line-height: 48px;
@@ -62,9 +68,9 @@ overflow: hidden;
         <a href="#!email"><span class="white-text email">{{ request.user.first_name }}</span></a>
     </div></li>
     <li><a href="/config/profile/"><i class="material-icons">settings</i>Configuración</a></li>
-    <li><a href="/messages/inbox/">Mensajes privados</a></li>
+    <li><a href="/messages/inbox/"><i class="material-icons">email</i>Mensajes privados</a></li>
     <li><div class="divider"></div></li>
-    <li><a href="{% url 'account_logout' %}" class="subheader">Salir</a></li>
-    <li><a class="waves-effect shortcut-keyboard">Atajos</a></li>
-    <li><a href="/about/home/" class="waves-effect" href="#!">Ayuda</a></li>
+    <li><a href="{% url 'account_logout' %}" class="subheader"><i class="material-icons">exit_to_app</i>Salir</a></li>
+    <li><a class="waves-effect shortcut-keyboard"><i class="material-icons">keyboard</i>Atajos</a></li>
+    <li><a href="/about/home/" class="waves-effect" href="#!"><i class="material-icons">help</i>Ayuda</a></li>
 </ul>

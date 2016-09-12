@@ -23,15 +23,17 @@ function fill_notification_list(data) {
             var item = data.unread_list[i];
             console.log(item);
             var message = '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + item.slug + '"/></a>';
-            if(typeof item.actor !== 'undefined' && item.level !== 'new_follow'){
-                message = message + " <div class=\"notification-body\"><a href=\"/profile/" + item.actor + '" >' + item.actor + '</a>';
-            }
             if (item.actor_avatar !== null && typeof item.actor_avatar !== 'undefined') {
-                message = message + " <img class=\"notification-img\" src=\"" + item.actor_avatar + '"/>';
+                message = message + " <img class=\"circle\" src=\"" + item.actor_avatar + '"/>';
             }
+            if(typeof item.actor !== 'undefined' && item.level !== 'new_follow'){
+                message = message + "<a class=\"title\" href=\"/profile/" + item.actor + '" >' + item.actor + '</a>';
+            }
+
             if(typeof item.verb !== 'undefined'){
-                message = message + " <i class=\"notification-verb\"/>" + item.verb + '</i>';
+                message = message + " <span class=\"title\"/>" + item.verb + '</span>';
             }
+
             if(typeof item.target !== 'undefined'){
                 message = message + " " + item.target;
             }
@@ -39,15 +41,16 @@ function fill_notification_list(data) {
                 message = message + " " + item.description;
             }
             if(typeof item.timestamp !== 'undefined'){
-                message = message + " <br><i>" + item.timestamp + '</i></div>';
+                message = message + "<p><i>" + item.timestamp + '</i></p>';
             }
             if (typeof item.level !== 'undefined' && item.level == 'friendrequest') {
                 message = message + " <div class=\"notification-buttons\"><" +
-'button data-notification="' + item.slug + '" onclick="AJAX_respondFriendRequest(\'' + item.actor_object_id + '\',\'' + "accept" + '\',\'' + item.id + '\'); AJAX_delete_notification(\'' + item.slug + '\',\'' + item.id + '\')" class="accept-response"> Aceptar</button>\<' +
-                    'button data-notification="' + item.slug + '" onclick="AJAX_respondFriendRequest(\'' + item.actor_object_id + '\',\'' + "rejected" + '\',\'' + item.id + '\'); AJAX_delete_notification(\'' + item.slug + '\',\'' + item.id + '\')" class="rejected-response"> Rechazar</button>\<' +
+'button data-notification="' + item.slug + '" onclick="AJAX_respondFriendRequest(\'' + item.actor_object_id + '\',\'' + "accept" + '\',\'' + item.id + '\'); AJAX_delete_notification(\'' + item.slug + '\',\'' + item.id + '\')" class="accept-response waves-effect waves-light btn white-text green"><i class="material-icons">done</i></button>\<' +
+                    'button data-notification="' + item.slug + '" onclick="AJAX_respondFriendRequest(\'' + item.actor_object_id + '\',\'' + "rejected" + '\',\'' + item.id + '\'); AJAX_delete_notification(\'' + item.slug + '\',\'' + item.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
                     '/div>';
             }
-            menu.innerHTML = menu.innerHTML + '<li data-id="' + item.id + '">'+ message + '</li>';
+            message += "<a href=\"#!\" class=\"secondary-content\"><i class=\"material-icons\">people<\/i><\/a>";
+            menu.innerHTML = menu.innerHTML + '<li class=\"collection-item avatar\" data-id="' + item.id + '">'+ message + '</li>';
         }
     }
 }

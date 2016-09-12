@@ -70,11 +70,10 @@ class ProfileForm(forms.ModelForm):
     status = forms.CharField(widget=forms.TextInput(attrs={'class': 'status',
                                                            'placeholder': 'Estado',
                                                            'maxlength': '20'}), required=False)
-    hiddenMenu = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'hiddeMenu'}), required=False)
 
     class Meta:
         model = UserProfile
-        fields = ('backImage', 'status', 'hiddenMenu')  # Añadir 'image' si decidimos quitar django-avatar.
+        fields = ('backImage', 'status', )  # Añadir 'image' si decidimos quitar django-avatar.
         # fields = ('image', 'backImage', 'status')
 
 
