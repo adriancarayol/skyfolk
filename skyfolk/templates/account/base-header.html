@@ -43,13 +43,12 @@
           <a data-activates="vertical-menu" class="btn-flat left button-menu-left blue-text text-darken-1"><i class="material-icons">menu</i></a>
           {% include "account/menu-horizontal.html" %}
           <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span id="live_notify_badge">0</span></a>
+          <div class="right field hide-on-med-only" id="searchform">
+            <form method='post' action='/search/'>{% csrf_token %}
+              {{searchForm}}
+            </form>
+         </div>
       </div>
-        <div class="field" id="searchform">
-        <form method='post' action='/search/'>{% csrf_token %}
-          {{searchForm}}
-        </form>
-        <!-- Logotipo que re-direcciona a la pagina principal -->
-         </div><
     </nav>
     {% include "account/menu-vertical.html" %}
     {% include "account/notification-right-menu.html" %}

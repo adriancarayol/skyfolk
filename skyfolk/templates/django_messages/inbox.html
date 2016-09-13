@@ -7,11 +7,11 @@
 {% block include_files %}
 {% endblock %}
   {% block body %}
-  <div class="col-lg-6 col-md-12 col-sm-12 body-wrapper">
+  <div class="col l6 m12 s12 body-wrapper">
   {% if message_list %}
      {% for message in message_list %}
-              <div class="col-sm-12 col-md-12 col-lg-12 card">
-              <div class="col-lg-3 col-md-12 col-sm-12">
+              <div class="col s12 m12 l12 card">
+              <div class="col l3 m12 s12">
                       <div class="image-user" id="image-user">
                           {% avatar message.sender %}
                           <span class="blue-text"><a href="/profile/{{ message.sender }}">{{ message.sender }}</a></span>
@@ -23,7 +23,7 @@
                     <span title="Mensaje respondido" class="replied-message"><i class="fa fa-pencil-square-o"></i></span>
                   {% endif %}
               </div>
-              <div class="col-lg-4 col-md-8 col-sm-8 msg-inbox">
+              <div class="col l4 m8 s8 msg-inbox">
                       <h5>
                         <b>
                           <a class="message_subject" href="{{message.get_absolute_url }}">{{ message.subject }}</a>

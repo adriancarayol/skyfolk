@@ -10,29 +10,32 @@
 {% endblock %}
 <!-- bloques de estilos para cada pagina -->
 {% block extra-css %}
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/mensajes_privados.css" />
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/mensajes_privados.css" />
 {% endblock %}
 <body>
 
 {% block content %}
-  <div class="col-lg-12 col-md-12 col-sm-12 wrapper">
-  <nav id="nav-menu-messages" class="col-lg-3 col-md-12 col-sm-12 menu-messages">
-      <a onclick="window.location.href='/messages/inbox'"><i class="fa fa-inbox"></i><br>Inbox</a>
-      <a onclick="window.location.href='/messages/compose'"><i class="fa fa-plus"></i><br>Componer</a>
-      <a onclick="window.location.href='/messages/outbox'"><i class="fa fa-lock"></i><br>Enviados</a>
-      <a onclick="window.location.href='/messages/trash'"><i class="fa fa-trash"></i><br>Papelera</a>
-  </nav>
+<div class="container">
+    <div class="row">
+    <div id="nav-menu-messages" class="col l2 m12 s12 wrapper-config-menu">
+        <ul class="menu-config">
+            <li id="config-profile" onclick="window.location.href='/messages/inbox'">Inbox<i class="material-icons right">person</i></li>
+            <li id="config-password" onclick="window.location.href='/messages/compose'">Componer<i class="material-icons right">lock</i></li>
+            <li onclick="window.location.href='/messages/outbox'">Email<i class="material-icons right">Componer</i></li>
+            <li onclick="window.location.href='/messages/trash'">Privacidad<i class="material-icons right">Papelera</i></li>
+        </ul>
+    </div>
+      <nav class="col l3 m12 s12 menu-messages-2">
+            <a href="#!" class="center-align">Contactos ({{ friends_top12|length }})</a>
+            {% for item in friends_top12 %}
+            <a href="/messages/compose/{{item.user__username}}"><i class="mdi-action-account-circle left"></i>({{item.user__username}})</a>
+            {% endfor %}
+            <a href="#!"><i class="mdi-social-group left"></i>Equipo desarrolladores <div class="chip">130</div></a>
+        </nav>
+        {% block body %}
 
-  <nav class="col-lg-3 col-md-12 col-sm-12 menu-messages-2">
-        <a href="#!" class="center-align">Contactos ({{ friends_top12|length }})</a>
-        {% for item in friends_top12 %}
-        <a href="/messages/compose/{{item.user__username}}"><i class="mdi-action-account-circle left"></i>({{item.user__username}})</a>
-        {% endfor %}
-        <a href="#!"><i class="mdi-social-group left"></i>Equipo desarrolladores <div class="chip">130</div></a>
-    </nav>
-    {% block body %}
-
+        {% endblock %}
     {% endblock %}
-{% endblock %}
-  </div>
+</div>
+</div>
 </body>

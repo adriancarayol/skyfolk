@@ -1,11 +1,15 @@
 {% comment %}
   Nueva respuesta a una publicacion
 {% endcomment %}
-<div class="hidden" id="caja-comentario-{{ pub.pk }}" >
-  <div class="triangle-reply"></div>
-  <!-- REPLY FORM -->
-  <form class="reply-form" action="" method="post">{% csrf_token %}
-    {{ reply_publication_form }}
-    <button type="submit" class="enviar" id="reply-{{ pub.pk }}"><i class="fa fa-paper-plane-o"></i></button>
-  </form>
+<div class="row">
+    <div class="col s12">
+        <div class="hidden" id="caja-comentario-{{ pub.pk }}" >
+          <div class="triangle-reply"></div>
+          <!-- REPLY FORM -->
+          <form class="reply-form" action="" method="post">{% csrf_token %}
+            {{ reply_publication_form }}
+            <button type="submit" class="enviar" id="reply-{{ pub.pk }}"><i class="fa fa-paper-plane-o"></i></button>
+          </form>
+        </div>
+    </div>
 </div>

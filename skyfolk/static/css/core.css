@@ -479,7 +479,7 @@ body > .container {
 .fontawesome-map-marker:hover {
   box-shadow: 0 1px 5px #1976d2; }
 
-textarea {
+div#page-wrapper textarea {
   width: 80%;
   position: relative;
   height: 40px;
@@ -496,9 +496,8 @@ textarea {
   -webkit-transition: all 0.2s linear;
   transition: all 0.2s linear;
   -moz-transition: all 0.2s linear; }
-
-textarea:focus {
-  border: 1px solid grey; }
+  div#page-wrapper textarea:focus {
+    border: 1px solid grey; }
 
 .nav-wrapper .button-right-notify > i {
   display: inline-block; }

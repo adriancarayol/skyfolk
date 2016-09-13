@@ -5,7 +5,7 @@
   -moz-box-sizing: border-box
   box-sizing: border-box
 
-body
+html
   font-size: 11.5px !important
   font-style: normal
   font-weight: 300
@@ -217,26 +217,32 @@ label[for="id_body"]
   font-size: 1.3em
   color: #212121
 
-.menu-messages
+.wrapper-config-menu
+  position: relative
+  margin-right: 10%
+.menu-config
   position: relative
   display: block
-  float: left
+  width: 100%
   height: auto
-  background-color: #eeeeee
+  border: 1px solid #e1e8ed
+  border-radius: 5px
+  margin-top: 1.3em
 
-.menu-messages a
-  flex: 1
-  text-decoration: none
-  color: grey
-  text-align: center
+
+
+.menu-config li
+  color: #555
+  text-align: left
   height: 40px
   display: block
-  border-right: 2px solid #1e88e5
   background-color: #fff
-  margin-bottom: 5px
-  transition: all .3s linear
-  -webkit-transition: all .3s linear
-  -moz-transition: all .3s linear
+  border-top: 1px solid #e1e8ed
+  padding: 8px 12px
+
+.menu-config li:hover
+  color: #1e88e5
+  background-color: #f5f8fa
 
 .menu-messages a:hover
   color: #1e88e5
