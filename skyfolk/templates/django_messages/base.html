@@ -19,22 +19,23 @@
     <div class="row">
     <div id="nav-menu-messages" class="col l2 m12 s12 wrapper-config-menu">
         <ul class="menu-config">
-            <li id="config-profile" onclick="window.location.href='/messages/inbox'">Inbox<i class="material-icons right">person</i></li>
-            <li id="config-password" onclick="window.location.href='/messages/compose'">Componer<i class="material-icons right">lock</i></li>
-            <li onclick="window.location.href='/messages/outbox'">Email<i class="material-icons right">Componer</i></li>
-            <li onclick="window.location.href='/messages/trash'">Privacidad<i class="material-icons right">Papelera</i></li>
+            <li id="config-profile" onclick="window.location.href='/messages/inbox'">Inbox<i class="material-icons right">inbox</i></li>
+            <li id="config-password" onclick="window.location.href='/messages/compose'">Componer<i class="material-icons right">create</i></li>
+            <li onclick="window.location.href='/messages/outbox'">Enviados<i class="material-icons right">forward</i></li>
+            <li onclick="window.location.href='/messages/trash'">Papelera<i class="material-icons right">delete</i></li>
         </ul>
     </div>
-      <nav class="col l3 m12 s12 menu-messages-2">
-            <a href="#!" class="center-align">Contactos ({{ friends_top12|length }})</a>
+    {% block body %}
+    {% endblock %}
+      <div id="nav-menu-messages-contact" class="col l2 m12 s12 wrapper-config-menu-contact">
+          <ul class="menu-config">
+            <li href="#!" class="center-align">Contactos ({{ friends_top12|length }})</li>
             {% for item in friends_top12 %}
-            <a href="/messages/compose/{{item.user__username}}"><i class="mdi-action-account-circle left"></i>({{item.user__username}})</a>
+            <li href="/messages/compose/{{item.user__username}}"><i class="material-icons right">account_circle</i>({{item.user__username}})</li>
             {% endfor %}
-            <a href="#!"><i class="mdi-social-group left"></i>Equipo desarrolladores <div class="chip">130</div></a>
-        </nav>
-        {% block body %}
-
-        {% endblock %}
+            <li href="#!"><i class="material-icons right">group</i>Equipo desarrolladores</li>
+          </ul>
+        </div>
     {% endblock %}
 </div>
 </div>

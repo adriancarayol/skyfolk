@@ -61,16 +61,16 @@ $(window).ready(function() {
     var menu_messages = document.getElementById('nav-menu-messages');
     switch (private_mess) {
         case "inbox":
-            $(menu_messages).find('a:first-child').css('color','#1e88e5');
+            $(menu_messages).find('li:first-child').css('color','#1e88e5');
             break;
         case "compose":
-            $(menu_messages).find('a:nth-child(2)').css('color', '#1e88e5');
+            $(menu_messages).find('li:nth-child(2)').css('color', '#1e88e5');
             break;
         case "outbox":
-            $(menu_messages).find('a:nth-child(3)').css('color', '#1e88e5');
+            $(menu_messages).find('li:nth-child(3)').css('color', '#1e88e5');
             break;
         case "trash":
-            $(menu_messages).find('a:nth-child(4)').css('color', '#1e88e5');
+            $(menu_messages).find('li:nth-child(4)').css('color', '#1e88e5');
             break;
         default:
             break;

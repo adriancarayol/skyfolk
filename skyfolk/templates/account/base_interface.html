@@ -46,29 +46,40 @@
     <!-- Form para nuevo mensaje -->
   {% if user.is_authenticated %}
   <div id="page-wrapper" style="display:none;">
-    <div id="status">
-        <i class="fa fa-paper-plane"> </i>
-        {% if user == user_profile %}
-                <h4>Publicar comentario</h4>
-                <h6>Publica un comentario para que el mundo lo vea.</h6>
-        {% else %}
-                <h4>Escribe algo a: {{ user_profile.username }}</h4>
-                <h6>Escribe un mensaje en el tablón de {{ user_profile.username }}.</h6>
-        {% endif %}
-      <p></p>
-    </div>
+  <div class="row">
+        <div id="status" class="col s12 title-page-wrapper">
+            {% if user == user_profile %}
+                    <h4><i class="material-icons left">send</i>Publicar comentario</h4>
+                    <h6>Publica un comentario para que el mundo lo vea.</h6>
+            {% else %}
+                    <h4><i class="material-icons left">send</i> Escribe algo a: {{ user_profile.username }}</h4>
+                    <h6>Escribe un mensaje en el tablón de {{ user_profile.username }}.</h6>
+            {% endif %}
+        </div>
+  </div>
     <form id="message-form2" action="" method="post">{% csrf_token %}
         {{ publicationForm.csrftoken }}
-        <p>{{ publicationForm.content }}</p>
+          <div class="row">
+              <div class="row">
+                <div class="input-field col s12">
+                  {{ publicationForm.content }}
+                  <label for="message2">Escribe tu mensaje</label>
+                </div>
+              </div>
+          </div>
         {{ publicationForm.author }}
         {{ publicationForm.board_owner }}
         {{ publicationForm.parent }}
-        <button type="submit" id="sendformpubli"><i class="fa fa-paper-plane"> </i> Enviar</button>
-        <button type="button" id="close"><i class="fa fa-remove"> </i> Cerrar</button>
-        <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
-        <button class="fontawesome-bullhorn"><i class="fa fa-bullhorn"> </i> Difundir mensaje</button>
-        <button class="fontawesome-file"><i class="fa fa-paperclip"> </i> Añadir archivo</button>
-        <button class="fontawesome-map-marker"><i class="fa fa-map-marker"> </i> Añadir localización</button>
+        <div class="row">
+            <div class="col s12">
+                <button type="submit" id="sendformpubli" class="waves-effect waves-light btn right blue">Enviar<i class="material-icons right">send</i></button>
+                <button type="button" id="close" class="waves-effect waves-light btn right transparent black-text">Cerrar<i class="material-icons right">close</i></button>
+                <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
+                <button class="waves-effect waves-light btn left blue"><i class="material-icons">import_contacts</i></button>
+                <button class="waves-effect waves-light btn left blue"><i class="material-icons">attach_file</i></button>
+                <button class="waves-effect waves-light btn left blue"><i class="material-icons">location_on</i></button>
+            </div>
+        </div>
     </form>
   </div>
   <!-- Atajos del usuario -->

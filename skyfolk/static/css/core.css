@@ -317,21 +317,32 @@ body > .container {
 
 #page-wrapper {
   width: 55%;
-  background: #fafafa;
-  padding: 1em;
+  background: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-  border-radius: 1px;
+  border-radius: 7px;
   cursor: default;
   font-family: "Open Sans", sans-serif;
-  /*CENTRADO */
   overflow: hidden;
   position: fixed;
-  top: 50%;
-  margin: -100px auto 0 auto;
+  top: 20%;
+  margin: 0 auto 0 auto;
   right: 0;
   left: 0;
   resize: none;
   z-index: 9999; }
+  #page-wrapper button {
+    margin-right: 10px; }
+  #page-wrapper textarea {
+    font-size: 1.3em;
+    font-weight: 600; }
+
+#page-wrapper .title-page-wrapper {
+  font-size: 1.4em;
+  background-color: #fafafa;
+  overflow: hidden; }
+
+#message-form2 {
+  margin-top: 1.5rem; }
 
 @media only screen and (min-width: 200px) and (max-width: 640px) {
   #page-wrapper {
@@ -339,165 +350,11 @@ body > .container {
 
   #message2 {
     font-size: 1.2em !important; } }
-#page-wrapper #status {
-  font-size: 1.4em;
-  margin-bottom: 1rem; }
-
-#page-wrapper #status .fa-paper-plane {
-  font-size: 2em !important;
-  padding: 7px; }
-
-#page-wrapper #status h4 {
-  top: -15px;
-  position: relative;
-  display: inline-block; }
-
-#page-wrapper #status h6 {
-  top: -10px;
-  position: relative;
-  margin-left: 54px;
-  font-size: 0.7em !important; }
-
 .open {
   color: green; }
 
 .closed {
   color: red; }
-
-#message-form2 {
-  margin-top: 1.5rem; }
-
-#message2 {
-  width: 98.5%;
-  padding: 0.5rem;
-  font-size: 1.5em;
-  border: 1px solid #D9D9D9;
-  border-radius: 3px;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
-  min-height: 200px;
-  margin-bottom: 1rem;
-  font-family: "Open Sans", sans-serif;
-  display: block;
-  resize: none; }
-
-#page-wrapper button[type="button"] {
-  border: medium none;
-  border-radius: 2px;
-  display: inline-block;
-  height: 36px;
-  line-height: 36px;
-  padding: 0 2rem;
-  text-transform: uppercase;
-  vertical-align: middle;
-  text-decoration: none;
-  color: #212121;
-  background-color: transparent;
-  text-align: center;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease-out 0s;
-  cursor: pointer;
-  float: right;
-  margin-right: 7px;
-  outline: none; }
-
-#page-wrapper button[type="submit"] {
-  border: medium none;
-  border-radius: 2px;
-  display: inline-block;
-  height: 36px;
-  line-height: 36px;
-  padding: 0 2rem;
-  text-transform: uppercase;
-  vertical-align: middle;
-  text-decoration: none;
-  color: #1e88e5;
-  background-color: transparent;
-  text-align: center;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease-out 0s;
-  cursor: pointer;
-  float: right;
-  outline: none; }
-
-#page-wrapper button[type="submit"]:hover {
-  opacity: 0.8;
-  background-color: #eee; }
-
-#page-wrapper button[type="button"]:hover {
-  opacity: 0.8;
-  background-color: #eee;
-  color: grey; }
-
-.fontawesome-bullhorn {
-  background: transparent;
-  display: inline-block;
-  border-radius: 3px;
-  border: none;
-  font-size: 1.1rem;
-  padding: 1rem 1em;
-  float: left;
-  color: #1e88e5;
-  top: 10px;
-  margin: 0 0.25rem;
-  cursor: pointer;
-  text-align: center; }
-
-.fontawesome-bullhorn:hover {
-  box-shadow: 0 1px 5px #1976d2; }
-
-.fontawesome-file {
-  background: transparent;
-  display: inline-block;
-  border-radius: 3px;
-  border: none;
-  font-size: 1.1rem;
-  padding: 1rem 1em;
-  float: left;
-  color: #1e88e5;
-  top: 10px;
-  cursor: pointer;
-  margin: 0 0.25rem;
-  text-align: center; }
-
-.fontawesome-file:hover {
-  box-shadow: 0 1px 5px #1976d2; }
-
-.fontawesome-map-marker {
-  background: transparent;
-  display: inline-block;
-  border-radius: 3px;
-  border: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  padding: 1rem 1em;
-  float: left;
-  color: #1e88e5;
-  top: 10px;
-  margin: 0 0.25rem;
-  text-align: center; }
-
-.fontawesome-map-marker:hover {
-  box-shadow: 0 1px 5px #1976d2; }
-
-div#page-wrapper textarea {
-  width: 80%;
-  position: relative;
-  height: 40px;
-  resize: none;
-  margin: 7px auto auto 7px;
-  padding: 7px 7px;
-  outline: none;
-  border: 1px solid #ececec;
-  border-radius: 3px;
-  font-family: "Open Sans", sans-serif;
-  color: #000;
-  font-weight: 100;
-  font-size: 15px;
-  -webkit-transition: all 0.2s linear;
-  transition: all 0.2s linear;
-  -moz-transition: all 0.2s linear; }
-  div#page-wrapper textarea:focus {
-    border: 1px solid grey; }
 
 .nav-wrapper .button-right-notify > i {
   display: inline-block; }

@@ -19,7 +19,8 @@ class ComposeForm(forms.Form):
     """
     recipient = CommaSeparatedUserField(label=_(u"Recipient"),  widget=forms.TextInput(attrs={'placeholder': 'Nombre'}))
     subject = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Asunto'}), max_length=120)
-    body = forms.CharField(widget=forms.Textarea(attrs={'rows': '10', 'cols':'120','placeholder':'Escribe tu mensaje...'}))
+    body = forms.CharField(widget=forms.Textarea(attrs={'rows': '10', 'cols':'120','placeholder':'Escribe tu mensaje...',
+                                                        'class': 'materialize-textarea'}))
 
 
     def __init__(self, *args, **kwargs):
@@ -33,7 +34,7 @@ class ComposeForm(forms.Form):
         recipients = self.cleaned_data['recipient']
         subject = self.cleaned_data['subject']
         body = self.cleaned_data['body']
-        body = '<div class="wrapper-message">%s</div>' % body
+        body = '%s' % body
         message_list = []
         for r in recipients:
             msg = Message(

@@ -1,16 +1,47 @@
 {% extends "django_messages/base.html" %}
 {% load i18n %}
+{% block title %}<title>{% trans "Compose Message"%}</title>{% endblock %}
 {% block body %}
     {% if parent_body %}
-    <div class="col-lg-6 col-md-12 col-sm-12 parent-body"><a href="/profile/{{ parent_username }}">{{ parent_username }}</a> <b>escribió</b>: {{ parent_body }}</div>
+    <div class="col l8 m12 m12 parent-body"><a href="/profile/{{ parent_username }}">{{ parent_username }}</a> <b>escribió</b>: {{ parent_body }}</div>
     {% endif %}
-    <h3 class="compose_message">{% trans "Compose Message"%}</h3>
-        <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="col l8 m12 s12 compose-body">
             <form action="" method="post">{% csrf_token %}
-            <table class="z-depth-1 compose_table">
-                {{ form.as_table }}
-            </table>
-            <button class="compose-button" type="submit" value="{% trans "Send" %} &raquo;">Enviar</button>
+            <div class="z-depth-1 compose_table">
+                <div class="row">
+                  <div class="row">
+                      {{ form.recipient.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        {{ form.recipient }}
+                        <label for="id_recipient">{% trans "Recipient"%}</label>
+                    </div>
+                  </div>
+                 </div>
+                <div class="row">
+                  <div class="row">
+                      {{ form.subject.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">subject</i>
+                        {{ form.subject }}
+                        <label for="id_subject">{% trans "Subject"%}</label>
+                    </div>
+                  </div>
+                 </div>
+                 <div class="row">
+                  <div class="row">
+                      {{ form.body.errors }}
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">mode_edit</i>
+                        {{ form.body }}
+                        <label for="id_body">{% trans "Body"%}</label>
+                    </div>
+                  </div>
+                 </div>
+                <button class="btn waves-effect waves-light right" type="submit" value="{% trans "Send" %} &raquo;">Enviar
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
             </form>
         </div>
     <!-- Reajusta el tamaño del textarea, conforme vamos escribiendo -->

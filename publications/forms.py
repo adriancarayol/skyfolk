@@ -15,6 +15,7 @@ class PublicationForm(forms.ModelForm):
         self.fields['content'].widget.attrs.update({
                 'placeholder': 'Escribe tu mensaje aqui...',
                 'id': 'message2', 'contenteditable': 'true',
+                'class': 'materialize-textarea',
             })
         self.fields['content'].label = ''
         self.fields['author'].widget = forms.HiddenInput()

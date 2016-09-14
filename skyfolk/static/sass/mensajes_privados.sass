@@ -18,8 +18,8 @@ html
   margin-top: 5%
   margin-bottom: 1em
 
-.body-wrapper
-  margin: auto
+.body-wrapper, .compose-body, .compose-outbox, .compose-trash, .body-view
+  margin-top: 1.3em
 
 #new_message
   padding: 10px 20px
@@ -75,93 +75,10 @@ html
   left: 45px
 
 
-.compose_table textarea
-  border: none
-  border-bottom: solid 2px #c9c9c9
-  transition: border 0.3s
-  outline: none
-  background-color: transparent
-  height: 100%
-  font-size: 1.3em
-  color: #212121
-
-.compose_table textarea:focus
-  border-bottom: solid 2px #1E88E5
-
-
-label[for="id_recipient"]
-  display: none
-
-
-label[for="id_subject"]
-  display: none
-
-label[for="id_body"]
-  display: none
-
-#id_recipient, #id_subject
-  padding: 10px 5px
-  border: none
-  border-bottom: solid 2px #c9c9c9
-  transition: border 0.3s
-  outline: none
-  width: 79%
-  background-color: transparent
-  margin-left: 6.5%
-
-#id_recipient:focus, #id_subject:focus
-  border-bottom: solid 2px #1E88E5
-
 
 .time
   font-size: 0.9em
   font-style: normal
-
-
-.compose-button
-  border: medium none
-  border-radius: 2px
-  display: inline-block
-  height: 36px
-  line-height: 36px
-  padding: 0 2rem
-  text-transform: uppercase
-  text-decoration: none
-  color: #1e88e5
-  background-color: transparent
-  text-align: center
-  letter-spacing: 0.5px
-  transition: all 0.2s ease-out 0s
-  cursor: pointer
-  margin-top: -10%
-  margin-right: 10px
-  position: relative
-  float: right
-  outline: none
-
-.compose-button:hover, .compose-view-button:hover
-  opacity: 0.8
-  background-color: #eee
-  color: grey
-
-.compose-view-button
-  border: medium none
-  border-radius: 2px
-  display: inline-block
-  height: 36px
-  line-height: 36px
-  padding: 0 2rem
-  text-transform: uppercase
-  text-decoration: none
-  color: #1e88e5
-  background-color: transparent
-  text-align: center
-  letter-spacing: 0.5px
-  transition: all 0.2s ease-out 0s
-  cursor: pointer
-  float: right
-  outline: none
-
 
 .outbox_sent
   border-bottom: 1px solid #e0e0e0
@@ -217,9 +134,8 @@ label[for="id_body"]
   font-size: 1.3em
   color: #212121
 
-.wrapper-config-menu
+.wrapper-config-menu, .wrapper-config-menu-contact
   position: relative
-  margin-right: 10%
 .menu-config
   position: relative
   display: block
@@ -373,29 +289,28 @@ label[for="id_body"]
   padding: 10px 10px 10px 50px
 
 /* VIEW */
-
-.wrapper-message
-  width: 80%
-  height: auto
-  min-height: 50px
-  border-radius: 3px
-  background-color: #e8eaf6
-  position: relative
-  padding: 10px
-  display: inline-block
-
-  &:before
-    content: ""
-    position: absolute
-    bottom: 0
-    width: 0
-    height: 0
-    border-bottom: 30px solid #e8eaf6
-    border-left: 20px solid transparent
-    -webkit-transform: rotate(270deg)
-    -moz-transform: rotate(270deg)
-    transform: rotate(270deg)
-    margin: 10px 0 0 -25px
+.body-view
+  blockquote
+    width: 80%
+    height: auto
+    min-height: 50px
+    border-radius: 3px
+    background-color: #e8eaf6
+    position: relative
+    padding: 10px
+    display: inline-block
+    &:before
+      content: ""
+      position: absolute
+      bottom: 0
+      width: 0
+      height: 0
+      border-bottom: 30px solid #e8eaf6
+      border-left: 20px solid transparent
+      -webkit-transform: rotate(270deg)
+      -moz-transform: rotate(270deg)
+      transform: rotate(270deg)
+      margin: 10px 0 0 -25px
 
 .parent-body
   height: auto
