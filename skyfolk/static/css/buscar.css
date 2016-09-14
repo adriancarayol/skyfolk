@@ -20,7 +20,7 @@
   width: 300px;
   border: none;
   height: 46px;
-    line-height: 46px;
+  line-height: 46px;
   text-align: left;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
@@ -235,10 +235,6 @@
     left: -260px;
     margin-top: 3px;
     width: 250px; }
-
-  #page-wrapper {
-    width: 50%;
-    margin-left: -94px; }
 
   #page-wrapper .fontawesome-bullhorn, .fontawesome-camera, .fontawesome-map-marker {
     display: none; } }

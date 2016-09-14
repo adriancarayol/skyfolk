@@ -68,9 +68,8 @@ $(document).ready(function () {
   });
 
     /* Abrir respuesta a comentario */
-    $('#options-comments').on('click', '.fa-reply', function() {
-        //var i = $(this).closest('.wrapper');
-        //replyComment(i);
+    $('div.options_comentarios').find('.opciones').on('click', '.fa-reply', function() {
+        console.log('OK...');
         var id_ = $(this).attr("id").slice(6);
         if (flag_reply) {
             $("#"+id_).slideUp("fast");

@@ -622,24 +622,10 @@ a.fontawesome-cog:hover {
   box-shadow: 0 0 5px #1e88e5;
 }
 .wrapper-reply .enviar {
-  float: right;
-  display: inline-block;
-  position: relative;
-  bottom: 55px;
-  margin-right: 1.5%;
-  border: 1px solid transparent;
-  padding: 7px;
-  border-radius: 3px;
-  outline: none;
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  cursor: pointer; }
-
-.wrapper-reply .enviar:hover {
-  color: #1e88e5;
-  border: 1px solid #1e88e5; }
-
+    margin-right: 2%;
+    margin-top: -7%;
+    margin-bottom: 1.25%;
+}
 .comment-reply {
   clear: both;
   padding: 2%;

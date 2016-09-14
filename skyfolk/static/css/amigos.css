@@ -13,9 +13,6 @@ html, body {
   margin-bottom: 2.5%; }
 
 .container .personal-card {
-  background-color: #fff;
-  width: 100%;
-  margin-top: 20px;
   height: 300px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4); }
 
@@ -132,7 +129,6 @@ html, body {
   font-family: "Open Sans", sans-serif;
   color: #555;
   padding: 7px;
-  border-left: 3px solid #ff6347;
   overflow: hidden; }
   .comm img {
     width: 20px;

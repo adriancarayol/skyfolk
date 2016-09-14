@@ -34,7 +34,8 @@ class ReplyPublicationForm(forms.ModelForm):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({
                 'placeholder': 'Escribe tu mensaje aqui...',
-                'id': 'message-reply'
+                'id': 'message-reply',
+                'class': 'materialize-textarea',
             })
         self.fields['content'].label = ''
         self.fields['author'].widget = forms.HiddenInput()
