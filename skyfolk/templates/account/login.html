@@ -7,7 +7,8 @@
 {% load url from future %}
 <!--{% block head_title %}{% trans "Sign In" %}{% endblock %}-->
 {% block extra_head %}
-<!--<link rel="stylesheet" type="text/css" href=".../static/css/login-signup.css" />-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 {% endblock %}
 {% block content %}
 <!-- <h1>{% trans "Sign In" %}</h1> -->
@@ -28,20 +29,53 @@ for a {{site_name}} account and sign in below:{% endblocktrans %}</p>
 <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
 -->
 {% endif %}
-<div id="login" class="row white z-depth-2">
-	<h5>Iniciar sesion</h5>
-	<form class="login form-3" method="POST" action="{% url 'account_login' %}">{% csrf_token %}
-		<div class="form-group">
-	  {{ form.as_p }}
-	  {% if redirect_field_value %}
-	  <input class="form-control" type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-	  {% endif %}
-	  </div>
-	  <button id="iniciar_sesion" class="waves-effect waves-light btn blue lighten-2" type="submit">{% trans "Sign In" %}</button>
-	  <a id="registrar" type="button" class="waves-effect waves-light btn blue lighten-2" onclick="javascript:location.href='{{ signup_url }}'">{% trans "Sign Up" %}</a>
-    <div class="forgot_pswd">
-    <a class="button secondaryAction" id="losepwd" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+    <div class="row">
+    <div id="login" class="white z-depth-2">
+        <div class="row">
+            <div class="col s12">
+                <h5>Iniciar sesion</h5>
+            </div>
+        </div>
+        <form class="login form-3" method="POST" action="{% url 'account_login' %}">{% csrf_token %}
+        <div class="form-group">
+            <div class="row">
+                {{ form.login.errors }}
+                <div class="input-field col s11">
+                    <i class="material-icons prefix">account_circle</i>
+                    {{ form.login }}
+                    <label for="login">{% trans "Username" %}</label>
+                </div>
+            </div>
+            <div class="row">
+                {{ form.password.errors }}
+                <div class="input-field col s11">
+                    <i class="material-icons prefix">vpn_key</i>
+                    {{ form.password }}
+                    <label for="id_password">{% trans "Password" %}</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 buttons">
+                    <button id="iniciar_sesion" class="waves-effect waves-light btn blue lighten-2 left" type="submit">{% trans "Sign In" %}</button>
+                    <button id="registrar" type="button" class="waves-effect waves-light btn blue lighten-2 right" onclick="javascript:location.href='{{ signup_url }}'">{% trans "Sign Up" %}</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s11 remember-check">
+                    {{ form.remember }}
+                    <label for="id_remember">Recordar</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 forgot-pass">
+                    <a class="button secondaryAction" id="losepwd" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                </div>
+            </div>
+        </div>
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+       </form>
     </div>
-	</form>
-</div>
+    </div>
 {% endblock %}

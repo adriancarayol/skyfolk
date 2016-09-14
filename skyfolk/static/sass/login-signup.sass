@@ -26,6 +26,11 @@ body
   background-repeat: no-repeat
   flex-wrap: wrap
 
+.signup
+  padding: 10px
+.login
+  padding-right: 10px
+  padding-left: 10px
 /* Random Background */
 #background_cycler
   padding: 0
@@ -123,115 +128,33 @@ body
 
 #login
   width: 370px
-  height: 390px
   margin: auto
   position: relative
   display: block
   top: 120px
-  border-radius: 1px
+  border-radius: 7px
   font-family: 'Open Sans', sans-serif
-  box-shadow: 0 55px 2px rgba(0, 0, 0, 0.2)
   z-index: 9999
-
-#login label, .block-formregister label
-  color: grey
-  font-size: 1em
-#login label[for="id_password"]
-  top: 15px
-
-form
-  position: relative
-  top: 23px
-  font-family: 'Open Sans', sans-serif
   color: black
 
 .links
   float: left
 
-.form-3 label
-  position: relative
-  text-align: center
-  font-family: 'Open Sans', sans-serif
-  font-weight: 100
-  left: 30px
-
 /* Estilos para el botón ¿olvido su contraseña? */
 
-.forgot_pswd
-  position: absolute
-  display: block
-  margin-top: 120px
-  height: 60px
-  width: 100%
-  background-color: white !important
-  right: 0
-  left: 0
-  margin-left: auto
-  margin-right: auto
-  border-top: 2px solid #bdbdbd
+.forgot-pass
   text-align: center
-  border-bottom-left-radius: 3px
-  border-bottom-right-radius: 3px
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+  border-top: 3px solid #eee
+  margin-bottom: 0 !important
 
-.forgot_pswd > .secondaryAction
-  font-size: 16px
-  margin: auto
-
-
-#id_remember
-  left: 60%
-  display: inherit
-  bottom: 45px
-
-
-.form-3 label[for="id_remember"]
-  left: 35%
-  font-size: 1.01121em
-  font-weight: 100
-  bottom: 40px
-  position: absolute
-
-
-.form-3 input[type="text"]
-  width: 70%
-  position: relative
-  margin: auto
-  outline: none
-  -webkit-transition: all .3s linear
-  -moz-transition: all .3s linear
-  transition: all .3s linear
-
-.form-3 input[type="email"]
-  width: 70%
-  position: relative
-  margin: auto
-  outline: none
-  -webkit-transition: all .3s linear
-  -moz-transition: all .3s linear
-  transition: all .3s linear
-
-.form-3 input[type=password]
-  width: 70%
-  position: relative
-  margin: 20px auto auto
-  outline: none
-  -webkit-transition: all .3s linear
-  -moz-transition: all .3s linear
-  transition: all .3s linear
-
-
-.form-3 input:focus
-  background-position: 5px
+.remember-check
+  text-align: center
 
 
 .row h5
-  position: absolute
-  left: 0
   text-align: center
   color: #757575
   border-bottom: 1px solid #bdbdbd
-  width: 100%
   margin: auto auto 10px
   font-weight: 100
   font-family: 'Open Sans', sans-serif
@@ -243,38 +166,18 @@ form
   display: inline-block
   position: relative
 
-.form-3 a
-  margin-left: 60px
-  position: relative
-  top: 13px
 
 .block-formregister
-  width: 320px
-  height: auto
   background-color: #fff
   position: relative
-  top: -30px
   float: right
   margin-right: 130px
   font-family: 'Open Sans', sans-serif
-  border-radius: 3px
+  border-radius: 7px
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
-  display: block
   padding: 0 0 30px
   margin-bottom: 5%
 
-  & #sign_in_register, #sign_up_register
-    position: relative
-    display: inline-block
-    width: 135px
-    margin: 3px auto auto 7px
-    z-index: 0
-
-
-  & #iniciar_sesion, & #registrar
-    position: relative
-    margin: -20px auto auto
-    display: inline-block
 
   & .reco-passwd
     position: absolute
@@ -306,7 +209,6 @@ form
 @media screen and (max-width: 600px)
   .block-formregister
     margin: auto
-    top: -80px
     float: none
 
   #background_cycler
@@ -322,39 +224,8 @@ form
     width: 350px
 
 .form-3 .form-group
-  height: 56%
-  width: 100%
-.form-3
-  height: 100%
-  width: 100%
-  padding: 10px
+  margin-top: 1.25%
 
-.form-3 p
-  padding-bottom: 10px
-
-.form-3 input
-  margin: 0 auto
-  display: block
-
-.form-3 input[type="checkbox"]
-  display: inline
-  float: right
-  margin-right: 55px
-
-.form-3 #registrar
-  float: right
-  position: relative
-  margin-top: -50px
-  display: inline-block
-  margin-right: 7px
-
-
-.form-3 #iniciar_sesion
-  float: left
-  margin-left: 7px
-  margin-top: 54px
-  display: inline-block
-  position: relative
 
 /* WebKit, Blink, Edge */
 ::-webkit-input-placeholder

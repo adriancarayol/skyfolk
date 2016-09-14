@@ -252,11 +252,11 @@ body > .container {
   left: 0;
   right: 0;
   width: 500px;
-  height: 400px;
+  height: auto;
   z-index: 9999;
   display: none;
-  background-color: #fff;
-  border-radius: 1px; }
+  background-color: #fafafa;
+  border-radius: 7px; }
 
 #atajos-keyboard-profile .atajos-title {
   position: relative;

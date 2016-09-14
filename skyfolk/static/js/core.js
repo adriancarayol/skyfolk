@@ -78,14 +78,18 @@ $(window).ready(function() {
 });
 
 $(document).ready(function () {
+
+    Materialize.updateTextFields();
+
+
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
-        menuWidth: 300,
+        menuWidth: 300
     });
 
     $(".button-right-notify").sideNav({
         edge: 'right', // Choose the horizontal origin
-        menuWidth: 340,
+        menuWidth: 340
     });
 
     var page_wrapper = document.getElementById('page-wrapper');
@@ -151,7 +155,7 @@ $(document).ready(function () {
 
 
       /* Abrir - Cerrar lista de atajos */
-      $('#mobile-menu').find('.shortcut-keyboard').on('click',function() {
+      $('#vertical-menu').find('.shortcut-keyboard').on('click',function() {
         $('#atajos-keyboard-profile').toggle();
       });
 
