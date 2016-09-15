@@ -14,31 +14,62 @@
 </div>
 {% endblock %}
 {% block cf-form %}
-<form id='formulario' method='post' enctype='multipart/form-data' action="">{% csrf_token %}
-	{{ privacity_form }}
-    <button name='action_add' class="btn btn-info" type="submit">Salvar cambios</button>
-</form>
-<div class="col l12 m12 s12 wrapper-options">
-	<h1><i>¿Qué significa cada opción?</i></h1>
-	<div class="col l12 m12 s12 options">
-		<ul>
-			<li class="col l12 m12 s12">
-				<h3>Todos pueden ver mi perfil y mis publicaciones</h3><br>
-				<p>Escoge esta opción para permitir a todo el mundo ver tu perfil y el contenido que publiques.</p>
-			</li>
-			<li class="col l12 m12 s12">
-				<h3>Sólo mis seguidores pueden ver mi perfil y mis publicaciones</h3><br>
-				<p>Escoge esta opción para permitir sólo a tus seguidores ver tu perfil y el contenido que publiques.<br></p>
-			</li>
-			<li class="col l12 m12 s12">
-				<h3>Sólo mis seguidores y aquellas personas que sigo pueden ver mi perfil y mis publicaciones</h3><br>
-				<p>Escoge esta opción para permitir sólo a tus seguidores y a las personas a las que sigues ver tu perfil y el contenido que publiques.</p>
-			</li>
-			<li class="col l12 m12 s12">
-				<h3>Nadie puede ver ni mi perfil ni mis publicaciones</h3><br>
-				<p>Esta opción es útil si quieres tener un perfil privado en el que guardar contenido útil para ti.</p>
-			</li>
-		</ul>
-	</div>
-</div>
+    <script>
+         $(document).ready(function() {
+            $('select').material_select();
+          });
+    </script>
+    <div class="row">
+        <div class="col s12">
+            <form id='formulario' method='post' enctype='multipart/form-data' action="">{% csrf_token %}
+                <div class="row">
+                    {{ privacity_form.privacity.errors }}
+                    <div class="input-field col s12">
+                        {{ privacity_form.privacity }}
+                        <label>Nivel de privacidad</label>
+                    </div>
+                </div>
+                <div class="row">
+                    {{ privacity_form.need_follow_confirmation.errors }}
+                    <div class="col s12">
+                        <div class="switch">
+                            <p>Necesito comprobar quien me sigue</p>
+                            <label>
+                              No
+                              {{ privacity_form.need_follow_confirmation }}
+                              <span class="lever"></span>
+                              Si
+                            </label>
+                      </div>
+                    </div>
+                </div>
+                <button name='action_add' class="btn btn-info" type="submit">Salvar cambios</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col l12 m12 s12 wrapper-options">
+            <h1>¿Qué significa cada opción?</h1>
+            <div class="col l12 m12 s12 options">
+                <ul>
+                    <li class="col l12 m12 s12">
+                        <h3>Todos pueden ver mi perfil y mis publicaciones</h3><br>
+                        <p>Escoge esta opción para permitir a todo el mundo ver tu perfil y el contenido que publiques.</p>
+                    </li>
+                    <li class="col l12 m12 s12">
+                        <h3>Sólo mis seguidores pueden ver mi perfil y mis publicaciones</h3><br>
+                        <p>Escoge esta opción para permitir sólo a tus seguidores ver tu perfil y el contenido que publiques.<br></p>
+                    </li>
+                    <li class="col l12 m12 s12">
+                        <h3>Sólo mis seguidores y aquellas personas que sigo pueden ver mi perfil y mis publicaciones</h3><br>
+                        <p>Escoge esta opción para permitir sólo a tus seguidores y a las personas a las que sigues ver tu perfil y el contenido que publiques.</p>
+                    </li>
+                    <li class="col l12 m12 s12">
+                        <h3>Nadie puede ver ni mi perfil ni mis publicaciones</h3><br>
+                        <p>Esta opción es útil si quieres tener un perfil privado en el que guardar contenido útil para ti.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

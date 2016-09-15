@@ -39,7 +39,7 @@
                         <p>{{ item.user__first_name }} {{item.user__last_name}}</p>
                     </div>
                     <div class="col l12 unblock-user-div">
-                        <span class="unblock-user" data-id="{{ item.user__profile__pk }}" onclick="AJAX_remove_bloq_from_config(this)">Desbloquear</span>
+                        <a class="waves-effect waves-light btn blue darken-1" data-id="{{ item.user__profile__pk }}" onclick="AJAX_remove_bloq_from_config(this)">Desbloquear</a>
                     </div>
                 </div>
             </li>

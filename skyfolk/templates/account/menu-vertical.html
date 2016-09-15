@@ -6,8 +6,8 @@
 
 <ul id="vertical-menu" class="side-nav">
     <li><div class="userView">
-        {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
-            <img class="background" src="{{user_profile.profile.backImage.url}}">
+        {% if request.user.profile.backImage and request.user.profile.backImage|file_exists %}
+            <img class="background" src="{{request.user.profile.backImage.url}}">
             {% else %}
             <img class="background" src="{{STATIC_URL}}img/nuevo_back.png">
         {% endif %}
