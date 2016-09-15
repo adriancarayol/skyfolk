@@ -17,7 +17,8 @@
             {% for item in friends_top4 %}
             <div class="col l3 m10 s12">
                 <div class="personal-card">
-                    <div class="col l12">
+                <div class="row">
+                    <div class="col s12">
                         <div class="header">
                            {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
                                <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user__profile__backImage }}">
@@ -31,12 +32,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col l12">
+                </div>
+                <div class="row">
+                    <div class="col s12">
                         <div class="name-friend">
                         <a href="/profile/{{ item.user__username }}">@{{ item.user__username }} </a><br><br>
                             <p>{{ item.user__first_name }} {{item.user__last_name}}</p>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
             {% endfor %}
@@ -44,10 +48,7 @@
         </div>
     </div>
 </div>
-{% endblock %}
-{% block extra-js %}
-    <script async src="{{STATIC_URL}}js/friends.js"></script>
-    <script async src="{{STATIC_URL}}js/jquery.min.js"></script>
+        <script src="{{STATIC_URL}}js/friends.js"></script>
     <script async type="text/javascript" language="javascript">
          $(function () {
              var $win = $(window);

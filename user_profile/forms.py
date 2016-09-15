@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
+from django.forms import FileInput
 
 from user_profile.models import UserProfile
 

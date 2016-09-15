@@ -73,9 +73,10 @@
   .wrapper-p .options-avatar label {
     margin-bottom: 20px; }
 
-.active {
-  border: 4px solid #1e88e5;
+.wrapper-p {
   /* DELETE AVATAR */ }
+  .wrapper-p .active {
+    border: 4px solid #1e88e5; }
 
 .delete-avatars input[type="checkbox"] {
   display: none; }

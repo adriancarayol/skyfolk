@@ -94,7 +94,7 @@ $(document).ready(function () {
 
     var page_wrapper = document.getElementById('page-wrapper');
     /* Mensaje flotante */
-    $("#publish2, #compose-new-no-comments, #publish").click(function()  {
+    $("#publish2, #compose-new-no-comments, #publish, #publish3").click(function()  {
         $(page_wrapper).each(function() {
           var displaying = $(this).css("display");
           $(page_wrapper).find("#message2").val('');
@@ -222,7 +222,7 @@ $(document).ready(function () {
     });
 
   /* Agregar Amigo por medio de PIN */
-  $('#agregar-amigo').on('click', function() {
+  $('#agregar-amigo, #agregar-amigo2').on('click', function() {
       swal({
             title: "Add new friend!",
             text: "Insert the friend's username or PIN",
