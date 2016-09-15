@@ -11,46 +11,15 @@ html, body {
   overflow: hidden;
   position: fixed;
   margin: -100px auto 0 auto;
-  top: 50%;
+  top: 20%;
   right: 0;
   left: 0;
   z-index: 9999;
   display: none; }
-  .container .upload_form input[type="submit"] {
-    border: medium none;
-    border-radius: 2px;
-    display: inline-block;
-    height: 36px;
-    line-height: 36px;
-    padding: 0 2rem;
-    text-transform: uppercase;
-    vertical-align: middle;
-    text-decoration: none;
-    color: #1e88e5;
-    background-color: transparent;
-    text-align: center;
-    letter-spacing: 0.5px;
-    transition: all 0.2s ease-out 0s;
-    cursor: pointer;
-    float: right;
-    outline: none; }
 
-.container-gallery .btn-upload-photo {
+.container-gallery .btn-floating {
   display: block;
-  border: none;
-  background-color: rgba(30, 136, 229, 0.4);
-  color: #ecf0f1;
-  margin: 0 auto 1% auto;
-  border-radius: 100%;
-  padding: 10px;
-  width: 50px;
-  height: 50px;
-  font-size: 1.5em;
-  transition: all 0.1s ease-in-out;
-  outline: none;
-  cursor: pointer; }
-  .container-gallery .btn-upload-photo:hover {
-    background-color: #1e88e5; }
+  margin: 0 auto 1% auto; }
 
 .image-div {
   margin-bottom: 2.5%; }
@@ -88,7 +57,7 @@ html, body {
           background-color: white; }
   .container-image .legend-content {
     height: 15%;
-    padding: 10px; }
+    padding: 5px; }
     .container-image .legend-content .legend-user-image {
       width: 20%;
       height: 50px;

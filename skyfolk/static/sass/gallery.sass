@@ -19,47 +19,17 @@ html, body
     overflow: hidden
     position: fixed
     margin: -100px auto 0 auto
-    top: 50%
+    top: 20%
     right: 0
     left: 0
     z-index: 9999
     display: none
-    & input[type="submit"]
-      border: medium none
-      border-radius: 2px
-      display: inline-block
-      height: 36px
-      line-height: 36px
-      padding: 0 2rem
-      text-transform: uppercase
-      vertical-align: middle
-      text-decoration: none
-      color: #1e88e5
-      background-color: transparent
-      text-align: center
-      letter-spacing: 0.5px
-      transition: all 0.2s ease-out 0s
-      cursor: pointer
-      float: right
-      outline: none
 
 .container-gallery
-  & .btn-upload-photo
+  & .btn-floating
     display: block
-    border: none
-    background-color: rgba(30, 136, 229, 0.4)
-    color: #ecf0f1
     margin: 0 auto 1% auto
-    border-radius: 100%
-    padding: 10px
-    width: 50px
-    height: 50px
-    font-size: 1.5em
-    transition: all .1s ease-in-out
-    outline: none
-    cursor: pointer
-    &:hover
-      background-color: rgba(30, 136, 229, 1)
+
 .image-div
   margin-bottom: 2.5%
 .container-image
@@ -95,7 +65,7 @@ html, body
           background-color: rgba(255, 255, 255, 1)
   & .legend-content
     height: 15%
-    padding: 10px
+    padding: 5px
     & .legend-user-image
       width: 20%
       height: 50px

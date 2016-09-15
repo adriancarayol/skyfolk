@@ -185,6 +185,7 @@ class UploadFormPhoto(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UploadFormPhoto, self).__init__(*args, **kwargs)
+        self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
 
     class Meta:
         model = Photo

@@ -12,7 +12,7 @@
     <div class="container">
         <div class="row">
             <div class="col l12 m12 s12 container-gallery">
-            <button class="btn-upload-photo" title="¡Subir una foto!" id="btn-upload-photo"><i class="fa fa-camera-retro" aria-hidden="true"></i></button>
+              <a id="btn-upload-photo" class="btn-floating btn-large waves-effect waves-light blue darken-1"><i class="material-icons">add</i></a>
                 {% if object_list %}
                     <div class="row">
                     {% for photo in object_list %}
@@ -32,7 +32,7 @@
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ photo.owner.username }}">@{{ photo.owner.username }}</a>
-                                        <i class="photo-title">{{ photo.title }}</i>
+                                        <i class="photo-title truncate">{{ photo.title }}</i>
                                         <i class="photo-date"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ photo.date_added|naturaltime }}</i>
                                     </div>
                                 </div>
@@ -45,8 +45,61 @@
         </div>
     <div class="upload_form" id="upload_photo">
         <form action="" method="post" accept-charset="utf-8" enctype="multipart/form-data">{% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" name="submit" value="Submit">
+            <div class="row">
+                <div class="file-field input-field">
+                    {{ form.image.errors }}
+                  <div class="btn blue darken-1 waves-effect waves-light">
+                    <span>Imágen</span>
+                    {{ form.image }}
+                  </div>
+                  <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                {{ form.crop_from.errors }}
+                <div class="input-field col s12">
+                    {{ form.crop_from }}
+                    <label>{% trans "crop from" %}</label>
+                </div>
+            </div>
+            <div class="row">
+                {{ form.effect.errors }}
+                <div class="input-field col s12">
+                    {{ form.effect }}
+                    <label>{% trans "photo effects" %}</label>
+                </div>
+            </div>
+            <div class="row">
+                {{ form.title.errors }}
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">title</i>
+                    {{ form.title }}
+                    <label for="id_title">{% trans "title" %}</label>
+                </div>
+            </div>
+            <div class="row">
+                {{ form.caption.errors }}
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">closed_caption</i>
+                    {{ form.caption }}
+                    <label for="id_caption">{% trans "caption" %}</label>
+                </div>
+            </div>
+            <div class="row">
+                {{ form.tags.errors }}
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">label</i>
+                    {{ form.tags }}
+                    <label for="id_caption">{{ form.tags.help_text }}</label>
+                </div>
+            </div>
+            <div class="row">
+                <button class="waves-effect waves-light btn blue darken-1 right" type="submit" >Subir
+                <i class="material-icons right">file_upload</i>
+                </button>
+            </div>
         </form>
     </div>
 </div> <!-- end wrapper -->
