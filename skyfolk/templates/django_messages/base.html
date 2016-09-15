@@ -31,7 +31,7 @@
           <ul class="menu-config">
             <li href="#!" class="center-align">Contactos ({{ friends_top12|length }})</li>
             {% for item in friends_top12 %}
-            <li href="/messages/compose/{{item.user__username}}"><i class="material-icons right">account_circle</i>({{item.user__username}})</li>
+            <li onclick="window.location.href='/messages/compose/{{item.user__username}}'"><i class="material-icons right">account_circle</i>({{item.user__username}})</li>
             {% endfor %}
             <li href="#!"><i class="material-icons right">group</i>Equipo desarrolladores</li>
           </ul>

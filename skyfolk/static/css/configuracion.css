@@ -110,7 +110,7 @@ html {
   height: auto;
   font-size: 1.4em; }
 
-.nameConfig, .lastConfig, .image-usr, .backimage-usr, .status-usr, .menu-usr {
+.backimage-usr {
   position: relative;
   display: block;
   margin-bottom: 30px; }
@@ -169,33 +169,6 @@ html {
 label[for="id_image"] {
   color: #212121;
   font-weight: 100; }
-
-#id_backImage {
-  display: list-item;
-  position: relative;
-  top: 0;
-  margin-top: 20px; }
-
-label[for="id_backImage"] {
-  color: #212121;
-  font-weight: 100;
-  margin-right: 10px; }
-
-#id_status {
-  padding: 10px 5px;
-  border: none;
-  border-bottom: solid 2px #c9c9c9;
-  transition: border 0.3s;
-  outline: none;
-  width: 100%;
-  margin-top: 10px;
-  background-color: transparent; }
-
-label[for="id_status"] {
-  top: 0;
-  font-family: "Open Sans", sans-serif;
-  font-weight: 100;
-  position: relative; }
 
 .cn {
   font-size: 20px;
@@ -257,7 +230,5 @@ label[for="id_status"] {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
   margin-bottom: 5%;
   padding: 10px; }
-  .disable-account-wrapper p label, .disable-account-wrapper p input {
-    float: left; }
 
 /*# sourceMappingURL=configuracion.css.map */

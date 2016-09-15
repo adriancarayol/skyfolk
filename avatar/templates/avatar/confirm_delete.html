@@ -34,13 +34,15 @@ $(document).ready(function() {
         {% url 'avatar_add' as avatar_change_url %}
         <p>{% blocktrans %}You have no avatars to delete. Please <a href="{{ avatar_change_url }}">upload one</a> now.{% endblocktrans %}</p>
     {% else %}
+        <div class="row">
         <form method="POST" action="{% url 'avatar_delete' %}">
             <ul>
                 {{ delete_avatar_form.as_ul }}
             </ul>
             <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
-            <p>{% csrf_token %}<input type="submit" value="{% trans "Delete These" %}" /></p>
+            {% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit" value="{% trans "Delete These" %}" />
         </form>
+        </div>
     {% endif %}
     </div>
 </div>

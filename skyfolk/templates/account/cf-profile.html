@@ -13,11 +13,11 @@
 {% endblock %}
 {% block cf-form %}
 	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
-	<div class="col-lg-12 col-md-12 col-sm-12 wrapper-profilex">
+	<div class="col l12 m12 s12 wrapper-profilex">
 		{% if user_profile.profile.backImage %}
-			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{user_profile.profile.backImage.url}}') no-repeat center center; background-size: cover;">
+			<div class="col l12 m12 s12 profilex" style="background: url('{{user_profile.profile.backImage.url}}') no-repeat center center; background-size: cover;">
 		{% else %}
-			<div class="col-lg-12 col-md-12 col-sm-12 profilex" style="background: url('{{STATIC_URL}}img/nuevo_back.png') no-repeat center center; background-size: cover;">
+			<div class="col l12 m12 s12 profilex" style="background: url('{{STATIC_URL}}img/nuevo_back.png') no-repeat center center; background-size: cover;">
 		{% endif %}
 		<!-- Si el usuario tiene imagen, lo redireccionamos a change -->
 		<div data-title="Imágen de perfil" class="img-profile">
@@ -33,26 +33,44 @@
 		</div>
 		</div>
 		<div class="col l12 m12 s12 index-wrapper">
-				<div class="nameConfig">
-				<p>{{ user_form.first_name.errors}}</p>
-				<p>¿Como te llamas?</p>
-				<p>{{ user_form.first_name }}</p>
-			</div>
-				<div class="lastConfig">
-				<p>{{ user_form.last_name.errors }}</p>
-				<p>¿Y tu apellido?</p>
-				<p>{{ user_form.last_name }}</p>
-			</div>
+            <div class="row">
+                  <div class="row">
+                      <div class="red-text">{{ user_form.first_name.errors}}</div>
+                    <div class="input-field col s12">
+                      <i class="material-icons prefix">perm_identity</i>
+                      {{ user_form.first_name }}
+                      <label for="id_first_name">{% trans "Name" %}</label>
+                    </div>
+                  </div>
+            </div>
+
+            <div class="row">
+                  <div class="row">
+                      <div class="red-text">{{ user_form.last_name.errors }}</div>
+                    <div class="input-field col s12">
+                      <i class="material-icons prefix">perm_identity</i>
+                      {{ user_form.last_name }}
+                      <label for="id_last_name">Apellido</label>
+                    </div>
+                  </div>
+            </div>
+
 				<div class="backimage-usr">
 					<p>{{ perfil_form.backImage.errors }}</p>
 					<p>Elige una imagen de fondo.</p>
 					<p>{{ perfil_form.backImage }}</p>
 				</div>
-				<div class="status-usr">
-					<p>{{ perfil_form.status.errors }}</p>
-					<p>Introduce un estado ;-).</p>
-					<p>{{ perfil_form.status }}</p>
-				</div>
+
+            <div class="row">
+                  <div class="row">
+                      <div class="red-text">{{ perfil_form.status.errors }}</div>
+                    <div class="input-field col s12">
+                      <i class="material-icons prefix">insert_emoticon</i>
+                      {{ perfil_form.status }}
+                      <label for="id_status">Di como te sientes</label>
+                    </div>
+                  </div>
+            </div>
 		</div>
 			</div>
 				<button class="btn btn-info right blue darken-1" id="boton-perfil" type="submit">Salvar cambios</button>

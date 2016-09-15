@@ -31,8 +31,17 @@
         <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
     {% endif %}
     <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
-        {{ upload_avatar_form.as_p }}
-        <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
+        <div class="file-field input-field">
+            {{ upload_avatar_form.avatar.errors }}
+          <div class="btn blue darken-1 waves-effect waves-light">
+            <span>Imágen</span>
+            {{ upload_avatar_form.avatar }}
+          </div>
+          <div class="file-path-wrapper">
+            <input class="file-path validate" type="text">
+          </div>
+        </div>
+        {% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit" value="{% trans "Upload New Image" %}" />
     </form>
     </div>
 
