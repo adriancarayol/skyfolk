@@ -7,7 +7,7 @@ from .views import PhotoDetailView, GalleryListView, \
     PhotoYearArchiveView, PhotoMonthArchiveView, GalleryArchiveIndexView, GalleryYearArchiveView, \
     GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
-    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list
+    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo
 
 
 
@@ -68,6 +68,8 @@ urlpatterns = [
     url(r'^photo/(?P<slug>[\-\d\w]+)/$',
         PhotoDetailView.as_view(),
         name='pl-photo'),
+
+    url(r'^photo/delete/$', delete_photo, name='delete-photo'),
 
     url(r'^media/(?P<username>[\w-]+)/$',
         photo_list,

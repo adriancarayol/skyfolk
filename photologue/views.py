@@ -13,11 +13,12 @@ from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
 
 from django.contrib.auth.decorators import login_required
-
+# from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 
 from .forms import UploadFormPhoto
-
+from django.http import QueryDict, HttpResponse
+import json
 
 
 # Gallery views.
@@ -57,6 +58,7 @@ class GalleryMonthArchiveView(GalleryDateView, MonthArchiveView):
 class GalleryYearArchiveView(GalleryDateView, YearArchiveView):
     make_object_list = True
 
+
 # Photo views.
 @login_required(login_url='accounts/login')
 def photo_list(request, username):
@@ -74,7 +76,7 @@ def photo_list(request, username):
     object_list = Photo.objects.filter(owner__username=username)
 
     if request.method == 'POST':
-        import pprint # Para imprimir el file y los datos del form
+        import pprint  # Para imprimir el file y los datos del form
         pprint.pprint(request.POST)
         pprint.pprint(request.FILES)
         form = UploadFormPhoto(data=request.POST, files=request.FILES)
@@ -82,15 +84,43 @@ def photo_list(request, username):
             obj = form.save(commit=False)
             obj.owner = user
             obj.save()
-            form.save_m2m() # Para guardar los tags de la foto
+            form.save_m2m()  # Para guardar los tags de la foto
         else:
             print(form.errors)
     else:
         form = UploadFormPhoto()
 
     return render(request, 'photologue/photo_gallery.html', {'form': form, 'object_list': object_list,
-                                                             'user_gallery': username, 'publicationForm': publicationForm,
+                                                             'user_gallery': username,
+                                                             'publicationForm': publicationForm,
                                                              'searchForm': searchForm})
+
+
+@login_required()
+def delete_photo(request):
+    """
+    Eliminamos una foto, comprobamos si el solicitante
+    es el autor de la foto, si es asi, procedemos.
+    """
+    if request.method == 'DELETE':
+        _id = int(QueryDict(request.body).get('postpk'))
+        photo_to_delete = get_object_or_404(Photo, id=_id)
+
+        if request.user.pk == photo_to_delete.owner_id:
+            photo_to_delete.delete()
+            response_data = {}
+            response_data['msg'] = 'Photo was deleted.'
+
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
+        else:
+            return HttpResponse(
+                json.dumps({"nothing to see": "this isn't happening"}),
+                content_type="application/json"
+            )
+
 
 class PhotoDetailView(DetailView):
     """
@@ -103,6 +133,7 @@ class PhotoDetailView(DetailView):
     def get_queryset(self):
         slug = self.kwargs['slug']
         return Photo.objects.filter(slug=slug)
+
 
 class PhotoDateView(object):
     queryset = Photo.objects.on_site().is_public()
@@ -133,7 +164,6 @@ class PhotoYearArchiveView(PhotoDateView, YearArchiveView):
 # Deprecated views.
 
 class DeprecatedMonthMixin(object):
-
     """Representation of months in urls has changed from a alpha representation ('jan' for January)
     to a numeric representation ('01' for January).
     Properly deprecate the previous urls."""
