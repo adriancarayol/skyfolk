@@ -146,9 +146,9 @@ $(document).ready(function () {
       });
 
       /* Atajo para enviar comentarios mas rapido */
-      $('#page-wrapper').find('#message2').keypress(function(event) {
+      $('#page-wrapper').find('#message2').keypress(function(e) {
         //tecla ENTER presinada + Shift
-        if (event.keyCode == 13 && event.shiftKey) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
           $('#sendformpubli').click();
         }
       });
