@@ -7,7 +7,7 @@ from .views import PhotoDetailView, GalleryListView, \
     PhotoYearArchiveView, PhotoMonthArchiveView, GalleryArchiveIndexView, GalleryYearArchiveView, \
     GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
-    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo
+    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, PhotoList, PhotoDetailAPI
 
 
 
@@ -93,5 +93,9 @@ urlpatterns = [
         name='pl-photo-archive-day'),
     url(r'^photo/(?P<year>\d{4})/(?P<month>[a-z]{3})/$',
         PhotoMonthArchiveOldView.as_view(),
-        name='pl-photo-archive-month')
+        name='pl-photo-archive-month'),
+
+    url(r'^snippets/$', PhotoList.as_view()),
+    url(r'^snippets/(?P<pk>[0-9]+)/$', PhotoDetailAPI.as_view()),    
+
 ]

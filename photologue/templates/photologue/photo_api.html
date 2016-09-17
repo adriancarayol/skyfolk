@@ -1,0 +1,15 @@
+<html><body>
+<h1>Profiles</h1>
+<ul>
+    {% for photo in photos %}
+        <li>{{ photo.title }}</li>
+        <li>{{ photo.caption }}</li>
+        <li>{{ photo.owner }}</li>
+        <li>{{ photo.image }}</li>
+        {% for tag in photo.tags.all %}
+            <blockquote>{{ tag.name }}</blockquote>
+        {% endfor %}
+        <p>--------------------</p>
+    {% endfor %}
+</ul>
+</body></html>

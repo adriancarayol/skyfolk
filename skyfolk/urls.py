@@ -41,13 +41,7 @@ urlpatterns = patterns(
         template_name='about/password_recommendation.html')),
     # Importamos las urls de REST Framework
     url(r'^', include(router.urls)),
-    url(
-        r'^api-auth/',
-        include(
-            'rest_framework.urls',
-            namespace='rest_framework'
-        )
-    ),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # Urls para el modulo emoji
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Django-avatar
