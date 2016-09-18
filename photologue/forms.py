@@ -148,12 +148,15 @@ class UploadZipForm(forms.Form):
                     continue
                 break
 
-            photo = Photo(title=photo_title,
+            tags = self.cleaned_data['tags']
+            photo = Photo.objects.create(title=photo_title,
                           slug=slug,
                           caption=self.cleaned_data['caption'],
                           is_public=self.cleaned_data['is_public'],
                           owner=self.cleaned_data['owner'])
 
+            for tag in tags:
+                photo.tags.add(tag)
             # Basic check that we have a valid image.
             try:
                 file = BytesIO(data)
