@@ -22,9 +22,9 @@ from django.conf import settings
 from django.utils.encoding import force_text
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
-
+from taggit.forms import TagField
 from .models import Gallery, Photo
-
+from django.contrib.auth.models import User
 logger = logging.getLogger('photologue.forms')
 
 
@@ -55,6 +55,12 @@ class UploadZipForm(forms.Form):
                                    required=False,
                                    help_text=_('Uncheck this to make the uploaded '
                                                'gallery and included photographs private.'))
+
+    owner = forms.ModelChoiceField(User.objects.all(),
+                                   label=_('Owner'))
+
+    tags = TagField()
+
 
     def clean_zip_file(self):
         """Open the zip file a first time, to check that it is a valid zip archive.
@@ -145,7 +151,8 @@ class UploadZipForm(forms.Form):
             photo = Photo(title=photo_title,
                           slug=slug,
                           caption=self.cleaned_data['caption'],
-                          is_public=self.cleaned_data['is_public'])
+                          is_public=self.cleaned_data['is_public'],
+                          owner=self.cleaned_data['owner'])
 
             # Basic check that we have a valid image.
             try:

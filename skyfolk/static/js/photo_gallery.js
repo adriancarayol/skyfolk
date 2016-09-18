@@ -13,7 +13,7 @@ $(document).ready(function () {
 function AJAX_delete_photo() {
    var _id = $('.photo-body').attr('data-id');
    $.ajax({
-      url: '/photo/sss/',
+      url: '/delete/photo/',
       type: 'DELETE',
       data: {
          'id': _id,
@@ -21,7 +21,14 @@ function AJAX_delete_photo() {
       },
       dataType: 'json',
       success: function(json) {
-         console.log(json);
+         swal({
+                  title: "Photo was deleted.",
+                  text: json.msg,
+                  timer: 2500,
+                  showConfirmButton: true
+         }, function () {
+            window.location.replace('/media/'+json.author+'/');
+         });
       }, error: function(rs, e) {
          swal(rs.responseText + " " + e);
       }

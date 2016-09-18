@@ -9,6 +9,7 @@ from .views import PhotoDetailView, GalleryListView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
     PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, PhotoList, PhotoDetailAPI
 
+from django.views.decorators.http import require_POST
 
 
 
@@ -69,7 +70,7 @@ urlpatterns = [
         PhotoDetailView.as_view(),
         name='pl-photo'),
 
-    url(r'^photo/delete/$', delete_photo, name='delete-photo'),
+    url(r'^delete/photo/$', delete_photo, name='delete-photo'),
 
     url(r'^media/(?P<username>[\w-]+)/$',
         photo_list,

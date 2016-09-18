@@ -5,6 +5,8 @@ from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArch
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
+from django.views.generic.edit import FormView
+
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404
 
@@ -13,7 +15,6 @@ from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
 
 from django.contrib.auth.decorators import login_required
-# from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
 
 from .forms import UploadFormPhoto
@@ -174,13 +175,14 @@ def delete_photo(request):
     es el autor de la foto, si es asi, procedemos.
     """
     if request.method == 'DELETE':
-        _id = int(QueryDict(request.body).get('postpk'))
+        _id = int(QueryDict(request.body).get('id'))
         photo_to_delete = get_object_or_404(Photo, id=_id)
 
         if request.user.pk == photo_to_delete.owner_id:
             photo_to_delete.delete()
             response_data = {}
             response_data['msg'] = 'Photo was deleted.'
+            response_data['author'] = request.user.username
 
             return HttpResponse(
                 json.dumps(response_data),
@@ -191,7 +193,11 @@ def delete_photo(request):
                 json.dumps({"nothing to see": "this isn't happening"}),
                 content_type="application/json"
             )
-
+    else:
+        return HttpResponse(
+                json.dumps(None),
+                content_type="application/json"
+            )
 
 class PhotoDetailView(DetailView):
     """
@@ -204,7 +210,6 @@ class PhotoDetailView(DetailView):
     def get_queryset(self):
         slug = self.kwargs['slug']
         return Photo.objects.filter(slug=slug)
-
 
 class PhotoDateView(object):
     queryset = Photo.objects.on_site().is_public()
