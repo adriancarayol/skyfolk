@@ -7,6 +7,18 @@ $(document).ready(function () {
    });
 
    $('#del-photo').click(AJAX_delete_photo);
+
+
+   $("#edit-photo").click(function () {
+      $(this).text(function(i, text){
+          return text === "Editar" ? "No editar" : "Editar";
+      });
+
+      $('#wrapper-edit-form').toggle();
+
+       return false;
+   });
+
 }); // FIN DOCUMENT READY
 
 /* DELETE OR EDIT PHOTO */

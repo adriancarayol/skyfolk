@@ -18,22 +18,24 @@
                     {% for photo in object_list %}
                         <div class="col l2 m12 s12 image-div">
                             <div class="container-image">
-                                <div class="col l12 principal-content">
-                                    <div class="tags-content">
-                                    {% for tag in photo.tags.all %}
-                                        <blockquote>{{ tag.name }}</blockquote>
-                                    {% endfor %}
-                                    </div>
+                                <div class="principal-content">
+                                    {% if photo.tags.all %}
+                                        <div class="tags-content">
+                                        {% for tag in photo.tags.all %}
+                                            <blockquote>{{ tag.name }}</blockquote>
+                                        {% endfor %}
+                                        </div>
+                                    {% endif %}
                                     <img src="{{ photo.image.url }}" alt="{{ photo.title }}" title="{{ photo.title }}" onclick="location.href='{{ photo.get_absolute_url }}'">
                                 </div>
-                                <div class="col l12 legend-content">
+                                <div class="col s12 legend-content">
                                     <div class="legend-user-image">
                                         {% avatar photo.owner.username %}
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ photo.owner.username }}">@{{ photo.owner.username }}</a>
                                         <i class="photo-title truncate">{{ photo.title }}</i>
-                                        <i class="photo-date"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ photo.date_added|naturaltime }}</i>
+                                        <i class="truncate photo-date"><i class="fa fa-clock-o" aria-hidden="true"></i> {{ photo.date_added|naturaltime }}</i>
                                     </div>
                                 </div>
                             </div>

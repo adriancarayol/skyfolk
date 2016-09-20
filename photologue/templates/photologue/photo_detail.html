@@ -19,7 +19,7 @@
                      <a href="{{ object.image.url }}">
                          <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
                      </a>
-                        <div class="col l12 photo-details">
+                        <div class="col s12 photo-details">
                                 <div class="legend-user-image">
                                     {% avatar object.owner.username %}
                                 </div>
@@ -40,8 +40,41 @@
                                 <div class="divider"></div>
                                 <div class="row">
                                     <div class="author-controls">
-                                        <a class="waves-effect waves-light btn right green">Editar</a>
+                                        <a id="edit-photo" class="waves-effect waves-light btn right green">Editar</a>
                                         <a id="del-photo" class="waves-effect waves-light btn right red">Eliminar</a>
+                                        <div class="edit-form" id="wrapper-edit-form">
+                                            <form method="post" accept-charset="utf-8" action="{% url "photologue:edit-photo" object.pk %}">{% csrf_token %}
+                                                <div class="row">
+                                                    {{ form.title.errors }}
+                                                    <div class="input-field col s12">
+                                                        <i class="material-icons prefix">title</i>
+                                                        {{ form.title }}
+                                                        <label for="id_title">{% trans "title" %}</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    {{ form.caption.errors }}
+                                                    <div class="input-field col s12">
+                                                        <i class="material-icons prefix">closed_caption</i>
+                                                        {{ form.caption }}
+                                                        <label for="id_caption">{% trans "caption" %}</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    {{ form.tags.errors }}
+                                                    <div class="input-field col s12">
+                                                        <i class="material-icons prefix">label</i>
+                                                        {{ form.tags }}
+                                                        <label for="id_caption">{{ form.tags.help_text }}</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <button class="waves-effect waves-light btn blue darken-1 right" type="submit" >Editar
+                                                    <i class="material-icons right">mode_edit</i>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

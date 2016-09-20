@@ -5,7 +5,7 @@ from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArch
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
-from django.views.generic.edit import FormView
+
 
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404
@@ -17,7 +17,7 @@ from user_profile.forms import SearchForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 
-from .forms import UploadFormPhoto
+from .forms import UploadFormPhoto, EditFormPhoto
 from django.http import QueryDict, HttpResponse
 import json
 
@@ -199,6 +199,30 @@ def delete_photo(request):
                 content_type="application/json"
             )
 
+@login_required()
+def edit_photo(request, photo_id):
+    """
+    Permite al creador de la imagen
+    editar los atributos title, caption y tags.
+    """
+    photo = get_object_or_404(Photo, id=photo_id)
+    form = EditFormPhoto(request.POST or None, instance=photo)
+    if form.is_valid():
+        if photo.owner.pk == request.user.pk:
+            response_data = {'msg': 'Photo was edited!'}
+            form.save()
+        else:
+            response_data = {'msg': 'You cant edit this photo.'}
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+    else:
+        return HttpResponse(
+            json.dumps({'Nothing to see': 'This isnt happening'}),
+            content_type='application/json'
+        )
+
 class PhotoDetailView(DetailView):
     """
     Modificado por @adriancarayol.
@@ -210,6 +234,11 @@ class PhotoDetailView(DetailView):
     def get_queryset(self):
         slug = self.kwargs['slug']
         return Photo.objects.filter(slug=slug)
+
+    def get_context_data(self, **kwargs):
+        context = super(PhotoDetailView, self).get_context_data(**kwargs)
+        context['form'] = EditFormPhoto(instance=self.object)
+        return context
 
 class PhotoDateView(object):
     queryset = Photo.objects.on_site().is_public()

@@ -192,7 +192,9 @@ class UploadZipForm(forms.Form):
 
 
 class UploadFormPhoto(forms.ModelForm):
-
+    """
+    Permite al usuario subir una nueva imagen
+    """
     def __init__(self, *args, **kwargs):
         super(UploadFormPhoto, self).__init__(*args, **kwargs)
         self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
@@ -200,4 +202,18 @@ class UploadFormPhoto(forms.ModelForm):
     class Meta:
         model = Photo
         exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug', 'is_public', )
+
+class EditFormPhoto(forms.ModelForm):
+    """
+    Permite al usuario editar una foto ya existente
+    """
+    def __init__(self, *args, **kwargs):
+        super(EditFormPhoto, self).__init__(*args, **kwargs)
+        self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
+
+    class Meta:
+        model = Photo
+        exclude = ('owner', 'date_added', 'sites',
+                   'date_taken', 'slug', 'is_public', 'image',
+                   'crop_from')
 
