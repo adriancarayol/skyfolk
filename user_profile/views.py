@@ -479,8 +479,8 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
-            need_petition = friend.need_follow_confirmation
-            if not need_petition:
+            no_need_petition = friend.privacity == UserProfile.ALL
+            if no_need_petition:
                 created = user.add_direct_relationship(profile=friend)
                 if created:
                     response = "added_friend"
@@ -547,14 +547,12 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
-            need_petition = friend.need_follow_confirmation
-            if not need_petition:
-                need_petition = friend.need_follow_confirmation
-                if not need_petition:
-                    created = user.add_direct_relationship(profile=friend)
-                    if created:
-                        response = "added_friend"
-                        return HttpResponse(json.dumps(response), content_type='application/javascript')
+            no_need_petition = friend.privacity == UserProfile.ALL
+            if no_need_petition:
+                created = user.add_direct_relationship(profile=friend)
+                if created:
+                    response = "added_friend"
+                    return HttpResponse(json.dumps(response), content_type='application/javascript')
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(
@@ -640,14 +638,12 @@ def request_friend(request):
             response = "isfriend"
         else:
             # Comprobamos si el perfil necesita peticion de amistad
-            need_petition = profile.need_follow_confirmation
-            if not need_petition:
-                need_petition = profile.need_follow_confirmation
-                if not need_petition:
-                    created = user.profile.add_direct_relationship(profile=profile)
-                    if created:
-                        response = "added_friend"
-                        return HttpResponse(json.dumps(response), content_type='application/javascript')
+            no_need_petition = profile.privacity == UserProfile.ALL
+            if no_need_petition:
+                created = user.profile.add_direct_relationship(profile=profile)
+                if created:
+                    response = "added_friend"
+                    return HttpResponse(json.dumps(response), content_type='application/javascript')
             response = "inprogress"
             try:
                 friend_request = user.profile.get_follow_request(profile)

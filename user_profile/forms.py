@@ -95,7 +95,7 @@ class PrivacityForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('privacity', 'need_follow_confirmation', )
+        fields = ('privacity', )
 
 
 class DeactivateUserForm(forms.ModelForm):

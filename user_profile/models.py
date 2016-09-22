@@ -8,8 +8,6 @@ from notifications.models import Notification
 import hashlib
 from django.utils.http import urlencode
 
-# from publications.models import Publication
-# from _overlapped import NULL
 from photologue.models import Photo
 
 RELATIONSHIP_FOLLOWING = 1
@@ -69,12 +67,6 @@ class UserProfile(models.Model):
     ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
-    """
-        El usuario decide si es necesario recibir una solicitud
-        de seguimiento, o directamente se puede añadir como seguido
-        por otro usuario.
-    """
-    need_follow_confirmation = models.BooleanField(default=True)
 
 
     def __unicode__(self):
@@ -112,6 +104,13 @@ class UserProfile(models.Model):
 
     # Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
+        """
+        Añade una relación entre dos usuarios
+        :param person => Persona con la que la instancia actual tiene una relacion:
+        :param status => Estado de la relación:
+        :param symm => Si la relación es simetrica:
+        :return devuelve la relación creada:
+        """
         print('>>>>>>> add_relationship')
         relationship, created = Relationship.objects.get_or_create(from_person=self, to_person=person, status=status)
         print('>>>>>>> created')
@@ -122,17 +121,33 @@ class UserProfile(models.Model):
         return relationship
 
     def remove_relationship(self, person, status, symm=False):
+        """
+        Elimina una relación entre dos personas
+        :param person => Persona con la que la instancia actual tiene una relacion:
+        :param status => Estado de la relación:
+        :param symm symm => Si la relación es simetrica:
+        """
         Relationship.objects.filter(from_person=self, to_person=person, status=status).delete()
         if symm:
             # avoid recursion by passing 'symm=False'
             person.remove_relationship(self, status, False)
 
     def get_relationships(self, status):
+        """
+        Devuelve las relaciones de una instancia.
+        :param status => Estado de una relación:
+        :return devuelve las relaciones de un perfil:
+        """
         return self.relationships.filter(
             to_people__status=status,
             to_people__from_person=self)
 
     def get_related_to(self, status):
+        """
+        Conseguir relación de una persona
+        :param status => Estado de la relación que se quiere conseguir:
+        :return:
+        """
         return self.related_to.filter(
             from_people__status=status,
             from_people__to_person=self)
@@ -193,9 +208,13 @@ class UserProfile(models.Model):
             return "all"
         # else...
         return None
-    # Methods of timeline
 
+    # Methods of timeline
     def getTimelineToMe(self):
+        """
+        Devuelve los objetos timeline para mi perfil (hacia mi)
+        :return devuelve los objetos timeline para mi perfil:
+        """
         return self.timeline_to.filter(
             from_timeline__profile=self).values('user__username', 'from_timeline__publication__content',
                                                 'from_timeline__id', 'from_timeline__publication__author__username',
@@ -203,21 +222,29 @@ class UserProfile(models.Model):
                                                 'from_timeline__type', 'from_timeline__verb').order_by(
             'from_timeline__insertion_date').reverse()
 
-    # Old (Mejor usar TimelineManager)
-    def remove_timeline(self, timeline_id):
-        t = timeline.models.Timeline.objects.get(pk=timeline_id)
-        t.publication.user_share_me.remove(self.user)
-        t.delete()
-
-    # Methods of publications
+    # Methods of publications (Old => Usar PublicationManager)
 
     def get_publication(self, publicationid):
+        """
+        Devuelve una publicacion a partir del identificador
+        :param publicationid => Identificador de la publicación:
+        :return Devuelve la publicacion solicitada:
+        """
         return publications.models.Publication.objects.get(pk=publicationid)
 
     def remove_publication(self, publicationid):
+        """
+        Elimina una publicacion a partir del identificador
+        :param publicationid => Identificador de la publicación:
+        :return:
+        """
         publications.models.Publication.objects.get(pk=publicationid).delete()
 
     def get_publicationsToMe(self):
+        """
+        Devuelve las publicaciones hacia mi perfil
+        :return Devuelve las publicaciones hacia mi perfil:
+        """
         return self.publications_to.filter(
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
@@ -225,12 +252,20 @@ class UserProfile(models.Model):
                                                    'from_publication__replies')
 
     def get_publicationsToMeTop15(self):
+        """
+        Devuelve 15 publicaciones hacia mi perfil
+        :return Devuelve 15 publicaciones hacia mi perfil:
+        """
         return self.publications_to.filter(
             from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
                                                    'from_publication__id',
                                                    'from_publication__content', 'from_publication__created')[0:15]
 
     def get_myPublications(self):
+        """
+        Devuelve las publicaciones que he realizado
+        :return Devuelve las publicaciones que he realizado:
+        """
         return self.publications.filter(
             to_publication__author=self).values('user__username', 'to_publication__profile', 'user__first_name',
                                                 'user__last_name',
@@ -239,12 +274,20 @@ class UserProfile(models.Model):
 
     # Obtener seguidos
     def get_following(self):
+        """
+        Devuelve las personas que sigo
+        :return Devuelve las personas que sigo:
+        """
         return self.get_relationships(RELATIONSHIP_FOLLOWING).values('user__id', 'user__username', 'user__first_name',
                                                                      'user__last_name',
                                                                      'user__profile__backImage').order_by('id')
 
     # Obtener seguidores
     def get_followers(self):
+        """
+        Devuelve las personas que son seguidores
+        :return Devuelve las personas que son seguidores:
+        """
         return self.get_relationships(RELATIONSHIP_FOLLOWER).values('user__id', 'user__username', 'user__first_name',
                                                                     'user__last_name',
                                                                     'user__profile__backImage').order_by('id')
@@ -255,16 +298,31 @@ class UserProfile(models.Model):
                                                                   'user__profile__backImage').order_by('id')'''
     # methods blocks
     def add_block(self, profile):
+        """
+        Añade un perfil a la lista de bloqueados
+        :param profile => Perfil que se desea bloquear:
+        :return Devuelve la relación de bloqueado con el perfil pasado como paramatro:
+        """
         return self.add_relationship(profile, RELATIONSHIP_BLOCKED,
                                      False)
 
     def get_blockeds(self):
+        """
+        Devuelve la lista de bloqueados del perfil instanciado
+        :return Devuelve la lista de bloqueados del perfil instanciado:
+        """
         return self.get_relationships(RELATIONSHIP_BLOCKED).values('user__id', 'user__username', 'user__first_name',
                                                                     'user__last_name',
                                                                     'user__profile__backImage',
                                                                    'user__profile__pk').order_by('id')
 
     def is_blocked(self, profile):
+        """
+        Método para comprobar si un perfil está bloqueado
+        :param profile => Perfil que quizás este bloqueado:
+        :return Devuelve un booleano dependiendo de si está o no
+        bloqueado el perfil pasado como paramatro:
+        """
         try:
             if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_BLOCKED):
                 return True
@@ -275,21 +333,43 @@ class UserProfile(models.Model):
 
     # methods likes
     def add_like(self, profile):
+        """
+        Añade un "me gusta" a un perfil
+        :param profile => Perfil que doy "me gusta":
+        :return Devuelve la relación "Me gusta":
+        """
         like, created = LikeProfile.objects.get_or_create(from_like=self, to_like=profile)
         return like
 
     def remove_like(self, profile):
+        """
+        Elimina la relación "me gusta"
+        :param profile => Perfil al que quiero quitar mi "me gusta":
+        """
         LikeProfile.objects.filter(from_like=self, to_like=profile).delete()
 
     def get_likes(self):
+        """
+        Obtengo los likes del perfil instanciado
+        :return Devuelve los likes del perfil instanciado:
+        """
         return self.likeprofiles.filter(to_likeprofile__from_like=self)
 
     def has_like(self, profile):
+        """
+        Comprueba si un perfil tiene un "me gusta" del perfil instanciado
+        :param profile => Perfil que se comprueba si tiene un me gusta del perfil instanciado:
+        """
         return LikeProfile.objects.get(from_like=self, to_like=profile)
 
     # methods following
 
     def is_follow(self, profile):
+        """
+        Comprueba si sigo al perfil pasado como parametro
+        :param profile => Perfil que se comprueba si lo sigo:
+        :return Booleano dependiendo de si sigo al perfil o no:
+        """
         try:
             if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FOLLOWING):
                 return True
@@ -310,25 +390,51 @@ class UserProfile(models.Model):
                                      False)
 
     def get_follow_top12(self):
+        """
+        Devuelve 12 seguidos ordenados por ID
+        :return Devuelve 12 seguidos ordenados por ID:
+        """
         return self.relationships.filter(to_people__status=RELATIONSHIP_FOLLOWING, to_people__from_person=self).values(
             'user__username', 'user__first_name', 'user__last_name').order_by('id')[0:12]
 
     def get_follow_objectlist(self):
+        """
+        Devuelve la lista de seguidos por un perfil
+        :return Devuelve la lista de seguidos por un perfil:
+        """
         return self.relationships.filter(to_people__status=RELATIONSHIP_FOLLOWING, to_people__from_person=self).values(
             'user__username', 'user__first_name', 'user__last_name').order_by('id')
 
     def add_follow_request(self, profile, notify):
+        """
+        Añade una solicitud de seguimiento
+        :param profile => Perfil que quiero seguir:
+        :param notify => Notificacion generada:
+        """
         obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING,
                                                      notification=notify)
         return obj
 
     def get_follow_request(self, profile):
+        """
+        Devuelve la petición de seguimiento de un perfil
+        :param profile => Perfil del que se quiere recuperar la solicitud de seguimiento:
+        :return Devuelve la petición de seguimiento de un perfil:
+        """
         return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
 
     def get_received_follow_requests(self):
+        """
+        Devuelve las peticiones de segumiento para mi perfil (perfil instanciado)
+        :return Devuelve las peticiones de segumiento para mi perfil:
+        """
         return self.requestsToMe.filter(from_request__status=2, from_request__receiver=self)
 
     def remove_received_follow_request(self, profile):
+        """
+        Elimina la petición de seguimiento hacia un perfil
+        :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
+        """
         try:
             request = Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
             request.notification.delete()  # Eliminamos la notificacion
@@ -338,6 +444,11 @@ class UserProfile(models.Model):
 
     # methods followers
     def is_follower(self, profile):
+        """
+        Comprueba si el perfil pasado como parametro es un seguidor mio
+        :param profile => Perfil del que quiero comprobar si es un seguidor:
+        :return Booleano que indica si es seguidor o no:
+        """
         try:
             if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FOLLOWER):
                 return True
@@ -348,6 +459,11 @@ class UserProfile(models.Model):
 
     # add follower
     def add_follower(self, profile):
+        """
+        El perfil pasado como parametro se añade como seguidor del perfil instancia
+        :param profile => Perfil que se quiere añadie a la lista de seguidores:
+        :return => Relación de seguidor:
+        """
         print('>>>>> add_follower')
         return self.add_relationship(profile, RELATIONSHIP_FOLLOWER,
                                      False)
@@ -390,51 +506,11 @@ class UserProfile(models.Model):
 
         return True
 
-
-
-    # methods friends
-    '''def is_friend(self, profile):
-        try:
-            if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FRIEND):
-                return True
-            else:
-                return False
-        except ObjectDoesNotExist:
-            return False'''
-
-    '''def add_friend(self, profile):
-        print('>>>>>>> add_friend')
-        return self.add_relationship(profile, RELATIONSHIP_FRIEND,
-                                     True)  # mas adelante cambiar aqui True por False
-        # para diferenciar seguidores de seguidos.'''
-
-    '''def get_friends_top12(self):
-        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values(
-            'user__username', 'user__first_name', 'user__last_name').order_by('id')[0:12]'''
-
-    '''def get_friends_objectlist(self):
-        return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).values(
-            'user__username', 'user__first_name', 'user__last_name').order_by('id')'''
-
-    '''def add_friend_request(self, profile):
-        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FRIEND)
-        return obj'''
-
-    '''def get_friend_request(self, profile):
-        return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FRIEND)'''
-
+    # Funcion despreciable
     def get_received_friends_requests(self):
         return self.requestsToMe.filter(from_request__status=1, from_request__receiver=self)
 
-    '''def remove_received_follow_request(self, profile):
-        Request.objects.filter(emitter=profile, receiver=self, status=REQUEST_FOLLOWING).delete()'''
-
-    """
-        def get_friends_next4(self, next):
-            n = next * 4
-            return self.relationships.filter(to_people__status=RELATIONSHIP_FRIEND, to_people__from_person=self).order_by('id')[n-4:n]
-    """
-
+    # Methods of multimedia
     def get_num_multimedia(self):
         """
         Devuelve el numero de contenido multimedia de un perfil.
@@ -462,6 +538,10 @@ class UserProfile(models.Model):
             return str_pk
 
     def get_pk_for_pin(pin):
+        """
+        Obtiene el pk para el pin
+        :return Devuelve el pk para un pin pasado como parametro:
+        """
         if len(pin) == 9:
             diff = int(pin[-1:])
             return pin[:-(diff + 1)]

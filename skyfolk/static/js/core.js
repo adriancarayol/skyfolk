@@ -368,6 +368,8 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
               text: "You have added a friend!",
               timer: 4000,
               showConfirmButton: true
+            }, function () {
+                $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
             });
       } else if (response == 'your_own_pin') {
           swal({
@@ -587,9 +589,11 @@ function AJAX_requestfriend(status) {
               swal({
                   title: "Success!",
                   text: "You have added a friend!",
-                  timer: 4000,
+                  timer: 1000,
                   showConfirmButton: true
-            });
+            }, function () {
+                  $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
+              });
           }
           else {
 
