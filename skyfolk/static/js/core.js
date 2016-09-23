@@ -204,6 +204,7 @@ $(document).ready(function () {
             $(personalInfo).hide(); // Oculta informacion personal
             $(searchInput).val("");
             $(searchInput).blur();
+            $('#upload_photo').hide();
         }
     });
     /* Focus on input search */

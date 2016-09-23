@@ -210,12 +210,12 @@ class PhotoAdmin(admin.ModelAdmin):
 
         # Handle form request
         if request.method == 'POST':
-            form = UploadZipForm(request.POST, request.FILES)
+            form = UploadZipForm(request.POST, request.FILES, request=request)
             if form.is_valid():
                 form.save(request=request)
                 return HttpResponseRedirect('..')
         else:
-            form = UploadZipForm()
+            form = UploadZipForm(request=request)
         context['form'] = form
         context['adminform'] = helpers.AdminForm(form,
                                                  list([(None, {'fields': form.base_fields})]),

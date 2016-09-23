@@ -29,6 +29,11 @@ logger = logging.getLogger('photologue.forms')
 
 
 class UploadZipForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(UploadZipForm, self).__init__(*args, **kwargs)
+
     zip_file = forms.FileField()
 
     title = forms.CharField(label=_('Title'),
@@ -39,11 +44,7 @@ class UploadZipForm(forms.Form):
                                         'gallery, but is optional when adding to an existing gallery - if '
                                         'not supplied, the photo titles will be creating from the existing '
                                         'gallery name.'))
-    gallery = forms.ModelChoiceField(Gallery.objects.all(),
-                                     label=_('Gallery'),
-                                     required=False,
-                                     help_text=_('Select a gallery to add these images to. Leave this empty to '
-                                                 'create a new gallery from the supplied title.'))
+
     caption = forms.CharField(label=_('Caption'),
                               required=False,
                               help_text=_('Caption will be added to all photos.'))
@@ -55,9 +56,6 @@ class UploadZipForm(forms.Form):
                                    required=False,
                                    help_text=_('Uncheck this to make the uploaded '
                                                'gallery and included photographs private.'))
-
-    owner = forms.ModelChoiceField(User.objects.all(),
-                                   label=_('Owner'))
 
     tags = TagField()
 
@@ -81,8 +79,8 @@ class UploadZipForm(forms.Form):
 
     def clean_title(self):
         title = self.cleaned_data['title']
-        if title and Gallery.objects.filter(title=title).exists():
-            raise forms.ValidationError(_('A gallery with that title already exists.'))
+        if not title:
+            raise forms.ValidationError(_('Title is empty.'))
         return title
 
     def clean(self):
@@ -90,9 +88,9 @@ class UploadZipForm(forms.Form):
         if not self['title'].errors:
             # If there's already an error in the title, no need to add another
             # error related to the same field.
-            if not cleaned_data.get('title', None) and not cleaned_data['gallery']:
+            if not cleaned_data.get('title', None):
                 raise forms.ValidationError(
-                    _('Select an existing gallery, or enter a title for a new gallery.'))
+                    _('Enter a title for a new collection.'))
         return cleaned_data
 
     def save(self, request=None, zip_file=None):
@@ -101,17 +99,7 @@ class UploadZipForm(forms.Form):
         zip = zipfile.ZipFile(zip_file)
         count = 1
         current_site = Site.objects.get(id=settings.SITE_ID)
-        if self.cleaned_data['gallery']:
-            logger.debug('Using pre-existing gallery.')
-            gallery = self.cleaned_data['gallery']
-        else:
-            logger.debug(
-                force_text('Creating new gallery "{0}".').format(self.cleaned_data['title']))
-            gallery = Gallery.objects.create(title=self.cleaned_data['title'],
-                                             slug=slugify(self.cleaned_data['title']),
-                                             description=self.cleaned_data['description'],
-                                             is_public=self.cleaned_data['is_public'])
-            gallery.sites.add(current_site)
+
         for filename in sorted(zip.namelist()):
 
             logger.debug('Reading file "{0}".'.format(filename))
@@ -136,7 +124,7 @@ class UploadZipForm(forms.Form):
                 logger.debug('File "{0}" is empty.'.format(filename))
                 continue
 
-            photo_title_root = self.cleaned_data['title'] if self.cleaned_data['title'] else gallery.title
+            photo_title_root = self.cleaned_data['title'] if self.cleaned_data['title'] else None
 
             # A photo might already exist with the same slug. So it's somewhat inefficient,
             # but we loop until we find a slug that's available.
@@ -153,8 +141,9 @@ class UploadZipForm(forms.Form):
                           slug=slug,
                           caption=self.cleaned_data['caption'],
                           is_public=self.cleaned_data['is_public'],
-                          owner=self.cleaned_data['owner'])
-
+                          owner=self.request.user)
+            # first add title tag.
+            photo.tags.add(self.cleaned_data['title'])
             for tag in tags:
                 photo.tags.add(tag)
             # Basic check that we have a valid image.
@@ -179,7 +168,6 @@ class UploadZipForm(forms.Form):
             photo.image.save(filename, contentfile)
             photo.save()
             photo.sites.add(current_site)
-            gallery.photos.add(photo)
             count += 1
 
         zip.close()
@@ -187,7 +175,7 @@ class UploadZipForm(forms.Form):
         if request:
             messages.success(request,
                              _('The photos have been added to gallery "{0}".').format(
-                                 gallery.title),
+                                 self.request.user),
                              fail_silently=True)
 
 
