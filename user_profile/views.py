@@ -643,6 +643,11 @@ def request_friend(request):
                 created = user.profile.add_direct_relationship(profile=profile)
                 if created:
                     response = "added_friend"
+                    # enviamos notificacion informando del evento
+                    notify.send(user, actor=user.username,
+                                recipient=profile.user,
+                                verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (user.username, user.username),
+                                level='new_follow')
                     return HttpResponse(json.dumps(response), content_type='application/javascript')
             response = "inprogress"
             try:

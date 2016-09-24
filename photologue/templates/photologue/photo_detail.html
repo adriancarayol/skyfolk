@@ -80,7 +80,16 @@
                             </div>
                         </div>
                     {% endif %}
+                        <div class="row">
+                            {% if next %}
+                                <a href="{{ next.get_absolute_url }}" class="waves-effect waves-light btn">Next</a>
+                            {% endif %}
+                            {% if previous %}
+                                <a href="{{ previous.get_absolute_url }}" class="waves-effect waves-light btn">previous</a>
+                            {% endif %}
+                        </div>
                     </div>
+            {% comment %}
                     <div class="gallery-details">
                       {% if object.public_galleries %}
                             <p>{% trans "This photo is found in the following galleries" %}:</p>
@@ -95,6 +104,7 @@
                     </table>
                 {% endif %}
                     </div>
+                    {% endcomment %}
             <div class="col l4 m12 s12 photo-messages">
                 <h1>Comentarios</h1>
             </div>

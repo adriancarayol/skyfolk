@@ -21,78 +21,6 @@ from .forms import UploadFormPhoto, EditFormPhoto
 from django.http import QueryDict, HttpResponse
 import json
 
-# Django-serializers
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
-from .serializers import PhotoSerializer
-from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .permissions import IsOwnerOrReadOnly
-from rest_framework import permissions
-from rest_framework.renderers import TemplateHTMLRenderer
-
-
-class JSONResponse(HttpResponse):
-    """
-    An HttpResponse that renders its content into JSON.
-    """
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
-
-class PhotoList(APIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'photologue/photo_api.html'
-    """
-    List all snippets, or create a new snippet.
-    """
-    def get(self, request, format=None):
-        snippets = Photo.objects.filter(owner=request.user)
-        return Response({'photos': snippets})
-
-    def post(self, request, format=None):
-        serializer = PhotoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class PhotoDetailAPI(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                      IsOwnerOrReadOnly,)
-    """
-    Retrieve, update or delete a snippet instance.
-    """
-    def get_object(self, pk):
-        try:
-            return Photo.objects.get(pk=pk)
-        except Photo.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = PhotoSerializer(snippet)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = PhotoSerializer(snippet, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        snippet.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 # Gallery views.
 
 
@@ -238,6 +166,18 @@ class PhotoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         context['form'] = EditFormPhoto(instance=self.object)
+        # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
+        try:
+            next = self.object.get_next_by_date_added()
+            context['next'] = next if next.owner == self.request.user else None
+        except Photo.DoesNotExist:
+            pass
+        # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
+        try:
+            previous = self.object.get_previous_by_date_added()
+            context['previous'] = previous if previous.owner == self.request.user else None
+        except Photo.DoesNotExist:
+            pass
         return context
 
 class PhotoDateView(object):

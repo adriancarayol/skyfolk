@@ -7,10 +7,7 @@ from .views import PhotoDetailView, GalleryListView, \
     PhotoYearArchiveView, PhotoMonthArchiveView, GalleryArchiveIndexView, GalleryYearArchiveView, \
     GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
-    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, PhotoList, PhotoDetailAPI, \
-    edit_photo
-
-from django.views.decorators.http import require_POST
+    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, edit_photo
 
 
 
@@ -98,8 +95,5 @@ urlpatterns = [
     url(r'^photo/(?P<year>\d{4})/(?P<month>[a-z]{3})/$',
         PhotoMonthArchiveOldView.as_view(),
         name='pl-photo-archive-month'),
-
-    url(r'^snippets/$', PhotoList.as_view()),
-    url(r'^snippets/(?P<pk>[0-9]+)/$', PhotoDetailAPI.as_view()),    
 
 ]
