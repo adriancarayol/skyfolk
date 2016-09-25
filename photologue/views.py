@@ -75,6 +75,7 @@ def collection_list(request, username, photo_id):
     if request.method == 'POST':
         photo = Photo.objects.get(id=photo_id, owner__username=username)
         object_list = photo.tags.similar_objects()
+        object_list.append(photo)
         return render(request, 'photologue/photo_gallery.html', {'publicationForm': publicationForm,
                                                                     'searchForm': searchForm,
                                                                     'object_list': object_list, 'form': form,

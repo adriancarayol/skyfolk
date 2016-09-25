@@ -19,6 +19,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
 from user_profile.models import UserProfile
+from photologue.models import Photo
 
 # allauth
 # Create your views here.
@@ -295,6 +296,7 @@ def search(request, option=None):
         if searchForm.is_valid:
             result_search = None
             result_messages = None
+            result_media = None
             try:
                 texto_to_search = request.POST['searchText']
                 request.session['searchText'] = request.POST['searchText']
@@ -334,10 +336,13 @@ def search(request, option=None):
                             Q(author__last_name__icontains=w), Q(author__is_active=True),
                             ~Q(author__username__icontains=request.user.username)).order_by('content').order_by(
                             'created').reverse()  # or .order_by('created').reverse()
+                    result_media = Photo.objects.filter(tags__name__in=words)
+                    print(result_media)
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': result_search,
                                                                   'resultMessages': result_messages,
+                                                                  'result_media': result_media,
                                                                   'words': words,
                                                                   'message': info},
                                           context_instance=RequestContext(request))
