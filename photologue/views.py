@@ -6,7 +6,6 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
 
-
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404
 
@@ -17,9 +16,10 @@ from user_profile.forms import SearchForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 
-from .forms import UploadFormPhoto, EditFormPhoto
+from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from django.http import QueryDict, HttpResponse
 import json
+
 
 # Gallery views.
 
@@ -89,12 +89,35 @@ def photo_list(request, username):
             print(form.errors)
     else:
         form = UploadFormPhoto()
+        form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
     return render(request, 'photologue/photo_gallery.html', {'form': form, 'object_list': object_list,
                                                              'user_gallery': username,
                                                              'publicationForm': publicationForm,
-                                                             'searchForm': searchForm})
+                                                             'searchForm': searchForm, 'form_zip': form_zip})
 
+
+def upload_zip_form(request):
+    if request.method == 'POST':
+        import pprint  # Para imprimir el file y los datos del form
+        pprint.pprint(request.POST)
+        pprint.pprint(request.FILES)
+        form = UploadZipForm(data=request.POST, files=request.FILES, request=request)
+        if form.is_valid():
+            return HttpResponse(
+                json.dumps(None),
+                content_type="application/json"
+            )
+        else:
+            return HttpResponse(
+                json.dumps(None),
+                content_type="application/json"
+            )
+    else:
+        return HttpResponse(
+            json.dumps(None),
+            content_type="application/json"
+        )
 
 @login_required()
 def delete_photo(request):
@@ -123,9 +146,10 @@ def delete_photo(request):
             )
     else:
         return HttpResponse(
-                json.dumps(None),
-                content_type="application/json"
-            )
+            json.dumps(None),
+            content_type="application/json"
+        )
+
 
 @login_required()
 def edit_photo(request, photo_id):
@@ -151,6 +175,7 @@ def edit_photo(request, photo_id):
             content_type='application/json'
         )
 
+
 class PhotoDetailView(DetailView):
     """
     Modificado por @adriancarayol.
@@ -166,6 +191,8 @@ class PhotoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         context['form'] = EditFormPhoto(instance=self.object)
+        context['publicationForm'] = PublicationForm()
+        context['searchForm'] = SearchForm()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:
             next = self.object.get_next_by_date_added()
@@ -179,6 +206,7 @@ class PhotoDetailView(DetailView):
         except Photo.DoesNotExist:
             pass
         return context
+
 
 class PhotoDateView(object):
     queryset = Photo.objects.on_site().is_public()

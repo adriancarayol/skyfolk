@@ -2,12 +2,17 @@ from django.conf.urls import url
 from django.views.generic import RedirectView
 from django.core.urlresolvers import reverse_lazy
 
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+
+
 from .views import PhotoDetailView, GalleryListView, \
     GalleryDetailView, PhotoArchiveIndexView, PhotoDateDetailView, PhotoDayArchiveView, \
     PhotoYearArchiveView, PhotoMonthArchiveView, GalleryArchiveIndexView, GalleryYearArchiveView, \
     GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
-    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, edit_photo
+    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, edit_photo, \
+    upload_zip_form
 
 
 
@@ -71,6 +76,9 @@ urlpatterns = [
     url(r'^delete/photo/$', delete_photo, name='delete-photo'),
 
     url(r'^edit/photo/(?P<photo_id>\d+)/$', edit_photo, name='edit-photo'),
+
+
+    url(r'^submit_zip/$', require_POST(login_required(upload_zip_form)), name='upload-zip'),
 
     url(r'^media/(?P<username>[\w-]+)/$',
         photo_list,
