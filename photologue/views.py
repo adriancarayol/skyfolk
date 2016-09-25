@@ -59,6 +59,31 @@ class GalleryMonthArchiveView(GalleryDateView, MonthArchiveView):
 class GalleryYearArchiveView(GalleryDateView, YearArchiveView):
     make_object_list = True
 
+# Collection views
+@login_required(login_url='accounts/login')
+def collection_list(request, username, photo_id):
+    """
+    Busca fotografias con tags muy parecidos o iguales
+    :return => Devuelve una lista de fotos con un parecido:
+    """
+    user = request.user
+    publicationForm = PublicationForm()
+    searchForm = SearchForm()
+    form = UploadFormPhoto()
+    form_zip = UploadZipForm(request.POST, request.FILES, request=request)
+
+    if request.method == 'POST':
+        photo = Photo.objects.get(id=photo_id, owner__username=username)
+        object_list = photo.tags.similar_objects()
+        return render(request, 'photologue/photo_gallery.html', {'publicationForm': publicationForm,
+                                                                    'searchForm': searchForm,
+                                                                    'object_list': object_list, 'form': form,
+                                                                    'form_zip': form_zip})
+    else:
+        return render(request, 'photologue/photo_gallery.html', {'publicationForm': publicationForm,
+                                                                    'searchForm': searchForm, 'form': form,
+                                                                    'form_zip': form_zip})
+
 
 # Photo views.
 @login_required(login_url='accounts/login')

@@ -12,7 +12,7 @@ from .views import PhotoDetailView, GalleryListView, \
     GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
     PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, edit_photo, \
-    upload_zip_form, upload_photo
+    upload_zip_form, upload_photo, collection_list
 
 
 
@@ -81,6 +81,9 @@ urlpatterns = [
     url(r'^submit_zip/$', require_POST(login_required(upload_zip_form)), name='upload-zip'),
 
     url(r'^submit_photo/$', require_POST(login_required(upload_photo)), name='upload-photo'),
+
+    url(r'^media/collection/(?P<photo_id>\d+)by(?P<username>[\w-]+)/$', collection_list, name='collection-list'),
+
 
     url(r'^media/(?P<username>[\w-]+)/$',
         photo_list,

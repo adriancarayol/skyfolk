@@ -19,6 +19,10 @@ $(document).ready(function () {
        return false;
    });
 
+    $('.tags-content').find('blockquote').click(function () {
+        $(this).nextAll('input').click();
+    });
+
 }); // FIN DOCUMENT READY
 
 /* DELETE OR EDIT PHOTO */
