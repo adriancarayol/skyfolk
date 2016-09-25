@@ -19,6 +19,7 @@ from django.contrib.auth import get_user_model
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from django.http import QueryDict, HttpResponse
 import json
+from django.shortcuts import redirect
 
 
 # Gallery views.
@@ -68,12 +69,26 @@ def photo_list(request, username):
     publicationForm = PublicationForm()
     searchForm = SearchForm()
 
-    user = request.user
 
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
 
     object_list = Photo.objects.filter(owner__username=username)
+
+    form = UploadFormPhoto()
+    form_zip = UploadZipForm(request.POST, request.FILES, request=request)
+
+    return render(request, 'photologue/photo_gallery.html', {'form': form, 'object_list': object_list,
+                                                             'user_gallery': username,
+                                                             'publicationForm': publicationForm,
+                                                             'searchForm': searchForm, 'form_zip': form_zip})
+
+
+def upload_photo(request):
+    """
+    Función para subir una nueva foto a la galeria del usuario
+    """
+    user = request.user
 
     if request.method == 'POST':
         import pprint  # Para imprimir el file y los datos del form
@@ -85,37 +100,34 @@ def photo_list(request, username):
             obj.owner = user
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
+            return redirect('/media/'+user.username+'/')
         else:
             print(form.errors)
     else:
-        form = UploadFormPhoto()
-        form_zip = UploadZipForm(request.POST, request.FILES, request=request)
-
-    return render(request, 'photologue/photo_gallery.html', {'form': form, 'object_list': object_list,
-                                                             'user_gallery': username,
-                                                             'publicationForm': publicationForm,
-                                                             'searchForm': searchForm, 'form_zip': form_zip})
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
 
 
 def upload_zip_form(request):
+    """
+    Función para subir un .zip a la galeria de un usuario
+    """
+    user = request.user
     if request.method == 'POST':
-        import pprint  # Para imprimir el file y los datos del form
-        pprint.pprint(request.POST)
-        pprint.pprint(request.FILES)
         form = UploadZipForm(data=request.POST, files=request.FILES, request=request)
         if form.is_valid():
-            return HttpResponse(
-                json.dumps(None),
-                content_type="application/json"
-            )
+            form.save(request=request)
+            return redirect('/media/' + user.username + '/')
         else:
             return HttpResponse(
-                json.dumps(None),
+                json.dumps({"nothing to see": "this isn't happening"}),
                 content_type="application/json"
             )
     else:
         return HttpResponse(
-            json.dumps(None),
+            json.dumps({"nothing to see": "no post method"}),
             content_type="application/json"
         )
 
@@ -146,7 +158,7 @@ def delete_photo(request):
             )
     else:
         return HttpResponse(
-            json.dumps(None),
+            json.dumps({"nothing to see": "this isn't happening"}),
             content_type="application/json"
         )
 

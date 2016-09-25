@@ -19,12 +19,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.conf import settings
-from django.utils.encoding import force_text
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from taggit.forms import TagField
-from .models import Gallery, Photo
-from django.contrib.auth.models import User
+from .models import Photo
 logger = logging.getLogger('photologue.forms')
 
 
@@ -57,7 +55,7 @@ class UploadZipForm(forms.Form):
                                    help_text=_('Uncheck this to make the uploaded '
                                                'gallery and included photographs private.'))
 
-    tags = TagField()
+    tags = TagField(help_text=_('A comma-separated list of tags.'))
 
 
     def clean_zip_file(self):
