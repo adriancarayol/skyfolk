@@ -7,6 +7,7 @@ from avatar.models import Avatar
 from user_profile.models import UserProfile
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
+from taggit.managers import TaggableManager
 import json
 
 class PublicationManager(models.Manager):
@@ -110,6 +111,9 @@ class Publication(models.Model):
                                            related_name='share_me')
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply')
+
+    tags = TaggableManager(blank=True)
+
     objects = PublicationManager()
 
     class Meta:

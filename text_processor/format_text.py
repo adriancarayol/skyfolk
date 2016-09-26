@@ -34,4 +34,5 @@ class TextProcessor():
         formatText = Emoji.replace(text)
         formatText = cls.__get_hashtags_text(formatText)
         formatText = cls.__get_mentions_text(emitter, formatText)
+        formatText = formatText.replace('\n', '').replace('\r', '')
         return formatText

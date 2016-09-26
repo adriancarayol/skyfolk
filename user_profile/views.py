@@ -20,6 +20,7 @@ from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
 from user_profile.models import UserProfile
 from photologue.models import Photo
+from user_profile.forms import AdvancedSearchForm
 
 # allauth
 # Create your views here.
@@ -327,6 +328,8 @@ def search(request, option=None):
                                                             Q(is_active=True))
                 # usamos la expresion regular para descartar las imagenes de los comentarios.
                 # Búsqueda predeterminada o de publicaciones.
+                # Mejorar consulta a bbdd (pasando lista words)
+                # en lugar de recorrer la lista y buscar cada palabra
                 if option is None or option == '2':
                     for w in words:
                         result_messages = Publication.objects.filter(
@@ -336,7 +339,8 @@ def search(request, option=None):
                             Q(author__last_name__icontains=w), Q(author__is_active=True),
                             ~Q(author__username__icontains=request.user.username)).order_by('content').order_by(
                             'created').reverse()  # or .order_by('created').reverse()
-                    result_media = Photo.objects.filter(tags__name__in=words)
+                    # GET MEDIA BY OWNER OR TAGS...
+                    result_media = Photo.objects.filter(Q(tags__name__in=words) | (Q(owner__username__icontains=w) & ~Q(owner__username=request.user.username)))
                     print(result_media)
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
@@ -348,21 +352,64 @@ def search(request, option=None):
                                           context_instance=RequestContext(request))
 
 
-# TODO
-class AdvancedView(TemplateView):
+
+@login_required(login_url='/')
+def advanced_view(request):
+    """
+    Búsqueda avanzada
+    """
+
     template_name = "account/search-avanzed.html"
+    publicationForm = PublicationForm()
+    searchForm = SearchForm(request.POST)
 
-    def get(self, request, *args, **kwargs):
-        publicationForm = PublicationForm()
-        searchForm = SearchForm(request.POST)
+    http_method = request.method
 
-        return render_to_response(self.template_name,
-                                  {'publicationForm': publicationForm,
-                                   'searchForm': searchForm},
-                                  context_instance=RequestContext(request))
+    if http_method == 'GET':
+        form = AdvancedSearchForm()
 
+    elif http_method == 'POST':
+        form = AdvancedSearchForm(request.POST)
+        if form.is_valid():
+            clean_all_words = form.cleaned_data['all_words']
+            clean_exactly = form.cleaned_data['word_or_exactly_word']
+            clean_some = form.cleaned_data['some_words']
+            clean_none = form.cleaned_data['none_words']
+            clean_hashtag = form.cleaned_data['hashtags']
+            clean_regex = form.cleaned_data['regex_string']
 
-advanced_view = login_required(AdvancedView.as_view())
+        if clean_all_words:
+            import operator
+            from functools import reduce
+            word_list = [x.strip() for x in clean_all_words.split(',')]
+            result_all_words = Publication.objects.filter(reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
+            print(result_all_words)
+
+        if clean_exactly:
+            result_exactly = Publication.objects.filter(Q(content__iexact=clean_exactly) | Q(content__iexact=('\n'.join(clean_exactly))))
+            print(result_exactly)
+
+        if clean_some:
+            result_some = Publication.objects.filter(content__icontains=clean_some)
+            print(result_some)
+
+        if clean_none:
+            result_none = Publication.objects.filter(~Q(content__icontains=clean_none))
+            print(result_none)
+
+        if clean_hashtag:
+            clean_hashtag = [x.strip() for x in clean_hashtag.split(',')]
+            result_hashtag = Publication.objects.filter(tags__name__in=clean_hashtag)
+            print(clean_hashtag)
+
+        if clean_regex:
+            result_regex = Publication.objects.filter(content__iregex=clean_regex)
+            print(result_regex)
+
+    return render_to_response(template_name, {'publicationForm': publicationForm, 'searchForm': searchForm,
+                                                'form': form},
+                                                 context_instance=RequestContext(request))
+
 
 
 @login_required(login_url='/')

@@ -20,7 +20,26 @@ class SearchForm(forms.Form):
                                                                'pattern': '.{1,}',
                                                                'required title': '1 character minimum'}))
 
+class AdvancedSearchForm(forms.Form):
+    """
+    Formulario para la vista avanzada
+    que se muestra en la url search-advanced
+    """
+    all_words = forms.CharField(label="", help_text="Todas estas palabras:", required=False,
+                                widget=forms.TextInput(attrs={'placeholder': 'username123, deportes, musica'}))
+    word_or_exactly_word = forms.CharField(label="", help_text="Palabra o frase exacta", required=False,
+                                         widget=forms.TextInput(attrs={'placeholder': '"Musica de los 90"'}))
+    some_words = forms.CharField(label="", help_text="Alguna de estas palabras", required=False,
+                                widget=forms.TextInput(attrs={'placeholder': 'perros y/o gatos'}))
 
+    none_words = forms.CharField(label="", help_text="Ninguna de estas palabras", required=False,
+                                widget=forms.TextInput(attrs={'placeholder': 'fútbol, baloncesto'}))
+
+    hashtags = forms.CharField(label="", help_text="Estas etiquetas", required=False,
+                                widget=forms.TextInput(attrs={'placeholder': '#musica, #cine'}))
+
+    regex_string = forms.CharField(label="", help_text="Esta expresión regular", required=False,
+                                widget=forms.TextInput(attrs={'placeholder': '"^The": Cadena que comience con "The"'}))
 class SignupForm(forms.Form):
     """
     Formulario de registro.
