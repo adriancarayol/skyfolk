@@ -79,7 +79,7 @@ $(window).ready(function() {
 
 $(document).ready(function () {
 
-    Materialize.updateTextFields();
+    // Materialize.updateTextFields();
 
 
     $(".button-menu-left").sideNav({
