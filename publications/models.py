@@ -129,7 +129,6 @@ class Publication(models.Model):
         """
         hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', self.content)
         for tag in hashtags:
-            print('Añadiendo: ' + tag)
             self.tags.add(tag)
 
     def send_notification(self, type="pub"):

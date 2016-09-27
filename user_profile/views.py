@@ -400,7 +400,7 @@ def advanced_view(request):
         if clean_hashtag:
             clean_hashtag = [x.strip() for x in clean_hashtag.split(',')]
             print(clean_hashtag)
-            result_hashtag = Publication.objects.filter(tags__name__in=clean_hashtag)
+            result_hashtag = Publication.objects.filter(tags__name__in=['#lll'])
             print(result_hashtag)
 
         if clean_regex:
