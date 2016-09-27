@@ -382,7 +382,7 @@ def advanced_view(request):
             import operator
             from functools import reduce
             word_list = [x.strip() for x in clean_all_words.split(',')]
-            result_all_words = Publication.objects.filter(reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
+            result_all_wgrds = Publication.objects.filter(reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
             print(result_all_words)
 
         if clean_exactly:
@@ -400,7 +400,7 @@ def advanced_view(request):
         if clean_hashtag:
             clean_hashtag = [x.strip() for x in clean_hashtag.split(',')]
             print(clean_hashtag)
-            result_hashtag = Publication.objects.filter(tags__name__in=['#lll'])
+            result_hashtag = Publication.objects.filter(tags__name__in=clean_hashtag)
             print(result_hashtag)
 
         if clean_regex:

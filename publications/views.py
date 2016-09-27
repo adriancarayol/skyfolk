@@ -41,9 +41,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.board_owner = board_owner
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.content = TextProcessor.get_format_text(publication.content, emitter)
                 publication.save(new_comment=True)
-                form.save_m2m()
                 print('>>>> PUBLICATION: ')
                 t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
                                                             profile=publication.board_owner.profile)

@@ -22,17 +22,16 @@ class TextProcessor():
                                     (mencion[1:], mencion))
         return text
 
-    def __get_hashtags_text(text):
-        hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', text)
+    def __get_hashtags_text(text, hashtags):
         for hashtag in hashtags:
             text = text.replace(hashtag,
-                                '<a href="/search/">%s</a>' % (hashtag))
+                                '<a href="/search/">{0}</a>'.format(hashtag))
         return text
 
     @classmethod
-    def get_format_text(cls, text, emitter):
+    def get_format_text(cls, text, emitter, hashtags=None):
         formatText = Emoji.replace(text)
-        formatText = cls.__get_hashtags_text(formatText)
+        formatText = cls.__get_hashtags_text(formatText, hashtags)
         formatText = cls.__get_mentions_text(emitter, formatText)
         formatText = formatText.replace('\n', '').replace('\r', '')
         return formatText

@@ -9,8 +9,11 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from taggit.managers import TaggableManager
 import json, re
+from text_processor.format_text import TextProcessor
 
 class PublicationManager(models.Manager):
+    list_display = ['tag_list']
+
     # Functions of publications
     def get_publication(self, publicationid):
         return self.objects.get(pk=publicationid)
@@ -94,6 +97,11 @@ class PublicationManager(models.Manager):
         pubs = self.filter(author__profile__to_people__in=relation).order_by('created').reverse()
         return pubs
 
+    def tag_list(self, obj):
+        """
+        Devuelve los tags de una publicación
+        """
+        return u", ".join(o.name for o in obj.tags.all())
 
 
 class Publication(models.Model):
@@ -127,9 +135,12 @@ class Publication(models.Model):
         Añadimos los hashtags encontramos a la
         lista de tags => atributo "tags"
         """
-        hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', self.content)
+        hashtags = [tag.strip("#") for tag in self.content.split() if tag.startswith("#")]
         for tag in hashtags:
+            if tag.endswith((',', '.')):
+                tag = tag[:-1]
             self.tags.add(tag)
+        self.content = TextProcessor.get_format_text(self.content, self.author, hashtags)
 
     def send_notification(self, type="pub"):
         """
