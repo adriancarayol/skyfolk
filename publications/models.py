@@ -8,7 +8,7 @@ from user_profile.models import UserProfile
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from taggit.managers import TaggableManager
-import json
+import json, re
 
 class PublicationManager(models.Manager):
     # Functions of publications
@@ -122,6 +122,16 @@ class Publication(models.Model):
     def __str__(self):
         return self.content
 
+    def add_hashtag(self):
+        """
+        Añadimos los hashtags encontramos a la
+        lista de tags => atributo "tags"
+        """
+        hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', self.content)
+        for tag in hashtags:
+            print('Añadiendo: ' + tag)
+            self.tags.add(tag)
+
     def send_notification(self, type="pub"):
         """
          Enviamos a través del socket a todos aquellos usuarios
@@ -152,6 +162,7 @@ class Publication(models.Model):
         if new_comment:
             print('NOTIFICACION ENVIADA POR EL SOCKET...')
             result = super(Publication, self).save(*args, **kwargs)
+            self.add_hashtag()
             if not self.parent:
                 self.send_notification()
             else:

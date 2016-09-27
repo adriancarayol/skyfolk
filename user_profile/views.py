@@ -399,8 +399,9 @@ def advanced_view(request):
 
         if clean_hashtag:
             clean_hashtag = [x.strip() for x in clean_hashtag.split(',')]
-            result_hashtag = Publication.objects.filter(tags__name__in=clean_hashtag)
             print(clean_hashtag)
+            result_hashtag = Publication.objects.filter(tags__name__in=clean_hashtag)
+            print(result_hashtag)
 
         if clean_regex:
             result_regex = Publication.objects.filter(content__iregex=clean_regex)
