@@ -135,7 +135,9 @@ class Publication(models.Model):
         Añadimos los hashtags encontramos a la
         lista de tags => atributo "tags"
         """
-        hashtags = [tag.strip("#") for tag in self.content.split() if tag.startswith("#")]
+        hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
+        print('>>> HASHTAGS')
+        print(hashtags)
         for tag in hashtags:
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
