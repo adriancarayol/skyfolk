@@ -1,20 +1,8 @@
-{% extends 'account/base_interface.html' %}
-{% comment %}
-  Template para los seguidores de un perfil
-{% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
-{% block title %} <title>Seguidores {{ request.user.username }}</title> {% endblock %}
-{% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{STATIC_URL}}css/profile.css" onload="if(media!='all')media='all'">
-{% endblock %}
-{% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col l12 m10 s12 container-responsive">
-            <div class="row">
-            {% for item in friends_top4 %}
+{% load el_pagination_tags %}
+{% paginate friends_top4 %}
+{% for item in friends_top4 %}
             <div class="col l3 m10 s12">
                 <div class="personal-card">
                 <div class="row">
@@ -44,20 +32,5 @@
                 </div>
             </div>
             {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
-        <script src="{{STATIC_URL}}js/friends.js"></script>
-    <script async type="text/javascript" language="javascript">
-         $(function () {
-             var $win = $(window);
-             $win.scroll(function () {
-                 if ($win.height() + $win.scrollTop() == $(document).height()) {
-                     console.log("Scroll to bottom");
-                     AJAX_loadFollowers();
-                 }
-             });
-         });
-    </script>
-{% endblock %}
+            {% show_more %}
+

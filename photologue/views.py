@@ -7,7 +7,7 @@ from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
 
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, render_to_response, get_object_or_404
 
 from .models import Photo, Gallery
 from publications.forms import PublicationForm
@@ -15,7 +15,7 @@ from user_profile.forms import SearchForm
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-
+from django.template import RequestContext
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from django.http import QueryDict, HttpResponse
 import json
@@ -61,7 +61,10 @@ class GalleryYearArchiveView(GalleryDateView, YearArchiveView):
 
 # Collection views
 @login_required(login_url='accounts/login')
-def collection_list(request, username, photo_id):
+@page_template("photologue/photo_gallery_page.html")
+def collection_list(request, username, photo_id,
+                    template='photologue/photo_gallery.html',
+                    extra_context=None):
     """
     Busca fotografias con tags muy parecidos o iguales
     :return => Devuelve una lista de fotos con un parecido:
@@ -71,19 +74,20 @@ def collection_list(request, username, photo_id):
     searchForm = SearchForm()
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
-
-    if request.method == 'POST':
+    method = request.method
+    if method == 'POST' or method == 'GET':
         photo = Photo.objects.get(id=photo_id, owner__username=username)
         object_list = photo.tags.similar_objects()
         object_list.append(photo)
-        return render(request, 'photologue/photo_gallery.html', {'publicationForm': publicationForm,
-                                                                    'searchForm': searchForm,
-                                                                    'object_list': object_list, 'form': form,
-                                                                    'form_zip': form_zip})
-    else:
-        return render(request, 'photologue/photo_gallery.html', {'publicationForm': publicationForm,
-                                                                    'searchForm': searchForm, 'form': form,
-                                                                    'form_zip': form_zip})
+        context = {'publicationForm': publicationForm,
+                    'searchForm': searchForm,
+                    'object_list': object_list, 'form': form,
+                    'form_zip': form_zip}
+
+        if extra_context is not None:
+            context.update(extra_context)
+
+        return render_to_response(template, context, context_instance=RequestContext(request))
 
 
 

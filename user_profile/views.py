@@ -21,7 +21,7 @@ from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm,
 from user_profile.models import UserProfile
 from photologue.models import Photo
 from user_profile.forms import AdvancedSearchForm
-
+from el_pagination.views import AjaxListView
 # allauth
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -889,48 +889,45 @@ def load_followers(request):
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
 
 
-@login_required(login_url='/')
-def followers(request, username):
-    searchForm = SearchForm()
-    publicationForm = PublicationForm()
-    user_profile = get_object_or_404(
-        get_user_model(), username__iexact=username)
+class FollowersListView(AjaxListView):
+    context_object_name = "friends_top4"
+    template_name = "account/relations.html"
+    page_template = "account/relations_page.html"
 
-    try:
-        friends = user_profile.profile.get_followers()
-    except ObjectDoesNotExist:
-        friends = None
+    def get_queryset(self):
+        user_profile = get_object_or_404(
+                get_user_model(),
+                username__iexact=self.kwargs['username'])
+        return user_profile.profile.get_followers()
 
-    if (len(friends) > 12):
-        friends_top4 = friends[0:12]
-    else:
-        friends_top4 = friends
-    return render_to_response('account/followers.html',
-                              {'friends_top4': friends_top4, 'searchForm': searchForm,
-                               'publicationForm': publicationForm},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(FollowersListView, self).get_context_data(**kwargs)
+        context['publicationForm'] = PublicationForm()
+        context['searchForm'] = SearchForm()
+        context['url_name'] = "followers"
+        return context
 
+followers = login_required(FollowersListView.as_view())
 
-@login_required(login_url='/')
-def following(request, username):
-    searchForm = SearchForm()
-    publicationForm = PublicationForm()
-    user_profile = get_object_or_404(
-        get_user_model(), username__iexact=username)
+class FollowingListView(AjaxListView):
+    context_object_name = "friends_top4"
+    template_name = "account/relations.html"
+    page_template = "account/relations_page.html"
 
-    try:
-        friends = user_profile.profile.get_following()
-    except ObjectDoesNotExist:
-        friends = None
+    def get_queryset(self):
+        user_profile = get_object_or_404(
+                get_user_model(),
+                username__iexact=self.kwargs['username'])
+        return user_profile.profile.get_following()
 
-    if len(friends) > 12:
-        friends_top4 = friends[0:12]
-    else:
-        friends_top4 = friends
-    return render_to_response('account/amigos.html', {'friends_top4': friends_top4, 'searchForm': searchForm,
-                                                      'publicationForm': publicationForm},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(FollowingListView, self).get_context_data(**kwargs)
+        context['publicationForm'] = PublicationForm()
+        context['searchForm'] = SearchForm()
+        context['url_name'] = "following"
+        return context
 
+following = login_required(FollowingListView.as_view())
 
 # Load follows
 @login_required(login_url='/')
