@@ -11,27 +11,13 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-      {% if resultSearch|length == 0 and resultMessages|length == 0 and result_media|length == 0 %}
-          <div class="row">
-              <div class="col s12">
-                   <div class="noelements-search" id="search-noelements">
-                     <h5 class="">Sin resultados :-(</h5>
-                     <i class="not-query">No se obtuvo ningún resultado para:
-                       {% for word in words %}
-                        {{ word }}
-                       {% endfor %}
-                    </i>
-                  </div>
-              </div>
-          </div>
-          {% else %}
-          <div class="row">
+            <div class="row">
               <div class="col l12 m12 s12">
                 <ul class="query-options">
-                    <li class="list-vertical">Destacados</li>
+                    <li class="list-vertical"><a href="/search/">Destacados</a></li>
                     <li class="list-vertical"><a href="/search/1">Cuentas</a></li>
                     <li class="list-vertical"><a href="/search/2">Publicaciones</a></li>
-                    <li class="list-vertical">Imágenes</li>
+                    <li class="list-vertical"><a href="/search/3">Imágenes</a></li>
                     <li class="list-vertical">Videos</li>
                     <li class="list-vertical">Más opciones <i class="fa fa-caret-down" aria-hidden="true"></i>
                         <div id="dropdown-search" class="dropdown-options">
@@ -48,7 +34,20 @@
                 </ul>
               </div>
           </div>
-    {% endif %}
+            {% if resultSearch|length == 0 and resultMessages|length == 0 and result_media|length == 0 %}
+            <div class="row">
+              <div class="col s12">
+                   <div class="noelements-search" id="search-noelements">
+                     <h5 class="">Sin resultados :-(</h5>
+                     <i class="not-query">No se obtuvo ningún resultado para:
+                       {% for word in words %}
+                        {{ word }}
+                       {% endfor %}
+                    </i>
+                  </div>
+              </div>
+            </div>
+          {% endif %}
           <div class="row">
           {% if resultSearch|length != 0 %}
           <h2 class="account-search">Cuentas</h2>

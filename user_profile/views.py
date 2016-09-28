@@ -17,11 +17,14 @@ from notifications.signals import notify
 from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
-from user_profile.forms import ProfileForm, UserForm, SearchForm, PrivacityForm, DeactivateUserForm
+from user_profile.forms import ProfileForm, UserForm, \
+    SearchForm, PrivacityForm, DeactivateUserForm
 from user_profile.models import UserProfile
 from photologue.models import Photo
 from user_profile.forms import AdvancedSearchForm
 from el_pagination.views import AjaxListView
+
+
 # allauth
 # Create your views here.
 @login_required(login_url='accounts/login')
@@ -53,7 +56,7 @@ def profile_view(request, username):
             'user_profile': user_profile,
             'searchForm': searchForm,
             'privacity': privacity, },
-                                  context_instance=RequestContext(request))
+            context_instance=RequestContext(request))
 
     elif privacity == "block":
         template = 'account/privacity/block_profile.html'
@@ -61,7 +64,7 @@ def profile_view(request, username):
             'user_profile': user_profile,
             'searchForm': searchForm,
             'privacity': privacity, },
-                                  context_instance=RequestContext(request))
+            context_instance=RequestContext(request))
     print('>>> Estado de la cuenta: ' + str(user.is_active))
     print('>>> Visibilidad: ' + str(privacity))
 
@@ -87,7 +90,7 @@ def profile_view(request, username):
                       item.user.username + " " +
                       item.user.email)
                 requestsToMe_result.append(
-                    {'id_profile': item.pk, 'username': item.user.username,})
+                    {'id_profile': item.pk, 'username': item.user.username, })
 
             # print requestsToMe_result
             json_requestsToMe = json.dumps(requestsToMe_result)
@@ -154,7 +157,7 @@ def profile_view(request, username):
         friends = None
 
     friends_top12 = None
-    if friends != None:
+    if friends is not None:
         if len(friends) > 12:
             request.session['friends_list'] = json.dumps(list(friends))
             friends_top12 = friends[0:12]
@@ -178,33 +181,34 @@ def profile_view(request, username):
     if privacity == "followers":
         template = 'account/privacity/need_confirmation_profile.html'
         return render_to_response(template, {
-        'friends_top12': friends_top12,
-        'user_profile': user_profile,
-        'searchForm': searchForm,
-        'liked': liked, 'n_likes': n_likes,
-        'existFollowRequest': existFollowRequest,
-        'json_requestsToMe': json_requestsToMe,
-        'followers': followers,
-        'privacity': privacity,
-        'isFollower': isFollower,
-        'following': following,
-        'isBlocked': isBlocked, 'multimedia_count': multimedia_count},
-                                  context_instance=RequestContext(request))
+            'friends_top12': friends_top12,
+            'user_profile': user_profile,
+            'searchForm': searchForm,
+            'liked': liked, 'n_likes': n_likes,
+            'existFollowRequest': existFollowRequest,
+            'json_requestsToMe': json_requestsToMe,
+            'followers': followers,
+            'privacity': privacity,
+            'isFollower': isFollower,
+            'following': following,
+            'isBlocked': isBlocked, 'multimedia_count': multimedia_count},
+            context_instance=RequestContext(request))
+
     elif privacity == "both":
         template = 'account/privacity/need_confirmation_profile.html'
         return render_to_response(template, {
-        'friends_top12': friends_top12,
-        'user_profile': user_profile,
-        'searchForm': searchForm,
-        'liked': liked, 'n_likes': n_likes,
-        'existFollowRequest': existFollowRequest,
-        'json_requestsToMe': json_requestsToMe,
-        'followers': followers,
-        'privacity': privacity,
-        'isFollower': isFollower,
-        'following': following,
-        'isBlocked': isBlocked, 'multimedia_count': multimedia_count},
-                                  context_instance=RequestContext(request))
+            'friends_top12': friends_top12,
+            'user_profile': user_profile,
+            'searchForm': searchForm,
+            'liked': liked, 'n_likes': n_likes,
+            'existFollowRequest': existFollowRequest,
+            'json_requestsToMe': json_requestsToMe,
+            'followers': followers,
+            'privacity': privacity,
+            'isFollower': isFollower,
+            'following': following,
+            'isBlocked': isBlocked, 'multimedia_count': multimedia_count},
+            context_instance=RequestContext(request))
 
     # cargar lista comentarios
     try:
@@ -245,7 +249,6 @@ def profile_view(request, username):
     except ObjectDoesNotExist:
         timeline = None
 
-
     return render_to_response(template, {
         'publications_top15': publications_top15,
         'friends_top12': friends_top12,
@@ -262,17 +265,12 @@ def profile_view(request, username):
         'isFollower': isFollower,
         'following': following,
         'isBlocked': isBlocked, 'multimedia_count': multimedia_count},
-                              context_instance=RequestContext(request))
+        context_instance=RequestContext(request))
 
 
 # >>>>>>> issue#11
 
 
-'''
-    Se añade una variable 'option' inicializada a None, para que por defecto
-    busque las palabras en usuarios y publicaciones, pero que si tiene algún
-    valor, haga la búsqueda únicamente por ese campo.
-'''
 @login_required(login_url='accounts/login')
 def search(request, option=None):
     """
@@ -280,6 +278,10 @@ def search(request, option=None):
     :param request:
     :param option:
     :return resultados de la busqueda:
+
+    Se añade una variable 'option' inicializada a None, para que por defecto
+    busque las palabras en usuarios y publicaciones, pero que si tiene algún
+    valor, haga la búsqueda únicamente por ese campo.
     """
     # para mostarar tambien el cuadro de busqueda en la pagina
     searchForm = SearchForm(request.POST)
@@ -288,10 +290,24 @@ def search(request, option=None):
     info = request.method
 
     if request.method == 'GET' and option is None:
+        '''
+        if 'searchText' in request.session:
+            request.POST = request.session['searchText']
+            request.method = 'POST'
+        '''
+        # NOTE Modificado por adrian:
+        # Si hay peticion GET => Se busca si antes hubo
+        # un request.POST
+        # Si hay peticion POST se actúa con normalidad
+
         return render_to_response('account/search.html',
-                                  {'showPerfilButtons': True, 'searchForm': searchForm, 'resultSearch': (
-                                  ), 'publicationForm': publicationForm, 'message': info},
+                                  {'showPerfilButtons': True,
+                                   'searchForm': searchForm,
+                                   'resultSearch': (),
+                                   'publicationForm': publicationForm,
+                                   'message': info},
                                   context_instance=RequestContext(request))
+
     # if request.method == 'POST':
     else:
         if searchForm.is_valid:
@@ -328,7 +344,7 @@ def search(request, option=None):
                                                             Q(is_active=True))
                 # usamos la expresion regular para descartar las imagenes de los comentarios.
                 # Búsqueda predeterminada o de publicaciones.
-                # Mejorar consulta a bbdd (pasando lista words)
+                # IDEA Mejorar consulta a bbdd (pasando lista words)
                 # en lugar de recorrer la lista y buscar cada palabra
                 if option is None or option == '2':
                     for w in words:
@@ -340,11 +356,13 @@ def search(request, option=None):
                             ~Q(author__username__icontains=request.user.username)).order_by('content').order_by(
                             'created').reverse()  # or .order_by('created').reverse()
                     # GET MEDIA BY OWNER OR TAGS...
-                    result_media = Photo.objects.filter(Q(tags__name__in=words) | (Q(owner__username__icontains=w) & ~Q(owner__username=request.user.username)))
-                    print(result_media)
+                if option == '3':
+                    for w in words:
+                        result_media = Photo.objects.filter(Q(tags__name__in=words) | (Q(owner__username__icontains=w) & ~Q(owner__username=request.user.username)))
 
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': result_search,
+                                                                  'publicationForm': publicationForm,
                                                                   'resultMessages': result_messages,
                                                                   'result_media': result_media,
                                                                   'words': words,
