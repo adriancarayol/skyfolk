@@ -20,8 +20,8 @@ from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from django.http import QueryDict, HttpResponse
 import json
 from django.shortcuts import redirect
-
-
+from el_pagination.decorators import page_template
+from el_pagination.views import AjaxListView
 # Gallery views.
 
 
@@ -86,29 +86,25 @@ def collection_list(request, username, photo_id):
                                                                     'form_zip': form_zip})
 
 
-# Photo views.
-@login_required(login_url='accounts/login')
-def photo_list(request, username):
-    """
-    Vista para mostrar las imágenes del usuario
-    """
-    publicationForm = PublicationForm()
-    searchForm = SearchForm()
 
+class PhotoListView(AjaxListView):
+    context_object_name = "object_list"
+    template_name = "photologue/photo_gallery.html"
+    page_template = "photologue/photo_gallery_page.html"
 
-    user_profile = get_object_or_404(get_user_model(),
-                                     username__iexact=username)
+    def get_queryset(self):
+        return Photo.objects.filter(owner__username=self.kwargs['username'])
 
-    object_list = Photo.objects.filter(owner__username=username)
+    def get_context_data(self, **kwargs):
+        context = super(PhotoListView, self).get_context_data(**kwargs)
+        context['form'] = UploadFormPhoto()
+        context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
+        context['user_gallery'] = self.kwargs['username']
+        context['publicationForm'] = PublicationForm()
+        context['searchForm'] = SearchForm()
+        return context
 
-    form = UploadFormPhoto()
-    form_zip = UploadZipForm(request.POST, request.FILES, request=request)
-
-    return render(request, 'photologue/photo_gallery.html', {'form': form, 'object_list': object_list,
-                                                             'user_gallery': username,
-                                                             'publicationForm': publicationForm,
-                                                             'searchForm': searchForm, 'form_zip': form_zip})
-
+photo_list = login_required(PhotoListView.as_view())
 
 def upload_photo(request):
     """

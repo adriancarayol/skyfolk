@@ -73,7 +73,7 @@ urlpatterns = [
         PhotoDetailView.as_view(),
         name='pl-photo'),
 
-    url(r'^delete/photo/$', require_POST(login_required(delete_photo)), name='delete-photo'),
+    url(r'^delete/photo/$', login_required(delete_photo), name='delete-photo'),
 
     url(r'^edit/photo/(?P<photo_id>\d+)/$', require_POST(login_required(edit_photo)), name='edit-photo'),
 

@@ -39,6 +39,7 @@ THIRD_PARTY_APPS = (
     'photologue',               # photologue original
     'sortedm2m',
     'taggit',                   # para etiquetas
+    'el_pagination',            # Para paginacion
     'notifications',           # siempre último
 )
 

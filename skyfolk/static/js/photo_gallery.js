@@ -19,7 +19,7 @@ $(document).ready(function () {
        return false;
    });
 
-    $('.tags-content').find('blockquote').click(function () {
+    $('.tags-content').on('click', 'blockquote', function () {
         $(this).nextAll('input').click();
     });
 

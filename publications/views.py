@@ -14,7 +14,7 @@ from publications.forms import PublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
 from notifications.signals import notify
-
+from el_pagination.views import AjaxListView
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
     form_class = PublicationForm
