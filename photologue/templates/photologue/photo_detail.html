@@ -82,10 +82,12 @@
                     {% endif %}
                         <div class="row">
                             {% if next %}
-                                <a href="{{ next.get_absolute_url }}" class="waves-effect waves-light btn">Next</a>
+                            <a href="{{ next.get_absolute_url }}" class="waves-effect waves-light btn">Next</a>
+                                <img src="{{next.get_thumbnail_url}}">
                             {% endif %}
                             {% if previous %}
                                 <a href="{{ previous.get_absolute_url }}" class="waves-effect waves-light btn">previous</a>
+                                <img src="{{ previous.get_thumbnail_url }}">
                             {% endif %}
                         </div>
                     </div>
