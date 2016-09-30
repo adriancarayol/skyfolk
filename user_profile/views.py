@@ -1049,10 +1049,10 @@ class DeactivateAccount(FormView):
         if user.is_authenticated():
             if form.is_valid():
                 user.is_active = form.clean_is_active()
+                user.save()
                 if user.is_active:
                     return self.form_valid(form=form, **kwargs)
                 else:
-                    user.delete()
                     return HttpResponseRedirect(self.success_url)
             else:
                 return self.form_invalid(form=form, **kwargs)
