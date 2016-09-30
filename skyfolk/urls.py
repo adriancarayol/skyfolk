@@ -22,7 +22,7 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
     # urls user_profile
-    url(r'^', include('user_profile.urls'), name="user_profile"),
+    url(r'^', include('user_profile.urls', namespace="user_profile"), name="user_profile"),
     # url(r'^config/changepass/$', 'user_profile.views.config_changepass'),
     # url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
     # {'document_root': settings.MEDIA_ROOT}),
@@ -31,7 +31,7 @@ urlpatterns = patterns(
     # urls timeline
     url(r'^', include('timeline.urls'), name="timeline"),
     # url novedades e inicio
-    url(r'^', include('latest_news.urls'), name="news"),
+    url(r'^', include('latest_news.urls', namespace="latest_news"), name="news"),
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
