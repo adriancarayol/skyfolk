@@ -7,14 +7,14 @@ from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
 
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404
 
 from .models import Photo, Gallery
 from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from django.template import RequestContext
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from django.http import QueryDict, HttpResponse
@@ -59,6 +59,7 @@ class GalleryMonthArchiveView(GalleryDateView, MonthArchiveView):
 class GalleryYearArchiveView(GalleryDateView, YearArchiveView):
     make_object_list = True
 
+
 # Collection views
 @login_required(login_url='accounts/login')
 @page_template("photologue/photo_gallery_page.html")
@@ -76,7 +77,7 @@ def collection_list(request, username, photo_id,
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
     method = request.method
     if method == 'POST' or method == 'GET':
-        photo = Photo.objects.get(id=photo_id, owner__username=username)
+        photo = get_object_or_404(Photo, id=photo_id, owner__username=username)
         object_list = photo.tags.similar_objects()
         object_list.append(photo)
         context = {'publicationForm': publicationForm,

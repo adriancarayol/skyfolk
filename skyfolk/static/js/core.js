@@ -513,14 +513,7 @@ function AJAX_submit_publication(data, type, pks) {
       var response = data.response;
       console.log('RESPONSE AQUI: ' + response + " type: " + type);
       if (response == true) {
-        swal({
-            title: "Success!",
-            text: "You have successfully posted!",
-            type: "success",
-            timer: 900,
-            animation: "slide-from-top",
-            showConfirmButton: false
-        });
+        /* nothing */ 
       } else {
         swal({
           title: "",
@@ -539,6 +532,8 @@ function AJAX_submit_publication(data, type, pks) {
       alert('ERROR: ' + rs.responseText + " " + e)
     }
   }).done(function() {
+      // No necesario, ya que usamos sockets para añadir
+      // En "vivo" publicaciones y respuestas
       //addNewPublication(type, pks[0], pks[1], pks[2]);
   })
 }
@@ -587,14 +582,7 @@ function AJAX_requestfriend(status) {
                 showConfirmButton: false
             });
           } else if (response == "added_friend") {
-              swal({
-                  title: "Success!",
-                  text: "You have added a friend!",
-                  timer: 1000,
-                  showConfirmButton: true
-            }, function () {
-                  $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
-              });
+                $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
           }
           else {
 
