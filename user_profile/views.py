@@ -284,9 +284,11 @@ def search(request, option=None):
     valor, haga la búsqueda únicamente por ese campo.
     """
     # para mostarar tambien el cuadro de busqueda en la pagina
+    user = request.user
+    initial = {'author': user.pk, 'board_owner': user.pk}
     searchForm = SearchForm(request.POST)
     # mostrar formulario para enviar comentarios/publicaciones
-    publicationForm = PublicationForm()
+    publicationForm = PublicationForm(initial=initial)
     info = request.method
 
     if request.method == 'GET' and option is None:
@@ -376,9 +378,10 @@ def advanced_view(request):
     """
     Búsqueda avanzada
     """
-
+    user = request.user
     template_name = "account/search-avanzed.html"
-    publicationForm = PublicationForm()
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm(request.POST)
 
     http_method = request.method
@@ -433,7 +436,9 @@ def advanced_view(request):
 
 @login_required(login_url='/')
 def config_privacity(request):
-    publicationForm = PublicationForm()
+    user = request.user
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
     print('>>>>> PETICION CONFIG')
     if request.POST:
@@ -456,7 +461,8 @@ def config_privacity(request):
 @login_required(login_url='/')
 def config_profile(request):
     user_profile = request.user
-    publicationForm = PublicationForm()
+    initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
+    publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
     print('>>>>>>>  PETICION CONFIG')
     if request.POST:
@@ -492,8 +498,10 @@ def config_profile(request):
 
 @login_required(login_url='/')
 def config_pincode(request):
-    pin = request.user.profile.pin
-    publicationForm = PublicationForm()
+    user = request.user
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    pin = user.profile.pin
+    publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
 
     return render_to_response('account/cf-pincode.html', {'showPerfilButtons': True, 'searchForm': searchForm,
@@ -503,8 +511,10 @@ def config_pincode(request):
 
 @login_required(login_url='/')
 def config_blocked(request):
+    user = request.user
+    initial = {'author': user.pk, 'board_owner': user.pk}
     list_blocked = request.user.profile.get_blockeds()
-    publicationForm = PublicationForm()
+    publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
 
     return render_to_response('account/cf-blocked.html', {'showPerfilButtons': True, 'searchForm': searchForm,
@@ -920,7 +930,9 @@ class FollowersListView(AjaxListView):
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
-        context['publicationForm'] = PublicationForm()
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publicationForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['url_name'] = "followers"
         return context
@@ -940,7 +952,9 @@ class FollowingListView(AjaxListView):
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
-        context['publicationForm'] = PublicationForm()
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publicationForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['url_name'] = "following"
         return context
@@ -972,13 +986,13 @@ def load_follows(request):
 
 class PassWordChangeDone(TemplateView):
     template_name = 'account/confirmation_changepass.html'
-    publicationForm = PublicationForm()
-    searchForm = SearchForm()
 
     def get(self, request, *args, **kwargs):
         context = locals()
-        context['publicationForm'] = self.publicationForm
-        context['searchForm'] = self.searchForm
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publicationForm'] = PublicationForm(initial=initial)
+        context['searchForm'] = SearchForm()
         context['showPerfilButtons'] = True
 
         return render_to_response(self.template_name, context, context_instance=RequestContext(request))
@@ -990,15 +1004,15 @@ password_done = login_required(PassWordChangeDone.as_view())
 # Modificacion del formulario para cambiar contraseña
 class CustomPasswordChangeView(PasswordChangeView):
     success_url = reverse_lazy("account_done_password")
-    publicationForm = PublicationForm()
-    searchForm = SearchForm()
 
     def get_context_data(self, **kwargs):
         ret = super(PasswordChangeView, self).get_context_data(**kwargs)
         # NOTE: For backwards compatibility
         ret['password_change_form'] = ret.get('form')
-        ret['publicationForm'] = self.publicationForm
-        ret['searchForm'] = self.searchForm
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
+        ret['publicationForm'] = PublicationForm(initial=initial)
+        ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
         # (end NOTE)
         return ret
@@ -1009,15 +1023,15 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
 # Modificacion del formulario para manejar los emails
 class CustomEmailView(EmailView):
-    publicationForm = PublicationForm()
-    searchForm = SearchForm()
 
     def get_context_data(self, **kwargs):
         ret = super(EmailView, self).get_context_data(**kwargs)
         # NOTE: For backwards compatibility
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
         ret['add_email_form'] = ret.get('form')
-        ret['publicationForm'] = self.publicationForm
-        ret['searchForm'] = self.searchForm
+        ret['publicationForm'] = PublicationForm(initial=initial)
+        ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
         # (end NOTE)
         return ret
@@ -1040,6 +1054,10 @@ class DeactivateAccount(FormView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         context['form'] = self.form_class
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publicationForm'] = PublicationForm(initial=initial)
+        context['searchForm'] = SearchForm()
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):

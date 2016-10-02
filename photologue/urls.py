@@ -82,7 +82,7 @@ urlpatterns = [
 
     url(r'^submit_photo/$', require_POST(login_required(upload_photo)), name='upload-photo'),
 
-    url(r'^media/collection/(?P<photo_id>\d+)by(?P<username>[\w-]+)/$', collection_list, name='collection-list'),
+    url(r'^media/collection/by(?P<username>[\w-]+)/(?P<tagname>[\w-]+)/$', collection_list, name='collection-list'),
 
 
     url(r'^media/(?P<username>[\w-]+)/$',

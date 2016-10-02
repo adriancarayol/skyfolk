@@ -63,7 +63,8 @@ class GalleryYearArchiveView(GalleryDateView, YearArchiveView):
 # Collection views
 @login_required(login_url='accounts/login')
 @page_template("photologue/photo_gallery_page.html")
-def collection_list(request, username, photo_id,
+def collection_list(request, username,
+                    tagname,
                     template='photologue/photo_gallery.html',
                     extra_context=None):
     """
@@ -71,24 +72,25 @@ def collection_list(request, username, photo_id,
     :return => Devuelve una lista de fotos con un parecido:
     """
     user = request.user
-    publicationForm = PublicationForm()
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
     method = request.method
-    if method == 'POST' or method == 'GET':
-        photo = get_object_or_404(Photo, id=photo_id, owner__username=username)
-        object_list = photo.tags.similar_objects()
-        object_list.append(photo)
-        context = {'publicationForm': publicationForm,
+
+
+    print('>>>>>>> TAGNAME {}'.format(tagname))
+    object_list = Photo.objects.filter(owner__username=username, tags__name__iexact=tagname)
+    context = {'publicationForm': publicationForm,
                     'searchForm': searchForm,
                     'object_list': object_list, 'form': form,
                     'form_zip': form_zip}
 
-        if extra_context is not None:
-            context.update(extra_context)
+    if extra_context is not None:
+        context.update(extra_context)
 
-        return render_to_response(template, context, context_instance=RequestContext(request))
+    return render_to_response(template, context, context_instance=RequestContext(request))
 
 
 
@@ -102,10 +104,12 @@ class PhotoListView(AjaxListView):
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
         context['form'] = UploadFormPhoto()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
         context['user_gallery'] = self.kwargs['username']
-        context['publicationForm'] = PublicationForm()
+        context['publicationForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         return context
 
@@ -229,8 +233,9 @@ class PhotoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
+        initial = {'author': user.pk, 'board_owner': user.pk}
         context['form'] = EditFormPhoto(instance=self.object)
-        context['publicationForm'] = PublicationForm()
+        context['publicationForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:

@@ -9,12 +9,9 @@
                         <div class="principal-content">
                                 {% if photo.tags.all %}
                                         <div class="tags-content">
-                                        <form method="post" action="{% url "photologue:collection-list" photo.pk photo.owner %}">{% csrf_token %}
                                             {% for tag in photo.tags.all %}
-                                                <blockquote>{{ tag.name }}</blockquote>
+                                                <blockquote onclick="location.href='{% url 'photologue:collection-list' photo.owner tag.name %}'">{{ tag.name }}</blockquote>
                                             {% endfor %}
-                                        <input data-id="{{ photo.pk }}" type="submit" hidden>
-                                        </form>
                                         </div>
                                 {% endif %}
                                     <img src="{{ photo.image.url }}" alt="{{ photo.title }}" title="{{ photo.title }}" onclick="location.href='{{ photo.get_absolute_url }}'">

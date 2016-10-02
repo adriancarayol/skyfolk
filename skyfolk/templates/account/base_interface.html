@@ -173,7 +173,7 @@
       <i class="large material-icons">menu</i>
     </a>
     <ul>
-      <li><a href="/inicio" class="btn-floating red"><i class="material-icons">home</i></a></li>
+        <li><a href="{% url 'user_profile:profile' request.user %}" class="btn-floating red"><i class="material-icons">home</i></a></li>
       <li><a id="publish3" class="btn-floating yellow darken-1"><i class="material-icons">create</i></a></li>
       <li><a href="/following/{{ request.user.username }}" class="btn-floating green"><i class="material-icons">people</i></a></li>
       <li><a id="agregar-amigo2" class="btn-floating blue"><i class="material-icons">add</i></a></li>

@@ -128,7 +128,7 @@ class DeactivateUserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DeactivateUserForm, self).__init__(*args, **kwargs)
         self.fields['is_active'].help_text = \
-            '<b>Desmarque esta opción si quiere eliminar permanentemente su cuenta.</b>'
+            '<b>Desmarque esta opción si quiere desactivar su cuenta.</b>'
 
     def clean_is_active(self):
         is_active = not (self.cleaned_data["is_active"])
