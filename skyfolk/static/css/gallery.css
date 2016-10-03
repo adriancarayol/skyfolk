@@ -17,6 +17,11 @@ html, body {
   left: 0;
   z-index: 9999;
   display: none; }
+.container .endless_more, .container .endless_loading {
+  clear: both;
+  text-align: center; }
+.container .endless_more {
+  display: block; }
 
 .container-gallery .btn-floating {
   display: block;

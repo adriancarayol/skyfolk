@@ -81,7 +81,7 @@ def collection_list(request, username,
 
 
     print('>>>>>>> TAGNAME {}'.format(tagname))
-    object_list = Photo.objects.filter(owner__username=username, tags__name__iexact=tagname)
+    object_list = Photo.objects.filter(owner__username=username, tags__name__exact=tagname)
     context = {'publicationForm': publicationForm,
                     'searchForm': searchForm,
                     'object_list': object_list, 'form': form,

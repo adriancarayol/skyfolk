@@ -3,14 +3,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
-from django.core.exceptions import ImproperlyConfigured
+# from django.core.exceptions import ImproperlyConfigured
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
 DEBUG = False
-ALLOWED_HOSTS = ['.skyfolk.net','127.0.0.1']
+ALLOWED_HOSTS = ['.skyfolk.net', '127.0.0.1']
 
 # Application definition
 DEFAULT_APPS = (
@@ -32,7 +32,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',
     'rest_framework',          # REST framework
     'django_messages',         # mensajes entre usuarios
-    #'achievements',            # achivements       Portando a Python3
+    # 'achievements',            # achivements       Portando a Python3
     'emoji',
     'avatar',                  # Avatares para usuarios.
     'channels',                # django-channels
@@ -124,6 +124,11 @@ MIDDLEWARE_CLASSES = (
 
 # Auto logout delay in minutes - 1 mes
 AUTO_LOGOUT_DELAY = 60
+
+# Configuracion para django-el-pagination
+
+EL_PAGINATION_LOADING = """<img src="/static/img/ripple.gif" alt="loading" />"""
+
 
 ROOT_URLCONF = 'skyfolk.urls'
 
