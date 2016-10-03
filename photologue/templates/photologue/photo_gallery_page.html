@@ -6,7 +6,7 @@
         {% for photo in object_list %}
             <div class="col l2 m12 s12 image-div">
                     <div class="container-image">
-                        <div class="principal-content">
+                        <div class="principal-content" style="background-image: url('{{ photo.image.url }}');">
                                 {% if photo.tags.all %}
                                         <div class="tags-content">
                                             {% for tag in photo.tags.all %}
