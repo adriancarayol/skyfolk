@@ -169,14 +169,15 @@ def delete_photo(request):
     es el autor de la foto, si es asi, procedemos.
     """
     if request.method == 'DELETE':
+        user = request.user
         _id = int(QueryDict(request.body).get('id'))
         photo_to_delete = get_object_or_404(Photo, id=_id)
 
-        if request.user.pk == photo_to_delete.owner_id:
+        if user.pk == photo_to_delete.owner_id:
             photo_to_delete.delete()
             response_data = {}
             response_data['msg'] = 'Photo was deleted.'
-            response_data['author'] = request.user.username
+            response_data['author'] = user.username
 
             return HttpResponse(
                 json.dumps(response_data),
@@ -202,16 +203,18 @@ def edit_photo(request, photo_id):
     """
     photo = get_object_or_404(Photo, id=photo_id)
     form = EditFormPhoto(request.POST or None, instance=photo)
+    user = request.user
     if form.is_valid():
         if photo.owner.pk == request.user.pk:
             response_data = {'msg': 'Photo was edited!'}
             form.save()
         else:
             response_data = {'msg': 'You cant edit this photo.'}
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type="application/json"
-        )
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
+        return redirect('/media/'+user.username+'/')
     else:
         return HttpResponse(
             json.dumps({'Nothing to see': 'This isnt happening'}),
@@ -233,6 +236,7 @@ class PhotoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
+        user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
         context['form'] = EditFormPhoto(instance=self.object)
         context['publicationForm'] = PublicationForm(initial=initial)
