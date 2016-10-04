@@ -139,7 +139,11 @@ body {
 .forgot-pass {
   text-align: center;
   border-top: 3px solid #eee;
-  margin-bottom: 0 !important; }
+  margin-bottom: 0 !important;
+  height: 40px; }
+  .forgot-pass > a {
+    display: block;
+    margin-top: 1.5%; }
 
 .remember-check {
   text-align: center; }
