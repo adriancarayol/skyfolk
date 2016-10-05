@@ -8,14 +8,14 @@
   <a title="Marcar como leido" class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
     <i class="fa fa-eye" aria-hidden="true"></i>
   </a>
-  <h4>
+  <h5>
     {% if notice.unread %}<i class="fa fa-bell" aria-hidden="true"></i>{% endif %}
     {% if not notice.level == "new_follow" %}<a href="/profile/{{ notice.actor }}">{{ notice.actor }}</a>{% endif %}
     <b>{{ notice.verb|safe }}</b>
     {% if notice.target %}
       of {{ notice.target }}
     {% endif %}
-  </h4>
+  </h5>
   <p class="notice-timesince">{{ notice.timesince }} ago</p>
   {% if notice.description %}
     of <p class="notice-description">{{ notice.description|linebreaksbr }}</p>
