@@ -2,22 +2,21 @@
 {% comment %}
   Template base para templates de configuracion.
 {% endcomment %}
+{% load i18n avatar_tags %}
+
 {% block include_files %}
     <script async src="{{STATIC_URL}}js/config.js"></script>
     <link rel="stylesheet" href="{{STATIC_URL}}css/configuracion.css" type="text/css" media="all" onload="if(media!='all')media='all'">
     <link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css' onload="if(media!='all')media='all'">
-    <meta name="viewport" content="width=device-width, maximum-scale=1, minimum-scale=0.5">
 {% endblock%}
-{% load i18n avatar_tags %}
+
 {% block title %} <title>Configuración - {{ request.user.username }}.</title> {% endblock %}
-	<!--[if IE 7]>
-	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome-ie7.min.css" rel="stylesheet" />
-	<![endif]-->
+
 {% block content %}
     <div class="container">
     {% block nav %}
         <div class="row">
-            <div class="col l12 m12 s12">
+            <div class="col s12">
                 <div class="col l2 m12 s12 wrapper-config-menu">
                   <ul class="menu-config">
                       <li id="config-profile" onclick="toProfile('/config/profile')">Perfil<i class="material-icons right">person</i></li>

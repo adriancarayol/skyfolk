@@ -12,14 +12,29 @@
   src: url("../fonts/Pacifico-regular/Pacifico-regular.eot");
   src: url("../fonts/Pacifico-regular/Pacifico-regular.eot?#iefix") format("embedded-opentype"), local("Pacifico Regular"), local("Pacifico-regular"), url("../fonts/Pacifico-regular/Pacifico-regular.woff2") format("woff2"), url("../fonts/Pacifico-regular/Pacifico-regular.woff") format("woff"), url("../fonts/Pacifico-regular/Pacifico-regular.ttf") format("truetype"), url("../fonts/Pacifico-regular/Pacifico-regular.svg#Pacifico") format("svg"); }
 body {
-  padding: 0;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column; }
+
+main {
+  flex: 1 0 auto; }
+
+.links > li {
+  display: inline-block; }
+
+.skyfolk-logo {
+  position: fixed;
+  font-family: "Pacifico", cursive !important;
   margin: auto;
-  background-size: 100%;
-  max-width: 100%;
-  min-height: 100%;
-  flex-direction: column;
-  background-repeat: no-repeat;
-  flex-wrap: wrap; }
+  left: 50%;
+  cursor: pointer;
+  color: #555 !important;
+  font-size: 1.7em;
+  letter-spacing: 0.2px;
+  color: #555; }
+  .skyfolk-logo > span {
+    color: #1e88e5;
+    text-shadow: 1px 1px 1px #ccc; }
 
 .signup {
   padding: 10px; }
@@ -28,24 +43,20 @@ body {
   padding-right: 10px;
   padding-left: 10px; }
 
-/* Random Background */
-#background_cycler {
-  padding: 0;
-  margin: 0;
+.active-img {
+  min-height: 100%;
+  min-width: 1024px;
   width: 100%;
-  height: 100%;
-  position: absolute;
+  height: auto;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: -1; }
-  #background_cycler img {
-    position: fixed;
-    width: 100%;
-    min-height: 100%;
-    z-index: 1; }
-  #background_cycler img.active {
-    z-index: 3; }
 
+@media screen and (max-width: 1024px) {
+  .active-img {
+    left: 50%;
+    margin-left: -512px; } }
 /* LOGO */
 .namesn {
   position: relative;
@@ -83,57 +94,16 @@ body {
     top: 12px;
     left: 0; }
 
-.footer_base {
-  width: 100%;
-  position: fixed;
-  height: auto;
-  padding: 10px;
-  bottom: 0;
-  -webkit-transition: all 0.1s ease-in-out;
-  -moz-transition: all 0.1s ease-in-out;
-  transition: all 0.1s ease-in-out;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
-  background-color: rgba(255, 255, 255, 0.8);
-  text-align: center; }
-  .footer_base a {
-    color: #616161;
-    font-family: "Open Sans", sans-serif;
-    -moz-transtion: all 0.2s ease-in;
-    -webkit-transition: all 0.2s ease-in;
-    transition: all 0.2s ease-in;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    position: relative; }
-  .footer_base a:hover {
-    color: #1e88e5; }
-  .footer_base #about, .footer_base #blog, .footer_base #tutorial, .footer_base #empleo, .footer_base #anunciarse, .footer_base #privacidad {
-    margin-left: 7%; }
-  .footer_base .left {
-    font-weight: 600;
-    position: absolute;
-    left: 0.5%; }
-
-.flex {
-  position: relative;
-  margin: auto;
-  width: 40px;
-  height: 40px;
-  top: -20px; }
-
 #login {
   width: 370px;
   margin: auto;
   position: relative;
   display: block;
-  top: 120px;
+  margin-top: 99px;
   border-radius: 7px;
   font-family: "Open Sans", sans-serif;
   z-index: 9999;
   color: black; }
-
-.links {
-  float: left; }
 
 /* Estilos para el botón ¿olvido su contraseña? */
 .forgot-pass {
@@ -148,7 +118,7 @@ body {
 .remember-check {
   text-align: center; }
 
-.row h5 {
+div#login h5 {
   text-align: center;
   color: #757575;
   border-bottom: 1px solid #bdbdbd;
@@ -201,12 +171,6 @@ body {
   #background_cycler {
     height: 100%; }
 
-  .footer_base {
-    display: none; }
-
-  .namesn {
-    margin-top: -10%; }
-
   #login {
     width: 350px; } }
 .form-3 .form-group {
@@ -238,12 +202,5 @@ body {
 input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
   border-bottom: 1px solid #64B5F6 !important;
   box-shadow: 0 1px 0 0 #64B5F6 !important; }
-
-@media screen and (max-height: 700px) and (min-width: 800px) {
-  #login {
-    top: 50px; }
-
-  .namesn {
-    top: -80px; } }
 
 /*# sourceMappingURL=login-signup.css.map */

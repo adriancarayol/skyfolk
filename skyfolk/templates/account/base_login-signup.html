@@ -17,33 +17,82 @@
         <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection" onload="if(media!='all')media='all'">
         <script src="{{STATIC_URL}}js/jquery.min.js"></script>
         <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
-
 	{% block extra_head %}
 	{% endblock %}
+
     </head>
     <body>
-    <div class="hide-on-small-only namesn">
-        <div onclick="javascript:location.href='/'" class="logo">
-                <h5><i>S</i>kyfolk.</h5>
-                <img src="{{STATIC_URL}}img/logo.png">
+        <img class="active-img" src="{{STATIC_URL}}img/backgrounds/back.jpg" alt="background">
+        <header></header>
+        <nav class="hide-on-large-only">
+            <div class="white nav-wrapper">
+              <a href="/" class="brand-logo center skyfolk-logo"><span>S</span>kyfolk</a>
+            </div>
+         </nav>
+        <div class="row">
+            <div class="hide-on-med-and-down namesn">
+                <div onclick="javascript:location.href='/'" class="logo">
+                        <h5><i>S</i>kyfolk.</h5>
+                        <img src="{{STATIC_URL}}img/logo.png">
+                </div>
+            </div>
         </div>
-    </div>
- <div id="background_cycler" > <!-- Random backgrounds -->
-      <img class="active" src="{{STATIC_URL}}img/backgrounds/back.jpg" alt=""/>
-  </div>
-       {% block content %}{% endblock %}
-    <div class="footer_base">
-      <div class="col s12 footer-copyright">
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        <footer class="page-footer white">
             <div class="container">
-            <a class="left">© Skyfolk 2016</a>
-            <a id="about" href="/about/home">Sobre Skyfolk</a>
-            <a id="blog" href="/blog">Blog</a>
-            <a id="tutorial" href="/blog">Ayuda</a>
-            <a id="empleo" href="/blog">Trabaja con nosotros</a>
-            <a id="anunciarse" href="/blog">Publicidad</a>
-            <a id="privacidad" href="/blog">Privacidad</a>
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="blue-text text-darken-1">Skyfolk</h5>
+                <p class="blue-text text-darken-1">Knows the world.</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="blue-text text-darken-1">Links</h5>
+                <ul class="links">
+                    <li>
+                         <div class="chip">
+                             <a class="blue-text text-darken-1" href="/about/home">Sobre Skyfolk</a>
+                         </div>
+                    </li>
+                    <li>
+                        <div class="chip">
+                            <a class="blue-text text-darken-1" href="/blog">Blog</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="chip">
+                            <a class="blue-text text-darken-1" href="/blog">Ayuda</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="chip">
+                            <a class="blue-text text-darken-1" href="/blog">Trabaja con nosotros</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="chip">
+                            <a class="blue-text text-darken-1" href="/blog">Publicidad</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="chip">
+                            <a class="blue-text text-darken-1" href="/blog">Privacidad</a>
+                        </div>
+                    </li>
+                </ul>
+              </div>
             </div>
           </div>
-    </div>
-</body>
+            <div class="footer-copyright grey lighten-2">
+              <div class="container blue-text text-darken-1">
+                    <div class="row">
+                        <div class="col s12">
+                            © 2017 Skyfolk
+                        </div>
+                    </div>
+              </div>
+            </div>
+          </footer>
+    </body>
 </html>
