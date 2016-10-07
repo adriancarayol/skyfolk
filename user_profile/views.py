@@ -301,7 +301,6 @@ def search(request, option=None):
         # Si hay peticion GET => Se busca si antes hubo
         # un request.POST
         # Si hay peticion POST se actúa con normalidad
-
         return render_to_response('account/search.html',
                                   {'showPerfilButtons': True,
                                    'searchForm': searchForm,
@@ -323,11 +322,12 @@ def search(request, option=None):
                 texto_to_search = request.session['searchText']
             # hacer busqueda si hay texto para buscar, mediante consulta a la
             # base de datos y pasar el resultado
+            searchForm = SearchForm(initial={'searchText': texto_to_search})
             if texto_to_search:
                 words = texto_to_search.split()
 
                 # Búsqueda predeterminada o de cuentas.
-                if option is None or option == '1':
+                if option is None or option == 'accounts':
                     if len(words) == 1:
                         result_search = User.objects.filter(Q(first_name__icontains=texto_to_search) |
                                                             Q(last_name__icontains=texto_to_search) |
@@ -348,7 +348,7 @@ def search(request, option=None):
                 # Búsqueda predeterminada o de publicaciones.
                 # IDEA Mejorar consulta a bbdd (pasando lista words)
                 # en lugar de recorrer la lista y buscar cada palabra
-                if option is None or option == '2':
+                if option is None or option == 'publications':
                     for w in words:
                         result_messages = Publication.objects.filter(
                             Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
@@ -357,11 +357,13 @@ def search(request, option=None):
                             Q(author__last_name__icontains=w), Q(author__is_active=True),
                             ~Q(author__username__icontains=request.user.username)).order_by('content').order_by(
                             'created').reverse()  # or .order_by('created').reverse()
-                    # GET MEDIA BY OWNER OR TAGS...
-                if option == '3':
-                    for w in words:
-                        result_media = Photo.objects.filter(Q(tags__name__in=words) | (Q(owner__username__icontains=w) & ~Q(owner__username=request.user.username)))
-
+                # GET MEDIA BY OWNER OR TAGS...
+                if option == 'images':
+                    if len(words) == 1:
+                        result_media = Photo.objects.filter(Q(tags__name__in=words) | (Q(owner__username__icontains=texto_to_search) & ~Q(owner__username=request.user.username)))
+                    elif len(words) > 1:
+                        for w in words:
+                            pass
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': result_search,
                                                                   'publicationForm': publicationForm,

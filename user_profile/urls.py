@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view',
         name='profile'),
     url(r'^search/$', 'user_profile.views.search'),
-    url(r'^search/(?P<option>.*)/$', 'user_profile.views.search'),
+    url(r'^search/(?P<option>[\w]*)/$', 'user_profile.views.search'),
     url(r'^search-advanced/$', 'user_profile.views.advanced_view',
         name='advanced_view'),
     # URL CONFIG PROFILE USER
