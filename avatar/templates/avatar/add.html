@@ -44,5 +44,7 @@
         {% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit" value="{% trans "Upload New Image" %}" />
     </form>
     </div>
-
+	<script>
+  	$('.menu-config').find('li:nth-child(3)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+	</script>
 {% endblock %}
