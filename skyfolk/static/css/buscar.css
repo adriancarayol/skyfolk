@@ -221,23 +221,7 @@
   cursor: pointer;
   position: fixed; }
 
-@media only screen and (max-width: 640px) {
-  .box-tool {
-    width: 100%; }
 
-  .logotipo_skyfolk {
-    display: none; }
-
-  .notificationss, .fa-comment {
-    display: none; }
-
-  .field > form input[type=text] {
-    left: -260px;
-    margin-top: 3px;
-    width: 250px; }
-
-  #page-wrapper .fontawesome-bullhorn, .fontawesome-camera, .fontawesome-map-marker {
-    display: none; } }
 /* Buscar en el tab-amigos */
 #tab-amigos .search {
   position: relative;

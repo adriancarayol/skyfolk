@@ -15,6 +15,13 @@
         <a href="/profile/{{ request.user }}"><span class="white-text name">{{ request.user.username }}</span></a>
         <a><span class="white-text email">{{ request.user.first_name }}</span></a>
     </div></li>
+    <li class="hide-on-large-only">
+        <div class="field" id="searchform">
+            <form method='post' action='/search/'>{% csrf_token %}
+              {{searchForm}}
+            </form>
+         </div>
+    </li>
     <li><a href="/config/profile/"><i class="material-icons">settings</i>Configuración</a></li>
     <li><a href="/messages/inbox/"><i class="material-icons">email</i>Mensajes privados</a></li>
     <li><div class="divider"></div></li>

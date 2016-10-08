@@ -33,15 +33,19 @@
                       <li id="config-delete-account" onclick="toProfile('/config/delete_account')">Eliminar cuenta<i class="material-icons right">delete</i></li>
                   </ul>
               </div>
-                {% endblock %}
-                <div class="row">
+    {% endblock %}
                   <div class="col l7 m12 s12 wrapper-p">
-                    <div class="col l12 m12 s12 wrapper-title">
-                      {% block cf-title %}{% endblock %}
-                      {% block cf-form %}{% endblock %}
+                    <div class="row">
+                        <div class="col s12 wrapper-title">
+                            {% block cf-title %}{% endblock %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            {% block cf-form %}{% endblock %}
+                        </div>
                     </div>
                   </div>
-                </div>
                 </div>
         </div>
     </div>

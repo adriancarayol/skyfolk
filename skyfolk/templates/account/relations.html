@@ -27,8 +27,10 @@
                 paginateOnScrollMargin: 20
             });
         </script>
-        <script>
-            $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
-        </script>
+        {% if url_name == "following" %}
+            <script>
+                $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
+            </script>
+        {% endif %}
 {% endblock %}
 {% endblock %}
