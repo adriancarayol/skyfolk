@@ -82,7 +82,17 @@
             {% comment %}
                 Incluimos el tab comentarios
             {% endcomment %}
-            {% include "account/tab-comentarios.html" %}
+            <div id="tab-comentarios">
+                {% if publications|length == 0 %} <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                    <div class="no-comments" id="without-comments">
+                        <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+                        <a id="compose-new-no-comments" class="no-comments-new-comment">
+                            <i class="fa fa-paper-plane fa-lg"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            {% include "account/profile_comments.html" %}
+            </div>
             {% comment %}
                 Incluimos el tab amigos
             {% endcomment %}
@@ -162,6 +172,17 @@ Para el manejo de las pestañas del usuario
 <script>
   $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
 </script>
+
+{% block js %}
+{{  block.super }} 
+    <script src="{{ STATIC_URL }}js/el-pagination.js"></script>
+    <script>
+        $.endlessPaginate({
+            paginateOnScroll: true,
+            paginateOnScrollMargin: 20,
+        });
+    </script>
+{% endblock %}
 
 <!-- Busqueda en tab-amigos -->
 <script>

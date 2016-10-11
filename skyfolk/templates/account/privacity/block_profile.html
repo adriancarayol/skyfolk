@@ -1,5 +1,5 @@
 {% extends 'account/privacity/base_privacity.html' %}
-
+{% block title %} <title> Perfil de {{ user_profile.username }}</title>{% endblock %}
 {% block content-text %}
     <h1>No puedes seguir ni ver el contenido de <strong>{{ user_profile.username }}</strong> porque te ha bloqueado.</h1>
 {% endblock %}
