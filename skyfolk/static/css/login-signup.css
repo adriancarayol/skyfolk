@@ -19,8 +19,13 @@ body {
 main {
   flex: 1 0 auto; }
 
-.links > li {
-  display: inline-block; }
+.page-footer {
+  padding-top: 0 !important; }
+  .page-footer > .row {
+    margin-bottom: 0 !important;
+    text-align: center; }
+    .page-footer > .row > ul li {
+      display: inline-block; }
 
 .skyfolk-logo {
   position: fixed;

@@ -189,6 +189,9 @@ class ProfileAjaxView(AjaxListView):
             return False
 
     def get_num_followers(self):
+        """
+        Devuelve el numero de seguidores
+        """
         username = self.kwargs['username']
         user_profile = get_object_or_404(get_user_model(),
                                         username__iexact=username)
@@ -198,6 +201,9 @@ class ProfileAjaxView(AjaxListView):
             return None
 
     def get_num_follows(self):
+        """
+        Devuelve el numero de seguidos
+        """
         username = self.kwargs['username']
         user_profile = get_object_or_404(get_user_model(),
                                         username__iexact=username)
@@ -207,12 +213,18 @@ class ProfileAjaxView(AjaxListView):
             return None
 
     def get_num_multimeida(self):
+        """
+        Devuelve el numero de contenido multimedia
+        """
         username = self.kwargs['username']
         user_profile = get_object_or_404(get_user_model(),
                                         username__iexact=username)
         return user_profile.profile.get_num_multimedia()
 
     def get_timeline(self):
+        """
+        Devuelve el timeline del perfil
+        """
         username = self.kwargs['username']
         user_profile = get_object_or_404(get_user_model(),
                                         username__iexact=username)
@@ -220,7 +232,6 @@ class ProfileAjaxView(AjaxListView):
             return user_profile.profile.getTimelineToMe()
         except ObjectDoesNotExist:
             return None
-
 
 
 profile_view = login_required(ProfileAjaxView.as_view(), 'accounts/login')

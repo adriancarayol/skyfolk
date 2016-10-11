@@ -450,6 +450,7 @@ function AJAX_submit_publication(data, type, pks) {
       if (type == "reply") {
           var caja_comentarios = $('#caja-comentario-'+pks[2]);
           $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
+          $(caja_comentarios).fadeOut();
       } else if (type == "publication") {
           $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
       }
