@@ -1,9 +1,10 @@
 {% comment %}
-  Nueva respuesta a una publicacion
+Nueva respuesta a una publicacion
 {% endcomment %}
 <div class="hidden" id="caja-comentario-{{ pub.pk }}" >
     <!-- REPLY FORM -->
     <form class="reply-form" action="" method="post">{% csrf_token %}
+        {{ reply_publication_form.csrftoken }}
         {{ reply_publication_form.author }}
         {{ reply_publication_form.board_owner }}
         {{ reply_publication_form.parent }}
@@ -11,12 +12,12 @@
             <div class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                          {{ reply_publication_form.content }}
-                          <label for="message-reply">Escribe tu mensaje aqui...</label>
+                        {{ reply_publication_form.content }}
+                        <label for="message-reply">Escribe tu mensaje aqui...</label>
                     </div>
                 </div>
             </div>
         </div>
-        <button type="submit" class="waves-effect waves-light btn right blue enviar" id="reply-{{ pub.pk }}"><i class="material-icons right">send</i>Enviar</button>
+        <button type="submit" id="reply-{{ pub.pk }}" class="waves-effect waves-light btn right blue enviar">Enviar<i class="material-icons right">send</i></button>
     </form>
 </div>

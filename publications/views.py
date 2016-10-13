@@ -23,7 +23,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
     success_url = '/thanks/'
 
     def post(self, request, *args, **kwargs):
-        # self.object = None
+        self.object = None
         # form = PublicationForm(request.POST)
         form = self.get_form()
         emitter = get_object_or_404(get_user_model(),

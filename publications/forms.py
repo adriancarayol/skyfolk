@@ -16,8 +16,10 @@ class PublicationForm(forms.ModelForm):
                 'placeholder': 'Escribe tu mensaje aqui...',
                 'id': 'message2', 'contenteditable': 'true',
                 'class': 'materialize-textarea',
+                'required': 'required',
             })
         self.fields['content'].label = ''
+        self.fields['author'].widget = forms.HiddenInput()
         self.fields['author'].widget = forms.HiddenInput()
         self.fields['board_owner'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
@@ -34,8 +36,9 @@ class ReplyPublicationForm(forms.ModelForm):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({
                 'placeholder': 'Escribe tu mensaje aqui...',
-                'id': 'message-reply',
+                'id': 'message-reply','contenteditable': 'true',
                 'class': 'materialize-textarea',
+                'required': 'required',
             })
         self.fields['content'].label = ''
         self.fields['author'].widget = forms.HiddenInput()
