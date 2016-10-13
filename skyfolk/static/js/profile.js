@@ -68,13 +68,15 @@ $(document).ready(function () {
   });
 
     /* Abrir respuesta a comentario */
-    $('div.options_comentarios').find('.opciones').on('click', '.fa-reply', function() {
+    $(document).on('click', '#options-comments .fa-reply', function() {
         console.log('OK...');
         var id_ = $(this).attr("id").slice(6);
         if (flag_reply) {
+            console.log('slideUp');
             $("#"+id_).slideUp("fast");
             flag_reply = false
         }else{
+            console.log('slideDown');
             $("#"+id_).slideDown("fast");
             flag_reply = true
         }
