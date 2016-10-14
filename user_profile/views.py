@@ -93,6 +93,7 @@ class ProfileAjaxView(AjaxListView):
         context['following'] = self.get_num_follows()
         context['isBlocked'] = self.is_blocked()
         context['isFollower'] = self.is_follower()
+        context['friends_top12'] = self.get_follows()
         context['multimedia_count'] = self.get_num_multimeida()
         initial = {'author': user.pk, 'board_owner': user_profile.pk}
         context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
@@ -211,6 +212,17 @@ class ProfileAjaxView(AjaxListView):
             return user_profile.profile.get_following().count()
         except ObjectDoesNotExist:
             return None
+
+    def get_follows(self):
+        username = self.kwargs['username']
+        user_profile = get_object_or_404(get_user_model(),
+                                        username__iexact=username)
+        try:
+            friends = user_profile.profile.get_following()
+        except ObjectDoesNotExist:
+            friends = None
+
+        return friends
 
     def get_num_multimeida(self):
         """
