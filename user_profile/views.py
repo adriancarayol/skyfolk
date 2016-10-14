@@ -126,12 +126,12 @@ class ProfileAjaxView(AjaxListView):
             liked = False
             requestsToMe = user.profile.get_received_friends_requests()
 
-        if requestsToMe:
-            requestsToMe_result = list()
-            for item in requestsToMe:
-                requestsToMe_result.append(
+            if requestsToMe:
+                requestsToMe_result = list()
+                for item in requestsToMe:
+                    requestsToMe_result.append(
                         {'id_profile': item.pk, 'username': item.user.username, })
-            json_requestsToMe = json.dumps(requestsToMe_result)
+                json_requestsToMe = json.dumps(requestsToMe_result)
         return (json_requestsToMe, liked, len(user_profile.profile.likesToMe.all()))
 
     def is_follow(self):
