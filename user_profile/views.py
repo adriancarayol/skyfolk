@@ -93,8 +93,10 @@ class ProfileAjaxView(AjaxListView):
         context['following'] = self.get_num_follows()
         context['isBlocked'] = self.is_blocked()
         context['isFollower'] = self.is_follower()
+        context['isFriend'] = self.is_follow()
         context['friends_top12'] = self.get_follows()
         context['multimedia_count'] = self.get_num_multimeida()
+        context['existFollowRequest'] = self.get_follow_request()
         initial = {'author': user.pk, 'board_owner': user_profile.pk}
         context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
         context['publicationForm'] = PublicationForm(initial=initial)
@@ -147,7 +149,7 @@ class ProfileAjaxView(AjaxListView):
             isFriend = False
             try:
                 if user.profile.is_follow(user_profile.profile):
-                    return False
+                    return True
             except ObjectDoesNotExist:
                 return False
         else:
@@ -165,7 +167,7 @@ class ProfileAjaxView(AjaxListView):
             isFriend = False
             try:
                 if user.profile.is_follower(user_profile.profile):
-                    return False
+                    return True
             except ObjectDoesNotExist:
                 return False
         else:
@@ -183,7 +185,7 @@ class ProfileAjaxView(AjaxListView):
             isFriend = False
             try:
                 if user.profile.is_blocked(user_profile.profile):
-                    return False
+                    return True
             except ObjectDoesNotExist:
                 return False
         else:
@@ -244,6 +246,18 @@ class ProfileAjaxView(AjaxListView):
             return user_profile.profile.getTimelineToMe()
         except ObjectDoesNotExist:
             return None
+
+    def get_follow_request(self):
+        user = self.request.user
+        username = self.kwargs['username']
+        user_profile = get_object_or_404(get_user_model(),
+                                        username__iexact=username)
+        try:
+            friend_request = user.profile.get_follow_request(user_profile.profile)
+        except ObjectDoesNotExist:
+            return False
+
+        return True
 
 
 profile_view = login_required(ProfileAjaxView.as_view(), 'accounts/login')
