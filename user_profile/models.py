@@ -672,6 +672,18 @@ class LastUserVisitManager(models.Manager):
         """
         return self.objects.filter(emitterid=emitterid).order_by('-affinity')
 
+    def increment_affinity(self, _id):
+        """
+        Incrementa la afinidad
+        """
+        try:
+            relation = self.objects.get(id=_id)
+        except ObjectDoesNotExist:
+            relation = None
+
+        if relation is not None:
+            relation.save()
+
 
 class LastUserVisit(models.Model):
     """
@@ -690,3 +702,10 @@ class LastUserVisit(models.Model):
     affinity = models.IntegerField(verbose_name='affinity', default=0)
     created = models.DateTimeField(auto_now_add=True)
     objects = LastUserVisitManager()
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        """
+            Autoincrementar afinidad
+        """
+        self.affinity += 1
+        super(LastUserVisit, self).save()

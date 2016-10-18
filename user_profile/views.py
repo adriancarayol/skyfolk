@@ -19,7 +19,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm
-from user_profile.models import UserProfile
+from user_profile.models import UserProfile, LastUserVisit
 from photologue.models import Photo
 from user_profile.forms import AdvancedSearchForm
 from el_pagination.views import AjaxListView
@@ -107,6 +107,7 @@ class ProfileAjaxView(AjaxListView):
             'timeline': self.get_timeline()
             })
         print(self.get_template_names())
+        self.set_affinity()
         return context
 
     def get_likes(self):
@@ -259,6 +260,21 @@ class ProfileAjaxView(AjaxListView):
 
         return True
 
+    def set_affinity(self):
+        user = self.request.user
+        username = self.kwargs['username']
+        user_profile = get_object_or_404(get_user_model(),
+                                         username__iexact=username)
+        try:
+            if user.pk != user_profile.pk:
+                profile_visit, created = LastUserVisit.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)
+            else:
+                profile_visit = None, False
+        except ObjectDoesNotExist:
+            profile_visit = None
+
+        if profile_visit is not None:
+            print('profile_visiṭ: {}'.format(profile_visit.affinity))
 
 profile_view = login_required(ProfileAjaxView.as_view(), 'accounts/login')
 
@@ -400,7 +416,7 @@ def advanced_view(request):
             import operator
             from functools import reduce
             word_list = [x.strip() for x in clean_all_words.split(',')]
-            result_all_wgrds = Publication.objects.filter(reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
+            result_all_words = Publication.objects.filter(reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
             print(result_all_words)
 
         if clean_exactly:
