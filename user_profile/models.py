@@ -612,3 +612,81 @@ class Request(models.Model):
 
     class Meta:
         unique_together = ('emitter', 'receiver', 'status')
+
+
+class LastUserVisitManager(models.Manager):
+    """
+        Manager para ultimos usuarios visitados por afinidad/tiempo
+    """
+    def get_all_relations(self, emitterid):
+        """
+        Devuelve todas las relaciones <<ultimos usuarios visitados>>
+        :param emitterid => Emisor de la relacion:
+        :return relaciones del emisor:
+        """
+        return self.objects.filter(emitterid=emitterid)
+
+    def get_relation(self, emitterid, receiver):
+        """
+        Devuelve la relacion creada entre dos perfiles
+        :param emitterid => Perfil emisor:
+        :param receiver => Perfil receptor:
+        :return relacion entre emisor/receptor:
+        """
+        return self.objects.filter(emitterid=emitterid, receiver=receiver)
+
+    def get_affinity(self, emitterid, receiver):
+        """
+        Devuelve la afinidad entre dos perfiles
+        :param emitterid => Perfil emisor:
+        :param receiver => Perfil receptor:
+        :return afinidad entre dos usuarios:
+        """
+        return self.objects.get(emitterid=emitterid, receiver=receiver)
+
+    def get_relations_by_created(self, emitterid, reverse=True):
+        """
+        Devuelve relaciones ordenadas por la creacion
+        :param emitterid => Perfil emisor:
+        :param reverse => Perfil receptor:
+        :return relaciones ordenadas segun la creacion:
+        """
+        if reverse:
+            return self.objects.filter(emitterid=emitterid).order_by('-created')
+
+        return self.objects.filter(emitterid=emitterid).order_by('created')
+
+    def get_last_relation(self, emitterid):
+        """
+        Devuelve la ultima relacion creada
+        :param emitterid => Perfil emisor:
+        :return ultima relacion creada:
+        """
+        return self.objects.filter(emitterid=emitterid).latest()
+
+    def get_favourite_relation(self, emitterid):
+        """
+        Devuelve la relacion favorita (por afinidad)
+        :param emitterid => Perfil emisor:
+        :return devuelve relaciones de mayor a menor afinidad:
+        """
+        return self.objects.filter(emitterid=emitterid).order_by('-affinity')
+
+
+class LastUserVisit(models.Model):
+    """
+        Modelo para gestionar los últimos usuarios visitados
+        cada usuario visitado tendra una afinidad,
+        esta se incrementara tantas veces como se visite un perfil
+        o actuemos con objetos de ese perfil(dar me gusta a comentarios,
+        añadir a mi timeline algun comentario suyo...
+    """
+
+    class Meta:
+        get_latest_by = 'created'
+
+    emitter = models.ForeignKey(UserProfile, related_name='from_profile')
+    receiver = models.ForeignKey(UserProfile, related_name='to_profile')
+    affinity = models.IntegerField(verbose_name='affinity', default=0)
+    created = models.DateTimeField(auto_now_add=True)
+    objects = LastUserVisitManager()

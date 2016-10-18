@@ -923,7 +923,7 @@ function AJAX_remove_bloq() {
                 swal({
                     title: "Tenemos un problema...",
                     text: "Hubo un problema con su petición.",
-                    timer: 4000,
+                    timer: 3000,
                     showConfirmButton: true
                 });
             }
