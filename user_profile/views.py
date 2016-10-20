@@ -261,20 +261,30 @@ class ProfileAjaxView(AjaxListView):
         return True
 
     def set_affinity(self):
+        """
+            Establece la afinidad a un perfil
+            visitado.
+        """
         user = self.request.user
         username = self.kwargs['username']
         user_profile = get_object_or_404(get_user_model(),
                                          username__iexact=username)
+        LastUserVisit.objects.check_limit(emitterid=user.profile)
+        # Comprobar si no es mi propio perfil
         try:
             if user.pk != user_profile.pk:
                 profile_visit, created = LastUserVisit.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)
             else:
-                profile_visit = None, False
-        except ObjectDoesNotExist:
-            profile_visit = None
+                profile_visit, created = None, False
+        except ObjectDoesNotExist: # programacion defensiva
+            profile_visit, created = None, False
 
-        if profile_visit is not None:
-            print('profile_visiṭ: {}'.format(profile_visit.affinity))
+        # Si el objeto existe y no ha sido creado (es nuevo)
+        if not created and profile_visit:
+            profile_visit.save()
+
+        if profile_visit:
+            print('>>> PROFILE_AFFINITY: {}'.format(profile_visit.created))
 
 profile_view = login_required(ProfileAjaxView.as_view(), 'accounts/login')
 

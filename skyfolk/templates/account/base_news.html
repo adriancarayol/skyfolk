@@ -3,29 +3,36 @@
 {% block title %} <title>Skyfolk</title> {% endblock %}
 
 {% block extra-css %}
-        <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/news.css" />
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/news.css" />
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col l12 m12 s12 wrapper-news">
+<div class="container"> 
+    <div class="row">
+        <div class="col l12 m12 s12 wrapper-news">
             <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/news.css" />
             {% for pub in publications %}
-                <div class="col l3 m12 s12 notice-item">
-                    <div class="col l3 m2 s3 img">
-                            {% avatar pub.author.username %}
-                    </div>
-                    <div class="col l8 m9 s8 author">
-                        <a href="/profile/{{ pub.author.username }}">@{{ pub.author.username }}</a><i>{{ pub.author.first_name }} {{ pub.author.last_name }}</i>
-                        <i class="pub-date">{{ pub.created }}</i>
-                    </div>
-                    <div class="col l9 m10 s9 contenido">
-                        <p>{{pub.content}}</p>
-                    </div>
+            <div class="col l3 m12 s12 notice-item">
+                <div class="col l3 m2 s3 img">
+                    {% avatar pub.author.username %}
                 </div>
-            {% endfor %}
+                <div class="col l8 m9 s8 author">
+                    <a href="/profile/{{ pub.author.username }}">@{{ pub.author.username }}</a><i>{{ pub.author.first_name }} {{ pub.author.last_name }}</i>
+                    <i class="pub-date">{{ pub.created }}</i>
+                </div>
+                <div class="col l9 m10 s9 contenido">
+                    <p>{{pub.content}}</p>
+                </div>
             </div>
+            {% endfor %}
         </div>
     </div>
+</div>
+<div class="row">
+    {% for fav_users in fav %}
+    <div class="col l3 m12 s12">
+        <p>HOLAA</p>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

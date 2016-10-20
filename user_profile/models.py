@@ -4,7 +4,7 @@ from django.db import models
 import publications
 import timeline
 from notifications.models import Notification
-
+from datetime import datetime
 import hashlib
 from django.utils.http import urlencode
 
@@ -624,7 +624,7 @@ class LastUserVisitManager(models.Manager):
         :param emitterid => Emisor de la relacion:
         :return relaciones del emisor:
         """
-        return self.objects.filter(emitterid=emitterid)
+        return self.filter(emitterid=emitterid)
 
     def get_relation(self, emitterid, receiver):
         """
@@ -633,7 +633,7 @@ class LastUserVisitManager(models.Manager):
         :param receiver => Perfil receptor:
         :return relacion entre emisor/receptor:
         """
-        return self.objects.filter(emitterid=emitterid, receiver=receiver)
+        return self.filter(emitterid=emitterid, receiver=receiver)
 
     def get_affinity(self, emitterid, receiver):
         """
@@ -642,7 +642,7 @@ class LastUserVisitManager(models.Manager):
         :param receiver => Perfil receptor:
         :return afinidad entre dos usuarios:
         """
-        return self.objects.get(emitterid=emitterid, receiver=receiver)
+        return self.get(emitterid=emitterid, receiver=receiver)
 
     def get_relations_by_created(self, emitterid, reverse=True):
         """
@@ -652,9 +652,9 @@ class LastUserVisitManager(models.Manager):
         :return relaciones ordenadas segun la creacion:
         """
         if reverse:
-            return self.objects.filter(emitterid=emitterid).order_by('-created')
+            return self.filter(emitterid=emitterid).order_by('-created')
 
-        return self.objects.filter(emitterid=emitterid).order_by('created')
+        return self.filter(emitterid=emitterid).order_by('created')
 
     def get_last_relation(self, emitterid):
         """
@@ -662,7 +662,7 @@ class LastUserVisitManager(models.Manager):
         :param emitterid => Perfil emisor:
         :return ultima relacion creada:
         """
-        return self.objects.filter(emitterid=emitterid).latest()
+        return self.filter(emitterid=emitterid).latest()
 
     def get_favourite_relation(self, emitterid):
         """
@@ -670,20 +670,23 @@ class LastUserVisitManager(models.Manager):
         :param emitterid => Perfil emisor:
         :return devuelve relaciones de mayor a menor afinidad:
         """
-        return self.objects.filter(emitterid=emitterid).order_by('-affinity')
+        return self.filter(emitter=emitterid).order_by('-affinity')
 
-    def increment_affinity(self, _id):
+    def check_limit(self, emitterid):
         """
-        Incrementa la afinidad
+        Comprueba el limite de usuarios en la lista de favoritos
+        Si alcanza el limite, elimina el que menos afinidad/fecha de creacion
+        tenga.
         """
-        try:
-            relation = self.objects.get(id=_id)
-        except ObjectDoesNotExist:
-            relation = None
-
-        if relation is not None:
-            relation.save()
-
+        LIMIT_USERS = 10
+        if self.count() > LIMIT_USERS:
+            try:
+                candidate= self.filter(emitter=emitterid).order_by('created', 'affinity')[0]
+            except ObjectDoesNotExist:
+                candidate = None
+            if candidate:
+                print('Borrando candidato: {}'.format(candidate))
+                candidate.delete()
 
 class LastUserVisit(models.Model):
     """
@@ -708,4 +711,5 @@ class LastUserVisit(models.Model):
             Autoincrementar afinidad
         """
         self.affinity += 1
+        self.created = datetime.now()
         super(LastUserVisit, self).save()
