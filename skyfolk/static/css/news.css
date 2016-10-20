@@ -13,6 +13,7 @@ html, body {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
     padding: 10px;
     margin: 0.95%;
+    overflow: hidden;
     border-radius: 3px; }
     .wrapper-news .notice-item .img {
       border-radius: 3px;

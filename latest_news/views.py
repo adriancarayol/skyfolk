@@ -34,6 +34,7 @@ class News(TemplateView):
         user_profile = self.get_current_user()
 
         fav_users = self.favourite_users()
+        
         try:
             publications = Publication.objects.get_friend_publications(user_profile.profile)
         except ObjectDoesNotExist:
