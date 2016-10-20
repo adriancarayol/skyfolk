@@ -27,10 +27,21 @@
     </div>
     {% endif %}
 <div class="display-info-reset-password">
-<div class="logotipo_skyfolk" onclick="location.href='/'"> <h5><i>S</i>kyfolk</h5> <h6>{% block head-text %}Restablecimiento de contraseña{% endblock %}</h6></div>
+<div class="navbar-fixed">
+    <nav>
+      <div class="nav-wrapper white z-depth-1">
+          <a title="Inicio" href="/inicio" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
+          {% block base-title %}
+          
+          {% endblock %}
+      </div>
+    </nav>
+  </div>
 
 </div>
+<div class="row">
      {% block menu %}
+    <div class="col l4 offset-l4 col s12">
     <div class="menu">
       <strong>¿No necesitas recuperar o restablecer tu contraseña?</strong>
       <ul>
@@ -43,7 +54,9 @@
   {% endif %}
       </ul>
     </div>
+    </div>
      {% endblock %}
+</div>
     {% block content %}
     {% endblock %}
     {% endblock %}

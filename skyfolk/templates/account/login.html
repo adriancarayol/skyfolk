@@ -7,8 +7,7 @@
 {% load url from future %}
 <!--{% block head_title %}{% trans "Sign In" %}{% endblock %}-->
 {% block extra_head %}
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {% endblock %}
 {% block content %}
 <!-- <h1>{% trans "Sign In" %}</h1> -->
@@ -38,6 +37,11 @@ for a {{site_name}} account and sign in below:{% endblocktrans %}</p>
         </div>
         <form class="login form-3" method="POST" action="{% url 'account_login' %}">{% csrf_token %}
         <div class="form-group">
+            {% for key, value in form.errors.items %}
+                {% if key == '__all__' %}
+                    <p>{{ value }}</p>
+                {% endif %}
+            {% endfor %}
             <div class="row">
                 {{ form.login.errors }}
                 <div class="input-field col s11">

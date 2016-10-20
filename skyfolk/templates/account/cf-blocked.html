@@ -21,7 +21,7 @@
     <ul>
         {% for item in blocked %}
             <li class="bloq-user col l3 m12 s12" data-id="{{ item.user__profile__pk }}">
-                <div class="col l12">
+                <div class="col s12">
                     <div class="header">
                        {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
                            <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user__profile__backImage }}">
@@ -33,12 +33,12 @@
                         </div>
                     </div>
             </div>
-                <div class="col l12">
+                <div class="col s12">
                     <div class="name-friend">
                     <a href="/profile/{{ item.user__username }}">@{{ item.user__username }} </a><br><br>
                         <p>{{ item.user__first_name }} {{item.user__last_name}}</p>
                     </div>
-                    <div class="col l12 unblock-user-div">
+                    <div class="col s12 unblock-user-div">
                         <a class="waves-effect waves-light btn blue darken-1" data-id="{{ item.user__profile__pk }}" onclick="AJAX_remove_bloq_from_config(this)">Desbloquear</a>
                     </div>
                 </div>

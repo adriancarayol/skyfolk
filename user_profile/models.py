@@ -37,6 +37,9 @@ def uploadAvatarPath(instance, filename):
 def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
 
+#TODO
+class UserProfileManager(models.Model):
+    pass
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9
@@ -90,17 +93,16 @@ class UserProfile(models.Model):
                 return result[0].verified
         return False
     """
-    """
+    
     def save(self, *args, **kwargs):
         # delete old image when replacing by updating the file
         try:
             this = UserProfile.objects.get(id=self.id)
-            if this.image != self.image:
-                this.image.delete(save=False)
+            if this.backImage != self.backImage:
+                this.backImage.delete(save=False)
         except:
             pass  # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
-    """
 
     # Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
@@ -671,7 +673,7 @@ class LastUserVisitManager(models.Manager):
         :return devuelve relaciones de mayor a menor afinidad:
         """
         return self.filter(emitter=emitterid).order_by('-affinity')
-
+    
     def check_limit(self, emitterid):
         """
         Comprueba el limite de usuarios en la lista de favoritos

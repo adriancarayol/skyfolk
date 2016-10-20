@@ -265,6 +265,7 @@ class ProfileAjaxView(AjaxListView):
             Establece la afinidad a un perfil
             visitado.
         """
+        #TODO: Mover funcion a (user_profile.models)
         user = self.request.user
         username = self.kwargs['username']
         user_profile = get_object_or_404(get_user_model(),
@@ -1089,7 +1090,7 @@ class DeactivateAccount(FormView):
 
         if user.is_authenticated():
             if form.is_valid():
-                user.is_active = form.clean_is_active()
+                user.is_active = not(form.clean_is_active())
                 user.save()
                 if user.is_active:
                     return self.form_valid(form=form, **kwargs)
