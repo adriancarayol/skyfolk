@@ -76,6 +76,8 @@ $(document).ready(function () {
         //tecla ENTER presinada + Shift
         if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
             $('#sendformpubli').click();
+            $(this).val(''); // CLEAR TEXTAREA
+            $(this).blur(); // OFF FOCUS
         }
     });
 
@@ -112,7 +114,7 @@ $(document).ready(function () {
         }
     });
 
-    /* Cierra todas las ventajas emergentes. */
+    /* Cierra todas las ventajas emergentes/menus. */
     $(this).on('keydown', function(e) {
         if (e.keyCode === 27) { // escape
             var messageWrapper = document.getElementById('page-wrapper');
@@ -130,6 +132,8 @@ $(document).ready(function () {
             $(personalInfo).hide(); // Oculta informacion personal
             $(searchInput).val("");
             $(searchInput).blur();
+            /* OCULTAR MENUS VERTICALES (NOTIFICACION Y MENU USUARIO */
+            $('.side-nav').sideNav('hide');
             $('#upload_photo').hide();
         }
     });
