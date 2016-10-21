@@ -24,7 +24,6 @@ class PublicationForm(forms.ModelForm):
         self.fields['board_owner'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
 
-
 class ReplyPublicationForm(forms.ModelForm):
     class Meta:
         model = Publication

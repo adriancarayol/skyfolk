@@ -270,8 +270,10 @@ class ProfileAjaxView(AjaxListView):
         username = self.kwargs['username']
         user_profile = get_object_or_404(get_user_model(),
                                          username__iexact=username)
-        LastUserVisit.objects.check_limit(emitterid=user.profile)
         # Comprobar si no es mi propio perfil
+
+        if user.pk != user_profile.pk:
+            LastUserVisit.objects.check_limit(emitterid=user.profile)
         try:
             if user.pk != user_profile.pk:
                 profile_visit, created = LastUserVisit.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)

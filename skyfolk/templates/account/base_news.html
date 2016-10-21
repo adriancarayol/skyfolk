@@ -11,14 +11,14 @@
     <div class="row">
         <div class="col s12 wrapper-news">
             {% comment "Usuarios con mayor afinidad" %}
-            Lista de los 10 usuarios con mayor afinidad.
+            Lista de los 6 usuarios con mayor afinidad.
             {% endcomment %} 
             <div class="row">
             {% for fav in fav_users %}
                 <div class="col l2 m12 s12">
                     <div class="notice-item">
                         <div class="col l3 m2 s3 img">
-                            {% avatar fav.receiver.username %}
+                            {% avatar fav.receiver.user %}
                         </div>
                         <div class="col l8 m9 s8 author">
                             <a href="/profile/{{fav.receiver.user}}">@{{ fav.receiver.user.username }}</a><i>{{ fav.receiver.user.first_name }} {{ fav.receiver.last_name }}</i>
@@ -40,7 +40,7 @@
                     <i class="pub-date">{{ pub.created }}</i>
                 </div>
                 <div class="col l9 m10 s9 contenido">
-                    <p>{{pub.content}}</p>
+                    <p>{{ pub.content|safe }}</p>
                 </div>
             </div>
         </div>
