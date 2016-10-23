@@ -156,6 +156,7 @@ $(document).ready(function () {
     $('#agregar-amigo, #agregar-amigo2').on('click', function() {
         swal({
             title: "Add new friend!",
+            customClass: "default-div",
             text: "Insert the friend's username or PIN",
             type: "input",
             animation: "slide-from-top",
@@ -176,13 +177,13 @@ $(document).ready(function () {
                 swal.showInputError("Wrong PIN format!");
                 return false
             }
-            var tipo;
+            var _tipo;
             if (!is_numeric(inputValue)) {
-                tipo = 'username';
+                _tipo = 'username';
             } else {
-                tipo = 'pin'
+                _tipo = 'pin'
             }
-            AJAX_addNewFriendByUsernameOrPin(inputValue, tipo);
+            AJAX_addNewFriendByUsernameOrPin(inputValue, _tipo);
         });
     });
 
@@ -297,6 +298,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Success!",
                     text: "You have added a friend!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 }, function () {
@@ -306,6 +308,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Wait a moment!",
                     text: "It's your own pin!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -313,13 +316,15 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Wait a moment!",
                     text: "It's your own username!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
             } else if (response == 'its_your_friend') {
-                swal({
+                 ({
                     title: "Wait a moment!",
                     text: "It's already your friend!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -327,6 +332,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Espera un momento!",
                     text: "Tienes bloqueado este perfil!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -334,6 +340,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "We have a problem",
                     text: "Friend no added",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -341,6 +348,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "We have a problem",
                     text: "This username or pin no exists.",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -348,6 +356,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Request in progress",
                     text: "Your request is to confirm!.",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -355,6 +364,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "New petition sent!",
                     text: "Wait to confirm!.",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -362,8 +372,9 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Petición denegada.",
                     text: "El usuario te ha bloqueado.",
+                    customClass: 'default-div',
                     type: "error",
-                    timer: 2000,
+                    timer: 4000,
                     animation: "slide-from-top",
                     showConfirmButton: false
                 });
@@ -371,8 +382,9 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Petición denegada.",
                     text: "Tienes bloqueado a este perfil.",
+                    customClass: 'default-div',
                     type: "error",
-                    timer: 2000,
+                    timer: 4000,
                     animation: "slide-from-top",
                     showConfirmButton: false
                 });
@@ -448,6 +460,7 @@ function AJAX_submit_publication(data, type, pks) {
                 swal({
                     title: "",
                     text: "Failed to publish",
+                    customClass: 'default-div',
                     type: "error"
                 });
             }
@@ -463,6 +476,7 @@ function AJAX_submit_publication(data, type, pks) {
             swal({
                 title: '¡Ups!',
                 text: 'Revisa el contenido de tu mensaje', // rs.responseText,
+                customClass: 'default-div',
                 type: "error"
             });
         }
@@ -492,6 +506,7 @@ function AJAX_requestfriend(status) {
                     swal({
                         title: "¡Ya es tu amigo!",
                         type: "warning",
+                        customClass: 'default-div',
                         animation: "slide-from-top",
                         showConfirmButton: true,
                         showCancelButton: true,
@@ -511,8 +526,9 @@ function AJAX_requestfriend(status) {
                     swal({
                         title: "Petición denegada.",
                         text: "El usuario te ha bloqueado.",
+                        customClass: 'default-div',
                         type: "error",
-                        timer: 2000,
+                        timer: 4000,
                         animation: "slide-from-top",
                         showConfirmButton: false
                     });
@@ -548,10 +564,14 @@ function AJAX_remove_relationship(slug) {
                 $(currentValue).html(parseInt($(currentValue).html())-1);
                 $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
             } else if (response == false) {
-                swal("Ha surgido un error, inténtalo de nuevo más tarde :-(");
+                swal({
+                    title: "¡Ups!",
+                    text: "Ha surgido un error, inténtalo de nuevo más tarde :-(",
+                    customClass: 'default-div'
+                });
             }
         }, error: function(rs, e) {
-            swal(rs.responseText + " " + e);
+            // swal(rs.responseText + " " + e);
         }
     });
 }
@@ -572,10 +592,14 @@ function AJAX_remove_request_friend() {
             if (response == true) {
                 $('#follow_request').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend("noabort");></span>');
             } else if (response == false) {
-                swal("Ha surgido un error, inténtalo de nuevo más tarde :-(");
+                swal({
+                    title: "¡Ups!",
+                    text: "Ha surgido un error, inténtalo de nuevo más tarde :-(",
+                    customClass: 'default-div'
+                });
             }
         }, error: function(rs, e) {
-            swal(rs.responseText + " " + e);
+            // swal(rs.responseText + " " + e);
         }
     });
 }
@@ -597,6 +621,7 @@ function AJAX_remove_bloq_from_config(obj) {
                 swal({
                     title: "Tenemos un problema...",
                     text: "Hubo un problema con su petición.",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });

@@ -916,16 +916,12 @@ ul.table > li {
   top: 30%;
   display: none;
   height: auto;
-  background-color: transparent;
   position: fixed;
   margin: auto;
   z-index: 9999; }
   .info-paw .info-nav {
     width: 100%;
     height: auto;
-    background-color: #fff;
-    box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.3);
-    border-radius: 7px;
     position: relative;
     margin: auto;
     padding: 10px; }

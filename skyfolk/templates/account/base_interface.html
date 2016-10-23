@@ -45,7 +45,7 @@ window.moveTo(0,0);
             <!-- Form para nuevo mensaje -->
             {% if user.is_authenticated %}
             <div class="row">
-                <div id="page-wrapper" class="col l5 m12 s12" style="display:none;">
+                <div id="page-wrapper" class="col l5 m12 s12 default-div" style="display:none;">
                     <div class="row">
                         <div id="status" class="col s12 title-page-wrapper">
                             {% if user == user_profile %}
@@ -84,7 +84,7 @@ window.moveTo(0,0);
                 </div>
             </div>
             <!-- Atajos del usuario -->
-            <div id="atajos-keyboard-profile">
+            <div class="default-div" id="atajos-keyboard-profile">
                 <table class="responsive-table highlight modal-table" summary="Atajos para acciones comunes.">
                     <caption class="hide-on-med-and-down atajos-title">
                         <p>Atajos de teclado</p>
