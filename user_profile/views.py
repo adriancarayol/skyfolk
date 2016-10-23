@@ -98,8 +98,10 @@ class ProfileAjaxView(AjaxListView):
         context['multimedia_count'] = self.get_num_multimeida()
         context['existFollowRequest'] = self.get_follow_request()
         initial = {'author': user.pk, 'board_owner': user_profile.pk}
+        self_initial = {'author': user.pk, 'board_owner': user.pk}
         context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
         context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
         if privacity == "followers" or privacity == "both":
             self.template_name = "account/privacity/need_confirmation_profile.html"
             return context
@@ -329,7 +331,7 @@ def search(request, option=None):
                                   {'showPerfilButtons': True,
                                    'searchForm': searchForm,
                                    'resultSearch': (),
-                                   'publicationForm': publicationForm,
+                                   'publicationSelfForm': publicationForm,
                                    'message': info},
                                   context_instance=RequestContext(request))
 
@@ -390,7 +392,7 @@ def search(request, option=None):
                             pass
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': result_search,
-                                                                  'publicationForm': publicationForm,
+                                                                  'publicationSelfForm': publicationForm,
                                                                   'resultMessages': result_messages,
                                                                   'result_media': result_media,
                                                                   'words': words,
@@ -454,7 +456,7 @@ def advanced_view(request):
             result_regex = Publication.objects.filter(content__iregex=clean_regex)
             print(result_regex)
 
-    return render_to_response(template_name, {'publicationForm': publicationForm, 'searchForm': searchForm,
+    return render_to_response(template_name, {'publicationSelfForm': publicationForm, 'searchForm': searchForm,
                                                 'form': form},
                                                  context_instance=RequestContext(request))
 
@@ -479,7 +481,7 @@ def config_privacity(request):
         privacity_form = PrivacityForm(instance=request.user.profile)
         print('PASO ULTIMO')
     return render_to_response('account/cf-privacity.html',
-                              {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm,
+                              {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationSelfForm': publicationForm,
                                'privacity_form': privacity_form},
                               context_instance=RequestContext(request))
 
@@ -515,7 +517,7 @@ def config_profile(request):
     print('>>>>>>>  paso x')
     return render_to_response('account/cf-profile.html',
                               {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
-                               'user_form': user_form, 'perfil_form': perfil_form, 'publicationForm': publicationForm},
+                               'user_form': user_form, 'perfil_form': perfil_form, 'publicationSelfForm': publicationForm},
                               context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -531,7 +533,7 @@ def config_pincode(request):
     searchForm = SearchForm()
 
     return render_to_response('account/cf-pincode.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                          'publicationForm': publicationForm, 'pin': pin},
+                                                          'publicationSelfForm': publicationForm, 'pin': pin},
                               context_instance=RequestContext(request))
 
 
@@ -544,7 +546,7 @@ def config_blocked(request):
     searchForm = SearchForm()
 
     return render_to_response('account/cf-blocked.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                          'publicationForm': publicationForm, 'blocked': list_blocked},
+                                                          'publicationSelfForm': publicationForm, 'blocked': list_blocked},
                               context_instance=RequestContext(request))
 
 
@@ -958,7 +960,7 @@ class FollowersListView(AjaxListView):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['url_name'] = "followers"
         return context
@@ -980,7 +982,7 @@ class FollowingListView(AjaxListView):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['url_name'] = "following"
         return context
@@ -1017,7 +1019,7 @@ class PassWordChangeDone(TemplateView):
         context = locals()
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['showPerfilButtons'] = True
 
@@ -1037,7 +1039,7 @@ class CustomPasswordChangeView(PasswordChangeView):
         ret['password_change_form'] = ret.get('form')
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        ret['publicationForm'] = PublicationForm(initial=initial)
+        ret['publicationSelfForm'] = PublicationForm(initial=initial)
         ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
         # (end NOTE)
@@ -1056,7 +1058,7 @@ class CustomEmailView(EmailView):
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
         ret['add_email_form'] = ret.get('form')
-        ret['publicationForm'] = PublicationForm(initial=initial)
+        ret['publicationSelfForm'] = PublicationForm(initial=initial)
         ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
         # (end NOTE)
@@ -1082,7 +1084,7 @@ class DeactivateAccount(FormView):
         context['form'] = self.form_class
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         return self.render_to_response(context)
 

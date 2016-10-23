@@ -316,24 +316,24 @@ body > .container {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 
-#page-wrapper {
+.compose-div {
   cursor: default;
   font-family: "Open Sans", sans-serif;
   overflow: hidden;
   position: fixed;
   top: 20%;
   margin: 0 auto 0 auto;
-  right: 0;
-  left: 0;
+  right: 0 !important;
+  left: 0 !important;
   resize: none;
   z-index: 9999; }
-  #page-wrapper button {
+  .compose-div button {
     margin-right: 10px; }
-  #page-wrapper textarea {
+  .compose-div textarea {
     font-size: 1.3em;
     font-weight: 600; }
 
-#page-wrapper .title-page-wrapper {
+.compose-div .title-page-wrapper {
   font-size: 1.4em;
   background-color: #fafafa;
   overflow: hidden; }
