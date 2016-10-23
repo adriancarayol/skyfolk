@@ -31,7 +31,6 @@ else:
 class NotificationViewList(ListView):
     template_name = 'notifications/list.html'
     context_object_name = 'notifications'
-    publicationForm = PublicationForm()
     searchForm = SearchForm()
 
     @method_decorator(login_required)
@@ -41,7 +40,9 @@ class NotificationViewList(ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super(NotificationViewList, self).get_context_data(**kwargs)
-        ctx['publicationForm'] = self.publicationForm
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
+        ctx['publicationSelfForm'] = PublicationForm(initial=initial)
         ctx['searchForm'] = self.searchForm
         ctx['showPerfilButtons'] = True
 

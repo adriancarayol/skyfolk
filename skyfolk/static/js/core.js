@@ -72,14 +72,14 @@ $(document).ready(function () {
     });
 
     /* Submit publication */
-    $('#message-form2').on('submit', function (event) {
+    $(page_wrapper).find('#message-form2').on('submit', function (event) {
         event.preventDefault();
         var data = $(page_wrapper).find('#message-form2').serialize();
         AJAX_submit_publication(data, 'publication');
     });
 
     /* Submit publication (propio) */
-    $('#self-page-wrapper #message-form2').on('submit', function (event) {
+    $(self_page_wrapper).find('#message-form2').on('submit', function (event) {
         event.preventDefault();
         var data = $(self_page_wrapper).find('#message-form2').serialize();
         AJAX_submit_publication(data, 'publication');
@@ -97,7 +97,7 @@ $(document).ready(function () {
         AJAX_submit_publication(data, 'reply', pks);
     });
 
-    /**** ATAJOS DE DECLADO ****/
+    /**** ATAJOS DE TECLADO ****/
 
     /* Mostrar atajos */
     $('#atajos-keyboard-profile').find('.atajos-title .fa-close').on('click', function () {
@@ -107,17 +107,17 @@ $(document).ready(function () {
     /* Atajo para enviar comentarios mas rapido */
     $(page_wrapper).find('#message2').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
             $('#sendformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
             $(this).blur(); // OFF FOCUS
         }
     });
-
+    /* Atajo para enviar comentarios mas rapido a mi perfil. */
     $(self_page_wrapper).find('#message2').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
-            $('#sendformpubli').click();
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
+            $('#sendselfformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
             $(this).blur(); // OFF FOCUS
         }

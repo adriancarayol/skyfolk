@@ -82,7 +82,7 @@ def collection_list(request, username,
 
     print('>>>>>>> TAGNAME {}'.format(tagname))
     object_list = Photo.objects.filter(owner__username=username, tags__name__exact=tagname)
-    context = {'publicationForm': publicationForm,
+    context = {'publicationSelfForm': publicationForm,
                     'searchForm': searchForm,
                     'object_list': object_list, 'form': form,
                     'form_zip': form_zip}
@@ -109,7 +109,7 @@ class PhotoListView(AjaxListView):
         context['form'] = UploadFormPhoto()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
         context['user_gallery'] = self.kwargs['username']
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         return context
 
@@ -131,7 +131,7 @@ def upload_photo(request):
             obj.owner = user
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
-            return redirect('/media/'+user.username+'/')
+            return redirect('/multimedia/'+user.username+'/')
         else:
             print(form.errors)
     else:
@@ -150,7 +150,7 @@ def upload_zip_form(request):
         form = UploadZipForm(data=request.POST, files=request.FILES, request=request)
         if form.is_valid():
             form.save(request=request)
-            return redirect('/media/' + user.username + '/')
+            return redirect('/multimedia/' + user.username + '/')
         else:
             return HttpResponse(
                 json.dumps({"nothing to see": "this isn't happening"}),
@@ -214,7 +214,7 @@ def edit_photo(request, photo_id):
                 json.dumps(response_data),
                 content_type="application/json"
             )
-        return redirect('/media/'+user.username+'/')
+        return redirect('/multimedia/'+user.username+'/')
     else:
         return HttpResponse(
             json.dumps({'Nothing to see': 'This isnt happening'}),
@@ -239,7 +239,7 @@ class PhotoDetailView(DetailView):
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
         context['form'] = EditFormPhoto(instance=self.object)
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:

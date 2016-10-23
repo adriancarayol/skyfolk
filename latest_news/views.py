@@ -28,11 +28,10 @@ class News(TemplateView):
         return LastUserVisit.objects.get_favourite_relation(emitterid=emitterid.profile)
 
     def get(self, request, *args, **kwargs):
-        searchForm = SearchForm()
-        publicationForm = PublicationForm()
-
         user_profile = self.get_current_user()
-
+        initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
+        publicationForm = PublicationForm(initial=initial)
+        searchForm = SearchForm()
         fav_users = self.favourite_users()
         
         try:
@@ -42,7 +41,7 @@ class News(TemplateView):
 
 
         return render_to_response(self.template_name, {'publications': publications,
-                                                             'publicationForm': publicationForm,
+                                                             'publicationSelfForm': publicationForm,
                                                              'searchForm': searchForm,
                                                              'fav_users': fav_users},
                                   context_instance=RequestContext(request))
