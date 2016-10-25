@@ -19,7 +19,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm
-from user_profile.models import UserProfile, LastUserVisit
+from user_profile.models import UserProfile, LastUserVisit, FavouriteUsers
 from photologue.models import Photo
 from user_profile.forms import AdvancedSearchForm
 from el_pagination.views import AjaxListView
@@ -552,6 +552,9 @@ def config_blocked(request):
 
 @login_required(login_url='accounts/login')
 def add_friend_by_username_or_pin(request):
+    """
+    Funcion para añadir usuario por nombre de usuario y perfil
+    """
     print('ADD FRIEND BY USERNAME OR PIN')
     response = 'no_added_friend'
     if request.method == 'POST':
@@ -697,6 +700,9 @@ def add_friend_by_username_or_pin(request):
 
 @login_required(login_url='/')
 def like_profile(request):
+    """
+    Funcion para dar like al perfil
+    """
     response = "null"
     if request.method == 'POST':
         user = request.user
@@ -724,6 +730,9 @@ def like_profile(request):
 # Request follow
 @login_required(login_url='accounts/login')
 def request_friend(request):
+    """
+    Funcion para solicitudes de amistad
+    """
     print('>>>>>>> peticion amistad ')
     response = "null"
     if request.method == 'POST':
@@ -793,6 +802,9 @@ def request_friend(request):
 # Responde request follow
 @login_required(login_url='/')
 def respond_friend_request(request):
+    """
+    Funcion para respuesta a solicitud de amistad
+    """
     response = "null"
     if request.method == 'POST':
         user = request.user
@@ -860,6 +872,9 @@ def respond_friend_request(request):
 # Elimina relación entre dos usuarios
 @login_required(login_url='/')
 def remove_relationship(request):
+    """
+    Elimina relacion seguidor/seguido
+    """
     response = None
     user = request.user
     slug = request.POST.get('slug', None)
@@ -882,6 +897,9 @@ def remove_relationship(request):
 
 @login_required(login_url='/')
 def remove_blocked(request):
+    """
+    Elimina relacion de bloqueo
+    """
     response = None
     user = request.user
     slug = request.POST.get('slug', None)
@@ -906,6 +924,9 @@ def remove_blocked(request):
 # Elimina la peticion existente para seguir a un perfil
 @login_required(login_url='/')
 def remove_request_follow(request):
+    """
+    Elimina relacion de seguidos
+    """
     response = False
     user = request.user
     slug = request.POST.get('slug', None)
@@ -925,6 +946,10 @@ def remove_request_follow(request):
 # Load followers
 @login_required(login_url='/')
 def load_followers(request):
+    """
+    Funcion para cargar seguidores
+    :return lista de seguidores:
+    """
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.user.profile.get_followers()
 
@@ -946,6 +971,9 @@ def load_followers(request):
 
 
 class FollowersListView(AjaxListView):
+    """
+    Lista de seguidores del usuario
+    """
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
     page_template = "account/relations_page.html"
@@ -968,6 +996,9 @@ class FollowersListView(AjaxListView):
 followers = login_required(FollowersListView.as_view())
 
 class FollowingListView(AjaxListView):
+    """
+    Lista de seguidos del usuario
+    """
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
     page_template = "account/relations_page.html"
@@ -992,6 +1023,10 @@ following = login_required(FollowingListView.as_view())
 # Load follows
 @login_required(login_url='/')
 def load_follows(request):
+    """
+    Funcion para cargar mas seguidos
+    :return lista de seguidos:
+    """
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.user.profile.get_following()
 
@@ -1120,6 +1155,9 @@ custom_delete_account = login_required(DeactivateAccount.as_view())
 
 
 def bloq_user(request):
+    """
+        Funcion para bloquear usuarios
+    """
     user = request.user
     haslike = "noliked"
     status = "none"
@@ -1209,3 +1247,23 @@ def setfirstLogin(request):
         response = True
 
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+def add_favorite(request):
+    """
+    Funcion para añadir un perfil como favorito
+    :return response con el estado de la peticion:
+    """
+    response = {'status': 'none'}
+    if request.method == 'POST':
+        user = request.user
+        _id = request.POST.get('id', None)
+        user_profile = get_object_or_404(get_user_model(), id=_id)
+        fav, created = FavouriteUsers.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)
+        if not created:
+            response = {'status': 'unfav'}
+            return HttpResponse(json.dumps(response), content_type='application/json')
+        response = {'status': 'fav'}
+        return HttpResponse(json.dumps(response), content_type='application/json')
+    else:
+        return HttpResponse(json.dumps(response), content_type='application/json')
