@@ -582,6 +582,72 @@ class Relationship(models.Model):
         unique_together = ('from_person', 'to_person', 'status')
 
 
+
+class LikeProfileQuerySet(models.QuerySet):
+    """
+        Query Manager para usuarios favoritos
+    """
+    def get_all_likes(self, from_like):
+        """
+        Devuelve todos los me gusta dados por un perfil en concreto.
+        :param from_like => Del perfil que da me gusta:
+        :return Todos los me gusta dados por un perfil en concreto:
+        """
+        return self.filter(from_like=from_like)
+
+    def get_last_like(self, from_like):
+        """
+        Devuelve el ultimo me gusta dado por un perfil
+        :param from_like => Perfil que da me gusta:
+        :return El ultimo me gusta dado por un perfil:
+        """
+        return self.filter(from_like=from_like).latest()
+
+    def get_likes_by_created(self, from_like, reverse=True):
+        """
+        Devuelve los me gusta dados por un perfil
+        ordenados por la creacion
+        :param from_like => Perfil emisor:
+        :param reverse => Perfil receptor:
+        :return  me gusta dados por un perfil ordenados por la creacion:
+        """
+        if reverse:
+            return self.filter(from_like=from_like).order_by('-created')
+        return self.filter(from_like=from_like).order_by('created')
+
+class LikeProfileManager(models.Manager):
+    """
+        Manager para usuarios que me gustan
+    """
+    def get_queryset(self):
+        return LikeProfileQuerySet(self.model, using=self._db)
+
+    def get_all_likes(self, from_like):
+        """
+        Devuelve todos los me gusta dados por un perfil en concreto.
+        :param from_like => Del perfil que da me gusta:
+        :return Todos los me gusta dados por un perfil en concreto:
+        """
+        return self.get_queryset().get_all_likes(from_like=from_like)
+
+    def get_last_like(self, from_like):
+        """
+        Devuelve el ultimo me gusta dado por un perfil
+        :param from_like => Perfil que da me gusta:
+        :return El ultimo me gusta dado por un perfil:
+        """
+        return self.get_queryset().get_last_like(from_like=from_like)
+
+    def get_likes_by_created(self, from_like, reverse=False):
+        """
+        Devuelve los me gusta dados por un perfil
+        ordenados por la creacion
+        :param from_like => Perfil emisor:
+        :param reverse => Perfil receptor:
+        :return  me gusta dados por un perfil ordenados por la creacion:
+        """
+        return self.get_queryset().get_likes_by_created(from_like=from_like, reverse=reverse)
+
 class LikeProfile(models.Model):
     """
     Modelo que relaciona a dos usuarios al dar "me gusta" al otro perfil.
@@ -589,9 +655,15 @@ class LikeProfile(models.Model):
         <<to_like>>: Persona que recibe el like
         <<created>>: Fecha de creación del like
     """
+
+    class Meta:
+        get_latest_by = 'created'
+
     from_like = models.ForeignKey(UserProfile, related_name='from_likeprofile')
     to_like = models.ForeignKey(UserProfile, related_name='to_likeprofile')
     created = models.DateTimeField(auto_now_add=True)
+
+    objects = LikeProfileManager()
 
     class Meta:
         unique_together = ('from_like', 'to_like')
@@ -702,6 +774,7 @@ class LastUserVisit(models.Model):
 
     class Meta:
         get_latest_by = 'created'
+        unique_together = ('emitter', 'receiver')
 
     emitter = models.ForeignKey(UserProfile, related_name='from_profile_affinity')
     receiver = models.ForeignKey(UserProfile, related_name='to_profile_affinity')
@@ -716,100 +789,3 @@ class LastUserVisit(models.Model):
         self.affinity += 1
         self.created = datetime.now()
         super(LastUserVisit, self).save()
-
-
-class FavouriteUsersManagerQuerySet(models.QuerySet):
-    """
-        Query manager para usuarios favoritos
-    """
-    def get_all_favourites(self, emitterid):
-        """
-        Devuelve todos los usuarios favoritos de un perfil
-        :param emitterid => Perfil del que se quiere saber los usuarios favoritos:
-        :return Usuarios favoritos del perfil:
-        """
-        return self.filter(emitter=emitterid)
-
-    def get_last_favourite(self, emitterid):
-        """
-        Devuelve el ultimo usuario favorito del usuario
-        :param emitterid => Perfil del que se quiere saber el ultimo usuario favorito:
-        :return Ultimo usuario favorito añadido por el usuario:
-        """
-        return self.filter(self, emitter=emitterid)
-
-    def get_favs_by_created(self, emitterid, reverse=True):
-        """
-        Devuelve relaciones ordenadas por la creacion
-        :param emitterid => Perfil emisor:
-        :param reverse => Perfil receptor:
-        :return relaciones ordenadas segun la creacion:
-        """
-        if reverse:
-            return self.filter(emitter=emitterid).order_by('-created')
-
-        return self.filter(emitter=emitterid).order_by('created')
-
-
-    def get_favourites_by_affinity(self, emitterid):
-        """
-        Devuelve el usuario favorito con mayor afinidad)
-        :param emitterid => Perfil emisor:
-        :return devuelve favorito de mayor a menor afinidad:
-        """
-        return self.filter(emitter=emitterid).order_by('-affinity')
-
-class FavouriteUsersManager(models.Manager):
-    """
-        Manager para los usuarios favoritos del perfil
-    """
-    def get_queryset(self):
-        return FavouriteUsersManagerQuerySet(self.model, using=self._db)
-
-    def get_all_favs(self, emitterid):
-        """
-        Devuelve todos los usuarios favoritos de un perfil
-        :param emitterid => Perfil del que se quiere saber los usuarios favoritos:
-        :return Usuarios favoritos del perfil:
-        """
-        return self.get_queryset().get_all_favourites(emitterid=emitterid)
-
-    def get_last_fav(self, emitterid):
-        """
-        Devuelve el ultimo usuario favorito del usuario
-        :param emitterid => Perfil del que se quiere saber el ultimo usuario favorito:
-        :return Ultimo usuario favorito añadido por el usuario:
-        """
-        return self.get_queryset().get_last_favourite(emitterid=emitterid)
-
-    def get_favs_by_created(self, emitterid, reverse=False):
-        """
-        Devuelve favoritos ordenados por la creacion
-        :param emitterid => Perfil emisor:
-        :param reverse => Perfil receptor:
-        :return relaciones ordenadas segun la creacion:
-        """
-        return self.get_queryset().get_favs_by_created(emitterid=emitterid, reverse=reverse)
-
-    def get_favs_by_affinity(self, emitterid):
-        """
-        Devuelve el usuario favorito con mayor afinidad)
-        :param emitterid => Perfil emisor:
-        :return devuelve favorito de mayor a menor afinidad:
-        """
-        return self.get_queryset().get_favourites_by_affinity(emitterid=emitterid)
-
-class FavouriteUsers(models.Model):
-    """
-        Modelo para gestionar los usuarios favoritos del perfil
-        cada usuario favorito tendra una afinidad, esta se incrementara
-        conforme interactuemos con el usuario.
-    """
-    class Meta:
-        get_latest_by = 'created'
-
-    emitter = models.ForeignKey(UserProfile, related_name='from_profile_fav')
-    receiver = models.ForeignKey(UserProfile, related_name='to_profile_fav')
-    affinity = models.IntegerField(verbose_name='affinity', default=0)
-    created = models.DateTimeField(auto_now_add=True)
-    objects = FavouriteUsersManager()

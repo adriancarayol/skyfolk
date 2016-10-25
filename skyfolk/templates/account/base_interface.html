@@ -47,7 +47,7 @@ Base para la interfaz en comun de todos los usuarios.
         {% comment "Componer mensaje" %}
             Componer mensaje para perfil ajeno
         {% endcomment %}
-        {% if publicationForm %}
+        {% if publicationForm and user_profile.pk != user.pk %}
             <div class="row">
                 <div id="page-wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
                     <div class="row">

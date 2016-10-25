@@ -19,7 +19,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm
-from user_profile.models import UserProfile, LastUserVisit, FavouriteUsers
+from user_profile.models import UserProfile, LastUserVisit
 from photologue.models import Photo
 from user_profile.forms import AdvancedSearchForm
 from el_pagination.views import AjaxListView
@@ -1247,23 +1247,3 @@ def setfirstLogin(request):
         response = True
 
     return HttpResponse(json.dumps(response), content_type='application/json')
-
-
-def add_favorite(request):
-    """
-    Funcion para añadir un perfil como favorito
-    :return response con el estado de la peticion:
-    """
-    response = {'status': 'none'}
-    if request.method == 'POST':
-        user = request.user
-        _id = request.POST.get('id', None)
-        user_profile = get_object_or_404(get_user_model(), id=_id)
-        fav, created = FavouriteUsers.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)
-        if not created:
-            response = {'status': 'unfav'}
-            return HttpResponse(json.dumps(response), content_type='application/json')
-        response = {'status': 'fav'}
-        return HttpResponse(json.dumps(response), content_type='application/json')
-    else:
-        return HttpResponse(json.dumps(response), content_type='application/json')
