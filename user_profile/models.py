@@ -7,7 +7,7 @@ from notifications.models import Notification
 from datetime import datetime
 import hashlib
 from django.utils.http import urlencode
-
+from taggit.managers import TaggableManager
 from photologue.models import Photo
 
 RELATIONSHIP_FOLLOWING = 1
@@ -98,7 +98,6 @@ class UserProfileManager(models.Manager):
             pass
 
         if user_profile:
-            print('USER_PROFILE EXIST!')
             is_first_time_login = user_profile.is_first_login
 
         if is_first_time_login:
@@ -142,9 +141,8 @@ class UserProfile(models.Model):
     ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
-    
     is_first_login = models.BooleanField(default=True)
-
+    tags = TaggableManager(blank=True)
     objects = UserProfileManager()
 
 

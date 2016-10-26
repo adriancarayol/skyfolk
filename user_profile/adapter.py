@@ -13,16 +13,17 @@ class MyAccountAdapter(DefaultAccountAdapter):
         despues de hacer login.
         """
         user = get_object_or_404(get_user_model(), pk=request.user.pk)
-
         is_first_time_login = UserProfile.objects.check_if_first_time_login(user)
-
+        
+        path = "/profile/{username}/"
+        
         if is_first_time_login:
             print(
                 'User {user} is login for the first time'.format(**locals())
             )
+            path = "/welcome/"
         else:
             print(
                 'User {user} is NOT login for the first time'.format(**locals())
             )
-        path = "/profile/{username}/"
         return path.format(username=request.user.username)

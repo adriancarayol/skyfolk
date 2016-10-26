@@ -59,7 +59,8 @@ class SignupForm(forms.Form):
     def save(self, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        user.save()
+        user.save() # Guardamos el usuario
+        user.profile.save() # Creamos el perfil
 
 
 class UserForm(forms.ModelForm):

@@ -2,8 +2,6 @@ from django.conf.urls import url
 
 
 urlpatterns = [
-    url(r'^setfirstLogin/', 'user_profile.views.setfirstLogin',
-        name='setfirstLogin'),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view',
         name='profile'),
     url(r'^search/$', 'user_profile.views.search'),
@@ -51,8 +49,12 @@ urlpatterns = [
     url(r"^config/password/done/$", 'user_profile.views.password_done',
         name="account_done_password"),
     # Página de bienvenida a nuevos usuarios.
-    url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
+    url(r'^welcome/$', 'user_profile.views.welcome_view',
+        name='welcome'),
     # Página de bienvenida, paso 1.
-    url(r'^step1/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeStep1',
-        name='welcomeStep1'),
+    url(r'^step1/$', 'user_profile.views.welcome_step_1',
+        name='welcome_step_1'),
+    # Establece si el usuario es la primera vez que se loguea
+    url(r'^setfirstLogin/$', 'user_profile.views.set_first_Login',
+        name='set_first_login'),
 ]

@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -1227,23 +1227,33 @@ def bloq_user(request):
         data = {'response': response, 'haslike': haslike, 'status': status}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
-
-def welcomeView(request, username):
-    newUser = username
+@login_required(login_url='/')
+def welcome_view(request):
+    """
+    View para pagina de bienvenida despues
+    del registro.
+    """
+    user = request.user
     return render_to_response('account/nuevosusuarios.html',
-                              context_instance=RequestContext(request, {'newUser': newUser}))
+                              context_instance=RequestContext(request, {'user_profile': user}))
 
-
-def welcomeStep1(request, username):
-    newUser = request.user.username
+@login_required(login_url='/')
+def welcome_step_1(request):
+    """
+    View para seleccionar los intereses
+    del usuario registrado.
+    """
+    user = request.user
     return render_to_response('account/welcomestep1.html',
-                              context_instance=RequestContext(request, {'newUser': newUser}))
+                              context_instance=RequestContext(request, {'user_profile': user}))
 
-
-def setfirstLogin(request):
-    response = False
+@login_required(login_url='/')
+def set_first_Login(request):
+    """
+    Establece si el usuario se ha logueado por primera vez
+    """
+    user = request.user
     if request.method == 'POST':
-        username = request.POST.get('username', None)
-        response = True
-
-    return HttpResponse(json.dumps(response), content_type='application/json')
+        if user.profile.is_first_login:
+            user.profile.is_first_login = False
+    return redirect('user_profile:profile', username=user.username)
