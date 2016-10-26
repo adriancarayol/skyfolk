@@ -85,14 +85,25 @@ class UserProfileManager(models.Manager):
         return self.all().order_by('-user__date_joined')
 
     def check_if_first_time_login(self, user):
+        """
+        Funcion para comprobar si un usuario se ha logueado
+        por primera vez.
+        """
         is_first_time_login = None
+        user_profile = None
+        
         try:
-            is_first_time_login = user.profile.is_first_time_login
+            user_profile = self.get(user__id=user.pk)
         except ObjectDoesNotExist:
             pass
-        else:
-            user.profile.is_first_time_login = False
-            user.profile.save()
+        
+        if user_profile:
+            is_first_time_login = user_profile.is_first_time_login
+
+        if is_first_time_login:
+            user_profile.is_first_time_login = False
+            user_profile.save()
+        
         return is_first_time_login
 
     def get_last_login_user(self):
