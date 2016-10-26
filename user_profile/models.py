@@ -96,12 +96,13 @@ class UserProfileManager(models.Manager):
             user_profile = self.get(user__id=user.pk)
         except ObjectDoesNotExist:
             pass
-        
+
         if user_profile:
-            is_first_time_login = user_profile.is_first_time_login
+            print('USER_PROFILE EXIST!')
+            is_first_time_login = user_profile.is_first_login
 
         if is_first_time_login:
-            user_profile.is_first_time_login = False
+            user_profile.is_first_login = False
             user_profile.save()
         
         return is_first_time_login
@@ -142,7 +143,7 @@ class UserProfile(models.Model):
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     
-    is_first_time_login = models.BooleanField(default=True)
+    is_first_login = models.BooleanField(default=True)
 
     objects = UserProfileManager()
 
