@@ -38,8 +38,68 @@ def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
 
 #TODO
-class UserProfileManager(models.Model):
-    pass
+class UserProfileQuerySet(models.QuerySet):
+    def get_all_users():
+        return self.all()
+
+    def get_user_by_username(self, username):
+        """
+        Devuelve un perfil dado un nombre de usuario
+        :param: => Nombre de usuario del que se desea obtener el perfil.
+        :return: Perfil asociado al nombre de usuario
+        """
+        return self.get(user__username=username)
+
+    def get_last_users(self):
+        """
+            Devuelve la lista de perfiles ordenada
+            segun su fecha de registro.
+            :return: Lista ordenada por fecha de registro
+        """
+        return self.all().order_by('-user__date_joined')
+
+    def get_last_login_user(self):
+        """
+        Devuelve el ultimo usuario que ha hecho login.
+        """
+        return self.all().order_by('-user__last_login')
+#TODO
+class UserProfileManager(models.Manager):
+    def get_queryset(self):
+        return UserProfileQuerySet(self.model, using=self._db)
+
+    def get_user_by_username(self, username):
+        """
+        Devuelve un perfil dado un nombre de usuario
+        :param: => Nombre de usuario del que se desea obtener el perfil.
+        :return: Perfil asociado al nombre de usuario
+        """
+        return self.get_queryset().get_user_by_username(username=username)
+
+    def get_last_users(self):
+        """
+            Devuelve la lista de perfiles ordenada
+            segun su fecha de registro.
+            :return: Lista ordenada por fecha de registro
+        """
+        return self.all().order_by('-user__date_joined')
+
+    def check_if_first_time_login(self, user):
+        is_first_time_login = None
+        try:
+            is_first_time_login = user.profile.is_first_time_login
+        except ObjectDoesNotExist:
+            pass
+        else:
+            user.profile.is_first_time_login = False
+            user.profile.save()
+        return is_first_time_login
+
+    def get_last_login_user(self):
+        """
+        Devuelve el ultimo usuario que ha hecho login.
+        """
+        return self.get_queryset().get_last_login_user()
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9
@@ -70,6 +130,10 @@ class UserProfile(models.Model):
     ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
+    
+    is_first_time_login = models.BooleanField(default=True)
+
+    objects = UserProfileManager()
 
 
     def __unicode__(self):
