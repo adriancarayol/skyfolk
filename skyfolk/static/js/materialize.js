@@ -3896,6 +3896,7 @@ $(document).ready(function(){
         var chipsLength = $chips.children(SELS.CHIP).length;
 
         // comma
+        //NOTE: modified
         if (188 === e.which) {
           e.preventDefault();
           self.addChip(chipsIndex, {tag: $target.val()}, $chips);

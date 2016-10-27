@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html>
-
 <head>
 	{% block title %}
 	<title>¡Bienvenido a Skyfolk, {{ user_profile }}!</title>
@@ -37,11 +36,10 @@
 		</div>
 		<div class="row">
 			<a onclick="location.href='/step1/'" class="waves-effect waves-light btn right">Configurar cuenta</a>
-			<a href="/setfirstLogin/" class="waves-effect waves-light btn">Omitir</a>
+			<a href="/profile/{{user_profile}}/" class="waves-effect waves-light btn">Omitir</a>
 		</div>
 		{% endblock %}
 	</div>
 
 </body>
-
 </html>

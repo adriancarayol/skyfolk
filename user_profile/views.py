@@ -1252,8 +1252,11 @@ def set_first_Login(request):
     """
     Establece si el usuario se ha logueado por primera vez
     """
+    print('>>> SET_FIRST_LOGIN')
     user = request.user
     if request.method == 'POST':
+        print('>>> IS_POST')
         if user.profile.is_first_login:
             user.profile.is_first_login = False
-    return redirect('user_profile:profile', username=user.username)
+    else: # ON GET ETC...
+        return redirect('user_profile:profile', username=user.username)

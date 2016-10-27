@@ -1,12 +1,10 @@
 $(document).ready(function() {
-  $('.chips-placeholder').material_chip({
-    placeholder: 'Introduce un tema',
-    secondaryPlaceholder: '+Música, +Cine...',
-  });
-});
-window.onload = function() {
+    $('.chips-placeholder').material_chip({
+        placeholder: 'Introduce un tema',
+        secondaryPlaceholder: '+Música, +Cine...',
+    });
     $('.progress').fadeOut();
-};
+});
 
 // using jQuery
 function getCookie(name) {

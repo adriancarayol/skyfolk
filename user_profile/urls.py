@@ -55,6 +55,6 @@ urlpatterns = [
     url(r'^step1/$', 'user_profile.views.welcome_step_1',
         name='welcome_step_1'),
     # Establece si el usuario es la primera vez que se loguea
-    url(r'^setfirstLogin/$', 'user_profile.views.set_first_Login',
+    url(r'^set_first_login/$', 'user_profile.views.set_first_Login',
         name='set_first_login'),
 ]
