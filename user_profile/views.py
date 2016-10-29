@@ -1153,7 +1153,7 @@ class DeactivateAccount(FormView):
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
 
-
+@login_required(login_url='/')
 def bloq_user(request):
     """
         Funcion para bloquear usuarios
