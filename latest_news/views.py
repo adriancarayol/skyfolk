@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from timeline.models import Timeline
 from user_profile.models import LastUserVisit, LikeProfile
-from django.db.models import Q
+from itertools import chain
 
 class News(TemplateView):
     template_name = "account/base_news.html"
@@ -35,15 +35,27 @@ class News(TemplateView):
         from_like = self.get_current_user()
         return LikeProfile.objects.get_all_likes(from_like=from_like.profile)
 
-    #TODO
-    def __mix_queryset(self, profile):
+    def __mix_queryset(self, affinity, favs):
         """
         Devuelve la lista de usuarios favoritos y
         por afinidad mezclada, sin repetidos
         :param profile => Perfil del que se desea obtener la lista mezclada:
         :return Lista mezlada de usuarios sin repeticiones:
         """
-        pass
+        mixing_list = chain(affinity, favs)
+            # sorted(
+            # key=lambda user: user.created, reverse=True)
+
+        result = {}
+        for user in mixing_list:
+            if isinstance(user, LastUserVisit):
+                if user.receiver_id not in result.keys():
+                    result[user.receiver_id] = user.receiver
+            else:
+                if user.to_like_id not in result.keys():
+                    result[user.to_like_id] = user.to_like
+
+        return result.values()
 
     def get(self, request, *args, **kwargs):
         user_profile = self.get_current_user()
@@ -52,8 +64,10 @@ class News(TemplateView):
         searchForm = SearchForm()
         affinity_users = self.get_affinity_users()
         fav_users = self.get_like_users()
+        mix = self.__mix_queryset(affinity=affinity_users, favs=fav_users)
 
-        # print('LISTA SIN REPETIDOS: {}'.format(self.__mix_queryset(profile=user_profile.profile)))
+        # print('LISTA MEZCLADA: {}'.format(self.__mix_queryset(affinity=affinity_users, favs=fav_users)))
+
         try:
             publications = Publication.objects.get_friend_publications(user_profile.profile)
         except ObjectDoesNotExist:
@@ -64,7 +78,8 @@ class News(TemplateView):
                                                        'publicationSelfForm': publicationForm,
                                                        'searchForm': searchForm,
                                                        'fav_users': fav_users,
-                                                       'affinity_users': affinity_users},
+                                                       'affinity_users': affinity_users,
+                                                       'mix': mix},
                                   context_instance=RequestContext(request))
 
 news_and_updates = login_required(News.as_view())
