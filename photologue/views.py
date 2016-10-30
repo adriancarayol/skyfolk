@@ -22,6 +22,7 @@ import json
 from django.shortcuts import redirect
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
+from user_profile.models import UserProfile
 # Gallery views.
 
 
@@ -72,13 +73,18 @@ def collection_list(request, username,
     :return => Devuelve una lista de fotos con un parecido:
     """
     user = request.user
+
+    # Para comprobar si tengo permisos para ver el contenido de la coleccion
+    user_profile = get_object_or_404(UserProfile, user__username=username)
+    visibility = user_profile.is_visible(user.profile, user.pk)
+    if visibility == ("nothing" or "both" or "followers" or "block"):
+        return redirect('user_profile:profile', username=user_profile.user.username)
+
     initial = {'author': user.pk, 'board_owner': user.pk}
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
-    method = request.method
-
 
     print('>>>>>>> TAGNAME {}'.format(tagname))
     object_list = Photo.objects.filter(owner__username=username, tags__name__exact=tagname)
@@ -99,8 +105,19 @@ class PhotoListView(AjaxListView):
     template_name = "photologue/photo_gallery.html"
     page_template = "photologue/photo_gallery_page.html"
 
+    def __init__(self):
+        self.username = None
+        super(PhotoListView, self).__init__()
+
+    def dispatch(self, request, *args, **kwargs):
+        self.username = self.kwargs['username']
+        if self.user_pass_test():
+            return super(PhotoListView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('user_profile:profile', username=self.username)
+
     def get_queryset(self):
-        return Photo.objects.filter(owner__username=self.kwargs['username'])
+        return Photo.objects.filter(owner__username=self.username)
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)
@@ -112,6 +129,21 @@ class PhotoListView(AjaxListView):
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         return context
+
+    def user_pass_test(self):
+        """
+        Comprueba si un usuario tiene permisos
+        para ver la galeria solicitada.
+        """
+        user = self.request.user
+        user_profile = UserProfile.objects.get(user__username=self.username)
+        visibility = user_profile.is_visible(user.profile, user.pk)
+
+        if visibility == ("nothing" or "both" or "followers" or "block"):
+            return False
+        return True
+
+
 
 photo_list = login_required(PhotoListView.as_view())
 
@@ -230,6 +262,20 @@ class PhotoDetailView(DetailView):
     template_name = 'photologue/photo_detail.html'
     model = Photo
 
+    def __init__(self):
+        self.username = None
+        self.object = None
+        super(PhotoDetailView, self).__init__()
+
+    def dispatch(self, request, *args, **kwargs):
+        photo = self.get_object()
+        self.username = photo.owner.username
+
+        if self.user_pass_test():
+            return super(PhotoDetailView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('user_profile:profile', username=self.username)
+
     def get_queryset(self):
         slug = self.kwargs['slug']
         return Photo.objects.filter(slug=slug)
@@ -254,6 +300,19 @@ class PhotoDetailView(DetailView):
         except Photo.DoesNotExist:
             pass
         return context
+
+    def user_pass_test(self):
+        """
+        Comprueba si un usuario tiene permisos
+        para ver la galeria solicitada.
+        """
+        user = self.request.user
+        user_profile = get_object_or_404(UserProfile, user__username=self.username)
+        visibility = user_profile.is_visible(user.profile, user.pk)
+
+        if visibility == ("nothing" or ("both" or "followers") or "block"):
+            return False
+        return True
 
 
 class PhotoDateView(object):
