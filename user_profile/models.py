@@ -39,7 +39,7 @@ def uploadBackImagePath(instance, filename):
 
 #TODO
 class UserProfileQuerySet(models.QuerySet):
-    def get_all_users():
+    def get_all_users(self):
         return self.all()
 
     def get_user_by_username(self, username):
