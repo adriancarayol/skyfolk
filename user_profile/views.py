@@ -12,6 +12,8 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
+from exifread import increment_base
+
 from notifications.models import Notification
 from notifications.signals import notify
 from publications.forms import PublicationForm, ReplyPublicationForm
@@ -19,7 +21,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm
-from user_profile.models import UserProfile, LastUserVisit
+from user_profile.models import UserProfile, AffinityUser
 from photologue.models import Photo
 from user_profile.forms import AdvancedSearchForm
 from el_pagination.views import AjaxListView
@@ -275,10 +277,10 @@ class ProfileAjaxView(AjaxListView):
         # Comprobar si no es mi propio perfil
 
         if user.pk != user_profile.pk:
-            LastUserVisit.objects.check_limit(emitterid=user.profile)
+            AffinityUser.objects.check_limit(emitterid=user.profile)
         try:
             if user.pk != user_profile.pk:
-                profile_visit, created = LastUserVisit.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)
+                profile_visit, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)
             else:
                 profile_visit, created = None, False
         except ObjectDoesNotExist: # programacion defensiva
@@ -716,13 +718,23 @@ def like_profile(request):
 
         if user_liked:
             user_liked.delete()
+            affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
+            if not created: # Quiere decir que ya ha interactuado con el perfil
+                affinity.affinity -= 20
+                affinity.save(increment=False)
             response = "nolike"
         else:
             print(str(slug))
             created = user.profile.add_like(actual_profile)
             created.save()
+            affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
+            if not created: # Quiere decir que ya ha interactuado con el perfil
+                affinity.affinity += 20
+                affinity.save(increment=False)
             response = "like"
+
     print('%s da like a %s' % (user.username, actual_profile.user.username))
+    print('Nueva afinidad emitter: {} receiver: {} afinidad: {}'.format(user.username, actual_profile.user.username, affinity.affinity))
     print("Response: " + response)
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 

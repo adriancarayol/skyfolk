@@ -765,7 +765,7 @@ class Request(models.Model):
         unique_together = ('emitter', 'receiver', 'status')
 
 
-class LastUserVisitManager(models.Manager):
+class AffinityUserManager(models.Manager):
     """
         Manager para ultimos usuarios visitados por afinidad/tiempo
     """
@@ -840,7 +840,7 @@ class LastUserVisitManager(models.Manager):
                 print('Borrando candidato: {}'.format(candidate.receiver.user.username))
                 candidate.delete()
 
-class LastUserVisit(models.Model):
+class AffinityUser(models.Model):
     """
         Modelo para gestionar los últimos usuarios visitados
         cada usuario visitado tendra una afinidad,
@@ -857,15 +857,16 @@ class LastUserVisit(models.Model):
     receiver = models.ForeignKey(UserProfile, related_name='to_profile_affinity')
     affinity = models.IntegerField(verbose_name='affinity', default=0)
     created = models.DateTimeField(auto_now_add=True)
-    objects = LastUserVisitManager()
+    objects = AffinityUserManager()
 
     def __str__(self):
         return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username, self.created)
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, increment=True):
         """
             Autoincrementar afinidad
         """
-        self.affinity += 1
+        if increment:
+            self.affinity += 1
         self.created = datetime.now()
-        super(LastUserVisit, self).save()
+        super(AffinityUser, self).save()

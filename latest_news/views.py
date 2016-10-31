@@ -8,7 +8,7 @@ from user_profile.forms import SearchForm
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from timeline.models import Timeline
-from user_profile.models import LastUserVisit, LikeProfile
+from user_profile.models import AffinityUser, LikeProfile
 from itertools import chain
 
 class News(TemplateView):
@@ -26,7 +26,7 @@ class News(TemplateView):
         Devuelve los 6 perfiles favoritos del usuario
         """
         emitterid = self.get_current_user()
-        return LastUserVisit.objects.get_favourite_relation(emitterid=emitterid.profile)
+        return AffinityUser.objects.get_favourite_relation(emitterid=emitterid.profile)
 
     def get_like_users(self):
         """
@@ -48,7 +48,7 @@ class News(TemplateView):
 
         result = {}
         for user in mixing_list:
-            if isinstance(user, LastUserVisit):
+            if isinstance(user, AffinityUser):
                 if user.receiver_id not in result.keys():
                     result[user.receiver_id] = user.receiver
             else:
@@ -62,9 +62,11 @@ class News(TemplateView):
         initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
         publicationForm = PublicationForm(initial=initial)
         searchForm = SearchForm()
-        affinity_users = self.get_affinity_users()
-        fav_users = self.get_like_users()
-        mix = self.__mix_queryset(affinity=affinity_users, favs=fav_users)
+        affinity_users = self.get_affinity_users().values_list('receiver__id', 'receiver__user__username',
+                                                               'receiver__user__first_name', 'receiver__user__last_name')
+        print(affinity_users)
+        # fav_users = self.get_like_users()
+        # mix = self.__mix_queryset(affinity=affinity_users, favs=fav_users)
 
         # print('LISTA MEZCLADA: {}'.format(self.__mix_queryset(affinity=affinity_users, favs=fav_users)))
 
@@ -77,9 +79,7 @@ class News(TemplateView):
         return render_to_response(self.template_name, {'publications': publications,
                                                        'publicationSelfForm': publicationForm,
                                                        'searchForm': searchForm,
-                                                       'fav_users': fav_users,
-                                                       'affinity_users': affinity_users,
-                                                       'mix': mix},
+                                                       'mix': affinity_users},
                                   context_instance=RequestContext(request))
 
 news_and_updates = login_required(News.as_view())
