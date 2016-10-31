@@ -737,6 +737,9 @@ class LikeProfile(models.Model):
     to_like = models.ForeignKey(UserProfile, related_name='to_likeprofile')
     created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username, self.to_like.user.username, self.created)
+
     objects = LikeProfileManager()
 
     class Meta:
@@ -855,6 +858,9 @@ class LastUserVisit(models.Model):
     affinity = models.IntegerField(verbose_name='affinity', default=0)
     created = models.DateTimeField(auto_now_add=True)
     objects = LastUserVisitManager()
+
+    def __str__(self):
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username, self.created)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         """

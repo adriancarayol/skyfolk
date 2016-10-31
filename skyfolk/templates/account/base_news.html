@@ -14,6 +14,21 @@
                     Lista de los 6 usuarios con mayor afinidad.
                 {% endcomment %}
                 <div class="row">
+                    {% for fav in mix %}
+                        <div class="col l2 m12 s12">
+                            <div class="notice-item">
+                                <div class="col l3 m2 s3 img">
+                                    {% avatar fav.user %}
+                                </div>
+                                <div class="col l8 m9 s8 author">
+                                    <a href="/profile/{{ fav.user }}">@{{ fav.user.username }}</a><i>{{ fav.user.first_name }} {{ fav.last_name }}</i>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% comment %}
+                <div class="row">
                     {% for fav in fav_users %}
                         <div class="col l2 m12 s12">
                             <div class="notice-item">
@@ -41,6 +56,7 @@
                         </div>
                     {% endfor %}
                 </div>
+                {% endcomment %}
                 <div class="divider"></div>
                 <br>
                 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/news.css"/>
