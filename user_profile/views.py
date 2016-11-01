@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, response
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.generic import TemplateView
@@ -43,6 +43,8 @@ def profile_view(request, username,
     user = request.user
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
+
+    print('Temas de interes del usuario: {} {}'.format(username, user_profile.profile.tags.names()))
     context = {}
     # Privacidad del usuario
     privacity = user_profile.profile.is_visible(user.profile, user.pk)
@@ -1152,23 +1154,24 @@ def welcome_step_1(request):
     del usuario registrado.
     """
     user = request.user
-    most_common = UserProfile.tags.most_common()
 
     context = {}
     context['user_profile'] = user
-    context['top_tags'] = most_common
 
-    form = ThemesForm(request.POST or None, instance=user.profile)
+
+    # form = ThemesForm(request.POST or None, instance=user.profile)
 
     if request.method == 'POST':
-        if form.is_valid():
-            text = form.cleaned_data['tags']
-            print('TAGS: {}'.format(text))
-        else:
-            text = form.cleaned_data['tags']
-            print('>> FORM INVALID : ' + text)
+        response = True
+        tags = request.POST.getlist('tags[]')
+        for tag in tags:
+            user.profile.tags.add(tag)
+        user.profile.save()
+        print(tags)
+        return HttpResponse(json.dumps(response), content_type='application/json')
     else:
-        context['form'] = form
+        most_common = UserProfile.tags.most_common()
+        context['top_tags'] = most_common
 
     return render_to_response('account/welcomestep1.html',
                               context,
