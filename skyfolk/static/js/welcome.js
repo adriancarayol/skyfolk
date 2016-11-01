@@ -1,9 +1,10 @@
 $(document).ready(function() {
     $('.chips-placeholder').material_chip({
         placeholder: 'Introduce un tema',
-        secondaryPlaceholder: '+Música, +Cine...',
+        secondaryPlaceholder: '+Música, +Cine...'
     });
     $('.progress').fadeOut();
+    $('.chips').find('.input').css('background-color', 'white');
 });
 
 // using jQuery

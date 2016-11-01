@@ -2,21 +2,20 @@
   Pestaña de comentarios en el perfil
 {% endcomment %}
 <div id="tab-comentarios">
-  {% if publications|length == 0 %} <!-- Si el usuario no tiene comentarios, proponemos uno -->
-    <div class="no-comments" id="without-comments">
-      <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-      <a id="compose-new-no-comments" class="no-comments-new-comment">
-        <i class="fa fa-paper-plane fa-lg"></i>
-      </a>
-    </div>
-  {% endif %}
+    {% if publications|length == 0 %} <!-- Si el usuario no tiene comentarios, proponemos uno -->
+        <div class="no-comments" id="without-comments">
+            <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+            <a id="compose-new-no-comments" class="no-comments-new-comment">
+                <i class="fa fa-paper-plane fa-lg"></i>
+            </a>
+        </div>
+    {% endif %}
     {% include "account/profile_comments.html" %}
 </div>
 {% block js %}
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="{{ STATIC_URL }}el-pagination/js/el-pagination.js"></script>
     <script>
-        $.endlessPaginate({
+        $('#tab-comentarios').endlessPaginate({
             paginateOnScroll: true,
             paginateOnScrollMargin: 20
         });

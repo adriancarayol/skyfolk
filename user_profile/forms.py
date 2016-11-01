@@ -134,3 +134,16 @@ class DeactivateUserForm(forms.ModelForm):
     def clean_is_active(self):
         is_active = self.cleaned_data["is_active"]
         return is_active
+
+class ThemesForm(forms.ModelForm):
+    """
+    Formulario para seleccionar los temas
+    que interesan a un usuario
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(ThemesForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = UserProfile
+        fields = ('tags', )
