@@ -22,9 +22,10 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
-    SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
+    SearchForm, PrivacityForm, DeactivateUserForm
 from user_profile.models import UserProfile, AffinityUser
 from el_pagination.decorators import page_template
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -1148,6 +1149,7 @@ def welcome_view(request):
                               context_instance=RequestContext(request, {'user_profile': user}))
 
 @login_required(login_url='/')
+@ensure_csrf_cookie
 def welcome_step_1(request):
     """
     View para seleccionar los intereses
@@ -1157,9 +1159,6 @@ def welcome_step_1(request):
 
     context = {}
     context['user_profile'] = user
-
-
-    # form = ThemesForm(request.POST or None, instance=user.profile)
 
     if request.method == 'POST':
         response = True

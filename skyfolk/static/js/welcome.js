@@ -4,6 +4,7 @@ $(document).ready(function () {
         secondaryPlaceholder: '+Música, +Cine...'
     });
     $('.progress').fadeOut();
+
     $('.chips').find('.input').css('background-color', 'white');
 
     var form = $('#submit-themes');

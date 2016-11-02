@@ -3924,6 +3924,16 @@ $(document).ready(function(){
         );
         $chips.find('input').focus();
       });
+
+        // add chips on click
+        self.$document.on('click', '.top-theme', function(e) {
+            var $target = $(e.target);
+            var $chips = $('.chips');
+            var chipsIndex = $chips.data('index');
+            e.stopPropagation();
+            self.addChip(chipsIndex, {tag: $target.text().trim()}, $chips);
+
+        });
     };
 
     this.chips = function($chips) {
@@ -3982,6 +3992,7 @@ $(document).ready(function(){
       $(chipHtml).insertBefore($chips.find('input'));
       $chips.trigger('chip.add', elem);
       self.setPlaceholder($chips);
+
     };
 
     this.deleteChip = function(chipsIndex, chipIndex, $chips) {
