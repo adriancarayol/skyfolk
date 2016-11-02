@@ -135,15 +135,31 @@ class DeactivateUserForm(forms.ModelForm):
         is_active = self.cleaned_data["is_active"]
         return is_active
 
-class ThemesForm(forms.ModelForm):
+class ThemesForm(forms.Form):
     """
     Formulario para seleccionar los temas
     que interesan a un usuario
     """
+    CHOICES = (
+        ('D', 'Deportes'),
+        ('M', 'Mundo'),
+        ('MU', 'Musica'),
+        ('C', 'Ciencia'),
+        ('L', 'Letras'),
+        ('T', 'Tecnología'),
+        ('CO', 'Comida'),
+        ('MO', 'Motor'),
+        ('CON', 'Conocer gente'),
+        ('F', 'Fiestas'),
+        ('DM', 'De moda'),
+        ('VJ', 'Videojuegos'),
+        ('FT', 'Fotografía'),
+        ('CI', 'Cine'),
+        ('A', 'Arte'),
+    )
 
-    def __init__(self, *args, **kwargs):
-        super(ThemesForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = UserProfile
-        fields = ('tags', )
+    choices = forms.MultipleChoiceField(
+        choices=CHOICES,
+        widget=forms.CheckboxSelectMultiple(),
+        required=False,
+    )

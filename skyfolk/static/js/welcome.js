@@ -15,14 +15,19 @@ $(document).ready(function () {
         for(var i = 0; i < tags.length; i++) {
             text_tag.push(tags[i].tag);
         }
-
+        var myCheckboxes = [];
+        $("input:checked").each(function() {
+           myCheckboxes.push($(this).val());
+        });
         $.ajax({
             type: form.attr('method'),
             url: "/step1/",
             data: {
                 'csrfmiddlewaretoken': csrftoken,
-                'tags[]': text_tag
+                'tags[]': text_tag,
+                'choices[]': myCheckboxes
             },
+            cache: false,
             dataType: "json",
             success: function (response) {
                 if (response == true) {

@@ -22,7 +22,7 @@ from publications.models import Publication
 from timeline.models import Timeline
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
-    SearchForm, PrivacityForm, DeactivateUserForm
+    SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser
 from el_pagination.decorators import page_template
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -1162,15 +1162,26 @@ def welcome_step_1(request):
 
     if request.method == 'POST':
         response = True
+        form = ThemesForm(request.POST)
+        # Procesar temas escritos por el usuario
         tags = request.POST.getlist('tags[]')
         for tag in tags:
+            if tag.isspace():
+                response = False
+                return HttpResponse(json.dumps(response), content_type='application/json')
             user.profile.tags.add(tag)
+        # Procesar temas por defecto
+        choices = request.POST.getlist('choices[]')
+        for choice in choices:
+            value = dict(ThemesForm.CHOICES).get(choice)
+            user.profile.tags.add(value)
         user.profile.save()
         print(tags)
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
         most_common = UserProfile.tags.most_common()
         context['top_tags'] = most_common
+        context['form'] = ThemesForm
 
     return render_to_response('account/welcomestep1.html',
                               context,
