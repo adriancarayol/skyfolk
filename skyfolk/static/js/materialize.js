@@ -3939,7 +3939,6 @@ $(document).ready(function(){
 
     this.renderChip = function(elem) {
       if (!elem.tag) return;
-
       var html = '<div class="chip">' + elem.tag;
       if (elem.image) {
         html += ' <img src="' + elem.image + '"> ';
@@ -3966,6 +3965,9 @@ $(document).ready(function(){
             exists = true;
             return;
         }
+      }
+      if (!(/\S/.test(elem.tag))) {
+          return false;
       }
       return '' !== elem.tag && !exists;
     };
