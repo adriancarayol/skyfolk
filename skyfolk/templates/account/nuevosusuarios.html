@@ -16,11 +16,11 @@
 </head>
 
 
-<body class="teal lighten-5" style="background-image: url({{STATIC_URL}}img/backgrounds/alternative_back.jpeg); background-size: 100%">
+<body style="background-image: url({{STATIC_URL}}img/backgrounds/alternative_back.jpeg); background-repeat: no-repeat; background-position: center; background-size: cover; background-attachment: fixed;">
 	<div class="container">
 		{% block content %}
 		<div class="row">
-			<div class="card-info">
+			<div class="white z-depth-1 card-info">
 				<div class="col s12 m12 l12">
 					<div class="card blue-grey lighten-5">
 						<div class="card-content blue-text">
@@ -35,8 +35,14 @@
 			</div>
 		</div>
 		<div class="row">
-			<a onclick="location.href='/step1/'" class="waves-effect waves-light btn right">Configurar cuenta</a>
-			<a href="/profile/{{user_profile}}/" class="waves-effect waves-light btn">Omitir</a>
+			<div class="col s12">
+				<div class="col l6 m5 s12 right">
+					<a onclick="location.href='/step1/'" class="waves-effect waves-light btn right blue darken-1">Configurar cuenta</a>
+				</div>
+				<div class="col l6 m5 s12 left">
+					<a href="/profile/{{user_profile}}/" class="waves-effect waves-light btn left blue darken-1">Omitir</a>
+				</div>
+			</div>
 		</div>
 		{% endblock %}
 	</div>
