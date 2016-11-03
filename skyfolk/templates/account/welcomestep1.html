@@ -51,7 +51,8 @@
                         </button>
                     </div>
                     <div class="col l6 m5 s12 left">
-                        <a href="/profile/{{ user_profile }}/" class="waves-effect waves-light btn left blue darken-1">Omitir</a>
+                        <a href="{% url 'user_profile:profile' username=user_profile %}"
+                           class="waves-effect waves-light btn left blue darken-1">Omitir</a>
                     </div>
                 </div>
             </div>

@@ -21,7 +21,7 @@ $(document).ready(function () {
         });
         $.ajax({
             type: form.attr('method'),
-            url: "/step1/",
+            url: "/topics/",
             data: {
                 'csrfmiddlewaretoken': csrftoken,
                 'tags[]': text_tag,

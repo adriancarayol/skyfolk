@@ -21,7 +21,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
             print(
                 'User {user} is login for the first time'.format(**locals())
             )
-            path = "/welcome/"
+            path = "/welcome/{username}"
         else:
             print(
                 'User {user} is NOT login for the first time'.format(**locals())

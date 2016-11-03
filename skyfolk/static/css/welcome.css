@@ -9,7 +9,14 @@ html, body {
   padding: 10px;
   margin-top: 1.3em; }
   .container > .wrapper {
-    padding: 10px; }
+    padding: 10px;
+    border-radius: 7px; }
+    .container > .wrapper .card-content img {
+      width: 72px;
+      height: 100%;
+      border-right: 2px solid #1e88e5;
+      cursor: pointer;
+      box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2); }
   .container > .title {
     background-color: #fff;
     height: 30%;

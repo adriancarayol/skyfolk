@@ -7,11 +7,12 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, response
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
+from django.views.generic.list import ListView
 from el_pagination.views import AjaxListView
 
 from notifications.models import Notification
@@ -26,6 +27,7 @@ from user_profile.forms import ProfileForm, UserForm, \
 from user_profile.models import UserProfile, AffinityUser
 from el_pagination.decorators import page_template
 from django.views.decorators.csrf import ensure_csrf_cookie
+from taggit.models import TaggedItem
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -1139,12 +1141,18 @@ def bloq_user(request):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 @login_required(login_url='/')
-def welcome_view(request):
+def welcome_view(request, username):
     """
     View para pagina de bienvenida despues
     del registro.
     """
+    user_profile = get_object_or_404(get_user_model(),
+                                     username__iexact=username)
     user = request.user
+
+    if user_profile.pk != user.pk:
+        raise Http404
+
     return render_to_response('account/nuevosusuarios.html',
                               context_instance=RequestContext(request, {'user_profile': user}))
 
@@ -1162,7 +1170,6 @@ def welcome_step_1(request):
 
     if request.method == 'POST':
         response = True
-        form = ThemesForm(request.POST)
         # Procesar temas escritos por el usuario
         tags = request.POST.getlist('tags[]')
         for tag in tags:
@@ -1179,7 +1186,7 @@ def welcome_step_1(request):
         print(tags)
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
-        most_common = UserProfile.tags.most_common()
+        most_common = UserProfile.tags.most_common()[:10]
         context['top_tags'] = most_common
         context['form'] = ThemesForm
 
@@ -1200,3 +1207,28 @@ def set_first_Login(request):
             user.profile.is_first_login = False
     else: # ON GET ETC...
         return redirect('user_profile:profile', username=user.username)
+
+
+class RecommendationUsers(ListView):
+    """
+        Lista de usuarios recomendados segun
+        los intereses del usuario.
+    """
+    model = User
+    template_name = "account/reccomendation_after_login.html"
+
+    def get_queryset(self):
+        user = self.request.user
+        related_items = TaggedItem.objects.none().order_by('count')
+        current_item = UserProfile.objects.get(user=user)
+        for tag in current_item.tags.all():
+            related_items |= tag.taggit_taggeditem_items.all()
+        ids = related_items.values_list('object_id', flat=True)
+        return UserProfile.objects.filter(id__in=ids).exclude(user=user)
+
+    def get_context_data(self, **kwargs):
+        context = super(RecommendationUsers, self).get_context_data(**kwargs)
+        context['user_profile'] = self.request.user
+        return context
+
+recommendation_users = login_required(RecommendationUsers.as_view(), login_url='/')
