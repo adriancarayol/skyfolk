@@ -1169,21 +1169,23 @@ def welcome_step_1(request):
     context['user_profile'] = user
 
     if request.method == 'POST':
-        response = True
+        response = "success"
         # Procesar temas escritos por el usuario
         tags = request.POST.getlist('tags[]')
         for tag in tags:
             if tag.isspace():
-                response = False
+                response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
             user.profile.tags.add(tag)
         # Procesar temas por defecto
         choices = request.POST.getlist('choices[]')
+        if not tags and not choices:
+            response = "empty"
+            return HttpResponse(json.dumps(response), content_type='application/json')
         for choice in choices:
             value = dict(ThemesForm.CHOICES).get(choice)
             user.profile.tags.add(value)
         user.profile.save()
-        print(tags)
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
         most_common = UserProfile.tags.most_common()[:10]
@@ -1208,7 +1210,7 @@ def set_first_Login(request):
     else: # ON GET ETC...
         return redirect('user_profile:profile', username=user.username)
 
-
+#TODO: Comrpobar que el usuario tenga tags establecidos antes de mostrar las recomendaciones
 class RecommendationUsers(ListView):
     """
         Lista de usuarios recomendados segun
@@ -1219,6 +1221,8 @@ class RecommendationUsers(ListView):
 
     def get_queryset(self):
         user = self.request.user
+        if not user.profile.tags:
+            return None
         related_items = TaggedItem.objects.none().order_by('count')
         current_item = UserProfile.objects.get(user=user)
         for tag in current_item.tags.all():
