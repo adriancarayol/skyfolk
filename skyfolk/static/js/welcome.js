@@ -58,11 +58,20 @@ $(document).ready(function () {
     });
 
     // Add follow
-    $('.follow-user').click(function () {
+    $('.card-action').on('click', '.follow-user', function () {
         var slug = $(this).data('user-id');
         AJAX_requestfriend(slug, 'noabort');
     });
-
+    // Exist follow request
+    $('.card-action').on('click', '.follow_request', function () {
+        var slug = $(this).data('user-id');
+        AJAX_remove_request_friend(slug);
+    });
+    // Remove block relation
+    $('.card-action').on('click', '.unblock-user', function () {
+        var slug = $(this).data('user-id');
+        AJAX_remove_bloq(slug);
+    });
 });
 
 // using jQuery
@@ -98,6 +107,7 @@ $.ajaxSetup({
 
 /*PETICION AJAX PARA AGREGAR AMIGO*/
 function AJAX_requestfriend(slug, status) {
+    console.log('REQUEST FRIEND');
     if (status == "noabort") {
         $.ajax({
             type: "POST",
@@ -106,29 +116,29 @@ function AJAX_requestfriend(slug, status) {
                 'slug': slug,
                 'csrfmiddlewaretoken': csrftoken
             },
-            //data: {'slug': $("#profileId").html()},
             dataType: "json",
             success: function (response) {
                 if (response == "isfriend") {
                     swal({
-                            title: "¡Ya es tu amigo!",
-                            type: "warning",
-                            customClass: 'default-div',
-                            animation: "slide-from-top",
-                            showConfirmButton: true,
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Unfollow",
-                            cancelButtonText: "Ok, fine!",
-                            closeOnConfirm: true
-                        },
+                        title: "¡Ya es tu amigo!",
+                        type: "warning",
+                        customClass: 'default-div',
+                        animation: "slide-from-top",
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Unfollow",
+                        cancelButtonText: "Ok, fine!",
+                        closeOnConfirm: true
+                    },
                         function (isConfirm) {
                             if (isConfirm) {
                                 AJAX_remove_relationship(slug);
                             }
                         });
                 } else if (response == "inprogress") {
-                    $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + ' ' + '</span>');
+                    var _btn = $('.card-action').find("[data-user-id='" + slug + "']");
+                    $(_btn).replaceWith('<button data-user-id=' + slug + ' class="btn waves-effect waves-light blue darken-1 follow_request" type="submit">' + 'Solicitud enviada' + '</button>');
                 } else if (response == "user_blocked") {
                     swal({
                         title: "Petición denegada.",
@@ -140,7 +150,8 @@ function AJAX_requestfriend(slug, status) {
                         showConfirmButton: false
                     });
                 } else if (response == "added_friend") {
-                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                    var _btn = $('.card-action').find("[data-user-id='" + slug + "']");
+                    $(_btn).replaceWith('<button data-user-id=' + slug + ' class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">' + 'Dejar de seguir' + '</button>');
                 }
                 else {
 
@@ -167,10 +178,8 @@ function AJAX_remove_relationship(slug) {
         dataType: 'json',
         success: function (response) {
             if (response == true) {
-                var currentValue = document.getElementById('followers-stats');
-                var addFriendButton = document.getElementById('addfriend');
-                $(currentValue).html(parseInt($(currentValue).html()) - 1);
-                $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                var addFriendButton = $('.card-action').find("[data-user-id='" + slug + "']");
+                $(addFriendButton).replaceWith('<button data-user-id=' + slug + ' class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">' + 'Seguir' + '</button>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
@@ -197,16 +206,45 @@ function AJAX_remove_request_friend(slug) {
         dataType: 'json',
         success: function (response) {
             if (response == true) {
-                $('#follow_request').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend("noabort");></span>');
+                var addFriendButton = $('.card-action').find("[data-user-id='" + slug + "']");
+                $(addFriendButton).replaceWith('<button data-user-id=' + slug + ' class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">' + 'Seguir' + '</button>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
-                    text: "Ha surgido un error, inténtalo de nuevo más tarde :-(",
+                    text: "Ha surgido un error, inténtalo de nuevo más tarde.",
                     customClass: 'default-div'
                 });
             }
         }, error: function (rs, e) {
 
+        }
+    });
+}
+/* Eliminar bloqueo al usuario */
+function AJAX_remove_bloq(slug) {
+    $.ajax({
+        type: 'POST',
+        url: '/remove_blocked/',
+        data: {
+            'slug': slug,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response == true) {
+                var addFriendButton = $('.card-action').find("[data-user-id='" + slug + "']");
+                $(addFriendButton).replaceWith('<button data-user-id=' + slug + ' class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">' + 'Seguir' + '</button>');
+            } else {
+                swal({
+                    title: "Tenemos un problema...",
+                    customClass: 'default-div',
+                    text: "Hubo un problema con su petición.",
+                    timer: 4000,
+                    showConfirmButton: true
+                });
+            }
+        }, error: function (rs, e) {
+            // alert(rs.responseText + " " + e);
         }
     });
 }

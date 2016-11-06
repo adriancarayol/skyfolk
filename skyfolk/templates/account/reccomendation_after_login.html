@@ -1,52 +1,50 @@
 {% extends 'account/nuevosusuarios.html' %}
 <!-- Extendemos la base de "nuevosusuarios.html" -->
-{% load avatar_tags %}
-
-{% block title %}
-    <title>¡Bienvenido a Skyfolk! - Paso 1 ({{ user }})</title>
+{% load avatar_tags %} {% load app_filters %} {% block title %}
+<title>¡Bienvenido a Skyfolk! - Paso 1 ({{ user }})</title>
 {% endblock %}
 
 <body>
-{% block content %}
+    {% block content %}
     <div class="wrapper white z-depth-1">
         <div class="col s12 m12 l12 title">
             <h3 class="grey-text darken-1 center-align">Puedes empezar siguiendo a estos perfiles... </h3>
         </div>
         <div class="row">
             {% for user in object_list %}
-                <div class="col s12 m12 l4">
-                    <div class="card white">
-                        <div class="card-content">
-                            {% avatar user.user 90 %}
-                            <span class="card-title grey-text darken-1">
+            <div class="col s12 m12 l4">
+                <div class="card white">
+                    <div class="card-content">
+                        {% avatar user.user 90 %}
+                        <span class="card-title grey-text darken-1">
                                 <a href="{% url "user_profile:profile" username=user.user.username %}">{{ user.user.username }}</a>
                             </span>
-                            <div class="divider"></div>
-                            <br>
-                            {% for tag in user.tags.all %}
-                                <div class="chip">{{ tag.name }}</div>
-                            {% endfor %}
-                        </div>
-                        <div class="card-action">
-                            <button data-user-id="{{ user.id }}"
-                                    class="btn waves-effect waves-light blue darken-1 follow-user" title="Seguir"
-                                    type="submit">
-                                Seguir
-                            </button>
-                        </div>
+                        <div class="divider"></div>
+                        <br> {% for tag in user.tags.all %}
+                        <div class="chip">{{ tag.name }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="card-action">
+                        {% if request.user|is_blocked:user.id %}
+                        <button data-user-id="{{ user.id }}" class="btn waves-effect waves-light blue darken-1 unblock-user" type="submit">Desbloquear</button>
+                        {% elif request.user|exist_request:user.id %}
+                        <button data-user-id="{{ user.id }}" class="btn waves-effect waves-light blue darken-1 follow_request" type="submit">Solicitud enviada</button>
+                        {% else %}
+                        <button data-user-id="{{ user.id }}" class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">{% if request.user|is_follow:user.id %}Dejar de seguir {% else %}Seguir{% endif %}</button>
+                        {% endif %}
                     </div>
                 </div>
+            </div>
             {% endfor %}
             <div class="row">
                 <div class="col s12">
                     <div class="divider"></div><br>
                     <div class="col s12 left">
-                        <a href="{% url 'user_profile:profile' username=user_profile %}"
-                           class="waves-effect waves-light btn right blue darken-1">He acabado</a>
+                        <a href="{% url 'user_profile:profile' username=user_profile %}" class="waves-effect waves-light btn right blue darken-1">He acabado</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %}
+    {% endblock %}
 </body>
