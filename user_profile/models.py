@@ -426,10 +426,17 @@ class UserProfile(models.Model):
 
     def get_likes(self):
         """
-        Obtengo los likes del perfil instanciado
+        Obtengo los likes que ha dado del perfil instanciado
         :return Devuelve los likes del perfil instanciado:
         """
         return self.likeprofiles.filter(to_likeprofile__from_like=self)
+
+    def get_likes_to_me(self):
+        """
+        Obtengo los likes que me han dado.
+        :return: Devuelve los likes recibidos
+        """
+        return self.likeprofiles.filter(from_likeprofile__to_like=self)
 
     def has_like(self, profile):
         """
@@ -689,6 +696,14 @@ class LikeProfileQuerySet(models.QuerySet):
             return self.filter(from_like=from_like).order_by('-created')
         return self.filter(from_like=from_like).order_by('created')
 
+    def get_all_likes_to_me(self, to_like):
+        """
+        Devuelve la lista de usuarios
+        que me han dado me gusta.
+        """
+        return self.filter(to_like=to_like)
+
+
 class LikeProfileManager(models.Manager):
     """
         Manager para usuarios que me gustan
@@ -721,6 +736,13 @@ class LikeProfileManager(models.Manager):
         :return  me gusta dados por un perfil ordenados por la creacion:
         """
         return self.get_queryset().get_likes_by_created(from_like=from_like, reverse=reverse)
+
+    def get_all_likes_to_me(self, to_like):
+        """
+        Devuelve la lista de usuarios
+        que me han dado me gusta.
+        """
+        return self.get_queryset().get_all_likes_to_me(to_like=to_like)
 
 class LikeProfile(models.Model):
     """

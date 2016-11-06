@@ -59,5 +59,8 @@ urlpatterns = [
         name='set_first_login'),
     # Recomendacion de usuarios dependiendo de intereses
     url(r'^recommendations/$', 'user_profile.views.recommendation_users',
-        name='reccomendation_users')
+        name='reccomendation_users'),
+    # Lista de usuarios que han dado like al perfil <<username>>
+    url(r'^likes/(?P<username>[\w-]+)/$', 'user_profile.views.like_list',
+        name='like_list'),
 ]

@@ -24,7 +24,7 @@ from timeline.models import Timeline
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import UserProfile, AffinityUser
+from user_profile.models import UserProfile, AffinityUser, LikeProfile
 from el_pagination.decorators import page_template
 from django.views.decorators.csrf import ensure_csrf_cookie
 from taggit.models import TaggedItem
@@ -1236,3 +1236,22 @@ class RecommendationUsers(ListView):
         return context
 
 recommendation_users = login_required(RecommendationUsers.as_view(), login_url='/')
+
+class LikeListUsers(AjaxListView):
+    model = UserProfile
+    template_name = "account/like_list.html"
+    context_object_name = "object_list"
+    page_template = "account/like_entries.html"
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        user_profile = get_object_or_404(UserProfile, user__username__iexact=username)
+        print(username)
+        return user_profile.get_likes_to_me()
+    
+    def get_context_data(self, **kwargs):
+        context = super(LikeListUsers, self).get_context_data(**kwargs)
+        context['user_profile'] = self.kwargs['username']
+        return context
+        
+like_list = login_required(LikeListUsers.as_view(), login_url='/')
