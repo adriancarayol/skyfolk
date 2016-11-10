@@ -7,6 +7,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
     """
     Adaptador modificado para django-allauth.
     """
+
     def get_login_redirect_url(self, request):
         """
         Devuelve la url a la que se redirige el usuario
@@ -26,4 +27,5 @@ class MyAccountAdapter(DefaultAccountAdapter):
             print(
                 'User {user} is NOT login for the first time'.format(**locals())
             )
+        
         return path.format(username=request.user.username)
