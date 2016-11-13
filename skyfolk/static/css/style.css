@@ -5,4 +5,7 @@
   background: gainsboro url("/static/img/index_bg.png") no-repeat center 30px;
   background-size: 90%; }
 
+.pull-right {
+  float: right; }
+
 /*# sourceMappingURL=style.css.map */

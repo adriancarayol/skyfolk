@@ -51,6 +51,7 @@ FIRST_PARTY_APPS = (
     'timeline',
     'about',                   # sobre los autores
     'latest_news',
+    'user_groups'              # Para grupos de usuarios
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS

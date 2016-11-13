@@ -31,8 +31,18 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         form = self.get_form()
         emitter = get_object_or_404(get_user_model(),
                                     pk=request.POST['author'])
+
+        if emitter.pk != self.request.user.pk:
+            raise IntegrityError("No have permissions.")
+
         board_owner = get_object_or_404(get_user_model(),
                                         pk=request.POST['board_owner'])
+
+        privacity = board_owner.profile.is_visible(self.request.user.profile, self.request.user.pk)
+
+        if privacity != ('all' or None):
+            raise IntegrityError("No have permissions")
+
         publication = None
         print('POST DATA: {}'.format(request.POST))
         print('tipo emitter: {}'.format(type(emitter)))
@@ -54,7 +64,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
         return self.form_invalid(form=form)
 
-#TODO
+
 class PublicationSelfNewView(AjaxableResponseMixin, CreateView):
     """
     Crear una publicación para mi perfil.

@@ -9,7 +9,8 @@ urlpatterns = [
     url(r'^search-advanced/$', 'user_profile.views.advanced_view',
         name='advanced_view'),
     # URL CONFIG PROFILE USER
-    url(r'^config/profile/$', 'user_profile.views.config_profile'),
+    url(r'^config/profile/$', 'user_profile.views.config_profile',
+        name="config_profile"),
     # URL CHANGE PRIVACITY
     url(r'^config/privacity/$', 'user_profile.views.config_privacity'),
     # CONSULTAR PINCODE

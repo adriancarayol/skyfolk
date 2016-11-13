@@ -58,6 +58,12 @@ $(document).ready(function () {
         });
     });
 
+    /* Crear nuevo grupo de usuarios */
+
+    $("#new_group").click(function () {
+        $('#create_group').toggle();
+    });
+
     /* Close page-wrapper (mensaje) */
     $(page_wrapper).find('#close').on('click', function (event) {
         event.preventDefault();
@@ -85,6 +91,7 @@ $(document).ready(function () {
         AJAX_submit_publication(data, 'publication');
     });
 
+    /* Submit creacion (perfil ajeno) */
     $('button.enviar').on('click', function (event) {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
@@ -97,6 +104,15 @@ $(document).ready(function () {
         AJAX_submit_publication(data, 'reply', pks);
     });
 
+    /* Submit creacion de grupo */
+    $('button#btn_new_group').on('click', function (event) {
+        event.preventDefault();
+        var form = $(this).closest('#from_new_group');
+        var owner_pk = $(form).find('input[name=owner]').val();
+        console.log(owner_pk);
+        var data = $(form).serialize();
+        AJAX_submit_group(data);
+    });
     /**** ATAJOS DE TECLADO ****/
 
     /* Mostrar atajos */
@@ -369,7 +385,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                     showConfirmButton: true
                 });
             } else if (response == 'its_your_friend') {
-                ({
+                swal({
                     title: "Wait a moment!",
                     text: "It's already your friend!",
                     customClass: 'default-div',
@@ -532,6 +548,40 @@ function AJAX_submit_publication(data, type, pks) {
         // No necesario, ya que usamos sockets para añadir
         // En "vivo" publicaciones y respuestas
         //addNewPublication(type, pks[0], pks[1], pks[2]);
+    })
+}
+
+
+function AJAX_submit_group(data) {
+    $.ajax({
+        url: '/create_group/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: function (data) {
+            var response = data.response;
+            console.log('RESPONSE AQUI (grupos): ' + response);
+            if (response == true) {
+                alert('GRUPO CREADO...');
+            } else {
+                swal({
+                    title: "¡Ups!",
+                    text: "Fallo al crear el grupo.",
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
+            swal({
+                title: '¡Ups!',
+                text: 'Revisa el contenido de tu grupo.', // rs.responseText,
+                customClass: 'default-div',
+                type: "error"
+            });
+        }
+    }).done(function () {
+
     })
 }
 

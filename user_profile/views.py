@@ -24,10 +24,11 @@ from timeline.models import Timeline
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import UserProfile, AffinityUser, LikeProfile
+from user_profile.models import UserProfile, AffinityUser
 from el_pagination.decorators import page_template
 from django.views.decorators.csrf import ensure_csrf_cookie
 from taggit.models import TaggedItem
+from user_groups.forms import FormUserGroup
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -53,10 +54,12 @@ def profile_view(request, username,
     privacity = user_profile.profile.is_visible(user.profile, user.pk)
     # Para escribir mensajes en mi propio perfil.
     self_initial = {'author': user.pk, 'board_owner': user.pk}
+    group_initial = {'owner': user.pk}
     context['user_profile'] = user_profile
     context['searchForm'] = SearchForm(request.POST)
     context['privacity'] = privacity
     context['publicationSelfForm'] = PublicationForm(initial=self_initial)
+    context['groupForm'] = FormUserGroup(initial=group_initial)
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":

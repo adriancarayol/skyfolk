@@ -141,6 +141,7 @@ Base para la interfaz en comun de todos los usuarios.
             </div>
         </div>
     {% endblock %}
+    {% block shortcuts %}
     <!-- Atajos del usuario -->
     <div class="default-div" id="atajos-keyboard-profile">
         <table class="responsive-table highlight modal-table" summary="Atajos para acciones comunes.">
@@ -225,6 +226,23 @@ Base para la interfaz en comun de todos los usuarios.
             </tbody>
         </table>
     </div>
+    {% endblock %}
+    {% block create-group %}
+        <div class="row">
+            <div id="create_group" class="col l5 m12 s12 compose-div default-div" style="display: none;">
+                <form id="from_new_group" action="" method="post">{% csrf_token %}
+                    {{ groupForm }}
+                    <div class="row">
+                        <div class="col s12">
+                            <button type="submit" id="btn_new_group"
+                                    class="waves-effect waves-light btn right blue">
+                                Crear grupo<i class="material-icons right">people</i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endblock %}
 {% endif %}
 {% comment "menu movil" %}
     Menu para versiones tablet/movil

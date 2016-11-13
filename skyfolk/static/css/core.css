@@ -9,6 +9,14 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
+html {
+  color: #555 !important;
+  font-family: "Open Sans", sans-serif !important;
+  font-size: 11.5px !important;
+  font-style: normal !important;
+  font-weight: 300 !important;
+  -webkit-font-smoothing: antialiased !important; }
+
 button::-moz-focus-inner {
   border: 0; }
 
