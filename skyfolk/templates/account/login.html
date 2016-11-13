@@ -7,79 +7,92 @@
 {% load url from future %}
 <!--{% block head_title %}{% trans "Sign In" %}{% endblock %}-->
 {% block extra_head %}
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {% endblock %}
 {% block content %}
-<!-- <h1>{% trans "Sign In" %}</h1> -->
-{% if socialaccount.providers  %}
-<p>{% blocktrans with site.name as site_name %}Please sign in with one
-of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
-for a {{site_name}} account and sign in below:{% endblocktrans %}</p>
-<div class="socialaccount_ballot">
-  <ul class="socialaccount_providers">
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  </ul>
-  <div class="login-or">{% trans 'or' %}</div>
-</div>
-{% include "socialaccount/snippets/login_extra.html" %}
-{% else %}
-<!--
+    <!-- <h1>{% trans "Sign In" %}</h1> -->
+    {% if socialaccount.providers %}zz
+        <p>{% blocktrans with site.name as site_name %}Please sign in with one
+            of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+            for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+        <div class="socialaccount_ballot">
+            <ul class="socialaccount_providers">
+                {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+            </ul>
+            <div class="login-or">{% trans 'or' %}</div>
+        </div>
+        {% include "socialaccount/snippets/login_extra.html" %}
+    {% else %}
+        <!--
 <p>{% blocktrans %}If you have not created an account yet, then please
 <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
 -->
-{% endif %}
+    {% endif %}
     <div class="row">
-    <div id="login" class="white z-depth-2">
-        <div class="row">
-            <div class="col s12">
-                <h5>Iniciar sesion</h5>
-            </div>
-        </div>
-        <form class="login form-3" method="POST" action="{% url 'account_login' %}">{% csrf_token %}
-        <div class="form-group">
-            {% for key, value in form.errors.items %}
-                {% if key == '__all__' %}
-                    <p>{{ value }}</p>
-                {% endif %}
-            {% endfor %}
+        <div id="login" class="white z-depth-2">
             <div class="row">
-                {{ form.login.errors }}
-                <div class="input-field col s11">
-                    <i class="material-icons prefix">account_circle</i>
-                    {{ form.login }}
-                    <label for="login">{% trans "Username" %}</label>
+                <div class="col s12">
+                    <h5>Iniciar sesion</h5>
                 </div>
             </div>
-            <div class="row">
-                {{ form.password.errors }}
-                <div class="input-field col s11">
-                    <i class="material-icons prefix">vpn_key</i>
-                    {{ form.password }}
-                    <label for="id_password">{% trans "Password" %}</label>
+            <form class="login form-3" method="POST" action="{% url 'account_login' %}">{% csrf_token %}
+                <div class="form-group">
+                    {% for key, value in form.errors.items %}
+                        {% if key == '__all__' %}
+                            <p>{{ value }}</p>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="row">
+                        {{ form.login.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">account_circle</i>
+                            {{ form.login }}
+                            <label for="login">{% trans "Username" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.password.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">vpn_key</i>
+                            {{ form.password }}
+                            <label for="id_password">{% trans "Password" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 buttons">
+                            <button id="iniciar_sesion" class="waves-effect waves-light btn blue lighten-2 left"
+                                    type="submit">{% trans "Sign In" %}</button>
+                            <button id="registrar" type="button"
+                                    class="waves-effect waves-light btn blue lighten-2 right"
+                                    onclick="javascript:location.href='{{ signup_url }}'">{% trans "Sign Up" %}</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s11 remember-check">
+                            {{ form.remember }}
+                            <label for="id_remember">Recordar</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 forgot-pass">
+                            <a class="button secondaryAction" id="losepwd"
+                               href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s12 buttons">
-                    <button id="iniciar_sesion" class="waves-effect waves-light btn blue lighten-2 left" type="submit">{% trans "Sign In" %}</button>
-                    <button id="registrar" type="button" class="waves-effect waves-light btn blue lighten-2 right" onclick="javascript:location.href='{{ signup_url }}'">{% trans "Sign Up" %}</button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s11 remember-check">
-                    {{ form.remember }}
-                    <label for="id_remember">Recordar</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12 forgot-pass">
-                    <a class="button secondaryAction" id="losepwd" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-                </div>
-            </div>
-        </div>
                 {% if redirect_field_value %}
-                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                 {% endif %}
-       </form>
+                {{ form.auth_browser }}
+            </form>
+        </div>
     </div>
-    </div>
+    <script src="{{ STATIC_URL }}js/fingerprint2.js" type="text/javascript"></script>
+    <script>
+        new Fingerprint2().get(function (result, components) {
+            console.log(result); //a hash, representing your device fingerprint
+            console.log(components); // an array of FP components
+            $('#id_auth_browser').val(result + " " + components[0].value);
+        });
+    </script>
 {% endblock %}

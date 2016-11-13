@@ -3,9 +3,51 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.utils.translation import ugettext_lazy as _
-from django.forms import FileInput
+from allauth.account.forms import LoginForm
+from django.db import IntegrityError
+from user_profile.models import UserProfile, AuthDevices
+from django.core.mail import send_mail
 
-from user_profile.models import UserProfile
+class CustomLoginForm(LoginForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CustomLoginForm, self).__init__(*args, **kwargs)
+        auth_browser = forms.CharField(required=False)
+        self.fields["auth_browser"] = auth_browser
+        self.fields["auth_browser"].widget = forms.HiddenInput()
+
+    def login(self, request, redirect_url=None):
+        user_profile = UserProfile.objects.get(user=self.user)
+        auth_token_device = self.cleaned_data['auth_browser']
+        if auth_token_device:
+            try:
+                components = auth_token_device.split()
+                device, created = AuthDevices.objects.get_or_create(user_profile=user_profile, browser_token=components.pop(0))
+                if created:
+                    device.save()
+                    send_mail(
+                        '[Skyfolk] - Nuevo inicio de sesión.',
+                        'Hemos detectado un nuevo inicio de sesión. \n' + ",".join(components).replace(",", " "),
+                        'noreply@skyfolk.net',
+                        [self.user.email],
+                        fail_silently=False,
+                    )
+            except IntegrityError:
+                pass
+        else:
+            # Aqui informamos al usuario por email de que
+            # el fingerprint browser no se ha podido coger
+            send_mail(
+                '[Skyfolk] - Nuevo inicio de sesión',
+                'Hemos detectado un nuevo inicio de sesión.',
+                'noreply@skyfolk.net',
+                [self.user.email],
+                fail_silently=False,
+            )
+
+
+        return super(CustomLoginForm, self).login(request=request, redirect_url=redirect_url)
+
 
 
 class SearchForm(forms.Form):

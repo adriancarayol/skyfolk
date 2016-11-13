@@ -1210,7 +1210,7 @@ def set_first_Login(request):
     else: # ON GET ETC...
         return redirect('user_profile:profile', username=user.username)
 
-#TODO: Comrpobar que el usuario tenga tags establecidos antes de mostrar las recomendaciones
+#TODO: Com que el usuario tenga tags establecidos antes de mostrar las recomendaciones
 class RecommendationUsers(ListView):
     """
         Lista de usuarios recomendados segun

@@ -892,3 +892,55 @@ class AffinityUser(models.Model):
             self.affinity += 1
         self.created = datetime.now()
         super(AffinityUser, self).save()
+
+
+class AuthDevicesQuerySet(models.QuerySet):
+    """
+        Query Manager para Auth Devices
+    """
+    def get_auth_device(self, user, token):
+        """
+        Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.
+        :param Usuario del que se quiere obtener los dispositivos que usa:
+        :return Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.:
+        """
+        return self.filter(user_profile=user, browser_token=token)
+
+    def get_devices_by_user(self, user):
+        """
+        Devuelve todos los navegadores usados por un usuario.
+        :param user:
+        :return Devuelve los navegadores usados por un usuario:
+        """
+        return self.filter(user_profile=user)
+
+class AuthDevicesManager(models.Manager):
+    """
+        Manager para Auth Devices
+    """
+    def get_queryset(self):
+        return AuthDevicesQuerySet(self.model, using=self._db)
+
+    def get_device(self, user, token):
+        """
+        Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.
+        :param Usuario del que se quiere obtener los dispositivos que usa:
+        :return Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.:
+        """
+        return self.get_queryset().get_auth_device(user=user, token=token)
+
+    def get_devices_by_user(self, user):
+        """
+        Devuelve todos los navegadores usados por un usuario.
+        :param user:
+        :return Devuelve los navegadores usados por un usuario:
+        """
+        return self.get_queryset().get_devices_by_user(user=user)
+
+class AuthDevices(models.Model):
+    """
+        Establece una relacion entre el usuario y los navegadores/dispositivos que usa.
+    """
+    user_profile = models.ForeignKey(UserProfile, related_name='device_to_profile')
+    browser_token = models.CharField(max_length=1024)
+    objects = AuthDevicesManager()
