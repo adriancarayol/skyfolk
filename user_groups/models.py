@@ -27,7 +27,7 @@ class UserGroups(models.Model):
         Modelo para la creacion de grupos de usuarios.
     """
     name = models.CharField(max_length=128, unique=True)
-    description = models.CharField(max_length=1024, null=True, blank=True)
+    description = models.TextField(max_length=1024, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=32, blank=True, null=True)
     owner = models.ForeignKey(User, related_name='group_owner')
@@ -36,6 +36,16 @@ class UserGroups(models.Model):
                                   blank=True, null=True)
     large_image = models.ImageField(upload_to=upload_large_group_image, verbose_name='large_image',
                                     blank=True, null=True)
+    privacity = models.BooleanField(default=True, help_text='Desactiva esta casilla si quieres que el grupo sea privado.')
     tags = TaggableManager()
 
     objects = UserGroupsManager()
+
+
+#TODO
+class RolUserGroup(models.Model):
+    """
+    Establece un rol para un usuario especifico
+    dentro de un grupo.
+    """
+    pass

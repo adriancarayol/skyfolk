@@ -6,6 +6,7 @@ $(window).ready(function () {
 $(document).ready(function () {
 
     // Materialize.updateTextFields();
+    $('select').material_select();
 
     var page_wrapper = $('#page-wrapper');
     var self_page_wrapper = $('#self-page-wrapper');

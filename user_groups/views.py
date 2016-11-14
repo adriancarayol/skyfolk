@@ -33,6 +33,8 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 group = form.save(commit=False)
                 group.owner = owner
                 group.save()
+                # Without this next line the tags won't be saved.
+                form.save_m2m()
                 print('GROUP CREATED!')
             except IntegrityError as e:
                 print("views.py line 30 -> {}".format(e))
