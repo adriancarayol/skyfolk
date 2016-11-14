@@ -12,4 +12,7 @@ class FormUserGroup(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FormUserGroup, self).__init__(*args, **kwargs)
+        self.fields['description'].widget.attrs.update({
+            'placeholder': 'Escribe una descripcion para tu grupo'
+            })
         self.fields['owner'].widget = forms.HiddenInput()
