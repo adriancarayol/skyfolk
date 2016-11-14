@@ -2,16 +2,17 @@
 from django import forms
 from .models import UserGroups
 from django.contrib.auth.models import User
+from dal import autocomplete
 
 class FormUserGroup(forms.ModelForm):
+    # users_in_group = forms.ModelMultipleChoiceField(queryset=User.objects.all())
 
     class Meta:
         model = UserGroups
         fields = ['name', 'description',
                   'type', 'users', 'small_image',
-                  'large_image', 'tags', 'owner', 'privacity', 'users_in_group']
+                  'large_image', 'tags', 'owner', 'privacity']
 
-    users_in_group = forms.ModelMultipleChoiceField(queryset=User.objects.all(), widget=forms.SelectMultiple)
 
     def __init__(self, *args, **kwargs):
         super(FormUserGroup, self).__init__(*args, **kwargs)

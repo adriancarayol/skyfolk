@@ -29,6 +29,7 @@ from el_pagination.decorators import page_template
 from django.views.decorators.csrf import ensure_csrf_cookie
 from taggit.models import TaggedItem
 from user_groups.forms import FormUserGroup
+from dal import autocomplete
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -1258,3 +1259,19 @@ class LikeListUsers(AjaxListView):
         return context
         
 like_list = login_required(LikeListUsers.as_view(), login_url='/')
+
+
+class UserAutocomplete(autocomplete.Select2QuerySetView):
+    """
+    Autocompletado de usuarios
+    """
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return User.objects.none()
+
+        users = User.objects.all()
+
+        if self.q:
+            users = users.filter(username__istartswith=self.q)
+
+        return users

@@ -1,5 +1,5 @@
 from django.conf.urls import url
-
+from .views import UserAutocomplete
 
 urlpatterns = [
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view',

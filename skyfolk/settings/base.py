@@ -41,6 +41,8 @@ THIRD_PARTY_APPS = (
     'taggit',                   # para etiquetas
     'el_pagination',            # Para paginacion
     'notifications',           # siempre último
+    'dal',                      # autocompletado
+    'dal_select2',
 )
 
 FIRST_PARTY_APPS = (

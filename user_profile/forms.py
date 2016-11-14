@@ -7,6 +7,7 @@ from allauth.account.forms import LoginForm
 from django.db import IntegrityError
 from user_profile.models import UserProfile, AuthDevices
 from django.core.mail import send_mail
+from dal import autocomplete
 
 class CustomLoginForm(LoginForm):
 
@@ -57,6 +58,7 @@ class SearchForm(forms.Form):
     disponible en todas las secciones de la web.
     Como mínimo se debe introducir un caracter para realizar una búsqueda.
     """
+
     searchText = forms.CharField(label="", help_text="", required=False,
                                  widget=forms.TextInput(attrs={'placeholder': '¿Que es lo que quieres buscar?',
                                                                'pattern': '.{1,}',
