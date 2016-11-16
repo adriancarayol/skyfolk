@@ -1035,8 +1035,8 @@ class DeactivateAccount(FormView):
         context = self.get_context_data(**kwargs)
         context['form'] = self.form_class
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
+        self_initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
         context['searchForm'] = SearchForm()
         return self.render_to_response(context)
 
@@ -1242,6 +1242,9 @@ class RecommendationUsers(ListView):
 recommendation_users = login_required(RecommendationUsers.as_view(), login_url='/')
 
 class LikeListUsers(AjaxListView):
+    """
+    Lista de usuarios que han dado like a un perfil
+    """
     model = UserProfile
     template_name = "account/like_list.html"
     context_object_name = "object_list"
@@ -1252,12 +1255,17 @@ class LikeListUsers(AjaxListView):
         user_profile = get_object_or_404(UserProfile, user__username__iexact=username)
         print(username)
         return user_profile.get_likes_to_me()
-    
+
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
         context['user_profile'] = self.kwargs['username']
+        user = self.request.user
+        self_initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
+        context['searchForm'] = SearchForm()
+
         return context
-        
+
 like_list = login_required(LikeListUsers.as_view(), login_url='/')
 
 
