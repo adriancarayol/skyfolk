@@ -1,0 +1,49 @@
+$blueskyfolk: #1e88e5
+$graycolor: #555
+$whitecolor: #fff
+$graylightcolor: #f9f9f9
+$transparentgraycolor: rgba(0, 0, 0, 0.4)
+$tomatocolor: #ff6347
+$boxshadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+
+html, body
+  background-color: $graylightcolor
+
+.wrapper-news
+  margin-top: 3%
+  border-radius: 3px
+  height: auto
+  & .notice-item
+    background-color: $whitecolor
+    box-shadow: $boxshadow
+    padding: 10px
+    margin: 0.95%
+    overflow: hidden
+    border-radius: 3px
+    & .img
+      border-radius: 3px
+      box-shadow: 0 1px 5px $blueskyfolk
+      & img
+        width: 100%
+        height: 100%
+    & .contenido
+      padding-left: 10px
+      display: block
+      > p
+        > img
+          width: 20px
+          height: 20px
+    & .author
+      display: block
+      padding-left: 10px
+      margin-bottom: 2%
+      & a
+        text-decoration: none
+        color: $blueskyfolk
+        font-weight: 600
+        margin-right: 2%
+      & i
+        color: $graycolor
+      & .pub-date
+        margin-top: 2%
+        display: block

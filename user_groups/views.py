@@ -1,4 +1,5 @@
 from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
 from .models import UserGroups
 from django.contrib.auth.decorators import login_required
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -43,3 +44,11 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
         return self.form_invalid(form=form)
 
 user_group_create = login_required(UserGroupCreate.as_view(), login_url='/')
+
+
+class UserGroupList(ListView):
+
+    model = UserGroups
+    template_name = "groups/list_group.html"
+
+group_list = login_required(UserGroupList.as_view(), login_url='/')
