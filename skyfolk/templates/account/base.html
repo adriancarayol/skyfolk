@@ -16,6 +16,7 @@
   </head>
   <body>
     {% block body %}
+        {% comment "No es necesario" %}
     {% if messages %}
     <div class="div-messages">
       <strong>{% trans "Messages" %}:</strong>
@@ -26,6 +27,7 @@
       </ul>
     </div>
     {% endif %}
+    {% endcomment %}
 <div class="display-info-reset-password">
 <div class="navbar-fixed">
     <nav>
@@ -46,8 +48,8 @@
       <strong>¿No necesitas recuperar o restablecer tu contraseña?</strong>
       <ul>
   {% if user.is_authenticated %}
-  <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
-  <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+  <li><a class="waves-effect waves-light btn blue lighten-2" href="{% url 'account_email' %}">Change E-mail</a></li>
+  <li><a class="waves-effect waves-light btn blue lighten-2" href="{% url 'account_logout' %}">Sign Out</a></li>
   {% else %}
   <li><a class="waves-effect waves-light btn blue lighten-2" onclick="javascript:location.href='{% url 'account_login' %}'">Iniciar Sesión</a></li>
   <li><a class="waves-effect waves-light btn blue lighten-2" onclick="javascript:location.href='{% url 'account_signup' %}'">Registrarme</a></li>
@@ -63,13 +65,4 @@
     {% block extra_body %}
     {% endblock %}
   </body>
-
-
-
-
-
-  <!-- codigo nuestro -->
-
-
-
 </html>

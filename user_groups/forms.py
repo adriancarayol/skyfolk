@@ -13,7 +13,6 @@ class FormUserGroup(forms.ModelForm):
                   'type', 'users', 'small_image',
                   'large_image', 'tags', 'owner', 'privacity']
 
-
     def __init__(self, *args, **kwargs):
         super(FormUserGroup, self).__init__(*args, **kwargs)
         self.fields['description'].widget.attrs.update({
@@ -21,7 +20,6 @@ class FormUserGroup(forms.ModelForm):
                 'class': 'materialize-textarea',
             })
         self.fields['owner'].widget = forms.HiddenInput()
-
 
     def clean_privacity(self):
         privacity = self.cleaned_data['privacity']

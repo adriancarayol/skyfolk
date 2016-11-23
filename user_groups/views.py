@@ -8,7 +8,9 @@ from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
+
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
+
     model = UserGroups
     form_class = FormUserGroup
     http_method_names = [u'post']

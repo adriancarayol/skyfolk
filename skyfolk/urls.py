@@ -21,6 +21,8 @@ urlpatterns = patterns(
     url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
+    # urls support
+    url(r'^', include('support.urls', namespace="support"), name="support"),
     # urls user_profile
     url(r'^', include('user_profile.urls', namespace="user_profile"), name="user_profile"),
     # urls para grupos de usuarios
