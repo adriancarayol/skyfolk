@@ -5,5 +5,6 @@ urlpatterns = [
     url(r'^create_group/$', 'user_groups.views.user_group_create',
         name='create_group'),
     # listado de grupos creados
-    url(r'^groups/$', 'user_groups.views.group_list'),
+    url(r'^groups/$', 'user_groups.views.group_list',
+        name='list-group'),
 ]
