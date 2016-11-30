@@ -4,6 +4,7 @@ from .models import UserGroups
 from django.contrib.auth.models import User
 from dal import autocomplete
 
+
 class FormUserGroup(forms.ModelForm):
     # users_in_group = forms.ModelMultipleChoiceField(queryset=User.objects.all())
 

@@ -563,7 +563,7 @@ function AJAX_submit_group(data) {
             var response = data.response;
             console.log('RESPONSE AQUI (grupos): ' + response);
             if (response == true) {
-                alert('GRUPO CREADO...');
+                $('#create_group').hide();
             } else {
                 swal({
                     title: "¡Ups!",
