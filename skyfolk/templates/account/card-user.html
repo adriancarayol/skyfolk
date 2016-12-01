@@ -172,8 +172,10 @@
                             id="followers-stats">{{ followers }}</strong><span>Seguidores</span></a>
                 </li>
                 <li>
-                    <a id="likes" href="{% url "user_profile:like_list" username=user_profile.username %}"><strong>{{ n_likes }}</strong><span title="me gusta"
-                                                                      onclick="contador()">Me gusta</span></a>
+                    <a id="likes"
+                       href="{% url "user_profile:like_list" username=user_profile.username %}"><strong>{{ n_likes }}</strong>
+                        <span title="me gusta">Me gusta</span>
+                    </a>
                 </li>
                 <li>
                     <a class="to_gallery"

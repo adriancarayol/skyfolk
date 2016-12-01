@@ -50,7 +50,9 @@ html, body
         display: block
 
   .personal-card
-    height: 300px
+    height: auto
+    min-height: 300px
+    max-height: 400px
     margin-top: 5%
     box-shadow: 0 1px 5px $transparentgraycolor
     .header
@@ -115,6 +117,7 @@ html, body
       > p:last-child
         color: $graycolor
     .users-in-group
-      margin-top: 1.5%
       font-weight: bold
       color: $blueskyfolk
+    .group-data
+      padding-top: 15px

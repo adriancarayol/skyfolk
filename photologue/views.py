@@ -99,7 +99,6 @@ def collection_list(request, username,
     return render_to_response(template, context, context_instance=RequestContext(request))
 
 
-
 class PhotoListView(AjaxListView):
     context_object_name = "object_list"
     template_name = "photologue/photo_gallery.html"

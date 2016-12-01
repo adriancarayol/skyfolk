@@ -7,4 +7,6 @@ urlpatterns = [
     # listado de grupos creados
     url(r'^groups/$', 'user_groups.views.group_list',
         name='list-group'),
+    url(r'^group/(?P<groupname>[\w-]+)/$', 'user_groups.views.group_profile',
+        name='group-profile')
 ]

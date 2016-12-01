@@ -39,7 +39,9 @@ html, body {
         margin-top: 2%;
         display: block; }
   .wrapper-groups .personal-card {
-    height: 300px;
+    height: auto;
+    min-height: 300px;
+    max-height: 400px;
     margin-top: 5%;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4); }
     .wrapper-groups .personal-card .header {
@@ -104,8 +106,9 @@ html, body {
       .wrapper-groups .personal-card .name-friend > p:last-child {
         color: #555; }
     .wrapper-groups .personal-card .users-in-group {
-      margin-top: 1.5%;
       font-weight: bold;
       color: #1e88e5; }
+    .wrapper-groups .personal-card .group-data {
+      padding-top: 15px; }
 
 /*# sourceMappingURL=groups.css.map */
