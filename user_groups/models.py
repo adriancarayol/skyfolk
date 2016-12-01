@@ -33,7 +33,7 @@ class UserGroups(models.Model):
     owner = models.ForeignKey(User, related_name='group_owner')
     users = models.ManyToManyField(User, related_name='users_in_group', blank=True)
     small_image = models.ImageField(upload_to=upload_small_group_image, verbose_name='small_image',
-                                  blank=True, null=True)
+                                    blank=True, null=True)
     large_image = models.ImageField(upload_to=upload_large_group_image, verbose_name='large_image',
                                     blank=True, null=True)
     privacity = models.BooleanField(default=True, help_text='Desactiva esta casilla si quieres que el grupo sea privado.')

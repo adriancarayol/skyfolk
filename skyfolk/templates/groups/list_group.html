@@ -1,34 +1,74 @@
 {% extends "groups/base_group.html" %}
-
+{% load app_filters %}
 {% load avatar_tags %}
 {% block title %} <title>Skyfolk - Grupos</title> {% endblock %}
 
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/groups.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/groups.css" onload="if(media!='all')media='all'">
 {% endblock %}
 
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col s12 wrapper-news">
-                {% comment "Usuarios con mayor afinidad" %}
-                    Lista de los 6 usuarios con mayor afinidad.
-                {% endcomment %}
+            <div class="col s12 wrapper-groups">
                 <div class="row">
-                     {% for group in object_list %}
-                        <div class="col l2 m12 s12">
-                            <div class="notice-item">
-                                <div class="col l3 m2 s3 img">
-                                    {% avatar fav.0 %}
+                    {% for group in object_list %}
+                        <div class="col l3 m10 s12 offset-m1">
+                            <div class="personal-card">
+                                <div class="row">
+                                    <div class="col s12">
+                                        <div class="header">
+                                            {% if group.large_image and group.large_image|file_exists %}
+                                                <img class="back-profile-user"
+                                                     src="{{ MEDIA_URL }}{{ group.large_image }}">
+                                            {% else %}
+                                                <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                                            {% endif %}
+                                            <i class="material-icons md-24 group-icon">group</i>
+                                            <div class="bg-user">
+                                                <div onclick="location.href='/group/{{ item.user__username }}'"
+                                                     class="profile-user-bg">
+                                                    {% if group.small_image and group.small_image|file_exists %}
+                                                        <img src="{{ MEDIA_URL }}{{ group.small_image }}"
+                                                             alt="small_image_group">
+                                                    {% else %}
+                                                        <img src="{{ STATIC_URL }}img/nuevo.png"
+                                                             alt="small_image_group">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col l8 m9 s8 author">
-                                    <a href="/group/{{ group.name }}">{{ group.name }}</a><br><br><i>{{ group.description}} {{ fav.3 }}</i>
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <div class="name-friend">
+                                                <a href="/group/{{ group.name }}">{{ group.name }}</a><br><br>
+                                                <p>{{ group.description }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider"></div>
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <span>
+                                                {% for tag in group.tags.all %}
+                                                    <div class="chip">{{ tag.name }}</div>
+                                                {% endfor %}
+                                            <p class="right users-in-group">
+                                                +500
+                                            </p>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
+                {% endfor %}
                 </div>
             </div>
         </div>
+    </div>
     </div>
 {% endblock %}
