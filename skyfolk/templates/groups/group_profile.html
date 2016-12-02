@@ -4,13 +4,18 @@
           onload="if(media!='all')media='all'">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css"
           onload="if(media!='all')media='all'">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/group_profile.css"
+          onload="if(media!='all')media='all'">
 {% endblock %}
 {% block title %} <title> Grupo {{ group_profile.name }}</title> {% endblock %}
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col l12 m12 s12">
+            <div class="col s12">
                 {% include "groups/card-group.html" %}
+            </div>
+            <div class="col s12">
+                {% include "groups/group-menu.html" %}
             </div>
             <div class="col l12 m12 s12">
                 <div class="container">

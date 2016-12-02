@@ -17,17 +17,17 @@
                 {% else %}
                     <img src="{{ STATIC_URL }}img/nuevo_back.png" class="user-bg">
                 {% endif %}
+                <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
                 <div class="caja">
                     <div class="item">
                         <div class="user-pic">
                             <img src="{{ STATIC_URL }}img/nuevo.png" height="120" width="120">
                         </div>
                         <span class="informacion">
-                    <span class="fa fa fa-cubes" title="Pines"></span>
-                    <span class="fa fa fa-bookmark"
-                          title="Temas"></span>
-                    <span class="fa fa-plus" title="Seguir"></span>
-               </span>
+                            <span class="fa fa-plus group-follow" title="Seguir"></span>
+                            <span class="fa fa-heart group-like" title="¡Me gusta!"></span>
+                            <span class="fa fa-paper-plane group-comment" title="Escribir"></span>
+                        </span>
                     </div>
                 </div>
             </div>

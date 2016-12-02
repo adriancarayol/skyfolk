@@ -11,6 +11,19 @@ def upload_large_group_image(instance, filename):
     return '%s/large_group_image/%s' % (instance.name, filename)
 
 
+class RolUserGroup(models.Model):
+    """
+    Establece un rol para un usuario especifico
+    dentro de un grupo.
+    """
+    ROL_CHOICES = (
+        ('A', 'Admin'),
+        ('M', 'Mod'),
+        ('N', 'Normal'),
+    )
+    user = models.ForeignKey(User, related_name='rol_user', blank=True, null=True)
+    rol = models.CharField(max_length=1, choices=ROL_CHOICES, default='A')
+
 class UserGroupsQuerySet(models.QuerySet):
     """
     QuerySet para UserGroups
@@ -33,7 +46,7 @@ class UserGroups(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=32, blank=True, null=True)
     owner = models.ForeignKey(User, related_name='group_owner')
-    users = models.ManyToManyField(User, related_name='users_in_group', blank=True)
+    users = models.ManyToManyField(RolUserGroup, related_name='users_in_group', blank=True)
     small_image = models.ImageField(upload_to=upload_small_group_image, verbose_name='small_image',
                                     blank=True, null=True)
     large_image = models.ImageField(upload_to=upload_large_group_image, verbose_name='large_image',
@@ -48,12 +61,3 @@ class UserGroups(models.Model):
         self.slug = slugify(self.name)
         super(UserGroups, self).save(force_insert=force_insert, force_update=force_update,
                                      using=using, update_fields=update_fields)
-
-
-#TODO
-class RolUserGroup(models.Model):
-    """
-    Establece un rol para un usuario especifico
-    dentro de un grupo.
-    """
-    pass
