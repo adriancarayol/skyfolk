@@ -24,9 +24,9 @@
                                             {% else %}
                                                 <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                                             {% endif %}
-                                            <i class="material-icons md-24 group-icon" title="{{ group.users|length }}">group</i>
+                                            <i class="material-icons md-24 group-icon" title="{{ group.users.all|length }}">group</i>
                                             <div class="bg-user">
-                                                <div onclick="location.href='/group/{{ group.user__username }}'"
+                                                <div onclick="location.href='/group/{{ group.slug }}'"
                                                      class="profile-user-bg">
                                                     {% if group.small_image and group.small_image|file_exists %}
                                                         <img src="{{ MEDIA_URL }}{{ group.small_image }}"

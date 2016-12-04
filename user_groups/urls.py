@@ -7,6 +7,10 @@ urlpatterns = [
     # listado de grupos creados
     url(r'^groups/$', 'user_groups.views.group_list',
         name='list-group'),
+    # Perfil de un grupo
     url(r'^group/(?P<groupname>[\w-]+)/$', 'user_groups.views.group_profile',
-        name='group-profile')
+        name='group-profile'),
+    # Para seguir a un grupo
+    url(r'^follow_group/$', 'user_groups.views.follow_group',
+        name='follow-group'),
 ]

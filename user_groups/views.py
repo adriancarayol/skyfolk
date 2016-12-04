@@ -5,13 +5,13 @@ from django.contrib.auth.decorators import login_required
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
 from django.db import IntegrityError
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, HttpResponse
 from django.contrib.auth import get_user_model
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from user_profile.forms import SearchForm
 from publications.forms import PublicationForm
-
+import json
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
     """
@@ -74,7 +74,7 @@ def group_profile(request, groupname):
     user = request.user
 
     group_profile = get_object_or_404(UserGroups,
-                      slug__iexact=groupname)
+                                      slug__iexact=groupname)
 
     template = "groups/group_profile.html"
     self_initial = {'author': user.pk, 'board_owner': user.pk}
@@ -84,3 +84,31 @@ def group_profile(request, groupname):
                'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile}
     return render_to_response(template, context, context_instance=RequestContext(request))
+
+
+def follow_group(request):
+    """
+    Vista para seguir a un grupo
+    """
+    if request.method == 'POST':
+        if request.is_ajax():
+            user = request.user
+            group_id = request.POST.get('id', '')
+            print('GROUP ID: {group_id}'.format(**locals()))
+            group = get_object_or_404(UserGroups,
+                                      pk=group_id)
+            try:
+                obj, created = group.users.get_or_create(user=user, rol='N')
+            except IntegrityError:
+                created = False
+            if not created:
+                response = "in_group"
+                return HttpResponse(json.dumps(response), content_type='application/javascript')
+            group.save()
+            response = "user_add"
+            return HttpResponse(json.dumps(response), content_type='application/javascript')
+    response = "error"
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+
+

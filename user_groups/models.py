@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 from django.utils.text import slugify
 
+
 def upload_small_group_image(instance, filename):
     return '%s/small_group_image/%s' % (instance.name, filename)
+
 
 def upload_large_group_image(instance, filename):
     return '%s/large_group_image/%s' % (instance.name, filename)
@@ -24,17 +26,20 @@ class RolUserGroup(models.Model):
     user = models.ForeignKey(User, related_name='rol_user', blank=True, null=True)
     rol = models.CharField(max_length=1, choices=ROL_CHOICES, default='A')
 
+
 class UserGroupsQuerySet(models.QuerySet):
     """
     QuerySet para UserGroups
     """
     pass
 
+
 class UserGroupsManager(models.Manager):
     """
     Manager para UserGroups
     """
     pass
+
 
 class UserGroups(models.Model):
     """
@@ -51,7 +56,8 @@ class UserGroups(models.Model):
                                     blank=True, null=True)
     large_image = models.ImageField(upload_to=upload_large_group_image, verbose_name='large_image',
                                     blank=True, null=True)
-    privacity = models.BooleanField(default=True, help_text='Desactiva esta casilla si quieres que el grupo sea privado.')
+    privacity = models.BooleanField(default=True, help_text='Desactiva esta casilla '
+                                                            'si quieres que el grupo sea privado.')
     tags = TaggableManager()
 
     objects = UserGroupsManager()
