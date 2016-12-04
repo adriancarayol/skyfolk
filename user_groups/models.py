@@ -31,14 +31,57 @@ class UserGroupsQuerySet(models.QuerySet):
     """
     QuerySet para UserGroups
     """
-    pass
+    def get_normal(self):
+        """
+        Devuelve los usuarios con rol normal
+        :return: Los usuarios con el rol normal
+        """
+        return self.filter(users__rol='N')
+
+    def get_admin(self):
+        """
+        Devuelve los usuarios con rol administrador
+        :return: Los usuarios con el rol administrador
+        """
+        return self.filter(users__rol='A')
+
+    def get_mod(self):
+        """
+        Devuelve los usuarios con el rot mod
+        :return: Los usuarios con el rol mod
+        """
+        return self.filter(users__rol='M')
+
+    def is_follow(self, group_id, user_id):
+        """
+        Devuelve si un usuario es seguidor del grupo
+        :param user_id: ID del usuario del que se quiere comprobar
+        si es seguidor del grupo
+        :param group_id: ID del grupo del que se quiere saber
+        si un usuario lo sigue
+        :return: Si un usuario es seguidor o no del grupo
+        """
+        return self.filter(id=group_id, users__user=user_id).exists()
 
 
 class UserGroupsManager(models.Manager):
     """
     Manager para UserGroups
     """
-    pass
+    def get_queryset(self):
+        return UserGroupsQuerySet(self.model, using=self._db)
+
+    def get_normal(self):
+        return self.get_queryset().get_normal()
+
+    def get_admin(self):
+        return self.get_queryset().get_admin()
+
+    def get_mod(self):
+        return self.get_queryset().get_mod()
+
+    def is_follow(self, group_id, user_id):
+        return self.get_queryset().is_follow(group_id=group_id, user_id=user_id)
 
 
 class UserGroups(models.Model):

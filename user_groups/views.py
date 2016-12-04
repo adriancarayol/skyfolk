@@ -13,6 +13,7 @@ from user_profile.forms import SearchForm
 from publications.forms import PublicationForm
 import json
 
+
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
     """
     Vista para la creacion de un grupo
@@ -76,13 +77,17 @@ def group_profile(request, groupname):
     group_profile = get_object_or_404(UserGroups,
                                       slug__iexact=groupname)
 
+    follow_group = UserGroups.objects.is_follow(group_id=group_profile.id,
+                                                user_id=user)
+    print('Usuario: {} sigue a: {}, {}'.format(user.username, group_profile.name, follow_group))
     template = "groups/group_profile.html"
     self_initial = {'author': user.pk, 'board_owner': user.pk}
     group_initial = {'owner': user.pk}
     context = {'searchForm': SearchForm(request.POST),
                'publicationSelfForm': PublicationForm(initial=self_initial),
                'groupForm': FormUserGroup(initial=group_initial),
-               'group_profile': group_profile}
+               'group_profile': group_profile,
+               'follow_group': follow_group}
     return render_to_response(template, context, context_instance=RequestContext(request))
 
 
