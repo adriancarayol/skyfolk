@@ -103,7 +103,11 @@ def follow_group(request):
             group = get_object_or_404(UserGroups,
                                       pk=group_id)
             try:
-                obj, created = group.users.get_or_create(user=user, rol='N')
+                if user.pk != group.owner.pk:
+                    obj, created = group.users.get_or_create(user=user, rol='N')
+                else:
+                    response = "error"
+                    return HttpResponse(json.dumps(response), content_type='application/javascript')
             except IntegrityError:
                 created = False
             if not created:
