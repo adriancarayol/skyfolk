@@ -33,14 +33,12 @@ class UserGroupsQuerySet(models.QuerySet):
     """
     def get_normal(self):
         """
-        Devuelve los usuarios con rol normal
         :return: Los usuarios con el rol normal
         """
         return self.filter(users__rol='N')
 
     def get_admin(self):
         """
-        Devuelve los usuarios con rol administrador
         :return: Los usuarios con el rol administrador
         """
         return self.filter(users__rol='A')
@@ -54,7 +52,6 @@ class UserGroupsQuerySet(models.QuerySet):
 
     def is_follow(self, group_id, user_id):
         """
-        Devuelve si un usuario es seguidor del grupo
         :param user_id: ID del usuario del que se quiere comprobar
         si es seguidor del grupo
         :param group_id: ID del grupo del que se quiere saber

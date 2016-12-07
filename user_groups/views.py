@@ -120,4 +120,29 @@ def follow_group(request):
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
+def unfollow_group(request):
+    """
+    Vista para dejar de seguir a un grupo
+    """
+    if request.method == 'POST':
+        if request.is_ajax():
+            user = request.user
+            group_id = request.POST.get('id', '')
+            group = get_object_or_404(UserGroups,
+                                      pk=group_id)
+            if user.pk != group.owner.pk:
+                try:
+                    group.users.filter(user=user).delete()
+                    try:
+                        group.save()
+                        return HttpResponse(json.dumps("user_unfollow"), content_type='application/javascript')
+                    except IntegrityError:
+                        return HttpResponse(json.dumps("error"), content_type='application/javascript')
+                except UserGroups.DoesNotExist:
+                    return HttpResponse(json.dumps("error"), content_type='application/javascript')
+            else:
+                return HttpResponse(json.dumps("error"), content_type='application/javascript')
+    return HttpResponse(json.dumps("error"), content_type='application/javascript')
+
+
 

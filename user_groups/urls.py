@@ -13,4 +13,7 @@ urlpatterns = [
     # Para seguir a un grupo
     url(r'^follow_group/$', 'user_groups.views.follow_group',
         name='follow-group'),
+    # Para dejar de seguir a un grupo
+    url(r'^unfollow_group/$', 'user_groups.views.unfollow_group',
+        name='follow-group'),
 ]
