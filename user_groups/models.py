@@ -107,3 +107,46 @@ class UserGroups(models.Model):
         self.slug = slugify(self.name)
         super(UserGroups, self).save(force_insert=force_insert, force_update=force_update,
                                      using=using, update_fields=update_fields)
+
+
+class LikeGroupQuerySet(models.QuerySet):
+
+    def has_like(self, group_id, user_id):
+        """
+        :param user_id: ID del usuario del que se quiere comprobar
+        si da me gusta al grupo
+        :param group_id: ID del grupo del que se quiere saber
+        si un usuario le gusta
+        :return: Si un usuario es le gusta o no del grupo
+        """
+        return self.filter(from_like=user_id, to_like=group_id).exists()
+
+
+class LikeGroupManager(models.Manager):
+
+    def get_queryset(self):
+        return LikeGroupQuerySet(self.model, using=self._db)
+
+    def has_like(self, group_id, user_id):
+        return self.filter(from_like=user_id, to_like=group_id).exists()
+
+
+class LikeGroup(models.Model):
+    """
+    Modelo que relaciona a un usuario al dar "me gusta" a un grupo.
+        <<from_like>>: Persona que da like
+        <<to_like>>: Grupo que recibe el like
+        <<created>>: Fecha de creación del like
+    """
+    class Meta:
+        get_latest_by = 'created'
+        unique_together = ('from_like', 'to_like')
+
+    from_like = models.ForeignKey(User, related_name='from_likegroup')
+    to_like = models.ForeignKey(UserGroups, related_name='to_likegroup')
+    created = models.DateTimeField(auto_now_add=True)
+
+    objects = LikeGroupManager()
+
+    def __str__(self):
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.username, self.to_like.name, self.created)

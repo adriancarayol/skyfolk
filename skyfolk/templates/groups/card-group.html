@@ -5,7 +5,7 @@
 {% load avatar_tags %}
 <div class="row">
     <div class="col l12 m12 s12">
-        <div class="user-card card">
+        <div id="group-profile" data-id="{{ group_profile.id }}" class="user-card card" >
             <div class="ventana-pin">
                 <a><i class="fa fa-times"></i></a>
                 <a><i class="fa fa-expand"></i></a>
@@ -24,11 +24,11 @@
                         </div>
                         <span class="informacion">
                         {% if follow_group %}
-                            <span id="unfollow-group" data-id="{{ group_profile.id }}" class="fa fa-remove group-follow" title="Dejar de seguir"></span>
+                            <span id="unfollow-group" class="fa fa-remove group-follow" title="Dejar de seguir"></span>
                         {% else %}
-                            <span id="follow-group" data-id="{{ group_profile.id }}" class="fa fa-plus group-follow" title="Seguir"></span>
+                            <span id="follow-group" class="fa fa-plus group-follow" title="Seguir"></span>
                         {% endif %}
-                            <span class="fa fa-heart group-like" title="¡Me gusta!"></span>
+                            <span id="like-group" class="fa fa-heart group-like" title="¡Me gusta!"></span>
                             <span class="fa fa-paper-plane group-comment" title="Escribir"></span>
                         </span>
                     </div>
@@ -36,7 +36,6 @@
             </div>
             <header>
                 <p class="user-profile-name">{{ group_profile.name }}</p><br>
-                <p id="profileId" hidden>{{ group_profile.id }}</p>
                 {% if group_profile.description != None %}
                     <p class="status">{{ group_profile.description }}</p><br><br>
                 {% endif %}

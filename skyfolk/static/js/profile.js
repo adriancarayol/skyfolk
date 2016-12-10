@@ -365,8 +365,8 @@ $(this).click(function(event) {
         }
     }
 });
-/* FIN DOCUMENT READY */
-});
+
+}); // END DOCUMENT READY */
 
 function addFriendToHtmlList(item) {
 

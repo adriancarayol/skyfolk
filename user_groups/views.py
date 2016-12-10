@@ -1,6 +1,6 @@
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
-from .models import UserGroups
+from .models import UserGroups, LikeGroup
 from django.contrib.auth.decorators import login_required
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
@@ -23,8 +23,11 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
     http_method_names = [u'post']
     success_url = '/thanks/'
 
-    def post(self, request, *args, **kwargs):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.object = None
+
+    def post(self, request, *args, **kwargs):
         form = self.get_form()
 
         owner = get_object_or_404(get_user_model(),
@@ -66,6 +69,7 @@ class UserGroupList(ListView):
 group_list = login_required(UserGroupList.as_view(), login_url='/')
 
 
+@login_required(login_url='/')
 def group_profile(request, groupname):
     """
     Vista del perfil de un grupo
@@ -73,10 +77,8 @@ def group_profile(request, groupname):
     :param groupname: Nombre del grupo
     """
     user = request.user
-
     group_profile = get_object_or_404(UserGroups,
                                       slug__iexact=groupname)
-
     follow_group = UserGroups.objects.is_follow(group_id=group_profile.id,
                                                 user_id=user)
     print('Usuario: {} sigue a: {}, {}'.format(user.username, group_profile.name, follow_group))
@@ -91,14 +93,16 @@ def group_profile(request, groupname):
     return render_to_response(template, context, context_instance=RequestContext(request))
 
 
+@login_required(login_url='/')
 def follow_group(request):
     """
     Vista para seguir a un grupo
     """
+    response = "error"
     if request.method == 'POST':
         if request.is_ajax():
             user = request.user
-            group_id = request.POST.get('id', '')
+            group_id = request.POST.get('id', None)
             print('GROUP ID: {group_id}'.format(**locals()))
             group = get_object_or_404(UserGroups,
                                       pk=group_id)
@@ -106,7 +110,6 @@ def follow_group(request):
                 if user.pk != group.owner.pk:
                     obj, created = group.users.get_or_create(user=user, rol='N')
                 else:
-                    response = "error"
                     return HttpResponse(json.dumps(response), content_type='application/javascript')
             except IntegrityError:
                 created = False
@@ -116,10 +119,10 @@ def follow_group(request):
             group.save()
             response = "user_add"
             return HttpResponse(json.dumps(response), content_type='application/javascript')
-    response = "error"
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
+@login_required(login_url='/')
 def unfollow_group(request):
     """
     Vista para dejar de seguir a un grupo
@@ -127,7 +130,7 @@ def unfollow_group(request):
     if request.method == 'POST':
         if request.is_ajax():
             user = request.user
-            group_id = request.POST.get('id', '')
+            group_id = request.POST.get('id', None)
             group = get_object_or_404(UserGroups,
                                       pk=group_id)
             if user.pk != group.owner.pk:
@@ -144,5 +147,33 @@ def unfollow_group(request):
                 return HttpResponse(json.dumps("error"), content_type='application/javascript')
     return HttpResponse(json.dumps("error"), content_type='application/javascript')
 
+
+@login_required(login_url='/')
+def like_profile(request):
+    """
+    Funcion para dar like al perfil
+    """
+    response = "error"
+    if request.method == 'POST':
+        if request.is_ajax():
+            user = request.user
+            group_id = request.POST.get('id', None)
+            group = get_object_or_404(UserGroups,
+                                      pk=group_id)
+
+            if user.pk == group.owner.pk:
+                return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+            like, created = LikeGroup.objects.get_or_create(from_like=user, to_like=group)
+
+            if created:
+                response = "like"
+            else:
+                like.delete()
+                response = "no_like"
+
+            print('%s da like a %s' % (user.username, group.name))
+            print("Response: " + response)
+    return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 

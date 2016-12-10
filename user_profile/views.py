@@ -614,8 +614,8 @@ def like_profile(request):
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
-        actual_profile = UserProfile.objects.get(pk=slug)
-
+        actual_profile = get_object_or_404(UserProfile,
+                                           id=slug)
         try:
             user_liked = user.profile.has_like(actual_profile)
         except ObjectDoesNotExist:

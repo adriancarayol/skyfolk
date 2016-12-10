@@ -29,7 +29,6 @@ REQUEST_STATUSES = (
 )
 
 
-
 def uploadAvatarPath(instance, filename):
     return '%s/avatar/%s' % (instance.user.username, filename)
 
@@ -37,7 +36,7 @@ def uploadAvatarPath(instance, filename):
 def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
 
-#TODO
+
 class UserProfileQuerySet(models.QuerySet):
     def get_all_users(self):
         return self.all()
@@ -63,7 +62,8 @@ class UserProfileQuerySet(models.QuerySet):
         Devuelve el ultimo usuario que ha hecho login.
         """
         return self.all().order_by('-user__last_login')
-#TODO
+
+
 class UserProfileManager(models.Manager):
     def get_queryset(self):
         return UserProfileQuerySet(self.model, using=self._db)
@@ -111,6 +111,7 @@ class UserProfileManager(models.Manager):
         Devuelve el ultimo usuario que ha hecho login.
         """
         return self.get_queryset().get_last_login_user()
+
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9
@@ -744,6 +745,7 @@ class LikeProfileManager(models.Manager):
         """
         return self.get_queryset().get_all_likes_to_me(to_like=to_like)
 
+
 class LikeProfile(models.Model):
     """
     Modelo que relaciona a dos usuarios al dar "me gusta" al otro perfil.
@@ -754,6 +756,7 @@ class LikeProfile(models.Model):
 
     class Meta:
         get_latest_by = 'created'
+        unique_together = ('from_like', 'to_like')
 
     from_like = models.ForeignKey(UserProfile, related_name='from_likeprofile')
     to_like = models.ForeignKey(UserProfile, related_name='to_likeprofile')
@@ -763,9 +766,6 @@ class LikeProfile(models.Model):
         return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username, self.to_like.user.username, self.created)
 
     objects = LikeProfileManager()
-
-    class Meta:
-        unique_together = ('from_like', 'to_like')
 
 
 class Request(models.Model):
@@ -862,6 +862,7 @@ class AffinityUserManager(models.Manager):
                 print('Borrando candidato: {}'.format(candidate.receiver.user.username))
                 candidate.delete()
 
+
 class AffinityUser(models.Model):
     """
         Modelo para gestionar los últimos usuarios visitados
@@ -914,6 +915,7 @@ class AuthDevicesQuerySet(models.QuerySet):
         """
         return self.filter(user_profile=user)
 
+
 class AuthDevicesManager(models.Manager):
     """
         Manager para Auth Devices
@@ -936,6 +938,7 @@ class AuthDevicesManager(models.Manager):
         :return Devuelve los navegadores usados por un usuario:
         """
         return self.get_queryset().get_devices_by_user(user=user)
+
 
 class AuthDevices(models.Model):
     """

@@ -251,17 +251,6 @@ $(document).ready(function () {
             AJAX_addNewFriendByUsernameOrPin(inputValue, _tipo);
         });
     });
-
-    // FOLLOW GROUP
-    $('#follow-group').on('click', function () {
-        var id = $(this).attr('data-id');
-        AJAX_follow_group(id);
-    });
-    // UNFOLLOW GROUP
-    $('#unfollow-group').on('click', function () {
-       var id = $(this).attr('data-id');
-       AJAX_unfollow_group(id);
-    });
 }); // END DOCUMENT READY
 
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
