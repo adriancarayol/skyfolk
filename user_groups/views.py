@@ -149,7 +149,7 @@ def unfollow_group(request):
 
 
 @login_required(login_url='/')
-def like_profile(request):
+def like_group(request):
     """
     Funcion para dar like al perfil
     """
@@ -166,14 +166,15 @@ def like_profile(request):
 
             like, created = LikeGroup.objects.get_or_create(from_like=user, to_like=group)
 
-            if created:
-                response = "like"
-            else:
+            if not created:
                 like.delete()
                 response = "no_like"
+            else:
+                response = "like"
 
             print('%s da like a %s' % (user.username, group.name))
             print("Response: " + response)
+            return HttpResponse(json.dumps(response), content_type='application/javascript')
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
