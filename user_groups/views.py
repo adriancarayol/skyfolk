@@ -131,8 +131,7 @@ def unfollow_group(request):
         if request.is_ajax():
             user = request.user
             group_id = request.POST.get('id', None)
-            group = get_object_or_404(UserGroups,
-                                      pk=group_id)
+            group = get_object_or_404(UserGroups, pk=group_id)
             if user.pk != group.owner.pk:
                 try:
                     group.users.filter(user=user).delete()
@@ -171,9 +170,7 @@ def like_group(request):
                 response = "no_like"
             else:
                 response = "like"
-
-            print('%s da like a %s' % (user.username, group.name))
-            print("Response: " + response)
+            print('Like: {}'.format(like))
             return HttpResponse(json.dumps(response), content_type='application/javascript')
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
