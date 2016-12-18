@@ -85,11 +85,15 @@ def group_profile(request, groupname):
     template = "groups/group_profile.html"
     self_initial = {'author': user.pk, 'board_owner': user.pk}
     group_initial = {'owner': user.pk}
+    likes = LikeGroup.objects.filter(to_like=group_profile).count()
+    user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
     context = {'searchForm': SearchForm(request.POST),
                'publicationSelfForm': PublicationForm(initial=self_initial),
                'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
-               'follow_group': follow_group}
+               'follow_group': follow_group,
+               'likes': likes,
+               'user_like_group': user_like_group}
     return render_to_response(template, context, context_instance=RequestContext(request))
 
 

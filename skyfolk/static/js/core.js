@@ -4,12 +4,12 @@ $(window).ready(function () {
 });
 
 $(document).ready(function () {
-
     // Materialize.updateTextFields();
     $('select').material_select();
 
     var page_wrapper = $('#page-wrapper');
     var self_page_wrapper = $('#self-page-wrapper');
+    var _group_profile = $('#group-profile');
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
@@ -251,6 +251,30 @@ $(document).ready(function () {
             AJAX_addNewFriendByUsernameOrPin(inputValue, _tipo);
         });
     });
+
+    // FOLLOW GROUP
+    $(_group_profile).on('click', '#follow-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_follow_group(id);
+        return false;
+    });
+    // UNFOLLOW GROUP
+    $(_group_profile).on('click', '#unfollow-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_unfollow_group(id);
+        return false;
+    });
+
+    // LIKE GROUP
+    $(_group_profile).on('click', '#like-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_like_group(id);
+        return false;
+    });
+
 }); // END DOCUMENT READY
 
 /* COMPLEMENTARIO PARA PETICIONES AJAX */

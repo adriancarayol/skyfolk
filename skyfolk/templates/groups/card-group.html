@@ -24,11 +24,15 @@
                         </div>
                         <span class="informacion">
                         {% if follow_group %}
-                            <span id="unfollow-group" class="fa fa-remove group-follow" title="Dejar de seguir"></span>
+                            <span id="unfollow-group" class="fa fa-remove group-follow" title="Dejar de seguir" style="color: #29b203;"></span>
                         {% else %}
                             <span id="follow-group" class="fa fa-plus group-follow" title="Seguir"></span>
                         {% endif %}
+                        {% if user_like_group %}
+                            <span id="like-group" class="fa fa-heart group-like" title="¡Me gusta!" style="color: rgb(236, 64, 122);"></span>
+                        {% else %}
                             <span id="like-group" class="fa fa-heart group-like" title="¡Me gusta!"></span>
+                        {% endif %}
                             <span class="fa fa-paper-plane group-comment" title="Escribir"></span>
                         </span>
                     </div>
@@ -46,7 +50,7 @@
                             id="followers-stats">50</strong><span>Usuarios</span></a>
                 </li>
                 <li>
-                    <a id="likes" href=""><strong>50</strong><span title="me gusta">Me gusta</span></a>
+                    <a id="likes" href=""><strong>{{ likes }}</strong><span title="me gusta">Me gusta</span></a>
                 </li>
                 <li>
                     <a class="to_gallery"
