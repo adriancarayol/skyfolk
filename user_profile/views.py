@@ -7,249 +7,201 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
+from django.views.generic.list import ListView
+from el_pagination.views import AjaxListView
+
 from notifications.models import Notification
 from notifications.signals import notify
+from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
-from user_profile.forms import ProfileForm, UserForm, \
-    SearchForm, PrivacityForm, DeactivateUserForm
-from user_profile.models import UserProfile
-from photologue.models import Photo
 from user_profile.forms import AdvancedSearchForm
-from el_pagination.views import AjaxListView
+from user_profile.forms import ProfileForm, UserForm, \
+    SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
+from user_profile.models import UserProfile, AffinityUser
+from el_pagination.decorators import page_template
+from django.views.decorators.csrf import ensure_csrf_cookie
+from taggit.models import TaggedItem
+from user_groups.forms import FormUserGroup
+from dal import autocomplete
 
+@login_required(login_url='/')
+@page_template("account/profile_comments.html")
+@page_template("account/timeline_entries.html", key='timeline_entries')
+@page_template("account/follow_entries.html", key='follow_entries')
+def profile_view(request, username,
+                 template="account/profile.html",
+                 extra_context=None):
+    """
+    Vista principal del perfil de usuario.
+    :param request:
+    :param username => Username del perfil:
+    :param template => Template por defecto que muestra el perfil:
+    :param extra_context => Para paginacion :
+    """
+    user = request.user
+    user_profile = get_object_or_404(get_user_model(),
+                                     username__iexact=username)
 
-class ProfileAjaxView(AjaxListView):
-    context_object_name = "publications"
-    template_name = "account/profile.html"
-    page_template = "account/profile_comments.html"
+    print('Temas de interes del usuario: {} {}'.format(username, user_profile.profile.tags.names()))
+    context = {}
+    # Privacidad del usuario
+    privacity = user_profile.profile.is_visible(user.profile, user.pk)
+    # Para escribir mensajes en mi propio perfil.
+    self_initial = {'author': user.pk, 'board_owner': user.pk}
+    group_initial = {'owner': user.pk}
+    context['user_profile'] = user_profile
+    context['searchForm'] = SearchForm(request.POST)
+    context['privacity'] = privacity
+    context['publicationSelfForm'] = PublicationForm(initial=self_initial)
+    context['groupForm'] = FormUserGroup(initial=group_initial)
 
-    def get_queryset(self):
-        """
-        Devuelve la lista de publicaciones
-        con paginacion
-        """
-        username = self.kwargs['username']
-        user = self.request.user
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        # cargar lista comentarios
+    # Cuando no tenemos permisos suficientes para ver nada del perfil
+    if privacity == "nothing":
+        template = "account/privacity/private_profile.html"
+        return render_to_response(template, context, context_instance=RequestContext(request))
+    elif privacity == "block":
+        template = "account/privacity/block_profile.html"
+        return render_to_response(template, context, context_instance=RequestContext(request))
+
+    # Recuperamos requests para el perfil y si el perfil es gustado.
+    json_requestsToMe = None
+    if user.username != username:
+        liked = True
         try:
-            if user_profile.username == username:
-                publications = Publication.objects.get_friend_profile_publications(
-                    user_pk=user_profile.pk,
-                    board_owner_pk=user_profile.pk)
-            else:
-                publications = Publication.objects.get_user_profile_publications(
-                    user_pk=user.pk,
-                    board_owner_pk=user_profile.pk)
-            print('>>>>>>> LISTA PUBLICACIONES: ')
-            # print publications
-            print(publications)
+            user.profile.has_like(user_profile.profile)
         except ObjectDoesNotExist:
-            publications = None
+            liked = False
+    else:
+        liked = False
+        requestsToMe = user.profile.get_received_friends_requests()
 
-        print('>>>>>>> LISTA PUBLICACIONES TOP 15: ')
+        if requestsToMe:
+            requestsToMe_result = list()
+            for item in requestsToMe:
+                requestsToMe_result.append(
+                    {'id_profile': item.pk, 'username': item.user.username, })
+            json_requestsToMe = json.dumps(requestsToMe_result)
+
+    # Recuperamos el numero de seguidores
+    try:
+        num_followers = user_profile.profile.get_followers().count()
+    except ObjectDoesNotExist:
+        num_followers = None
+
+    # Recuperamos el numero de seguidos y la lista de seguidos
+    try:
+        num_follows = user_profile.profile.get_following()
+    except ObjectDoesNotExist:
+        num_follows = None
+
+    # Comprobamos si el perfil esta bloqueado
+    isBlocked = False
+    if user.username != username:
+        try:
+            if user.profile.is_blocked(user_profile.profile):
+                isBlocked = True
+        except ObjectDoesNotExist:
+            pass
+
+    # Comprobamos si el perfil es seguidor
+    isFollower = False
+    if user.username != username:
+        try:
+            if user.profile.is_follower(user_profile.profile):
+                isFollower = True
+        except ObjectDoesNotExist:
+            pass
+    # Comprobamos si el perfil es seguido
+    isFollow = False
+    if user.username != username:
+        try:
+            if user.profile.is_follow(user_profile.profile):
+                isFollow = True
+        except ObjectDoesNotExist:
+            pass
+    # Recuperamos el numero de contenido multimedia que tiene el perfil
+    try:
+        multimedia_count = user_profile.profile.get_num_multimedia()
+    except ObjectDoesNotExist:
+        multimedia_count = 0
+    # Comprobamos si existe una peticion de seguimiento
+    try:
+        friend_request = user.profile.get_follow_request(user_profile.profile)
+    except ObjectDoesNotExist:
+        friend_request = None
+
+    context['json_requestsToMe'] = json_requestsToMe
+    context['liked'] = liked
+    context['n_likes'] = len(user_profile.profile.likesToMe.all())
+    context['followers'] = num_followers
+    context['following'] = len(num_follows)
+    context['isBlocked'] = isBlocked
+    context['isFollower'] = isFollower
+    context['isFriend'] = isFollow
+    context['multimedia_count'] = multimedia_count
+    context['existFollowRequest'] = True if friend_request else False
+
+    if privacity == "followers" or privacity == "both":
+        template = "account/privacity/need_confirmation_profile.html"
+        return render_to_response(template, context, context_instance=RequestContext(request))
+
+    # Para escribir mensajes en perfiles ajenos
+    initial = {'author': user.pk, 'board_owner': user_profile.pk}
+    context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
+    context['publicationForm'] = PublicationForm(initial=initial)
+    # cargar lista comentarios
+    try:
+        if user_profile.username == username:
+            publications = Publication.objects.get_friend_profile_publications(
+                user_pk=user_profile.pk,
+                board_owner_pk=user_profile.pk)
+        else:
+            publications = Publication.objects.get_user_profile_publications(
+                user_pk=user.pk,
+                board_owner_pk=user_profile.pk)
+        print('>>>>>>> LISTA PUBLICACIONES: ')
         # print publications
         print(publications)
 
-        # cargar timeline
-        print('>>>>>>>>>>> TIMELINE <<<<<<<<<<<')
-        print('views.py line:164 publications_top {}'.format(publications))
-        print('>>> LEN {}'.format(len(publications)))
-        return publications
+    except ObjectDoesNotExist:
+        publications = None
 
-    def get_context_data(self, **kwargs):
-        """
-        Devuelve el resto de variables
-        del perfil al template
-        """
-        context = super(ProfileAjaxView, self).get_context_data(**kwargs)
-        username = self.kwargs['username']
-        user = self.request.user
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        privacity = user_profile.profile.is_visible(user.profile, user.pk)
-        context['user_profile'] = user_profile
-        context['searchForm'] = SearchForm(self.request.POST)
-        context['privacity'] = privacity
-        if privacity == "nothing":
-            self.template_name = "account/privacity/private_profile.html"
-            return context
-        elif privacity == "block":
-            self.template_name = "account/privacity/block_profile.html"
-            return context
-        json_requestsToMe, liked, n_likes = self.get_likes()
-        context['json_requestsToMe'] = json_requestsToMe
-        context['liked'] = liked
-        context['n_likes'] = n_likes
-        context['followers'] = self.get_num_followers()
-        context['following'] = self.get_num_follows()
-        context['isBlocked'] = self.is_blocked()
-        context['isFollower'] = self.is_follower()
-        context['friends_top12'] = self.get_follows()
-        context['multimedia_count'] = self.get_num_multimeida()
-        initial = {'author': user.pk, 'board_owner': user_profile.pk}
-        context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
-        context['publicationForm'] = PublicationForm(initial=initial)
-        if privacity == "followers" or privacity == "both":
-            self.template_name = "account/privacity/need_confirmation_profile.html"
-            return context
-        context.update({
-            'timeline': self.get_timeline()
-            })
-        print(self.get_template_names())
-        return context
+    # cargar lista de timeline
+    try:
+        timeline = user_profile.profile.getTimelineToMe()
+    except ObjectDoesNotExist:
+        timeline = None
 
-    def get_likes(self):
-        """
-        Devuelve el numero de likes, si he dado
-        me gusta al perfil, y si existen peticiones
-        """
-        user = self.request.user
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        json_requestsToMe = None
-        if user.username != username:
-            liked = True
-            try:
-                user.profile.has_like(user_profile.profile)
-            except ObjectDoesNotExist:
-                liked = False
+    # Establece la afinidad al perfil visitado.
+    if user.pk != user_profile.pk:
+        AffinityUser.objects.check_limit(emitterid=user_profile.profile)
+    try:
+        if user.pk != user_profile.pk:
+            profile_visit, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)
         else:
-            liked = False
-            requestsToMe = user.profile.get_received_friends_requests()
+            profile_visit, created = None, False
+    except ObjectDoesNotExist:
+        profile_visit, created = None, False
 
-            if requestsToMe:
-                requestsToMe_result = list()
-                for item in requestsToMe:
-                    requestsToMe_result.append(
-                        {'id_profile': item.pk, 'username': item.user.username, })
-                json_requestsToMe = json.dumps(requestsToMe_result)
-        return (json_requestsToMe, liked, len(user_profile.profile.likesToMe.all()))
+    if not created and profile_visit:
+        profile_visit.save()
 
-    def is_follow(self):
-        """
-        Devuelve si sigo al perfil que visito
-        """
-        user = self.request.user
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        if user.username != username:
-            isFriend = False
-            try:
-                if user.profile.is_follow(user_profile.profile):
-                    return False
-            except ObjectDoesNotExist:
-                return False
-        else:
-            return False
+    # Contenido de las tres tabs
+    context['publications'] = publications
+    context['timeline'] = timeline
+    context['friends_top12'] = num_follows
 
-    def is_follower(self):
-        """
-        Devuelve si soy seguidor del perfil que visito
-        """
-        user = self.request.user
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        if user.username != username:
-            isFriend = False
-            try:
-                if user.profile.is_follower(user_profile.profile):
-                    return False
-            except ObjectDoesNotExist:
-                return False
-        else:
-            return False
+    if extra_context is not None:
+        context.update(extra_context)
 
-    def is_blocked(self):
-        """
-        Devuelve si estoy bloqueado por el perfil que visito
-        """
-        user = self.request.user
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        if user.username != username:
-            isFriend = False
-            try:
-                if user.profile.is_blocked(user_profile.profile):
-                    return False
-            except ObjectDoesNotExist:
-                return False
-        else:
-            return False
-
-    def get_num_followers(self):
-        """
-        Devuelve el numero de seguidores
-        """
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        try:
-            return user_profile.profile.get_followers().count()
-        except ObjectDoesNotExist:
-            return None
-
-    def get_num_follows(self):
-        """
-        Devuelve el numero de seguidos
-        """
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        try:
-            return user_profile.profile.get_following().count()
-        except ObjectDoesNotExist:
-            return None
-
-    def get_follows(self):
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        try:
-            friends = user_profile.profile.get_following()
-        except ObjectDoesNotExist:
-            friends = None
-
-        return friends
-
-    def get_num_multimeida(self):
-        """
-        Devuelve el numero de contenido multimedia
-        """
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        return user_profile.profile.get_num_multimedia()
-
-    def get_timeline(self):
-        """
-        Devuelve el timeline del perfil
-        """
-        username = self.kwargs['username']
-        user_profile = get_object_or_404(get_user_model(),
-                                        username__iexact=username)
-        try:
-            return user_profile.profile.getTimelineToMe()
-        except ObjectDoesNotExist:
-            return None
-
-
-profile_view = login_required(ProfileAjaxView.as_view(), 'accounts/login')
-
-
-# >>>>>>> issue#11
+    return render_to_response(template, context, context_instance=RequestContext(request))
 
 
 @login_required(login_url='accounts/login')
@@ -286,7 +238,7 @@ def search(request, option=None):
                                   {'showPerfilButtons': True,
                                    'searchForm': searchForm,
                                    'resultSearch': (),
-                                   'publicationForm': publicationForm,
+                                   'publicationSelfForm': publicationForm,
                                    'message': info},
                                   context_instance=RequestContext(request))
 
@@ -347,7 +299,7 @@ def search(request, option=None):
                             pass
                 return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': result_search,
-                                                                  'publicationForm': publicationForm,
+                                                                  'publicationSelfForm': publicationForm,
                                                                   'resultMessages': result_messages,
                                                                   'result_media': result_media,
                                                                   'words': words,
@@ -386,7 +338,7 @@ def advanced_view(request):
             import operator
             from functools import reduce
             word_list = [x.strip() for x in clean_all_words.split(',')]
-            result_all_wgrds = Publication.objects.filter(reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
+            result_all_words = Publication.objects.filter(reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
             print(result_all_words)
 
         if clean_exactly:
@@ -411,7 +363,7 @@ def advanced_view(request):
             result_regex = Publication.objects.filter(content__iregex=clean_regex)
             print(result_regex)
 
-    return render_to_response(template_name, {'publicationForm': publicationForm, 'searchForm': searchForm,
+    return render_to_response(template_name, {'publicationSelfForm': publicationForm, 'searchForm': searchForm,
                                                 'form': form},
                                                  context_instance=RequestContext(request))
 
@@ -436,7 +388,7 @@ def config_privacity(request):
         privacity_form = PrivacityForm(instance=request.user.profile)
         print('PASO ULTIMO')
     return render_to_response('account/cf-privacity.html',
-                              {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationForm': publicationForm,
+                              {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationSelfForm': publicationForm,
                                'privacity_form': privacity_form},
                               context_instance=RequestContext(request))
 
@@ -472,7 +424,7 @@ def config_profile(request):
     print('>>>>>>>  paso x')
     return render_to_response('account/cf-profile.html',
                               {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
-                               'user_form': user_form, 'perfil_form': perfil_form, 'publicationForm': publicationForm},
+                               'user_form': user_form, 'perfil_form': perfil_form, 'publicationSelfForm': publicationForm},
                               context_instance=RequestContext(request))
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -488,7 +440,7 @@ def config_pincode(request):
     searchForm = SearchForm()
 
     return render_to_response('account/cf-pincode.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                          'publicationForm': publicationForm, 'pin': pin},
+                                                          'publicationSelfForm': publicationForm, 'pin': pin},
                               context_instance=RequestContext(request))
 
 
@@ -501,12 +453,15 @@ def config_blocked(request):
     searchForm = SearchForm()
 
     return render_to_response('account/cf-blocked.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                          'publicationForm': publicationForm, 'blocked': list_blocked},
+                                                          'publicationSelfForm': publicationForm, 'blocked': list_blocked},
                               context_instance=RequestContext(request))
 
 
 @login_required(login_url='accounts/login')
 def add_friend_by_username_or_pin(request):
+    """
+    Funcion para añadir usuario por nombre de usuario y perfil
+    """
     print('ADD FRIEND BY USERNAME OR PIN')
     response = 'no_added_friend'
     if request.method == 'POST':
@@ -652,12 +607,15 @@ def add_friend_by_username_or_pin(request):
 
 @login_required(login_url='/')
 def like_profile(request):
+    """
+    Funcion para dar like al perfil
+    """
     response = "null"
     if request.method == 'POST':
         user = request.user
         slug = request.POST.get('slug', None)
-        actual_profile = UserProfile.objects.get(pk=slug)
-
+        actual_profile = get_object_or_404(UserProfile,
+                                           id=slug)
         try:
             user_liked = user.profile.has_like(actual_profile)
         except ObjectDoesNotExist:
@@ -665,13 +623,23 @@ def like_profile(request):
 
         if user_liked:
             user_liked.delete()
+            affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
+            if not created: # Quiere decir que ya ha interactuado con el perfil
+                affinity.affinity -= 20
+                affinity.save(increment=False)
             response = "nolike"
         else:
             print(str(slug))
             created = user.profile.add_like(actual_profile)
             created.save()
+            affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
+            if not created: # Quiere decir que ya ha interactuado con el perfil
+                affinity.affinity += 20
+                affinity.save(increment=False)
             response = "like"
+
     print('%s da like a %s' % (user.username, actual_profile.user.username))
+    print('Nueva afinidad emitter: {} receiver: {} afinidad: {}'.format(user.username, actual_profile.user.username, affinity.affinity))
     print("Response: " + response)
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -679,6 +647,9 @@ def like_profile(request):
 # Request follow
 @login_required(login_url='accounts/login')
 def request_friend(request):
+    """
+    Funcion para solicitudes de amistad
+    """
     print('>>>>>>> peticion amistad ')
     response = "null"
     if request.method == 'POST':
@@ -748,6 +719,9 @@ def request_friend(request):
 # Responde request follow
 @login_required(login_url='/')
 def respond_friend_request(request):
+    """
+    Funcion para respuesta a solicitud de amistad
+    """
     response = "null"
     if request.method == 'POST':
         user = request.user
@@ -815,6 +789,9 @@ def respond_friend_request(request):
 # Elimina relación entre dos usuarios
 @login_required(login_url='/')
 def remove_relationship(request):
+    """
+    Elimina relacion seguidor/seguido
+    """
     response = None
     user = request.user
     slug = request.POST.get('slug', None)
@@ -837,6 +814,9 @@ def remove_relationship(request):
 
 @login_required(login_url='/')
 def remove_blocked(request):
+    """
+    Elimina relacion de bloqueo
+    """
     response = None
     user = request.user
     slug = request.POST.get('slug', None)
@@ -861,6 +841,9 @@ def remove_blocked(request):
 # Elimina la peticion existente para seguir a un perfil
 @login_required(login_url='/')
 def remove_request_follow(request):
+    """
+    Elimina relacion de seguidos
+    """
     response = False
     user = request.user
     slug = request.POST.get('slug', None)
@@ -880,6 +863,10 @@ def remove_request_follow(request):
 # Load followers
 @login_required(login_url='/')
 def load_followers(request):
+    """
+    Funcion para cargar seguidores
+    :return lista de seguidores:
+    """
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.user.profile.get_followers()
 
@@ -901,6 +888,9 @@ def load_followers(request):
 
 
 class FollowersListView(AjaxListView):
+    """
+    Lista de seguidores del usuario
+    """
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
     page_template = "account/relations_page.html"
@@ -915,7 +905,7 @@ class FollowersListView(AjaxListView):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['url_name'] = "followers"
         return context
@@ -923,6 +913,9 @@ class FollowersListView(AjaxListView):
 followers = login_required(FollowersListView.as_view())
 
 class FollowingListView(AjaxListView):
+    """
+    Lista de seguidos del usuario
+    """
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
     page_template = "account/relations_page.html"
@@ -937,7 +930,7 @@ class FollowingListView(AjaxListView):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['url_name'] = "following"
         return context
@@ -947,6 +940,10 @@ following = login_required(FollowingListView.as_view())
 # Load follows
 @login_required(login_url='/')
 def load_follows(request):
+    """
+    Funcion para cargar mas seguidos
+    :return lista de seguidos:
+    """
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.user.profile.get_following()
 
@@ -974,7 +971,7 @@ class PassWordChangeDone(TemplateView):
         context = locals()
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['showPerfilButtons'] = True
 
@@ -994,7 +991,7 @@ class CustomPasswordChangeView(PasswordChangeView):
         ret['password_change_form'] = ret.get('form')
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
-        ret['publicationForm'] = PublicationForm(initial=initial)
+        ret['publicationSelfForm'] = PublicationForm(initial=initial)
         ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
         # (end NOTE)
@@ -1013,7 +1010,7 @@ class CustomEmailView(EmailView):
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
         ret['add_email_form'] = ret.get('form')
-        ret['publicationForm'] = PublicationForm(initial=initial)
+        ret['publicationSelfForm'] = PublicationForm(initial=initial)
         ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
         # (end NOTE)
@@ -1038,8 +1035,8 @@ class DeactivateAccount(FormView):
         context = self.get_context_data(**kwargs)
         context['form'] = self.form_class
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationForm'] = PublicationForm(initial=initial)
+        self_initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
         context['searchForm'] = SearchForm()
         return self.render_to_response(context)
 
@@ -1049,7 +1046,7 @@ class DeactivateAccount(FormView):
 
         if user.is_authenticated():
             if form.is_valid():
-                user.is_active = form.clean_is_active()
+                user.is_active = not(form.clean_is_active())
                 user.save()
                 if user.is_active:
                     return self.form_valid(form=form, **kwargs)
@@ -1073,8 +1070,11 @@ class DeactivateAccount(FormView):
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
 
-
+@login_required(login_url='/')
 def bloq_user(request):
+    """
+        Funcion para bloquear usuarios
+    """
     user = request.user
     haslike = "noliked"
     status = "none"
@@ -1144,23 +1144,142 @@ def bloq_user(request):
         data = {'response': response, 'haslike': haslike, 'status': status}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
+@login_required(login_url='/')
+def welcome_view(request, username):
+    """
+    View para pagina de bienvenida despues
+    del registro.
+    """
+    user_profile = get_object_or_404(get_user_model(),
+                                     username__iexact=username)
+    user = request.user
 
-def welcomeView(request, username):
-    newUser = username
+    if user_profile.pk != user.pk:
+        raise Http404
+
     return render_to_response('account/nuevosusuarios.html',
-                              context_instance=RequestContext(request, {'newUser': newUser}))
+                              context_instance=RequestContext(request, {'user_profile': user}))
 
+@login_required(login_url='/')
+@ensure_csrf_cookie
+def welcome_step_1(request):
+    """
+    View para seleccionar los intereses
+    del usuario registrado.
+    """
+    user = request.user
 
-def welcomeStep1(request, username):
-    newUser = request.user.username
-    return render_to_response('account/welcomestep1.html',
-                              context_instance=RequestContext(request, {'newUser': newUser}))
+    context = {}
+    context['user_profile'] = user
 
-
-def setfirstLogin(request):
-    response = False
     if request.method == 'POST':
-        username = request.POST.get('username', None)
-        response = True
+        response = "success"
+        # Procesar temas escritos por el usuario
+        tags = request.POST.getlist('tags[]')
+        for tag in tags:
+            if tag.isspace():
+                response = "with_spaces"
+                return HttpResponse(json.dumps(response), content_type='application/json')
+            user.profile.tags.add(tag)
+        # Procesar temas por defecto
+        choices = request.POST.getlist('choices[]')
+        if not tags and not choices:
+            response = "empty"
+            return HttpResponse(json.dumps(response), content_type='application/json')
+        for choice in choices:
+            value = dict(ThemesForm.CHOICES).get(choice)
+            user.profile.tags.add(value)
+        user.profile.save()
+        return HttpResponse(json.dumps(response), content_type='application/json')
+    else:
+        most_common = UserProfile.tags.most_common()[:10]
+        context['top_tags'] = most_common
+        context['form'] = ThemesForm
 
-    return HttpResponse(json.dumps(response), content_type='application/json')
+    return render_to_response('account/welcomestep1.html',
+                              context,
+                              context_instance=RequestContext(request))
+
+@login_required(login_url='/')
+def set_first_Login(request):
+    """
+    Establece si el usuario se ha logueado por primera vez
+    """
+    print('>>> SET_FIRST_LOGIN')
+    user = request.user
+    if request.method == 'POST':
+        print('>>> IS_POST')
+        if user.profile.is_first_login:
+            user.profile.is_first_login = False
+    else: # ON GET ETC...
+        return redirect('user_profile:profile', username=user.username)
+
+#TODO: Com que el usuario tenga tags establecidos antes de mostrar las recomendaciones
+class RecommendationUsers(ListView):
+    """
+        Lista de usuarios recomendados segun
+        los intereses del usuario.
+    """
+    model = User
+    template_name = "account/reccomendation_after_login.html"
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user.profile.tags:
+            return None
+        related_items = TaggedItem.objects.none().order_by('count')
+        current_item = UserProfile.objects.get(user=user)
+        for tag in current_item.tags.all():
+            related_items |= tag.taggit_taggeditem_items.all()
+        ids = related_items.values_list('object_id', flat=True)
+        return UserProfile.objects.filter(id__in=ids).exclude(user=user)
+
+    def get_context_data(self, **kwargs):
+        context = super(RecommendationUsers, self).get_context_data(**kwargs)
+        context['user_profile'] = self.request.user
+        return context
+
+recommendation_users = login_required(RecommendationUsers.as_view(), login_url='/')
+
+class LikeListUsers(AjaxListView):
+    """
+    Lista de usuarios que han dado like a un perfil
+    """
+    model = UserProfile
+    template_name = "account/like_list.html"
+    context_object_name = "object_list"
+    page_template = "account/like_entries.html"
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        user_profile = get_object_or_404(UserProfile, user__username__iexact=username)
+        print(username)
+        return user_profile.get_likes_to_me()
+
+    def get_context_data(self, **kwargs):
+        context = super(LikeListUsers, self).get_context_data(**kwargs)
+        context['user_profile'] = self.kwargs['username']
+        user = self.request.user
+        self_initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
+        context['searchForm'] = SearchForm()
+
+        return context
+
+like_list = login_required(LikeListUsers.as_view(), login_url='/')
+
+
+class UserAutocomplete(autocomplete.Select2QuerySetView):
+    """
+    Autocompletado de usuarios
+    """
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return User.objects.none()
+
+        users = User.objects.all()
+
+        if self.q:
+            users = users.filter(username__istartswith=self.q)
+
+        return users

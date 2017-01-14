@@ -61,7 +61,10 @@ def _get_avatars(user):
 @login_required
 def add(request, extra_context=None, next_override=None,
         upload_form=UploadAvatarForm, *args, **kwargs):
-    publicationForm = PublicationForm()
+
+    user = request.user
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
     searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
@@ -83,7 +86,7 @@ def add(request, extra_context=None, next_override=None,
         'avatars': avatars,
         'upload_avatar_form': upload_avatar_form,
         'next': next_override or _get_next(request),
-        'publicationForm': publicationForm,
+        'publicationSelfForm': publicationForm,
         'searchForm': searchForm,
         'showPerfilButtons': True
     }
@@ -95,7 +98,9 @@ def add(request, extra_context=None, next_override=None,
 def change(request, extra_context=None, next_override=None,
            upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
            *args, **kwargs):
-    publicationForm = PublicationForm()
+    user = request.user
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
     searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
@@ -128,7 +133,7 @@ def change(request, extra_context=None, next_override=None,
         'upload_avatar_form': upload_avatar_form,
         'primary_avatar_form': primary_avatar_form,
         'next': next_override or _get_next(request),
-        'publicationForm': publicationForm,
+        'publicationSelfForm': publicationForm,
         'searchForm': searchForm,
         'showPerfilButtons': True
     }
@@ -138,7 +143,9 @@ def change(request, extra_context=None, next_override=None,
 
 @login_required
 def delete(request, extra_context=None, next_override=None, *args, **kwargs):
-    publicationForm = PublicationForm()
+    user = request.user
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
     searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
@@ -168,7 +175,7 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         'avatars': avatars,
         'delete_avatar_form': delete_avatar_form,
         'next': next_override or _get_next(request),
-        'publicationForm': publicationForm,
+        'publicationSelfForm': publicationForm,
         'searchForm': searchForm,
         'showPerfilButtons': True
     }

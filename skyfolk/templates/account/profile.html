@@ -1,114 +1,117 @@
 {% extends "account/base_interface.html" %}
 {% comment %}
-  Template para el perfil de cada usuario
+Template para el perfil de cada usuario
 {% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
 {% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
-<!-- Mostrar objetos al hacer scroll -->
+    <!-- Mostrar objetos al hacer scroll -->
 
 {% endblock %}
 
 {% block extra-js %}
-    <script src="{{STATIC_URL}}js/list.min.js"></script>
+    <script src="{{ STATIC_URL }}js/list.min.js"></script>
 {% endblock %}
 
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/timeline.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{STATIC_URL}}css/profile.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css"
+          onload="if(media!='all')media='all'">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/timeline.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/profile.css" onload="if(media!='all')media='all'">
     {% if liked == True %}
-    <style type="text/css">
-        #ilike_profile {
-            color: #ec407a;
-        }
-    </style>
-  {% endif %}
+        <style type="text/css">
+            #ilike_profile {
+                color: #ec407a;
+            }
+        </style>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-    <script async src="{{STATIC_URL}}js/profile.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/jquery.easytabs.js" type="text/javascript"></script>
-    <script async src="{{STATIC_URL}}js/jquery.hashchange.min.js" type="text/javascript"></script>
+    <script async src="{{ STATIC_URL }}js/profile.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/jquery.easytabs.js" type="text/javascript"></script>
+    <script async src="{{ STATIC_URL }}js/jquery.hashchange.min.js" type="text/javascript"></script>
 
-<div class="container">
-    {% if user_profile.is_active %}
-        <div class="row">
-  <div class="col l8 m12 s12">
-<!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
     <div class="container">
-    <!-- Para el diseño de la rama develop, se cambia col-md-6 por col-md-12 -->
-        {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
-        {% include "account/card-user.html" %}
-        {% comment %}
-         PIN ARRIBA IZQUIERDA
-        {% endcomment %}
-        {% include "account/pin-left-top.html" %}
-    <!-- PIN PEQUEÑO - 2 -->
-        {% comment %}
-        PIN ARRIBA DERECHA
-        {% endcomment %}
-        {% include "account/pin-right-top.html" %}
+        {% if user_profile.is_active %}
+            <div class="row">
+                <div class="col l8 m12 s12">
+                    <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
+                    <div class="container">
+                        <!-- Para el diseño de la rama develop, se cambia col-md-6 por col-md-12 -->
+                        {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
+                        {% include "account/card-user.html" %}
+                        {% comment %}
+                PIN ARRIBA IZQUIERDA
+                {% endcomment %}
+                        {% include "account/pin-left-top.html" %}
+                        <!-- PIN PEQUEÑO - 2 -->
+                        {% comment %}
+                PIN ARRIBA DERECHA
+                {% endcomment %}
+                        {% include "account/pin-right-top.html" %}
 
-    </div>
-      {% comment %}
-        PIN ABAJO
-      {% endcomment %}
-    {% include "account/pin-bottom.html" %}
-
-  </div>
-
-  <div class="col l4 m12 s12">
-    <div class="container">
-      <div class="col l12 m12 s12">
-      <div id="div-separator">
-        <div class="sidebar card" id="tab-container">
-            <div class="ventana-pin">
-               <a><i class="fa fa-times"></i></a>
-               <a><i class="fa fa-expand"></i></a>
-               <a><i class="fa fa-thumb-tack"></i></a>
-            </div>
-          <ul class="unstyled table fullwidth links">
-            <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">timeline</a></li>
-	        <li class="tab" id="li-tab-comentarios"><a href="#tab-comentarios">Comentarios</a></li>
-            <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
-          </ul>
-          <div class="unstyled content" id="hood-tabs">
-            {% comment %}
-                Incluimos el tab timeline
-            {% endcomment %}
-            {% include "account/tab-timeline.html" %}
-            {% comment %}
-                Incluimos el tab comentarios
-            {% endcomment %}
-            <div id="tab-comentarios">
-                {% if publications|length == 0 %} <!-- Si el usuario no tiene comentarios, proponemos uno -->
-                    <div class="no-comments" id="without-comments">
-                        <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-                        <a id="compose-new-no-comments" class="no-comments-new-comment">
-                            <i class="fa fa-paper-plane fa-lg"></i>
-                        </a>
                     </div>
-                {% endif %}
-            {% include "account/profile_comments.html" %}
+                    {% comment %}
+            PIN ABAJO
+            {% endcomment %}
+                    {% include "account/pin-bottom.html" %}
+
+                </div>
+
+                <div class="col l4 m12 s12">
+                    <div class="container">
+                        <div class="col l12 m12 s12">
+                            <div id="div-separator">
+                                <div class="sidebar card" id="tab-container">
+                                    <div class="ventana-pin">
+                                        <a><i class="fa fa-times"></i></a>
+                                        <a><i class="fa fa-expand"></i></a>
+                                        <a><i class="fa fa-thumb-tack"></i></a>
+                                    </div>
+                                    <ul class="unstyled table fullwidth links">
+                                        <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">timeline</a></li>
+                                        <li class="tab" id="li-tab-comentarios"><a
+                                                href="#tab-comentarios">Comentarios</a></li>
+                                        <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
+                                    </ul>
+                                    <div class="unstyled content" id="hood-tabs">
+                                        {% comment %}
+                                Incluimos el tab timeline
+                                {% endcomment %}
+                                        {% include "account/tab-timeline.html" %}
+                                        {% comment %}
+                                Incluimos el tab comentarios
+                                {% endcomment %}
+                                        <div id="tab-comentarios">
+                                            {% if publications|length == 0 %}
+                                                <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                                                <div class="no-comments" id="without-comments">
+                                                    <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+                                                    <a id="compose-new-no-comments" class="no-comments-new-comment">
+                                                        <i class="fa fa-paper-plane fa-lg"></i>
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                            {% include "account/profile_comments.html" %}
+                                        </div>
+                                        {% comment %}
+                                Incluimos el tab amigos
+                                {% endcomment %}
+                                        {% include "account/tab-amigos.html" %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
             {% comment %}
-                Incluimos el tab amigos
-            {% endcomment %}
-            {% include "account/tab-amigos.html" %}
-          </div>
-        </div>
-      </div>
-        </div>
-    </div>
-  </div>
-        </div>
-</div>
-    {% comment %}
-    <script type="text/javascript">
+<script type="text/javascript">
 
-   //first set the value you will be using.
+    //first set the value you will be using.
    var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
    var MEDIA_URL = "{{MEDIA_URL}}";
 
@@ -116,89 +119,90 @@
    var stopRequests = false;
    var idRequestsTimer = null;
    if(requests){
-      idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
+       idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
 
-    }
+   }
 </script>
 {% endcomment %}
-<!-- Esto es para las menciones a usuarios -->
-    <!--
-<script type="text/javascript">
-$(document).ready(function() {
-  $.ajax({
-    url: '/get_mentions/',
-    type: 'POST',
-    data: {
-      'slug': $("#profileId").html(),
-    },
-    dataType: 'json',
-    success: function(data) {
-      $("#message2").mention({
-          queryBy: ['name', 'username'],
-          users: [{
-              username: "sarah",
-              name: "Sarah Jones",
-              image: "http://placekitten.com/25/25"
-          }, {
-              username: "bigCat",
-              name: "Scott Pfaff",
-              image: "http://placekitten.com/25/25"
-          }, {
-              username: "coderDude",
-              name: "Roger Penn",
-              image: "http://placekitten.com/25/25"
-          }]
-      });
-    },
-    error: function(rs, e) {
-      alert("No se puede.");
-    }
-  });
-});
+            <!-- Esto es para las menciones a usuarios -->
+            <!--
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $.ajax({
+                        url: '/get_mentions/',
+                type: 'POST',
+                data: {
+                    'slug': $("#profileId").html(),
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $("#message2").mention({
+                        queryBy: ['name', 'username'],
+                      users: [{
+                          username: "sarah",
+                          name: "Sarah Jones",
+                          image: "http://placekitten.com/25/25"
+                      }, {
+                          username: "bigCat",
+                          name: "Scott Pfaff",
+                          image: "http://placekitten.com/25/25"
+                      }, {
+                          username: "coderDude",
+                          name: "Roger Penn",
+                          image: "http://placekitten.com/25/25"
+                      }]
+                    });
+                },
+                error: function(rs, e) {
+                    alert("No se puede.");
+                }
+                    });
+                });
 
-</script> -->
-{% comment %}
+            </script> -->
+            {% comment %}
 Para el manejo de las pestañas del usuario
 {% endcomment %}
-<script type="text/javascript">
-  $('#tab-container').easytabs({
-        defaultTab: "#li-tab-comentarios",
-        animate: true,
-        animationSpeed: "fast",
-        updateHash: false
-  });
-</script>
+            <script type="text/javascript">
+                $('#tab-container').easytabs({
+                    defaultTab: "#li-tab-comentarios",
+                    animate: true,
+                    animationSpeed: "fast",
+                    updateHash: false
+                });
+            </script>
+            {% if user_profile == user %}
+                <script>
+                    $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
+                </script>
+            {% endif %}
 
-<script>
-  $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
-</script>
+            {% block js %}
+                {{ block.super }}
+                <script src="{{ STATIC_URL }}js/el-pagination.js"></script>
+                <script>
+                    $.endlessPaginate({
+                        paginateOnScroll: true,
+                        paginateOnScrollMargin: 20,
+                    });
+                </script>
+            {% endblock %}
 
-{% block js %}
-{{  block.super }} 
-    <script src="{{ STATIC_URL }}js/el-pagination.js"></script>
-    <script>
-        $.endlessPaginate({
-            paginateOnScroll: true,
-            paginateOnScrollMargin: 20,
-        });
-    </script>
-{% endblock %}
-
-<!-- Busqueda en tab-amigos -->
-<script>
-  var options = {
-    valueNames: [ 'name' ],
-    indexAsync : true
-  };
-  var userList = new List('tab-amigos', options);
-</script>
-        <script src="{{ STATIC_URL }}js/socket.js"></script>
-        <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
-        <script>
-           UTILS.init([{{ user.pk }}]);
-           UTILS.conn_socket();
-        </script>
-    {% else %}
-        <h1 class="account-disabled">Cuenta desactivada.</h1>
-{% endif %}
+            <!-- Busqueda en tab-amigos -->
+            <script>
+                var options = {
+                    valueNames: ['name'],
+                    indexAsync: true
+                };
+                var userList = new List('tab-amigos', options);
+            </script>
+            <script src="{{ STATIC_URL }}js/socket.js"></script>
+            <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+            <script>
+                UTILS.init([{{ user.pk }}]);
+                UTILS.conn_socket();
+            </script>
+        {% else %}
+            <h1 class="account-disabled">Cuenta desactivada.</h1>
+        {% endif %}
 {% endblock %}

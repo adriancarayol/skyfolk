@@ -1,0 +1,123 @@
+$blueskyfolk: #1e88e5
+$graycolor: #555
+$whitecolor: #fff
+$graylightcolor: #f9f9f9
+$graylight-2-color: #e0e0e0
+$transparentgraycolor: rgba(0, 0, 0, 0.4)
+$tomatocolor: #ff6347
+$boxshadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+
+html, body
+  background-color: $graylightcolor
+
+.wrapper-groups
+  margin-top: 3%
+  border-radius: 3px
+  height: auto
+  & .notice-item
+    background-color: $whitecolor
+    box-shadow: $boxshadow
+    padding: 10px
+    margin: 0.95%
+    overflow: hidden
+    border-radius: 3px
+    & .img
+      border-radius: 3px
+      box-shadow: 0 1px 5px $blueskyfolk
+      & img
+        width: 100%
+        height: 100%
+    & .contenido
+      padding-left: 10px
+      display: block
+      > p
+        > img
+          width: 20px
+          height: 20px
+    & .author
+      display: block
+      padding-left: 10px
+      margin-bottom: 2%
+      & a
+        text-decoration: none
+        color: $blueskyfolk
+        font-weight: 600
+        margin-right: 2%
+      & i
+        color: $graycolor
+      & .pub-date
+        margin-top: 2%
+        display: block
+
+  .personal-card
+    height: auto
+    min-height: 300px
+    max-height: 400px
+    margin-top: 5%
+    box-shadow: 0 1px 5px $transparentgraycolor
+    .header
+      height: 150px
+      .back-profile-user
+        width: 100%
+        height: 100%
+        position: relative
+      .bg-user
+        width: 80px
+        height: 80px
+        position: relative
+        margin: auto
+        display: block
+      .profile-user-bg
+        position: relative
+        margin-top: -80px
+        width: 80px
+        height: 80px
+        border-radius: 3px
+        box-shadow: 0 1px 5px $blueskyfolk
+        cursor: pointer
+        -webkit-transition: all .3s ease-in
+        transition: all .3s ease-in
+        > img
+          width: 100%
+          height: 100%
+          display: block
+        &:hover
+          transform: scale(1.1)
+          border-color: $blueskyfolk
+          opacity: 1
+      .group-icon
+        position: relative
+        margin-top: -30px
+        float: right
+        margin-right: 20px
+        background-color: $blueskyfolk
+        color: $whitecolor
+        border-radius: 100%
+        width: 50px
+        height: 50px
+        padding-top: 12px
+        box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18),0 4px 15px 0 rgba(0,0,0,0.15)
+        text-align: center
+        display: inline-block
+    .name-friend
+      position: relative
+      width: 60%
+      height: auto
+      margin: auto
+      text-align: center
+      border-radius: 7px
+      padding: 10px
+      color: $graycolor
+      word-wrap: break-word
+      background-color: $graylight-2-color
+      clear: both
+      > a:first-child
+        color: $blueskyfolk
+        text-decoration: none
+      > p:last-child
+        color: $graycolor
+    .users-in-group
+      font-weight: bold
+      color: $blueskyfolk
+    .group-data
+      padding-top: 15px

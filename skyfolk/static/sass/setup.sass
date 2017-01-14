@@ -5,8 +5,8 @@ body
   background-color: #fafafa
   padding: 0
   font-family: 'Open Sans', sans-serif
-
-.div-messages
+//
+  .div-messages
   background-color: #eee
   border-radius: 3px
   position: absolute
@@ -21,10 +21,11 @@ body
     list-style: none
     & li
       display: list-item
+
 .ctrlHolder
   padding: 10px
 
-.wrapper
+.container
   position: relative
   margin-top: 10%
 
@@ -36,7 +37,7 @@ body
     margin: auto
     -webkit-transition: all .2s linear
     -moz-transition: all .2s linear
-    trasnsition: all .2s linear
+    transition: all .2s linear
     border-radius: 100%
     padding: 5px
     border: 3px solid transparent
@@ -51,7 +52,8 @@ body
   position: fixed
   top: 0
   background-color: #fff
-  padding: 0 12px
+  h5
+    margin-left: 2%
 
   & h6
     color: #bdbdbd
@@ -59,32 +61,22 @@ body
     display: inline-block
 
   & .logotipo_skyfolk
-    position: relative
-    float: left
-    display: inline-block
-
-  & .logotipo_skyfolk h5
-    font-family: 'Pacifico', cursive
-    font-size: 1.45em
-    display: inline-block
-    margin-right: 20px
-    margin-left: 7px
-    margin-top: 4px
+    position: fixed
+    font-family: "Pacifico", cursive !important
+    margin: auto
+    left: 50%
     cursor: pointer
-    color: #555
-
-  & .logotipo_skyfolk i
-    color: #0096d7
-    text-shadow: 1px 1px 1px #ccc
+    color: #555 !important
+    font-size: 1.7em
+    letter-spacing: 0.2p
+    > span
+      color: #1e88e5
+      text-shadow: 1px 1px 1px #ccc
 
 .menu
-  position: relative
-  width: 400px
   text-align: center
   height: auto
   margin-top: 60px
-  margin-right: auto
-  margin-left: auto
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
   background-color: #fff
 
@@ -120,76 +112,10 @@ p
 form
   position: relative
   display: block
-  width: 40%
   height: auto
   margin: auto
 
-.email_list
-  background-color: #eee
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
-  & label
-    color: #616161
-    display: inline-block
-    font-size: 1.1em
-  & button
-    background-color: #64B5F6 !important
-    position: relative
-    cursor: pointer
-    display: inline-block
-    left: 10%
-    overflow: hidden
-    -webkit-user-select: none
-    -moz-user-select: none
-    -ms-user-select: none
-    user-select: none
-    -webkit-tap-highlight-color: transparent
-    z-index: 1
-    text-decoration: none
-    color: #FFF
-    text-align: center
-    letter-spacing: 1px
-    border: none
-    border-radius: 2px
-    height: 36px
-    line-height: 36px
-    outline: 0
-    padding: 0 2rem
-    text-transform: uppercase
-  & input[type="submit"]
-    background-color: #64B5F6 !important
-    position: relative
-    cursor: pointer
-    display: inline-block
-    float: right
-    overflow: hidden
-    -webkit-user-select: none
-    -moz-user-select: none
-    -ms-user-select: none
-    user-select: none
-    -webkit-tap-highlight-color: transparent
-    z-index: 1
-    text-decoration: none
-    color: #FFF
-    text-align: center
-    letter-spacing: 1px
-    border: none
-    border-radius: 2px
-    height: 36px
-    line-height: 36px
-    outline: 0
-    padding: 0 2rem
-    text-transform: uppercase
 
-.verified
-  color: #8bc34a
-.unverified
-  color: tomato
-.primary
-  color: #1e88e5
-
-button[name="action_add"]
-  float: right !important
-  left: 0
 
 input[type="email"]:focus, button
   border-bottom: 1px solid #64B5F6 !important

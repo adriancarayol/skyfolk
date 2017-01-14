@@ -40,7 +40,8 @@ def inbox(request, template_name='django_messages/inbox.html'):
     user = request.user
 
     searchForm = SearchForm(request.POST) # Cuadro de búsqueda
-    publicationForm = PublicationForm() # Mostrar formulario para enviar mensajes.
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
 
     user_profile = user
      # cargar lista de amigos (12 primeros)
@@ -63,7 +64,7 @@ def inbox(request, template_name='django_messages/inbox.html'):
     message_list = Message.objects.inbox_for(request.user)
     return render_to_response(template_name, {
         'message_list': message_list, 'friends_top12': friends_top12,
-    'publicationForm' :publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
+    'publicationSelfForm' :publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def outbox(request,template_name='django_messages/outbox.html'):
@@ -75,7 +76,8 @@ def outbox(request,template_name='django_messages/outbox.html'):
     user = request.user
 
     searchForm = SearchForm(request.POST) # Cuadro de búsqueda
-    publicationForm = PublicationForm() # Mostrar formulario para enviar mensajes.
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
 
     user_profile = user
      # cargar lista de amigos (12 primeros)
@@ -100,7 +102,7 @@ def outbox(request,template_name='django_messages/outbox.html'):
     message_list = Message.objects.outbox_for(request.user)
     return render_to_response(template_name, {
         'message_list': message_list, 'friends_top12': friends_top12,
-'publicationForm': publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
+'publicationSelfForm': publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def trash(request,template_name='django_messages/trash.html'):
@@ -114,7 +116,8 @@ def trash(request,template_name='django_messages/trash.html'):
     user = request.user
 
     searchForm = SearchForm(request.POST) # Cuadro de búsqueda
-    publicationForm = PublicationForm() # Mostrar formulario para enviar mensajes.
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
 
     user_profile = user
      # cargar lista de amigos (12 primeros)
@@ -139,7 +142,7 @@ def trash(request,template_name='django_messages/trash.html'):
     message_list = Message.objects.trash_for(request.user)
     return render_to_response(template_name, {
         'message_list': message_list, 'friends_top12' : friends_top12,
-'searchForm': searchForm, 'publicationForm': publicationForm}, context_instance=RequestContext(request))
+'searchForm': searchForm, 'publicationSelfForm': publicationForm}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def compose(request,recipient=None, form_class=ComposeForm,
@@ -158,7 +161,8 @@ def compose(request,recipient=None, form_class=ComposeForm,
     user = request.user
 
     searchForm = SearchForm(request.POST) # Cuadro de búsqueda
-    publicationForm = PublicationForm() # Mostrar formulario para enviar mensajes.
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
 
     user_profile = user
      # cargar lista de amigos (12 primeros)
@@ -198,7 +202,7 @@ def compose(request,recipient=None, form_class=ComposeForm,
             form.fields['recipient'].initial = recipients
     return render_to_response(template_name, {
         'form': form, 'friends_top12': friends_top12,
-    'publicationForm': publicationForm, 'searchForm': searchForm, 'message_list': message_list}, context_instance=RequestContext(request))
+    'publicationSelfForm': publicationForm, 'searchForm': searchForm, 'message_list': message_list}, context_instance=RequestContext(request))
 
 @login_required(login_url='/')
 def compose_username(request, recipient=None, form_class=ComposeForm,
@@ -207,7 +211,8 @@ def compose_username(request, recipient=None, form_class=ComposeForm,
     user = request.user
 
     searchForm = SearchForm(request.POST) # Cuadro de búsqueda
-    publicationForm = PublicationForm() # Mostrar formulario para enviar mensajes.
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
 
     user_profile = user
      # cargar lista de amigos (12 primeros)
@@ -246,7 +251,7 @@ def compose_username(request, recipient=None, form_class=ComposeForm,
                 form.fields['recipient'].initial = recipient
         return render_to_response(template_name, {
             'form': form, 'friends_top12': friends_top12,
-            'publicationForm': publicationForm, 'searchForm': searchForm, 'message_list': message_list},
+            'publicationSelfForm': publicationForm, 'searchForm': searchForm, 'message_list': message_list},
                                   context_instance=RequestContext(request))
 
 @login_required(login_url='/')
@@ -264,7 +269,8 @@ def reply(request,message_id, form_class=ComposeForm,
     user = request.user
 
     searchForm = SearchForm(request.POST) # Cuadro de búsqueda
-    publicationForm = PublicationForm() # Mostrar formulario para enviar mensajes.
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
 
     user_profile = user
      # cargar lista de amigos (12 primeros)
@@ -309,7 +315,7 @@ def reply(request,message_id, form_class=ComposeForm,
             })
     return render_to_response(template_name, {
         'form': form, 'friends_top12': friends_top12,
-    'searchForm': searchForm, 'publicationForm': publicationForm,
+    'searchForm': searchForm, 'publicationSelfForm': publicationForm,
     'parent_body': parent.body,
     'parent_username': parent.sender.username}, context_instance=RequestContext(request))
 
@@ -392,7 +398,8 @@ def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
     user = request.user
 
     searchForm = SearchForm(request.POST) # Cuadro de búsqueda
-    publicationForm = PublicationForm() # Mostrar formulario para enviar mensajes.
+    initial = {'author': user.pk, 'board_owner': user.pk}
+    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
 
     user_profile = user
      # cargar lista de amigos (12 primeros)
@@ -423,7 +430,9 @@ def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
         message.read_at = now
         message.save()
 
-    context = {'message': message, 'reply_form': None}
+    context = {'message': message, 'reply_form': None,
+               'publicationSelfForm': publicationForm,
+               'searchForm': searchForm}
     if message.recipient == user:
         form = form_class(initial={
             'body': quote_helper(message.sender, message.body),

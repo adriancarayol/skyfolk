@@ -1,12 +1,15 @@
-$(window).ready(function() {
+$(window).ready(function () {
     $("#loader").fadeOut("slow");
 
 });
 
 $(document).ready(function () {
-
     // Materialize.updateTextFields();
+    $('select').material_select();
 
+    var page_wrapper = $('#page-wrapper');
+    var self_page_wrapper = $('#self-page-wrapper');
+    var _group_profile = $('#group-profile');
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
@@ -18,41 +21,79 @@ $(document).ready(function () {
         menuWidth: 340
     });
 
-    var page_wrapper = document.getElementById('page-wrapper');
-    /* Mensaje flotante */
-    $("#publish2, #compose-new-no-comments, #publish, #publish3").click(function()  {
-        $(page_wrapper).each(function() {
+    /* Mensaje flotante (perfil ajeno) */
+    // #compose-new-no-comments
+    $("#publish").click(function () {
+        $(page_wrapper).each(function () {
             var displaying = $(this).css("display");
             $(page_wrapper).find("#message2").val('');
             if (displaying == "none") {
-                $(this).fadeOut('slow', function() {
+                $(this).fadeOut('slow', function () {
                     $(this).css("display", "block");
                 });
                 $(this).find('#message2').focus();
             } else {
                 $(this).find('#message2').blur();
-                $(this).fadeIn('slow', function() {
+                $(this).fadeIn('slow', function () {
+                    $(this).css("display", "none");
+                });
+            }
+        });
+    });
+    /* Mensaje flotante (perfil propio) */
+    $("#publish2, #publish3").click(function () {
+        $(self_page_wrapper).each(function () {
+            var displaying = $(this).css("display");
+            $(self_page_wrapper).find("#message2").val('');
+            if (displaying == "none") {
+                $(this).fadeOut('slow', function () {
+                    $(this).css("display", "block");
+                });
+                $(this).find('#message2').focus();
+            } else {
+                $(this).find('#message2').blur();
+                $(this).fadeIn('slow', function () {
                     $(this).css("display", "none");
                 });
             }
         });
     });
 
+    /* Crear nuevo grupo de usuarios */
+
+    $("#new_group").click(function () {
+        $('#create_group').toggle();
+    });
+
     /* Close page-wrapper (mensaje) */
-    $(page_wrapper).find('#close').on('click', function(event) {
+    $(page_wrapper).find('#close').on('click', function (event) {
         event.preventDefault();
         $(page_wrapper).find('#message2').val('');
         $(page_wrapper).hide();
     });
-    /* Submit publication */
-    $('#message-form2').on('submit', function(event) {
+    /* Close self-page-wrapper (mensaje propio) */
+    $(self_page_wrapper).find('#close').on('click', function (event) {
         event.preventDefault();
-        var data = $('#page-wrapper').find('#message-form2').serialize();
+        $(self_page_wrapper).find('#message2').val('');
+        $(self_page_wrapper).hide();
+    });
+
+    /* Submit publication */
+    $(page_wrapper).find('#message-form2').on('submit', function (event) {
+        event.preventDefault();
+        var data = $(page_wrapper).find('#message-form2').serialize();
         AJAX_submit_publication(data, 'publication');
     });
 
+    /* Submit publication (propio) */
+    $(self_page_wrapper).find('#message-form2').on('submit', function (event) {
+        event.preventDefault();
+        var data = $(self_page_wrapper).find('#message-form2').serialize();
+        AJAX_submit_publication(data, 'publication');
+    });
 
-    $('button.enviar').on('click', function(event) {
+    /* Submit creacion (perfil ajeno) */
+    $('button.enviar').on('click', function (event) {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
@@ -64,94 +105,123 @@ $(document).ready(function () {
         AJAX_submit_publication(data, 'reply', pks);
     });
 
-    /**** ATAJOS DE DECLADO ****/
+    /* Submit creacion de grupo */
+    $('button#btn_new_group').on('click', function (event) {
+        event.preventDefault();
+        var form = $(this).closest('#from_new_group');
+        var owner_pk = $(form).find('input[name=owner]').val();
+        console.log(owner_pk);
+        var data = $(form).serialize();
+        AJAX_submit_group(data);
+    });
+    /**** ATAJOS DE TECLADO ****/
 
     /* Mostrar atajos */
-    $('#atajos-keyboard-profile').find('.atajos-title .fa-close').on('click',function() {
+    $('#atajos-keyboard-profile').find('.atajos-title .fa-close').on('click', function () {
         $('#atajos-keyboard-profile').hide();
     });
 
     /* Atajo para enviar comentarios mas rapido */
-    $('#page-wrapper').find('#message2').keypress(function(e) {
+    $(page_wrapper).find('#message2').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
             $('#sendformpubli').click();
+            $(this).val(''); // CLEAR TEXTAREA
+            $(this).blur(); // OFF FOCUS
+        }
+    });
+    /* Atajo para enviar comentarios mas rapido a mi perfil. */
+    $(self_page_wrapper).find('#message2').keypress(function (e) {
+        //tecla ENTER presinada + Shift
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
+            $('#sendselfformpubli').click();
+            $(this).val(''); // CLEAR TEXTAREA
+            $(this).blur(); // OFF FOCUS
         }
     });
 
-
     /* Abrir - Cerrar lista de atajos */
-    $('#vertical-menu').find('.shortcut-keyboard').on('click',function() {
+    $('#vertical-menu').find('.shortcut-keyboard').on('click', function () {
         $('#atajos-keyboard-profile').toggle();
     });
 
 
     /* Abre nuevo mensaje "m" */
-    $(this).keypress(function(e){
-        var page_wrapper = document.getElementById('page-wrapper');
-        var key = e.which;
-        if (key == 109 && ($(page_wrapper).is(':hidden')) &&
-                !($('input').is(":focus")) &&
-                !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+    $(this).keypress(function (e) {
+        var key = e.keyCode || e.which;
+        if (key == 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(page_wrapper).toggle();
             $(page_wrapper).find('#message2').focus();
             return false;
         }
     });
+    /* Abre nuevo mensaje (propio) "m" */
+    $(this).keypress(function (e) {
+        var key = e.keyCode || e.which;
+        if (key == 77 && ($(self_page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+            // Si presionas el char 'm' mostará el div para escribir un mensaje.
+            $(self_page_wrapper).toggle();
+            $(self_page_wrapper).find('#message2').focus();
+            return false;
+        }
+    });
 
     /* Abre atajos "a" */
-    $(this).keypress(function(e){
-        var key = e.which;
+    $(this).keypress(function (e) {
+        var key = e.keyCode || e.which;
         var cheat = document.getElementById('atajos-keyboard-profile');
-        if (key == 97 && ($(cheat).is(':hidden')) &&
-                !($('input').is(":focus")) &&
-                !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key == 97 && ($(cheat).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(cheat).show();
         }
     });
 
-    /* Cierra todas las ventajas emergentes. */
-    $(this).on('keydown', function(e) {
-        if (e.keyCode === 27) { // escape
-            var messageWrapper = document.getElementById('page-wrapper');
+    /* Cierra todas las ventajas emergentes/menus. */
+    $(this).on('keydown', function (e) {
+        var key = e.keyCode || e.which;
+        if (key === 27) { // escape
             var ampliado = document.getElementsByClassName('ampliado');
             var atj = document.getElementById('atajos-keyboard-profile');
             var personalInfo = document.getElementsByClassName('info-paw');
             var searchInput = document.getElementById('id_searchText');
-            var messageWrapperMessage2 = document.getElementById('message2');
+            var messageWrapperMessage2 = $(page_wrapper).find('#message2');
+            var messageWrapperMessage3 = $(self_page_wrapper).find('#message2');
 
             $(messageWrapperMessage2).blur(); // Focus del textarea off.
             $(messageWrapperMessage2).val("");
-            $(messageWrapper).hide();  // Oculta from para crear comentario.
+            $(page_wrapper).hide();  // Oculta form para crear comentario.
+            $(messageWrapperMessage3).blur(); // Focus del textarea off.
+            $(messageWrapperMessage3).val("");
+            $(self_page_wrapper).hide(); // Oculta form para crear comentario.
             $(atj).hide(); // Oculta atajos de teclado.
             $(ampliado).hide(); // Oculta mensaje ampliado.
             $(personalInfo).hide(); // Oculta informacion personal
             $(searchInput).val("");
             $(searchInput).blur();
+            /* OCULTAR MENUS VERTICALES (NOTIFICACION Y MENU USUARIO */
+            $('.side-nav').sideNav('hide');
             $('#upload_photo').hide();
         }
     });
     /* Focus on input search */
-    $(this).on('keydown', function(e) {
-        if (e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) &&
-                !($('input').is(":focus")) &&
-                !($('textarea').is(":focus"))) { // escape
+    $(this).on('keydown', function (e) {
+        if (e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // escape
             $('#id_searchText').focus(); // Focus del textarea off.
             return false;
         }
     });
 
     /* Marcar todas las notificaciones como leidas */
-    $('#clear-notify').on('click', function() {
+    $('#clear-notify').on('click', function () {
         AJAX_mark_all_read();
     });
 
     /* Agregar Amigo por medio de PIN */
-    $('#agregar-amigo, #agregar-amigo2').on('click', function() {
+    $('#agregar-amigo, #agregar-amigo2').on('click', function () {
         swal({
             title: "Add new friend!",
+            customClass: "default-div",
             text: "Insert the friend's username or PIN",
             type: "input",
             animation: "slide-from-top",
@@ -162,7 +232,7 @@ $(document).ready(function () {
             cancelButtonText: "Cancel!",
             closeOnConfirm: false,
             showLoaderOnConfirm: true
-        }, function(inputValue) {
+        }, function (inputValue) {
             if (inputValue === false) return false;
             if (inputValue === "") {
                 swal.showInputError("You need to write something!");
@@ -172,14 +242,37 @@ $(document).ready(function () {
                 swal.showInputError("Wrong PIN format!");
                 return false
             }
-            var tipo;
+            var _tipo;
             if (!is_numeric(inputValue)) {
-                tipo = 'username';
+                _tipo = 'username';
             } else {
-                tipo = 'pin'
+                _tipo = 'pin'
             }
-            AJAX_addNewFriendByUsernameOrPin(inputValue, tipo);
+            AJAX_addNewFriendByUsernameOrPin(inputValue, _tipo);
         });
+    });
+
+    // FOLLOW GROUP
+    $(_group_profile).on('click', '#follow-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_follow_group(id);
+        return false;
+    });
+    // UNFOLLOW GROUP
+    $(_group_profile).on('click', '#unfollow-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_unfollow_group(id);
+        return false;
+    });
+
+    // LIKE GROUP
+    $(_group_profile).on('click', '#like-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_like_group(id);
+        return false;
     });
 
 }); // END DOCUMENT READY
@@ -208,7 +301,7 @@ function csrfSafeMethod(method) {
 }
 $.ajaxSetup({
     crossDomain: false, // obviates need for sameOrigin test
-    beforeSend: function(xhr, settings) {
+    beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type)) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
@@ -225,11 +318,11 @@ function AJAX_mark_all_read() {
             'csrfmiddlewaretoken': csrftoken
         },
         type: 'POST',
-        success: function() {
+        success: function () {
             $('#notification-menu').find('li').fadeOut("fast");
             $("#live_notify_badge").html(0);
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             alert('ERROR: ' + rs.responseText + e);
         }
     });
@@ -244,13 +337,13 @@ function AJAX_mark_read(obj) {
             'csrfmiddlewaretoken': csrftoken
         },
         type: 'POST',
-        success: function() {
+        success: function () {
             $(obj).parent().fadeOut("fast");
             var currentValue = document.getElementById('live_notify_badge');
             if (parseInt($(currentValue).html()) > 0)
-                $(currentValue).html(parseInt($(currentValue).html())-1);
+                $(currentValue).html(parseInt($(currentValue).html()) - 1);
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             alert('ERROR: ' + rs.responseText + e);
         }
     });
@@ -264,15 +357,15 @@ function AJAX_delete_notification(slug, id) {
             'csrfmiddlewaretoken': csrftoken
         },
         type: 'POST',
-        success: function() {
+        success: function () {
             $("ul.list-notifications").find("[data-id='" + id + "']").each(function () {
                 $(this).hide();
             });
             var currentValue = document.getElementById('live_notify_badge');
             if (parseInt($(currentValue).html()) > 0)
-                $(currentValue).html(parseInt($(currentValue).html())-1);
+                $(currentValue).html(parseInt($(currentValue).html()) - 1);
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             alert('ERROR: ' + rs.responseText + e);
         }
     });
@@ -288,20 +381,22 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
             'csrfmiddlewaretoken': csrftoken
         },
         dataType: "json",
-        success: function(response) {
+        success: function (response) {
             if (response == "added_friend") {
                 swal({
                     title: "Success!",
                     text: "You have added a friend!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 }, function () {
-                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
+                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
                 });
             } else if (response == 'your_own_pin') {
                 swal({
                     title: "Wait a moment!",
                     text: "It's your own pin!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -309,6 +404,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Wait a moment!",
                     text: "It's your own username!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -316,6 +412,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Wait a moment!",
                     text: "It's already your friend!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -323,34 +420,39 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Espera un momento!",
                     text: "Tienes bloqueado este perfil!",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'no_added_friend'){
+            } else if (response == 'no_added_friend') {
                 swal({
                     title: "We have a problem",
                     text: "Friend no added",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'no_match'){
+            } else if (response == 'no_match') {
                 swal({
                     title: "We have a problem",
                     text: "This username or pin no exists.",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'in_progress'){
+            } else if (response == 'in_progress') {
                 swal({
                     title: "Request in progress",
                     text: "Your request is to confirm!.",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'new_petition'){
+            } else if (response == 'new_petition') {
                 swal({
                     title: "New petition sent!",
                     text: "Wait to confirm!.",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -358,8 +460,9 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Petición denegada.",
                     text: "El usuario te ha bloqueado.",
+                    customClass: 'default-div',
                     type: "error",
-                    timer: 2000,
+                    timer: 4000,
                     animation: "slide-from-top",
                     showConfirmButton: false
                 });
@@ -367,14 +470,15 @@ function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
                 swal({
                     title: "Petición denegada.",
                     text: "Tienes bloqueado a este perfil.",
+                    customClass: 'default-div',
                     type: "error",
-                    timer: 2000,
+                    timer: 4000,
                     animation: "slide-from-top",
                     showConfirmButton: false
                 });
             }
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             alert(rs.responseText + " " + e);
         }
     });
@@ -393,16 +497,16 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
             'csrfmiddlewaretoken': csrftoken
         },
         dataType: "json",
-        success: function(response) {
+        success: function (response) {
             if (response == "added_friend") {
-                addItemToFriendList('Nuevo','nuevo');
+                addItemToFriendList('Nuevo', 'nuevo');
                 sweetAlert("You have added a friend!");
-                $('li[data-id='+obj_data+']').fadeOut("fast");
+                $('li[data-id=' + obj_data + ']').fadeOut("fast");
             } else {
-                $('li[data-id='+obj_data+']').fadeOut("fast");
+                $('li[data-id=' + obj_data + ']').fadeOut("fast");
             }
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             alert(rs.responseText + " " + e);
         }
     });
@@ -411,14 +515,14 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
 }
 
 function addNewPublication(type, user_pk, board_owner_pk, parent) {
-    if (type=="reply") {
+    if (type == "reply") {
         console.log(type + " " + user_pk + " " + board_owner_pk + " " + parent);
-        $.get( "/publication/list/?type=reply&user_pk=" + user_pk + "&board_owner_pk" + board_owner_pk + ",parent="+parent, function(data) {
+        $.get("/publication/list/?type=reply&user_pk=" + user_pk + "&board_owner_pk" + board_owner_pk + ",parent=" + parent, function (data) {
             console.log(data);
             $("#tab-comentarios").prepend(data).fadeIn('slow/400/fast');
         })
     } else {
-        $.get("/publication/list/", function(data) {
+        $.get("/publication/list/", function (data) {
             if ($("#tab-comentarios").find(".no-comments").length) {
                 $("#tab-comentarios").find(".no-comments").remove()
             }
@@ -435,37 +539,73 @@ function AJAX_submit_publication(data, type, pks) {
         type: 'POST',
         dataType: 'json',
         data: data,
-        success: function(data) {
+        success: function (data) {
             var response = data.response;
             console.log('RESPONSE AQUI: ' + response + " type: " + type);
             if (response == true) {
-                /* nothing */ 
+                /* nothing */
             } else {
                 swal({
                     title: "",
                     text: "Failed to publish",
+                    customClass: 'default-div',
                     type: "error"
                 });
             }
             if (type == "reply") {
-                var caja_comentarios = $('#caja-comentario-'+pks[2]);
+                var caja_comentarios = $('#caja-comentario-' + pks[2]);
                 $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type == "publication") {
-                $('#page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+                $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
             }
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             swal({
                 title: '¡Ups!',
                 text: 'Revisa el contenido de tu mensaje', // rs.responseText,
+                customClass: 'default-div',
                 type: "error"
             });
         }
-    }).done(function() {
+    }).done(function () {
         // No necesario, ya que usamos sockets para añadir
         // En "vivo" publicaciones y respuestas
         //addNewPublication(type, pks[0], pks[1], pks[2]);
+    })
+}
+
+
+function AJAX_submit_group(data) {
+    $.ajax({
+        url: '/create_group/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: function (data) {
+            var response = data.response;
+            console.log('RESPONSE AQUI (grupos): ' + response);
+            if (response == true) {
+                $('#create_group').hide();
+            } else {
+                swal({
+                    title: "¡Ups!",
+                    text: "Fallo al crear el grupo.",
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
+            swal({
+                title: '¡Ups!',
+                text: 'Revisa el contenido de tu grupo.', // rs.responseText,
+                customClass: 'default-div',
+                type: "error"
+            });
+        }
+    }).done(function () {
+
     })
 }
 
@@ -483,43 +623,45 @@ function AJAX_requestfriend(status) {
             },
             //data: {'slug': $("#profileId").html()},
             dataType: "json",
-            success: function(response) {
+            success: function (response) {
                 if (response == "isfriend") {
                     swal({
-                        title: "¡Ya es tu amigo!",
-                        type: "warning",
-                        animation: "slide-from-top",
-                        showConfirmButton: true,
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Unfollow",
-                        cancelButtonText: "Ok, fine!",
-                        closeOnConfirm: true
-                    },
-                    function(isConfirm) {
-                        if (isConfirm) {
-                            AJAX_remove_relationship(slug);
-                        }
-                    });
+                            title: "¡Ya es tu amigo!",
+                            type: "warning",
+                            customClass: 'default-div',
+                            animation: "slide-from-top",
+                            showConfirmButton: true,
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Unfollow",
+                            cancelButtonText: "Ok, fine!",
+                            closeOnConfirm: true
+                        },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                AJAX_remove_relationship(slug);
+                            }
+                        });
                 } else if (response == "inprogress") {
-                    $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">'+' '+'</span>');
-                } else if (response == "user_blocked"){
+                    $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + ' ' + '</span>');
+                } else if (response == "user_blocked") {
                     swal({
                         title: "Petición denegada.",
                         text: "El usuario te ha bloqueado.",
+                        customClass: 'default-div',
                         type: "error",
-                        timer: 2000,
+                        timer: 4000,
                         animation: "slide-from-top",
                         showConfirmButton: false
                     });
                 } else if (response == "added_friend") {
-                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
+                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
                 }
                 else {
 
                 }
             },
-            error: function(rs, e) {
+            error: function (rs, e) {
                 alert(rs.responseText + " " + e);
             }
         });
@@ -537,17 +679,21 @@ function AJAX_remove_relationship(slug) {
             'csrfmiddlewaretoken': csrftoken
         },
         dataType: 'json',
-        success: function(response) {
+        success: function (response) {
             if (response == true) {
                 var currentValue = document.getElementById('followers-stats');
                 var addFriendButton = document.getElementById('addfriend');
-                $(currentValue).html(parseInt($(currentValue).html())-1);
-                $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
+                $(currentValue).html(parseInt($(currentValue).html()) - 1);
+                $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
             } else if (response == false) {
-                swal("Ha surgido un error, inténtalo de nuevo más tarde :-(");
+                swal({
+                    title: "¡Ups!",
+                    text: "Ha surgido un error, inténtalo de nuevo más tarde :-(",
+                    customClass: 'default-div'
+                });
             }
-        }, error: function(rs, e) {
-            swal(rs.responseText + " " + e);
+        }, error: function (rs, e) {
+            // swal(rs.responseText + " " + e);
         }
     });
 }
@@ -564,14 +710,18 @@ function AJAX_remove_request_friend() {
             'csrfmiddlewaretoken': csrftoken
         },
         dataType: 'json',
-        success: function(response) {
+        success: function (response) {
             if (response == true) {
                 $('#follow_request').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend("noabort");></span>');
             } else if (response == false) {
-                swal("Ha surgido un error, inténtalo de nuevo más tarde :-(");
+                swal({
+                    title: "¡Ups!",
+                    text: "Ha surgido un error, inténtalo de nuevo más tarde :-(",
+                    customClass: 'default-div'
+                });
             }
-        }, error: function(rs, e) {
-            swal(rs.responseText + " " + e);
+        }, error: function (rs, e) {
+            // swal(rs.responseText + " " + e);
         }
     });
 }
@@ -593,6 +743,7 @@ function AJAX_remove_bloq_from_config(obj) {
                 swal({
                     title: "Tenemos un problema...",
                     text: "Hubo un problema con su petición.",
+                    customClass: 'default-div',
                     timer: 4000,
                     showConfirmButton: true
                 });
@@ -607,16 +758,15 @@ function AJAX_remove_bloq_from_config(obj) {
 /*****************************************************/
 
 function is_numeric(value) {
-    var is_number =  /^\d+$/.test(value);
+    var is_number = /^\d+$/.test(value);
     return is_number;
 }
 
 function serializedToJSON(data) {
     //from -> http://stackoverflow.com/questions/23287067/converting-serialized-forms-data-to-json-object
     data = data.split("&");
-    var obj={};
-    for(var key in data)
-    {
+    var obj = {};
+    for (var key in data) {
         obj[data[key].split("=")[0]] = data[key].split("=")[1]
     }
 

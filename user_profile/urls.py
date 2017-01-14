@@ -1,9 +1,7 @@
 from django.conf.urls import url
-
+from .views import UserAutocomplete
 
 urlpatterns = [
-    url(r'^setfirstLogin/', 'user_profile.views.setfirstLogin',
-        name='setfirstLogin'),
     url(r'^profile/(?P<username>[\w-]+)/$', 'user_profile.views.profile_view',
         name='profile'),
     url(r'^search/$', 'user_profile.views.search'),
@@ -11,7 +9,8 @@ urlpatterns = [
     url(r'^search-advanced/$', 'user_profile.views.advanced_view',
         name='advanced_view'),
     # URL CONFIG PROFILE USER
-    url(r'^config/profile/$', 'user_profile.views.config_profile'),
+    url(r'^config/profile/$', 'user_profile.views.config_profile',
+        name="config_profile"),
     # URL CHANGE PRIVACITY
     url(r'^config/privacity/$', 'user_profile.views.config_privacity'),
     # CONSULTAR PINCODE
@@ -51,8 +50,18 @@ urlpatterns = [
     url(r"^config/password/done/$", 'user_profile.views.password_done',
         name="account_done_password"),
     # Página de bienvenida a nuevos usuarios.
-    url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeView'),
+    url(r'^welcome/(?P<username>[\w-]+)/$', 'user_profile.views.welcome_view',
+        name='welcome'),
     # Página de bienvenida, paso 1.
-    url(r'^step1/(?P<username>[\w-]+)/$', 'user_profile.views.welcomeStep1',
-        name='welcomeStep1'),
+    url(r'^topics/$', 'user_profile.views.welcome_step_1',
+        name='welcome_step_1'),
+    # Establece si el usuario es la primera vez que se loguea
+    url(r'^set_first_login/$', 'user_profile.views.set_first_Login',
+        name='set_first_login'),
+    # Recomendacion de usuarios dependiendo de intereses
+    url(r'^recommendations/$', 'user_profile.views.recommendation_users',
+        name='reccomendation_users'),
+    # Lista de usuarios que han dado like al perfil <<username>>
+    url(r'^likes/(?P<username>[\w-]+)/$', 'user_profile.views.like_list',
+        name='like_list'),
 ]

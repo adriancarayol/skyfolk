@@ -7,6 +7,7 @@ from django.core.validators import URLValidator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from user_profile.models import UserProfile
 
 register = template.Library()
 
@@ -94,4 +95,45 @@ def check_blocked(request, author):
     else:
         return False
 
-    return false
+    return False
+
+@register.filter(name='is_follow')
+def is_follow(request, profile):
+    user_profile = get_object_or_404(
+        UserProfile, id=profile)
+    
+    if request.pk != user_profile.user.pk:
+        isFriend = False
+        try:
+            if request.profile.is_follow(user_profile):
+                return True
+        except ObjectDoesNotExist:
+            pass
+    return False
+
+@register.filter(name='exist_request')
+def exist_request(request, profile):
+    user_profile = get_object_or_404(
+        UserProfile, id=profile)
+    
+    if request.pk != user_profile.user.pk:
+        isFriend = False
+        try:
+            if request.profile.get_follow_request(user_profile):
+                return True
+        except ObjectDoesNotExist:
+            pass
+    return False
+
+@register.filter(name='is_blocked')
+def is_blocked(request, profile):
+    user_profile = get_object_or_404(
+        UserProfile, id=profile)
+
+    try:
+        if request.profile.is_blocked(user_profile):
+            return True
+    except ObjectDoesNotExist:
+        pass
+
+    return False

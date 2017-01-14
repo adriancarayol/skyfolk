@@ -4,10 +4,10 @@ from django.db import models
 import publications
 import timeline
 from notifications.models import Notification
-
+from datetime import datetime
 import hashlib
 from django.utils.http import urlencode
-
+from taggit.managers import TaggableManager
 from photologue.models import Photo
 
 RELATIONSHIP_FOLLOWING = 1
@@ -29,13 +29,88 @@ REQUEST_STATUSES = (
 )
 
 
-
 def uploadAvatarPath(instance, filename):
     return '%s/avatar/%s' % (instance.user.username, filename)
 
 
 def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
+
+
+class UserProfileQuerySet(models.QuerySet):
+    def get_all_users(self):
+        return self.all()
+
+    def get_user_by_username(self, username):
+        """
+        Devuelve un perfil dado un nombre de usuario
+        :param: => Nombre de usuario del que se desea obtener el perfil.
+        :return: Perfil asociado al nombre de usuario
+        """
+        return self.get(user__username=username)
+
+    def get_last_users(self):
+        """
+            Devuelve la lista de perfiles ordenada
+            segun su fecha de registro.
+            :return: Lista ordenada por fecha de registro
+        """
+        return self.all().order_by('-user__date_joined')
+
+    def get_last_login_user(self):
+        """
+        Devuelve el ultimo usuario que ha hecho login.
+        """
+        return self.all().order_by('-user__last_login')
+
+
+class UserProfileManager(models.Manager):
+    def get_queryset(self):
+        return UserProfileQuerySet(self.model, using=self._db)
+
+    def get_user_by_username(self, username):
+        """
+        Devuelve un perfil dado un nombre de usuario
+        :param: => Nombre de usuario del que se desea obtener el perfil.
+        :return: Perfil asociado al nombre de usuario
+        """
+        return self.get_queryset().get_user_by_username(username=username)
+
+    def get_last_users(self):
+        """
+            Devuelve la lista de perfiles ordenada
+            segun su fecha de registro.
+            :return: Lista ordenada por fecha de registro
+        """
+        return self.all().order_by('-user__date_joined')
+
+    def check_if_first_time_login(self, user):
+        """
+        Funcion para comprobar si un usuario se ha logueado
+        por primera vez.
+        """
+        is_first_time_login = None
+        user_profile = None
+        
+        try:
+            user_profile = self.get(user__id=user.pk)
+        except ObjectDoesNotExist:
+            pass
+
+        if user_profile:
+            is_first_time_login = user_profile.is_first_login
+
+        if is_first_time_login:
+            user_profile.is_first_login = False
+            user_profile.save()
+        
+        return is_first_time_login
+
+    def get_last_login_user(self):
+        """
+        Devuelve el ultimo usuario que ha hecho login.
+        """
+        return self.get_queryset().get_last_login_user()
 
 
 class UserProfile(models.Model):
@@ -67,6 +142,9 @@ class UserProfile(models.Model):
     ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
+    is_first_login = models.BooleanField(default=True)
+    tags = TaggableManager(blank=True)
+    objects = UserProfileManager()
 
 
     def __unicode__(self):
@@ -90,17 +168,16 @@ class UserProfile(models.Model):
                 return result[0].verified
         return False
     """
-    """
+    
     def save(self, *args, **kwargs):
         # delete old image when replacing by updating the file
         try:
             this = UserProfile.objects.get(id=self.id)
-            if this.image != self.image:
-                this.image.delete(save=False)
+            if this.backImage != self.backImage:
+                this.backImage.delete(save=False)
         except:
             pass  # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
-    """
 
     # Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
@@ -350,10 +427,17 @@ class UserProfile(models.Model):
 
     def get_likes(self):
         """
-        Obtengo los likes del perfil instanciado
+        Obtengo los likes que ha dado del perfil instanciado
         :return Devuelve los likes del perfil instanciado:
         """
         return self.likeprofiles.filter(to_likeprofile__from_like=self)
+
+    def get_likes_to_me(self):
+        """
+        Obtengo los likes que me han dado.
+        :return: Devuelve los likes recibidos
+        """
+        return self.likeprofiles.filter(from_likeprofile__to_like=self)
 
     def has_like(self, profile):
         """
@@ -580,6 +664,88 @@ class Relationship(models.Model):
         unique_together = ('from_person', 'to_person', 'status')
 
 
+
+class LikeProfileQuerySet(models.QuerySet):
+    """
+        Query Manager para usuarios favoritos
+    """
+    def get_all_likes(self, from_like):
+        """
+        Devuelve todos los me gusta dados por un perfil en concreto.
+        :param from_like => Del perfil que da me gusta:
+        :return Todos los me gusta dados por un perfil en concreto:
+        """
+        return self.filter(from_like=from_like)
+
+    def get_last_like(self, from_like):
+        """
+        Devuelve el ultimo me gusta dado por un perfil
+        :param from_like => Perfil que da me gusta:
+        :return El ultimo me gusta dado por un perfil:
+        """
+        return self.filter(from_like=from_like).latest()
+
+    def get_likes_by_created(self, from_like, reverse=True):
+        """
+        Devuelve los me gusta dados por un perfil
+        ordenados por la creacion
+        :param from_like => Perfil emisor:
+        :param reverse => Perfil receptor:
+        :return  me gusta dados por un perfil ordenados por la creacion:
+        """
+        if reverse:
+            return self.filter(from_like=from_like).order_by('-created')
+        return self.filter(from_like=from_like).order_by('created')
+
+    def get_all_likes_to_me(self, to_like):
+        """
+        Devuelve la lista de usuarios
+        que me han dado me gusta.
+        """
+        return self.filter(to_like=to_like)
+
+
+class LikeProfileManager(models.Manager):
+    """
+        Manager para usuarios que me gustan
+    """
+    def get_queryset(self):
+        return LikeProfileQuerySet(self.model, using=self._db)
+
+    def get_all_likes(self, from_like):
+        """
+        Devuelve todos los me gusta dados por un perfil en concreto.
+        :param from_like => Del perfil que da me gusta:
+        :return Todos los me gusta dados por un perfil en concreto:
+        """
+        return self.get_queryset().get_all_likes(from_like=from_like)
+
+    def get_last_like(self, from_like):
+        """
+        Devuelve el ultimo me gusta dado por un perfil
+        :param from_like => Perfil que da me gusta:
+        :return El ultimo me gusta dado por un perfil:
+        """
+        return self.get_queryset().get_last_like(from_like=from_like)
+
+    def get_likes_by_created(self, from_like, reverse=False):
+        """
+        Devuelve los me gusta dados por un perfil
+        ordenados por la creacion
+        :param from_like => Perfil emisor:
+        :param reverse => Perfil receptor:
+        :return  me gusta dados por un perfil ordenados por la creacion:
+        """
+        return self.get_queryset().get_likes_by_created(from_like=from_like, reverse=reverse)
+
+    def get_all_likes_to_me(self, to_like):
+        """
+        Devuelve la lista de usuarios
+        que me han dado me gusta.
+        """
+        return self.get_queryset().get_all_likes_to_me(to_like=to_like)
+
+
 class LikeProfile(models.Model):
     """
     Modelo que relaciona a dos usuarios al dar "me gusta" al otro perfil.
@@ -587,12 +753,19 @@ class LikeProfile(models.Model):
         <<to_like>>: Persona que recibe el like
         <<created>>: Fecha de creación del like
     """
+
+    class Meta:
+        get_latest_by = 'created'
+        unique_together = ('from_like', 'to_like')
+
     from_like = models.ForeignKey(UserProfile, related_name='from_likeprofile')
     to_like = models.ForeignKey(UserProfile, related_name='to_likeprofile')
     created = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ('from_like', 'to_like')
+    def __str__(self):
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username, self.to_like.user.username, self.created)
+
+    objects = LikeProfileManager()
 
 
 class Request(models.Model):
@@ -612,3 +785,165 @@ class Request(models.Model):
 
     class Meta:
         unique_together = ('emitter', 'receiver', 'status')
+
+
+class AffinityUserManager(models.Manager):
+    """
+        Manager para ultimos usuarios visitados por afinidad/tiempo
+    """
+    def get_all_relations(self, emitterid):
+        """
+        Devuelve todas las relaciones <<ultimos usuarios visitados>>
+        :param emitterid => Emisor de la relacion:
+        :return relaciones del emisor:
+        """
+        return self.filter(emitter=emitterid)
+
+    def get_relation(self, emitterid, receiver):
+        """
+        Devuelve la relacion creada entre dos perfiles
+        :param emitterid => Perfil emisor:
+        :param receiver => Perfil receptor:
+        :return relacion entre emisor/receptor:
+        """
+        return self.filter(emitter=emitterid, receiver=receiver)
+
+    def get_affinity(self, emitterid, receiver):
+        """
+        Devuelve la afinidad entre dos perfiles
+        :param emitterid => Perfil emisor:
+        :param receiver => Perfil receptor:
+        :return afinidad entre dos usuarios:
+        """
+        return self.get(emitter=emitterid, receiver=receiver)
+
+    def get_relations_by_created(self, emitterid, reverse=True):
+        """
+        Devuelve relaciones ordenadas por la creacion
+        :param emitterid => Perfil emisor:
+        :param reverse => Perfil receptor:
+        :return relaciones ordenadas segun la creacion:
+        """
+        if reverse:
+            return self.filter(emitter=emitterid).order_by('-created')
+
+        return self.filter(emitter=emitterid).order_by('created')
+
+    def get_last_relation(self, emitterid):
+        """
+        Devuelve la ultima relacion creada
+        :param emitterid => Perfil emisor:
+        :return ultima relacion creada:
+        """
+        return self.filter(emitter=emitterid).latest()
+
+    def get_favourite_relation(self, emitterid):
+        """
+        Devuelve la relacion favorita (por afinidad)
+        :param emitterid => Perfil emisor:
+        :return devuelve relaciones de mayor a menor afinidad:
+        """
+        return self.filter(emitter=emitterid).order_by('-affinity')
+    
+    def check_limit(self, emitterid):
+        """
+        Comprueba el limite de usuarios en la lista de favoritos
+        Si alcanza el limite, elimina el que menos afinidad/fecha de creacion
+        tenga.
+        """
+        LIMIT_USERS = 6
+        if self.filter(emitter=emitterid).count() > LIMIT_USERS:
+            print('>> HAVE: {} relations.'.format(self.count()))
+            try:
+                candidate = self.filter(emitter=emitterid).order_by('created', 'affinity')[0]
+            except ObjectDoesNotExist:
+                candidate = None
+            if candidate:
+                print('Borrando candidato: {}'.format(candidate.receiver.user.username))
+                candidate.delete()
+
+
+class AffinityUser(models.Model):
+    """
+        Modelo para gestionar los últimos usuarios visitados
+        cada usuario visitado tendra una afinidad,
+        esta se incrementara tantas veces como se visite un perfil
+        o actuemos con objetos de ese perfil(dar me gusta a comentarios,
+        añadir a mi timeline algun comentario suyo...
+    """
+
+    class Meta:
+        get_latest_by = 'created'
+        unique_together = ('emitter', 'receiver')
+
+    emitter = models.ForeignKey(UserProfile, related_name='from_profile_affinity')
+    receiver = models.ForeignKey(UserProfile, related_name='to_profile_affinity')
+    affinity = models.IntegerField(verbose_name='affinity', default=0)
+    created = models.DateTimeField(auto_now_add=True)
+    objects = AffinityUserManager()
+
+    def __str__(self):
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username, self.created)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, increment=True):
+        """
+            Autoincrementar afinidad
+        """
+        if increment:
+            self.affinity += 1
+        self.created = datetime.now()
+        super(AffinityUser, self).save()
+
+
+class AuthDevicesQuerySet(models.QuerySet):
+    """
+        Query Manager para Auth Devices
+    """
+    def get_auth_device(self, user, token):
+        """
+        Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.
+        :param Usuario del que se quiere obtener los dispositivos que usa:
+        :return Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.:
+        """
+        return self.filter(user_profile=user, browser_token=token)
+
+    def get_devices_by_user(self, user):
+        """
+        Devuelve todos los navegadores usados por un usuario.
+        :param user:
+        :return Devuelve los navegadores usados por un usuario:
+        """
+        return self.filter(user_profile=user)
+
+
+class AuthDevicesManager(models.Manager):
+    """
+        Manager para Auth Devices
+    """
+    def get_queryset(self):
+        return AuthDevicesQuerySet(self.model, using=self._db)
+
+    def get_device(self, user, token):
+        """
+        Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.
+        :param Usuario del que se quiere obtener los dispositivos que usa:
+        :return Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.:
+        """
+        return self.get_queryset().get_auth_device(user=user, token=token)
+
+    def get_devices_by_user(self, user):
+        """
+        Devuelve todos los navegadores usados por un usuario.
+        :param user:
+        :return Devuelve los navegadores usados por un usuario:
+        """
+        return self.get_queryset().get_devices_by_user(user=user)
+
+
+class AuthDevices(models.Model):
+    """
+        Establece una relacion entre el usuario y los navegadores/dispositivos que usa.
+    """
+    user_profile = models.ForeignKey(UserProfile, related_name='device_to_profile')
+    browser_token = models.CharField(max_length=1024)
+    objects = AuthDevicesManager()

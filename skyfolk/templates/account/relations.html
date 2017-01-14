@@ -5,7 +5,9 @@
 {% block title %} <title>{% if url_name == "followers" %}Seguidores {% else %} Seguidos {% endif %}{{ request.user.username }}</title> {% endblock %}
 {% block extra-css %}
     <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css" onload="if(media!='all')media='all'">
+    {% comment "No necesario" %}
     <link rel="stylesheet" href="{{STATIC_URL}}css/profile.css" onload="if(media!='all')media='all'">
+    {% endcomment %}
 {% endblock %}
 {% block content %}
 <div class="container">

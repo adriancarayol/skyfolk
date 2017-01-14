@@ -3,13 +3,12 @@ from django.db import models
 from django.db.models import Q
 from user_profile.models import Relationship
 from channels import Group
-from avatar.models import Avatar
-from user_profile.models import UserProfile
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from taggit.managers import TaggableManager
-import json, re
+import json
 from text_processor.format_text import TextProcessor
+from user_groups.models import UserGroups
 
 class PublicationManager(models.Manager):
     list_display = ['tag_list']
@@ -104,13 +103,22 @@ class PublicationManager(models.Manager):
         return u", ".join(o.name for o in obj.tags.all())
 
 
-class Publication(models.Model):
+class PublicationBase(models.Model):
     content = models.TextField(blank=False)
     author = models.ForeignKey(User, related_name='publications')
-    board_owner = models.ForeignKey(User, related_name='board_owner')
     image = models.ImageField(upload_to='publicationimages',
                               verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
+    tags = TaggableManager(blank=True)
+
+    class Meta:
+        abstract = True
+        ordering = ('-created',)
+
+
+
+class Publication(PublicationBase):
+    board_owner = models.ForeignKey(User, related_name='board_owner')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
@@ -120,12 +128,7 @@ class Publication(models.Model):
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply')
 
-    tags = TaggableManager(blank=True)
-
     objects = PublicationManager()
-
-    class Meta:
-        ordering = ('-created',)
 
     def __str__(self):
         return self.content
@@ -182,3 +185,21 @@ class Publication(models.Model):
             return result
         else:
             super(Publication, self).save(*args, **kwargs)
+
+class PublicationGroup(models.Model):
+    board_group = models.ForeignKey(UserGroups, related_name='board_group')
+    user_give_me_like = models.ManyToManyField(User, blank=True,
+            related_name='likes_group_me')
+    user_give_me_hate = models.ManyToManyField(User, blank=True,
+                                               related_name='hates_group_me')
+    user_share_me = models.ManyToManyField(User, blank=True,
+                                           related_name='share_group_me')
+    parent = models.ForeignKey('self', blank=True, null=True,
+                               related_name='reply_group')
+
+
+    #TODO objects = PublicationManager()
+
+    def __str__(self):
+        return self.content
+

@@ -22,10 +22,11 @@
             </form>
          </div>
     </li>
-    <li><a href="/config/profile/"><i class="material-icons">settings</i>Configuración</a></li>
+    <li><a href="{% url "user_profile:config_profile" %}" ><i class="material-icons">settings</i>Configuración</a></li>
     <li><a href="/messages/inbox/"><i class="material-icons">email</i>Mensajes privados</a></li>
+    <li><a id="new_group"><i class="material-icons">people</i>Crear grupo</a></li>
     <li><div class="divider"></div></li>
     <li><a href="{% url 'account_logout' %}" class="subheader"><i class="material-icons">exit_to_app</i>Salir</a></li>
     <li><a class="waves-effect shortcut-keyboard"><i class="material-icons">keyboard</i>Atajos</a></li>
-    <li><a href="/about/home/" class="waves-effect" href="#!"><i class="material-icons">help</i>Ayuda</a></li>
+    <li><a href="/about/home/" class="waves-effect"><i class="material-icons">help</i>Ayuda</a></li>
 </ul>

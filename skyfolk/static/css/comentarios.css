@@ -363,7 +363,6 @@ input[type="checkbox"] {
       margin: 1em 1.5em 2em 0;
       cursor: pointer;
       position: relative;
-      font-family: Tahoma, Arial;
       -webkit-transition:.5s;
       -moz-transition:.5s;
       -o-transition:.5s;

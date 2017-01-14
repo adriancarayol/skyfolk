@@ -1,9 +1,6 @@
 var countFriendList = 1;
 var countPublicationsList = 1;
 var countTimeLine = 1;
-var lastClickHeart = 0;
-var lastClickHate = 0;
-var lastClickTag = 0;
 var flag_reply = false;
 
 $(document).ready(function () {
@@ -178,106 +175,40 @@ $('#tab-timeline').find('.controles .fa-trash').on('click', function() {
 $(document).on('click', '#options-comments .fa-tag', function() {
     var caja_publicacion = $(this).closest('.wrapper');
     var tag = this;
-    if (Date.now() - lastClickTag > 1000) {
         AJAX_add_timeline(caja_publicacion, tag, "publication");
-        lastClickTag = Date.now();
-    } else {
-        swal({
-            title: ":/",
-            text: "Debes esperar 1 segundos para volver a pulsar el botón.",
-            timer: 2000,
-            showConfirmButton: true,
-            type: "warning"
-        });
-    }
 });
 
 /* Añadir me gusta a comentario */
 $(document).on('click', '#options-comments #like-heart', function() {
     var caja_publicacion = $(this).closest('.wrapper');
     var heart = this;
-    if (Date.now() - lastClickHeart > 1000) {
-        AJAX_add_like(caja_publicacion, heart, "publication");
-        lastClickHeart = Date.now();
-    } else {
-        swal({
-            title: ":/",
-            text: "Debes esperar 1 segundos para volver a pulsar el botón.",
-            timer: 2000,
-            showConfirmButton: true,
-            type: "warning"
-        });
-    }
+    AJAX_add_like(caja_publicacion, heart, "publication");
 });
 
 /* Añadir no me gusta a comentario */
 $(document).on('click', '#options-comments #fa-hate', function() {
     var caja_publicacion = $(this).closest('.wrapper');
     var heart = this;
-    if (Date.now() - lastClickHate > 1000) {
-        AJAX_add_hate(caja_publicacion, heart, "publication");
-        lastClickHate = Date.now();
-    } else {
-        swal({
-            title: ":/",
-            text: "Debes esperar 1 segundos para volver a pulsar el botón.",
-            timer: 2000,
-            showConfirmButton: true,
-            type: "warning"
-        });
-    }
+    AJAX_add_hate(caja_publicacion, heart, "publication");
 });
 
 /* Añadir publicacion de timeline a mi timeline */
 $('#wrapperx-timeline').find('#controls-timeline').find('#add-timeline').on('click', function() {
     var caja_publicacion = $(this).closest('.timeline-pub');
     var tag = this;
-    if (Date.now() - lastClickTag > 1000) {
-        AJAX_add_timeline(caja_publicacion, tag, "timeline");
-        lastClickTag = Date.now();
-    } else {
-        swal({
-            title: ":/",
-            text: "Debes esperar 1 segundos para volver a pulsar el botón.",
-            timer: 2000,
-            showConfirmButton: true,
-            type: "warning"
-        });
-    }
+    AJAX_add_timeline(caja_publicacion, tag, "timeline");
 });
 /* Añadir me gusta a comentario en timeline */
 $('#wrapperx-timeline').find('#controls-timeline').find('#like-heart-timeline').on('click', function() {
     var caja_publicacion = $(this).closest('.timeline-pub');
     var heart = this;
-    if (Date.now() - lastClickHate > 1000) {
-        AJAX_add_like(caja_publicacion, heart, "timeline");
-        lastClickHate = Date.now();
-    } else {
-        swal({
-            title: ":/",
-            text: "Debes esperar 1 segundos para volver a pulsar el botón.",
-            timer: 2000,
-            showConfirmButton: true,
-            type: "warning"
-        });
-    }
+    AJAX_add_like(caja_publicacion, heart, "timeline");
 });
 /* Añadir no me gusta a comentario en timeline */
 $('#wrapperx-timeline').find('#controls-timeline').find('#fa-hate-timeline').on('click', function() {
     var caja_publicacion = $(this).closest('.timeline-pub');
     var heart = this;
-    if (Date.now() - lastClickHate > 1000) {
-        AJAX_add_hate(caja_publicacion, heart, "timeline");
-        lastClickHate = Date.now();
-    } else {
-        swal({
-            title: ":/",
-            text: "Debes esperar 1 segundos para volver a pulsar el botón.",
-            timer: 2000,
-            showConfirmButton: true,
-            type: "warning"
-        });
-    }
+    AJAX_add_hate(caja_publicacion, heart, "timeline");
 });
 
 
@@ -410,6 +341,7 @@ $('#personal-card-info').find('#bloq-user').on('click', function () {
         title: "Bloquear a " + username,
         text: username + " no podrá seguirte, enviarte mensajes ni ver tu contenido.",
         type: "warning",
+        customClass: 'default-div',
         animation: "slide-from-top",
         showConfirmButton: true,
         showCancelButton: true,
@@ -433,8 +365,8 @@ $(this).click(function(event) {
         }
     }
 });
-/* FIN DOCUMENT READY */
-});
+
+}); // END DOCUMENT READY */
 
 function addFriendToHtmlList(item) {
 
@@ -616,6 +548,7 @@ function AJAX_likeprofile(status) {
             } else if (response == "blocked") {
                 swal({
                     title: "Vaya... algo no está bien.",
+                    customClass: 'default-div',
                     text: "Si quieres dar un like, antes debes desbloquear este perfil.",
                     timer: 4000,
                     showConfirmButton: true,
@@ -626,10 +559,14 @@ function AJAX_likeprofile(status) {
             }
         },
         error: function (rs, e) {
-            alert(rs.responseText);
+            // alert(rs.responseText);
         }
     }); else if (status == "anonymous") {
-        alert("Debe estar registrado");
+        swal({
+            title: "¡Ups!",
+            text: "Debe estar registrado",
+            customClass: 'default-div'
+        });
     }
 
 }
@@ -695,13 +632,14 @@ function AJAX_delete_publication(caja_publicacion) {
             }else{
                 swal({
                     title: "Fail",
+                    customClass: 'default-div',
                     text: "Failed to delete publish.",
                     type: "error"
                 });
             }
         },
         error: function(rs, e) {
-            alert('ERROR: ' + rs.responseText + ' ' + e);
+            // alert('ERROR: ' + rs.responseText + ' ' + e);
         }
     });
 }
@@ -751,7 +689,8 @@ function AJAX_add_like(caja_publicacion, heart, type) {
                 swal({
                     title: ":-(",
                     text: "¡No puedes dar me gusta a este comentario!",
-                    timer: 1000,
+                    timer: 4000,
+                    customClass: 'default-div',
                     animation: "slide-from-bottom",
                     showConfirmButton: false,
                     type: "error"
@@ -759,7 +698,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
             }
         },
         error: function(rs, e) {
-            alert('ERROR: ' + rs.responseText + e);
+            // alert('ERROR: ' + rs.responseText + e);
         }
     });
 }
@@ -812,7 +751,8 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
                 swal({
                     title: ":-(",
                     text: "¡No puedes dar no me gusta a este comentario!",
-                    timer: 1000,
+                    timer: 4000,
+                    customClass: 'default-div',
                     animation: "slide-from-bottom",
                     showConfirmButton: false,
                     type: "error"
@@ -820,7 +760,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
             }
         },
         error: function(rs, e) {
-            alert('ERROR: ' + rs.responseText + e);
+            // alert('ERROR: ' + rs.responseText + e);
         }
     });
 }
@@ -855,13 +795,14 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
             }else{
                 swal({
                     title: "Fail",
+                    customClass: 'default-div',
                     text: "Failed to add to timeline.",
                     type: "error"
                 });
             }
         },
         error: function(rs, e) {
-            alert('ERROR: ' + rs.responseText + e);
+            // alert('ERROR: ' + rs.responseText + e);
         }
     });
 }
@@ -895,13 +836,14 @@ function AJAX_bloq_user(buttonBan) {
             } else {
                 swal({
                     title: "Tenemos un problema...",
+                    customClass: 'default-div',
                     text: "Hubo un problema con su petición.",
                     timer: 4000,
                     showConfirmButton: true
                 });
             }
         }, error: function (rs, e) {
-            alert(rs.responseText + " " + e);
+            // alert(rs.responseText + " " + e);
         }
     });
 }
@@ -922,13 +864,14 @@ function AJAX_remove_bloq() {
             } else {
                 swal({
                     title: "Tenemos un problema...",
+                    customClass: 'default-div',
                     text: "Hubo un problema con su petición.",
                     timer: 4000,
                     showConfirmButton: true
                 });
             }
         }, error: function (rs, e) {
-            alert(rs.responseText + " " + e);
+            // alert(rs.responseText + " " + e);
         }
     });
 }
@@ -958,13 +901,14 @@ function AJAX_delete_timeline(div_timeline) {
             }else{
                 swal({
                     title: "Fail",
+                    customClass: 'default-div',
                     text: "Failed to delete publish.",
                     type: "error"
                 });
             }
         },
         error: function(rs, e) {
-            alert('ERROR: ' + rs.responseText + " " + e);
+            // alert('ERROR: ' + rs.responseText + " " + e);
         }
     });
 }

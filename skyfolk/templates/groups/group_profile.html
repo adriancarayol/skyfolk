@@ -1,0 +1,71 @@
+{% extends "groups/base_group.html" %}
+{% block extra-css %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css"
+          onload="if(media!='all')media='all'">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css"
+          onload="if(media!='all')media='all'">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/group_profile.css"
+          onload="if(media!='all')media='all'">
+{% block extra-js %}
+     <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
+{% endblock %}
+{% endblock %}
+{% block title %} <title> Grupo {{ group_profile.name }}</title> {% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                {% include "groups/card-group.html" %}
+            </div>
+            <div class="col s12">
+                {% include "groups/group-menu.html" %}
+            </div>
+            <div class="col l12 m12 s12">
+                <div class="container">
+                    <div class="col l12 m12 s12">
+                        <div id="div-separator">
+                            <div class="sidebar card" id="tab-container">
+                                <div class="ventana-pin">
+                                    <a><i class="fa fa-times"></i></a>
+                                    <a><i class="fa fa-expand"></i></a>
+                                    <a><i class="fa fa-thumb-tack"></i></a>
+                                </div>
+                                <ul class="unstyled table fullwidth links">
+                                    <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">timeline</a></li>
+                                    <li class="tab" id="li-tab-comentarios"><a
+                                            href="#tab-comentarios">Comentarios</a></li>
+                                    <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Usuarios</a></li>
+                                </ul>
+                                <div class="unstyled content" id="hood-tabs">
+                                    {% comment %}
+                                            Incluimos el tab timeline
+                                        {% include "account/tab-timeline.html" %} {% endcomment %}
+                                    {% comment %}
+                                            Incluimos el tab comentarios
+                                        {% endcomment %}
+                                    <div id="tab-comentarios">
+                                        {% if publications|length == 0 %}
+                                            <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                                            <div class="no-comments" id="without-comments">
+                                                <span class="no-comments-text-info">¡{{ group_profile.name }} no tiene comentarios!</span>
+                                                <a id="compose-new-no-comments" class="no-comments-new-comment">
+                                                    <i class="fa fa-paper-plane fa-lg"></i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                        {% comment %}
+                                            {% include "account/profile_comments.html" %}
+                                            {% endcomment %}
+                                    </div>
+                                    {% comment %}
+                                            Incluimos el tab amigos
+                                        {% include "account/tab-amigos.html" %}{% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

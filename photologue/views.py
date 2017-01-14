@@ -22,6 +22,7 @@ import json
 from django.shortcuts import redirect
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
+from user_profile.models import UserProfile
 # Gallery views.
 
 
@@ -72,17 +73,22 @@ def collection_list(request, username,
     :return => Devuelve una lista de fotos con un parecido:
     """
     user = request.user
+
+    # Para comprobar si tengo permisos para ver el contenido de la coleccion
+    user_profile = get_object_or_404(UserProfile, user__username=username)
+    visibility = user_profile.is_visible(user.profile, user.pk)
+    if visibility == ("nothing" or "both" or "followers" or "block"):
+        return redirect('user_profile:profile', username=user_profile.user.username)
+
     initial = {'author': user.pk, 'board_owner': user.pk}
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
-    method = request.method
-
 
     print('>>>>>>> TAGNAME {}'.format(tagname))
     object_list = Photo.objects.filter(owner__username=username, tags__name__exact=tagname)
-    context = {'publicationForm': publicationForm,
+    context = {'publicationSelfForm': publicationForm,
                     'searchForm': searchForm,
                     'object_list': object_list, 'form': form,
                     'form_zip': form_zip}
@@ -93,14 +99,24 @@ def collection_list(request, username,
     return render_to_response(template, context, context_instance=RequestContext(request))
 
 
-
 class PhotoListView(AjaxListView):
     context_object_name = "object_list"
     template_name = "photologue/photo_gallery.html"
     page_template = "photologue/photo_gallery_page.html"
 
+    def __init__(self):
+        self.username = None
+        super(PhotoListView, self).__init__()
+
+    def dispatch(self, request, *args, **kwargs):
+        self.username = self.kwargs['username']
+        if self.user_pass_test():
+            return super(PhotoListView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('user_profile:profile', username=self.username)
+
     def get_queryset(self):
-        return Photo.objects.filter(owner__username=self.kwargs['username'])
+        return Photo.objects.filter(owner__username=self.username)
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)
@@ -109,9 +125,24 @@ class PhotoListView(AjaxListView):
         context['form'] = UploadFormPhoto()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
         context['user_gallery'] = self.kwargs['username']
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         return context
+
+    def user_pass_test(self):
+        """
+        Comprueba si un usuario tiene permisos
+        para ver la galeria solicitada.
+        """
+        user = self.request.user
+        user_profile = UserProfile.objects.get(user__username=self.username)
+        visibility = user_profile.is_visible(user.profile, user.pk)
+
+        if visibility == ("nothing" or "both" or "followers" or "block"):
+            return False
+        return True
+
+
 
 photo_list = login_required(PhotoListView.as_view())
 
@@ -131,7 +162,7 @@ def upload_photo(request):
             obj.owner = user
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
-            return redirect('/media/'+user.username+'/')
+            return redirect('/multimedia/'+user.username+'/')
         else:
             print(form.errors)
     else:
@@ -150,7 +181,7 @@ def upload_zip_form(request):
         form = UploadZipForm(data=request.POST, files=request.FILES, request=request)
         if form.is_valid():
             form.save(request=request)
-            return redirect('/media/' + user.username + '/')
+            return redirect('/multimedia/' + user.username + '/')
         else:
             return HttpResponse(
                 json.dumps({"nothing to see": "this isn't happening"}),
@@ -214,7 +245,7 @@ def edit_photo(request, photo_id):
                 json.dumps(response_data),
                 content_type="application/json"
             )
-        return redirect('/media/'+user.username+'/')
+        return redirect('/multimedia/'+user.username+'/')
     else:
         return HttpResponse(
             json.dumps({'Nothing to see': 'This isnt happening'}),
@@ -230,6 +261,20 @@ class PhotoDetailView(DetailView):
     template_name = 'photologue/photo_detail.html'
     model = Photo
 
+    def __init__(self):
+        self.username = None
+        self.object = None
+        super(PhotoDetailView, self).__init__()
+
+    def dispatch(self, request, *args, **kwargs):
+        photo = self.get_object()
+        self.username = photo.owner.username
+
+        if self.user_pass_test():
+            return super(PhotoDetailView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('user_profile:profile', username=self.username)
+
     def get_queryset(self):
         slug = self.kwargs['slug']
         return Photo.objects.filter(slug=slug)
@@ -239,7 +284,7 @@ class PhotoDetailView(DetailView):
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
         context['form'] = EditFormPhoto(instance=self.object)
-        context['publicationForm'] = PublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:
@@ -254,6 +299,19 @@ class PhotoDetailView(DetailView):
         except Photo.DoesNotExist:
             pass
         return context
+
+    def user_pass_test(self):
+        """
+        Comprueba si un usuario tiene permisos
+        para ver la galeria solicitada.
+        """
+        user = self.request.user
+        user_profile = get_object_or_404(UserProfile, user__username=self.username)
+        visibility = user_profile.is_visible(user.profile, user.pk)
+
+        if visibility == ("nothing" or ("both" or "followers") or "block"):
+            return False
+        return True
 
 
 class PhotoDateView(object):

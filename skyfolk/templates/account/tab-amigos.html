@@ -1,19 +1,12 @@
 {% comment %}
   Pestaña de amigos en el perfil
 {% endcomment %}
-{% load avatar_tags %}
-{% load app_filters %}
 <div id="tab-amigos">
-            <input class="search" type="search" placeholder="¿A quién buscas?" title="Search">
-            <button class="sort" data-sort="name">
-              Ordenar
-            </button>
-            <ul class="list">
-                {% for item in friends_top12 %}
-                  <li id="friend-{{item.user__id}}">
-                      <div class="usr-img img-responsive">{% avatar item.user__username %}</div>
-                  <a class="name" href="/profile/{{ item.user__username }}">{{item.user__first_name}} {{item.user__last_name}} ({{item.user__username}})</a>
-                  </li>
-                {% endfor %}
-            </ul>
+    <input class="search" type="search" placeholder="¿A quién buscas?" title="Search">
+    <button class="sort" data-sort="name">
+        Ordenar
+    </button>
+    <ul class="list">
+        {% include "account/follow_entries.html" %}
+    </ul>
 </div>

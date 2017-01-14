@@ -43,7 +43,7 @@ function AJAX_delete_photo() {
                   timer: 2500,
                   showConfirmButton: true
          }, function () {
-            window.location.replace('/media/'+json.author+'/');
+            window.location.replace('/multimedia/'+json.author+'/');
          });
       }, error: function(rs, e) {
          swal(rs.responseText + " " + e);

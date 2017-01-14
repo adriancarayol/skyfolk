@@ -3,4 +3,10 @@
 {% block title %}<title>Perfil de {{ user_profile.username }}</title>{% endblock %}
 {% block content-text %}
     <h1>El perfil <strong>{{ user_profile.username }}</strong> es privado.</h1>
+                <script src="{{ STATIC_URL }}js/socket.js"></script>
+            <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+            <script>
+                UTILS.init([{{ user.pk }}]);
+                UTILS.conn_socket();
+            </script>
 {% endblock %}

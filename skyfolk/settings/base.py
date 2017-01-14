@@ -30,27 +30,31 @@ THIRD_PARTY_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'rest_framework',          # REST framework
-    'django_messages',         # mensajes entre usuarios
-    # 'achievements',            # achivements       Portando a Python3
+    'rest_framework',   # REST framework
+    'django_messages',  # mensajes entre usuarios
+    # 'achievements',   # achivements       Portando a Python3
     'emoji',
-    'avatar',                  # Avatares para usuarios.
-    'channels',                # django-channels
-    'photologue',               # photologue original
+    'avatar',   # Avatares para usuarios.
+    'channels', # django-channels
+    'photologue',   # photologue original
     'sortedm2m',
-    'taggit',                   # para etiquetas
-    'el_pagination',            # Para paginacion
-    'notifications',           # siempre último
+    'taggit',   # para etiquetas
+    'el_pagination',    # Para paginacion
+    'notifications',    # notificaciones
+    'dal',  # autocompletado
+    'dal_select2',
 )
 
 FIRST_PARTY_APPS = (
-    'landing',                 # página de inicio
-    'user_profile',            # perfil de usuario
-    'publications',            # publicaciones en el perfil
-    'text_processor',          # Formatea un texto para incorporar emoticonos, hashtags...
+    'landing',  # página de inicio
+    'user_profile', # perfil de usuario
+    'publications', # publicaciones en el perfil
+    'text_processor',   # Formatea un texto para incorporar emoticonos, hashtags...
     'timeline',
-    'about',                   # sobre los autores
+    'about',    # sobre los autores
     'latest_news',
+    'user_groups',  # Para grupos de usuarios
+    'support',  # modulo para ofrecer soporte al usuario
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
@@ -75,6 +79,7 @@ LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
+ACCOUNT_FORMS = {'login': 'user_profile.forms.CustomLoginForm'}
 ACCOUNT_SIGNUP_FORM_CLASS = 'user_profile.forms.SignupForm'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
