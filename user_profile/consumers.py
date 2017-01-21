@@ -3,6 +3,7 @@ from channels import Group
 from .models import UserProfile
 from django.core.exceptions import ObjectDoesNotExist
 from channels.auth import http_session_user, channel_session_user, channel_session_user_from_http
+import logging
 
 # The "slug" keyword argument here comes from the regex capture group in
 #
@@ -21,6 +22,11 @@ def connect_blog(message, username):
         profile_blog = UserProfile.objects.get(user__username=username)
         visibility = profile_blog.is_visible(user.profile, user.pk)
         if visibility != ("all" or None):
+            logging.warning('User: {} no puede conectarse al socket de: profile: {}'.format(user.username, username))
+            message.reply_channel.send({
+                "text": json.dumps({"error": "no_perm"}),
+                "close": True,
+            })
             return
     except ObjectDoesNotExist:
         # You can see what messages back to a WebSocket look like in the spec:
@@ -34,7 +40,6 @@ def connect_blog(message, username):
             "close": True,
         })
         return
-
     # Each different client has a different "reply_channel", which is how you
     # send information back to them. We can add all the different reply channels
     # to a single Group, and then when we send to the group, they'll all get the
