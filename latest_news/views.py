@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from publications.models import Publication
 from publications.forms import PublicationForm
@@ -75,11 +75,11 @@ class News(TemplateView):
         except ObjectDoesNotExist:
             publications = None
 
+        context = {'publications': publications,
+                   'publicationSelfForm': publicationForm,
+                   'searchForm': searchForm,
+                   'mix': affinity_users}
 
-        return render_to_response(self.template_name, {'publications': publications,
-                                                       'publicationSelfForm': publicationForm,
-                                                       'searchForm': searchForm,
-                                                       'mix': affinity_users},
-                                  context_instance=RequestContext(request))
+        return render(request, self.template_name, context=context)
 
 news_and_updates = login_required(News.as_view())

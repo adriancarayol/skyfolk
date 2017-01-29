@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import render_to_response, get_object_or_404, redirect
+from django.shortcuts import render_to_response, get_object_or_404, redirect, render
 from django.template import RequestContext
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -64,10 +64,10 @@ def profile_view(request, username,
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":
         template = "account/privacity/private_profile.html"
-        return render_to_response(template, context, context_instance=RequestContext(request))
+        return render(request, template, context)
     elif privacity == "block":
         template = "account/privacity/block_profile.html"
-        return render_to_response(template, context, context_instance=RequestContext(request))
+        return render(request, template, context)
 
     # Recuperamos requests para el perfil y si el perfil es gustado.
     json_requestsToMe = None
@@ -149,7 +149,7 @@ def profile_view(request, username,
 
     if privacity == "followers" or privacity == "both":
         template = "account/privacity/need_confirmation_profile.html"
-        return render_to_response(template, context, context_instance=RequestContext(request))
+        return render(request, template, context)
 
     # Para escribir mensajes en perfiles ajenos
     initial = {'author': user.pk, 'board_owner': user_profile.pk}
@@ -200,7 +200,7 @@ def profile_view(request, username,
     if extra_context is not None:
         context.update(extra_context)
 
-    return render_to_response(template, context, context_instance=RequestContext(request))
+    return render(request, template, context)
 
 
 @login_required(login_url='accounts/login')
@@ -233,13 +233,12 @@ def search(request, option=None):
         # Si hay peticion GET => Se busca si antes hubo
         # un request.POST
         # Si hay peticion POST se actúa con normalidad
-        return render_to_response('account/search.html',
+        return render(request, 'account/search.html',
                                   {'showPerfilButtons': True,
                                    'searchForm': searchForm,
                                    'resultSearch': (),
                                    'publicationSelfForm': publicationForm,
-                                   'message': info},
-                                  context_instance=RequestContext(request))
+                                   'message': info})
 
     # if request.method == 'POST':
     else:
@@ -296,14 +295,13 @@ def search(request, option=None):
                     elif len(words) > 1:
                         for w in words:
                             pass
-                return render_to_response('account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
+                return render(request, 'account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
                                                                   'resultSearch': result_search,
                                                                   'publicationSelfForm': publicationForm,
                                                                   'resultMessages': result_messages,
                                                                   'result_media': result_media,
                                                                   'words': words,
-                                                                  'message': info},
-                                          context_instance=RequestContext(request))
+                                                                  'message': info})
 
 
 
@@ -362,9 +360,8 @@ def advanced_view(request):
             result_regex = Publication.objects.filter(content__iregex=clean_regex)
             print(result_regex)
 
-    return render_to_response(template_name, {'publicationSelfForm': publicationForm, 'searchForm': searchForm,
-                                                'form': form},
-                                                 context_instance=RequestContext(request))
+    return render(request, template_name, {'publicationSelfForm': publicationForm, 'searchForm': searchForm,
+                                                'form': form})
 
 
 
@@ -386,10 +383,9 @@ def config_privacity(request):
     else:
         privacity_form = PrivacityForm(instance=request.user.profile)
         print('PASO ULTIMO')
-    return render_to_response('account/cf-privacity.html',
+    return render(request, 'account/cf-privacity.html',
                               {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationSelfForm': publicationForm,
-                               'privacity_form': privacity_form},
-                              context_instance=RequestContext(request))
+                               'privacity_form': privacity_form})
 
 
 @login_required(login_url='/')
@@ -421,10 +417,11 @@ def config_profile(request):
         perfil_form = ProfileForm(instance=request.user.profile)
 
     print('>>>>>>>  paso x')
-    return render_to_response('account/cf-profile.html',
-                              {'showPerfilButtons': True, 'searchForm': searchForm, 'user_profile': user_profile,
-                               'user_form': user_form, 'perfil_form': perfil_form, 'publicationSelfForm': publicationForm},
-                              context_instance=RequestContext(request))
+    context = {'showPerfilButtons': True, 'searchForm': searchForm, 
+                'user_profile': user_profile,
+                'user_form': user_form, 'perfil_form': perfil_form, 
+                'publicationSelfForm': publicationForm}
+    return render(request, 'account/cf-profile.html', context)
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
     # 'user_form':user_form}, context_instance=RequestContext(request))
@@ -438,9 +435,10 @@ def config_pincode(request):
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
 
-    return render_to_response('account/cf-pincode.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                          'publicationSelfForm': publicationForm, 'pin': pin},
-                              context_instance=RequestContext(request))
+    context = {'showPerfilButtons': True, 'searchForm': searchForm,
+                'publicationSelfForm': publicationForm, 'pin': pin}
+
+    return render(request, 'account/cf-pincode.html', context)
 
 
 @login_required(login_url='/')
@@ -451,9 +449,10 @@ def config_blocked(request):
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
 
-    return render_to_response('account/cf-blocked.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                          'publicationSelfForm': publicationForm, 'blocked': list_blocked},
-                              context_instance=RequestContext(request))
+    return render(request, 'account/cf-blocked.html', {'showPerfilButtons': True,
+                                                       'searchForm': searchForm,
+                                                        'publicationSelfForm': publicationForm,
+                                                        'blocked': list_blocked})
 
 
 @login_required(login_url='accounts/login')
@@ -975,7 +974,7 @@ class PassWordChangeDone(TemplateView):
         context['searchForm'] = SearchForm()
         context['showPerfilButtons'] = True
 
-        return render_to_response(self.template_name, context, context_instance=RequestContext(request))
+        return render(request, self.template_name, context)
 
 
 password_done = login_required(PassWordChangeDone.as_view())
@@ -1022,7 +1021,7 @@ custom_email = login_required(CustomEmailView.as_view())
 
 @login_required(login_url='/')
 def changepass_confirmation(request):
-    return render_to_response('account/confirmation_changepass.html', context_instance=RequestContext(request))
+    return render(request, 'account/confirmation_changepass.html', context)
 
 
 # Modificacion del template para desactivar una cuenta
@@ -1157,8 +1156,7 @@ def welcome_view(request, username):
     if user_profile.pk != user.pk:
         raise Http404
 
-    return render_to_response('account/nuevosusuarios.html',
-                              context_instance=RequestContext(request, {'user_profile': user}))
+    return render(request, 'account/nuevosusuarios.html', {'user_profile': user})
 
 @login_required(login_url='/')
 @ensure_csrf_cookie
@@ -1196,9 +1194,7 @@ def welcome_step_1(request):
         context['top_tags'] = most_common
         context['form'] = ThemesForm
 
-    return render_to_response('account/welcomestep1.html',
-                              context,
-                              context_instance=RequestContext(request))
+    return render(request, 'account/welcomestep1.html', context)
 
 @login_required(login_url='/')
 def set_first_Login(request):

@@ -62,9 +62,9 @@ def inbox(request, template_name='django_messages/inbox.html'):
         else:
             friends_top12 = friends
     message_list = Message.objects.inbox_for(request.user)
-    return render_to_response(template_name, {
+    return render(request, template_name, {
         'message_list': message_list, 'friends_top12': friends_top12,
-    'publicationSelfForm' :publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
+        'publicationSelfForm': publicationForm, 'searchForm': searchForm})
 
 @login_required(login_url='/')
 def outbox(request,template_name='django_messages/outbox.html'):
@@ -100,9 +100,9 @@ def outbox(request,template_name='django_messages/outbox.html'):
     message_list = Message.objects.inbox_for(request.user)
 
     message_list = Message.objects.outbox_for(request.user)
-    return render_to_response(template_name, {
+    return render(request, template_name, {
         'message_list': message_list, 'friends_top12': friends_top12,
-'publicationSelfForm': publicationForm, 'searchForm': searchForm}, context_instance=RequestContext(request))
+        'publicationSelfForm': publicationForm, 'searchForm': searchForm})
 
 @login_required(login_url='/')
 def trash(request,template_name='django_messages/trash.html'):
@@ -140,9 +140,9 @@ def trash(request,template_name='django_messages/trash.html'):
     message_list = Message.objects.inbox_for(request.user)
 
     message_list = Message.objects.trash_for(request.user)
-    return render_to_response(template_name, {
+    return render(request, template_name, {
         'message_list': message_list, 'friends_top12' : friends_top12,
-'searchForm': searchForm, 'publicationSelfForm': publicationForm}, context_instance=RequestContext(request))
+        'searchForm': searchForm, 'publicationSelfForm': publicationForm})
 
 @login_required(login_url='/')
 def compose(request,recipient=None, form_class=ComposeForm,
@@ -200,9 +200,10 @@ def compose(request,recipient=None, form_class=ComposeForm,
         if recipient is not None:
             recipients = [u for u in User.objects.filter(**{'%s__in' % get_username_field(): [r.strip() for r in recipient.split('+')]})]
             form.fields['recipient'].initial = recipients
-    return render_to_response(template_name, {
+    return render(request, template_name, {
         'form': form, 'friends_top12': friends_top12,
-    'publicationSelfForm': publicationForm, 'searchForm': searchForm, 'message_list': message_list}, context_instance=RequestContext(request))
+        'publicationSelfForm': publicationForm, 'searchForm': searchForm,
+        'message_list': message_list})
 
 @login_required(login_url='/')
 def compose_username(request, recipient=None, form_class=ComposeForm,
@@ -249,10 +250,10 @@ def compose_username(request, recipient=None, form_class=ComposeForm,
             form = form_class()
             if recipient is not None:
                 form.fields['recipient'].initial = recipient
-        return render_to_response(template_name, {
+        return render(request, template_name, {
             'form': form, 'friends_top12': friends_top12,
-            'publicationSelfForm': publicationForm, 'searchForm': searchForm, 'message_list': message_list},
-                                  context_instance=RequestContext(request))
+            'publicationSelfForm': publicationForm, 'searchForm': searchForm,
+            'message_list': message_list})
 
 @login_required(login_url='/')
 def reply(request,message_id, form_class=ComposeForm,
@@ -313,11 +314,11 @@ def reply(request,message_id, form_class=ComposeForm,
             'subject': subject_template % {'subject': parent.subject},
             'recipient': parent.sender.username, # [parent.sender ,]
             })
-    return render_to_response(template_name, {
+    return render(request, template_name, {
         'form': form, 'friends_top12': friends_top12,
     'searchForm': searchForm, 'publicationSelfForm': publicationForm,
     'parent_body': parent.body,
-    'parent_username': parent.sender.username}, context_instance=RequestContext(request))
+    'parent_username': parent.sender.username})
 
 @login_required(login_url='/')
 def delete(request, message_id, success_url=None):
@@ -440,5 +441,4 @@ def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
             'recipient': [message.sender,]
             })
         context['reply_form'] = form
-    return render_to_response(template_name, context,
-        context_instance=RequestContext(request))
+    return render(request, template_name, context)
