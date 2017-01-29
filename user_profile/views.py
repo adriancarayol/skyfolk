@@ -1,5 +1,4 @@
 import json
-
 from allauth.account.views import PasswordChangeView, EmailView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -14,7 +13,6 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from el_pagination.views import AjaxListView
-
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
@@ -53,6 +51,7 @@ def profile_view(request, username,
     context = {}
     # Privacidad del usuario
     privacity = user_profile.profile.is_visible(user.profile, user.pk)
+
     # Para escribir mensajes en mi propio perfil.
     self_initial = {'author': user.pk, 'board_owner': user.pk}
     group_initial = {'owner': user.pk}
@@ -435,7 +434,7 @@ def config_profile(request):
 def config_pincode(request):
     user = request.user
     initial = {'author': user.pk, 'board_owner': user.pk}
-    pin = user.profile.pin
+    pin = user.profile.personal_pin
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
 
@@ -475,7 +474,8 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
 
             try:
-                friend_pk = UserProfile.get_pk_for_pin(pin)
+                # friend_pk = UserProfile.get_pk_for_pin(pin)
+                friend_pk = UserProfile.objects.get(personal_pin=pin)
                 friend = UserProfile.objects.get(pk=friend_pk)
             except:
                 return HttpResponse(json.dumps('no_match'), content_type='application/javascript')

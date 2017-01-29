@@ -3,6 +3,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
+from django.core.validators import MaxLengthValidator
 # from django.core.exceptions import ImproperlyConfigured
 
 
@@ -81,6 +82,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
 ACCOUNT_FORMS = {'login': 'user_profile.forms.CustomLoginForm'}
 ACCOUNT_SIGNUP_FORM_CLASS = 'user_profile.forms.SignupForm'
+ACCOUNT_USERNAME_VALIDATORS = MaxLengthValidator(15)
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
 ACCOUNT_UNIQUE_EMAIL = True

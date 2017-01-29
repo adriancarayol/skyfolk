@@ -1,14 +1,16 @@
+import publications
+import timeline
+import hashlib
+import uuid
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-import publications
-import timeline
 from notifications.models import Notification
 from datetime import datetime
-import hashlib
 from django.utils.http import urlencode
 from taggit.managers import TaggableManager
 from photologue.models import Photo
+from django.db import models
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_FOLLOWER = 2
@@ -144,6 +146,7 @@ class UserProfile(models.Model):
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     is_first_login = models.BooleanField(default=True)
     tags = TaggableManager(blank=True)
+    personal_pin = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     objects = UserProfileManager()
 
 
@@ -600,37 +603,7 @@ class UserProfile(models.Model):
         Devuelve el numero de contenido multimedia de un perfil.
         """
         return Photo.objects.filter(owner=self.user).count()
-
-    @property
-    def pin(self):
-        # PIN format: pk + token + diff
-        print('>>>>>>> get_pin()')
-        str_pk = str(self.pk)
-        length = len(str_pk)
-        if length < self.PIN_LENGTH:
-            diff = self.PIN_LENGTH - length - 1
-            # the value used as pickle needs generate a number with 8 digits as minimal length
-            pickle = 87654321.13
-            if length >= 3 and length < 6:
-                pickle = 876543.13
-            elif length >= 6 and length < 9:
-                pickle = 8765.13
-            token = str(self.pk * pickle).replace('.', '')[-diff:]
-            str_pk = '{}{}{}'.format(str_pk, token, diff)
-            return str_pk
-        else:
-            return str_pk
-
-    def get_pk_for_pin(pin):
-        """
-        Obtiene el pk para el pin
-        :return Devuelve el pk para un pin pasado como parametro:
-        """
-        if len(pin) == 9:
-            diff = int(pin[-1:])
-            return pin[:-(diff + 1)]
-        return None
-
+        
     @property
     def gravatar(self, size=120):
         """

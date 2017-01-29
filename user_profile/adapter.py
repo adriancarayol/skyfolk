@@ -8,6 +8,10 @@ class MyAccountAdapter(DefaultAccountAdapter):
     Adaptador modificado para django-allauth.
     """
 
+    def clean_username(self, username):
+        print('username: {}'.format(username))
+        return username
+        
     def get_login_redirect_url(self, request):
         """
         Devuelve la url a la que se redirige el usuario
