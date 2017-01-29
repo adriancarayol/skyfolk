@@ -3,7 +3,7 @@ import logging
 from channels import Group
 from .models import UserProfile
 from django.core.exceptions import ObjectDoesNotExist
-from channels.auth import http_session_user, channel_session_user, channel_session_user_from_http
+from channels.auth import channel_session_user, channel_session_user_from_http
 
 # The "slug" keyword argument here comes from the regex capture group in
 #
