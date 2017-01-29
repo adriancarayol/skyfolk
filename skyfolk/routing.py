@@ -10,7 +10,6 @@ from user_profile.consumers import connect_blog, disconnect_blog
 channel_routing = [
     # Called when incoming WebSockets connect
     route("websocket.connect", connect_blog, path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
-
     # Called when the client closes the socket
     route("websocket.disconnect", disconnect_blog, path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
 
