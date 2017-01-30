@@ -1,5 +1,7 @@
 import json
+
 from allauth.account.views import PasswordChangeView, EmailView
+from dal import autocomplete
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -7,27 +9,27 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import render_to_response, get_object_or_404, redirect, render
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
+from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
+from taggit.models import TaggedItem
+
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm
 from publications.models import Publication
 from timeline.models import Timeline
+from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser
-from el_pagination.decorators import page_template
-from django.views.decorators.csrf import ensure_csrf_cookie
-from taggit.models import TaggedItem
-from user_groups.forms import FormUserGroup
-from dal import autocomplete
+
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -183,7 +185,8 @@ def profile_view(request, username,
         AffinityUser.objects.check_limit(emitterid=user_profile.profile)
     try:
         if user.pk != user_profile.pk:
-            profile_visit, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=user_profile.profile)
+            profile_visit, created = AffinityUser.objects.get_or_create(emitter=user.profile,
+                                                                        receiver=user_profile.profile)
         else:
             profile_visit, created = None, False
     except ObjectDoesNotExist:
@@ -234,11 +237,11 @@ def search(request, option=None):
         # un request.POST
         # Si hay peticion POST se actúa con normalidad
         return render(request, 'account/search.html',
-                                  {'showPerfilButtons': True,
-                                   'searchForm': searchForm,
-                                   'resultSearch': (),
-                                   'publicationSelfForm': publicationForm,
-                                   'message': info})
+                      {'showPerfilButtons': True,
+                       'searchForm': searchForm,
+                       'resultSearch': (),
+                       'publicationSelfForm': publicationForm,
+                       'message': info})
 
     # if request.method == 'POST':
     else:
@@ -291,18 +294,18 @@ def search(request, option=None):
                 # GET MEDIA BY OWNER OR TAGS...
                 if option == 'images':
                     if len(words) == 1:
-                        result_media = Photo.objects.filter(Q(tags__name__in=words) | (Q(owner__username__icontains=texto_to_search) & ~Q(owner__username=request.user.username)))
+                        result_media = Photo.objects.filter(Q(tags__name__in=words) | (
+                            Q(owner__username__icontains=texto_to_search) & ~Q(owner__username=request.user.username)))
                     elif len(words) > 1:
                         for w in words:
                             pass
                 return render(request, 'account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
-                                                                  'resultSearch': result_search,
-                                                                  'publicationSelfForm': publicationForm,
-                                                                  'resultMessages': result_messages,
-                                                                  'result_media': result_media,
-                                                                  'words': words,
-                                                                  'message': info})
-
+                                                               'resultSearch': result_search,
+                                                               'publicationSelfForm': publicationForm,
+                                                               'resultMessages': result_messages,
+                                                               'result_media': result_media,
+                                                               'words': words,
+                                                               'message': info})
 
 
 @login_required(login_url='/')
@@ -335,11 +338,13 @@ def advanced_view(request):
             import operator
             from functools import reduce
             word_list = [x.strip() for x in clean_all_words.split(',')]
-            result_all_words = Publication.objects.filter(reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
+            result_all_words = Publication.objects.filter(
+                reduce(operator.and_, (Q(content__icontains=x) for x in word_list)))
             print(result_all_words)
 
         if clean_exactly:
-            result_exactly = Publication.objects.filter(Q(content__iexact=clean_exactly) | Q(content__iexact=('\n'.join(clean_exactly))))
+            result_exactly = Publication.objects.filter(
+                Q(content__iexact=clean_exactly) | Q(content__iexact=('\n'.join(clean_exactly))))
             print(result_exactly)
 
         if clean_some:
@@ -361,8 +366,7 @@ def advanced_view(request):
             print(result_regex)
 
     return render(request, template_name, {'publicationSelfForm': publicationForm, 'searchForm': searchForm,
-                                                'form': form})
-
+                                           'form': form})
 
 
 @login_required(login_url='/')
@@ -384,8 +388,8 @@ def config_privacity(request):
         privacity_form = PrivacityForm(instance=request.user.profile)
         print('PASO ULTIMO')
     return render(request, 'account/cf-privacity.html',
-                              {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationSelfForm': publicationForm,
-                               'privacity_form': privacity_form})
+                  {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationSelfForm': publicationForm,
+                   'privacity_form': privacity_form})
 
 
 @login_required(login_url='/')
@@ -418,9 +422,9 @@ def config_profile(request):
 
     print('>>>>>>>  paso x')
     context = {'showPerfilButtons': True, 'searchForm': searchForm,
-                'user_profile': user_profile,
-                'user_form': user_form, 'perfil_form': perfil_form,
-                'publicationSelfForm': publicationForm}
+               'user_profile': user_profile,
+               'user_form': user_form, 'perfil_form': perfil_form,
+               'publicationSelfForm': publicationForm}
     return render(request, 'account/cf-profile.html', context)
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -436,7 +440,7 @@ def config_pincode(request):
     searchForm = SearchForm()
 
     context = {'showPerfilButtons': True, 'searchForm': searchForm,
-                'publicationSelfForm': publicationForm, 'pin': pin}
+               'publicationSelfForm': publicationForm, 'pin': pin}
 
     return render(request, 'account/cf-pincode.html', context)
 
@@ -451,8 +455,8 @@ def config_blocked(request):
 
     return render(request, 'account/cf-blocked.html', {'showPerfilButtons': True,
                                                        'searchForm': searchForm,
-                                                        'publicationSelfForm': publicationForm,
-                                                        'blocked': list_blocked})
+                                                       'publicationSelfForm': publicationForm,
+                                                       'blocked': list_blocked})
 
 
 @login_required(login_url='accounts/login')
@@ -463,21 +467,21 @@ def add_friend_by_username_or_pin(request):
     print('ADD FRIEND BY USERNAME OR PIN')
     response = 'no_added_friend'
     if request.method == 'POST':
-        if request.POST.get('tipo') == 'pin':
+        pin = str(request.POST.get('valor'))
+        if len(pin) > 15:
             print('STEP 1')
             user_request = request.user
-            pin = request.POST.get('valor')
             user = user_request.profile
             print('STEP 2')
             print('Pin: {}'.format(pin))
-            if user.pin == pin:
+            if str(user.personal_pin).strip() == pin.strip():
                 return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
+            else:
+                print('personal_pin: {} pin: {}'.format(user.personal_pin, pin))
 
             try:
-                # friend_pk = UserProfile.get_pk_for_pin(pin)
-                friend_pk = UserProfile.objects.get(personal_pin=pin)
-                friend = UserProfile.objects.get(pk=friend_pk)
-            except:
+                friend = UserProfile.objects.get(personal_pin=pin)
+            except ObjectDoesNotExist:
                 return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
 
             if user.is_follow(friend):
@@ -532,11 +536,9 @@ def add_friend_by_username_or_pin(request):
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-
-
         else:  # tipo == username
             user_request = request.user
-            username = request.POST.get('valor')
+            username = pin
             user = user_request.profile
 
             if user.user.username == username:
@@ -624,7 +626,7 @@ def like_profile(request):
         if user_liked:
             user_liked.delete()
             affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
-            if not created: # Quiere decir que ya ha interactuado con el perfil
+            if not created:  # Quiere decir que ya ha interactuado con el perfil
                 affinity.affinity -= 20
                 affinity.save(increment=False)
             response = "nolike"
@@ -633,13 +635,14 @@ def like_profile(request):
             created = user.profile.add_like(actual_profile)
             created.save()
             affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
-            if not created: # Quiere decir que ya ha interactuado con el perfil
+            if not created:  # Quiere decir que ya ha interactuado con el perfil
                 affinity.affinity += 20
                 affinity.save(increment=False)
             response = "like"
 
     print('%s da like a %s' % (user.username, actual_profile.user.username))
-    print('Nueva afinidad emitter: {} receiver: {} afinidad: {}'.format(user.username, actual_profile.user.username, affinity.affinity))
+    print('Nueva afinidad emitter: {} receiver: {} afinidad: {}'.format(user.username, actual_profile.user.username,
+                                                                        affinity.affinity))
     print("Response: " + response)
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -870,7 +873,7 @@ def load_followers(request):
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.user.profile.get_followers()
 
-    if friendslist == None:
+    if friendslist is None:
         friends_next = None
     else:
         # friendslist = json.loads(friendslist)
@@ -897,8 +900,8 @@ class FollowersListView(AjaxListView):
 
     def get_queryset(self):
         user_profile = get_object_or_404(
-                get_user_model(),
-                username__iexact=self.kwargs['username'])
+            get_user_model(),
+            username__iexact=self.kwargs['username'])
         return user_profile.profile.get_followers()
 
     def get_context_data(self, **kwargs):
@@ -910,7 +913,9 @@ class FollowersListView(AjaxListView):
         context['url_name'] = "followers"
         return context
 
+
 followers = login_required(FollowersListView.as_view())
+
 
 class FollowingListView(AjaxListView):
     """
@@ -922,8 +927,8 @@ class FollowingListView(AjaxListView):
 
     def get_queryset(self):
         user_profile = get_object_or_404(
-                get_user_model(),
-                username__iexact=self.kwargs['username'])
+            get_user_model(),
+            username__iexact=self.kwargs['username'])
         return user_profile.profile.get_following()
 
     def get_context_data(self, **kwargs):
@@ -935,7 +940,9 @@ class FollowingListView(AjaxListView):
         context['url_name'] = "following"
         return context
 
+
 following = login_required(FollowingListView.as_view())
+
 
 # Load follows
 @login_required(login_url='/')
@@ -947,7 +954,7 @@ def load_follows(request):
     print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     friendslist = request.user.profile.get_following()
 
-    if friendslist == None:
+    if friendslist is None:
         friends_next = None
     else:
         # friendslist = json.loads(friendslist)
@@ -1003,7 +1010,6 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
 # Modificacion del formulario para manejar los emails
 class CustomEmailView(EmailView):
-
     def get_context_data(self, **kwargs):
         ret = super(EmailView, self).get_context_data(**kwargs)
         # NOTE: For backwards compatibility
@@ -1022,7 +1028,7 @@ custom_email = login_required(CustomEmailView.as_view())
 
 @login_required(login_url='/')
 def changepass_confirmation(request):
-    return render(request, 'account/confirmation_changepass.html', context)
+    return render(request, 'account/confirmation_changepass.html')
 
 
 # Modificacion del template para desactivar una cuenta
@@ -1046,7 +1052,7 @@ class DeactivateAccount(FormView):
 
         if user.is_authenticated():
             if form.is_valid():
-                user.is_active = not(form.clean_is_active())
+                user.is_active = not (form.clean_is_active())
                 user.save()
                 if user.is_active:
                     return self.form_valid(form=form, **kwargs)
@@ -1069,6 +1075,7 @@ class DeactivateAccount(FormView):
 
 
 custom_delete_account = login_required(DeactivateAccount.as_view())
+
 
 @login_required(login_url='/')
 def bloq_user(request):
@@ -1144,6 +1151,7 @@ def bloq_user(request):
         data = {'response': response, 'haslike': haslike, 'status': status}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
+
 @login_required(login_url='/')
 def welcome_view(request, username):
     """
@@ -1159,6 +1167,7 @@ def welcome_view(request, username):
 
     return render(request, 'account/nuevosusuarios.html', {'user_profile': user})
 
+
 @login_required(login_url='/')
 @ensure_csrf_cookie
 def welcome_step_1(request):
@@ -1168,8 +1177,7 @@ def welcome_step_1(request):
     """
     user = request.user
 
-    context = {}
-    context['user_profile'] = user
+    context = {'user_profile': user}
 
     if request.method == 'POST':
         response = "success"
@@ -1197,6 +1205,7 @@ def welcome_step_1(request):
 
     return render(request, 'account/welcomestep1.html', context)
 
+
 @login_required(login_url='/')
 def set_first_Login(request):
     """
@@ -1208,10 +1217,11 @@ def set_first_Login(request):
         print('>>> IS_POST')
         if user.profile.is_first_login:
             user.profile.is_first_login = False
-    else: # ON GET ETC...
+    else:  # ON GET ETC...
         return redirect('user_profile:profile', username=user.username)
 
-#TODO: Com que el usuario tenga tags establecidos antes de mostrar las recomendaciones
+
+# TODO: Com que el usuario tenga tags establecidos antes de mostrar las recomendaciones
 class RecommendationUsers(ListView):
     """
         Lista de usuarios recomendados segun
@@ -1236,7 +1246,9 @@ class RecommendationUsers(ListView):
         context['user_profile'] = self.request.user
         return context
 
+
 recommendation_users = login_required(RecommendationUsers.as_view(), login_url='/')
+
 
 class LikeListUsers(AjaxListView):
     """
@@ -1263,6 +1275,7 @@ class LikeListUsers(AjaxListView):
 
         return context
 
+
 like_list = login_required(LikeListUsers.as_view(), login_url='/')
 
 
@@ -1270,6 +1283,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
     """
     Autocompletado de usuarios
     """
+
     def get_queryset(self):
         if not self.request.user.is_authenticated():
             return User.objects.none()
