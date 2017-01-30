@@ -23,7 +23,7 @@ $(document).ready(function () {
 
     /* Mensaje flotante (perfil ajeno) */
     // #compose-new-no-comments
-    $("#publish").click(function () {
+    $("#publish, #compose-new-no-comments").click(function () {
         $(page_wrapper).each(function () {
             var displaying = $(this).css("display");
             $(page_wrapper).find("#message2").val('');
@@ -41,7 +41,7 @@ $(document).ready(function () {
         });
     });
     /* Mensaje flotante (perfil propio) */
-    $("#publish2, #publish3").click(function () {
+    $("#publish2, #publish3, #compose-self-new-no-comments").click(function () {
         $(self_page_wrapper).each(function () {
             var displaying = $(this).css("display");
             $(self_page_wrapper).find("#message2").val('');

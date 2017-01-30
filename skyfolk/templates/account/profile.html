@@ -87,12 +87,13 @@ Template para el perfil de cada usuario
                                                 <!-- Si el usuario no tiene comentarios, proponemos uno -->
                                                 <div class="no-comments" id="without-comments">
                                                     <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-                                                    <a id="compose-new-no-comments" class="no-comments-new-comment">
+                                                    <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}" class="no-comments-new-comment">
                                                         <i class="fa fa-paper-plane fa-lg"></i>
                                                     </a>
                                                 </div>
+                                            {% else %}
+                                                {% include "account/profile_comments.html" %}
                                             {% endif %}
-                                            {% include "account/profile_comments.html" %}
                                         </div>
                                         {% comment %}
                                 Incluimos el tab amigos

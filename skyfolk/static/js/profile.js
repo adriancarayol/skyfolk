@@ -731,21 +731,20 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
             var statusNo = 2;
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = heart;
-            var countLikes = numLikes.innerHTML;
+            var numLikes = $(heart).find(".hate-value");
+            var countLikes = numLikes.text();
             if (response==true) {
                 if (status == statusOk) {
                     $(heart).css('color','#ba68c8');
-
                     countLikes++;
                 } else if (status == statusNo) {
                     $(heart).css('color','#555');
                     countLikes--;
                 }
                 if (countLikes == 0) {
-                    numLikes.innerHTML = " ";
+                    numLikes.text(" ");
                 } else {
-                    numLikes.innerHTML = " " + countLikes;
+                    numLikes.text(countLikes);
                 }
             } else{
                 swal({
