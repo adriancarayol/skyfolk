@@ -9,7 +9,6 @@ from user_profile.forms import SearchForm
 from publications.forms import PublicationForm
 from .utils import slug2id
 from .models import Notification
-from django.shortcuts import render_to_response
 from django.template import RequestContext
 from distutils.version import StrictVersion
 if StrictVersion(get_version()) >= StrictVersion('1.7.0'):

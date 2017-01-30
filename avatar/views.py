@@ -14,7 +14,6 @@ from avatar.utils import (get_primary_avatar, get_default_avatar_url,
 
 from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
-from django.shortcuts import render_to_response
 from django.template import RequestContext
 def _get_next(request):
     """
