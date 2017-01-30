@@ -417,9 +417,9 @@ def config_profile(request):
         perfil_form = ProfileForm(instance=request.user.profile)
 
     print('>>>>>>>  paso x')
-    context = {'showPerfilButtons': True, 'searchForm': searchForm, 
+    context = {'showPerfilButtons': True, 'searchForm': searchForm,
                 'user_profile': user_profile,
-                'user_form': user_form, 'perfil_form': perfil_form, 
+                'user_form': user_form, 'perfil_form': perfil_form,
                 'publicationSelfForm': publicationForm}
     return render(request, 'account/cf-profile.html', context)
     # return render_to_response('account/cf-profile.html',
@@ -469,6 +469,7 @@ def add_friend_by_username_or_pin(request):
             pin = request.POST.get('valor')
             user = user_request.profile
             print('STEP 2')
+            print('Pin: {}'.format(pin))
             if user.pin == pin:
                 return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
 

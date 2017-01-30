@@ -238,17 +238,7 @@ $(document).ready(function () {
                 swal.showInputError("You need to write something!");
                 return false
             }
-            if ((inputValue.length != 9) && (is_numeric(inputValue))) {
-                swal.showInputError("Wrong PIN format!");
-                return false
-            }
-            var _tipo;
-            if (!is_numeric(inputValue)) {
-                _tipo = 'username';
-            } else {
-                _tipo = 'pin'
-            }
-            AJAX_addNewFriendByUsernameOrPin(inputValue, _tipo);
+            AJAX_addNewFriendByUsernameOrPin(inputValue);
         });
     });
 
@@ -371,13 +361,12 @@ function AJAX_delete_notification(slug, id) {
     });
 }
 
-function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
+function AJAX_addNewFriendByUsernameOrPin(valor) {
     $.ajax({
         type: "POST",
         url: "/add_friend_by_pin/",
         data: {
             'valor': valor,
-            'tipo': tipo,
             'csrfmiddlewaretoken': csrftoken
         },
         dataType: "json",
