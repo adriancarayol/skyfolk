@@ -56,6 +56,7 @@ FIRST_PARTY_APPS = (
     'latest_news',
     'user_groups',  # Para grupos de usuarios
     'support',  # modulo para ofrecer soporte al usuario
+    'cropper', # modulo para tratamiento de imagenes
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS

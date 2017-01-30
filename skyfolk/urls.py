@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
+    url(r'^', include('cropper.urls')),
     # urls support
     url(r'^', include('support.urls', namespace="support"), name="support"),
     # urls user_profile
