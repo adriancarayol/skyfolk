@@ -42,6 +42,13 @@
                     </div>
                 </div>
                 <div class="row">
+                    {{ form.url_image.errors }}
+                    <div class="input-field col s12">
+                        {{ form.url_image }}
+                        <label for="id_url_image">URL Imagen</label>
+                    </div>
+                </div>
+                <div class="row">
                     {{ form.crop_from.errors }}
                     <div class="input-field col s12">
                         {{ form.crop_from }}

@@ -143,8 +143,8 @@ class PhotoListView(AjaxListView):
         return True
 
 
-
 photo_list = login_required(PhotoListView.as_view())
+
 
 def upload_photo(request):
     """
@@ -156,15 +156,28 @@ def upload_photo(request):
         import pprint  # Para imprimir el file y los datos del form
         pprint.pprint(request.POST)
         pprint.pprint(request.FILES)
-        form = UploadFormPhoto(data=request.POST, files=request.FILES)
+        image = request.FILES
+        if not image:
+            form = UploadFormPhoto(data=request.POST)
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.owner = user
+                obj.save()
+                form.save_m2m()
+            return redirect('/multimedia/' + user.username + '/')
+        form = UploadFormPhoto(data=request.POST, files=image)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = user
+            obj.url_image = None
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
             return redirect('/multimedia/'+user.username+'/')
         else:
-            print(form.errors)
+            return HttpResponse(
+                json.dumps({"nothing to see": "Selecciona un archivo valido."}),
+                content_type='application/json'
+            )
     else:
         return HttpResponse(
             json.dumps({"nothing to see": "this isn't happening"}),
@@ -192,6 +205,7 @@ def upload_zip_form(request):
             json.dumps({"nothing to see": "no post method"}),
             content_type="application/json"
         )
+
 
 @login_required()
 def delete_photo(request):

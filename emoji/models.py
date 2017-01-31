@@ -5,15 +5,13 @@ from sys import version_info
 
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-from . import settings
-
-
 try:
     from ._unicode_characters import UNICODE_ALIAS
 except ImportError as exc:
     UNICODE_ALIAS = {}
 
 
+from . import settings
 
 __all__ = ('Emoji',)
 
@@ -37,7 +35,7 @@ PYTHON3 = False
 if version_info[0] == 3:
     PYTHON3 = True
 else:
-    from _python2 import hex_to_unicode
+    from ._python2 import hex_to_unicode
 
 
 class Emoji(object):

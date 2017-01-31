@@ -7,12 +7,14 @@ from io import BytesIO
 from importlib import import_module
 import exifread
 import unicodedata
+import requests
+import tempfile
 
 from django.utils.timezone import now
 from django.db import models
 from django.db.models.signals import post_save
 from django.conf import settings
-from django.core.files.base import ContentFile
+from django.core.files.base import ContentFile, File
 from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
@@ -25,6 +27,10 @@ from django.core.validators import RegexValidator
 from django.contrib.sites.models import Site
 from taggit.managers import TaggableManager
 from django.contrib.auth.models import User
+from .validators import validate_file_extension
+from os.path import splitext
+from urllib.parse import urlparse
+from .validators import validate_extension
 
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
@@ -260,7 +266,8 @@ class Gallery(models.Model):
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
-                              upload_to=get_storage_path)
+                              upload_to=get_storage_path, validators=[validate_file_extension])
+
     date_taken = models.DateTimeField(_('date taken'),
                                       null=True,
                                       blank=True,
@@ -544,6 +551,8 @@ class Photo(ImageModel):
     sites = models.ManyToManyField(Site, verbose_name=_(u'sites'),
                                    blank=True)
 
+    url_image = models.URLField(max_length=255, blank=True, null=True)
+
     objects = PhotoQuerySet.as_manager()
 
     class Meta:
@@ -556,8 +565,28 @@ class Photo(ImageModel):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title + 'by' + str(self.owner.username)  + str(self.date_added.timestamp()))
+        self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(self.date_added.timestamp()))
+        self.get_remote_image()
         super(Photo, self).save(*args, **kwargs)
+
+    def get_remote_image(self):
+        if self.url_image and not self.image:
+            parsed = urlparse(self.url_image)
+            name, ext = splitext(parsed.path)
+            validate_extension(ext)
+
+            request = requests.get(self.url_image, stream=True)
+
+            if request.status_code != requests.codes.ok:
+                raise ValueError('Cant get image')
+
+            tmp = tempfile.NamedTemporaryFile()
+
+            for block in request.iter_content(1024 * 8):
+                if not block:
+                    break
+                tmp.write(block)
+            self.image.save(self.slug, File(tmp))
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])

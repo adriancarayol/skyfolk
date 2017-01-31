@@ -1,4 +1,7 @@
 import zipfile
+
+from django.core.files import File
+
 try:
     from zipfile import BadZipFile
 except ImportError:
@@ -23,6 +26,8 @@ from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from taggit.forms import TagField
 from .models import Photo
+from tempfile import NamedTemporaryFile
+
 logger = logging.getLogger('photologue.forms')
 
 
@@ -181,13 +186,16 @@ class UploadFormPhoto(forms.ModelForm):
     """
     Permite al usuario subir una nueva imagen
     """
+
     def __init__(self, *args, **kwargs):
         super(UploadFormPhoto, self).__init__(*args, **kwargs)
+        self.fields['image'].required = False
         self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
 
     class Meta:
         model = Photo
         exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug', 'is_public', )
+
 
 class EditFormPhoto(forms.ModelForm):
     """
