@@ -1,7 +1,5 @@
 import zipfile
 
-from django.core.files import File
-
 try:
     from zipfile import BadZipFile
 except ImportError:
@@ -26,7 +24,6 @@ from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from taggit.forms import TagField
 from .models import Photo
-from tempfile import NamedTemporaryFile
 
 logger = logging.getLogger('photologue.forms')
 

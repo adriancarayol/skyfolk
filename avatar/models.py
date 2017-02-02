@@ -81,6 +81,7 @@ class Avatar(models.Model):
                                storage=avatar_storage,
                                blank=True)
     date_uploaded = models.DateTimeField(default=now)
+    url_image = models.URLField(max_length=255, blank=True, null=True)
 
     class Meta:
         app_label = 'avatar'
@@ -143,6 +144,7 @@ class Avatar(models.Model):
             size=size,
             ext=ext
         )
+
 
 def invalidate_avatar_cache(sender, instance, **kwargs):
     invalidate_cache(instance.user)

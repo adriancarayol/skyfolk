@@ -26,6 +26,8 @@ $whitewithopacity: rgba(255, 255, 255, .8)
     &:hover
       color: $blueskyfolk
 .wrapper-p
+  & .avatar_from_url
+
   & .current-avatar
     box-shadow: 0 1px 5px $shadowcolor
     min-height: 30%
@@ -56,7 +58,7 @@ $whitewithopacity: rgba(255, 255, 255, .8)
         display: inline-block
     & input[type="radio"]
       display: none
-    & #id_avatar
+    & .file_avatar
       overflow: hidden
       padding: 7px
       &::-webkit-file-upload-button
@@ -97,7 +99,7 @@ $whitewithopacity: rgba(255, 255, 255, .8)
       display: inline-block
 
 /* IF AVATAR EMPTY */
-#id_avatar
+.file_avatar
   overflow: hidden
   padding: 7px
   &::-webkit-file-upload-button

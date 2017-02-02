@@ -570,10 +570,19 @@ class Photo(ImageModel):
         super(Photo, self).save(*args, **kwargs)
 
     def get_remote_image(self):
+        if not self.url_image and not self.image:
+            raise ValueError('Select image')
+
         if self.url_image and not self.image:
             parsed = urlparse(self.url_image)
             name, ext = splitext(parsed.path)
             validate_extension(ext)
+
+            response = requests.head(self.url_image)
+            print('Response aqui: {}'.format(response.headers))
+
+            if int(response.headers.get('content-length', None)) > 1000000:
+                raise ValueError('Image so big')
 
             request = requests.get(self.url_image, stream=True)
 

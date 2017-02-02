@@ -1,7 +1,9 @@
+import requests
+import tempfile
 from django.shortcuts import render, redirect
 from django.utils import six
 from django.utils.translation import ugettext as _
-
+from django.core.files.base import File
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
@@ -14,7 +16,9 @@ from avatar.utils import (get_primary_avatar, get_default_avatar_url,
 
 from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
-from django.template import RequestContext
+from urllib.parse import urlparse
+from os.path import splitext
+
 def _get_next(request):
     """
     The part that's the least straightforward about views in this module is
@@ -57,7 +61,7 @@ def _get_avatars(user):
     return (avatar, avatars)
 
 
-@login_required
+@login_required(login_url='/')
 def add(request, extra_context=None, next_override=None,
         upload_form=UploadAvatarForm, *args, **kwargs):
 
@@ -67,19 +71,51 @@ def add(request, extra_context=None, next_override=None,
     searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
-    avatar, avatars = _get_avatars(request.user)
+    avatar, avatars = _get_avatars(user)
     upload_avatar_form = upload_form(request.POST or None,
                                      request.FILES or None,
                                      user=request.user)
+
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
-            avatar = Avatar(user=request.user, primary=True)
+            avatar = Avatar(user=user, primary=True)
             image_file = request.FILES['avatar']
             avatar.avatar.save(image_file.name, image_file)
             avatar.save()
             messages.success(request, _("Successfully uploaded a new avatar."))
+            avatar_updated.send(sender=Avatar, user=user, avatar=avatar)
+            return redirect(next_override or _get_next(request))
+
+    if request.method == "POST" and 'avatar' not in request.FILES \
+            and 'url_image' in request.POST:
+        if upload_avatar_form.is_valid():
+            url_image = request.POST.get('url_image', None)
+
+            parsed = urlparse(url_image)
+            name, ext = splitext(parsed.path)
+
+            avatar = Avatar(user=user, primary=True, url_image=url_image)
+
+            request_img = requests.get(url_image, stream=True)
+
+            if request_img.status_code != requests.codes.ok:
+                raise ValueError('Cant get image')
+
+            tmp = tempfile.NamedTemporaryFile()
+
+            for block in request_img.iter_content(1024 * 8):
+                if not block:
+                    break
+                tmp.write(block)
+
+            avatar.avatar.save(name + ext, File(tmp))
+            avatar.url_image = url_image
+            avatar.save()
+            messages.success(request, _("Successfully uploaded a new avatar."))
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
             return redirect(next_override or _get_next(request))
+
+
     context = {
         'avatar': avatar,
         'avatars': avatars,
@@ -93,7 +129,8 @@ def add(request, extra_context=None, next_override=None,
     # return render(request, 'avatar/add.html',{'publicationForm': publicationForm, 'searchForm': searchForm},context)
     return render(request, 'avatar/add.html', context)
 
-@login_required
+
+@login_required(login_url='/')
 def change(request, extra_context=None, next_override=None,
            upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
            *args, **kwargs):
@@ -140,7 +177,7 @@ def change(request, extra_context=None, next_override=None,
     return render(request, 'avatar/change.html', context)
 
 
-@login_required
+@login_required(login_url='/')
 def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     user = request.user
     initial = {'author': user.pk, 'board_owner': user.pk}
