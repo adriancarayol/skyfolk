@@ -44,6 +44,7 @@ def connect_blog(message, username):
     # send information back to them. We can add all the different reply channels
     # to a single Group, and then when we send to the group, they'll all get the
     # same message.
+    message.reply_channel.send({"accept": True})
     Group(profile_blog.group_name).add(message.reply_channel)
 
 @channel_session_user

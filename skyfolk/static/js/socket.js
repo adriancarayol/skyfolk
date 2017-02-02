@@ -128,7 +128,7 @@ var UTILS = UTILS || (function(){
                 };
 
                 // Helpful debugging
-                socket.onopen = function() { console.log("Connected!"); };
+                if (socket.readyState == WebSocket.OPEN) socket.onopen();
                 socket.onclose = function() { console.log("No connected."); };
         }
     };
