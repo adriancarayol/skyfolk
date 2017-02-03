@@ -7,7 +7,7 @@ from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
 
 from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 
 from .models import Photo, Gallery
 from publications.forms import PublicationForm
@@ -96,7 +96,7 @@ def collection_list(request, username,
     if extra_context is not None:
         context.update(extra_context)
 
-    return render_to_response(template, context, context_instance=RequestContext(request))
+    return render(request, template, context)
 
 
 class PhotoListView(AjaxListView):

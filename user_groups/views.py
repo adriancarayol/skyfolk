@@ -1,17 +1,18 @@
-from django.views.generic.edit import CreateView
-from django.views.generic.list import ListView
-from .models import UserGroups, LikeGroup
+import json
+
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from .forms import FormUserGroup
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, HttpResponse
-from django.contrib.auth import get_user_model
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from user_profile.forms import SearchForm
+from django.shortcuts import render
+from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
+
 from publications.forms import PublicationForm
-import json
+from user_profile.forms import SearchForm
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from .forms import FormUserGroup
+from .models import UserGroups, LikeGroup
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -31,7 +32,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
         form = self.get_form()
 
         owner = get_object_or_404(get_user_model(),
-                                    pk=request.POST['owner'])
+                                  pk=request.POST['owner'])
 
         # Comprobamos si somos el mismo usuario
         if self.request.user.pk != owner.pk:
@@ -55,6 +56,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
         print(form.errors)
         return self.form_invalid(form=form)
 
+
 user_group_create = login_required(UserGroupCreate.as_view(), login_url='/')
 
 
@@ -65,6 +67,7 @@ class UserGroupList(ListView):
     """
     model = UserGroups
     template_name = "groups/list_group.html"
+
 
 group_list = login_required(UserGroupList.as_view(), login_url='/')
 
@@ -87,14 +90,16 @@ def group_profile(request, groupname):
     group_initial = {'owner': user.pk}
     likes = LikeGroup.objects.filter(to_like=group_profile).count()
     user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
+    users_in_group = group_profile.users.count()
     context = {'searchForm': SearchForm(request.POST),
                'publicationSelfForm': PublicationForm(initial=self_initial),
                'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
                'follow_group': follow_group,
                'likes': likes,
-               'user_like_group': user_like_group}
-    return render_to_response(template, context, context_instance=RequestContext(request))
+               'user_like_group': user_like_group,
+               'users_in_group': users_in_group}
+    return render(request, template, context)
 
 
 @login_required(login_url='/')
@@ -177,5 +182,3 @@ def like_group(request):
             print('Like: {}'.format(like))
             return HttpResponse(json.dumps(response), content_type='application/javascript')
     return HttpResponse(json.dumps(response), content_type='application/javascript')
-
-

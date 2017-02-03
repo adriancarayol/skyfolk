@@ -65,6 +65,11 @@ $(document).ready(function () {
         $('#create_group').toggle();
     });
 
+    /* Close nuevo grupo */
+    $("#btn_close_group").click(function () {
+       $('#create_group').hide();
+    });
+
     /* Close page-wrapper (mensaje) */
     $(page_wrapper).find('#close').on('click', function (event) {
         event.preventDefault();
@@ -197,6 +202,7 @@ $(document).ready(function () {
             $(atj).hide(); // Oculta atajos de teclado.
             $(ampliado).hide(); // Oculta mensaje ampliado.
             $(personalInfo).hide(); // Oculta informacion personal
+            $("#create_group").hide(); // Oculta form para crear grupo
             $(searchInput).val("");
             $(searchInput).blur();
             /* OCULTAR MENUS VERTICALES (NOTIFICACION Y MENU USUARIO */

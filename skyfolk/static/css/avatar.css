@@ -65,7 +65,7 @@
       -webkit-user-select: none; }
   .wrapper-p .options-avatar .list-avatar label[for="id_avatar"] {
     display: none; }
-  .wrapper-p .options-avatar .list-avatar img, .wrapper-p .options-avatar label {
+  .wrapper-p .options-avatar .list-avatar img, .wrapper-p .options-avatar .list-avatar label {
     position: relative;
     display: inline-block; }
   .wrapper-p .options-avatar .list-avatar img {

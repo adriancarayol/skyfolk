@@ -69,13 +69,16 @@ def add(request, extra_context=None, next_override=None,
     initial = {'author': user.pk, 'board_owner': user.pk}
     publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
     searchForm = SearchForm()
+
     if extra_context is None:
         extra_context = {}
     avatar, avatars = _get_avatars(user)
+
     upload_avatar_form = upload_form(request.POST or None,
                                      request.FILES or None,
                                      user=request.user)
 
+    # Si el formulario contiene un archivo
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
             avatar = Avatar(user=user, primary=True)
@@ -86,10 +89,12 @@ def add(request, extra_context=None, next_override=None,
             avatar_updated.send(sender=Avatar, user=user, avatar=avatar)
             return redirect(next_override or _get_next(request))
 
+    url_image = request.POST.get('url_image', None)
+    
     if request.method == "POST" and 'avatar' not in request.FILES \
-            and 'url_image' in request.POST:
+            and url_image:
         if upload_avatar_form.is_valid():
-            url_image = request.POST.get('url_image', None)
+            
 
             parsed = urlparse(url_image)
             name, ext = splitext(parsed.path)

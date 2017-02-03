@@ -78,11 +78,8 @@ class UploadAvatarForm(forms.Form):
             valid_exts = None
             if settings.AVATAR_ALLOWED_FILE_EXTS:
                 valid_exts = ", ".join(settings.AVATAR_ALLOWED_FILE_EXTS)
-            error = _("%(ext)s is an invalid file extension. "
-                      "Authorized extensions are : %(valid_exts_list)s")
-            raise forms.ValidationError(error %
-                                        {'ext': ext,
-                                         'valid_exts_list': valid_exts})
+            error = _("No se ha podido resolver el link de la imagen, comprueba si es correcto.")
+            raise forms.ValidationError(error)
 
         if settings.AVATAR_ALLOWED_FILE_EXTS:
             if ext not in settings.AVATAR_ALLOWED_FILE_EXTS:
