@@ -23,10 +23,7 @@ def connect_blog(message, username):
         visibility = profile_blog.is_visible(user.profile, user.pk)
         if visibility != ("all" or None):
             logging.warning('User: {} no puede conectarse al socket de: profile: {}'.format(user.username, username))
-            message.reply_channel.send({
-                "text": json.dumps({"error": "no_perm"}),
-                "close": True,
-            })
+            message.reply_channel.send({"accept": False})
             return
     except ObjectDoesNotExist:
         # You can see what messages back to a WebSocket look like in the spec:

@@ -40,7 +40,7 @@ $(document).ready(function() {
         <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
     {% else %}
         <div id="option-avatar" class="col l12 m12 s12 options-avatar">
-        <div class="row">
+        <div class="row list-avatar">
         <form method="POST" action="{% url 'avatar_change' %}">
             <ul>
                 {{ primary_avatar_form.as_ul }}
