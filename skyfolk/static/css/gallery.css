@@ -10,7 +10,7 @@
   top: 20%;
   right: 0;
   left: 0;
-  z-index: 9999;
+  z-index: 9998;
   display: none; }
 .container .endless_more, .container .endless_loading {
   clear: both;
@@ -87,5 +87,19 @@
     .container-image .legend-content .legend-user-data blockquote {
       display: inline-block;
       padding: 10px; }
+
+.crop-image-div {
+  position: absolute;
+  display: none;
+  top: 20%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  height: auto;
+  background-color: #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  z-index: 9999; }
 
 /*# sourceMappingURL=gallery.css.map */

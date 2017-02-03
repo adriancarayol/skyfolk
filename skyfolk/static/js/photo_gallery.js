@@ -23,6 +23,9 @@ $(document).ready(function () {
         $(this).nextAll('input').click();
     });
 
+    $('#crop-image').on('click', function () {
+       $('#crop-image-preview').show();
+    });
 }); // FIN DOCUMENT READY
 
 /* DELETE OR EDIT PHOTO */

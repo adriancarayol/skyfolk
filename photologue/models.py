@@ -570,6 +570,7 @@ class Photo(ImageModel):
         super(Photo, self).save(*args, **kwargs)
 
     def get_remote_image(self):
+        """Obtiene la url introducida por el usuario"""
         if not self.url_image and not self.image:
             raise ValueError('Select image')
 
