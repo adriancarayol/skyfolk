@@ -605,13 +605,13 @@ class Photo(ImageModel):
         """Return the public galleries to which this photo belongs."""
         return self.galleries.filter(is_public=True)
 
-    def get_previous_in_gallery(self, gallery):
+    def get_previous_in_gallery(self):
         """Find the neighbour of this photo in the supplied gallery.
         We assume that the gallery and all its photos are on the same site.
         """
         if not self.is_public:
             raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = gallery.photos.is_public()
+        photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
             raise ValueError('Photo does not belong to gallery.')
         previous = None
@@ -620,14 +620,13 @@ class Photo(ImageModel):
                 return previous
             previous = photo
 
-
-    def get_next_in_gallery(self, gallery):
+    def get_next_in_gallery(self):
         """Find the neighbour of this photo in the supplied gallery.
         We assume that the gallery and all its photos are on the same site.
         """
         if not self.is_public:
             raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = gallery.photos.is_public()
+        photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
             raise ValueError('Photo does not belong to gallery.')
         matched = False

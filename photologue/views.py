@@ -1,5 +1,5 @@
 import warnings
-
+import os
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
 from django.views.generic.detail import DetailView
@@ -15,7 +15,7 @@ from user_profile.forms import SearchForm
 
 from django.contrib.auth.decorators import login_required
 # from django.contrib.auth import get_user_model
-from django.template import RequestContext
+from PIL import Image
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from django.http import QueryDict, HttpResponse
 import json
@@ -23,6 +23,9 @@ from django.shortcuts import redirect
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 from user_profile.models import UserProfile
+from django.utils.six import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.http import JsonResponse
 # Gallery views.
 
 
@@ -161,20 +164,55 @@ def upload_photo(request):
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = user
+            if 'image' in request.FILES:
+                img_data = dict(request.POST.items())
+                x = None  # Coordinate x
+                y = None  # Coordinate y
+                w = None  # Width
+                h = None  # Height
+                rotate = None  # Rotate
+                for key, value in img_data.items():  # Recorremos las opciones de recorte
+                    if key == "avatar_data":
+                        str_value = json.loads(value)
+                        print(str_value)
+                        x = str_value.get('x')
+                        y = str_value.get('y')
+                        w = str_value.get('width')
+                        h = str_value.get('height')
+                        rotate = str_value.get('rotate')
+
+                im = Image.open(request.FILES['image']).convert('RGBA')
+                tempfile = im.rotate(-rotate, expand=True)
+                tempfile = tempfile.crop((int(x), int(y), int(w + x), int(h + y)))
+                tempfile_io = BytesIO()
+                tempfile_io.seek(0, os.SEEK_END)
+                tempfile.save(tempfile_io, format='PNG')
+                image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.png', 'image/png', tempfile_io.tell(), None)
+                obj.image = image_file
+
             # obj.url_image = None
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
-            return redirect('/multimedia/'+user.username+'/')
+            data = {
+                'result': True,
+                'state': 200,
+                'message': 'Success',
+            }
+            return JsonResponse({'data': data})
         else:
-            return HttpResponse(
-                json.dumps({"nothing to see": "Selecciona un archivo valido."}),
-                content_type='application/json'
-            )
+            data = {
+                'result': True,
+                'state': 415,
+                'message': 'Success',
+            }
+            return JsonResponse({'data': data})
     else:
-        return HttpResponse(
-            json.dumps({"nothing to see": "this isn't happening"}),
-            content_type="application/json"
-        )
+        data = {
+            'result': True,
+            'state': 405,
+            'message': 'Success',
+        }
+        return JsonResponse({'data': data})
 
 
 def upload_zip_form(request):
@@ -294,14 +332,14 @@ class PhotoDetailView(DetailView):
         context['searchForm'] = SearchForm()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:
-            next = self.object.get_next_by_date_added()
-            context['next'] = next if next.owner == self.request.user else None
+            next = self.object.get_next_in_gallery()
+            context['next'] = next
         except Photo.DoesNotExist:
             pass
         # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
         try:
-            previous = self.object.get_previous_by_date_added()
-            context['previous'] = previous if previous.owner == self.request.user else None
+            previous = self.object.get_previous_in_gallery()
+            context['previous'] = previous
         except Photo.DoesNotExist:
             pass
         return context

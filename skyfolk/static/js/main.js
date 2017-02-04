@@ -27,6 +27,7 @@
     this.$avatarSrc = this.$avatarForm.find('.avatar-src');
     this.$avatarData = this.$avatarForm.find('.avatar-data');
     this.$avatarInput = this.$avatarForm.find('.avatar-input');
+    this.$avatarURL = this.$avatarForm.find('#id_url_image');
     this.$avatarSave = this.$avatarForm.find('.avatar-save');
     this.$avatarBtns = $('#crop-image-preview').find('.avatar-btns');
 
@@ -151,7 +152,7 @@
     },
 
     submit: function () {
-      if (!this.$avatarSrc.val() && !this.$avatarInput.val()) {
+      if (!this.$avatarSrc.val() && !this.$avatarInput.val() && !this.$avatarURL.val()) {
         return false;
       }
 
