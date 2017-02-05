@@ -171,7 +171,11 @@ def upload_photo(request):
                 w = None  # Width
                 h = None  # Height
                 rotate = None  # Rotate
+                is_cutted = True
                 for key, value in img_data.items():  # Recorremos las opciones de recorte
+                    if key == "avatar_cut" and value == 'false':  # Comprobamos si el usuario ha recortado la foto
+                        is_cutted = False
+                        break
                     if key == "avatar_data":
                         str_value = json.loads(value)
                         print(str_value)
@@ -180,15 +184,15 @@ def upload_photo(request):
                         w = str_value.get('width')
                         h = str_value.get('height')
                         rotate = str_value.get('rotate')
-
-                im = Image.open(request.FILES['image']).convert('RGBA')
-                tempfile = im.rotate(-rotate, expand=True)
-                tempfile = tempfile.crop((int(x), int(y), int(w + x), int(h + y)))
-                tempfile_io = BytesIO()
-                tempfile_io.seek(0, os.SEEK_END)
-                tempfile.save(tempfile_io, format='PNG')
-                image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.png', 'image/png', tempfile_io.tell(), None)
-                obj.image = image_file
+                if is_cutted:
+                    im = Image.open(request.FILES['image']).convert('RGBA')
+                    tempfile = im.rotate(-rotate, expand=True)
+                    tempfile = tempfile.crop((int(x), int(y), int(w + x), int(h + y)))
+                    tempfile_io = BytesIO()
+                    tempfile_io.seek(0, os.SEEK_END)
+                    tempfile.save(tempfile_io, format='PNG')
+                    image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.png', 'image/png', tempfile_io.tell(), None)
+                    obj.image = image_file
 
             # obj.url_image = None
             obj.save()

@@ -207,7 +207,6 @@ $(document).ready(function () {
             $(searchInput).blur();
             /* OCULTAR MENUS VERTICALES (NOTIFICACION Y MENU USUARIO */
             $('.side-nav').sideNav('hide');
-            $('#upload_photo').hide();
         }
     });
     /* Focus on input search */

@@ -25,6 +25,27 @@ $(document).ready(function () {
 
     $('#crop-image').on('click', function () {
        $('#crop-image-preview').show();
+       $('.avatar-form .is-cutted').val('true');
+    });
+
+    $('#crop-image-preview').find('.close-crop-image').on('click', function () {
+        $('#crop-image-preview').hide();
+        $('.avatar-form .is-cutted').val('false');
+    });
+
+    $('#crop-image-preview').find('#cut-done').on('click',function () {
+        $('#crop-image-preview').hide();
+        $('.avatar-form .is-cutted').val('true'); // Redundancia
+
+    });
+
+    $(this).on('keydown', function (e) {
+        var key = e.keyCode || e.which;
+        if (key == 27) {
+            $('#upload_photo').hide();
+            $('#crop-image-preview').hide();
+            $('.avatar-form .is-cutted').val('false');
+        }
     });
 }); // FIN DOCUMENT READY
 

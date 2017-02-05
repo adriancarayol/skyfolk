@@ -25,6 +25,7 @@
     this.$avatarForm = this.$avatarModal.find('.avatar-form');
     this.$avatarUpload = this.$avatarForm.find('.avatar-upload');
     this.$avatarSrc = this.$avatarForm.find('.avatar-src');
+    this.$isCutted = this.$avatarForm.find('.is-cutted');
     this.$avatarData = this.$avatarForm.find('.avatar-data');
     this.$avatarInput = this.$avatarForm.find('.avatar-input');
     this.$avatarURL = this.$avatarForm.find('#id_url_image');
@@ -65,9 +66,9 @@
 
 
     initModal: function () {
-      this.$avatarModal.modal({
+      /*this.$avatarModal.modal({
         show: false
-      });
+      });*/
     },
 
     initPreview: function () {
@@ -119,7 +120,7 @@
     },
 
     click: function () {
-      this.$avatarModal.modal('show');
+      //this.$avatarModal.modal('show');
       this.initPreview();
     },
 
@@ -263,8 +264,8 @@
 
     submitDone: function (data) {
       console.log(data);
-      var _respose = data.data;
-      if ($.isPlainObject(_respose) && _respose.state == 200) {
+      var _response = data.data;
+      if ($.isPlainObject(_response) && _response.state == 200) {
         if (data.result) {
           this.url = data.result;
 
@@ -278,8 +279,8 @@
           }
 
           this.$avatarInput.val('');
-        } else if (_respose.message) {
-          this.alert(_respose.message);
+        } else if (_response.message) {
+          this.alert(_response.message);
         }
       } else {
         this.alert('Failed to response');
@@ -298,7 +299,7 @@
       this.$avatarForm.get(0).reset();
       this.$avatar.attr('src', this.url);
       this.stopCropper();
-      this.$avatarModal.modal('hide');
+      //this.$avatarModal.modal('hide');
     },
 
     alert: function (msg) {
