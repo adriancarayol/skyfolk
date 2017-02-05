@@ -201,6 +201,7 @@ def upload_photo(request):
                 'result': True,
                 'state': 200,
                 'message': 'Success',
+                'gallery': '/multimedia/' + user.username
             }
             return JsonResponse({'data': data})
         else:

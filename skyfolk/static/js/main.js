@@ -263,7 +263,6 @@
     },
 
     submitDone: function (data) {
-      console.log(data);
       var _response = data.data;
       if ($.isPlainObject(_response) && _response.state == 200) {
         if (data.result) {
@@ -280,15 +279,15 @@
 
           this.$avatarInput.val('');
         } else if (_response.message) {
-          this.alert(_response.message);
+          window.location.replace(_response.gallery); // Redirect to user gallery.
         }
       } else {
-        this.alert('Failed to response');
+        swal('Failed to response');
       }
     },
 
     submitFail: function (msg) {
-      this.alert(msg);
+      swal(msg);
     },
 
     submitEnd: function () {
@@ -302,16 +301,6 @@
       //this.$avatarModal.modal('hide');
     },
 
-    alert: function (msg) {
-      var $alert = [
-            '<div class="alert alert-danger avatar-alert alert-dismissable">',
-              '<button type="button" class="close" data-dismiss="alert">&times;</button>',
-              msg,
-            '</div>'
-          ].join('');
-
-      this.$avatarUpload.after($alert);
-    }
   };
 
   $(function () {
