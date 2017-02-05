@@ -8,18 +8,30 @@ function AJAX_follow_group(_id) {
         },
         dataType: 'json',
         success: function (response) {
-            if (response.localeCompare("user_add") == 0) {
+            var _response = response.response;
+            console.log(_response);
+            if (_response === "user_add") {
                 $('#follow-group').attr({
                     "id": "unfollow-group",
                     "class": "fa fa-remove group-follow",
                     "style": "color: #29b203;"
                 });
-            } else {
-
+            } else if (_response === "own_group") {
+                    swal({
+                        title: "¡Ups!",
+                        text: "¡No puedes seguir a tu propio grupo!",
+                        customClass: 'default-div'
+                    });
+                } else {
+                swal({
+                    title: "¡Ups!",
+                    text: "Hay un error con tu petición, intentalo de nuevo mas tarde.",
+                    customClass: 'default-div'
+                });
             }
         },
         error: function (rs, e) {
-            alert('ERROR: ' + rs.responseText + e);
+            
         }
     });
 }
@@ -43,7 +55,7 @@ function AJAX_unfollow_group(_id) {
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
-                    text: "Ha surgido un error, inténtalo de nuevo más tarde :-(",
+                    text: "Hay un error con tu petición, intentalo de nuevo mas tarde.",
                     customClass: 'default-div'
                 });
             }
@@ -63,17 +75,28 @@ function AJAX_like_group(_id) {
         },
         dataType: 'json',
         success: function (response) {
+            var _response = response.response;
             var _numLikes = $("#likes");
-            if (response == "like") {
+            if (_response === "like") {
                 $("#like-group").css('color', '#ec407a');
                 $(_numLikes).find("strong").html(parseInt($(_numLikes).find("strong").html()) + 1);
-            } else if (response == "no_like") {
+            } else if (_response === "no_like") {
                 $("#like-group").css('color', '#46494c');
                 if ($(_numLikes).find("strong").html() > 0) {
                     $(_numLikes).find("strong").html(parseInt($(_numLikes).find("strong").html()) - 1);
                 }
+            } else if (_response === "own_group") {
+                swal({
+                    title: "¡Ups!",
+                    text: "¡No puedes dar like a tu propio grupo!",
+                    customClass: 'default-div'
+                });
             } else {
-                console.log("...");
+                swal({
+                    title: "¡Ups!",
+                    text: "Hay un error con tu petición, intentalo de nuevo mas tarde.",
+                    customClass: 'default-div'
+                });
             }
         }, error: function (rs, e) {
             // alert(rs.responseText);

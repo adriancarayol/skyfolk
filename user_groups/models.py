@@ -26,6 +26,9 @@ class RolUserGroup(models.Model):
     user = models.ForeignKey(User, related_name='rol_user', blank=True, null=True)
     rol = models.CharField(max_length=1, choices=ROL_CHOICES, default='A')
 
+    def get_rol_verbose(self):
+        return dict(RolUserGroup.ROL_CHOICES)[self.rol]
+
 
 class UserGroupsQuerySet(models.QuerySet):
     """
@@ -91,13 +94,17 @@ class UserGroups(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=32, blank=True, null=True)
     owner = models.ForeignKey(User, related_name='group_owner')
-    users = models.ManyToManyField(RolUserGroup, related_name='users_in_group', blank=True)
-    small_image = models.ImageField(upload_to=upload_small_group_image, verbose_name='small_image',
+    users = models.ManyToManyField(RolUserGroup, 
+        related_name='users_in_group', blank=True)
+    small_image = models.ImageField(upload_to=upload_small_group_image, 
+                                    verbose_name='small_image',
                                     blank=True, null=True)
-    large_image = models.ImageField(upload_to=upload_large_group_image, verbose_name='large_image',
+    large_image = models.ImageField(upload_to=upload_large_group_image, 
+                                    verbose_name='large_image',
                                     blank=True, null=True)
-    privacity = models.BooleanField(default=True, help_text='Desactiva esta casilla '
-                                                            'si quieres que el grupo sea privado.')
+    privacity = models.BooleanField(default=True, 
+                                    help_text='Desactiva esta casilla '
+                                    'si quieres que el grupo sea privado.')
     tags = TaggableManager()
 
     objects = UserGroupsManager()
@@ -105,8 +112,7 @@ class UserGroups(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         self.slug = slugify(self.name)
-        super(UserGroups, self).save(force_insert=force_insert, force_update=force_update,
-                                     using=using, update_fields=update_fields)
+        super(UserGroups, self).save()
 
 
 class LikeGroupQuerySet(models.QuerySet):
