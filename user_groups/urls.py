@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^like_group/$', user_groups_views.like_group,
         name='like-group'),
     # Seguidores de un grupo.
-    url(r'^users/(?P<groupname>[\w-]+)/$', 
+    url(r'^users/(?P<groupname>[\w-]+)/$',
         user_groups_views.followers_group),
+    url(r'^glikes/(?P<groupname>[\w-]+)/$',
+        user_groups_views.likes_group)
 ]

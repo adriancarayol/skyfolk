@@ -16,6 +16,7 @@ from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup
 from el_pagination.views import AjaxListView
 
+
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
     """
     Vista para la creacion de un grupo
@@ -182,15 +183,15 @@ def like_group(request):
 
             like, created = LikeGroup.objects.get_or_create(
                 from_like=user, to_like=group)
-
+            print('Like: {}'.format(like))
             if not created:
                 like.delete()
                 return JsonResponse({'response': 'no_like'})
             else:
                 return JsonResponse({'response': 'like'})
-            print('Like: {}'.format(like))
     return JsonResponse(
         {'response': 'error'})
+
 
 class FollowersGroup(AjaxListView):
     """
@@ -198,9 +199,28 @@ class FollowersGroup(AjaxListView):
     """
     context_object_name = 'user_list'
     template_name = 'groups/followers.html'
-    page_template='groups/followers_page.html'
+    page_template = 'groups/followers_page.html'
 
     def get_queryset(self):
         return UserGroups.objects.get(slug__exact=self.kwargs['groupname']).users.all()
 
+
 followers_group = login_required(FollowersGroup.as_view(), login_url='/')
+
+
+class LikeListGroup(AjaxListView):
+    """
+    Vista con los usuarios que han dado like a un grupo
+    """
+    context_object_name = 'like_list'
+    template_name = 'groups/user_likes.html'
+    page_template = 'groups/user_list_page.html'
+
+    def get_queryset(self):
+        group = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
+        return LikeGroup.objects.filter(to_like=group).values('from_like__username',
+                                                              'from_like__first_name', 'from_like__last_name',
+                                                              'from_like__profile__backImage')
+
+
+likes_group = login_required(LikeListGroup.as_view(), login_url='/')

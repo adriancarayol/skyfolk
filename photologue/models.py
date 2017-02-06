@@ -263,10 +263,31 @@ class Gallery(models.Model):
                           .exclude(sites__id__in=self.sites.all())
 
 
+def flat(*nums):
+    """Build a tuple of ints from float or integer arguments. Useful because PIL crop and resize require integer points."""
+    return tuple(int(round(n)) for n in nums)
+
+class Size(object):
+    def __init__(self, pair):
+        self.width = float(pair[0])
+        self.height = float(pair[1])
+
+    @property
+    def aspect_ratio(self):
+        return self.width / self.height
+
+    @property
+    def size(self):
+        return flat(self.width, self.height)
+
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
                               upload_to=get_storage_path, validators=[validate_file_extension])
+
+    thumbnail = models.ImageField(_('thumbnail'),
+                                  max_length=IMAGE_FIELD_MAX_LENGTH,
+                                  upload_to=get_storage_path, null=True, blank=True)
 
     date_taken = models.DateTimeField(_('date taken'),
                                       null=True,
@@ -482,6 +503,32 @@ class ImageModel(models.Model):
             if photosize.pre_cache:
                 self.create_size(photosize)
 
+    def cropped_thumbnail(self, img, size):
+        '''
+        Builds a thumbnail by cropping out a maximal region from the center of the original with
+        the same aspect ratio as the target size, and then resizing. The result is a thumbnail which is
+        always EXACTLY the requested size and with no aspect ratio distortion (although two edges, either
+        top/bottom or left/right depending whether the image is too tall or too wide, may be trimmed off.)
+        '''
+
+        original = Size(img.size)
+        target = Size(size)
+
+        if target.aspect_ratio > original.aspect_ratio:
+            # image is too tall: take some off the top and bottom
+            scale_factor = target.width / original.width
+            crop_size = Size((original.width, target.height / scale_factor))
+            top_cut_line = (original.height - crop_size.height) / 2
+            img = img.crop(flat(0, top_cut_line, crop_size.width, top_cut_line + crop_size.height))
+        elif target.aspect_ratio < original.aspect_ratio:
+            # image is too wide: take some off the sides
+            scale_factor = target.height / original.height
+            crop_size = Size((target.width / scale_factor, original.height))
+            side_cut_line = (original.width - crop_size.width) / 2
+            img = img.crop(flat(side_cut_line, 0, side_cut_line + crop_size.width, crop_size.height))
+
+        return img.resize(target.size, Image.ANTIALIAS)
+
     def __init__(self, *args, **kwargs):
         super(ImageModel, self).__init__(*args, **kwargs)
         self._old_image = self.image
@@ -498,8 +545,10 @@ class ImageModel(models.Model):
             self.image = self._old_image
             self.clear_cache()
             self.image = new_image  # Back to the new image.
+            #self.thumbnail = self.cropped_thumbnail(self.image, [123,233])
             self._old_image.storage.delete(self._old_image.name)  # Delete (old) base image.
         if self.date_taken is None or image_has_changed:
+            #self.thumbnail = self.cropped_thumbnail(self.image, [123,233])
             # Attempt to get the date the photo was taken from the EXIF data.
             try:
                 exif_date = self.EXIF(self.image.file).get('EXIF DateTimeOriginal', None)
@@ -575,6 +624,9 @@ class Photo(ImageModel):
             raise ValueError('Select image')
 
         if self.url_image and not self.image:
+            if len(self.url_image) > 255:
+                raise ValueError('URL is very long.')
+
             parsed = urlparse(self.url_image)
             name, ext = splitext(parsed.path)
             validate_extension(ext)
