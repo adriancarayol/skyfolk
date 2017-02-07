@@ -1262,8 +1262,8 @@ class LikeListUsers(AjaxListView):
     def get_queryset(self):
         username = self.kwargs['username']
         user_profile = get_object_or_404(UserProfile, user__username__iexact=username)
-        print(username)
-        return user_profile.get_likes_to_me()
+        return user_profile.get_likes_to_me().values('from_like__user__username', 'from_like__user__first_name',
+                                                     'from_like__user__last_name', 'from_like__backImage')
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)

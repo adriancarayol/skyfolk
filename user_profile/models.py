@@ -440,7 +440,7 @@ class UserProfile(models.Model):
         Obtengo los likes que me han dado.
         :return: Devuelve los likes recibidos
         """
-        return self.likeprofiles.filter(from_likeprofile__to_like=self)
+        return LikeProfile.objects.get_all_likes_to_me(self)
 
     def has_like(self, profile):
         """
