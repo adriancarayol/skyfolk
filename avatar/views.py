@@ -19,6 +19,7 @@ from user_profile.forms import SearchForm
 from urllib.parse import urlparse
 from os.path import splitext
 
+
 def _get_next(request):
     """
     The part that's the least straightforward about views in this module is

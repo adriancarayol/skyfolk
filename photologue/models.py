@@ -263,23 +263,6 @@ class Gallery(models.Model):
                           .exclude(sites__id__in=self.sites.all())
 
 
-def flat(*nums):
-    """Build a tuple of ints from float or integer arguments. Useful because PIL crop and resize require integer points."""
-    return tuple(int(round(n)) for n in nums)
-
-class Size(object):
-    def __init__(self, pair):
-        self.width = float(pair[0])
-        self.height = float(pair[1])
-
-    @property
-    def aspect_ratio(self):
-        return self.width / self.height
-
-    @property
-    def size(self):
-        return flat(self.width, self.height)
-
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
@@ -503,32 +486,6 @@ class ImageModel(models.Model):
             if photosize.pre_cache:
                 self.create_size(photosize)
 
-    def cropped_thumbnail(self, img, size):
-        '''
-        Builds a thumbnail by cropping out a maximal region from the center of the original with
-        the same aspect ratio as the target size, and then resizing. The result is a thumbnail which is
-        always EXACTLY the requested size and with no aspect ratio distortion (although two edges, either
-        top/bottom or left/right depending whether the image is too tall or too wide, may be trimmed off.)
-        '''
-
-        original = Size(img.size)
-        target = Size(size)
-
-        if target.aspect_ratio > original.aspect_ratio:
-            # image is too tall: take some off the top and bottom
-            scale_factor = target.width / original.width
-            crop_size = Size((original.width, target.height / scale_factor))
-            top_cut_line = (original.height - crop_size.height) / 2
-            img = img.crop(flat(0, top_cut_line, crop_size.width, top_cut_line + crop_size.height))
-        elif target.aspect_ratio < original.aspect_ratio:
-            # image is too wide: take some off the sides
-            scale_factor = target.height / original.height
-            crop_size = Size((target.width / scale_factor, original.height))
-            side_cut_line = (original.width - crop_size.width) / 2
-            img = img.crop(flat(side_cut_line, 0, side_cut_line + crop_size.width, crop_size.height))
-
-        return img.resize(target.size, Image.ANTIALIAS)
-
     def __init__(self, *args, **kwargs):
         super(ImageModel, self).__init__(*args, **kwargs)
         self._old_image = self.image
@@ -545,10 +502,8 @@ class ImageModel(models.Model):
             self.image = self._old_image
             self.clear_cache()
             self.image = new_image  # Back to the new image.
-            #self.thumbnail = self.cropped_thumbnail(self.image, [123,233])
             self._old_image.storage.delete(self._old_image.name)  # Delete (old) base image.
         if self.date_taken is None or image_has_changed:
-            #self.thumbnail = self.cropped_thumbnail(self.image, [123,233])
             # Attempt to get the date the photo was taken from the EXIF data.
             try:
                 exif_date = self.EXIF(self.image.file).get('EXIF DateTimeOriginal', None)
@@ -613,13 +568,17 @@ class Photo(ImageModel):
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(self.date_added.timestamp()))
-        self.get_remote_image()
+    def save(self, created=True, *args, **kwargs):
+        if created:
+            self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(self.date_added.timestamp()))
+            self.get_remote_image()
         super(Photo, self).save(*args, **kwargs)
 
     def get_remote_image(self):
-        """Obtiene la url introducida por el usuario"""
+        """
+        Obtiene la url introducida por el usuario
+        """
+
         if not self.url_image and not self.image:
             raise ValueError('Select image')
 
@@ -1003,5 +962,7 @@ def add_default_site(instance, created, **kwargs):
     if instance.sites.exists():
         return
     instance.sites.add(Site.objects.get_current())
+
+
 post_save.connect(add_default_site, sender=Gallery)
 post_save.connect(add_default_site, sender=Photo)
