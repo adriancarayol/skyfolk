@@ -737,19 +737,16 @@ def respond_friend_request(request):
             emitter_profile = None
 
         if emitter_profile:
-            # user.profile.get_received_friends_requests().delete()
             user.profile.remove_received_follow_request(emitter_profile)
 
             if request_status == 'accept':
                 response = "not_added_friend"
                 try:
-                    #  user_friend = user.profile.is_friend(profileUserId)
                     user_friend = user.profile.is_follower(profileUserId)
                 except ObjectDoesNotExist:
                     user_friend = None
 
                 if not user_friend:
-                    #  created = user.profile.add_friend(emitter_profile)
                     created = user.profile.add_follower(
                         emitter_profile)  # Me añado como seguidor del perfil que quiero seguir
                     created_2 = emitter_profile.add_follow(
@@ -757,12 +754,14 @@ def respond_friend_request(request):
                     created.save()
                     created_2.save()
 
+                    print('user.profile: {} emitter_profile: {}'.format(user.username, emitter_profile.user.username))
                     t, created = Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
                                                                 verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
                                                                     emitter_profile.user.username,
                                                                     emitter_profile.user.username, user.username,
                                                                     user.username),
                                                                 type='new_relation')
+
                     t_, created_ = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
                                                                   verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
                                                                       user.username, user.username,

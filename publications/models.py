@@ -118,6 +118,9 @@ class PublicationBase(models.Model):
 
 
 class Publication(PublicationBase):
+    """
+    Modelo para las publicaciones de usuario (en perfiles de usuarios)
+    """
     board_owner = models.ForeignKey(User, related_name='board_owner')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
