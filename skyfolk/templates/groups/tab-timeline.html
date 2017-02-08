@@ -1,0 +1,18 @@
+{% comment %}
+  Pestaña de timeline en el grupo
+{% endcomment %}
+<div id="tab-timeline">
+    <div id="section">
+        <div class="wrapperx" id="wrapperx-timeline">
+            {% include "groups/timeline_entries.html" %}
+        </div>
+    </div>
+</div>
+{% block js %}
+    <script>
+        $('#tab-timeline').endlessPaginate({
+            paginateOnScroll: true,
+            paginateOnScrollMargin: 20
+        });
+    </script>
+{% endblock %}

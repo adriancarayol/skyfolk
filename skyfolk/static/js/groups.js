@@ -1,3 +1,24 @@
+$(function () {
+    $("#li-tab-amigos").click(function () {
+        $('#tab-amigos').css({
+            "overflow": "auto"
+        });
+    });
+
+    $("#li-tab-comentarios").click(function () {
+        $('#tab-comentarios').css({
+            "overflow": "auto"
+        });
+
+    });
+
+    $("#li-tab-timeline").click(function () {
+        $('#tab-timeline').css({
+            "overflow": "auto"
+        });
+    });
+}); // end document ready
+
 function AJAX_follow_group(_id) {
     $.ajax({
         type: 'POST',
@@ -17,12 +38,12 @@ function AJAX_follow_group(_id) {
                     "style": "color: #29b203;"
                 });
             } else if (_response === "own_group") {
-                    swal({
-                        title: "¡Ups!",
-                        text: "¡No puedes seguir a tu propio grupo!",
-                        customClass: 'default-div'
-                    });
-                } else {
+                swal({
+                    title: "¡Ups!",
+                    text: "¡No puedes seguir a tu propio grupo!",
+                    customClass: 'default-div'
+                });
+            } else {
                 swal({
                     title: "¡Ups!",
                     text: "Hay un error con tu petición, intentalo de nuevo mas tarde.",
@@ -31,7 +52,7 @@ function AJAX_follow_group(_id) {
             }
         },
         error: function (rs, e) {
-            
+
         }
     });
 }

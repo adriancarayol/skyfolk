@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup
 from el_pagination.views import AjaxListView
+from el_pagination.decorators import page_template
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -75,7 +76,9 @@ group_list = login_required(UserGroupList.as_view(), login_url='/')
 
 
 @login_required(login_url='/')
-def group_profile(request, groupname):
+@page_template('groups/user_entries.html')
+def group_profile(request, groupname, template='groups/group_profile.html',
+                  extra_context=None):
     """
     Vista del perfil de un grupo
     :param request:
@@ -86,13 +89,12 @@ def group_profile(request, groupname):
                                       slug__exact=groupname)
     follow_group = UserGroups.objects.is_follow(group_id=group_profile.id,
                                                 user_id=user)
-    print('Usuario: {} sigue a: {}, {}'.format(user.username, group_profile.name, follow_group))
-    template = "groups/group_profile.html"
     self_initial = {'author': user.pk, 'board_owner': user.pk}
     group_initial = {'owner': user.pk}
     likes = LikeGroup.objects.filter(to_like=group_profile).count()
     user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
     users_in_group = group_profile.users.count()
+
     context = {'searchForm': SearchForm(request.POST),
                'publicationSelfForm': PublicationForm(initial=self_initial),
                'groupForm': FormUserGroup(initial=group_initial),
@@ -100,7 +102,13 @@ def group_profile(request, groupname):
                'follow_group': follow_group,
                'likes': likes,
                'user_like_group': user_like_group,
-               'users_in_group': users_in_group}
+               'users_in_group': users_in_group,
+               'user_list': group_profile.users.all().values('user__username', 'user__first_name',
+                                                             'user__last_name')}
+
+    if extra_context is not None:
+        context.update(extra_context)
+
     return render(request, template, context)
 
 
