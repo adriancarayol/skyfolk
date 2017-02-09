@@ -10,11 +10,12 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from text_processor.format_text import TextProcessor
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from publications.forms import PublicationForm
-from publications.models import Publication
+from publications.forms import PublicationForm, PublicationPhotoForm
+from publications.models import Publication, PublicationPhoto
 from timeline.models import Timeline
 from notifications.signals import notify
 from el_pagination.views import AjaxListView
+from photologue.models import Photo
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
     """
@@ -123,36 +124,45 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
         else:
             return self.queryset
 
+class PublicationPhotoView(AjaxableResponseMixin, CreateView):
+    """
+    Crear una publicación para mi perfil.
+    """
+    form_class = PublicationPhotoForm
+    model = PublicationPhoto
+    http_method_names = [u'post']
+    success_url = '/thanks/'
+    
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
 
-'''def publication_form(request):
-    print('>>>>>>>> PETICION AJAX PUBLICACION')
-    if request.POST:
-        form = PublicationForm(request.POST)
-        userprofile = get_object_or_404(get_user_model(), pk=request.POST['userprofileid'])
-        emitter = get_object_or_404(get_user_model(), pk=request.POST['emitterid'])
-        response = False
+        emitter = get_object_or_404(get_user_model(),
+                                    pk=request.POST.get('p_author', None))
+    
+
+        photo = get_object_or_404(Photo, pk=request.POST.get('board_photo', None))
+        import pprint
+        pprint.pprint(request.POST)
         publication = None
-
+        print('POST DATA: {}'.format(request.POST))
+        print('tipo emitter: {}'.format(type(emitter)))
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-                publication.author = emitter.profile
-                publication.profile = userprofile.profile
+                publication.author = emitter
+                publication.board_photo = photo
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.content = TextProcessor.get_format_text(publication.content, emitter)
-                print(str(userprofile.profile))
-                print(str(emitter.profile))
-                """ Send notification to userprofile """
-                if userprofile.pk != emitter.pk:
-                    notify.send(emitter, actor=emitter.username, recipient=userprofile, verb=u'¡ha publicado un comentario en tu tablón!', description="Contenido: " + publication.content)
                 publication.save()
-                response = True
-            except IntegrityError:
-                pass
+                print('>>>> PUBLICATION: ')
+                """t, created = Timeline.objects.get_or_create(publication=publication, author=emitter.profile,
+                                                            profile=emitter.profile)"""
+                return self.form_valid(form=form)
+            except IntegrityError as e:
+                print("views.py line 48 -> {}".format(e))
 
-        jsons = json.dumps({'response': response})
-        return HttpResponse(jsons, content_type='application/json')'''
+        return self.form_invalid(form=form)
 
 
 def delete_publication(request):

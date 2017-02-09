@@ -47,6 +47,13 @@ $(document).ready(function () {
             $('.avatar-form .is-cutted').val('false');
         }
     });
+
+    $('#tab-messages').find('#message-photo-form').on('submit', function (event) {
+        event.preventDefault();
+        var data = $('.form-wrapper').find('#message-photo-form').serialize();
+        console.log(data);
+        AJAX_submit_photo_publication(data, 'publication');
+    });
 }); // FIN DOCUMENT READY
 
 /* DELETE OR EDIT PHOTO */
@@ -73,4 +80,47 @@ function AJAX_delete_photo() {
          swal(rs.responseText + " " + e);
       }
    });
+}
+
+function AJAX_submit_photo_publication(data, type, pks) {
+    type = typeof type !== 'undefined' ? type : "reply"; //default para type
+    $.ajax({
+        url: '/publication_photo/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: function (data) {
+            var response = data.response;
+            console.log('RESPONSE AQUI: ' + response + " type: " + type);
+            if (response == true) {
+                /* nothing */
+            } else {
+                swal({
+                    title: "",
+                    text: "Failed to publish",
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            }
+            if (type == "reply") {
+                var caja_comentarios = $('#caja-comentario-' + pks[2]);
+                $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
+                $(caja_comentarios).fadeOut();
+            } else if (type == "publication") {
+                // $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+            }
+        },
+        error: function (rs, e) {
+            swal({
+                title: '¡Ups!',
+                text: 'Revisa el contenido de tu mensaje', // rs.responseText,
+                customClass: 'default-div',
+                type: "error"
+            });
+        }
+    }).done(function () {
+        // No necesario, ya que usamos sockets para añadir
+        // En "vivo" publicaciones y respuestas
+        //addNewPublication(type, pks[0], pks[1], pks[2]);
+    })
 }

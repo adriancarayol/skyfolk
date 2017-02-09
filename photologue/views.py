@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render, get_object_or_404
 
 from .models import Photo, Gallery
-from publications.forms import PublicationForm
+from publications.forms import PublicationForm, PublicationPhotoForm
 from user_profile.forms import SearchForm
 
 from django.contrib.auth.decorators import login_required
@@ -26,6 +26,7 @@ from user_profile.models import UserProfile
 from django.utils.six import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import JsonResponse
+from publications.models import PublicationPhoto
 # Gallery views.
 
 
@@ -337,9 +338,12 @@ class PhotoDetailView(DetailView):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
+        initial_photo = {'p_author': user.pk, 'board_photo': self.get_object()}
         context['form'] = EditFormPhoto(instance=self.object)
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
+        context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
+        context['publications'] = PublicationPhoto.objects.filter(board_photo=self.get_object())
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:
             next = self.object.get_next_in_gallery()

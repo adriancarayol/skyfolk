@@ -118,8 +118,21 @@
                 {% endif %}
                     </div>
                     {% endcomment %}
-                    <div class="col l4 m12 s12 photo-messages">
+                    <div id="tab-messages" class="col l4 m12 s12 photo-messages">
                         <h1>Comentarios</h1>
+                        <div class="row form-wrapper">
+                        <form id="message-photo-form" action="" method="post">{% csrf_token %}
+                            {{ publication_photo.csrftoken }}
+                            {{ publication_photo }}
+                             <button type="submit" id="send_form_photo_publi"
+                                        class="waves-effect waves-light btn right blue">
+                                    Enviar<i class="material-icons right">send</i></button>
+                        </form>
+                        </div>
+                        {% for pub in publications %}
+                            <p>{{ pub.p_author }}</p>
+                            <p>{{ pub.content }}</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

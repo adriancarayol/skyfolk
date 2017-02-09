@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
@@ -6,9 +7,10 @@ from channels import Group
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from taggit.managers import TaggableManager
-import json
 from text_processor.format_text import TextProcessor
 from user_groups.models import UserGroups
+from photologue.models import Photo
+
 
 class PublicationManager(models.Manager):
     list_display = ['tag_list']
@@ -104,11 +106,10 @@ class PublicationManager(models.Manager):
 
 
 class PublicationBase(models.Model):
-    content = models.TextField(blank=False)
-    author = models.ForeignKey(User, related_name='publications')
+    content = models.TextField(blank=False, null=True)
     image = models.ImageField(upload_to='publicationimages',
                               verbose_name='Image', blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
     tags = TaggableManager(blank=True)
 
     class Meta:
@@ -121,6 +122,7 @@ class Publication(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
+    author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
@@ -189,7 +191,8 @@ class Publication(PublicationBase):
         else:
             super(Publication, self).save(*args, **kwargs)
 
-class PublicationGroup(models.Model):
+class PublicationGroup(PublicationBase):
+    g_author = models.ForeignKey(User, null=True)
     board_group = models.ForeignKey(UserGroups, related_name='board_group')
     user_give_me_like = models.ManyToManyField(User, blank=True,
             related_name='likes_group_me')
@@ -206,3 +209,18 @@ class PublicationGroup(models.Model):
     def __str__(self):
         return self.content
 
+
+class PublicationPhoto(PublicationBase):
+    """
+    Modelo para las publicaciones en las fotos
+    """
+    p_author = models.ForeignKey(User, null=True)
+    board_photo = models.ForeignKey(Photo, related_name='board_photo')
+    user_give_me_like = models.ManyToManyField(User, blank=True,
+        related_name='likes_photo_me')
+    user_give_me_hate = models.ManyToManyField(User, blank=True,
+        related_name='hate_photo_me')
+    user_share_me = models.ManyToManyField(User, blank=True,
+        related_name='share_photo_me')
+    parent = models.ForeignKey('self', blank=True, null=True,
+        related_name='reply_photo')
