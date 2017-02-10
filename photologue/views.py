@@ -343,7 +343,9 @@ class PhotoDetailView(DetailView):
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
+        print('???')
         context['publications'] = PublicationPhoto.objects.filter(board_photo=self.get_object())
+        print('!!!')
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:
             next = self.object.get_next_in_gallery()

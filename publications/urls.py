@@ -12,7 +12,6 @@ urlpatterns = [
         name='add_like'),
     url(r'^publication/add_hate/$', publications_views.add_hate,
         name='add_hate'),
-    url(r'^load_publications/$', publications_views.load_publications),
     # Publication for photo
     url(r'^publication_photo/$', publications_views.PublicationPhotoView.as_view(),
         name='new_photo_publication'),

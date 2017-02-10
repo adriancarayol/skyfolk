@@ -193,24 +193,6 @@ def delete_publication(request):
                             )
 
 
-def load_publications(request):
-    global publications_next
-    print('>>>>>> PETICION AJAX, CARGAR MAS PUBLICACIONES')
-    publicationslist = request.session.get('publications_list', None)
-    if publicationslist == None:
-        publications_next = None
-    else:
-        publicationslist = json.loads(publicationslist)
-        if request.method == 'POST':
-            slug = request.POST.get('slug', None)
-            print('>>>>>>> SLUG: ' + slug)
-            n = int(slug) * 15
-            publications_next = publicationslist[n - 15:n]
-            print('>>>>>>> LISTA: ')
-            print(publications_next)
-
-    return HttpResponse(json.dumps(list(publications_next)), content_type='application/json')
-
 def add_like(request):
     response = False
     statuslike = 0

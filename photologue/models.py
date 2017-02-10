@@ -9,6 +9,7 @@ import exifread
 import unicodedata
 import requests
 import tempfile
+import uuid
 
 from django.utils.timezone import now
 from django.db import models
@@ -570,7 +571,7 @@ class Photo(ImageModel):
 
     def save(self, created=True, *args, **kwargs):
         if created:
-            self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(self.date_added.timestamp()))
+            self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(uuid.uuid1()))
             self.get_remote_image()
         super(Photo, self).save(*args, **kwargs)
 

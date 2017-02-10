@@ -567,7 +567,7 @@ a.fontawesome-cog:hover {
     float: right;
     left: 4px;
 }
-#tab-comentarios .no-comments {
+#tab-comentarios .no-comments, #tab-messages .no-comments {
   width: 100%;
   height: 20%;
   position: relative;
@@ -575,7 +575,7 @@ a.fontawesome-cog:hover {
   border-bottom: 5px solid #eee;
   text-align: center; }
 
-#tab-comentarios .no-comments .no-comments-text-info {
+#tab-comentarios .no-comments .no-comments-text-info, #tab-messages .no-comments .no-comments-text-info {
   top: 80px;
   font-size: 1.5em;
   position: relative;

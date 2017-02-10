@@ -1,12 +1,12 @@
 .container-photo {
   position: relative;
   display: block;
-  text-align: center;
   margin-top: 2.7%; }
   .container-photo .photo {
     color: #555; }
     .container-photo .photo .photo-body {
-      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); }
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+      text-align: center; }
     .container-photo .photo .photo-details {
       background-color: #f9f9f9;
       display: block;
@@ -65,7 +65,43 @@
   background: white;
   border-radius: 0.3rem;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  margin-bottom: 1em; }
+  margin-bottom: 1em;
+  /* visited link */ }
+  .photo-messages .form-wrapper {
+    display: block;
+    border-top: 2px solid #1e88e5;
+    width: 100%;
+    margin-top: 2%; }
+  .photo-messages .tab a {
+    color: #404040;
+    outline: none; }
+  .photo-messages .tab a:visited {
+    color: #404040; }
+  .photo-messages .tab.active {
+    background: #FFFFFF;
+    position: relative;
+    border-bottom: 1px solid #1e88e5;
+    padding: 20px; }
+  .photo-messages .tab.active > a {
+    color: #1e88e5; }
+  .photo-messages .tab:hover:not(.active) {
+    background: #FAFAFA; }
+  .photo-messages .unstyled {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: scroll;
+    overflow-x: hidden; }
+  .photo-messages .table {
+    display: table; }
+  .photo-messages .fullwidth {
+    width: 100%; }
+  .photo-messages .links > li {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700;
+    background: #f7f7f7;
+    border-bottom: 1px solid #1e88e5; }
 
 .author-controls {
   margin-top: 1.3%; }
