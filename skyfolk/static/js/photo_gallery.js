@@ -51,7 +51,6 @@ $(document).ready(function () {
     $('#tab-messages').find('#message-photo-form').on('submit', function (event) {
         event.preventDefault();
         var data = $('.form-wrapper').find('#message-photo-form').serialize();
-        console.log(data);
         AJAX_submit_photo_publication(data, 'publication');
     });
 }); // FIN DOCUMENT READY
@@ -91,7 +90,6 @@ function AJAX_submit_photo_publication(data, type, pks) {
         data: data,
         success: function (data) {
             var response = data.response;
-            console.log('RESPONSE AQUI: ' + response + " type: " + type);
             if (response == true) {
                 /* nothing */
             } else {

@@ -224,3 +224,60 @@ class PublicationPhoto(PublicationBase):
         related_name='share_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
         related_name='reply_photo')
+
+    def __str__(self):
+        return self.content
+
+    def add_hashtag(self):
+        """
+        Añadimos los hashtags encontramos a la
+        lista de tags => atributo "tags"
+        """
+        hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
+        print('>>> HASHTAGS')
+        print(hashtags)
+        for tag in hashtags:
+            if tag.endswith((',', '.')):
+                tag = tag[:-1]
+            self.tags.add(tag)
+        self.content = TextProcessor.get_format_text(self.content, self.p_author, hashtags)
+
+    def send_notification(self, type="pub"):
+        """
+         Enviamos a través del socket a todos aquellos usuarios
+         que esten visitando el perfil donde se publica el comentario.
+        """
+        if type == "pub":
+            id_parent = ''
+        else:
+            id_parent = self.parent.id
+
+        notification = {
+            "id": self.pk,
+            "content": self.content,
+            "avatar_path": get_author_avatar(authorpk=self.author),
+            "author_username": self.author.username,
+            "author_first_name": self.author.first_name,
+            "author_last_name": self.author.last_name,
+            "created": naturaltime(self.created),
+            "type": type,
+            "parent": id_parent,
+        }
+        # Enviamos a todos los usuarios que visitan el perfil
+        Group(self.board_photo.group_name).send({
+                "text": json.dumps(notification)
+            })
+
+    def save(self, new_comment=False, *args, **kwargs):
+        if new_comment:
+            print('NOTIFICACION ENVIADA POR EL SOCKET...')
+            result = super(PublicationPhoto, self).save(*args, **kwargs)
+            self.add_hashtag()
+            if not self.parent:
+                self.send_notification()
+            else:
+                self.send_notification(type="reply")
+            return result
+        else:
+            super(PublicationPhoto, self).save(*args, **kwargs)
+

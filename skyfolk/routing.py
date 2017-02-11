@@ -1,5 +1,6 @@
 from channels import route
 from user_profile.consumers import connect_blog, disconnect_blog
+from photologue.consumers import connect_photo, disconnect_photo
 
 
 # The channel routing defines what channels get handled by what consumers,
@@ -12,6 +13,9 @@ channel_routing = [
     route("websocket.connect", connect_blog, path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
     # Called when the client closes the socket
     route("websocket.disconnect", disconnect_blog, path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
+
+    route("websocket.connect", connect_photo, path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
+    route("websocket.disconnect", disconnect_photo, path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
 
     # A default "http.request" route is always inserted by Django at the end of the routing list
     # that routes all unmatched HTTP requests to the Django view system. If you want lower-level

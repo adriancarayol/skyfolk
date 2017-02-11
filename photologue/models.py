@@ -569,6 +569,13 @@ class Photo(ImageModel):
     def __str__(self):
         return self.title
 
+    @property
+    def group_name(self):
+        """
+        Devuelve el nombre del canal para enviar notificaciones
+        """
+        return "photos-%s" % self.pk
+
     def save(self, created=True, *args, **kwargs):
         if created:
             self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(uuid.uuid1()))

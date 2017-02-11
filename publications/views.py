@@ -132,14 +132,14 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     model = PublicationPhoto
     http_method_names = [u'post']
     success_url = '/thanks/'
-    
+
     def post(self, request, *args, **kwargs):
         self.object = None
         form = self.get_form()
 
         emitter = get_object_or_404(get_user_model(),
                                     pk=request.POST.get('p_author', None))
-    
+
 
         photo = get_object_or_404(Photo, pk=request.POST.get('board_photo', None))
         import pprint
@@ -154,7 +154,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 publication.board_photo = photo
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.save()
+                publication.save(new_comment=True)
                 print('>>>> PUBLICATION: ')
                 """t, created = Timeline.objects.get_or_create(publication=publication, author=emitter.profile,
                                                             profile=emitter.profile)"""

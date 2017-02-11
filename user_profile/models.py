@@ -93,7 +93,7 @@ class UserProfileManager(models.Manager):
         """
         is_first_time_login = None
         user_profile = None
-        
+
         try:
             user_profile = self.get(user__id=user.pk)
         except ObjectDoesNotExist:
@@ -105,7 +105,7 @@ class UserProfileManager(models.Manager):
         if is_first_time_login:
             user_profile.is_first_login = False
             user_profile.save()
-        
+
         return is_first_time_login
 
     def get_last_login_user(self):
@@ -163,15 +163,7 @@ class UserProfile(models.Model):
         Devuelve el nombre del canal para enviar las notificaciones
         """
         return "users-%s" % self.pk
-    """
-    def account_verified(self):
-        if self.user.is_authenticated:
-            result = EmailAddress.objects.filter(email=self.user.email)
-            if len(result):
-                return result[0].verified
-        return False
-    """
-    
+
     def save(self, *args, **kwargs):
         # delete old image when replacing by updating the file
         try:
@@ -603,7 +595,7 @@ class UserProfile(models.Model):
         Devuelve el numero de contenido multimedia de un perfil.
         """
         return Photo.objects.filter(owner=self.user).count()
-        
+
     @property
     def gravatar(self, size=120):
         """
@@ -817,7 +809,7 @@ class AffinityUserManager(models.Manager):
         :return devuelve relaciones de mayor a menor afinidad:
         """
         return self.filter(emitter=emitterid).order_by('-affinity')
-    
+
     def check_limit(self, emitterid):
         """
         Comprueba el limite de usuarios en la lista de favoritos
