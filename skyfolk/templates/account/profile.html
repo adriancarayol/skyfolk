@@ -202,13 +202,6 @@ var userList = new List('tab-amigos', options);
 UTILS.init([{{ user.pk }}]);
 UTILS.conn_socket();
 	</script>
-	<script src="{{ STATIC_URL }}js/socket_notifications.js"></script>
-	<script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
-	<script>
-UTILS_N.init([{{ user.pk }}]);
-UTILS_N.conn_socket();
-	</script>
-
 	{% else %}
 	<h1 class="account-disabled">Cuenta desactivada.</h1>
 	{% endif %}

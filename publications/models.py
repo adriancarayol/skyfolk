@@ -178,9 +178,6 @@ class Publication(PublicationBase):
                 "text": json.dumps(notification)
             })
 
-        Group(self.board_owner.profile.notification_channel).send({
-            "text": json.dumps(notification)
-        })
     def save(self, new_comment=False, *args, **kwargs):
         """
         Modificacion del metodo save, enviamos el comentario al

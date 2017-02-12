@@ -4,299 +4,304 @@ Base para la interfaz en comun de todos los usuarios.
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Mi perfil">
-    <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
-    <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/core.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/materialize.min.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/buscar.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}fonts/iconfont/material-icons.css">
-    <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
-    <script src="{{STATIC_URL}}js/jquery-3.1.0.min.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/jquery-migrate-1.4.1.min.js" type="text/javascript"></script>
-    <!--<script src="{{STATIC_URL}}js/jquery-ui.min.js" type="text/javascript"></script>-->
-    {% block title %} <title>Skyfolk - Bienvenido.</title> {% endblock %}
-    {% block extra-js %}{% endblock %}
-    <!-- bloques de estilos para cada pagina -->
-    {% block extra-css %}{% endblock %}
-    {% block include_files %}{% endblock %}
-    <script async>
-        window.moveTo(0, 0);
-        if (document.all) {
-            top.window.resizeTo(screen.availWidth, screen.availHeight);
-        }
-        else if (document.layers || document.getElementById) {
-            if (top.window.outerHeight < screen.availHeight || top.window.outerWidth < screen.availWidth) {
-                top.window.outerHeight = screen.availHeight;
-                top.window.outerWidth = screen.availWidth;
-            }
-        }
-    </script>
-</head>
-<body>
-<!-- Header de la pagina -->
-{% block barra_navegacion %}
-    {% include "account/base-header.html" %}
-{% endblock %}
-{% block content %}
-    <!-- Contenido de cada pagina por separado -->
-{% endblock %}
-{% if user.is_authenticated %}
-    {% block compose-div-message %}
-        {% comment "Componer mensaje" %}
-        Componer mensaje para perfil ajeno
-        {% endcomment %}
-        {% if publicationForm and user_profile.pk != user.pk %}
-            <div class="row">
-                <div id="page-wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
-                    <div class="row">
-                        <div id="status" class="col s12 title-page-wrapper">
-                            {% if user == user_profile %}
-                                <h4><i class="material-icons left">send</i>Publicar comentario</h4>
-                                <h6>Publica un comentario para que el mundo lo vea.</h6>
-                            {% else %}
-                                <h4><i class="material-icons left">send</i> Escribe algo a: {{ user_profile.username }}
-                                </h4>
-                                <h6>Escribe un mensaje en el tablón de {{ user_profile.username }}.</h6>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <form id="message-form2" action="" method="post">{% csrf_token %}
-                        {{ publicationForm.csrftoken }}
-                        <div class="row">
-                            <div class="row">
-                                <div class="input-field col s12">
-                                    {{ publicationForm.content }}
-                                    <label for="message2">Escribe tu mensaje</label>
-                                </div>
-                            </div>
-                        </div>
-                        {{ publicationForm.author }}
-                        {{ publicationForm.board_owner }}
-                        {{ publicationForm.parent }}
-                        <div class="row">
-                            <div class="col s12">
-                                <button type="submit" id="sendformpubli"
-                                        class="waves-effect waves-light btn right blue">
-                                    Enviar<i class="material-icons right">send</i></button>
-                                <button type="button" id="close"
-                                        class="waves-effect waves-light btn right transparent black-text">Cerrar<i
-                                        class="material-icons right">close</i></button>
-                                <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
-                                <button title="Importar usuarios" class="waves-effect waves-light btn left blue"><i
-                                        class="material-icons">import_contacts</i></button>
-                                <button title="Adjuntar archivo" class="waves-effect waves-light btn left blue"><i
-                                        class="material-icons">attach_file</i></button>
-                                <button title="Localización" class="waves-effect waves-light btn left blue"><i
-                                        class="material-icons">location_on</i></button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        {% endif %}
-        {% comment "Componer mensaje" %}
-        Componer mensaje para mi propio perfil.
-        {% endcomment %}
-        <div class="row">
-            <div id="self-page-wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
-                <div class="row">
-                    <div id="status" class="col s12 title-page-wrapper">
-                        <h4><i class="material-icons left">send</i>Publicar comentario</h4>
-                        <h6>Publica un comentario para que el mundo lo vea.</h6>
-                    </div>
-                </div>
-                <form id="message-form2" action="" method="post">{% csrf_token %}
-                    {{ publicationSelfForm.csrftoken }}
-                    <div class="row">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                {{ publicationSelfForm.content }}
-                                <label for="message2">Escribe tu mensaje</label>
-                            </div>
-                        </div>
-                    </div>
-                    {{ publicationSelfForm.author }}
-                    {{ publicationSelfForm.board_owner }}
-                    {{ publicationSelfForm.parent }}
-                    <div class="row">
-                        <div class="col s12">
-                            <button type="submit" id="sendselfformpubli"
-                                    class="waves-effect waves-light btn right blue">
-                                Enviar<i class="material-icons right">send</i></button>
-                            <button type="button" id="close"
-                                    class="waves-effect waves-light btn right transparent black-text">Cerrar<i
-                                    class="material-icons right">close</i></button>
-                            <!--  <input type="submit" id="sendselfformpubli" value="Submit Feedback" /> -->
-                            <button title="Importar usuarios" class="waves-effect waves-light btn left blue"><i
-                                    class="material-icons">import_contacts</i></button>
-                            <button title="Adjuntar archivo" class="waves-effect waves-light btn left blue"><i
-                                    class="material-icons">attach_file</i></button>
-                            <button title="Localización" class="waves-effect waves-light btn left blue"><i
-                                    class="material-icons">location_on</i></button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    {% endblock %}
-    {% block shortcuts %}
-        <!-- Atajos del usuario -->
-        <div class="default-div" id="atajos-keyboard-profile">
-            <table class="responsive-table highlight modal-table" summary="Atajos para acciones comunes.">
-                <caption class="hide-on-med-and-down atajos-title">
-                    <p>Atajos de teclado</p>
-                    <i class="fa fa-close"></i>
-                </caption>
-                <thead>
-                <tr class="acc-atajos">
-                    <th colspan="2">Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">m</b>
-                    </td>
-                    <td class="shortcut-label">Nuevo comentario</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">f</b>
-                    </td>
-                    <td class="shortcut-label">Favorito</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">r</b>
-                    </td>
-                    <td class="shortcut-label">Responder</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">a</b>
-                    </td>
-                    <td class="shortcut-label">Abrir atajos</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">d</b>
-                    </td>
-                    <td class="shortcut-label">Mensaje privado</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">s</b>
-                    </td>
-                    <td class="shortcut-label">Silenciar usuario</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">b</b>
-                    </td>
-                    <td class="shortcut-label">Bloquear usuario</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">o</b>
-                    </td>
-                    <td class="shortcut-label">Cerrar mensajes</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">p</b>
-                    </td>
-                    <td class="shortcut-label">Expandir foto</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">/</b>
-                    </td>
-                    <td class="shortcut-label">Buscar</td>
-                </tr>
-                <tr>
-                    <td class="shortcut">
-                        <b class="sc-key">Ctrl</b>
-                        +
-                        <b class="sc-key">Enter</b>
-                    </td>
-                    <td class="shortcut-label">Enviar comentario</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    {% endblock %}
-    {% block create-group %}
-        <div class="row">
-            <div id="create_group" class="col l5 m12 s12 compose-div default-div" style="display: none;">
-                <form id="from_new_group" action="" method="post">{% csrf_token %}
-                    <div class="row">
-                        {{ groupForm.name.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">title</i>
-                            {{ groupForm.name }}
-                            <label for="id_name">Escribe un nombre para el grupo.</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ groupForm.description.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">description</i>
-                            {{ groupForm.description }}
-                            <label for="description-area">Escribe una descripcion para el grupo.</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ groupForm.type.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">description</i>
-                            {{ groupForm.type }}
-                            <label for="id_type">¿De que tipo es tu grupo? (Ocio, Deportes...).</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ groupForm.tags.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">label</i>
-                            {{ groupForm.tags }}
-                            <label for="id_tags">{{ groupForm.tags.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ groupForm.privacity.errors }}
-                        <div class="input-field col s12">
-                            {{ groupForm.privacity }}
-                            <label for="id_privacity">{{ groupForm.privacity.help_text }}</label>
-                        </div>
-                    </div>
-                    {{ groupForm.owner }}
-                    <div class="row">
-                        <div class="col s12">
-                            <button type="submit" id="btn_new_group"
-                                    class="waves-effect waves-light btn right blue">
-                                Crear grupo<i class="material-icons right">people</i></button>
-                            <button type="submit" id="btn_close_group"
-                                    class="waves-effect waves-light btn right transparent black-text">
-                                Cerrar<i class="material-icons right">close</i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    {% endblock %}
-{% endif %}
-{% comment "menu movil" %}
-        Menu para versiones tablet/movil
-        {% endcomment %}
-{% include "account/mobile-menu.html" %}
-{% block footer %}
-    <script src="{{ STATIC_URL }}emoji/js/textarea_find_emoji.js" type="text/javascript"></script>
-    {{ groupForm.media }}
-{% endblock %}
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="description" content="Mi perfil">
+		<meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
+		<meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<link rel="stylesheet" href="{{ STATIC_URL }}css/core.css" onload="if(media!='all')media='all'">
+		<link rel="stylesheet" href="{{ STATIC_URL }}css/materialize.min.css" onload="if(media!='all')media='all'">
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/buscar.css" onload="if(media!='all')media='all'">
+		<link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css">
+		<link rel="stylesheet" href="{{ STATIC_URL }}fonts/iconfont/material-icons.css">
+		<link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
+		<script src="{{STATIC_URL}}js/jquery-3.1.0.min.js" type="text/javascript"></script>
+		<script src="{{STATIC_URL}}js/jquery-migrate-1.4.1.min.js" type="text/javascript"></script>
+		<!--<script src="{{STATIC_URL}}js/jquery-ui.min.js" type="text/javascript"></script>-->
+		{% block title %} <title>Skyfolk - Bienvenido.</title> {% endblock %}
+		{% block extra-js %}{% endblock %}
+		<!-- bloques de estilos para cada pagina -->
+		{% block extra-css %}{% endblock %}
+		{% block include_files %}{% endblock %}
+		<script async>
+window.moveTo(0, 0);
+	if (document.all) {
+	    top.window.resizeTo(screen.availWidth, screen.availHeight);
+	}
+	else if (document.layers || document.getElementById) {
+	    if (top.window.outerHeight < screen.availHeight || top.window.outerWidth < screen.availWidth) {
+		top.window.outerHeight = screen.availHeight;
+		top.window.outerWidth = screen.availWidth;
+	    }
+	}
+		</script>
+	</head>
+	<body>
+		<!-- Header de la pagina -->
+		{% block barra_navegacion %}
+		{% include "account/base-header.html" %}
+		{% endblock %}
+		{% block content %}
+		<!-- Contenido de cada pagina por separado -->
+		{% endblock %}
+		{% if user.is_authenticated %}
+		{% block compose-div-message %}
+		{% comment "Componer mensaje" %}
+		Componer mensaje para perfil ajeno
+		{% endcomment %}
+		{% if publicationForm and user_profile.pk != user.pk %}
+		<div class="row">
+			<div id="page-wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
+				<div class="row">
+					<div id="status" class="col s12 title-page-wrapper">
+						{% if user == user_profile %}
+						<h4><i class="material-icons left">send</i>Publicar comentario</h4>
+						<h6>Publica un comentario para que el mundo lo vea.</h6>
+						{% else %}
+						<h4><i class="material-icons left">send</i> Escribe algo a: {{ user_profile.username }}
+						</h4>
+						<h6>Escribe un mensaje en el tablón de {{ user_profile.username }}.</h6>
+						{% endif %}
+					</div>
+				</div>
+				<form id="message-form2" action="" method="post">{% csrf_token %}
+					{{ publicationForm.csrftoken }}
+					<div class="row">
+						<div class="row">
+							<div class="input-field col s12">
+								{{ publicationForm.content }}
+								<label for="message2">Escribe tu mensaje</label>
+							</div>
+						</div>
+					</div>
+					{{ publicationForm.author }}
+					{{ publicationForm.board_owner }}
+					{{ publicationForm.parent }}
+					<div class="row">
+						<div class="col s12">
+							<button type="submit" id="sendformpubli"
+			     class="waves-effect waves-light btn right blue">
+								Enviar<i class="material-icons right">send</i></button>
+							<button type="button" id="close"
+			     class="waves-effect waves-light btn right transparent black-text">Cerrar<i
+	class="material-icons right">close</i></button>
+							<!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
+							<button title="Importar usuarios" class="waves-effect waves-light btn left blue"><i
+					 class="material-icons">import_contacts</i></button>
+							<button title="Adjuntar archivo" class="waves-effect waves-light btn left blue"><i
+					class="material-icons">attach_file</i></button>
+							<button title="Localización" class="waves-effect waves-light btn left blue"><i
+				     class="material-icons">location_on</i></button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		{% endif %}
+		{% comment "Componer mensaje" %}
+		Componer mensaje para mi propio perfil.
+		{% endcomment %}
+		<div class="row">
+			<div id="self-page-wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
+				<div class="row">
+					<div id="status" class="col s12 title-page-wrapper">
+						<h4><i class="material-icons left">send</i>Publicar comentario</h4>
+						<h6>Publica un comentario para que el mundo lo vea.</h6>
+					</div>
+				</div>
+				<form id="message-form2" action="" method="post">{% csrf_token %}
+					{{ publicationSelfForm.csrftoken }}
+					<div class="row">
+						<div class="row">
+							<div class="input-field col s12">
+								{{ publicationSelfForm.content }}
+								<label for="message2">Escribe tu mensaje</label>
+							</div>
+						</div>
+					</div>
+					{{ publicationSelfForm.author }}
+					{{ publicationSelfForm.board_owner }}
+					{{ publicationSelfForm.parent }}
+					<div class="row">
+						<div class="col s12">
+							<button type="submit" id="sendselfformpubli"
+			     class="waves-effect waves-light btn right blue">
+								Enviar<i class="material-icons right">send</i></button>
+							<button type="button" id="close"
+			     class="waves-effect waves-light btn right transparent black-text">Cerrar<i
+	class="material-icons right">close</i></button>
+							<!--  <input type="submit" id="sendselfformpubli" value="Submit Feedback" /> -->
+							<button title="Importar usuarios" class="waves-effect waves-light btn left blue"><i
+					 class="material-icons">import_contacts</i></button>
+							<button title="Adjuntar archivo" class="waves-effect waves-light btn left blue"><i
+					class="material-icons">attach_file</i></button>
+							<button title="Localización" class="waves-effect waves-light btn left blue"><i
+				     class="material-icons">location_on</i></button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		{% endblock %}
+		{% block shortcuts %}
+		<!-- Atajos del usuario -->
+		<div class="default-div" id="atajos-keyboard-profile">
+			<table class="responsive-table highlight modal-table" summary="Atajos para acciones comunes.">
+				<caption class="hide-on-med-and-down atajos-title">
+					<p>Atajos de teclado</p>
+					<i class="fa fa-close"></i>
+				</caption>
+				<thead>
+					<tr class="acc-atajos">
+						<th colspan="2">Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">m</b>
+						</td>
+						<td class="shortcut-label">Nuevo comentario</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">f</b>
+						</td>
+						<td class="shortcut-label">Favorito</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">r</b>
+						</td>
+						<td class="shortcut-label">Responder</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">a</b>
+						</td>
+						<td class="shortcut-label">Abrir atajos</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">d</b>
+						</td>
+						<td class="shortcut-label">Mensaje privado</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">s</b>
+						</td>
+						<td class="shortcut-label">Silenciar usuario</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">b</b>
+						</td>
+						<td class="shortcut-label">Bloquear usuario</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">o</b>
+						</td>
+						<td class="shortcut-label">Cerrar mensajes</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">p</b>
+						</td>
+						<td class="shortcut-label">Expandir foto</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">/</b>
+						</td>
+						<td class="shortcut-label">Buscar</td>
+					</tr>
+					<tr>
+						<td class="shortcut">
+							<b class="sc-key">Ctrl</b>
+							+
+							<b class="sc-key">Enter</b>
+						</td>
+						<td class="shortcut-label">Enviar comentario</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		{% endblock %}
+		{% block create-group %}
+		<div class="row">
+			<div id="create_group" class="col l5 m12 s12 compose-div default-div" style="display: none;">
+				<form id="from_new_group" action="" method="post">{% csrf_token %}
+					<div class="row">
+						{{ groupForm.name.errors }}
+						<div class="input-field col s12">
+							<i class="material-icons prefix">title</i>
+							{{ groupForm.name }}
+							<label for="id_name">Escribe un nombre para el grupo.</label>
+						</div>
+					</div>
+					<div class="row">
+						{{ groupForm.description.errors }}
+						<div class="input-field col s12">
+							<i class="material-icons prefix">description</i>
+							{{ groupForm.description }}
+							<label for="description-area">Escribe una descripcion para el grupo.</label>
+						</div>
+					</div>
+					<div class="row">
+						{{ groupForm.type.errors }}
+						<div class="input-field col s12">
+							<i class="material-icons prefix">description</i>
+							{{ groupForm.type }}
+							<label for="id_type">¿De que tipo es tu grupo? (Ocio, Deportes...).</label>
+						</div>
+					</div>
+					<div class="row">
+						{{ groupForm.tags.errors }}
+						<div class="input-field col s12">
+							<i class="material-icons prefix">label</i>
+							{{ groupForm.tags }}
+							<label for="id_tags">{{ groupForm.tags.help_text }}</label>
+						</div>
+					</div>
+					<div class="row">
+						{{ groupForm.privacity.errors }}
+						<div class="input-field col s12">
+							{{ groupForm.privacity }}
+							<label for="id_privacity">{{ groupForm.privacity.help_text }}</label>
+						</div>
+					</div>
+					{{ groupForm.owner }}
+					<div class="row">
+						<div class="col s12">
+							<button type="submit" id="btn_new_group"
+			     class="waves-effect waves-light btn right blue">
+								Crear grupo<i class="material-icons right">people</i></button>
+							<button type="submit" id="btn_close_group"
+			     class="waves-effect waves-light btn right transparent black-text">
+								Cerrar<i class="material-icons right">close</i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		{% endblock %}
+		{% endif %}
+		{% comment "menu movil" %}
+		Menu para versiones tablet/movil
+		{% endcomment %}
+		{% include "account/mobile-menu.html" %}
+		{% block footer %}
+		<script src="{{ STATIC_URL }}emoji/js/textarea_find_emoji.js" type="text/javascript"></script>
+		<script src="{{ STATIC_URL }}js/socket_notifications.js"></script>
+		<script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+		<script>
+UTILS_N.init([{{ user.pk }}]);
+UTILS_N.conn_socket();
+		</script>
+		{% endblock %}
+	</body>
 </html>

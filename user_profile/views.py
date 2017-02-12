@@ -523,10 +523,6 @@ def add_friend_by_username_or_pin(request):
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
                                            recipient=friend.user,
                                            verb=u'quiere seguirte.', level='friendrequest')
-                try:
-                    notification = notification[0][1]
-                except IndexError:
-                    notification = None
                 # Enlazamos notificacion con peticion de amistad
                 try:
                     created = user.add_follow_request(
@@ -591,10 +587,6 @@ def add_friend_by_username_or_pin(request):
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
                                            recipient=friend.user,
                                            verb=u'quiere seguirte.', level='friendrequest')
-                try:
-                    notification = notification[0][1]
-                except IndexError:
-                    notification = None
                 # Enlazamos notificacion y peticion de amistad
                 try:
                     created = user.add_follow_request(

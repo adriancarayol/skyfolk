@@ -1,3 +1,4 @@
+import json
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django import get_version
@@ -19,9 +20,10 @@ from .signals import notify
 
 from model_utils import Choices
 from jsonfield.fields import JSONField
-
+from channels import Group as group_channel
 from django.contrib.auth.models import Group
-
+from user_profile import models as user_profile
+from django.core import serializers
 
 # SOFT_DELETE = getattr(settings, 'NOTIFICATIONS_SOFT_DELETE', False)
 def is_soft_delete():
@@ -271,7 +273,11 @@ def notify_handler(verb, **kwargs):
             newnotify.data = kwargs
 
         newnotify.save()
-
+        recipient_profile = user_profile.UserProfile.objects.get(user__username__exact=recipient.username)
+        data = serializers.serialize('xml', [newnotify, ])
+        group_channel(recipient_profile.notification_channel).send({
+            "text": json.dumps(data)
+        })
         return newnotify # add by adrian
 
 
