@@ -17,7 +17,7 @@ channel_routing = [
     route("websocket.connect", connect_photo, path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
     route("websocket.disconnect", disconnect_photo, path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
     # channels para notificationes
-    route("websocket.connect", ws_connect, path=r'^/inbox/notifications/stream/$'),
+    route("websocket.connect", ws_connect, path=r'^.*/notification/$'),
     # A default "http.request" route is always inserted by Django at the end of the routing list
     # that routes all unmatched HTTP requests to the Django view system. If you want lower-level
     # HTTP handling - e.g. long-polling - you can do it here and route by path, and let the rest

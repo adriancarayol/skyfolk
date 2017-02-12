@@ -26,8 +26,8 @@
 <script src="{{ STATIC_URL }}js/socket_notifications.js"></script>
 <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
 <script>
-UTILS.init([{{ user.pk }}]);
-UTILS.conn_socket();
+UTILS_N.init([{{ user.pk }}]);
+UTILS_N.conn_socket();
 </script>
 
 {% endblock %}
