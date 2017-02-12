@@ -32,6 +32,24 @@ def connect_photo(message, slug):
             "close": True,
         })
         return
+    try:
+        user_profile = photo.owner.profile
+    except ObjectDoesNotExist:
+        message.reply_channel.send({
+            "text": json.dumps({"error": "bad_slug"}),
+            "close": True,
+        })
+        return
+    visibility = user_profile.is_visible(user.profile, user.pk)
+    if visibility != ("all" or None):
+        logging.warning('User: {} no puede conectarse al socket de: photo: {}'.format(user.username, username))
+        message.reply_channel.send({
+            # WebSockets send either a text or binary payload each frame.
+            # We do JSON over the text portion.
+            "text": json.dumps({"error": "bad_slug"}),
+            "close": True,
+        })
+        return
     # Each different client has a different "reply_channel", which is how you
     # send information back to them. We can add all the different reply channels
     # to a single Group, and then when we send to the group, they'll all get the

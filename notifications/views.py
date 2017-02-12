@@ -1,3 +1,4 @@
+import json
 from django import get_version
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -11,6 +12,7 @@ from .utils import slug2id
 from .models import Notification
 from django.template import RequestContext
 from distutils.version import StrictVersion
+from channels import Group
 if StrictVersion(get_version()) >= StrictVersion('1.7.0'):
     from django.http import JsonResponse
 else:

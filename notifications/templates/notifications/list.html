@@ -1,26 +1,33 @@
 {% extends 'account/base_interface.html' %}
 {% block include_files %}
-    <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-    <link rel="stylesheet" href="{{STATIC_URL}}css/notifications.css" type="text/css" media="all" onload="if(media!='all')media='all'">
-    {% block title %} <title>Notificaciones - {{ request.user }}.</title> {% endblock %}
+<meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
+<link rel="stylesheet" href="{{STATIC_URL}}css/notifications.css" type="text/css" media="all" onload="if(media!='all')media='all'">
+{% block title %} <title>Notificaciones - {{ request.user }}.</title> {% endblock %}
 {% endblock %}
 {% block content %}
-    <div class="container">
-    {% if notifications %}
-        <div class="row">
-            <div class="col s12 all-notifications-options">
-                <a class="mark-all-as-read-template" href="{% url 'notifications:mark_all_as_read' %}">Todas leídas</a>
-                <a class="mark-all-as-unread-template" href="{% url 'notifications:mark_all_as_unread' %}">Todas sin leer</a>
-                <a class="mark-all-as-deleted-template" href="{% url 'notifications:mark_all_as_deleted' %}">Eliminar todas</a>
-            </div>
-        </div>
-    {% endif %}
-    <div class="row">
-        <ul class="notifications list-notifications">
-          {% for notice in notifications %}
-            <li class="col s12 m12 l3" data-id="{{ notice.id }}">{% include 'notifications/notice.html' %}</li>
-          {% endfor %}
-        </ul>
-    </div>
-    </div>
+<div class="container">
+	{% if notifications %}
+	<div class="row">
+		<div class="col s12 all-notifications-options">
+			<a class="mark-all-as-read-template" href="{% url 'notifications:mark_all_as_read' %}">Todas leídas</a>
+			<a class="mark-all-as-unread-template" href="{% url 'notifications:mark_all_as_unread' %}">Todas sin leer</a>
+			<a class="mark-all-as-deleted-template" href="{% url 'notifications:mark_all_as_deleted' %}">Eliminar todas</a>
+		</div>
+	</div>
+	{% endif %}
+	<div class="row">
+		<ul class="notifications list-notifications">
+			{% for notice in notifications %}
+			<li class="col s12 m12 l3" data-id="{{ notice.id }}">{% include 'notifications/notice.html' %}</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+<script src="{{ STATIC_URL }}js/socket_notifications.js"></script>
+<script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+<script>
+UTILS.init([{{ user.pk }}]);
+UTILS.conn_socket();
+</script>
+
 {% endblock %}

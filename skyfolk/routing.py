@@ -1,7 +1,7 @@
 from channels import route
 from user_profile.consumers import connect_blog, disconnect_blog
 from photologue.consumers import connect_photo, disconnect_photo
-
+from notifications.consumers import ws_connect
 
 # The channel routing defines what channels get handled by what consumers,
 # including optional matching on message attributes. WebSocket messages of all
@@ -13,10 +13,11 @@ channel_routing = [
     route("websocket.connect", connect_blog, path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
     # Called when the client closes the socket
     route("websocket.disconnect", disconnect_blog, path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
-
+    # channels en fotos
     route("websocket.connect", connect_photo, path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
     route("websocket.disconnect", disconnect_photo, path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
-
+    # channels para notificationes
+    route("websocket.connect", ws_connect, path=r'^/inbox/notifications/stream/$'),
     # A default "http.request" route is always inserted by Django at the end of the routing list
     # that routes all unmatched HTTP requests to the Django view system. If you want lower-level
     # HTTP handling - e.g. long-polling - you can do it here and route by path, and let the rest

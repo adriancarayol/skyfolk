@@ -179,6 +179,10 @@ class Publication(PublicationBase):
             })
 
     def save(self, new_comment=False, *args, **kwargs):
+        """
+        Modificacion del metodo save, enviamos el comentario al
+        perfil si es un comentario nuevo
+        """
         if new_comment:
             print('NOTIFICACION ENVIADA POR EL SOCKET...')
             result = super(Publication, self).save(*args, **kwargs)

@@ -164,6 +164,14 @@ class UserProfile(models.Model):
         """
         return "users-%s" % self.pk
 
+
+    @property
+    def notification_channel(self):
+        """
+        Devuelve el nombre del canal notification para cada usuario
+        """
+        return "notification-%s" % self.pk
+
     def save(self, *args, **kwargs):
         # delete old image when replacing by updating the file
         try:
