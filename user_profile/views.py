@@ -29,7 +29,7 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser
-
+from datetime import datetime
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -526,7 +526,7 @@ def add_friend_by_username_or_pin(request):
                 # Enlazamos notificacion con peticion de amistad
                 try:
                     created = user.add_follow_request(
-                        friend, notification)
+                        friend, notification[0][1])
                     created.save()
                     response = 'new_petition'
                 except ObjectDoesNotExist:
@@ -590,7 +590,7 @@ def add_friend_by_username_or_pin(request):
                 # Enlazamos notificacion y peticion de amistad
                 try:
                     created = user.add_follow_request(
-                        friend, notification)
+                        friend, notification[0][1])
                     created.save()
                     response = 'new_petition'
                 except ObjectDoesNotExist:
@@ -694,14 +694,13 @@ def request_friend(request):
                 notification = notify.send(user, actor=User.objects.get(pk=user.pk).username,
                                            recipient=profile.user,
                                            verb=u'quiere seguirte.', level='friendrequest')
-                try:
-                    notification = notification[0][1]
-                except IndexError:
-                    notification = None
+
+                import pprint
+                pprint.pprint(notification)
                 # Enlazamos notificacion con peticion de amistad
                 try:
                     created = user.profile.add_follow_request(
-                        profile, notification)
+                        profile, notification[0][1])
                     created.save()
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
@@ -747,25 +746,36 @@ def respond_friend_request(request):
                     created_2.save()
 
                     print('user.profile: {} emitter_profile: {}'.format(user.username, emitter_profile.user.username))
+                    # Creamos historia en nuestro perfil
                     t, created = Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
                                                                 verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
                                                                     emitter_profile.user.username,
                                                                     emitter_profile.user.username, user.username,
                                                                     user.username),
                                                                 type='new_relation')
-
-                    t_, created_ = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
-                                                                  verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                    # Creamos historia en el perfil que seguimos
+                    t2, created2 = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
+                                                                  verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!'  % (
                                                                       user.username, user.username,
                                                                       emitter_profile.user.username,
                                                                       emitter_profile.user.username),
                                                                   type='new_relation')
+
+                    # Actualizamos fecha en el timeline
+                    if not created:
+                        t.insertion_date = datetime.now()
+                        t.save()
+                    # Actualizamos fecha en el timeline
+                    if not created2:
+                        t.insertion_date = datetime.now()
+                        t.save()
 
                     # enviamos notificacion informando del evento
                     notify.send(user, actor=user.username,
                                 recipient=emitter_profile.user,
                                 verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (user.username, user.username),
                                 level='new_follow')
+
                     emitter_profile.remove_received_follow_request(
                         user.profile)  # ya podemos borrar la peticion de amistad
 
@@ -1212,7 +1222,7 @@ def set_first_Login(request):
         return redirect('user_profile:profile', username=user.username)
 
 
-# TODO: Com que el usuario tenga tags establecidos antes de mostrar las recomendaciones
+# TODO: que el usuario tenga tags establecidos antes de mostrar las recomendaciones
 class RecommendationUsers(ListView):
     """
         Lista de usuarios recomendados segun

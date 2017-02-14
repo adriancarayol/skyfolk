@@ -2,6 +2,7 @@ import json
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django import get_version
+from django.forms import model_to_dict
 from django.utils import timezone
 from avatar.models import Avatar
 from distutils.version import StrictVersion
@@ -24,6 +25,7 @@ from channels import Group as group_channel
 from django.contrib.auth.models import Group
 from user_profile import models as user_profile
 from django.core import serializers
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 # SOFT_DELETE = getattr(settings, 'NOTIFICATIONS_SOFT_DELETE', False)
 def is_soft_delete():
@@ -250,7 +252,7 @@ def notify_handler(verb, **kwargs):
 
     for recipient in recipients:
         actor_avatar = get_author_avatar(authorpk=actor)
-        newnotify = Notification(
+        newnotify, created = Notification.objects.get_or_create(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),
             actor_object_id=actor.pk,
@@ -274,7 +276,18 @@ def notify_handler(verb, **kwargs):
 
         newnotify.save()
         recipient_profile = user_profile.UserProfile.objects.get(user__username__exact=recipient.username)
-        data = serializers.serialize('xml', [newnotify, ])
+        data = model_to_dict(newnotify)
+        if newnotify.actor:
+            data['actor'] = str(newnotify.actor)
+        if newnotify.target:
+            data['target'] = str(newnotify.target)
+        if newnotify.action_object:
+            data['action_object'] = str(newnotify.action_object)
+        if newnotify.slug:
+            data['slug'] = str(newnotify.slug)
+        if newnotify.timestamp:
+            data['timestamp'] = str(naturaltime(newnotify.timestamp))
+        # Enviamos notificacion al canal del receptor
         group_channel(recipient_profile.notification_channel).send({
             "text": json.dumps(data)
         })

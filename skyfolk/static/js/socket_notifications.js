@@ -18,50 +18,44 @@ var UTILS_N = UTILS_N || (function(){
 				console.log("Got message " + message.data);
 				var data = JSON.parse(message.data);
 				// Create the inner content of the post div
-				var content = "";
-				content += '<div class="alert alert-block alert-'+data.level+'">prueba notificacion';
-				content += '<a title="Borrar notificacion" class="close pull-right href="#">';
-				content += '<i class="fa fa-trash" aria-hidden="true"></i></a>';
-				content += '<a title="Marcar como leido" class="close pull-right" href="#">';
-				content += '<i class="fa fa-eye-slash" aria-hidden="true"></i></a>';
-				content += '<h5><i class="fa fa-bell" aria-hidden="true"></i>';
-				if (data.level === "new_follow") {
-					content += '<a href="#">'+data.actor+'</a>';
-				}
-				content += '<b>'+data.verb+'</b></h5>';
-				content += '<p class="notice-timesince">'+data.timeline+'</p>';
-				if (data.description) {
-					content += '<p class="notice-description">'+data.description+'</p>';
-				}
-				if (data.level === "friendrequest") {
-					content += '<div class="notification-buttons">';
-					content += '<button data-notification="'+data.slug+'" class="accept-response">Rechazar</button>';
-				content += '</div>';
-				}
-				content += '<div class="notice-actions">';
-				content += '<a class="btn" href="#">'+data.title+'</a></div>';
-				content += '</div>';
+                var message = '<li class=\"collection-item avatar\" data-id="'+ data.id +'">';
+				message += '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + data.slug + '"/></a>';
+            if (data.actor_avatar !== null && typeof data.actor_avatar !== 'undefined') {
+                message = message + " <img class=\"circle\" src=\"" + data.actor_avatar + '"/>';
+            }
+            if(typeof data.actor !== 'undefined' && data.level !== 'new_follow'){
+                message = message + "<a class=\"title\" href=\"/profile/" + data.actor + '" >' + data.actor + '</a>';
+            }
+
+            if(typeof data.verb !== 'undefined'){
+                message = message + " <span class=\"title\"/>" + data.verb + '</span>';
+            }
+
+            if(typeof data.target !== 'undefined'){
+                message = message + " " + item.target;
+            }
+            if(typeof data.description !== 'undefined' && data.description != null){
+                message = message + " " + item.description;
+            }
+            if(typeof data.timestamp !== 'undefined'){
+                message = message + "<p><i>" + data.timestamp + '</i></p>';
+            }
+            if (typeof data.level !== 'undefined' && data.level == 'friendrequest') {
+                message = message + " <div class=\"notification-buttons\"><" +
+'button data-notification="' + data.slug + '" onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "accept" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="accept-response waves-effect waves-light btn white-text green"><i class="material-icons">done</i></button>\<' +
+                    'button data-notification="' + data.slug + '" onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "rejected" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
+                    '/div>';
+            }
+            message += "<a href=\"#!\" class=\"secondary-content\"><i class=\"material-icons\">people<\/i><\/a></li>";
 				// See if there's a div to replace it in, or if we should add a new one
-				var existing = $('#notification-'+data.id);
-				var no_comments = $('#without-comments');
-				var comment_length = data.content.replace(/\s\s+/g, ' ');
+                var list_notifications = $('#list-notify');
+                var existing = $(list_notifications).find("[data-id='"+data.id+"']");
 				/* Comprobamos si el elemento existe, si es asi lo modifcamos */
 				if (existing.length) {
-					existing.html(content);
+					existing.html(message);
 				} else {
-					$("#notification-menu").prepend(content);
+					$(list_notifications).prepend(message);
 				}
-				var show = $('div#pub-'+data.id+'').find('#show-comment-'+data.id+'');
-				/* Eliminamos el div de "Este perfil no tiene comentarios" */
-				if ($(no_comments).is(':visible')) {
-					$(no_comments).fadeOut();
-				}
-
-				/* Comprobamos la longitud del nuevo comentario */
-				if (comment_length.length < _showLimitChar) {
-					$(show).css('display','none');
-				}
-
 			};
 
 			// Helpful debugging

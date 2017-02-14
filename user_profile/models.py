@@ -498,8 +498,10 @@ class UserProfile(models.Model):
         :param profile => Perfil que quiero seguir:
         :param notify => Notificacion generada:
         """
-        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING,
-                                                     notification=notify)
+        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
+        # Si existe la peticion de amistad, actualizamos la notificacion
+        obj.notification = notify
+        obj.save()
         return obj
 
     def get_follow_request(self, profile):
@@ -574,22 +576,30 @@ class UserProfile(models.Model):
         created_follower.save()
         created_follow.save()
 
+        # Creamos historia en el perfil del usuario que seguimos
         t, created = timeline.models.Timeline.objects.get_or_create(author=self, profile=profile,
-                                       verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                       verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                           profile.user.username,
+                                           profile.user.username,
                                            self.user.username,
-                                           self.user.username, profile.user.username,
-                                           profile.user.username),
+                                           self.user.username),
                                        type='new_relation')
-        t_, created_ = timeline.models.Timeline.objects.get_or_create(author=profile, profile=self,
-                                                      verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                          profile.user.username, profile.user.username,
+        # Creamos historia en nuestro perfil
+        t2, created2 = timeline.models.Timeline.objects.get_or_create(author=profile, profile=self,
+                                                      verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
                                                           self.user.username,
-                                                          self.user.username),
+                                                          self.user.username,
+                                                          profile.user.username,
+                                                          profile.user.username),
                                                       type='new_relation')
+        # Actualizamos fecha en el timeline
         if not created:
+            t.insertion_date = datetime.now()
             t.save()
-        if not created_:
-            t.save()
+        # Actualizamos fecha en el timeline
+        if not created2:
+            t2.insertion_date = datetime.now()
+            t2.save()
 
         return True
 
