@@ -3,8 +3,8 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.template.defaultfilters import stringfilter
 from django.utils.html import escape
 from django.utils.safestring import mark_safe, SafeData
-from emoji import Emoji
 
+from emoji import Emoji
 
 register = template.Library()
 

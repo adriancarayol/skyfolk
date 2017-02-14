@@ -1,12 +1,13 @@
 # coding=utf-8
 
-import os
 import datetime
+import os
 
+from django.conf import settings
+from django.utils import six
 from django.utils.text import slugify
 from django.utils.timezone import utc
-from django.utils import six
-from django.conf import settings
+
 try:
     import factory
 except ImportError:
@@ -28,7 +29,6 @@ IGNORED_FILES_ZIP_PATH = os.path.join(RES_DIR, 'zips/ignored_files.zip')
 
 
 class GalleryFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = Gallery
 
@@ -62,14 +62,12 @@ class GalleryFactory(factory.django.DjangoModelFactory):
 
 
 class ImageModelFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = ImageModel
         abstract = True
 
 
 class PhotoFactory(ImageModelFactory):
-
     """Note: after creating Photo instances for tests, remember to manually
     delete them.
     """
@@ -108,7 +106,6 @@ class PhotoFactory(ImageModelFactory):
 
 
 class PhotoSizeFactory(factory.django.DjangoModelFactory):
-
     class Meta:
         model = PhotoSize
 

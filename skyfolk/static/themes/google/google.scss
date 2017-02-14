@@ -1,10 +1,9 @@
 // Google Theme for SweetAlert
 // By Tristan Edwards
 
-.sweet-overlay {  
-  background: rgba(10,10,10,.6);
+.sweet-overlay {
+  background: rgba(10, 10, 10, .6);
 }
-
 
 .sweet-alert {
   $header-height: 40px;
@@ -19,7 +18,7 @@
   padding-bottom: 13px;
   text-align: right; // Align buttons
   border-radius: 0;
-  box-shadow: 0 0 14px rgba(black, 0.24),0 14px 28px rgba(black, 0.48);
+  box-shadow: 0 0 14px rgba(black, 0.24), 0 14px 28px rgba(black, 0.48);
 
   h2 {
     position: absolute;
@@ -130,7 +129,6 @@
   }
 }
 
-
 // Animations
 
 @mixin keyframes($animation-name) {
@@ -143,6 +141,14 @@
 }
 
 @include keyframes(animateErrorIcon) {
-  0%    { transform: rotateX(100deg), scale(0.5); -webkit-transform: rotateX(100deg), scale(0.5); opacity: 0; }
-  100%  { transform: rotateX(0deg),   scale(0.5); -webkit-transform: rotateX(0deg),   scale(0.5); opacity: 1; }
+  0% {
+    transform: rotateX(100deg), scale(0.5);
+    -webkit-transform: rotateX(100deg), scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0deg), scale(0.5);
+    -webkit-transform: rotateX(0deg), scale(0.5);
+    opacity: 1;
+  }
 }

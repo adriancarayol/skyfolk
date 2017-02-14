@@ -1,37 +1,38 @@
+import logging
 import os
 import random
-from datetime import datetime
-from inspect import isclass
-import logging
-from io import BytesIO
-from importlib import import_module
-import exifread
-import unicodedata
-import requests
 import tempfile
+import unicodedata
 import uuid
+from datetime import datetime
+from importlib import import_module
+from inspect import isclass
+from io import BytesIO
+from os.path import splitext
+from urllib.parse import urlparse
 
-from django.utils.timezone import now
-from django.db import models
-from django.db.models.signals import post_save
+import exifread
+import requests
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile, File
 from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.db import models
+from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text, smart_str, filepath_to_uri
-from django.utils.functional import curry
-from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-from django.core.validators import RegexValidator
-from django.contrib.sites.models import Site
+from django.utils.functional import curry
+from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
-from django.contrib.auth.models import User
-from .validators import validate_file_extension
-from os.path import splitext
-from urllib.parse import urlparse
+
 from .validators import validate_extension
+from .validators import validate_file_extension
 
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
@@ -168,7 +169,6 @@ size_method_map = {}
 
 
 class TagField(models.CharField):
-
     """Tags have been removed from Photologue, but the migrations still refer to them so this
     Tagfield definition is left here.
     """
@@ -249,6 +249,7 @@ class Gallery(models.Model):
             return self.public().count()
         else:
             return self.photos.filter(sites__id=settings.SITE_ID).count()
+
     photo_count.short_description = _('count')
 
     def public(self):
@@ -260,8 +261,8 @@ class Gallery(models.Model):
         Return all photos that belong to this gallery but don't share the
         gallery's site.
         """
-        return self.photos.filter(is_public=True)\
-                          .exclude(sites__id__in=self.sites.all())
+        return self.photos.filter(is_public=True) \
+            .exclude(sites__id__in=self.sites.all())
 
 
 class ImageModel(models.Model):
@@ -312,10 +313,11 @@ class ImageModel(models.Model):
         else:
             if hasattr(self, 'get_absolute_url'):
                 return u'<a href="%s"><img src="%s"></a>' % \
-                    (self.get_absolute_url(), func())
+                       (self.get_absolute_url(), func())
             else:
                 return u'<a href="%s"><img src="%s"></a>' % \
-                    (self.image.url, func())
+                       (self.image.url, func())
+
     admin_thumbnail.short_description = _('Thumbnail')
     admin_thumbnail.allow_tags = True
 
@@ -417,7 +419,7 @@ class ImageModel(models.Model):
             new_dimensions = (int(round(cur_width * ratio)),
                               int(round(cur_height * ratio)))
             if new_dimensions[0] > cur_width or \
-               new_dimensions[1] > cur_height:
+                            new_dimensions[1] > cur_height:
                 if not photosize.upscale:
                     return im
             im = im.resize(new_dimensions, Image.ANTIALIAS)
@@ -439,7 +441,7 @@ class ImageModel(models.Model):
             im = photosize.effect.pre_process(im)
         # Rotate if found & necessary
         if 'Image Orientation' in self.EXIF() and \
-                self.EXIF().get('Image Orientation').values[0] in IMAGE_EXIF_ORIENTATION_MAP:
+                        self.EXIF().get('Image Orientation').values[0] in IMAGE_EXIF_ORIENTATION_MAP:
             im = im.transpose(
                 IMAGE_EXIF_ORIENTATION_MAP[self.EXIF().get('Image Orientation').values[0]])
         # Resize/crop image
@@ -691,6 +693,7 @@ class BaseEffect(models.Model):
 
     def admin_sample(self):
         return u'<img src="%s">' % self.sample_url()
+
     admin_sample.short_description = 'Sample'
     admin_sample.allow_tags = True
 
@@ -732,7 +735,6 @@ class BaseEffect(models.Model):
 
 
 class PhotoEffect(BaseEffect):
-
     """ A pre-defined effect to apply to photos """
     transpose_method = models.CharField(_('rotate or flip'),
                                         max_length=15,
@@ -819,7 +821,7 @@ class Watermark(BaseEffect):
 
     def delete(self):
         assert self._get_pk_val() is not None, "%s object can't be deleted because its %s attribute is set to None." \
-            % (self._meta.object_name, self._meta.pk.attname)
+                                               % (self._meta.object_name, self._meta.pk.attname)
         super(Watermark, self).delete()
         self.image.storage.delete(self.image.name)
 
@@ -830,7 +832,6 @@ class Watermark(BaseEffect):
 
 @python_2_unicode_compatible
 class PhotoSize(models.Model):
-
     """About the Photosize name: it's used to create get_PHOTOSIZE_url() methods,
     so the name has to follow the same restrictions as any Python method name,
     e.g. no spaces or non-ascii characters."""
@@ -843,7 +844,7 @@ class PhotoSize(models.Model):
                                 '"thumbnail", "display", "small", "main_page_widget".'),
                             validators=[RegexValidator(regex='^[a-z0-9_]+$',
                                                        message='Use only plain lowercase letters (ASCII), numbers and '
-                                                       'underscores.'
+                                                               'underscores.'
                                                        )]
                             )
     width = models.PositiveIntegerField(_('width'),
@@ -853,7 +854,7 @@ class PhotoSize(models.Model):
     height = models.PositiveIntegerField(_('height'),
                                          default=0,
                                          help_text=_(
-        'If height is set to "0" the image will be scaled to the supplied width'))
+                                             'If height is set to "0" the image will be scaled to the supplied width'))
     quality = models.PositiveIntegerField(_('quality'),
                                           choices=JPEG_QUALITY_CHOICES,
                                           default=70,
@@ -915,7 +916,7 @@ class PhotoSize(models.Model):
 
     def delete(self):
         assert self._get_pk_val() is not None, "%s object can't be deleted because its %s attribute is set to None." \
-            % (self._meta.object_name, self._meta.pk.attname)
+                                               % (self._meta.object_name, self._meta.pk.attname)
         self.clear_cache()
         super(PhotoSize, self).delete()
 
@@ -924,6 +925,7 @@ class PhotoSize(models.Model):
 
     def _set_size(self, value):
         self.width, self.height = value
+
     size = property(_get_size, _set_size)
 
 

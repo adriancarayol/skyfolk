@@ -5,19 +5,19 @@
 {% block additional_files %}
 {% endblock %}
 {% block extra-css %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/privacidad.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/privacidad.css">
 {% endblock %}
 {% block cf-title %}
-<div class="hgroup">
-	<h4 class="cn"> Privacidad </h4>
-	<h6 class="ch"> Cambia la privacidad de tu perfil </h6>
-</div>
+    <div class="hgroup">
+        <h4 class="cn"> Privacidad </h4>
+        <h6 class="ch"> Cambia la privacidad de tu perfil </h6>
+    </div>
 {% endblock %}
 {% block cf-form %}
     <script>
-         $(document).ready(function() {
+        $(document).ready(function () {
             $('select').material_select();
-          });
+        });
     </script>
     <div class="row">
         <div class="col s12">
@@ -40,26 +40,31 @@
                 <ul>
                     <li class="col l12 m12 s12">
                         <h3>Todos pueden ver mi perfil y mis publicaciones</h3><br>
-                        <p>Escoge esta opción para permitir a todo el mundo ver tu perfil y el contenido que publiques.</p>
+                        <p>Escoge esta opción para permitir a todo el mundo ver tu perfil y el contenido que
+                            publiques.</p>
                     </li>
                     <li class="col l12 m12 s12">
                         <h3>Sólo mis seguidores pueden ver mi perfil y mis publicaciones</h3><br>
-                        <p>Escoge esta opción para permitir sólo a tus seguidores ver tu perfil y el contenido que publiques.<br></p>
+                        <p>Escoge esta opción para permitir sólo a tus seguidores ver tu perfil y el contenido que
+                            publiques.<br></p>
                     </li>
                     <li class="col l12 m12 s12">
-                        <h3>Sólo mis seguidores y aquellas personas que sigo pueden ver mi perfil y mis publicaciones</h3><br>
-                        <p>Escoge esta opción para permitir sólo a tus seguidores y a las personas a las que sigues ver tu perfil y el contenido que publiques.</p>
+                        <h3>Sólo mis seguidores y aquellas personas que sigo pueden ver mi perfil y mis
+                            publicaciones</h3><br>
+                        <p>Escoge esta opción para permitir sólo a tus seguidores y a las personas a las que sigues ver
+                            tu perfil y el contenido que publiques.</p>
                     </li>
                     <li class="col l12 m12 s12">
                         <h3>Nadie puede ver ni mi perfil ni mis publicaciones</h3><br>
-                        <p>Esta opción es útil si quieres tener un perfil privado en el que guardar contenido útil para ti.</p>
+                        <p>Esta opción es útil si quieres tener un perfil privado en el que guardar contenido útil para
+                            ti.</p>
                     </li>
                 </ul>
             </div>
         </div>
     </div>
 
-        <script>
-  	        $('.menu-config').find('li:nth-child(5)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
-	    </script>
+    <script>
+        $('.menu-config').find('li:nth-child(5)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
 {% endblock %}

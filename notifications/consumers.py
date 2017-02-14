@@ -1,9 +1,12 @@
 import json
-import logging
+
 from channels import Group
-from channels.auth import channel_session_user, channel_session_user_from_http
+from channels.auth import channel_session_user_from_http
 from django.core.exceptions import ObjectDoesNotExist
+
 from user_profile.models import UserProfile
+
+
 # The "slug" keyword argument here comes from the regex capture group in
 #
 @channel_session_user_from_http

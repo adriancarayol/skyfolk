@@ -1,101 +1,110 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 
 body {
-	padding: 0;
-	background-color: #eeeeee;
+    padding: 0;
+    background-color: #eeeeee;
 }
 
 .name-relations {
-	color: #424242;
-	margin-left: 3%;
-	width: 80%;
-	border-bottom: 1px solid #616161;
+    color: #424242;
+    margin-left: 3%;
+    width: 80%;
+    border-bottom: 1px solid #616161;
 }
+
 .container .eje-central-relation {
-	position: relative;
-	width: 300px;
-	height: 300px;
-	border-radius: 100%;
-	margin: auto;
-	display: block;
-	border: 2px solid #1976d2;
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 100%;
+    margin: auto;
+    display: block;
+    border: 2px solid #1976d2;
 }
+
 .container .eje-central-relation img {
-	border-radius: 100%;
-	width: 100%;
-	height: 100%;
+    border-radius: 100%;
+    width: 100%;
+    height: 100%;
 }
+
 .container .eje-secundario-relation {
-	position: absolute;
-	width: 298px;
-	height: 298px;
-	top: 0px;
-	border-radius: 100%;
-	margin-top: 0px;
-	margin-left: 0px;
+    position: absolute;
+    width: 298px;
+    height: 298px;
+    top: 0px;
+    border-radius: 100%;
+    margin-top: 0px;
+    margin-left: 0px;
 }
+
 .container .eje-secundario-relation img {
-	width: 100%;
-	height: 100%;
-	border-radius: 100%;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
 }
+
 .container .eje-secundario-relation .eje-secundario {
-	width: 80px;
-	height: 80px;
-	position: relative;
-	border-radius: 100%;
-	background-image: url('http://boast-talk.com/wp-content/uploads/2013/06/friends_icon.jpg');
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 100%;
-	border: 2px solid #69f0ae;
+    width: 80px;
+    height: 80px;
+    position: relative;
+    border-radius: 100%;
+    background-image: url('http://boast-talk.com/wp-content/uploads/2013/06/friends_icon.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    border: 2px solid #69f0ae;
 }
+
 .container ul {
-	position: relative;
-	top: 105%;
-	width: 900px;
-	margin: auto;
-	margin-left: -50px;
+    position: relative;
+    top: 105%;
+    width: 900px;
+    margin: auto;
+    margin-left: -50px;
 }
+
 .container ul li {
-	list-style-type: none;
-	display: inline-block;
+    list-style-type: none;
+    display: inline-block;
 }
 
 .container .eje-secundario-relation .eje-secundario:hover > img {
-	opacity: 0;
+    opacity: 0;
     -webkit-transition: all .3s linear;
-	transition: all .3s linear;
-	-moz-transition: all .3s linear;
+    transition: all .3s linear;
+    -moz-transition: all .3s linear;
 }
 
 .container .relations-controls {
-	position: relative;
-	margin-top: 200px;
-}
-.container .image-card {
-	margin: auto;
-	position: relative;
-	width: 100px;
-	height: 100px;
-}
-.container .card-action i {
-	position: relative;
-	top: 7px;
-	margin-right: 3px;
-}
-.container .card-action a:hover {
-	-webkit-transition: all .2s linear;
-	-moz-transition: all .2s linear;
-	transition: all .2s linear;
-	opacity: 0.5;
+    position: relative;
+    margin-top: 200px;
 }
 
+.container .image-card {
+    margin: auto;
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.container .card-action i {
+    position: relative;
+    top: 7px;
+    margin-right: 3px;
+}
+
+.container .card-action a:hover {
+    -webkit-transition: all .2s linear;
+    -moz-transition: all .2s linear;
+    transition: all .2s linear;
+    opacity: 0.5;
+}
 
 /* MEDIAS */
 
 @media screen and (min-width: 200px) and (max-width: 500px) {
-	.container .eje-secundario-relation {
-		display: none;
-	}
+    .container .eje-secundario-relation {
+        display: none;
+    }
 }

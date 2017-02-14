@@ -1,8 +1,7 @@
+import re
+
 from django.contrib.auth.models import User
 from django.db import models
-import re
-# from django.db.models.signals import post_save
-# from django.utils.translation import ugettext as _
 
 from user_profile.models import UserProfile
 
@@ -30,14 +29,15 @@ class Publication(models.Model):
         self.hates = hates
 
     ''' Menciones para comentario '''
+
     def getMentions(self):
         menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
         for mencion in menciones:
-            if User.objects.filter(username = mencion[1:]):
+            if User.objects.filter(username=mencion[1:]):
                 self.content = self.content.replace(mencion, '<a href="/profile/%s">%s</a>' % (mencion[1:], mencion))
 
-
     ''' Tags para comentario '''
+
     def getHashTags(self):
         hashtags = re.findall('#[a-zA-Z][a-zA-Z0-9_]*', self.content)
         for hashtag in hashtags:

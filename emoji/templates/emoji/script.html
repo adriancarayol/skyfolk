@@ -3,7 +3,7 @@
 
 <script src="{% static 'emoji/js/emoji.js' %}"></script>
 <script>
-if($) {
-    Emoji.setDataUrl('{% url 'emoji:list.json' %}').load();
-}
+    if ($) {
+        Emoji.setDataUrl('{% url 'emoji:list.json' %}').load();
+    }
 </script>

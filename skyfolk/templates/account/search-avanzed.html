@@ -8,75 +8,76 @@
 
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="row">
-            <div class="col s12">
-                <div class="card-panel grey lighten-5">
-                    <h1 class="center-align">Búsqueda avanzada</h1>
-                </div>
-            </div>
-        </div>
+    <div class="container">
         <div class="row">
             <div class="row">
-                <h4 class="left-align">Contenido</h4>
+                <div class="col s12">
+                    <div class="card-panel grey lighten-5">
+                        <h1 class="center-align">Búsqueda avanzada</h1>
+                    </div>
+                </div>
             </div>
-        <div class="col s12">
-            <form action="" method="post">{% csrf_token %} 
+            <div class="row">
                 <div class="row">
-                    {{ form.all_words.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">list</i>
-                        {{ form.all_words }}
-                        <label for="id_all_words">{{ form.all_words.help_text }}</label>
-                    </div>
+                    <h4 class="left-align">Contenido</h4>
                 </div>
-                <div class="row">
-                    {{ form.word_or_exactly_word.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">label</i>
-                        {{ form.word_or_exactly_word }}
-                        <label for="id_all_words">{{ form.word_or_exactly_word.help_text }}</label>
-                    </div>
+                <div class="col s12">
+                    <form action="" method="post">{% csrf_token %}
+                        <div class="row">
+                            {{ form.all_words.errors }}
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">list</i>
+                                {{ form.all_words }}
+                                <label for="id_all_words">{{ form.all_words.help_text }}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{ form.word_or_exactly_word.errors }}
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">label</i>
+                                {{ form.word_or_exactly_word }}
+                                <label for="id_all_words">{{ form.word_or_exactly_word.help_text }}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{ form.some_words.errors }}
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">filter_list</i>
+                                {{ form.some_words }}
+                                <label for="id_all_words">{{ form.some_words.help_text }}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{ form.none_words.errors }}
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">not_interested</i>
+                                {{ form.none_words }}
+                                <label for="id_all_words">{{ form.none_words.help_text }}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{ form.hashtags.errors }}
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">label</i>
+                                {{ form.hashtags }}
+                                <label for="id_all_words">{{ form.hashtags.help_text }}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{ form.regex_string.errors }}
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">settings</i>
+                                {{ form.regex_string }}
+                                <label for="id_all_words">{{ form.regex_string.help_text }}</label>
+                            </div>
+                        </div>
+                        <button class="waves-effect waves-light btn right" type="submit"><i class="material-icons left">search</i>Buscar
+                        </button>
+                    </form>
                 </div>
-                <div class="row">
-                    {{ form.some_words.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">filter_list</i>
-                        {{ form.some_words }}
-                        <label for="id_all_words">{{ form.some_words.help_text }}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    {{ form.none_words.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">not_interested</i>
-                        {{ form.none_words }}
-                        <label for="id_all_words">{{ form.none_words.help_text }}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    {{ form.hashtags.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">label</i>
-                        {{ form.hashtags }}
-                        <label for="id_all_words">{{ form.hashtags.help_text }}</label>
-                    </div>
-                </div>
-                <div class="row">
-                    {{ form.regex_string.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">settings</i>
-                        {{ form.regex_string }}
-                        <label for="id_all_words">{{ form.regex_string.help_text }}</label>
-                    </div>
-                </div>
-                <button class="waves-effect waves-light btn right" type="submit"><i class="material-icons left">search</i>Buscar</button>
-            </form>
+            </div>
         </div>
     </div>
-    </div>
-</div>
-    <script async src="{{STATIC_URL}}js/search.js"></script>
+    <script async src="{{ STATIC_URL }}js/search.js"></script>
 {% endblock %}
 </div>

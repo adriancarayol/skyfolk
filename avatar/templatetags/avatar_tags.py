@@ -43,7 +43,8 @@ def avatar_url(user, size=settings.AVATAR_DEFAULT_SIZE):
         if settings.AVATAR_GRAVATAR_FORCEDEFAULT:
             params['f'] = 'y'
         path = "%s/?%s" % (hashlib.md5(force_bytes(getattr(user,
-            settings.AVATAR_GRAVATAR_FIELD))).hexdigest(), urlencode(params))
+                                                           settings.AVATAR_GRAVATAR_FIELD))).hexdigest(),
+                           urlencode(params))
         return urljoin(settings.AVATAR_GRAVATAR_BASE_URL, path)
 
     if settings.AVATAR_FACEBOOK_BACKUP:

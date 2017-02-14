@@ -7,7 +7,6 @@ import user_profile.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('user_profile', '0012_remove_userprofile_backimage'),
     ]
@@ -16,6 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userprofile',
             name='backImage',
-            field=models.ImageField(null=True, upload_to=user_profile.models.uploadBackImagePath, verbose_name='BackImage', blank=True),
+            field=models.ImageField(null=True, upload_to=user_profile.models.uploadBackImagePath,
+                                    verbose_name='BackImage', blank=True),
         ),
     ]

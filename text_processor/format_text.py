@@ -1,8 +1,10 @@
 # Clase que dado un texto,
 # lo devuelve formateado (con hashtags, menciones y emoticonos)
 import re
-from emoji import Emoji
+
 from django.contrib.auth.models import User
+
+from emoji import Emoji
 from notifications.signals import notify
 
 

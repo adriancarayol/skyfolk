@@ -3,21 +3,21 @@
 	Template para cambiar de contraseña
 {% endcomment %}
 {% block additional_files %}
-{% endblock%}
+{% endblock %}
 {% block cf-title %}
-<div class="hgroup">
-	<h4 class="cn"> Contraseña </h4>
-	<h6 class="ch"> Cambia tu contraseña o recupera tu contraseña actual.</h6>
-</div>
+    <div class="hgroup">
+        <h4 class="cn"> Contraseña </h4>
+        <h6 class="ch"> Cambia tu contraseña o recupera tu contraseña actual.</h6>
+    </div>
 {% endblock %}
 {% block cf-form %}
-<div class="wr">
-<div class="chg">
-  <form method="POST" action="{% url 'account_change_password' %}" class="password_change">
-      {% csrf_token %}
-      {{ form.as_p }}
-    <button type="submit" name="action">Salvar cambios</button>
-  </form>
-	</div>
-	</div>
+    <div class="wr">
+        <div class="chg">
+            <form method="POST" action="{% url 'account_change_password' %}" class="password_change">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" name="action">Salvar cambios</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from avatar.models import Avatar
+
 import user_profile
+from avatar.models import Avatar
 
 if sys.version > '3':
     long = int
@@ -14,6 +15,7 @@ def slug2id(slug):
 
 def id2slug(id):
     return id + 110909
+
 
 def get_author_avatar(authorpk):
     """

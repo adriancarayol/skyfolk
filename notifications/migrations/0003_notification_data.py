@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
 import jsonfield.fields
+from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('notifications', '0002_auto_20150224_1134'),
     ]

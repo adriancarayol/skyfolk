@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('user_profile', '0021_remove_userprofile_hiddenmenu'),
     ]

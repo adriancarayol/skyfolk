@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        #('user_profile', '__first__'),
+        # ('user_profile', '__first__'),
     ]
 
     operations = [
-        #migrations.CreateModel(
+        # migrations.CreateModel(
         #    name='Publication',
         #    fields=[
         #        ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
@@ -22,5 +21,5 @@ class Migration(migrations.Migration):
         #        ('profile', models.ForeignKey(to='user_profile.UserProfile', related_name='to_publication')),
         #        ('writer', models.ForeignKey(to='user_profile.UserProfile', related_name='from_publication')),
         #    ],
-        #),
+        # ),
     ]

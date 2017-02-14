@@ -1,4 +1,5 @@
 from django.conf.urls import url
+
 from latest_news import views as latest_news_views
 
 urlpatterns = [

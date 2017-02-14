@@ -1,11 +1,14 @@
-import requests
 import tempfile
+from os.path import splitext
+from urllib.parse import urlparse
+
+import requests
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.files.base import File
 from django.shortcuts import render, redirect
 from django.utils import six
 from django.utils.translation import ugettext as _
-from django.core.files.base import File
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 
 from avatar.conf import settings
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
@@ -13,11 +16,8 @@ from avatar.models import Avatar
 from avatar.signals import avatar_updated
 from avatar.utils import (get_primary_avatar, get_default_avatar_url,
                           invalidate_cache)
-
 from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
-from urllib.parse import urlparse
-from os.path import splitext
 
 
 def _get_next(request):
@@ -36,7 +36,7 @@ def _get_next(request):
        the view will redirect to that previous page.
     """
     next = request.POST.get('next', request.GET.get('next',
-                            request.META.get('HTTP_REFERER', None)))
+                                                    request.META.get('HTTP_REFERER', None)))
     if not next:
         next = request.path
     return next
@@ -65,10 +65,9 @@ def _get_avatars(user):
 @login_required(login_url='/')
 def add(request, extra_context=None, next_override=None,
         upload_form=UploadAvatarForm, *args, **kwargs):
-
     user = request.user
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
     searchForm = SearchForm()
 
     if extra_context is None:
@@ -91,11 +90,10 @@ def add(request, extra_context=None, next_override=None,
             return redirect(next_override or _get_next(request))
 
     url_image = request.POST.get('url_image', None)
-    
+
     if request.method == "POST" and 'avatar' not in request.FILES \
             and url_image:
         if upload_avatar_form.is_valid():
-            
 
             parsed = urlparse(url_image)
             name, ext = splitext(parsed.path)
@@ -121,7 +119,6 @@ def add(request, extra_context=None, next_override=None,
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
             return redirect(next_override or _get_next(request))
 
-
     context = {
         'avatar': avatar,
         'avatars': avatars,
@@ -142,7 +139,7 @@ def change(request, extra_context=None, next_override=None,
            *args, **kwargs):
     user = request.user
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
     searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
@@ -187,7 +184,7 @@ def change(request, extra_context=None, next_override=None,
 def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     user = request.user
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
     searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}

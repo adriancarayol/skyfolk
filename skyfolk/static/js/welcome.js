@@ -120,17 +120,17 @@ function AJAX_requestfriend(slug, status) {
             success: function (response) {
                 if (response == "isfriend") {
                     swal({
-                        title: "¡Ya es tu amigo!",
-                        type: "warning",
-                        customClass: 'default-div',
-                        animation: "slide-from-top",
-                        showConfirmButton: true,
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Unfollow",
-                        cancelButtonText: "Ok, fine!",
-                        closeOnConfirm: true
-                    },
+                            title: "¡Ya es tu amigo!",
+                            type: "warning",
+                            customClass: 'default-div',
+                            animation: "slide-from-top",
+                            showConfirmButton: true,
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Unfollow",
+                            cancelButtonText: "Ok, fine!",
+                            closeOnConfirm: true
+                        },
                         function (isConfirm) {
                             if (isConfirm) {
                                 AJAX_remove_relationship(slug);

@@ -3,7 +3,7 @@ import json
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 
 from publications.models import Publication
 from timeline.models import Timeline
@@ -38,6 +38,7 @@ def add_to_timeline(request):
 
         return HttpResponse(json.dumps(response), content_type='application/json')
 
+
 def remove_timeline(request):
     print('>>>>>>>> PETICION AJAX BORRAR TIMELINE')
     if request.POST:
@@ -54,5 +55,5 @@ def remove_timeline(request):
             response = False
 
         return HttpResponse(json.dumps(response),
-                    content_type='application/json'
-        )
+                            content_type='application/json'
+                            )

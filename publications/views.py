@@ -1,21 +1,19 @@
 import json
-from datetime import date
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpResponse
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView
-from text_processor.format_text import TextProcessor
-from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+
+from photologue.models import Photo
 from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import Publication, PublicationPhoto
 from timeline.models import Timeline
-from notifications.signals import notify
-from el_pagination.views import AjaxListView
-from photologue.models import Photo
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
     """
@@ -102,6 +100,7 @@ class PublicationSelfNewView(AjaxableResponseMixin, CreateView):
 
         return self.form_invalid(form=form)
 
+
 class PublicationsListView(AjaxableResponseMixin, ListView):
     model = Publication
     template_name = 'account/tab-comentarios.html'
@@ -118,11 +117,12 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
             # TODO: pasar el resto de parametros por get
             self.template_name = 'account/tab-comentarios.html'
             return Publication.objects.get_publication_replies(
-                                        self.request.GET.get('user_pk'),
-                                        self.request.GET.get('booar_owner'),
-                                        self.request.GET.get('parent'))
+                self.request.GET.get('user_pk'),
+                self.request.GET.get('booar_owner'),
+                self.request.GET.get('parent'))
         else:
             return self.queryset
+
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     """
@@ -139,7 +139,6 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
         emitter = get_object_or_404(get_user_model(),
                                     pk=request.POST.get('p_author', None))
-
 
         photo = get_object_or_404(Photo, pk=request.POST.get('board_photo', None))
         import pprint
@@ -212,15 +211,15 @@ def add_like(request):
         print("(USERS QUE HICIERON LIKE): ")
         print(pub.user_give_me_like.all())
 
-        if request.user.pk != user_profile.pk and not request.user in pub.user_give_me_like.all()\
+        if request.user.pk != user_profile.pk and not request.user in pub.user_give_me_like.all() \
                 and not request.user in pub.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
             # tampoco si el usuario ya ha dado like antes.
-            print ("Incrementando like")
+            print("Incrementando like")
             try:
-                pub.user_give_me_like.add(request.user) # add users like
+                pub.user_give_me_like.add(request.user)  # add users like
                 pub.save()
                 response = True
                 statuslike = 1
@@ -228,9 +227,9 @@ def add_like(request):
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif request.user.pk != user_profile.pk and request.user in pub.user_give_me_like.all()\
+        elif request.user.pk != user_profile.pk and request.user in pub.user_give_me_like.all() \
                 and not request.user in pub.user_give_me_hate.all():
-            print ("Decrementando like")
+            print("Decrementando like")
             try:
                 pub.user_give_me_like.remove(request.user)
                 pub.save()
@@ -243,9 +242,10 @@ def add_like(request):
             response = False
             statuslike = 0
     print("Fin like comentario ---> Response" + str(response)
-    + " Estado" + str(statuslike))
+          + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
+
 
 def add_hate(request):
     response = False
@@ -266,15 +266,15 @@ def add_hate(request):
         print("(USERS QUE HICIERON LIKE): ")
         print(pub.user_give_me_hate.all())
 
-        if request.user.pk != user_profile.pk and request.user not in pub.user_give_me_like.all()\
+        if request.user.pk != user_profile.pk and request.user not in pub.user_give_me_like.all() \
                 and request.user not in pub.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
             # tampoco si el usuario ya ha dado like antes.
-            print ("Incrementando like")
+            print("Incrementando like")
             try:
-                pub.user_give_me_hate.add(request.user) # add users like
+                pub.user_give_me_hate.add(request.user)  # add users like
                 pub.save()
                 response = True
                 statuslike = 1
@@ -282,9 +282,9 @@ def add_hate(request):
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif request.user.pk != user_profile.pk and request.user in pub.user_give_me_hate.all()\
+        elif request.user.pk != user_profile.pk and request.user in pub.user_give_me_hate.all() \
                 and not request.user in pub.user_give_me_like.all():
-            print ("Decrementando like")
+            print("Decrementando like")
             try:
                 pub.user_give_me_hate.remove(request.user)
                 pub.save()
@@ -297,6 +297,6 @@ def add_hate(request):
             response = False
             statuslike = 0
     print("Fin like comentario ---> Response" + str(response)
-    + " Estado" + str(statuslike))
+          + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')

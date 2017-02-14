@@ -3,11 +3,11 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+
 import photologue.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('photologue', '0015_auto_20170131_1627'),
     ]

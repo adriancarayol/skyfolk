@@ -3,11 +3,11 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+
 import photologue.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('photologue', '0018_photo_url_image'),
     ]
@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='photo',
             name='thumbnail',
-            field=models.ImageField(blank=True, null=True, upload_to=photologue.models.get_storage_path, verbose_name='thumbnail'),
+            field=models.ImageField(blank=True, null=True, upload_to=photologue.models.get_storage_path,
+                                    verbose_name='thumbnail'),
         ),
     ]

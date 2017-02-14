@@ -3,7 +3,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
+
 from django.core.validators import MaxLengthValidator
+
 # from django.core.exceptions import ImproperlyConfigured
 
 
@@ -31,28 +33,28 @@ THIRD_PARTY_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'rest_framework',   # REST framework
+    'rest_framework',  # REST framework
     'django_messages',  # mensajes entre usuarios
     # 'achievements',   # achivements       Portando a Python3
     'emoji',
-    'avatar',   # Avatares para usuarios.
-    'channels', # django-channels
-    'photologue',   # photologue original
+    'avatar',  # Avatares para usuarios.
+    'channels',  # django-channels
+    'photologue',  # photologue original
     'sortedm2m',
-    'taggit',   # para etiquetas
-    'el_pagination',    # Para paginacion
-    'notifications',    # notificaciones
+    'taggit',  # para etiquetas
+    'el_pagination',  # Para paginacion
+    'notifications',  # notificaciones
     'dal',  # autocompletado
     'dal_select2',
 )
 
 FIRST_PARTY_APPS = (
     'landing',  # página de inicio
-    'user_profile', # perfil de usuario
-    'publications', # publicaciones en el perfil
-    'text_processor',   # Formatea un texto para incorporar emoticonos, hashtags...
+    'user_profile',  # perfil de usuario
+    'publications',  # publicaciones en el perfil
+    'text_processor',  # Formatea un texto para incorporar emoticonos, hashtags...
     'timeline',
-    'about',    # sobre los autores
+    'about',  # sobre los autores
     'latest_news',
     'user_groups',  # Para grupos de usuarios
     'support',  # modulo para ofrecer soporte al usuario
@@ -70,13 +72,13 @@ AUTHENTICATION_BACKENDS = (
 
 # auth and allauth settings
 LOGIN_REDIRECT_URL = '/'
-#SOCIALACCOUNT_QUERY_EMAIL = True
-#SOCIALACCOUNT_PROVIDERS = {
+# SOCIALACCOUNT_QUERY_EMAIL = True
+# SOCIALACCOUNT_PROVIDERS = {
 #    'facebook': {
 #        'SCOPE': ['email', 'publish_stream'],
 #        'METHOD': 'js_sdk'  # instead of 'oauth2'
 #    }
-#}
+# }
 
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
@@ -114,8 +116,8 @@ REST_FRAMEWORK = {
 # django-taggit
 TAGGIT_CASE_INSENSITIVE = True
 
-#NOTIFICATION
-NOTIFICATIONS_USE_JSONFIELD=True
+# NOTIFICATION
+NOTIFICATIONS_USE_JSONFIELD = True
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -137,22 +139,21 @@ AUTO_LOGOUT_DELAY = 60
 EL_PAGINATION_LOADING = """<img src="/static/img/ripple.gif" alt="loading" />"""
 EL_PAGINATION_PER_PAGE = 20
 
-
 ROOT_URLCONF = 'skyfolk.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-                    os.path.join(BASE_DIR, 'skyfolk/templates')
-                ],
+            os.path.join(BASE_DIR, 'skyfolk/templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 # Required by allauth template tags
                 # allauth specific context processors
-                #"allauth.account.context_processors.account",
-                #"allauth.socialaccount.context_processors.socialaccount",
+                # "allauth.account.context_processors.account",
+                # "allauth.socialaccount.context_processors.socialaccount",
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
@@ -189,7 +190,7 @@ TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-#FILE_CHARSET="utf-8"
+# FILE_CHARSET="utf-8"
 
 SITE_ID = 1
 

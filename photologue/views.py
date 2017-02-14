@@ -1,32 +1,32 @@
-import warnings
+import json
 import os
+import warnings
+
+from PIL import Image
+from django.contrib.auth.decorators import login_required
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.urlresolvers import reverse
+from django.http import JsonResponse
+from django.http import QueryDict, HttpResponse
+from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+from django.utils.six import BytesIO
+from django.views.generic.base import RedirectView
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.base import RedirectView
-
-from django.core.urlresolvers import reverse
-from django.shortcuts import render, get_object_or_404
-
-from .models import Photo, Gallery
-from publications.forms import PublicationForm, PublicationPhotoForm
-from user_profile.forms import SearchForm
-
-from django.contrib.auth.decorators import login_required
-# from django.contrib.auth import get_user_model
-from PIL import Image
-from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
-from django.http import QueryDict, HttpResponse
-import json
-from django.shortcuts import redirect
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
-from user_profile.models import UserProfile
-from django.utils.six import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.http import JsonResponse
+
+from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import PublicationPhoto
+from user_profile.forms import SearchForm
+from user_profile.models import UserProfile
+from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
+from .models import Photo, Gallery
+
+
 # Gallery views.
 
 
@@ -93,9 +93,10 @@ def collection_list(request, username,
     print('>>>>>>> TAGNAME {}'.format(tagname))
     object_list = Photo.objects.filter(owner__username=username, tags__name__exact=tagname)
     context = {'publicationSelfForm': publicationForm,
-                    'searchForm': searchForm,
-                    'object_list': object_list, 'form': form,
-                    'form_zip': form_zip}
+               'searchForm': searchForm,
+               'object_list': object_list, 'form': form,
+               'form_zip': form_zip,
+               'notifications': user.notifications.unread()}
 
     if extra_context is not None:
         context.update(extra_context)
@@ -131,6 +132,7 @@ class PhotoListView(AjaxListView):
         context['user_gallery'] = self.kwargs['username']
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
+        context['notifications'] = user.notifications.unread()
         return context
 
     def user_pass_test(self):
@@ -300,7 +302,7 @@ def edit_photo(request, photo_id):
                 json.dumps(response_data),
                 content_type="application/json"
             )
-        return redirect('/multimedia/'+user.username+'/')
+        return redirect('/multimedia/' + user.username + '/')
     else:
         return HttpResponse(
             json.dumps({'Nothing to see': 'This isnt happening'}),
@@ -343,9 +345,8 @@ class PhotoDetailView(DetailView):
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
-        print('???')
         context['publications'] = PublicationPhoto.objects.filter(board_photo=self.get_object())
-        print('!!!')
+        context['notifications'] = user.notifications.unread()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:
             next = self.object.get_next_in_gallery()

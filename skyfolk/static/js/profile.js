@@ -13,16 +13,16 @@ $(document).ready(function () {
         text = text.replace(/\s\s+/g, ' ');
 
         if (text.length < showLimitChar) {
-            $(show).css('display','none');
+            $(show).css('display', 'none');
         }
     });
 
-    $("#tab-comentarios").on('click', '.show-more a', function() {
+    $("#tab-comentarios").on('click', '.show-more a', function () {
         var $this = $(this);
         var $content = $this.parent().prev("div.comment").find(".wrp-comment");
         var linkText = $this.text().toUpperCase();
 
-        if(linkText === "+ MOSTRAR MÁS"){
+        if (linkText === "+ MOSTRAR MÁS") {
             linkText = "- Mostrar menos";
             $content.css('height', 'auto');
         } else {
@@ -33,28 +33,28 @@ $(document).ready(function () {
         return false;
     });
 
-    $('.fa-paw').on('click',function() {
+    $('.fa-paw').on('click', function () {
         $(".info-paw").show();
     });
 
-    $('.info-trof').on('click',function() {
+    $('.info-trof').on('click', function () {
         $(".trofeos").show();
     });
 
-    $('.info-groups').on('click',function() {
+    $('.info-groups').on('click', function () {
         $(".grupos").show();
     });
 
-    $('#close-trofeos').on('click',function() {
+    $('#close-trofeos').on('click', function () {
         $(".trofeos").hide();
     });
 
-    $('#close-grupos').on('click',function() {
+    $('#close-grupos').on('click', function () {
         $(".grupos").hide();
     });
 
 
-    $('#configurationOnProfile').on('click', function() {
+    $('#configurationOnProfile').on('click', function () {
         if ($('.ventana-pin').is(':visible')) {
             $('html, body').removeClass('body-inConf');
             $('.ventana-pin').fadeOut("fast");
@@ -65,13 +65,13 @@ $(document).ready(function () {
     });
 
     /* Abrir respuesta a comentario */
-    $('#div-separator').on('click', '#options-comments .fa-reply', function() {
+    $('#div-separator').on('click', '#options-comments .fa-reply', function () {
         var id_ = $(this).attr("id").slice(6);
         if (flag_reply) {
-            $("#"+id_).slideUp("fast");
+            $("#" + id_).slideUp("fast");
             flag_reply = false
-        }else{
-            $("#"+id_).slideDown("fast");
+        } else {
+            $("#" + id_).slideDown("fast");
             flag_reply = true
         }
     });
@@ -81,9 +81,10 @@ $(document).ready(function () {
         var commentReply = document.getElementById('actual-' + id_comment);
         $(commentReply).toggleClass("reply-actual-message-show");
     }
+
     /* Expandir comentario */
 
-    $('.fa-expand').on('click', function() {
+    $('.fa-expand').on('click', function () {
         var caja_pub = $(this).closest('.wrapper');
         expandComment(caja_pub);
     });
@@ -96,7 +97,7 @@ $(document).ready(function () {
 
     /* Cerrar comentario expandido */
 
-    $('.cerrar_ampliado').on('click', function() {
+    $('.cerrar_ampliado').on('click', function () {
         var expand = $(this).closest('.ampliado');
         closeExpand(expand);
     });
@@ -108,190 +109,190 @@ $(document).ready(function () {
     }
 
     /*
-       var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
-       var id_user = $(caja_publicacion).data('id')// obtengo id
-       var data = {
-       userprofile_id: id_user,
-       publication_id: id_pub
-       };
-    //event.preventDefault(); //stop submit
-    $.ajax({
-    url: '/timeline/addToTimeline/',
-    type: 'POST',
-    dataType: 'json',
-    data: data,
-    success: function(data) {
-// borrar caja publicacion
-if (data==true) {
-$(caja_publicacion).css('background-color', 'tomato');
+     var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
+     var id_user = $(caja_publicacion).data('id')// obtengo id
+     var data = {
+     userprofile_id: id_user,
+     publication_id: id_pub
+     };
+     //event.preventDefault(); //stop submit
+     $.ajax({
+     url: '/timeline/addToTimeline/',
+     type: 'POST',
+     dataType: 'json',
+     data: data,
+     success: function(data) {
+     // borrar caja publicacion
+     if (data==true) {
+     $(caja_publicacion).css('background-color', 'tomato');
 
-*/
-/* Borrar publicacion */
-$('#tab-comentarios').on('click', '#options-comments .fa-trash', function() {
-    var caja_publicacion = $(this).closest('.wrapper');
-    //alert($(caja_comentario).html());
-    swal({
-        title: "Are you sure?",
-        text: "You will not be able to recover this publication!",
-        type: "warning",
-        animation: "slide-from-top",
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No God, please no!",
-        closeOnConfirm: true
-    }, function(isConfirm) {
-        if (isConfirm) {
-            AJAX_delete_publication(caja_publicacion);
-        }
-    });
-});
-
-/* Borrar timeline */
-
-$('#tab-timeline').find('.controles .fa-trash').on('click', function() {
-    var div_timeline = $(this).closest('.timeline-pub');
-    swal({
-        title: "Are you sure?",
-        text: "You will not be able to recover this history!",
-        type: "warning",
-        animation: "slide-from-top",
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No God, please no!",
-        closeOnConfirm: true
-    }, function(isConfirm) {
-        if (isConfirm) {
-            AJAX_delete_timeline(div_timeline);
-        }
-    });
-});
-
-
-/* Agregar timeline */
-$(document).on('click', '#options-comments .fa-tag', function() {
-    var caja_publicacion = $(this).closest('.wrapper');
-    var tag = this;
-        AJAX_add_timeline(caja_publicacion, tag, "publication");
-});
-
-/* Añadir me gusta a comentario */
-$(document).on('click', '#options-comments #like-heart', function() {
-    var caja_publicacion = $(this).closest('.wrapper');
-    var heart = this;
-    AJAX_add_like(caja_publicacion, heart, "publication");
-});
-
-/* Añadir no me gusta a comentario */
-$(document).on('click', '#options-comments #fa-hate', function() {
-    var caja_publicacion = $(this).closest('.wrapper');
-    var heart = this;
-    AJAX_add_hate(caja_publicacion, heart, "publication");
-});
-
-/* Añadir publicacion de timeline a mi timeline */
-$('#wrapperx-timeline').find('#controls-timeline').find('#add-timeline').on('click', function() {
-    var caja_publicacion = $(this).closest('.timeline-pub');
-    var tag = this;
-    AJAX_add_timeline(caja_publicacion, tag, "timeline");
-});
-/* Añadir me gusta a comentario en timeline */
-$('#wrapperx-timeline').find('#controls-timeline').find('#like-heart-timeline').on('click', function() {
-    var caja_publicacion = $(this).closest('.timeline-pub');
-    var heart = this;
-    AJAX_add_like(caja_publicacion, heart, "timeline");
-});
-/* Añadir no me gusta a comentario en timeline */
-$('#wrapperx-timeline').find('#controls-timeline').find('#fa-hate-timeline').on('click', function() {
-    var caja_publicacion = $(this).closest('.timeline-pub');
-    var heart = this;
-    AJAX_add_hate(caja_publicacion, heart, "timeline");
-});
-
-
-/* FUNCIONES AJAX PARA TABS DE PERFIL */
-
-$('#tab-amigos').bind('scroll', function() {
-    if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-        countFriendList++;
-        $.ajax({
-            type: "POST",
-            url: "/load_friends/",
-            data: {
-                'slug': countFriendList,
-                'csrfmiddlewaretoken': csrftoken
-            },
-            dataType: "json",
-            success: function(response) {
-
-                //load friends
-                for (var i = 0; i < response.length; i++) {
-                    addFriendToHtmlList(response[i]);
-                }
-            },
-            error: function(rs, e) {
-
+     */
+    /* Borrar publicacion */
+    $('#tab-comentarios').on('click', '#options-comments .fa-trash', function () {
+        var caja_publicacion = $(this).closest('.wrapper');
+        //alert($(caja_comentario).html());
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this publication!",
+            type: "warning",
+            animation: "slide-from-top",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No God, please no!",
+            closeOnConfirm: true
+        }, function (isConfirm) {
+            if (isConfirm) {
+                AJAX_delete_publication(caja_publicacion);
             }
         });
-    }
-});
-
-
-/**/
-$("#li-tab-amigos").click(function() {
-    $('#tab-amigos').css({
-        "overflow": "auto"
-    });
-});
-
-$("#li-tab-comentarios").click(function() {
-    $('#tab-comentarios').css({
-        "overflow": "auto"
     });
 
-});
+    /* Borrar timeline */
 
-$("#li-tab-timeline").click(function() {
-    $('#tab-timeline').css({
-        "overflow": "auto"
+    $('#tab-timeline').find('.controles .fa-trash').on('click', function () {
+        var div_timeline = $(this).closest('.timeline-pub');
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this history!",
+            type: "warning",
+            animation: "slide-from-top",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No God, please no!",
+            closeOnConfirm: true
+        }, function (isConfirm) {
+            if (isConfirm) {
+                AJAX_delete_timeline(div_timeline);
+            }
+        });
     });
-});
 
-$('#personal-card-info').find('#bloq-user').on('click', function () {
-    var obj = document.getElementById('info-user-name-profile'),
-    username = obj.getAttribute('data-id'),
-    buttonBan = $(this);
-    swal({
-        title: "Bloquear a " + username,
-        text: username + " no podrá seguirte, enviarte mensajes ni ver tu contenido.",
-        type: "warning",
-        customClass: 'default-div',
-        animation: "slide-from-top",
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Bloquear",
-        cancelButtonText: "Cancelar",
-        closeOnConfirm: true
-    }, function(isConfirm) {
-        if (isConfirm) {
-            AJAX_bloq_user(buttonBan);
+
+    /* Agregar timeline */
+    $(document).on('click', '#options-comments .fa-tag', function () {
+        var caja_publicacion = $(this).closest('.wrapper');
+        var tag = this;
+        AJAX_add_timeline(caja_publicacion, tag, "publication");
+    });
+
+    /* Añadir me gusta a comentario */
+    $(document).on('click', '#options-comments #like-heart', function () {
+        var caja_publicacion = $(this).closest('.wrapper');
+        var heart = this;
+        AJAX_add_like(caja_publicacion, heart, "publication");
+    });
+
+    /* Añadir no me gusta a comentario */
+    $(document).on('click', '#options-comments #fa-hate', function () {
+        var caja_publicacion = $(this).closest('.wrapper');
+        var heart = this;
+        AJAX_add_hate(caja_publicacion, heart, "publication");
+    });
+
+    /* Añadir publicacion de timeline a mi timeline */
+    $('#wrapperx-timeline').find('#controls-timeline').find('#add-timeline').on('click', function () {
+        var caja_publicacion = $(this).closest('.timeline-pub');
+        var tag = this;
+        AJAX_add_timeline(caja_publicacion, tag, "timeline");
+    });
+    /* Añadir me gusta a comentario en timeline */
+    $('#wrapperx-timeline').find('#controls-timeline').find('#like-heart-timeline').on('click', function () {
+        var caja_publicacion = $(this).closest('.timeline-pub');
+        var heart = this;
+        AJAX_add_like(caja_publicacion, heart, "timeline");
+    });
+    /* Añadir no me gusta a comentario en timeline */
+    $('#wrapperx-timeline').find('#controls-timeline').find('#fa-hate-timeline').on('click', function () {
+        var caja_publicacion = $(this).closest('.timeline-pub');
+        var heart = this;
+        AJAX_add_hate(caja_publicacion, heart, "timeline");
+    });
+
+
+    /* FUNCIONES AJAX PARA TABS DE PERFIL */
+
+    $('#tab-amigos').bind('scroll', function () {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            countFriendList++;
+            $.ajax({
+                type: "POST",
+                url: "/load_friends/",
+                data: {
+                    'slug': countFriendList,
+                    'csrfmiddlewaretoken': csrftoken
+                },
+                dataType: "json",
+                success: function (response) {
+
+                    //load friends
+                    for (var i = 0; i < response.length; i++) {
+                        addFriendToHtmlList(response[i]);
+                    }
+                },
+                error: function (rs, e) {
+
+                }
+            });
         }
     });
-});
 
-$(this).click(function(event) {
-    if (!$(event.target).closest('#personal-card-info').length) {
-        if (!$(event.target).closest('.fa-paw').length) {
-            if ($('#personal-card-info').is(":visible")) {
-                $('#personal-card-info').hide();
+
+    /**/
+    $("#li-tab-amigos").click(function () {
+        $('#tab-amigos').css({
+            "overflow": "auto"
+        });
+    });
+
+    $("#li-tab-comentarios").click(function () {
+        $('#tab-comentarios').css({
+            "overflow": "auto"
+        });
+
+    });
+
+    $("#li-tab-timeline").click(function () {
+        $('#tab-timeline').css({
+            "overflow": "auto"
+        });
+    });
+
+    $('#personal-card-info').find('#bloq-user').on('click', function () {
+        var obj = document.getElementById('info-user-name-profile'),
+            username = obj.getAttribute('data-id'),
+            buttonBan = $(this);
+        swal({
+            title: "Bloquear a " + username,
+            text: username + " no podrá seguirte, enviarte mensajes ni ver tu contenido.",
+            type: "warning",
+            customClass: 'default-div',
+            animation: "slide-from-top",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Bloquear",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: true
+        }, function (isConfirm) {
+            if (isConfirm) {
+                AJAX_bloq_user(buttonBan);
+            }
+        });
+    });
+
+    $(this).click(function (event) {
+        if (!$(event.target).closest('#personal-card-info').length) {
+            if (!$(event.target).closest('.fa-paw').length) {
+                if ($('#personal-card-info').is(":visible")) {
+                    $('#personal-card-info').hide();
+                }
             }
         }
-    }
-});
+    });
 
 }); // END DOCUMENT READY */
 
@@ -303,10 +304,10 @@ function addFriendToHtmlList(item) {
         //SI NO EXISTE LA URL DE LA IMAGEN, SE CAMBIA POR EL AVATAR POR DEFECTO. QUITAR ESTO CUANDO
         //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
         imageselector = $("#tab-amigos").find("ul.list #friend-" + item.user__id + " img.friend-avatar")
-            URL_CHECK = MEDIA_URL + item.user__profile__image;
+        URL_CHECK = MEDIA_URL + item.user__profile__image;
         URL_CHANGE = STATIC_URL + 'img/default.png';
         //Check image URL;
-        (function(imageselector, URL_CHECK, URL_CHANGE) {
+        (function (imageselector, URL_CHECK, URL_CHANGE) {
 
             $.ajax({
                 url: URL_CHECK,
@@ -315,14 +316,14 @@ function addFriendToHtmlList(item) {
                     'csrfmiddlewaretoken': csrftoken
                 },
                 dataType: "json",
-                error: function() {
+                error: function () {
                     //url not exists
                     //wait secs
 
-                    setTimeout(function() {
+                    setTimeout(function () {
 
                         //forma chula
-                        imageselector.fadeOut("slow", function() {
+                        imageselector.fadeOut("slow", function () {
                             imageselector.attr("src", URL_CHANGE);
                         });
                         imageselector.fadeIn("slow");
@@ -340,7 +341,6 @@ function addFriendToHtmlList(item) {
     }
 
 
-
 }
 
 function addPublicationToHtmlList(data) {
@@ -349,7 +349,7 @@ function addPublicationToHtmlList(data) {
         $("#tab-comentarios").append('<div class="wrapper" id="pub-' + item.from_publication__id + '">\
                 <div id="box">\
                 <span id="check-' + item.from_publication__id + '" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></span>\
-                <div class="ampliado" id="expand-' + item.from_publication__id +'">\
+                <div class="ampliado" id="expand-' + item.from_publication__id + '">\
                 <div class="nombre_image">\
                 <ul>\
                 <li><i class="first">' + item.user__first_name + item.user__last_name + '</i></li>\
@@ -390,14 +390,13 @@ function addPublicationToHtmlList(data) {
                 </div>');
 
 
-
         //SI NO EXISTE LA URL DE LA IMAGEN, SE CAMBIA POR EL AVATAR POR DEFECTO. QUITAR ESTO CUANDO
         //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
         imageselector = $("#tab-comentarios").find("#pub-" + item.from_publication__id + " img.pub-avatar");
         URL_CHECK = MEDIA_URL + item.user__profile__image;
         URL_CHANGE = STATIC_URL + 'img/default.png';
         //Check image URL
-        (function(imageselector, URL_CHECK, URL_CHANGE) {
+        (function (imageselector, URL_CHECK, URL_CHANGE) {
 
             $.ajax({
                 url: URL_CHECK,
@@ -406,12 +405,12 @@ function addPublicationToHtmlList(data) {
                     'csrfmiddlewaretoken': csrftoken
                 },
                 dataType: "json",
-                error: function() {
+                error: function () {
 
-                    setTimeout(function() {
+                    setTimeout(function () {
 
                         //forma chula1
-                        imageselector.fadeOut("slow", function() {
+                        imageselector.fadeOut("slow", function () {
                             imageselector.attr("src", URL_CHANGE);
                         });
                         imageselector.fadeIn("slow");
@@ -426,8 +425,8 @@ function addPublicationToHtmlList(data) {
     } else {
         $("#tab-comentarios").append('<div class="wrapper">\
                 <div id="box">\
-                <input type="checkbox" id="check-' + item.from_publication__id +'">\
-                <label for="check-' + item.from_publication__id +'" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>\
+                <input type="checkbox" id="check-' + item.from_publication__id + '">\
+                <label for="check-' + item.from_publication__id + '" class="zoom-pub"><i class="fa fa-expand fa-lg"></i></label>\
                 <div class="image">\
                 <img id="avatar-publication" src="' + STATIC_URL + 'img/generic-avatar.png" alt="img" class="usr-img img-responsive">\
                 </div>\
@@ -499,33 +498,33 @@ function AJAX_likeprofile(status) {
 }
 
 /*
-   function showRequest(id_profile, username) {
-   var unique_id = $.gritter.add({
-// (string | mandatory) the heading of the notification
-title: '<a href="/profile/'+username+'">'+username+'</a>' + ' wants to follow you!',
-// (string | mandatory) the text inside the notification
-text: '',
-// (string | optional) the image to display on the left
-image: '../../static/img/nuevo.png',
-// (bool | optional) if you want it to fade out on its own or just sit there
-sticky: true,
-// (int | optional) the time you want it to be alive for before fading out
-time: '',
-// (string | optional) the class name you want to apply to that specific message
-class_name: 'gritter-light',
+ function showRequest(id_profile, username) {
+ var unique_id = $.gritter.add({
+ // (string | mandatory) the heading of the notification
+ title: '<a href="/profile/'+username+'">'+username+'</a>' + ' wants to follow you!',
+ // (string | mandatory) the text inside the notification
+ text: '',
+ // (string | optional) the image to display on the left
+ image: '../../static/img/nuevo.png',
+ // (bool | optional) if you want it to fade out on its own or just sit there
+ sticky: true,
+ // (int | optional) the time you want it to be alive for before fading out
+ time: '',
+ // (string | optional) the class name you want to apply to that specific message
+ class_name: 'gritter-light',
 
-//new options
-button1: true,
-button2: true,
-height: "85px",
-type: "friendrequest",
-buttons_function: AJAX_respondFriendRequest,
-id_emitter: id_profile
+ //new options
+ button1: true,
+ button2: true,
+ height: "85px",
+ type: "friendrequest",
+ buttons_function: AJAX_respondFriendRequest,
+ id_emitter: id_profile
 
-});
+ });
 
-}
-*/
+ }
+ */
 
 function addItemToFriendList(name, lastname) {
 
@@ -552,11 +551,11 @@ function AJAX_delete_publication(caja_publicacion) {
         type: 'POST',
         dataType: 'json',
         data: data,
-        success: function(data) {
+        success: function (data) {
             // borrar caja publicacion
-            if (data==true) {
+            if (data == true) {
                 $(caja_publicacion).fadeToggle("fast");
-            }else{
+            } else {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',
@@ -565,7 +564,7 @@ function AJAX_delete_publication(caja_publicacion) {
                 });
             }
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + ' ' + e);
         }
     });
@@ -594,17 +593,17 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         type: 'POST',
         dataType: 'json',
         data: data,
-        success: function(data) {
+        success: function (data) {
             var response = data.response;
             var status = data.statuslike;
             var numLikes = heart;
             var countLikes = numLikes.innerHTML;
-            if (response==true) {
-                $(heart).css('color','#f06292');
+            if (response == true) {
+                $(heart).css('color', '#f06292');
                 if (status == 1) {
                     countLikes++;
                 } else if (status == 2) {
-                    $(heart).css('color','#555');
+                    $(heart).css('color', '#555');
                     countLikes--;
                 }
                 if (countLikes == 0) {
@@ -612,7 +611,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
                 } else {
                     numLikes.innerHTML = " " + countLikes;
                 }
-            } else{
+            } else {
                 swal({
                     title: ":-(",
                     text: "¡No puedes dar me gusta a este comentario!",
@@ -624,7 +623,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
                 });
             }
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + e);
         }
     });
@@ -653,19 +652,19 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
         type: 'POST',
         dataType: 'json',
         data: data,
-        success: function(data) {
+        success: function (data) {
             var statusOk = 1;
             var statusNo = 2;
             var response = data.response;
             var status = data.statuslike;
             var numLikes = $(heart).find(".hate-value");
             var countLikes = numLikes.text();
-            if (response==true) {
+            if (response == true) {
                 if (status == statusOk) {
-                    $(heart).css('color','#ba68c8');
+                    $(heart).css('color', '#ba68c8');
                     countLikes++;
                 } else if (status == statusNo) {
-                    $(heart).css('color','#555');
+                    $(heart).css('color', '#555');
                     countLikes--;
                 }
                 if (countLikes == 0) {
@@ -673,7 +672,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
                 } else {
                     numLikes.text(countLikes);
                 }
-            } else{
+            } else {
                 swal({
                     title: ":-(",
                     text: "¡No puedes dar no me gusta a este comentario!",
@@ -685,7 +684,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
                 });
             }
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + e);
         }
     });
@@ -714,11 +713,11 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
         type: 'POST',
         dataType: 'json',
         data: data,
-        success: function(data) {
+        success: function (data) {
             // borrar caja publicacion
-            if (data==true) {
+            if (data == true) {
                 $(tag).css('color', '#bbdefb');
-            }else{
+            } else {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',
@@ -727,7 +726,7 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
                 });
             }
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + e);
         }
     });
@@ -748,9 +747,9 @@ function AJAX_bloq_user(buttonBan) {
             if (data.response == true) {
                 $(buttonBan).css('color', '#FF6347');
                 if (data.status == "none" || data.status == "isfollow") {
-                    $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
+                    $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
                 } else if (data.status == "inprogress") {
-                    $('#follow_request').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">'+' '+'</span>');
+                    $('#follow_request').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
                 }
                 if (data.haslike == "liked") {
                     $("#ilike_profile").css('color', '#46494c');
@@ -785,7 +784,7 @@ function AJAX_remove_bloq() {
         dataType: "json",
         success: function (response) {
             if (response == true) {
-                $('#bloq-user-span').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>'+' '+'</span>');
+                $('#bloq-user-span').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
                 $('#bloq-user').css('color', '#555');
             } else {
                 swal({
@@ -820,11 +819,11 @@ function AJAX_delete_timeline(div_timeline) {
         type: 'POST',
         dataType: 'json',
         data: data,
-        success: function(data) {
+        success: function (data) {
             // borrar caja timeline
-            if (data==true) {
+            if (data == true) {
                 $(div_timeline).fadeToggle("fast");
-            }else{
+            } else {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',
@@ -833,7 +832,7 @@ function AJAX_delete_timeline(div_timeline) {
                 });
             }
         },
-        error: function(rs, e) {
+        error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + " " + e);
         }
     });

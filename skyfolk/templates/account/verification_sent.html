@@ -9,20 +9,25 @@
         body {
             background-color: #b0bec5;
         }
+
         .container {
             background-color: #ffffff;
             padding: 20px;
             border-radius: 10px;
         }
+
         .information-text {
             font-size: 1.3em;
         }
+
         .email-info {
             padding: 10px;
         }
+
         .email-info > h1 {
             font-size: 2em;
         }
+
         .email-info > p {
             font-size: 1.3em;
         }
@@ -31,7 +36,8 @@
 
 {% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
 
-{% block barra_navegacion %}{% comment %} No debe aparecer, ya que no estamos registrados aun {% endcomment %}{% endblock %}
+{% block barra_navegacion %}
+    {% comment %} No debe aparecer, ya que no estamos registrados aun {% endcomment %}{% endblock %}
 
 {% block content %}
     <div class="col l12 s12 m12">
@@ -44,7 +50,9 @@
                 <h1><i class="fa fa-envelope-o" aria-hidden="true"></i> {% trans "Verify Your E-mail Address" %}</h1>
                 <br><br>
                 <p class="information-text">
-                    {% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}
+                    {% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize
+                        the signup process. Please contact us if you do not receive it within a few
+                        minutes.{% endblocktrans %}
                 </p>
             </div>
         </div>

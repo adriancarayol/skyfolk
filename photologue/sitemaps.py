@@ -26,14 +26,15 @@ lightbox).
 
 """
 from django.contrib.sitemaps import Sitemap
+
 from .models import Gallery, Photo
+
 
 # Note: Gallery and Photo are split, because there are use cases for having galleries
 # in the sitemap, but not photos (e.g. if the photos are displayed with a lightbox).
 
 
 class GallerySitemap(Sitemap):
-
     def items(self):
         # The following code is very basic and will probably cause problems with
         # large querysets.
@@ -44,7 +45,6 @@ class GallerySitemap(Sitemap):
 
 
 class PhotoSitemap(Sitemap):
-
     def items(self):
         # The following code is very basic and will probably cause problems with
         # large querysets.

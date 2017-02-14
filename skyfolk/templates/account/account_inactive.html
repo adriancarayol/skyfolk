@@ -6,30 +6,30 @@
 {% block extra-css %}
 {% endblock %}
 {% block cf-title %}
-<div class="hgroup">
-	<h4 class="cn"> Eliminar cuenta </h4>
-	<h6 class="ch"> Elimina tu cuenta de skyfolk. </h6>
-</div>
+    <div class="hgroup">
+        <h4 class="cn"> Eliminar cuenta </h4>
+        <h6 class="ch"> Elimina tu cuenta de skyfolk. </h6>
+    </div>
 {% endblock %}
 
 {% block cf-form %}
-<div class="wrapper disable-account-wrapper">
-{% if not user.is_active %}
-    <p class="account-dissable">{% trans "Account Inactive" %}</p>
-{% endif %}
-<form action="." method="POST">{% csrf_token %}
-    {{ form.is_active.errors }}
-    <p>
-      {{ form.is_active }}
-      <label for="id_is_active"></label>
-        <span>{{ form.is_active.help_text|safe }}</span>
-    </p>
-    {% if user.is_active %}
-        <button class="btn btn-primary" type="submit" name="action">{% trans "Confirm" %}</button>
-    {% endif %}
-</form>
-</div>
+    <div class="wrapper disable-account-wrapper">
+        {% if not user.is_active %}
+            <p class="account-dissable">{% trans "Account Inactive" %}</p>
+        {% endif %}
+        <form action="." method="POST">{% csrf_token %}
+            {{ form.is_active.errors }}
+            <p>
+                {{ form.is_active }}
+                <label for="id_is_active"></label>
+                <span>{{ form.is_active.help_text|safe }}</span>
+            </p>
+            {% if user.is_active %}
+                <button class="btn btn-primary" type="submit" name="action">{% trans "Confirm" %}</button>
+            {% endif %}
+        </form>
+    </div>
     <script>
-  	    $('.menu-config').find('li:nth-child(8)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': 'tomato'});
-	</script>
+        $('.menu-config').find('li:nth-child(8)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': 'tomato'});
+    </script>
 {% endblock %}

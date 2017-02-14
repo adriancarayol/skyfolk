@@ -1,4 +1,5 @@
 from django.conf.urls import url
+
 from timeline import views as timeline_views
 
 urlpatterns = [

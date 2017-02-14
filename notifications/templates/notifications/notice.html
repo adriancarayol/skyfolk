@@ -1,34 +1,41 @@
 <div class="alert alert-block alert-{{ notice.level }}">
-  <a title="Borrar notificación" class="close pull-right" href="{% url 'notifications:delete' notice.slug %}">
-    <i class="fa fa-trash" aria-hidden="true"></i>
-  </a>
-  <a title="Marcar como no leido" class="close pull-right" href="{% url 'notifications:mark_as_unread' notice.slug %}">
-      <i class="fa fa-eye-slash" aria-hidden="true"></i>
-  </a>
-  <a title="Marcar como leido" class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
-    <i class="fa fa-eye" aria-hidden="true"></i>
-  </a>
-  <h5>
-    {% if notice.unread %}<i class="fa fa-bell" aria-hidden="true"></i>{% endif %}
-    {% if not notice.level == "new_follow" %}<a href="/profile/{{ notice.actor }}">{{ notice.actor }}</a>{% endif %}
-    <b>{{ notice.verb|safe }}</b>
-    {% if notice.target %}
-      of {{ notice.target }}
+    <a title="Borrar notificación" class="close pull-right" href="{% url 'notifications:delete' notice.slug %}">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+    </a>
+    <a title="Marcar como no leido" class="close pull-right"
+       href="{% url 'notifications:mark_as_unread' notice.slug %}">
+        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+    </a>
+    <a title="Marcar como leido" class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
+        <i class="fa fa-eye" aria-hidden="true"></i>
+    </a>
+    <h5>
+        {% if notice.unread %}<i class="fa fa-bell" aria-hidden="true"></i>{% endif %}
+        {% if not notice.level == "new_follow" %}<a href="/profile/{{ notice.actor }}">{{ notice.actor }}</a>{% endif %}
+        <b>{{ notice.verb|safe }}</b>
+        {% if notice.target %}
+            of {{ notice.target }}
+        {% endif %}
+    </h5>
+    <p class="notice-timesince">{{ notice.timesince }} ago</p>
+    {% if notice.description %}
+        of <p class="notice-description">{{ notice.description|linebreaksbr }}</p>
     {% endif %}
-  </h5>
-  <p class="notice-timesince">{{ notice.timesince }} ago</p>
-  {% if notice.description %}
-    of <p class="notice-description">{{ notice.description|linebreaksbr }}</p>
-  {% endif %}
-  {% if notice.level == "friendrequest" %}
-    <div class="notification-buttons">
-        <button data-notification="{{ notice.slug }}" onclick="AJAX_respondFriendRequest({{ notice.actor_object_id }}, 'rejected', {{ notice.id }}); AJAX_delete_notification({{ notice.slug }}, {{ notice.id }});" class="accept-response">Rechazar</button>
-        <button data-notification="{{ notice.slug }}" onclick="AJAX_respondFriendRequest({{ notice.actor_object_id }}, 'accept', {{ notice.id }}); AJAX_delete_notification({{ notice.slug }}, {{ notice.id }});" class="rejected-response">Aceptar</button>
+    {% if notice.level == "friendrequest" %}
+        <div class="notification-buttons">
+            <button data-notification="{{ notice.slug }}"
+                    onclick="AJAX_respondFriendRequest({{ notice.actor_object_id }}, 'rejected', {{ notice.id }}); AJAX_delete_notification({{ notice.slug }}, {{ notice.id }});"
+                    class="accept-response">Rechazar
+            </button>
+            <button data-notification="{{ notice.slug }}"
+                    onclick="AJAX_respondFriendRequest({{ notice.actor_object_id }}, 'accept', {{ notice.id }}); AJAX_delete_notification({{ notice.slug }}, {{ notice.id }});"
+                    class="rejected-response">Aceptar
+            </button>
+        </div>
+    {% endif %}
+    <div class="notice-actions">
+        {% for action in notice.data.actions %}
+            <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
+        {% endfor %}
     </div>
-  {% endif %}
-  <div class="notice-actions">
-    {% for action in notice.data.actions %}
-      <a class="btn" href="{{ action.href }}">{{ action.title }}</a>
-    {% endfor %}
-  </div>
 </div>

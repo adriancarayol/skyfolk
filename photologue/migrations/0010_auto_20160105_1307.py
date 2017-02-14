@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('photologue', '0009_auto_20160102_0904'),
     ]
@@ -15,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='gallery',
             name='slug',
-            field=models.SlugField(help_text='A "slug" is a unique URL-friendly title for an object.', max_length=250, unique=True, verbose_name='title slug'),
+            field=models.SlugField(help_text='A "slug" is a unique URL-friendly title for an object.', max_length=250,
+                                   unique=True, verbose_name='title slug'),
         ),
         migrations.AlterField(
             model_name='gallery',
@@ -25,7 +25,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='photo',
             name='slug',
-            field=models.SlugField(help_text='A "slug" is a unique URL-friendly title for an object.', max_length=250, unique=True, verbose_name='slug'),
+            field=models.SlugField(help_text='A "slug" is a unique URL-friendly title for an object.', max_length=250,
+                                   unique=True, verbose_name='slug'),
         ),
         migrations.AlterField(
             model_name='photo',

@@ -1,4 +1,5 @@
 import random
+
 from django import template
 
 from ..models import Gallery
@@ -50,7 +51,6 @@ def get_photo(parser, token):
 
 
 class PhotoNode(template.Node):
-
     def __init__(self, photo, photosize, css_class):
         self.photo = photo
         self.photosize = photosize
@@ -98,7 +98,6 @@ def get_rotating_photo(parser, token):
 
 
 class PhotoGalleryNode(template.Node):
-
     def __init__(self, gallery, photosize, css_class):
         self.gallery = gallery
         self.photosize = photosize

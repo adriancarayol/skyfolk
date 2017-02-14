@@ -2,8 +2,8 @@
 
 {% blocktrans with recipient=message.recipient sender=message.sender %}Hello {{ recipient }},
 
-you received a private message from {{ sender }} with
-the following contents:{% endblocktrans %}
+    you received a private message from {{ sender }} with
+    the following contents:{% endblocktrans %}
 
 {{ message.body|safe }}
 

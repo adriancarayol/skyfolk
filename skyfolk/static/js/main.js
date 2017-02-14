@@ -1,310 +1,313 @@
 (function (factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as anonymous module.
-    define(['jquery'], factory);
-  } else if (typeof exports === 'object') {
-    // Node / CommonJS
-    factory(require('jquery'));
-  } else {
-    // Browser globals.
-    factory(jQuery);
-  }
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as anonymous module.
+        define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node / CommonJS
+        factory(require('jquery'));
+    } else {
+        // Browser globals.
+        factory(jQuery);
+    }
 })(function ($) {
 
-  'use strict';
+    'use strict';
 
-  var console = window.console || { log: function () {} };
+    var console = window.console || {
+            log: function () {
+            }
+        };
 
-  function CropAvatar($element) {
-    this.$container = $element;
-
-
-    this.$avatarModal = this.$container;
-    this.$loading = this.$container.find('.loading');
-
-    this.$avatarForm = this.$avatarModal.find('.avatar-form');
-    this.$avatarUpload = this.$avatarForm.find('.avatar-upload');
-    this.$avatarSrc = this.$avatarForm.find('.avatar-src');
-    this.$isCutted = this.$avatarForm.find('.is-cutted');
-    this.$avatarData = this.$avatarForm.find('.avatar-data');
-    this.$avatarInput = this.$avatarForm.find('.avatar-input');
-    this.$avatarURL = this.$avatarForm.find('#id_url_image');
-    this.$avatarSave = this.$avatarForm.find('.avatar-save');
-    this.$avatarBtns = $('#crop-image-preview').find('.avatar-btns');
-
-    this.$avatarWrapper = this.$avatarModal.find('.avatar-wrapper');
-    this.$avatarPreview = this.$avatarModal.find('.avatar-preview');
-
-    this.init();
-  }
-
-  CropAvatar.prototype = {
-    constructor: CropAvatar,
-
-    support: {
-      fileList: !!$('<input type="file">').prop('files'),
-      blobURLs: !!window.URL && URL.createObjectURL,
-      formData: !!window.FormData
-    },
-
-    init: function () {
-      this.support.datauri = this.support.fileList && this.support.blobURLs;
-
-      if (!this.support.formData) {
-        this.initIframe();
-      }
-
-      this.initModal();
-      this.addListener();
-    },
-
-    addListener: function () {
-      this.$avatarInput.on('change', $.proxy(this.change, this));
-      this.$avatarForm.on('submit', $.proxy(this.submit, this));
-      this.$avatarBtns.on('click', $.proxy(this.rotate, this));
-    },
+    function CropAvatar($element) {
+        this.$container = $element;
 
 
-    initModal: function () {
-      /*this.$avatarModal.modal({
-        show: false
-      });*/
-    },
+        this.$avatarModal = this.$container;
+        this.$loading = this.$container.find('.loading');
 
-    initPreview: function () {
-      var url = this.$avatar.attr('src');
+        this.$avatarForm = this.$avatarModal.find('.avatar-form');
+        this.$avatarUpload = this.$avatarForm.find('.avatar-upload');
+        this.$avatarSrc = this.$avatarForm.find('.avatar-src');
+        this.$isCutted = this.$avatarForm.find('.is-cutted');
+        this.$avatarData = this.$avatarForm.find('.avatar-data');
+        this.$avatarInput = this.$avatarForm.find('.avatar-input');
+        this.$avatarURL = this.$avatarForm.find('#id_url_image');
+        this.$avatarSave = this.$avatarForm.find('.avatar-save');
+        this.$avatarBtns = $('#crop-image-preview').find('.avatar-btns');
 
-      this.$avatarPreview.html('<img src="' + url + '">');
-    },
+        this.$avatarWrapper = this.$avatarModal.find('.avatar-wrapper');
+        this.$avatarPreview = this.$avatarModal.find('.avatar-preview');
 
-    initIframe: function () {
-      var target = 'upload-iframe-' + (new Date()).getTime();
-      var $iframe = $('<iframe>').attr({
-            name: target,
-            src: ''
-          });
-      var _this = this;
+        this.init();
+    }
 
-      // Ready ifrmae
-      $iframe.one('load', function () {
+    CropAvatar.prototype = {
+        constructor: CropAvatar,
 
-        // respond response
-        $iframe.on('load', function () {
-          var data;
+        support: {
+            fileList: !!$('<input type="file">').prop('files'),
+            blobURLs: !!window.URL && URL.createObjectURL,
+            formData: !!window.FormData
+        },
 
-          try {
-            data = $(this).contents().find('body').text();
-          } catch (e) {
-            console.log(e.message);
-          }
+        init: function () {
+            this.support.datauri = this.support.fileList && this.support.blobURLs;
 
-          if (data) {
-            try {
-              data = $.parseJSON(data);
-            } catch (e) {
-              console.log(e.message);
+            if (!this.support.formData) {
+                this.initIframe();
             }
 
-            _this.submitDone(data);
-          } else {
-            _this.submitFail('Image upload failed!');
-          }
+            this.initModal();
+            this.addListener();
+        },
 
-          _this.submitEnd();
+        addListener: function () {
+            this.$avatarInput.on('change', $.proxy(this.change, this));
+            this.$avatarForm.on('submit', $.proxy(this.submit, this));
+            this.$avatarBtns.on('click', $.proxy(this.rotate, this));
+        },
 
-        });
-      });
 
-      this.$iframe = $iframe;
-      this.$avatarForm.attr('target', target).after($iframe.hide());
-    },
+        initModal: function () {
+            /*this.$avatarModal.modal({
+             show: false
+             });*/
+        },
 
-    click: function () {
-      //this.$avatarModal.modal('show');
-      this.initPreview();
-    },
+        initPreview: function () {
+            var url = this.$avatar.attr('src');
 
-    change: function () {
-      var files;
-      var file;
+            this.$avatarPreview.html('<img src="' + url + '">');
+        },
 
-      if (this.support.datauri) {
-        files = this.$avatarInput.prop('files');
+        initIframe: function () {
+            var target = 'upload-iframe-' + (new Date()).getTime();
+            var $iframe = $('<iframe>').attr({
+                name: target,
+                src: ''
+            });
+            var _this = this;
 
-        if (files.length > 0) {
-          file = files[0];
+            // Ready ifrmae
+            $iframe.one('load', function () {
 
-          if (this.isImageFile(file)) {
-            if (this.url) {
-              URL.revokeObjectURL(this.url); // Revoke the old one
+                // respond response
+                $iframe.on('load', function () {
+                    var data;
+
+                    try {
+                        data = $(this).contents().find('body').text();
+                    } catch (e) {
+                        console.log(e.message);
+                    }
+
+                    if (data) {
+                        try {
+                            data = $.parseJSON(data);
+                        } catch (e) {
+                            console.log(e.message);
+                        }
+
+                        _this.submitDone(data);
+                    } else {
+                        _this.submitFail('Image upload failed!');
+                    }
+
+                    _this.submitEnd();
+
+                });
+            });
+
+            this.$iframe = $iframe;
+            this.$avatarForm.attr('target', target).after($iframe.hide());
+        },
+
+        click: function () {
+            //this.$avatarModal.modal('show');
+            this.initPreview();
+        },
+
+        change: function () {
+            var files;
+            var file;
+
+            if (this.support.datauri) {
+                files = this.$avatarInput.prop('files');
+
+                if (files.length > 0) {
+                    file = files[0];
+
+                    if (this.isImageFile(file)) {
+                        if (this.url) {
+                            URL.revokeObjectURL(this.url); // Revoke the old one
+                        }
+
+                        this.url = URL.createObjectURL(file);
+                        this.startCropper();
+                    }
+                }
+            } else {
+                file = this.$avatarInput.val();
+
+                if (this.isImageFile(file)) {
+                    this.syncUpload();
+                }
+            }
+        },
+
+        submit: function () {
+            if (!this.$avatarSrc.val() && !this.$avatarInput.val() && !this.$avatarURL.val()) {
+                return false;
             }
 
-            this.url = URL.createObjectURL(file);
-            this.startCropper();
-          }
-        }
-      } else {
-        file = this.$avatarInput.val();
-
-        if (this.isImageFile(file)) {
-          this.syncUpload();
-        }
-      }
-    },
-
-    submit: function () {
-      if (!this.$avatarSrc.val() && !this.$avatarInput.val() && !this.$avatarURL.val()) {
-        return false;
-      }
-
-      if (this.support.formData) {
-        this.ajaxUpload();
-        return false;
-      }
-    },
-
-    rotate: function (e) {
-      var data;
-
-      if (this.active) {
-        data = $(e.target).data();
-
-        if (data.method) {
-          this.$img.cropper(data.method, data.option);
-        }
-      }
-    },
-
-    isImageFile: function (file) {
-      if (file.type) {
-        return /^image\/\w+$/.test(file.type);
-      } else {
-        return /\.(jpg|jpeg|png|gif)$/.test(file);
-      }
-    },
-
-    startCropper: function () {
-      var _this = this;
-
-      if (this.active) {
-        this.$img.cropper('replace', this.url);
-      } else {
-        this.$img = $('<img src="' + this.url + '">');
-        this.$avatarWrapper.empty().html(this.$img);
-        this.$img.cropper({
-          aspectRatio: 1,
-          preview: this.$avatarPreview.selector,
-          crop: function (e) {
-            var json = [
-                  '{"x":' + e.x,
-                  '"y":' + e.y,
-                  '"height":' + e.height,
-                  '"width":' + e.width,
-                  '"rotate":' + e.rotate + '}'
-                ].join();
-
-            _this.$avatarData.val(json);
-          }
-        });
-
-        this.active = true;
-      }
-
-      this.$avatarModal.one('hidden.bs.modal', function () {
-        _this.$avatarPreview.empty();
-        _this.stopCropper();
-      });
-    },
-
-    stopCropper: function () {
-      if (this.active) {
-        this.$img.cropper('destroy');
-        this.$img.remove();
-        this.active = false;
-      }
-    },
-
-    ajaxUpload: function () {
-      var url = this.$avatarForm.attr('action');
-      var data = new FormData(this.$avatarForm[0]);
-      var _this = this;
-
-      $.ajax(url, {
-        type: 'post',
-        data: data,
-        dataType: 'json',
-        processData: false,
-        contentType: false,
-
-        beforeSend: function () {
-          _this.submitStart();
+            if (this.support.formData) {
+                this.ajaxUpload();
+                return false;
+            }
         },
 
-        success: function (data) {
-          _this.submitDone(data);
+        rotate: function (e) {
+            var data;
+
+            if (this.active) {
+                data = $(e.target).data();
+
+                if (data.method) {
+                    this.$img.cropper(data.method, data.option);
+                }
+            }
         },
 
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-          _this.submitFail(textStatus || errorThrown);
+        isImageFile: function (file) {
+            if (file.type) {
+                return /^image\/\w+$/.test(file.type);
+            } else {
+                return /\.(jpg|jpeg|png|gif)$/.test(file);
+            }
         },
 
-        complete: function () {
-          _this.submitEnd();
-        }
-      });
-    },
+        startCropper: function () {
+            var _this = this;
 
-    syncUpload: function () {
-      this.$avatarSave.click();
-    },
+            if (this.active) {
+                this.$img.cropper('replace', this.url);
+            } else {
+                this.$img = $('<img src="' + this.url + '">');
+                this.$avatarWrapper.empty().html(this.$img);
+                this.$img.cropper({
+                    aspectRatio: 1,
+                    preview: this.$avatarPreview.selector,
+                    crop: function (e) {
+                        var json = [
+                            '{"x":' + e.x,
+                            '"y":' + e.y,
+                            '"height":' + e.height,
+                            '"width":' + e.width,
+                            '"rotate":' + e.rotate + '}'
+                        ].join();
 
-    submitStart: function () {
-      this.$loading.fadeIn();
-    },
+                        _this.$avatarData.val(json);
+                    }
+                });
 
-    submitDone: function (data) {
-      var _response = data.data;
-      if ($.isPlainObject(_response) && _response.state == 200) {
-        if (data.result) {
-          this.url = data.result;
+                this.active = true;
+            }
 
-          if (this.support.datauri || this.uploaded) {
-            this.uploaded = false;
-            this.cropDone();
-          } else {
-            this.uploaded = true;
-            this.$avatarSrc.val(this.url);
-            this.startCropper();
-          }
+            this.$avatarModal.one('hidden.bs.modal', function () {
+                _this.$avatarPreview.empty();
+                _this.stopCropper();
+            });
+        },
 
-          this.$avatarInput.val('');
-        } else if (_response.message) {
-          window.location.replace(_response.gallery); // Redirect to user gallery.
-        }
-      } else {
-        swal('Failed to response');
-      }
-    },
+        stopCropper: function () {
+            if (this.active) {
+                this.$img.cropper('destroy');
+                this.$img.remove();
+                this.active = false;
+            }
+        },
 
-    submitFail: function (msg) {
-      swal(msg);
-    },
+        ajaxUpload: function () {
+            var url = this.$avatarForm.attr('action');
+            var data = new FormData(this.$avatarForm[0]);
+            var _this = this;
 
-    submitEnd: function () {
-      this.$loading.fadeOut();
-    },
+            $.ajax(url, {
+                type: 'post',
+                data: data,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
 
-    cropDone: function () {
-      this.$avatarForm.get(0).reset();
-      this.$avatar.attr('src', this.url);
-      this.stopCropper();
-      //this.$avatarModal.modal('hide');
-    },
+                beforeSend: function () {
+                    _this.submitStart();
+                },
 
-  };
+                success: function (data) {
+                    _this.submitDone(data);
+                },
 
-  $(function () {
-    return new CropAvatar($('#crop-avatar'));
-  });
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    _this.submitFail(textStatus || errorThrown);
+                },
+
+                complete: function () {
+                    _this.submitEnd();
+                }
+            });
+        },
+
+        syncUpload: function () {
+            this.$avatarSave.click();
+        },
+
+        submitStart: function () {
+            this.$loading.fadeIn();
+        },
+
+        submitDone: function (data) {
+            var _response = data.data;
+            if ($.isPlainObject(_response) && _response.state == 200) {
+                if (data.result) {
+                    this.url = data.result;
+
+                    if (this.support.datauri || this.uploaded) {
+                        this.uploaded = false;
+                        this.cropDone();
+                    } else {
+                        this.uploaded = true;
+                        this.$avatarSrc.val(this.url);
+                        this.startCropper();
+                    }
+
+                    this.$avatarInput.val('');
+                } else if (_response.message) {
+                    window.location.replace(_response.gallery); // Redirect to user gallery.
+                }
+            } else {
+                swal('Failed to response');
+            }
+        },
+
+        submitFail: function (msg) {
+            swal(msg);
+        },
+
+        submitEnd: function () {
+            this.$loading.fadeOut();
+        },
+
+        cropDone: function () {
+            this.$avatarForm.get(0).reset();
+            this.$avatar.attr('src', this.url);
+            this.stopCropper();
+            //this.$avatarModal.modal('hide');
+        },
+
+    };
+
+    $(function () {
+        return new CropAvatar($('#crop-avatar'));
+    });
 
 });

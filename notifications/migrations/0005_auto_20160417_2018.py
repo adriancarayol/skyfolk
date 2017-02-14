@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('notifications', '0004_auto_20150826_1508'),
     ]
@@ -14,6 +13,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='notification',
             name='level',
-            field=models.CharField(default='info', max_length=20, choices=[('success', 'success'), ('info', 'info'), ('warning', 'warning'), ('error', 'error')]),
+            field=models.CharField(default='info', max_length=20,
+                                   choices=[('success', 'success'), ('info', 'info'), ('warning', 'warning'),
+                                            ('error', 'error')]),
         ),
     ]

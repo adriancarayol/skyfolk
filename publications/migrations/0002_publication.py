@@ -5,7 +5,6 @@ from django.db import models, migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('publications', '0001_initial'),
     ]
@@ -16,9 +15,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('content', models.TextField()),
-                ('image', models.ImageField(blank=True, verbose_name='Image', null=True, upload_to='publicationimages')),
+                (
+                    'image',
+                    models.ImageField(blank=True, verbose_name='Image', null=True, upload_to='publicationimages')),
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('is_response_from', models.ForeignKey(related_name='responses', null=True, to='publications.Publication')),
+                ('is_response_from',
+                 models.ForeignKey(related_name='responses', null=True, to='publications.Publication')),
             ],
         ),
     ]

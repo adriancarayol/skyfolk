@@ -1,7 +1,7 @@
 {% comment %}
   Base para el head de la pagina (menu horizontal con busqueda etc...)
 {% endcomment %}
-{% load notifications_tags %}
+{% load notification_tags %}
 {% comment %}
 <nav class="box-tool">
     <ul class="box-tool-wrapper">
@@ -38,37 +38,39 @@
 
 <div class="navbar-fixed">
     <nav>
-      <div class="nav-wrapper white z-depth-1">
-          <a title="Inicio" href="/inicio" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
-          <a data-activates="vertical-menu" class="btn-flat left button-menu-left blue-text text-darken-1"><i class="material-icons">menu</i></a>
-          {% include "account/menu-horizontal.html" %}
-          <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span id="live_notify_badge">0</span></a>
-          <div class="right field hide-on-med-and-down" id="searchform">
-            <form method='post' action='/search/'>{% csrf_token %}
-              {{searchForm}}
-            </form>
-         </div>
-      </div>
+        <div class="nav-wrapper white z-depth-1">
+            <a title="Inicio" href="/inicio" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
+            <a data-activates="vertical-menu" class="btn-flat left button-menu-left blue-text text-darken-1"><i
+                    class="material-icons">menu</i></a>
+            {% include "account/menu-horizontal.html" %}
+            <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span
+                    id="live_notify_badge">{% unread_notifications %}</span></a>
+            <div class="right field hide-on-med-and-down" id="searchform">
+                <form method='post' action='/search/'>{% csrf_token %}
+                    {{ searchForm }}
+                </form>
+            </div>
+        </div>
     </nav>
     {% include "account/menu-vertical.html" %}
     {% include "account/notification-right-menu.html" %}
-  </div>
-  <li id="loader"></li>
-    <script async src="{{STATIC_URL}}js/core.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/jquery.shorten.1.0.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/jquery.textcomplete.min.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/jquery.shorten.1.0.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/materialize.min.js" type="text/javascript"></script>
+</div>
+<li id="loader"></li>
+<script async src="{{ STATIC_URL }}js/core.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/jquery.shorten.1.0.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/jquery.textcomplete.min.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/jquery.shorten.1.0.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/materialize.min.js" type="text/javascript"></script>
 
-    <!-- <script async src="{{STATIC_URL}}js/jquery.textcomplete.js"></script> -->
-    <!-- Mentions -->
-    <!--
+<!-- <script async src="{{STATIC_URL}}js/jquery.textcomplete.js"></script> -->
+<!-- Mentions -->
+<!--
     <script src="{{STATIC_URL}}js/mentions/bootstrap-typeahead.js"></script>
     <script src="{{STATIC_URL}}js/mentions/mention.js"></script>
   -->
 <!-- Sweet Alert -->
 
-    <link rel="stylesheet" href="{{STATIC_URL}}dist/sweetalert.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{STATIC_URL}}emoji/css/textarea_find_emoji.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{STATIC_URL}}themes/google/google.css" onload="if(media!='all')media='all'">
-    <script async src="{{STATIC_URL}}dist/sweetalert.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}dist/sweetalert.css" onload="if(media!='all')media='all'">
+<link rel="stylesheet" href="{{ STATIC_URL }}emoji/css/textarea_find_emoji.css" onload="if(media!='all')media='all'">
+<link rel="stylesheet" href="{{ STATIC_URL }}themes/google/google.css" onload="if(media!='all')media='all'">
+<script async src="{{ STATIC_URL }}dist/sweetalert.min.js" type="text/javascript"></script>

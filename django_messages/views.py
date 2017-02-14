@@ -1,34 +1,31 @@
+import json
+import re
+
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.db.models import Q
-from django.http import Http404, HttpResponseRedirect, HttpResponse, \
-    HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404, \
-    render_to_response, get_object_or_404, render
-from django.template import RequestContext, RequestContext, loader
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+
 from django_messages.forms import ComposeForm
 from django_messages.models import Message
 from django_messages.utils import format_quote, get_user_model, \
     get_username_field
-
-from user_profile.models import Relationship, LikeProfile, UserProfile
 from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
-import json
-import re
+
 User = get_user_model()
 
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
 else:
     notification = None
+
 
 @login_required(login_url='/')
 def inbox(request, template_name='django_messages/inbox.html'):
@@ -39,14 +36,14 @@ def inbox(request, template_name='django_messages/inbox.html'):
     """
     user = request.user
 
-    searchForm = SearchForm(request.POST) # Cuadro de búsqueda
+    searchForm = SearchForm(request.POST)  # Cuadro de búsqueda
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
 
     user_profile = user
-     # cargar lista de amigos (12 primeros)
+    # cargar lista de amigos (12 primeros)
     try:
-        #friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
@@ -64,10 +61,12 @@ def inbox(request, template_name='django_messages/inbox.html'):
     message_list = Message.objects.inbox_for(request.user)
     return render(request, template_name, {
         'message_list': message_list, 'friends_top12': friends_top12,
-        'publicationSelfForm': publicationForm, 'searchForm': searchForm})
+        'publicationSelfForm': publicationForm, 'searchForm': searchForm,
+        'notifications': user.notifications.unread()})
+
 
 @login_required(login_url='/')
-def outbox(request,template_name='django_messages/outbox.html'):
+def outbox(request, template_name='django_messages/outbox.html'):
     """
     Displays a list of sent messages by the current user.
     Optional arguments:
@@ -75,14 +74,14 @@ def outbox(request,template_name='django_messages/outbox.html'):
     """
     user = request.user
 
-    searchForm = SearchForm(request.POST) # Cuadro de búsqueda
+    searchForm = SearchForm(request.POST)  # Cuadro de búsqueda
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
 
     user_profile = user
-     # cargar lista de amigos (12 primeros)
+    # cargar lista de amigos (12 primeros)
     try:
-        #friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
@@ -102,10 +101,12 @@ def outbox(request,template_name='django_messages/outbox.html'):
     message_list = Message.objects.outbox_for(request.user)
     return render(request, template_name, {
         'message_list': message_list, 'friends_top12': friends_top12,
-        'publicationSelfForm': publicationForm, 'searchForm': searchForm})
+        'publicationSelfForm': publicationForm, 'searchForm': searchForm,
+        'notifications': user.notifications.unread()})
+
 
 @login_required(login_url='/')
-def trash(request,template_name='django_messages/trash.html'):
+def trash(request, template_name='django_messages/trash.html'):
     """
     Displays a list of deleted messages.
     Optional arguments:
@@ -115,14 +116,14 @@ def trash(request,template_name='django_messages/trash.html'):
     """
     user = request.user
 
-    searchForm = SearchForm(request.POST) # Cuadro de búsqueda
+    searchForm = SearchForm(request.POST)  # Cuadro de búsqueda
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
 
     user_profile = user
-     # cargar lista de amigos (12 primeros)
+    # cargar lista de amigos (12 primeros)
     try:
-        #friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
@@ -141,12 +142,14 @@ def trash(request,template_name='django_messages/trash.html'):
 
     message_list = Message.objects.trash_for(request.user)
     return render(request, template_name, {
-        'message_list': message_list, 'friends_top12' : friends_top12,
-        'searchForm': searchForm, 'publicationSelfForm': publicationForm})
+        'message_list': message_list, 'friends_top12': friends_top12,
+        'searchForm': searchForm, 'publicationSelfForm': publicationForm,
+        'notifications': user.notifications.unread()})
+
 
 @login_required(login_url='/')
-def compose(request,recipient=None, form_class=ComposeForm,
-        template_name='django_messages/compose.html', success_url=None, recipient_filter=None):
+def compose(request, recipient=None, form_class=ComposeForm,
+            template_name='django_messages/compose.html', success_url=None, recipient_filter=None):
     """
     Displays and handles the ``form_class`` form to compose new messages.
     Required Arguments: None
@@ -160,14 +163,14 @@ def compose(request,recipient=None, form_class=ComposeForm,
     """
     user = request.user
 
-    searchForm = SearchForm(request.POST) # Cuadro de búsqueda
+    searchForm = SearchForm(request.POST)  # Cuadro de búsqueda
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
 
     user_profile = user
-     # cargar lista de amigos (12 primeros)
+    # cargar lista de amigos (12 primeros)
     try:
-        #friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
@@ -198,12 +201,14 @@ def compose(request,recipient=None, form_class=ComposeForm,
     else:
         form = form_class()
         if recipient is not None:
-            recipients = [u for u in User.objects.filter(**{'%s__in' % get_username_field(): [r.strip() for r in recipient.split('+')]})]
+            recipients = [u for u in User.objects.filter(
+                **{'%s__in' % get_username_field(): [r.strip() for r in recipient.split('+')]})]
             form.fields['recipient'].initial = recipients
     return render(request, template_name, {
         'form': form, 'friends_top12': friends_top12,
         'publicationSelfForm': publicationForm, 'searchForm': searchForm,
-        'message_list': message_list})
+        'message_list': message_list, 'notifications': user.notifications.unread()})
+
 
 @login_required(login_url='/')
 def compose_username(request, recipient=None, form_class=ComposeForm,
@@ -211,14 +216,14 @@ def compose_username(request, recipient=None, form_class=ComposeForm,
                      success_url=None):
     user = request.user
 
-    searchForm = SearchForm(request.POST) # Cuadro de búsqueda
+    searchForm = SearchForm(request.POST)  # Cuadro de búsqueda
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
 
     user_profile = user
-     # cargar lista de amigos (12 primeros)
+    # cargar lista de amigos (12 primeros)
     try:
-        #friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
@@ -253,13 +258,14 @@ def compose_username(request, recipient=None, form_class=ComposeForm,
         return render(request, template_name, {
             'form': form, 'friends_top12': friends_top12,
             'publicationSelfForm': publicationForm, 'searchForm': searchForm,
-            'message_list': message_list})
+            'message_list': message_list, 'notifications': user.notifications.unread()})
+
 
 @login_required(login_url='/')
-def reply(request,message_id, form_class=ComposeForm,
-        template_name='django_messages/compose.html', success_url=None,
-        recipient_filter=None, quote_helper=format_quote,
-        subject_template=_(u"Re: %(subject)s"),):
+def reply(request, message_id, form_class=ComposeForm,
+          template_name='django_messages/compose.html', success_url=None,
+          recipient_filter=None, quote_helper=format_quote,
+          subject_template=_(u"Re: %(subject)s"), ):
     """
     Prepares the ``form_class`` form for writing a reply to a given message
     (specified via ``message_id``). Uses the ``format_quote`` helper from
@@ -269,14 +275,14 @@ def reply(request,message_id, form_class=ComposeForm,
     """
     user = request.user
 
-    searchForm = SearchForm(request.POST) # Cuadro de búsqueda
+    searchForm = SearchForm(request.POST)  # Cuadro de búsqueda
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
 
     user_profile = user
-     # cargar lista de amigos (12 primeros)
+    # cargar lista de amigos (12 primeros)
     try:
-        #friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
@@ -308,17 +314,19 @@ def reply(request,message_id, form_class=ComposeForm,
                 success_url = reverse('messages_inbox')
             return HttpResponseRedirect(success_url)
     else:
-        parent.body = re.sub(r'<[^>]*>', r'', parent.body) # eliminamos html tags
+        parent.body = re.sub(r'<[^>]*>', r'', parent.body)  # eliminamos html tags
         form = form_class(initial={
             # 'body': quote_helper(parent.sender, parent.body),
             'subject': subject_template % {'subject': parent.subject},
-            'recipient': parent.sender.username, # [parent.sender ,]
-            })
+            'recipient': parent.sender.username,  # [parent.sender ,]
+        })
     return render(request, template_name, {
         'form': form, 'friends_top12': friends_top12,
-    'searchForm': searchForm, 'publicationSelfForm': publicationForm,
-    'parent_body': parent.body,
-    'parent_username': parent.sender.username})
+        'searchForm': searchForm, 'publicationSelfForm': publicationForm,
+        'parent_body': parent.body,
+        'parent_username': parent.sender.username,
+        'notifications': user.notifications.unread()})
+
 
 @login_required(login_url='/')
 def delete(request, message_id, success_url=None):
@@ -351,9 +359,10 @@ def delete(request, message_id, success_url=None):
         message.save()
         messages.info(request, _(u"Message successfully deleted."))
         if notification:
-            notification.send([user], "messages_deleted", {'message': message,})
+            notification.send([user], "messages_deleted", {'message': message, })
         return HttpResponseRedirect(success_url)
     raise Http404
+
 
 @login_required(login_url='/')
 def undelete(request, message_id, success_url=None):
@@ -378,14 +387,15 @@ def undelete(request, message_id, success_url=None):
         message.save()
         messages.info(request, _(u"Message successfully recovered."))
         if notification:
-            notification.send([user], "messages_recovered", {'message': message,})
+            notification.send([user], "messages_recovered", {'message': message, })
         return HttpResponseRedirect(success_url)
     raise Http404
 
+
 @login_required(login_url='/')
-def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
-        subject_template=_(u"Re: %(subject)s"),
-        template_name='django_messages/view.html'):
+def view(request, message_id, form_class=ComposeForm, quote_helper=format_quote,
+         subject_template=_(u"Re: %(subject)s"),
+         template_name='django_messages/view.html'):
     """
     Shows a single message.``message_id`` argument is required.
     The user is only allowed to see the message, if he is either
@@ -398,14 +408,14 @@ def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
     """
     user = request.user
 
-    searchForm = SearchForm(request.POST) # Cuadro de búsqueda
+    searchForm = SearchForm(request.POST)  # Cuadro de búsqueda
     initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial) # Mostrar formulario para enviar mensajes.
+    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
 
     user_profile = user
-     # cargar lista de amigos (12 primeros)
+    # cargar lista de amigos (12 primeros)
     try:
-        #friends_4 = request.user.profile.get_friends_next4(1)
+        # friends_4 = request.user.profile.get_friends_next4(1)
         friends = user_profile.profile.get_following()
         print('>>>>>>> LISTA: ')
         print(friends)
@@ -433,12 +443,12 @@ def view(request,message_id, form_class=ComposeForm, quote_helper=format_quote,
 
     context = {'message': message, 'reply_form': None,
                'publicationSelfForm': publicationForm,
-               'searchForm': searchForm}
+               'searchForm': searchForm, 'notifications': user.notifications.unread()}
     if message.recipient == user:
         form = form_class(initial={
             'body': quote_helper(message.sender, message.body),
             'subject': subject_template % {'subject': message.subject},
-            'recipient': [message.sender,]
-            })
+            'recipient': [message.sender, ]
+        })
         context['reply_form'] = form
     return render(request, template_name, context)

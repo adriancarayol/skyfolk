@@ -1,10 +1,13 @@
 import re
+
 from allauth.account.adapter import DefaultAccountAdapter
-from user_profile.models import UserProfile
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+
+from user_profile.models import UserProfile
+
 
 class MyAccountAdapter(DefaultAccountAdapter):
     """

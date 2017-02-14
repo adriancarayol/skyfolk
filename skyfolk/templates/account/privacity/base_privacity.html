@@ -3,8 +3,9 @@
   Template para un perfil privado.
 {% endcomment %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/comentarios.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{STATIC_URL}}css/profile.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css"
+          onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/profile.css" onload="if(media!='all')media='all'">
     <style type="text/css">
         .title-wrapper {
             display: block;
@@ -16,10 +17,12 @@
             margin-top: 10%;
             border-radius: 3px;
         }
+
         h1 {
             text-align: center;
             font-size: 1.6em;
         }
+
         h1 strong {
             font-weight: 600;
         }

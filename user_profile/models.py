@@ -1,16 +1,17 @@
-import publications
-import timeline
 import hashlib
 import uuid
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from notifications.models import Notification
-from datetime import datetime
 from django.utils.http import urlencode
 from taggit.managers import TaggableManager
+
+import publications
+import timeline
+from notifications.models import Notification
 from photologue.models import Photo
-from django.db import models
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_FOLLOWER = 2
@@ -149,13 +150,11 @@ class UserProfile(models.Model):
     personal_pin = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     objects = UserProfileManager()
 
-
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
 
     class Meta:
         db_table = 'user_profile'
-
 
     @property
     def group_name(self):
@@ -163,7 +162,6 @@ class UserProfile(models.Model):
         Devuelve el nombre del canal para enviar las notificaciones
         """
         return "users-%s" % self.pk
-
 
     @property
     def notification_channel(self):
@@ -245,15 +243,14 @@ class UserProfile(models.Model):
             return "all"
 
         # Si el perfil es privado
-        if self.user.pk != user_pk and\
+        if self.user.pk != user_pk and \
                         self.privacity == UserProfile.NOTHING:
             return "nothing"
 
         # Si el perfil esta bloqueado
-        if self.user.pk != user_pk and\
+        if self.user.pk != user_pk and \
                 self.is_blocked(user_profile):
             return "block"
-
 
         # Recuperamos la relacion de "seguidor"
         try:
@@ -264,10 +261,9 @@ class UserProfile(models.Model):
             relation_follower = None
 
         # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
-        if self.user.pk != user_pk and\
-                                    self.privacity == UserProfile.ONLYFOLLOWERS and not relation_follower:
+        if self.user.pk != user_pk and \
+                        self.privacity == UserProfile.ONLYFOLLOWERS and not relation_follower:
             return "followers"
-
 
         # Recuperamos la relacion de "seguir"
         try:
@@ -278,9 +274,9 @@ class UserProfile(models.Model):
             relation_follow = None
 
         # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
-        if self.user.pk != user_pk and\
-                        self.privacity == UserProfile.ONLYFOLLOWERSANDFOLLOWS and not\
-                        (relation_follower or relation_follow):
+        if self.user.pk != user_pk and \
+                        self.privacity == UserProfile.ONLYFOLLOWERSANDFOLLOWS and not \
+                (relation_follower or relation_follow):
             return "both"
 
         # Si el nivel de privacidad es TODOS
@@ -376,6 +372,7 @@ class UserProfile(models.Model):
         return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name',
                                                                   'user__last_name',
                                                                   'user__profile__backImage').order_by('id')'''
+
     # methods blocks
     def add_block(self, profile):
         """
@@ -392,8 +389,8 @@ class UserProfile(models.Model):
         :return Devuelve la lista de bloqueados del perfil instanciado:
         """
         return self.get_relationships(RELATIONSHIP_BLOCKED).values('user__id', 'user__username', 'user__first_name',
-                                                                    'user__last_name',
-                                                                    'user__profile__backImage',
+                                                                   'user__last_name',
+                                                                   'user__profile__backImage',
                                                                    'user__profile__pk').order_by('id')
 
     def is_blocked(self, profile):
@@ -578,20 +575,20 @@ class UserProfile(models.Model):
 
         # Creamos historia en el perfil del usuario que seguimos
         t, created = timeline.models.Timeline.objects.get_or_create(author=self, profile=profile,
-                                       verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                           profile.user.username,
-                                           profile.user.username,
-                                           self.user.username,
-                                           self.user.username),
-                                       type='new_relation')
+                                                                    verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                                        profile.user.username,
+                                                                        profile.user.username,
+                                                                        self.user.username,
+                                                                        self.user.username),
+                                                                    type='new_relation')
         # Creamos historia en nuestro perfil
         t2, created2 = timeline.models.Timeline.objects.get_or_create(author=profile, profile=self,
-                                                      verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                          self.user.username,
-                                                          self.user.username,
-                                                          profile.user.username,
-                                                          profile.user.username),
-                                                      type='new_relation')
+                                                                      verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                                          self.user.username,
+                                                                          self.user.username,
+                                                                          profile.user.username,
+                                                                          profile.user.username),
+                                                                      type='new_relation')
         # Actualizamos fecha en el timeline
         if not created:
             t.insertion_date = datetime.now()
@@ -647,11 +644,11 @@ class Relationship(models.Model):
         unique_together = ('from_person', 'to_person', 'status')
 
 
-
 class LikeProfileQuerySet(models.QuerySet):
     """
         Query Manager para usuarios favoritos
     """
+
     def get_all_likes(self, from_like):
         """
         Devuelve todos los me gusta dados por un perfil en concreto.
@@ -692,6 +689,7 @@ class LikeProfileManager(models.Manager):
     """
         Manager para usuarios que me gustan
     """
+
     def get_queryset(self):
         return LikeProfileQuerySet(self.model, using=self._db)
 
@@ -746,7 +744,8 @@ class LikeProfile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username, self.to_like.user.username, self.created)
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username,
+                                                                self.to_like.user.username, self.created)
 
     objects = LikeProfileManager()
 
@@ -774,6 +773,7 @@ class AffinityUserManager(models.Manager):
     """
         Manager para ultimos usuarios visitados por afinidad/tiempo
     """
+
     def get_all_relations(self, emitterid):
         """
         Devuelve todas las relaciones <<ultimos usuarios visitados>>
@@ -866,7 +866,8 @@ class AffinityUser(models.Model):
     objects = AffinityUserManager()
 
     def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username, self.created)
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username,
+                                                                self.created)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, increment=True):
         """
@@ -882,6 +883,7 @@ class AuthDevicesQuerySet(models.QuerySet):
     """
         Query Manager para Auth Devices
     """
+
     def get_auth_device(self, user, token):
         """
         Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.
@@ -903,6 +905,7 @@ class AuthDevicesManager(models.Manager):
     """
         Manager para Auth Devices
     """
+
     def get_queryset(self):
         return AuthDevicesQuerySet(self.model, using=self._db)
 

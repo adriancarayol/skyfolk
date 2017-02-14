@@ -1,15 +1,17 @@
 import json
+
+from channels import Group
 from django.contrib.auth.models import User
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
 from django.db.models import Q
-from user_profile.models import Relationship
-from channels import Group
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from .utils import get_author_avatar
 from taggit.managers import TaggableManager
+
+from photologue.models import Photo
 from text_processor.format_text import TextProcessor
 from user_groups.models import UserGroups
-from photologue.models import Photo
+from user_profile.models import Relationship
+from .utils import get_author_avatar
 
 
 class PublicationManager(models.Manager):
@@ -117,7 +119,6 @@ class PublicationBase(models.Model):
         ordering = ('-created',)
 
 
-
 class Publication(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
@@ -175,8 +176,8 @@ class Publication(PublicationBase):
         }
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
-                "text": json.dumps(notification)
-            })
+            "text": json.dumps(notification)
+        })
 
     def save(self, new_comment=False, *args, **kwargs):
         """
@@ -195,11 +196,12 @@ class Publication(PublicationBase):
         else:
             super(Publication, self).save(*args, **kwargs)
 
+
 class PublicationGroup(PublicationBase):
     g_author = models.ForeignKey(User, null=True)
     board_group = models.ForeignKey(UserGroups, related_name='board_group')
     user_give_me_like = models.ManyToManyField(User, blank=True,
-            related_name='likes_group_me')
+                                               related_name='likes_group_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_group_me')
     user_share_me = models.ManyToManyField(User, blank=True,
@@ -207,8 +209,7 @@ class PublicationGroup(PublicationBase):
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply_group')
 
-
-    #TODO objects = PublicationManager()
+    # TODO objects = PublicationManager()
 
     def __str__(self):
         return self.content
@@ -221,13 +222,13 @@ class PublicationPhoto(PublicationBase):
     p_author = models.ForeignKey(User, null=True)
     board_photo = models.ForeignKey(Photo, related_name='board_photo')
     user_give_me_like = models.ManyToManyField(User, blank=True,
-        related_name='likes_photo_me')
+                                               related_name='likes_photo_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
-        related_name='hate_photo_me')
+                                               related_name='hate_photo_me')
     user_share_me = models.ManyToManyField(User, blank=True,
-        related_name='share_photo_me')
+                                           related_name='share_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-        related_name='reply_photo')
+                               related_name='reply_photo')
 
     def __str__(self):
         return self.content
@@ -269,8 +270,8 @@ class PublicationPhoto(PublicationBase):
         }
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_photo.group_name).send({
-                "text": json.dumps(notification)
-            })
+            "text": json.dumps(notification)
+        })
 
     def save(self, new_comment=False, *args, **kwargs):
         if new_comment:
@@ -284,4 +285,3 @@ class PublicationPhoto(PublicationBase):
             return result
         else:
             super(PublicationPhoto, self).save(*args, **kwargs)
-

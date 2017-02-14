@@ -4,26 +4,26 @@
 {% endcomment %}
 {% block title %} <title>Usuarios de </title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/amigos.css" onload="if(media!='all')media='all'">
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col l12 m10 s12 container-responsive">
-            <div class="row">
-            {% include "groups/user_list_page.html" %}
+    <div class="container">
+        <div class="row">
+            <div class="col l12 m10 s12 container-responsive">
+                <div class="row">
+                    {% include "groups/user_list_page.html" %}
+                </div>
             </div>
         </div>
-        </div>
-</div>
-{% block js %}
-    {{ block.super }} 
-    <script src="{{ STATIC_URL }}el-pagination/js/el-pagination.js"></script>
+    </div>
+    {% block js %}
+        {{ block.super }}
+        <script src="{{ STATIC_URL }}el-pagination/js/el-pagination.js"></script>
         <script>
             $.endlessPaginate({
                 paginateOnScroll: true,
                 paginateOnScrollMargin: 20
             });
         </script>
-{% endblock %}
+    {% endblock %}
 {% endblock %}

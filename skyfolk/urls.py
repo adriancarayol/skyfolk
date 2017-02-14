@@ -2,10 +2,11 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
-from rest_framework import routers, viewsets, routers
+from django.views.generic import TemplateView
+from rest_framework import routers
+
 from about.views import about
 from api import views
-from django.views.generic import TemplateView
 
 admin.autodiscover()
 
@@ -52,9 +53,9 @@ urlpatterns = [
     # url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls',
     # namespace='notifications')),
     url('^inbox/notifications/', include('notifications.urls',
-        namespace='notifications')),
+                                         namespace='notifications')),
     # django-photologue
-    url(r'^', include('photologue.urls', namespace='photologue')), # original photologue
+    url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
 ]
 
 urlpatterns += staticfiles_urlpatterns()

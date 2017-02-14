@@ -1,10 +1,13 @@
 import json
 import logging
+
 from channels import Group
-from user_profile.models import UserProfile
-from django.core.exceptions import ObjectDoesNotExist
 from channels.auth import channel_session_user, channel_session_user_from_http
+from django.core.exceptions import ObjectDoesNotExist
+
 from .models import Photo
+
+
 # The "slug" keyword argument here comes from the regex capture group in
 #
 @channel_session_user_from_http
@@ -56,6 +59,7 @@ def connect_photo(message, slug):
     # same message.
     message.reply_channel.send({"accept": True})
     Group(photo.group_name).add(message.reply_channel)
+
 
 @channel_session_user
 def disconnect_photo(message, slug):

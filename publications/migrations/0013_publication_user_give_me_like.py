@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('user_profile', '0016_userprofile_timeline'),
         ('publications', '0012_auto_20151023_1131'),

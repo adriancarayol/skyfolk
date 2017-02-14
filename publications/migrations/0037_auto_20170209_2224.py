@@ -6,7 +6,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('publications', '0036_publicationphoto_user_give_me_hate'),
     ]

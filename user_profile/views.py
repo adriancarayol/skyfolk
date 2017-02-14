@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from allauth.account.views import PasswordChangeView, EmailView
 from dal import autocomplete
@@ -29,7 +30,7 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser
-from datetime import datetime
+
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -62,6 +63,7 @@ def profile_view(request, username,
     context['privacity'] = privacity
     context['publicationSelfForm'] = PublicationForm(initial=self_initial)
     context['groupForm'] = FormUserGroup(initial=group_initial)
+    context['notifications'] = user.notifications.unread()
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":
@@ -305,7 +307,8 @@ def search(request, option=None):
                                                                'resultMessages': result_messages,
                                                                'result_media': result_media,
                                                                'words': words,
-                                                               'message': info})
+                                                               'message': info,
+                                                               'notifications': user.notifications.unread()})
 
 
 @login_required(login_url='/')
@@ -424,7 +427,8 @@ def config_profile(request):
     context = {'showPerfilButtons': True, 'searchForm': searchForm,
                'user_profile': user_profile,
                'user_form': user_form, 'perfil_form': perfil_form,
-               'publicationSelfForm': publicationForm}
+               'publicationSelfForm': publicationForm,
+               'notifications': user_profile.notifications.unread()}
     return render(request, 'account/cf-profile.html', context)
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -440,7 +444,8 @@ def config_pincode(request):
     searchForm = SearchForm()
 
     context = {'showPerfilButtons': True, 'searchForm': searchForm,
-               'publicationSelfForm': publicationForm, 'pin': pin}
+               'publicationSelfForm': publicationForm, 'pin': pin,
+               'notifications': user.notifications.unread()}
 
     return render(request, 'account/cf-pincode.html', context)
 
@@ -755,7 +760,7 @@ def respond_friend_request(request):
                                                                 type='new_relation')
                     # Creamos historia en el perfil que seguimos
                     t2, created2 = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
-                                                                  verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!'  % (
+                                                                  verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
                                                                       user.username, user.username,
                                                                       emitter_profile.user.username,
                                                                       emitter_profile.user.username),
@@ -912,6 +917,7 @@ class FollowersListView(AjaxListView):
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['url_name'] = "followers"
+        context['notifications'] = user.notifications.unread()
         return context
 
 
@@ -982,7 +988,7 @@ class PassWordChangeDone(TemplateView):
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['showPerfilButtons'] = True
-
+        context['notifications'] = user.notifications.unread()
         return render(request, self.template_name, context)
 
 
@@ -1002,6 +1008,7 @@ class CustomPasswordChangeView(PasswordChangeView):
         ret['publicationSelfForm'] = PublicationForm(initial=initial)
         ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
+        ret['notifications'] = user.notifications.unread()
         # (end NOTE)
         return ret
 
@@ -1020,6 +1027,7 @@ class CustomEmailView(EmailView):
         ret['publicationSelfForm'] = PublicationForm(initial=initial)
         ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
+        ret['notifications'] = user.notifications.unread()
         # (end NOTE)
         return ret
 
@@ -1045,6 +1053,7 @@ class DeactivateAccount(FormView):
         self_initial = {'author': user.pk, 'board_owner': user.pk}
         context['publicationSelfForm'] = PublicationForm(initial=self_initial)
         context['searchForm'] = SearchForm()
+        context['notifications'] = user.notifications.unread()
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):

@@ -1,7 +1,8 @@
 from channels import route
-from user_profile.consumers import connect_blog, disconnect_blog
-from photologue.consumers import connect_photo, disconnect_photo
+
 from notifications.consumers import ws_connect
+from photologue.consumers import connect_photo, disconnect_photo
+from user_profile.consumers import connect_blog, disconnect_blog
 
 # The channel routing defines what channels get handled by what consumers,
 # including optional matching on message attributes. WebSocket messages of all

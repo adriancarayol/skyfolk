@@ -14,7 +14,6 @@ try:
 except ImportError:
     from PIL import Image
 
-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
@@ -29,7 +28,6 @@ logger = logging.getLogger('photologue.forms')
 
 
 class UploadZipForm(forms.Form):
-
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request")
         super(UploadZipForm, self).__init__(*args, **kwargs)
@@ -58,7 +56,6 @@ class UploadZipForm(forms.Form):
                                                'gallery and included photographs private.'))
 
     tags = TagField(help_text=_('A comma-separated list of tags.'))
-
 
     def clean_zip_file(self):
         """Open the zip file a first time, to check that it is a valid zip archive.
@@ -138,10 +135,10 @@ class UploadZipForm(forms.Form):
 
             tags = self.cleaned_data['tags']
             photo = Photo.objects.create(title=photo_title,
-                          slug=slug,
-                          caption=self.cleaned_data['caption'],
-                          is_public=self.cleaned_data['is_public'],
-                          owner=self.request.user)
+                                         slug=slug,
+                                         caption=self.cleaned_data['caption'],
+                                         is_public=self.cleaned_data['is_public'],
+                                         owner=self.request.user)
             # first add title tag.
             photo.tags.add(self.cleaned_data['title'])
             for tag in tags:
@@ -192,13 +189,14 @@ class UploadFormPhoto(forms.ModelForm):
 
     class Meta:
         model = Photo
-        exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug', 'is_public', )
+        exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug', 'is_public',)
 
 
 class EditFormPhoto(forms.ModelForm):
     """
     Permite al usuario editar una foto ya existente
     """
+
     def __init__(self, *args, **kwargs):
         super(EditFormPhoto, self).__init__(*args, **kwargs)
         self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
@@ -208,4 +206,3 @@ class EditFormPhoto(forms.ModelForm):
         exclude = ('owner', 'date_added', 'sites',
                    'date_taken', 'slug', 'is_public', 'image',
                    'crop_from')
-

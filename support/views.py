@@ -1,10 +1,7 @@
-from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
-from .models import SupportPasswordModel
 from django.views.generic.edit import FormView
-from .forms import SupportPasswordForm
+
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from django.utils.translation import ugettext_lazy as _
+from .forms import SupportPasswordForm
 
 
 class SupportPasswordView(FormView, AjaxableResponseMixin):
@@ -25,5 +22,6 @@ class SupportPasswordView(FormView, AjaxableResponseMixin):
         obj.save()
         form.send_email(obj.title, obj.description, obj.user.email)
         return super(SupportPasswordView, self).form_valid(form)
+
 
 support_view = SupportPasswordView.as_view()

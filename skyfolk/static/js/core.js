@@ -67,7 +67,7 @@ $(document).ready(function () {
 
     /* Close nuevo grupo */
     $("#btn_close_group").click(function () {
-       $('#create_group').hide();
+        $('#create_group').hide();
     });
 
     /* Close page-wrapper (mensaje) */

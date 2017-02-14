@@ -5,44 +5,52 @@
 {% load avatar_tags %}
 {% block include_files %}
 {% endblock %}
-  {% block body %}
-  <div class="col l8 m12 s12 body-wrapper">
-  {% if message_list %}
-     {% for message in message_list %}
-              <div class="col s12 m12 l12 card">
-              <div class="col l3 m12 s12">
-                      <div class="image-user" id="image-user">
-                          {% avatar message.sender %}
-                          <span class="blue-text"><a href="/profile/{{ message.sender }}">{{ message.sender }}</a></span>
-                      </div>
-                  {% if message.new %}
-                    <span title="¡Nuevo mensaje!" class="new-message"><i class="fa fa-bell-o"></i></span>
-                  {% endif %}
-                  {% if message.replied %}
-                    <span title="Mensaje respondido" class="replied-message"><i class="fa fa-pencil-square-o"></i></span>
-                  {% endif %}
-              </div>
-              <div class="col l4 m8 s8 msg-inbox">
-                      <h5>
-                        <b>
-                          <a class="message_subject" href="{{message.get_absolute_url }}">{{ message.subject }}</a>
-                        </b>
-                      </h5>
-                      <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
-                      <br><br>
-                   <blockquote onclick="javascript:location.href='{{message.get_absolute_url }}'" class="grey-text truncate">{{message.body|replaceTags}}</blockquote>
-              </div>
-              <a class="borrar" title="Eliminar mensaje" href="{% url 'messages_delete' message.id %}"><i class="fa fa-trash"></i></a>
-            </div>
-        {% endfor %}
-  {% else %}
-  <p class="no_messages">{% trans "¡No tienes mensajes!" %}<br><br>
-    <a class="create-new" href="{% url 'messages_compose' %}">Crea uno nuevo.</a>
-  </p>
-  {% endif %}
-</div>
+{% block body %}
+    <div class="col l8 m12 s12 body-wrapper">
+        {% if message_list %}
+            {% for message in message_list %}
+                <div class="col s12 m12 l12 card">
+                    <div class="col l3 m12 s12">
+                        <div class="image-user" id="image-user">
+                            {% avatar message.sender %}
+                            <span class="blue-text"><a
+                                    href="/profile/{{ message.sender }}">{{ message.sender }}</a></span>
+                        </div>
+                        {% if message.new %}
+                            <span title="¡Nuevo mensaje!" class="new-message"><i class="fa fa-bell-o"></i></span>
+                        {% endif %}
+                        {% if message.replied %}
+                            <span title="Mensaje respondido" class="replied-message"><i
+                                    class="fa fa-pencil-square-o"></i></span>
+                        {% endif %}
+                    </div>
+                    <div class="col l4 m8 s8 msg-inbox">
+                        <h5>
+                            <b>
+                                <a class="message_subject"
+                                   href="{{ message.get_absolute_url }}">{{ message.subject }}</a>
+                            </b>
+                        </h5>
+                        <i class="time">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
+                        <br><br>
+                        <blockquote onclick="javascript:location.href='{{ message.get_absolute_url }}'"
+                                    class="grey-text truncate">{{ message.body|replaceTags }}</blockquote>
+                    </div>
+                    <a class="borrar" title="Eliminar mensaje" href="{% url 'messages_delete' message.id %}"><i
+                            class="fa fa-trash"></i></a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no_messages">{% trans "¡No tienes mensajes!" %}<br><br>
+                <a class="create-new" href="{% url 'messages_compose' %}">Crea uno nuevo.</a>
+            </p>
+        {% endif %}
+    </div>
 
     <script>
-  	    $('#nav-menu-messages').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
-	  </script>
+        $('#nav-menu-messages').find('li:nth-child(1)').css({
+            'background-color': 'rgba(0,0,0,0.1)',
+            'color': '#1e88e5'
+        });
+    </script>
 {% endblock %}

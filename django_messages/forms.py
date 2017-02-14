@@ -3,9 +3,9 @@ import datetime
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+
 from django_messages.fields import CommaSeparatedUserField
 from django_messages.models import Message
-
 
 if "notification" in settings.INSTALLED_APPS:
     from notification import models as notification
@@ -17,18 +17,17 @@ class ComposeForm(forms.Form):
     """
     A simple default form for private messages.
     """
-    recipient = CommaSeparatedUserField(label=_(u"Recipient"),  widget=forms.TextInput(attrs={'placeholder': 'Nombre'}))
-    subject = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Asunto'}), max_length=120)
-    body = forms.CharField(widget=forms.Textarea(attrs={'rows': '10', 'cols':'120','placeholder':'Escribe tu mensaje...',
-                                                        'class': 'materialize-textarea'}))
-
+    recipient = CommaSeparatedUserField(label=_(u"Recipient"), widget=forms.TextInput(attrs={'placeholder': 'Nombre'}))
+    subject = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Asunto'}), max_length=120)
+    body = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': '10', 'cols': '120', 'placeholder': 'Escribe tu mensaje...',
+                                     'class': 'materialize-textarea'}))
 
     def __init__(self, *args, **kwargs):
         recipient_filter = kwargs.pop('recipient_filter', None)
         super(ComposeForm, self).__init__(*args, **kwargs)
         if recipient_filter is not None:
             self.fields['recipient']._recipient_filter = recipient_filter
-
 
     def save(self, sender, parent_msg=None):
         recipients = self.cleaned_data['recipient']
@@ -38,10 +37,10 @@ class ComposeForm(forms.Form):
         message_list = []
         for r in recipients:
             msg = Message(
-                sender = sender,
-                recipient = r,
-                subject = subject,
-                body = body,
+                sender=sender,
+                recipient=r,
+                subject=subject,
+                body=body,
             )
             if parent_msg is not None:
                 msg.parent_msg = parent_msg
@@ -51,9 +50,9 @@ class ComposeForm(forms.Form):
             message_list.append(msg)
             if notification:
                 if parent_msg is not None:
-                    notification.send([sender], "messages_replied", {'message': msg,})
-                    notification.send([r], "messages_reply_received", {'message': msg,})
+                    notification.send([sender], "messages_replied", {'message': msg, })
+                    notification.send([r], "messages_reply_received", {'message': msg, })
                 else:
-                    notification.send([sender], "messages_sent", {'message': msg,})
-                    notification.send([r], "messages_received", {'message': msg,})
+                    notification.send([sender], "messages_sent", {'message': msg, })
+                    notification.send([r], "messages_received", {'message': msg, })
         return message_list

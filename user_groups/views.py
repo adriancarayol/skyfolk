@@ -3,19 +3,19 @@ import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
+from el_pagination.decorators import page_template
+from el_pagination.views import AjaxListView
 
 from publications.forms import PublicationForm
 from user_profile.forms import SearchForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from django.http import JsonResponse
 from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup
-from el_pagination.views import AjaxListView
-from el_pagination.decorators import page_template
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -103,6 +103,7 @@ def group_profile(request, groupname, template='groups/group_profile.html',
                'likes': likes,
                'user_like_group': user_like_group,
                'users_in_group': users_in_group,
+               'notifications': user.notifications.unread(),
                'user_list': group_profile.users.all().values('user__username', 'user__first_name',
                                                              'user__last_name')}
 

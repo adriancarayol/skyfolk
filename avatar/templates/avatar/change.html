@@ -4,70 +4,74 @@
 {% block title %} <title>Configuración - {{ request.user.username }} - Imágenes de perfil.</title> {% endblock %}
 
 {% block extra-css %}
-<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/avatar.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/avatar.css"/>
 {% endblock %}
 
 {% block extra-js %}
-      <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-<script>
-$(document).ready(function() {
-    $("#option-avatar").find("img").click(function() {
-        if ($('#option-avatar').find('img').size() == 1) {
-            $(this).toggleClass('active');
-        } else {
-            $("img").removeClass('active');
-            $(this).toggleClass('active');
-        }
-    });
-});
-</script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#option-avatar").find("img").click(function () {
+                if ($('#option-avatar').find('img').size() == 1) {
+                    $(this).toggleClass('active');
+                } else {
+                    $("img").removeClass('active');
+                    $(this).toggleClass('active');
+                }
+            });
+        });
+    </script>
 {% endblock %}
 {% block cf-title %}
-<div class="hgroup">
-	<h4 class="cn"> Imágen de perfil </h4>
-	<h6 class="ch"> Elige y gestiona tus imágenes de perfil </h6>
-</div>
+    <div class="hgroup">
+        <h4 class="cn"> Imágen de perfil </h4>
+        <h6 class="ch"> Elige y gestiona tus imágenes de perfil </h6>
+    </div>
 {% endblock %}
 
 {% block cf-form %}
     <div class="col l12 m12 s12 current-avatar">
-    <p>{% trans "Your current avatar: " %}</p>
-    {% avatar user %}
-    <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i class="fa fa-trash"></i></a>
-    <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
-        </div>
+        <p>{% trans "Your current avatar: " %}</p>
+        {% avatar user %}
+        <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
+                class="fa fa-trash"></i></a>
+        <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
+                class="fa fa-plus"></i></a>
+    </div>
     {% if not avatars %}
         <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
     {% else %}
         <div id="option-avatar" class="col l12 m12 s12 options-avatar">
         <div class="row list-avatar">
-        <form method="POST" action="{% url 'avatar_change' %}">
-            <ul>
-                {{ primary_avatar_form.as_ul }}
-            </ul>
-            <p>{% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit" value="{% trans "Choose new Default" %}" /></p>
-        </form>
+            <form method="POST" action="{% url 'avatar_change' %}">
+                <ul>
+                    {{ primary_avatar_form.as_ul }}
+                </ul>
+                <p>{% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit"
+                                          value="{% trans "Choose new Default" %}"/></p>
+            </form>
         </div>
     {% endif %}
-    <div class="divider"></div>
-    <div class="row">
+<div class="divider"></div>
+<div class="row">
     <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
-            <div class="file-field input-field">
+        <div class="file-field input-field">
             {{ upload_avatar_form.avatar.errors }}
-          <div class="btn blue darken-1 waves-effect waves-light">
-            <span>Imágen</span>
-            {{ upload_avatar_form.avatar }}
-          </div>
-          <div class="file-path-wrapper">
-            <input class="file-path validate" type="text">
-          </div>
+            <div class="btn blue darken-1 waves-effect waves-light">
+                <span>Imágen</span>
+                {{ upload_avatar_form.avatar }}
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text">
+            </div>
         </div>
-        {% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit" value="{% trans "Upload New Image" %}" />
+        {% csrf_token %}<input class="btn blue darken-1 waves-effect waves-light left" type="submit"
+                               value="{% trans "Upload New Image" %}"/>
     </form>
 </div>
-        </div>
+</div>
     </div>
     <script>
-  	    $('.menu-config').find('li:nth-child(3)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
-	</script>
+        $('.menu-config').find('li:nth-child(3)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
 {% endblock %}

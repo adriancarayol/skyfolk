@@ -1,15 +1,16 @@
+from itertools import chain
+
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
-from django.template import RequestContext
-from publications.models import Publication
-from publications.forms import PublicationForm
-from user_profile.forms import SearchForm
 from django.views.generic import TemplateView
-from django.contrib.auth.decorators import login_required
-from timeline.models import Timeline
+
+from publications.forms import PublicationForm
+from publications.models import Publication
+from user_profile.forms import SearchForm
 from user_profile.models import AffinityUser, LikeProfile
-from itertools import chain
+
 
 class News(TemplateView):
     template_name = "account/base_news.html"
@@ -19,7 +20,7 @@ class News(TemplateView):
         Devuelve el usuario instaciado (logueado)
         """
         return get_object_or_404(get_user_model(),
-                username__iexact=self.request.user.username)
+                                 username__iexact=self.request.user.username)
 
     def get_affinity_users(self):
         """
@@ -43,8 +44,8 @@ class News(TemplateView):
         :return Lista mezlada de usuarios sin repeticiones:
         """
         mixing_list = chain(affinity, favs)
-            # sorted(
-            # key=lambda user: user.created, reverse=True)
+        # sorted(
+        # key=lambda user: user.created, reverse=True)
 
         result = {}
         for user in mixing_list:
@@ -63,7 +64,8 @@ class News(TemplateView):
         publicationForm = PublicationForm(initial=initial)
         searchForm = SearchForm()
         affinity_users = self.get_affinity_users().values_list('receiver__id', 'receiver__user__username',
-                                                               'receiver__user__first_name', 'receiver__user__last_name')
+                                                               'receiver__user__first_name',
+                                                               'receiver__user__last_name')
         print(affinity_users)
         # fav_users = self.get_like_users()
         # mix = self.__mix_queryset(affinity=affinity_users, favs=fav_users)
@@ -81,5 +83,6 @@ class News(TemplateView):
                    'mix': affinity_users}
 
         return render(request, self.template_name, context=context)
+
 
 news_and_updates = login_required(News.as_view())

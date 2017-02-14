@@ -8,7 +8,6 @@ import user_profile.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('publications', '0002_publication'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -43,11 +42,17 @@ class Migration(migrations.Migration):
             name='UserProfile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
-                ('image', models.ImageField(blank=True, verbose_name='Image', null=True, upload_to=user_profile.models.uploadAvatarPath)),
-                ('likeprofiles', models.ManyToManyField(related_name='likesToMe', through='user_profile.LikeProfile', to='user_profile.UserProfile')),
-                ('publications', models.ManyToManyField(related_name='publications_to', through='publications.Publication', to='user_profile.UserProfile')),
-                ('relationships', models.ManyToManyField(related_name='related_to', through='user_profile.Relationship', to='user_profile.UserProfile')),
-                ('requests', models.ManyToManyField(related_name='requestsToMe', through='user_profile.Request', to='user_profile.UserProfile')),
+                ('image', models.ImageField(blank=True, verbose_name='Image', null=True,
+                                            upload_to=user_profile.models.uploadAvatarPath)),
+                ('likeprofiles', models.ManyToManyField(related_name='likesToMe', through='user_profile.LikeProfile',
+                                                        to='user_profile.UserProfile')),
+                ('publications',
+                 models.ManyToManyField(related_name='publications_to', through='publications.Publication',
+                                        to='user_profile.UserProfile')),
+                ('relationships', models.ManyToManyField(related_name='related_to', through='user_profile.Relationship',
+                                                         to='user_profile.UserProfile')),
+                ('requests', models.ManyToManyField(related_name='requestsToMe', through='user_profile.Request',
+                                                    to='user_profile.UserProfile')),
                 ('user', models.OneToOneField(related_name='profile', to=settings.AUTH_USER_MODEL)),
             ],
             options={
