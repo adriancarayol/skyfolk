@@ -369,30 +369,28 @@ def advanced_view(request):
             print(result_regex)
 
     return render(request, template_name, {'publicationSelfForm': publicationForm, 'searchForm': searchForm,
-                                           'form': form})
+                                           'form': form, 'notifications': user.notifications.unread()})
 
 
 @login_required(login_url='/')
 def config_privacity(request):
-    user = request.user
-    initial = {'author': user.pk, 'board_owner': user.pk}
+    user_profile = request.user
+    initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
     print('>>>>> PETICION CONFIG')
     if request.POST:
-        print('>>>> PASO 1')
-        privacity_form = PrivacityForm(data=request.POST, instance=request.user.profile)
-        print('>>>> PASO 1.1')
+        privacity_form = PrivacityForm(data=request.POST, instance=user_profile.profile)
         if privacity_form.is_valid():
-            print('>>>>> SAVE')
             privacity_form.save()
             return HttpResponseRedirect('/config/privacity')
     else:
-        privacity_form = PrivacityForm(instance=request.user.profile)
-        print('PASO ULTIMO')
+        privacity_form = PrivacityForm(instance=user_profile.profile)
+
     return render(request, 'account/cf-privacity.html',
                   {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationSelfForm': publicationForm,
-                   'privacity_form': privacity_form})
+                   'privacity_form': privacity_form,
+                   'notifications': user_profile.notifications.unread()})
 
 
 @login_required(login_url='/')
@@ -461,7 +459,8 @@ def config_blocked(request):
     return render(request, 'account/cf-blocked.html', {'showPerfilButtons': True,
                                                        'searchForm': searchForm,
                                                        'publicationSelfForm': publicationForm,
-                                                       'blocked': list_blocked})
+                                                       'blocked': list_blocked,
+                                                       'notifications': user.notifications.unread()})
 
 
 @login_required(login_url='accounts/login')
@@ -945,6 +944,7 @@ class FollowingListView(AjaxListView):
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['url_name'] = "following"
+        context['notifications'] = user.notifications.unread()
         return context
 
 

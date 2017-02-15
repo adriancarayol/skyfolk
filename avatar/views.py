@@ -126,7 +126,8 @@ def add(request, extra_context=None, next_override=None,
         'next': next_override or _get_next(request),
         'publicationSelfForm': publicationForm,
         'searchForm': searchForm,
-        'showPerfilButtons': True
+        'showPerfilButtons': True,
+        'notifications': user.notifications.unread(),
     }
     context.update(extra_context)
     # return render(request, 'avatar/add.html',{'publicationForm': publicationForm, 'searchForm': searchForm},context)
@@ -174,7 +175,8 @@ def change(request, extra_context=None, next_override=None,
         'next': next_override or _get_next(request),
         'publicationSelfForm': publicationForm,
         'searchForm': searchForm,
-        'showPerfilButtons': True
+        'showPerfilButtons': True,
+        'notifications': user.notifications.unread(),
     }
     context.update(extra_context)
     return render(request, 'avatar/change.html', context)
@@ -216,7 +218,8 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         'next': next_override or _get_next(request),
         'publicationSelfForm': publicationForm,
         'searchForm': searchForm,
-        'showPerfilButtons': True
+        'showPerfilButtons': True,
+        'notifications': user.notifications.unread(),
     }
     context.update(extra_context)
 

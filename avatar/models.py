@@ -110,6 +110,7 @@ class Avatar(models.Model):
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb')
             image = Image.open(orig)
+            ext = image.format
             quality = quality or settings.AVATAR_THUMB_QUALITY
             w, h = image.size
             if w != size or h != size:
@@ -119,7 +120,7 @@ class Avatar(models.Model):
                 else:
                     diff = int((h - w) / 2)
                     image = image.crop((0, diff, w, h - diff))
-                if image.mode not in ("RGB", "RGBA"):
+                if ext.lower() in ['.jpg', '.jpeg', '.png'] and image.mode not in ("RGB", "RGBA"):
                     image = image.convert("RGB")
                 image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
                 thumb = six.BytesIO()
