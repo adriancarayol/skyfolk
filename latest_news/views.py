@@ -80,7 +80,8 @@ class News(TemplateView):
         context = {'publications': publications,
                    'publicationSelfForm': publicationForm,
                    'searchForm': searchForm,
-                   'mix': affinity_users}
+                   'mix': affinity_users,
+                   'notifications': user_profile.notifications.unread()}
 
         return render(request, self.template_name, context=context)
 

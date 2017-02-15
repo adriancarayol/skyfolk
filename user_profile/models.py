@@ -170,6 +170,14 @@ class UserProfile(models.Model):
         """
         return "notification-%s" % self.pk
 
+    @property
+    def news_channel(self):
+        """
+        Devuelve el nombre del canal para enviar actualizaciones
+        al tablon de inicio
+        """
+        return "news-%s" % self.pk
+
     def save(self, *args, **kwargs):
         # delete old image when replacing by updating the file
         try:
@@ -368,10 +376,6 @@ class UserProfile(models.Model):
                                                                     'user__last_name',
                                                                     'user__profile__backImage').order_by('id')
 
-    '''def get_friends(self):
-        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name',
-                                                                  'user__last_name',
-                                                                  'user__profile__backImage').order_by('id')'''
 
     # methods blocks
     def add_block(self, profile):
