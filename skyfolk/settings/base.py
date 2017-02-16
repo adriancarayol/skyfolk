@@ -214,7 +214,7 @@ NOTIFICATIONS_SOFT_DELETE = True
 NOTIFICATIONS_USE_JSONFIELD = True
 
 
-# django-rq 
+# django-rq
 
 RQ_QUEUES = {
     'default': {
@@ -232,7 +232,6 @@ RQ_QUEUES = {
         'HOST': 'localhost',
         'PORT': 6379,
         'DB': 0,
-        'DEFAULT_TIMEOUT': 1200,
     }
 }
 

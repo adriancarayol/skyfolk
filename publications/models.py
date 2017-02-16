@@ -284,27 +284,32 @@ class PublicationPhoto(PublicationBase):
             super(PublicationPhoto, self).save(*args, **kwargs)
 
 @job('low')
-def read_petition():
-    print("WORKER")
+def send_to_stream(instance):
+    [ Group(follower_channel.news_channel).send({
+                "text": json.dumps(instance.content)
+            }) for follower_channel in
+                instance.author.profile.get_all_follower_values() ]
 
-read_petition.delay()
+
+@job('low')
+def send_to_profile(instance, type):
+    if type:
+        instance.send_notification(type=type)
+    else:
+        instance.send_notification()
 
 @receiver(post_save, sender=Publication, dispatch_uid='publication_save')
 def publication_handler(sender, instance, created, **kwargs):
     """
     Enviamos notificacion a los que visitan nuestro perfil
     """
-    read_petition()
     if not created: # Cuando llamamos a .save() enviamos notificacion
         if not instance.parent:
-            instance.send_notification()
+            send_to_profile.delay(instance, None)
         else:
-            instance.send_notification(type="reply")
+            send_to_profile.delay(instance, "reply")
 
         # Enviamos al tablon de noticias (inicio)
         if (instance.author == instance.board_owner):
-            [ Group(follower_channel.news_channel).send({
-                "text": json.dumps(instance.content)
-            }) for follower_channel in
-                instance.author.profile.get_all_follower_values() ]
+            send_to_stream.delay(instance)
 

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from emoji import Emoji
 from notifications.signals import notify
-
+from django_rq import job
 
 class TextProcessor():
     def __get_mentions_text(emitter, text):
@@ -15,10 +15,7 @@ class TextProcessor():
             if User.objects.filter(username=mencion[1:]):
                 recipientprofile = User.objects.get(username=mencion[1:])
                 if emitter.pk != recipientprofile.pk:
-                    notify.send(emitter, actor=emitter.username,
-                                recipient=recipientprofile,
-                                verb=u'¡te ha mencionado en su tablón!',
-                                description='Mencion')
+                    send_mention_notification(emitter, recipientprofile)
                 text = text.replace(mencion,
                                     '<a href="/profile/%s">%s</a>' %
                                     (mencion[1:], mencion))
@@ -37,3 +34,12 @@ class TextProcessor():
         formatText = cls.__get_mentions_text(emitter, formatText)
         formatText = formatText.replace('\n', '').replace('\r', '')
         return formatText
+
+@job('low')
+def send_mention_notification(emitter, recipient):
+    notify.send(emitter, actor=emitter.username,
+                            recipient=recipient,
+                            verb=u'¡te ha mencionado en su tablón!',
+                            description='Mencion')
+
+
