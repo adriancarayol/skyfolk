@@ -46,6 +46,7 @@ THIRD_PARTY_APPS = (
     'notifications',  # notificaciones
     'dal',  # autocompletado
     'dal_select2',
+    'django_rq',
 )
 
 FIRST_PARTY_APPS = (
@@ -211,6 +212,29 @@ MEDIA_URL = '/media/'
 NOTIFICATIONS_SOFT_DELETE = True
 ''' Permite enviar datos arbitrarios en las notificaciones '''
 NOTIFICATIONS_USE_JSONFIELD = True
+
+
+# django-rq 
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'PASSWORD': 'some-password',
+        'DEFAULT_TIMEOUT': 360,
+    },
+    'high': {
+        'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'), # If you're on Heroku
+        'DEFAULT_TIMEOUT': 500,
+    },
+    'low': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 1200,
+    }
+}
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),

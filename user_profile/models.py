@@ -377,6 +377,13 @@ class UserProfile(models.Model):
                                                                     'user__profile__backImage').order_by('id')
 
 
+    # Obtener canal de noticias de mis seguidores
+    def get_all_follower_values(self):
+        """
+        Devuelve el canal de noticias de mis seguidores
+        """
+        return self.get_relationships(RELATIONSHIP_FOLLOWER)
+
     # methods blocks
     def add_block(self, profile):
         """

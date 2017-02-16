@@ -56,6 +56,7 @@ urlpatterns = [
                                          namespace='notifications')),
     # django-photologue
     url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
+    url(r'^django-rq/', include('django_rq.urls')), # django-rq
 ]
 
 urlpatterns += staticfiles_urlpatterns()

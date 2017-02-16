@@ -97,7 +97,7 @@ $(document).ready(function () {
         AJAX_submit_publication(data, 'publication');
     });
 
-    /* Submit creacion (perfil ajeno) */
+    /* Submit reply publication º*/
     $('button.enviar').on('click', function (event) {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];

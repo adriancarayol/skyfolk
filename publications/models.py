@@ -12,7 +12,9 @@ from text_processor.format_text import TextProcessor
 from user_groups.models import UserGroups
 from user_profile.models import Relationship
 from .utils import get_author_avatar
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django_rq import job
 
 class PublicationManager(models.Manager):
     list_display = ['tag_list']
@@ -185,13 +187,8 @@ class Publication(PublicationBase):
         perfil si es un comentario nuevo
         """
         if new_comment:
-            print('NOTIFICACION ENVIADA POR EL SOCKET...')
             result = super(Publication, self).save(*args, **kwargs)
             self.add_hashtag()
-            if not self.parent:
-                self.send_notification()
-            else:
-                self.send_notification(type="reply")
             return result
         else:
             super(Publication, self).save(*args, **kwargs)
@@ -235,7 +232,7 @@ class PublicationPhoto(PublicationBase):
 
     def add_hashtag(self):
         """
-        Añadimos los hashtags encontramos a la
+        Añadimos los hashtags encontrados a la
         lista de tags => atributo "tags"
         """
         hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
@@ -285,3 +282,29 @@ class PublicationPhoto(PublicationBase):
             return result
         else:
             super(PublicationPhoto, self).save(*args, **kwargs)
+
+@job('low')
+def read_petition():
+    print("WORKER")
+
+read_petition.delay()
+
+@receiver(post_save, sender=Publication, dispatch_uid='publication_save')
+def publication_handler(sender, instance, created, **kwargs):
+    """
+    Enviamos notificacion a los que visitan nuestro perfil
+    """
+    read_petition()
+    if not created: # Cuando llamamos a .save() enviamos notificacion
+        if not instance.parent:
+            instance.send_notification()
+        else:
+            instance.send_notification(type="reply")
+
+        # Enviamos al tablon de noticias (inicio)
+        if (instance.author == instance.board_owner):
+            [ Group(follower_channel.news_channel).send({
+                "text": json.dumps(instance.content)
+            }) for follower_channel in
+                instance.author.profile.get_all_follower_values() ]
+
