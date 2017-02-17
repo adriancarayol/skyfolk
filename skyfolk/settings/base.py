@@ -3,7 +3,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
-
+import djcelery
 from django.core.validators import MaxLengthValidator
 
 # from django.core.exceptions import ImproperlyConfigured
@@ -46,7 +46,7 @@ THIRD_PARTY_APPS = (
     'notifications',  # notificaciones
     'dal',  # autocompletado
     'dal_select2',
-    'django_rq',
+    'djcelery',
 )
 
 FIRST_PARTY_APPS = (
@@ -168,15 +168,20 @@ TEMPLATES = [
     },
 ]
 
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
+# rabbitmq
+rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
+rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % rabbitmq_host
+
+# django-celery
+djcelery.setup_loader()
 
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "BACKEND": "asgi_rabbitmq.RabbitmqChannelLayer",
         "CONFIG": {
-            "hosts": [(redis_host, 6379)],
+            "url": rabbitmq_url,
         },
         "ROUTING": "skyfolk.routing.channel_routing",
     },
@@ -213,27 +218,6 @@ NOTIFICATIONS_SOFT_DELETE = True
 ''' Permite enviar datos arbitrarios en las notificaciones '''
 NOTIFICATIONS_USE_JSONFIELD = True
 
-
-# django-rq
-
-RQ_QUEUES = {
-    'default': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-        'PASSWORD': 'some-password',
-        'DEFAULT_TIMEOUT': 360,
-    },
-    'high': {
-        'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'), # If you're on Heroku
-        'DEFAULT_TIMEOUT': 500,
-    },
-    'low': {
-        'HOST': 'localhost',
-        'PORT': 6379,
-        'DB': 0,
-    }
-}
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),

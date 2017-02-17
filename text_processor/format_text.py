@@ -6,7 +6,11 @@ from django.contrib.auth.models import User
 
 from emoji import Emoji
 from notifications.signals import notify
-from django_rq import job
+from celery.decorators import task
+from celery.utils.log import get_task_logger
+
+logger = get_task_logger(__name__)
+
 
 class TextProcessor():
     def __get_mentions_text(emitter, text):
@@ -35,8 +39,9 @@ class TextProcessor():
         formatText = formatText.replace('\n', '').replace('\r', '')
         return formatText
 
-@job('low')
+@task(name="send_mention_notification")
 def send_mention_notification(emitter, recipient):
+    logger.info("Sent mention notification")
     notify.send(emitter, actor=emitter.username,
                             recipient=recipient,
                             verb=u'¡te ha mencionado en su tablón!',

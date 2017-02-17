@@ -14,7 +14,10 @@ from user_profile.models import Relationship
 from .utils import get_author_avatar
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django_rq import job
+from celery.decorators import task
+from celery.utils.log import get_task_logger
+
+logger = get_task_logger(__name__)
 
 class PublicationManager(models.Manager):
     list_display = ['tag_list']
@@ -283,16 +286,17 @@ class PublicationPhoto(PublicationBase):
         else:
             super(PublicationPhoto, self).save(*args, **kwargs)
 
-@job('low')
+@task(name="send_to_stream")
 def send_to_stream(instance):
+    logger.info("Sent to %s follewers stream")
     [ Group(follower_channel.news_channel).send({
                 "text": json.dumps(instance.content)
             }) for follower_channel in
                 instance.author.profile.get_all_follower_values() ]
 
-
-@job('low')
+@task(name="send_to_profile")
 def send_to_profile(instance, type):
+    logger.info("Sent to profile")
     if type:
         instance.send_notification(type=type)
     else:
