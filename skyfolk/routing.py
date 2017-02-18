@@ -1,8 +1,8 @@
 from channels import route
 
-from notifications.consumers import ws_connect
+#from notifications.consumers import ws_connect
 from photologue.consumers import connect_photo, disconnect_photo
-from user_profile.consumers import connect_blog, disconnect_blog
+from user_profile.consumers import connect_blog, disconnect_blog, ws_connect
 from latest_news.consumers import ws_connect_news
 
 # The channel routing defines what channels get handled by what consumers,

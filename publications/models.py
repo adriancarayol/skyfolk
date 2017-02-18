@@ -6,18 +6,11 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
 from django.db.models import Q
 from taggit.managers import TaggableManager
-
 from photologue.models import Photo
 from text_processor.format_text import TextProcessor
 from user_groups.models import UserGroups
 from user_profile.models import Relationship
 from .utils import get_author_avatar
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from celery.decorators import task
-from celery.utils.log import get_task_logger
-
-logger = get_task_logger(__name__)
 
 class PublicationManager(models.Manager):
     list_display = ['tag_list']
@@ -182,7 +175,7 @@ class Publication(PublicationBase):
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
             "text": json.dumps(notification)
-        })
+        }, immediately=True)
 
     def save(self, new_comment=False, *args, **kwargs):
         """
@@ -286,34 +279,5 @@ class PublicationPhoto(PublicationBase):
         else:
             super(PublicationPhoto, self).save(*args, **kwargs)
 
-@task(name="send_to_stream")
-def send_to_stream(instance):
-    logger.info("Sent to %s follewers stream")
-    [ Group(follower_channel.news_channel).send({
-                "text": json.dumps(instance.content)
-            }) for follower_channel in
-                instance.author.profile.get_all_follower_values() ]
 
-@task(name="send_to_profile")
-def send_to_profile(instance, type):
-    logger.info("Sent to profile")
-    if type:
-        instance.send_notification(type=type)
-    else:
-        instance.send_notification()
-
-@receiver(post_save, sender=Publication, dispatch_uid='publication_save')
-def publication_handler(sender, instance, created, **kwargs):
-    """
-    Enviamos notificacion a los que visitan nuestro perfil
-    """
-    if not created: # Cuando llamamos a .save() enviamos notificacion
-        if not instance.parent:
-            send_to_profile.delay(instance, None)
-        else:
-            send_to_profile.delay(instance, "reply")
-
-        # Enviamos al tablon de noticias (inicio)
-        if (instance.author == instance.board_owner):
-            send_to_stream.delay(instance)
 

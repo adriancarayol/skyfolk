@@ -3,7 +3,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
-import djcelery
 from django.core.validators import MaxLengthValidator
 
 # from django.core.exceptions import ImproperlyConfigured
@@ -46,7 +45,7 @@ THIRD_PARTY_APPS = (
     'notifications',  # notificaciones
     'dal',  # autocompletado
     'dal_select2',
-    'djcelery',
+    'django_celery_results',
 )
 
 FIRST_PARTY_APPS = (
@@ -172,16 +171,20 @@ TEMPLATES = [
 rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
 rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % rabbitmq_host
 
-# django-celery
-djcelery.setup_loader()
-
+# celery
+# Celery settings
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+# use json format for everything
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgi_rabbitmq.RabbitmqChannelLayer",
         "CONFIG": {
-            "url": rabbitmq_url,
+            "url": rabbitmq_url
         },
         "ROUTING": "skyfolk.routing.channel_routing",
     },

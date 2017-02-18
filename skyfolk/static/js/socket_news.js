@@ -1,6 +1,5 @@
 var UTILS_E = UTILS_E || (function () {
 	var _args = {};
-	var _showLimitChar = 90;
 	return {
 		init: function (args) {
 			_args = args;

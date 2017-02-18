@@ -6,20 +6,23 @@ from django.contrib.auth.models import User
 
 from emoji import Emoji
 from notifications.signals import notify
-from celery.decorators import task
 from celery.utils.log import get_task_logger
+from skyfolk.celery import app
+from django.core.exceptions import ObjectDoesNotExist
 
 logger = get_task_logger(__name__)
-
 
 class TextProcessor():
     def __get_mentions_text(emitter, text):
         menciones = re.findall('\\@[a-zA-Z0-9_]+', text)
         for mencion in menciones:
             if User.objects.filter(username=mencion[1:]):
-                recipientprofile = User.objects.get(username=mencion[1:])
+                try:
+                    recipientprofile = User.objects.get(username=mencion[1:])
+                except ObjectDoesNotExist:
+                    pass
                 if emitter.pk != recipientprofile.pk:
-                    send_mention_notification(emitter, recipientprofile)
+                    send_mention_notification(emitter.id, recipientprofile.id)
                 text = text.replace(mencion,
                                     '<a href="/profile/%s">%s</a>' %
                                     (mencion[1:], mencion))
@@ -39,9 +42,14 @@ class TextProcessor():
         formatText = formatText.replace('\n', '').replace('\r', '')
         return formatText
 
-@task(name="send_mention_notification")
-def send_mention_notification(emitter, recipient):
+@app.task(name="send_mention_notification")
+def send_mention_notification(emitter_id, recipient_id):
     logger.info("Sent mention notification")
+    try:
+        emitter = User.objects.get(id=emitter_id)
+        recipient = User.objects.get(id=recipient_id)
+    except ObjectDoesNotExist:
+        return
     notify.send(emitter, actor=emitter.username,
                             recipient=recipient,
                             verb=u'¡te ha mencionado en su tablón!',

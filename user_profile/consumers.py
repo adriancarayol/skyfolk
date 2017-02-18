@@ -65,3 +65,18 @@ def disconnect_blog(message, username):
     # It's called .discard() because if the reply channel is already there it
     # won't fail - just like the set() type.
     Group(profile_blog.group_name).discard(message.reply_channel)
+
+@channel_session_user_from_http
+def ws_connect(message):
+    username = message.user.username
+    try:
+        profile = UserProfile.objects.get(user__username__iexact=username)
+    except ObjectDoesNotExist:
+        message.reply_channel.send({
+            "text": json.dumps({"error": "bad_slug"}),
+            "close": True,
+        })
+        return
+    # accept connection
+    message.reply_channel.send({"accept": True})
+    Group(profile.notification_channel).add(message.reply_channel)
