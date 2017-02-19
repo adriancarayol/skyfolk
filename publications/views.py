@@ -39,7 +39,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
         privacity = board_owner.profile.is_visible(self.request.user.profile, self.request.user.pk)
 
-        if privacity or (privacity and privacity != 'all'):
+        if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
 
         publication = None

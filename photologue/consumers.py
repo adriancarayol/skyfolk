@@ -44,7 +44,7 @@ def connect_photo(message, slug):
         })
         return
     visibility = user_profile.is_visible(user.profile, user.pk)
-    if visibility != ("all" or None):
+    if visibility and visibility != 'all':
         logging.warning('User: {} no puede conectarse al socket de: photo: {}'.format(user.username, username))
         message.reply_channel.send({
             # WebSockets send either a text or binary payload each frame.
