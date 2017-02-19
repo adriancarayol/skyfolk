@@ -3,16 +3,16 @@
 	Template para la configuracion del perfil de usuario
 {% endcomment %}
 {% block additional_files %}
-{% load i18n avatar_tags %}
-{% endblock%}
+    {% load i18n avatar_tags %}
+{% endblock %}
 {% block extra-css %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/pincode.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/pincode.css" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block cf-title %}
-<div class="hgroup">
-	<h4 class="cn"> Pincode </h4>
-	<h6 class="ch"> Consulta tu pincode. </h6>
-</div>
+    <div class="hgroup">
+        <h4 class="cn"> Pincode </h4>
+        <h6 class="ch"> Consulta tu pincode. </h6>
+    </div>
 {% endblock %}
 {% block cf-form %}
     <div class="col l12 m12 s12 wrapper-profilex">
@@ -28,6 +28,6 @@
     </script>
 
     <script>
-  	    $('.menu-config').find('li:nth-child(6)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
-	</script>
+        $('.menu-config').find('li:nth-child(6)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
 {% endblock %}

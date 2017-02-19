@@ -2,14 +2,13 @@ import unittest
 
 from django.conf import settings
 
-from .helpers import PhotologueBaseTest
 from .factories import GalleryFactory
+from .helpers import PhotologueBaseTest
 
 
 @unittest.skipUnless('django.contrib.sitemaps' in settings.INSTALLED_APPS,
                      'Sitemaps not installed in this project, nothing to test.')
 class SitemapTest(PhotologueBaseTest):
-
     urls = 'photologue.tests.test_urls'
 
     def test_get_photo(self):

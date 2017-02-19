@@ -8,6 +8,7 @@ class AjaxableResponseMixin(object):
     Extracted from: https://docs.djangoproject.com/es/1.9/topics/class-based-
     views/generic-editing/
     """
+
     def form_invalid(self, form):
         response = super(AjaxableResponseMixin, self).form_invalid(form)
         if self.request.is_ajax():

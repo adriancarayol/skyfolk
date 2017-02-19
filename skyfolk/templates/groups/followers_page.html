@@ -1,0 +1,37 @@
+{% load app_filters %}
+{% load avatar_tags %}
+{% load el_pagination_tags %}
+{% paginate user_list %}
+{% for item in user_list %}
+    <div class="col l3 m10 s12 offset-m1">
+        <div class="personal-card">
+            <div class="row">
+                <div class="col s12">
+                    <div class="header">
+                        {% if item.user.profile.backImage and item.user.profile.backImage|file_exists %}
+                            <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user.profile.backImage }}">
+                        {% else %}
+                            <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                        {% endif %}
+                        <i class="fa fa-user fa-2x like-him">
+                        </i>
+                        <div class="bg-user">
+                            <div onclick="location.href='/profile/{{ item.user.username }}'"
+                                 class="profile-user-bg">{% avatar item.user.username %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="name-friend">
+                        <a href="/profile/{{ item.user.username }}">@{{ item.user.username }}
+                            ({{ item.get_rol_verbose }})</a><br><br>
+                        <p>{{ item.user.first_name }} {{ item.user.last_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% show_more %}

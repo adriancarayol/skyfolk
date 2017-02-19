@@ -1,42 +1,47 @@
 {% extends "account/base_interface.html" %}
 {% load i18n %}
 
-{% load url from future %}
+
 {% block bodyclass %}about{% endblock %}
-{% block title %} <title> Mensajes privados - {{user.username }}</title> {% endblock %}
+{% block title %} <title> Mensajes privados - {{ user.username }}</title> {% endblock %}
 
 {% block extra-js %}
 
 {% endblock %}
 <!-- bloques de estilos para cada pagina -->
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/mensajes_privados.css" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mensajes_privados.css"/>
 {% endblock %}
 <body>
 
 {% block content %}
-<div class="container">
+    <div class="container">
     <div class="row">
     <div id="nav-menu-messages" class="col l2 m12 s12 wrapper-config-menu">
         <ul class="menu-config">
-            <li id="config-profile" onclick="window.location.href='/messages/inbox'">Inbox<i class="material-icons right">inbox</i></li>
-            <li id="config-password" onclick="window.location.href='/messages/compose'">Componer<i class="material-icons right">create</i></li>
-            <li onclick="window.location.href='/messages/outbox'">Enviados<i class="material-icons right">forward</i></li>
+            <li id="config-profile" onclick="window.location.href='/messages/inbox'">Inbox<i
+                    class="material-icons right">inbox</i></li>
+            <li id="config-password" onclick="window.location.href='/messages/compose'">Componer<i
+                    class="material-icons right">create</i></li>
+            <li onclick="window.location.href='/messages/outbox'">Enviados<i class="material-icons right">forward</i>
+            </li>
             <li onclick="window.location.href='/messages/trash'">Papelera<i class="material-icons right">delete</i></li>
         </ul>
     </div>
     {% block body %}
     {% endblock %}
-      <div id="nav-menu-messages-contact" class="col l2 m12 s12 wrapper-config-menu-contact">
-          <ul class="menu-config">
+    <div id="nav-menu-messages-contact" class="col l2 m12 s12 wrapper-config-menu-contact">
+        <ul class="menu-config">
             <li href="#!" class="center-align">Contactos ({{ friends_top12|length }})</li>
             {% for item in friends_top12 %}
-            <li onclick="window.location.href='/messages/compose/{{item.user__username}}'"><i class="material-icons right">account_circle</i>({{item.user__username}})</li>
+                <li onclick="window.location.href='/messages/compose/{{ item.user__username }}'"><i
+                        class="material-icons right">account_circle</i>({{ item.user__username }})
+                </li>
             {% endfor %}
             <li href="#!"><i class="material-icons right">group</i>Equipo desarrolladores</li>
-          </ul>
-        </div>
-    {% endblock %}
+        </ul>
+    </div>
+{% endblock %}
 </div>
 </div>
 </body>

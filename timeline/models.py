@@ -1,9 +1,11 @@
-from django.db import models
 from django.contrib.auth.models import User
-from user_profile.models import UserProfile
-from publications.models import Publication
-from model_utils import Choices
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+from model_utils import Choices
+
+from publications.models import Publication
+from user_profile.models import UserProfile
+
 
 # TODO
 class TimelineManager(models.Manager):
@@ -26,6 +28,7 @@ class TimelineManager(models.Manager):
 
         return timeline
 
+
 class Timeline(models.Model):
     publication = models.ForeignKey(Publication, null=True, related_name='publications')
     author = models.ForeignKey(UserProfile, related_name='from_timeline', null=True)
@@ -38,7 +41,7 @@ class Timeline(models.Model):
     objects = TimelineManager()
 
     class Meta:
-        ordering = ('-insertion_date', )
+        ordering = ('-insertion_date',)
 
     def __unicode__(self):
         if self.publication.content:

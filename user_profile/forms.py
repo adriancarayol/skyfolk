@@ -1,16 +1,16 @@
 # encoding:utf-8
+from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
-from django.utils.translation import ugettext_lazy as _
-from allauth.account.forms import LoginForm
-from django.db import IntegrityError
-from user_profile.models import UserProfile, AuthDevices
 from django.core.mail import send_mail
-from dal import autocomplete
+from django.core.validators import RegexValidator
+from django.db import IntegrityError
+from django.utils.translation import ugettext_lazy as _
+
+from user_profile.models import UserProfile, AuthDevices
+
 
 class CustomLoginForm(LoginForm):
-
     def __init__(self, *args, **kwargs):
         super(CustomLoginForm, self).__init__(*args, **kwargs)
         auth_browser = forms.CharField(required=False)
@@ -23,7 +23,8 @@ class CustomLoginForm(LoginForm):
         if auth_token_device:
             try:
                 components = auth_token_device.split()
-                device, created = AuthDevices.objects.get_or_create(user_profile=user_profile, browser_token=components.pop(0))
+                device, created = AuthDevices.objects.get_or_create(user_profile=user_profile,
+                                                                    browser_token=components.pop(0))
                 if created:
                     device.save()
                     send_mail(
@@ -46,9 +47,7 @@ class CustomLoginForm(LoginForm):
                 fail_silently=False,
             )
 
-
         return super(CustomLoginForm, self).login(request=request, redirect_url=redirect_url)
-
 
 
 class SearchForm(forms.Form):
@@ -64,6 +63,7 @@ class SearchForm(forms.Form):
                                                                'pattern': '.{1,}',
                                                                'required title': '1 character minimum'}))
 
+
 class AdvancedSearchForm(forms.Form):
     """
     Formulario para la vista avanzada
@@ -72,18 +72,21 @@ class AdvancedSearchForm(forms.Form):
     all_words = forms.CharField(label="", help_text="Todas estas palabras:", required=False,
                                 widget=forms.TextInput(attrs={'placeholder': 'username123, deportes, musica'}))
     word_or_exactly_word = forms.CharField(label="", help_text="Palabra o frase exacta", required=False,
-                                         widget=forms.TextInput(attrs={'placeholder': '"Musica de los 90"'}))
+                                           widget=forms.TextInput(attrs={'placeholder': '"Musica de los 90"'}))
     some_words = forms.CharField(label="", help_text="Alguna de estas palabras", required=False,
-                                widget=forms.TextInput(attrs={'placeholder': 'perros y/o gatos'}))
+                                 widget=forms.TextInput(attrs={'placeholder': 'perros y/o gatos'}))
 
     none_words = forms.CharField(label="", help_text="Ninguna de estas palabras", required=False,
-                                widget=forms.TextInput(attrs={'placeholder': 'fútbol, baloncesto'}))
+                                 widget=forms.TextInput(attrs={'placeholder': 'fútbol, baloncesto'}))
 
     hashtags = forms.CharField(label="", help_text="Estas etiquetas", required=False,
-                                widget=forms.TextInput(attrs={'placeholder': '#musica, #cine'}))
+                               widget=forms.TextInput(attrs={'placeholder': '#musica, #cine'}))
 
     regex_string = forms.CharField(label="", help_text="Esta expresión regular", required=False,
-                                widget=forms.TextInput(attrs={'placeholder': '"^The": Cadena que comience con "The"'}))
+                                   widget=forms.TextInput(
+                                       attrs={'placeholder': '"^The": Cadena que comience con "The"'}))
+
+
 class SignupForm(forms.Form):
     """
     Formulario de registro.
@@ -103,8 +106,8 @@ class SignupForm(forms.Form):
     def save(self, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        user.save() # Guardamos el usuario
-        user.profile.save() # Creamos el perfil
+        user.save()  # Guardamos el usuario
+        user.profile.save()  # Creamos el perfil
 
 
 class UserForm(forms.ModelForm):
@@ -138,7 +141,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('backImage', 'status', )  # Añadir 'image' si decidimos quitar django-avatar.
+        fields = ('backImage', 'status',)  # Añadir 'image' si decidimos quitar django-avatar.
         # fields = ('image', 'backImage', 'status')
 
 
@@ -159,13 +162,14 @@ class PrivacityForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('privacity', )
+        fields = ('privacity',)
 
 
 class DeactivateUserForm(forms.ModelForm):
     """
     Formulario para desactivar la cuenta del usuario.
     """
+
     class Meta:
         model = User
         fields = ['is_active']
@@ -178,6 +182,7 @@ class DeactivateUserForm(forms.ModelForm):
     def clean_is_active(self):
         is_active = self.cleaned_data["is_active"]
         return is_active
+
 
 class ThemesForm(forms.Form):
     """

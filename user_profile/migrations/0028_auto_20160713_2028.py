@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('user_profile', '0027_remove_userprofile_avatar_path'),
     ]

@@ -1,54 +1,59 @@
 {% extends "django_messages/base.html" %}
 {% load i18n %}
-{% block title %}<title>{% trans "Compose Message"%}</title>{% endblock %}
+{% block title %}<title>{% trans "Compose Message" %}</title>{% endblock %}
 {% block body %}
     {% if parent_body %}
-    <div class="col l8 m12 m12 parent-body"><a href="/profile/{{ parent_username }}">{{ parent_username }}</a> <b>escribió</b>: {{ parent_body }}</div>
+        <div class="col l8 m12 m12 parent-body"><a href="/profile/{{ parent_username }}">{{ parent_username }}</a> <b>escribió</b>: {{ parent_body }}
+        </div>
     {% endif %}
-        <div class="col l8 m12 s12 compose-body">
-            <form action="" method="post">{% csrf_token %}
+    <div class="col l8 m12 s12 compose-body">
+        <form action="" method="post">{% csrf_token %}
             <div class="z-depth-1 compose_table">
                 <div class="row">
-                  <div class="row">
-                      {{ form.recipient.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">account_circle</i>
-                        {{ form.recipient }}
-                        <label for="id_recipient">{% trans "Recipient"%}</label>
+                    <div class="row">
+                        {{ form.recipient.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            {{ form.recipient }}
+                            <label for="id_recipient">{% trans "Recipient" %}</label>
+                        </div>
                     </div>
-                  </div>
-                 </div>
+                </div>
                 <div class="row">
-                  <div class="row">
-                      {{ form.subject.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">subject</i>
-                        {{ form.subject }}
-                        <label for="id_subject">{% trans "Subject"%}</label>
+                    <div class="row">
+                        {{ form.subject.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">subject</i>
+                            {{ form.subject }}
+                            <label for="id_subject">{% trans "Subject" %}</label>
+                        </div>
                     </div>
-                  </div>
-                 </div>
-                 <div class="row">
-                  <div class="row">
-                      {{ form.body.errors }}
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">mode_edit</i>
-                        {{ form.body }}
-                        <label for="id_body">{% trans "Body"%}</label>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        {{ form.body.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">mode_edit</i>
+                            {{ form.body }}
+                            <label for="id_body">{% trans "Body" %}</label>
+                        </div>
                     </div>
-                  </div>
-                 </div>
-                <button class="btn waves-effect waves-light right" type="submit" value="{% trans "Send" %} &raquo;">Enviar
+                </div>
+                <button class="btn waves-effect waves-light right" type="submit" value="{% trans "Send" %} &raquo;">
+                    Enviar
                     <i class="material-icons right">send</i>
                 </button>
             </div>
-            </form>
-        </div>
+        </form>
+    </div>
     <!-- Reajusta el tamaño del textarea, conforme vamos escribiendo -->
-	<script>
-		autosize(document.querySelectorAll('textarea'));
-	</script>
     <script>
-  	    $('#nav-menu-messages').find('li:nth-child(2)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
-	</script>
+        autosize(document.querySelectorAll('textarea'));
+    </script>
+    <script>
+        $('#nav-menu-messages').find('li:nth-child(2)').css({
+            'background-color': 'rgba(0,0,0,0.1)',
+            'color': '#1e88e5'
+        });
+    </script>
 {% endblock %}

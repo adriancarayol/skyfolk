@@ -1,6 +1,7 @@
 from avatar.models import Avatar
 from user_profile.models import UserProfile
 
+
 def get_author_avatar(authorpk):
     """
     Devuelve el avatar del autor de la publicacion pasada como parametro

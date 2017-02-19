@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('user_profile', '0022_userprofile_hiddenmenu'),
         ('timeline', '0005_auto_20151011_1333'),

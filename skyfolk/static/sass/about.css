@@ -2,141 +2,160 @@
 @import url(http://fonts.googleapis.com/css?family=Lato);
 @import url(http://fonts.googleapis.com/css?family=Pacifico); /* ONLY FOR LOGO */
 
-
 body {
-	padding: 0;
-	background: none;
-	font-family: 'Open Sans', sans-serif;
+    padding: 0;
+    background: none;
+    font-family: 'Open Sans', sans-serif;
 }
 
 h2 {
-	font-family: 'Lato', sans-serif;
+    font-family: 'Lato', sans-serif;
 }
+
 .parallax-container {
-      height: 350px;
- }
+    height: 350px;
+}
 
 .sk_info {
-	margin-left: 7px;
-	font-size: 1.2em;
-	color: #616161;
+    margin-left: 7px;
+    font-size: 1.2em;
+    color: #616161;
 }
+
 .tarjetas_info {
-	position: relative;
-	margin-left: 20%;
+    position: relative;
+    margin-left: 20%;
 }
+
 .logotipo_skyfolk {
-	position: fixed;
-	font-family: "Pacifico", cursive !important;
-	margin: auto;
-	left: 5%;
-	cursor: pointer;
-	top: 0px;
-	font-size: 1.7em;
-	letter-spacing: 0.2px;
-	color: #555;
+    position: fixed;
+    font-family: "Pacifico", cursive !important;
+    margin: auto;
+    left: 5%;
+    cursor: pointer;
+    top: 0px;
+    font-size: 1.7em;
+    letter-spacing: 0.2px;
+    color: #555;
 }
+
 .logotipo_skyfolk b {
-  color: #0096d7;
-  text-shadow: 1px 1px 1px #ccc; }
+    color: #0096d7;
+    text-shadow: 1px 1px 1px #ccc;
+}
+
 .icon_info, .icon_info_1, .icon_info_2 {
-	position: relative;
-	top: 45px;
-	margin: auto;
-	width: 80px;
-	height: 80px;
-	display: block;
-	border-radius: 100%;
+    position: relative;
+    top: 45px;
+    margin: auto;
+    width: 80px;
+    height: 80px;
+    display: block;
+    border-radius: 100%;
 }
+
 .icon_info i {
-	text-align: center;
-	color: #bbdefb;
+    text-align: center;
+    color: #bbdefb;
 }
+
 .icon_info_1 i {
-	color: #1e88e5;
+    color: #1e88e5;
 }
+
 .icon_info_2 i {
-	color: #42a5f5;
+    color: #42a5f5;
 }
+
 .info-logo-sk {
-	position: relative;
-	width: 200px;
-	height: 200px;
-	margin: auto;
-	border-radius: 100%;
-	cursor: pointer;
-	border: 2px solid #eee;
-	-webkit-transition: all .3s ease-in;
-	-moz-transition: all .3s ease-in;
-	transition: all .3s ease-in;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    border-radius: 100%;
+    cursor: pointer;
+    border: 2px solid #eee;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    transition: all .3s ease-in;
 }
+
 .info-logo-sk:hover {
-	border-color: #1e88e5;
+    border-color: #1e88e5;
 }
+
 .info-logo-sk img {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
+
 /* Out team - About us */
 .meet-team {
-	color: #616161;
-	font-size: 1.2em;
+    color: #616161;
+    font-size: 1.2em;
 }
+
 .our-card-1, .our-card-2, .our-card-3 {
-	height: 300px;
-	margin-right: 20px;
-	margin-top: 20px;
-	max-width: 500px;
-	position: relative;
-	left: 9%;
+    height: 300px;
+    margin-right: 20px;
+    margin-top: 20px;
+    max-width: 500px;
+    position: relative;
+    left: 9%;
 }
+
 .info-our-profile {
-	position: relative;
-	margin: auto;
-	display: block;
-	margin-left: 8%;
-	width: 90%;
+    position: relative;
+    margin: auto;
+    display: block;
+    margin-left: 8%;
+    width: 90%;
 }
+
 .info-our-profile .name {
-	position: relative;
-	top: 0;
-	width: 100%;
-	height: 20%;
-	background-color: transparent;
-	border-bottom: 1px solid #e0e0e0;
-	text-align: center;
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 20%;
+    background-color: transparent;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
 }
+
 .info-class {
-	position: relative;
-	width: 100%;
-	height: 70%;
-	background-color: transparent;
-	text-align: center;
-	margin-top: 20px;
+    position: relative;
+    width: 100%;
+    height: 70%;
+    background-color: transparent;
+    text-align: center;
+    margin-top: 20px;
 }
+
 .info-class i {
-	color: #ef5350;
-	position: relative;
-	top: 0px;
-	-webkit-transition-property: top, bottom;
-  -webkit-transition-duration: 0.5s;
-	-moz-transition-property: top, bottom;
-	-moz-transition-duration: 0.5s;
-	transition-property: top, bottom;
-	transition-duration: 0.5s;
+    color: #ef5350;
+    position: relative;
+    top: 0px;
+    -webkit-transition-property: top, bottom;
+    -webkit-transition-duration: 0.5s;
+    -moz-transition-property: top, bottom;
+    -moz-transition-duration: 0.5s;
+    transition-property: top, bottom;
+    transition-duration: 0.5s;
 }
+
 .info-class i:hover {
-	top: -5px;
+    top: -5px;
 }
+
 .info-class span {
-	color: #757575;
-	cursor: pointer;
+    color: #757575;
+    cursor: pointer;
 }
 
 /* Special thanks */
 
 .info-thanks {
-	position: relative;
-	margin: auto;
-	width: 70%;
+    position: relative;
+    margin: auto;
+    width: 70%;
 }

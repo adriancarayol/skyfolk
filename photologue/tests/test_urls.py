@@ -1,4 +1,5 @@
 from django.conf.urls import *
+
 from ..sitemaps import GallerySitemap, PhotoSitemap
 
 urlpatterns = patterns('',
@@ -11,5 +12,5 @@ sitemaps = {'photologue_galleries': GallerySitemap,
 
 urlpatterns += patterns('',
                         (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps':
-                                                                                     sitemaps})
+                                                                                         sitemaps})
                         )

@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
 
 
 def about(request, view):
@@ -15,4 +14,4 @@ def about(request, view):
     elif view == "special":
         plantilla = 'about/special.html'
 
-    return render(request,plantilla)
+    return render(request, plantilla)

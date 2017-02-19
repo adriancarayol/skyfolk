@@ -1,21 +1,61 @@
 {% comment %}
-  Menu de notificaciones verticales
+Menu de notificaciones verticales
 {% endcomment %}
-{% load notifications_tags %}
-<script src="{{STATIC_URL}}js/notify.js" type="text/javascript"></script>
-{% register_notify_callbacks callbacks='fill_notification_list,fill_notification_badge' menu_id='list-notify' %}
+{% load humanize %}
+{% load avatar_tags %}
+<script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+<script src="{{ STATIC_URL }}js/socket_notifications.js" type="text/javascript"></script>
+<script>
+UTILS_N.init([{{ user.pk }}]);
+UTILS_N.conn_socket();
+</script>
+
 <!-- MENU VERTICAL CON NOTIFICACIONES  -->
-{% comment %}
- {% endcomment %}
 <div id="notification-menu" class="side-nav nav-vertical-and-chat">
-    <ul id="list-notify" class="collection">
-        {% live_notify_list %}
-    </ul>
-    <div class="nav-vertical-controls">
-        <div class="divider"></div>
-        <div class="controls-notifications">
-            <a id="clear-notify" class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
-            <a href="/inbox/notifications/" id="clear-notify" class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Todas</a>
-        </div>
-    </div>
+	<ul id="list-notify" class="collection">
+		{% if notifications %}
+		{% for notification in notifications %}
+		<li class="collection-item avatar" data-id="notification.id">
+			<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification"
+							  data-notification="{{ notification.slug }}"></a>
+			{% comment %}
+			<img class="circle" src="{{ notification.actor_avatar }}">
+			{% endcomment %}
+			<div class="circle">
+				{% avatar notification.actor 64 %}
+			</div>
+			{% if notification.level != "new_follow" %}
+			<a class="title" href="/profile/{{ notification.actor }}">{{ notification.actor }}</a>
+			{% endif %}
+			<span class="title">{{ notification.verb|safe }}</span>
+			<p><i>{{ notification.timestamp|naturaltime }}</i></p>
+			{% if notification.level == "friendrequest" %}
+			<div class="notification-buttons">
+				<button data-notification="{{ notification.slug }}"
+	    class="accept-response waves-effect waves-light btn white-text green"
+     onclick="AJAX_respondFriendRequest({{ notification.actor_object_id }}, "accept", {{ notification.id }}); AJAX_delete_notification({{ notification.slug }}, {{ notification.id }})">
+					<i class="material-icons">done</i>
+				</button>
+				<button data-notification="{{ notification.slug }}"
+	    class="rejected-response waves-effect waves-light btn white-text red"
+     onclick="AJAX_respondFriendRequest({{ notification.actor_object_id }}, "rejected", {{ notification.id }}); AJAX_delete_notification({{ notification.slug }}, {{ notification.id }})">
+					<i class="material-icons">cancel</i>
+				</button>
+			</div>
+			{% endif %}
+			<a href="#" class="secondary-content">
+				<i class="material-icons">people</i>
+			</a>
+		</li>
+		{% endfor %}
+		{% endif %}
+	</ul>
+	<div class="nav-vertical-controls">
+		<div class="divider"></div>
+		<div class="controls-notifications">
+			<a id="clear-notify" class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
+			<a href="/inbox/notifications/" id="clear-notify"
+				   class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Todas</a>
+		</div>
+	</div>
 </div>

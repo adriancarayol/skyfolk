@@ -1,10 +1,9 @@
 // Facebook Theme for SweetAlert
 // By Tristan Edwards
 
-.sweet-overlay {  
+.sweet-overlay {
   border-radius: 3px;
 }
-
 
 .sweet-alert {
   $header-height: 41px;
@@ -128,7 +127,6 @@
   }
 }
 
-
 // Animations
 
 @mixin keyframes($animation-name) {
@@ -141,6 +139,14 @@
 }
 
 @include keyframes(animateErrorIcon) {
-  0%    { transform: rotateX(100deg), scale(0.5); -webkit-transform: rotateX(100deg), scale(0.5); opacity: 0; }
-  100%  { transform: rotateX(0deg),   scale(0.5); -webkit-transform: rotateX(0deg),   scale(0.5); opacity: 1; }
+  0% {
+    transform: rotateX(100deg), scale(0.5);
+    -webkit-transform: rotateX(100deg), scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0deg), scale(0.5);
+    -webkit-transform: rotateX(0deg), scale(0.5);
+    opacity: 1;
+  }
 }

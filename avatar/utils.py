@@ -1,8 +1,8 @@
 import hashlib
 
 from django.core.cache import cache
-from django.utils import six
 from django.template.defaultfilters import slugify
+from django.utils import six
 
 try:
     from django.utils.encoding import force_bytes
@@ -12,7 +12,6 @@ except ImportError:
 from django.contrib.auth import get_user_model
 
 from avatar.conf import settings
-
 
 cached_funcs = set()
 
@@ -54,6 +53,7 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
     if not settings.AVATAR_CACHE_ENABLED:
         def decorator(func):
             return func
+
         return decorator
 
     def decorator(func):
@@ -66,7 +66,9 @@ def cache_result(default_size=settings.AVATAR_DEFAULT_SIZE):
                 result = func(user, size or default_size)
                 cache_set(key, result)
             return result
+
         return cached_func
+
     return decorator
 
 

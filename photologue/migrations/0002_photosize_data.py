@@ -1,11 +1,10 @@
 # encoding: utf8
 from __future__ import unicode_literals
 
-from django.db import models, migrations
+from django.db import migrations
 
 
 def initial_photosizes(apps, schema_editor):
-
     PhotoSize = apps.get_model('photologue', 'PhotoSize')
 
     # If there are already Photosizes, then we are upgrading an existing
@@ -32,7 +31,6 @@ def initial_photosizes(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('photologue', '0001_initial'),
         ('contenttypes', '0001_initial'),

@@ -1,7 +1,11 @@
-from django import template
-from publications.models import Publication
 import re
+
+from django import template
+
+from publications.models import Publication
+
 register = template.Library()
+
 
 # Remplaza ocurrencias en el contenido del comentario
 @register.filter(name='replace_decorators')
@@ -9,7 +13,7 @@ def replace_tags(value):
     bold = re.findall('\*[^\*]+\*', value)
     ''' Bold para comentario '''
     for b in bold:
-        value = value.replace(b, '<b>%s</b>' % (b[1:len(b)-1]))
+        value = value.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
     ''' Italic para comentario '''
     italic = re.findall('~[^~]+~', value)
     for i in italic:
@@ -20,6 +24,7 @@ def replace_tags(value):
         value = value.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
     return value
 
+
 # Devuelve el numero total de veces que se ha compartido un comentario
 @register.filter(name='total_shares')
 def total_shares(pub):
@@ -29,6 +34,7 @@ def total_shares(pub):
     else:
         return ""
 
+
 # Devuelve el numero total de me gustas
 @register.filter(name='total_likes')
 def total_likes(pub):
@@ -37,6 +43,7 @@ def total_likes(pub):
         return total
     else:
         return ""
+
 
 # Devuelve el numero total de no me gusta
 @register.filter(name='total_hates')

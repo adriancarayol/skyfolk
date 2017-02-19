@@ -3,50 +3,54 @@
 
 {% block textarea %}@{{ user.username }} {% endblock %}
 {% block contenido %}
-<style>
-.perfil-grande
-{
-	float: left;
-	height: 75px;
-	margin: 5px;
-	width: 75px;
-	border-radius: 15px;
-}
-</style>
-<section>
-	<header>
-		<img src="{% if profile.avatar %}{{ profile.avatar }}{% else %}{{ STATIC_URL }}default.png{% endif %}" class="perfil-grande"><h2>{{ user.get_full_name }} (@{{ user.username }})</h2>
-		<h3>{{ profile.ubicacion }}</h3>
-		<p>
-			{{ profile.frase|linebreaksbr }}
-		</p><p>
-			Joined on {{ user.date_joined }}<br>
-			Email: <a href="mailto:{{ user.email }}">{{ user.email }}</a>
-		</p>
-		{% if logueado.is_authenticated %}
-		{% if logueado != user %}
-			<form action="/twitter/follow/" method="post">
-				{% csrf_token %}
-				<input type="hidden" name="user" value="{{ user.username }}">
-				<p>
-					{% if following %}
-						<input class="btn btn-danger" type="submit" value="Dejar de seguir">
-					{% else %}
-						<input class="btn btn-success" type="submit" value="Seguir">
-					{% endif %}
-				</p>
-			</form>
-		{% endif %}
-		{% endif %}
-		<div class="pagination">
-			<ul>
-				<li><a href="#tweets">{{ length }} tweet{{ length|pluralize }}</a></li>
-				<li><a href="/twitter/seguidores/{{ user.username }}/">{{ seguidores|length }} seguidores</li></a>
-				<li><a href="/twitter/siguiendo/{{ user.username }}/">{{ siguiendo|length }} siguiendo</li></a>
-			</ul>
-	</header>
-</section>
-{% comment %}<section id="tweets">
+    <style>
+        .perfil-grande {
+            float: left;
+            height: 75px;
+            margin: 5px;
+            width: 75px;
+            border-radius: 15px;
+        }
+    </style>
+    <section>
+        <header>
+            <img src="{% if profile.avatar %}{{ profile.avatar }}{% else %}{{ STATIC_URL }}default.png{% endif %}"
+                 class="perfil-grande">
+            <h2>{{ user.get_full_name }} (@{{ user.username }})</h2>
+            <h3>{{ profile.ubicacion }}</h3>
+            <p>
+                {{ profile.frase|linebreaksbr }}
+            </p>
+            <p>
+                Joined on {{ user.date_joined }}<br>
+                Email: <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+            </p>
+            {% if logueado.is_authenticated %}
+                {% if logueado != user %}
+                    <form action="/twitter/follow/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="user" value="{{ user.username }}">
+                        <p>
+                            {% if following %}
+                                <input class="btn btn-danger" type="submit" value="Dejar de seguir">
+                            {% else %}
+                                <input class="btn btn-success" type="submit" value="Seguir">
+                            {% endif %}
+                        </p>
+                    </form>
+                {% endif %}
+            {% endif %}
+            <div class="pagination">
+                <ul>
+                    <li><a href="#tweets">{{ length }} tweet{{ length|pluralize }}</a></li>
+                    <li><a href="/twitter/seguidores/{{ user.username }}/">{{ seguidores|length }} seguidores</li>
+                    </a>
+                    <li><a href="/twitter/siguiendo/{{ user.username }}/">{{ siguiendo|length }} siguiendo</li>
+                    </a>
+                </ul>
+        </header>
+    </section>
+    {% comment %}<section id="tweets">
 	{% if tweets|length %}
 		<header id="tweets">
 			<h2>Ultimos tweets</h2>
@@ -88,5 +92,5 @@
 		</div>
 	</footer>
 </section>{% endcomment %}
-{% include 'twitter/tweets.html' %}
+    {% include 'twitter/tweets.html' %}
 {% endblock %}

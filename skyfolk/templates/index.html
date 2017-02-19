@@ -8,7 +8,7 @@
             Not Logged In
         {% endif %}
     </title>
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
 </head>
 <body class="{% if request.user.is_authenticated %}logged-in{% else %}logged-out{% endif %}">
 {% if request.user.is_authenticated %}
@@ -20,7 +20,7 @@
         {{ request.user.username }}
     {% endif %}
     {% if request.user.profile.account_verified %} (verified) {% else %} (unverified) {% endif %}
- 
+
 {% else %}
     <a href="/accounts/login/" class="pull-right">Login</a>
 {% endif %}

@@ -1,10 +1,8 @@
 from django.conf.urls import url
-from django.views.generic import RedirectView
-from django.core.urlresolvers import reverse_lazy
-
-from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-
+from django.core.urlresolvers import reverse_lazy
+from django.views.decorators.http import require_POST
+from django.views.generic import RedirectView
 
 from .views import PhotoDetailView, GalleryListView, \
     GalleryDetailView, PhotoArchiveIndexView, PhotoDateDetailView, PhotoDayArchiveView, \
@@ -13,8 +11,6 @@ from .views import PhotoDetailView, GalleryListView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
     PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, edit_photo, \
     upload_zip_form, upload_photo, collection_list
-
-
 
 """NOTE: the url names are changing. In the long term, I want to remove the 'pl-'
 prefix on all urls, and instead rely on an application namespace 'photologue'.
@@ -25,7 +21,6 @@ twice within a few releases, could be confusing, so instead I am updating URLs b
 The new style will coexist with the existing 'pl-' prefix for a couple of releases.
 
 """
-
 
 urlpatterns = [
     url(r'^gallery/(?P<year>\d{4})/(?P<month>[0-9]{2})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
@@ -77,13 +72,11 @@ urlpatterns = [
 
     url(r'^edit/photo/(?P<photo_id>\d+)/$', require_POST(login_required(edit_photo)), name='edit-photo'),
 
-
     url(r'^submit_zip/$', require_POST(login_required(upload_zip_form)), name='upload-zip'),
 
     url(r'^submit_photo/$', require_POST(login_required(upload_photo)), name='upload-photo'),
 
     url(r'^multimedia/collection/by(?P<username>[\w-]+)/(?P<tagname>[^,]+)/$', collection_list, name='collection-list'),
-
 
     url(r'^multimedia/(?P<username>[\w-]+)/$',
         photo_list,

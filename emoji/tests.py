@@ -10,7 +10,6 @@ from django.test import TestCase
 from . import Emoji as EmojiInstance
 from .models import Emoji, UNICODE_WIDE
 
-
 # Anyone know how to mock out so os.listdir only lists what I want
 # instead of hitting the file system?
 TOTAL_EMOJIS = 888

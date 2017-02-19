@@ -1,7 +1,12 @@
 <ul class="left hide-on-med-and-down" id="menu-hr">
-    <li title="Perfil"><a href="{% url 'user_profile:profile' request.user %}" class="blue-text text-darken-1"><i class="material-icons">account_box</i></a></li>
-    <li title="Crear mensaje" id="publish2"><a class="blue-text text-darken-1"><i class="material-icons">create</i></a></li>
-    <li title="Seguidos"><a href="/following/{{ request.user.username }}" class="blue-text text-darken-1"><i class="material-icons">people</i></a></li>
-    <li title="Seguir usuario" id="agregar-amigo"> <a class="blue-text text-darken-1"><i class="material-icons">add</i></a></li>
-    <li title="Salir""><a href="{% url 'account_logout' %}" class="blue-text text-darken-1"><i class="material-icons">exit_to_app</i></a></li>
+    <li title="Perfil"><a href="{% url 'user_profile:profile' request.user %}" class="blue-text text-darken-1"><i
+            class="material-icons">account_box</i></a></li>
+    <li title="Crear mensaje" id="publish2"><a class="blue-text text-darken-1"><i class="material-icons">create</i></a>
+    </li>
+    <li title="Seguidos"><a href="/following/{{ request.user.username }}" class="blue-text text-darken-1"><i
+            class="material-icons">people</i></a></li>
+    <li title="Seguir usuario" id="agregar-amigo"><a class="blue-text text-darken-1"><i
+            class="material-icons">add</i></a></li>
+    <li title="Salir"><a href="{% url 'account_logout' %}" class="blue-text text-darken-1"><i
+        class="material-icons">exit_to_app</i></a></li>
 </ul>

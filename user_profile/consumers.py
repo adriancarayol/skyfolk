@@ -1,8 +1,12 @@
 import json
+import logging
+
 from channels import Group
-from .models import UserProfile
+from channels.auth import channel_session_user, channel_session_user_from_http
 from django.core.exceptions import ObjectDoesNotExist
-from channels.auth import http_session_user, channel_session_user, channel_session_user_from_http
+
+from .models import UserProfile
+
 
 # The "slug" keyword argument here comes from the regex capture group in
 #
@@ -21,6 +25,8 @@ def connect_blog(message, username):
         profile_blog = UserProfile.objects.get(user__username=username)
         visibility = profile_blog.is_visible(user.profile, user.pk)
         if visibility != ("all" or None):
+            logging.warning('User: {} no puede conectarse al socket de: profile: {}'.format(user.username, username))
+            message.reply_channel.send({"accept": False})
             return
     except ObjectDoesNotExist:
         # You can see what messages back to a WebSocket look like in the spec:
@@ -34,12 +40,13 @@ def connect_blog(message, username):
             "close": True,
         })
         return
-
     # Each different client has a different "reply_channel", which is how you
     # send information back to them. We can add all the different reply channels
     # to a single Group, and then when we send to the group, they'll all get the
     # same message.
+    message.reply_channel.send({"accept": True})
     Group(profile_blog.group_name).add(message.reply_channel)
+
 
 @channel_session_user
 def disconnect_blog(message, username):
@@ -58,3 +65,18 @@ def disconnect_blog(message, username):
     # It's called .discard() because if the reply channel is already there it
     # won't fail - just like the set() type.
     Group(profile_blog.group_name).discard(message.reply_channel)
+
+@channel_session_user_from_http
+def ws_connect(message):
+    username = message.user.username
+    try:
+        profile = UserProfile.objects.get(user__username__iexact=username)
+    except ObjectDoesNotExist:
+        message.reply_channel.send({
+            "text": json.dumps({"error": "bad_slug"}),
+            "close": True,
+        })
+        return
+    # accept connection
+    message.reply_channel.send({"accept": True})
+    Group(profile.notification_channel).add(message.reply_channel)

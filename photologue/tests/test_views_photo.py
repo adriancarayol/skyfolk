@@ -1,10 +1,10 @@
 from django.test import TestCase
+
 from .factories import PhotoFactory
 from ..models import Photo
 
 
 class RequestPhotoTest(TestCase):
-
     urls = 'photologue.tests.test_urls'
 
     def setUp(self):

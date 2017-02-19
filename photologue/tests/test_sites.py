@@ -1,14 +1,13 @@
 import unittest
 
-from django.test import TestCase
-from django.contrib.sites.models import Site
 from django.conf import settings
+from django.contrib.sites.models import Site
+from django.test import TestCase
 
 from .factories import GalleryFactory, PhotoFactory
 
 
 class SitesTest(TestCase):
-
     urls = 'photologue.tests.test_urls'
 
     def setUp(self):

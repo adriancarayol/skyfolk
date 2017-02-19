@@ -16,9 +16,9 @@ Base para la interfaz en comun de todos los usuarios.
     <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}fonts/iconfont/material-icons.css">
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
-    <script src="{{STATIC_URL}}js/jquery-3.1.0.min.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/jquery-migrate-1.4.1.min.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/jquery-3.1.0.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/jquery-migrate-1.4.1.min.js" type="text/javascript"></script>
+    <!--<script src="{{STATIC_URL}}js/jquery-ui.min.js" type="text/javascript"></script>-->
     {% block title %} <title>Skyfolk - Bienvenido.</title> {% endblock %}
     {% block extra-js %}{% endblock %}
     <!-- bloques de estilos para cada pagina -->
@@ -279,6 +279,10 @@ Base para la interfaz en comun de todos los usuarios.
                             <button type="submit" id="btn_new_group"
                                     class="waves-effect waves-light btn right blue">
                                 Crear grupo<i class="material-icons right">people</i></button>
+                            <button type="submit" id="btn_close_group"
+                                    class="waves-effect waves-light btn right transparent black-text">
+                                Cerrar<i class="material-icons right">close</i>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -292,7 +296,6 @@ Base para la interfaz en comun de todos los usuarios.
 {% include "account/mobile-menu.html" %}
 {% block footer %}
     <script src="{{ STATIC_URL }}emoji/js/textarea_find_emoji.js" type="text/javascript"></script>
-    {{ groupForm.media }}
 {% endblock %}
 </body>
 </html>

@@ -1,17 +1,21 @@
+import json
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, HttpResponse
+from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
-from .models import UserGroups, LikeGroup
-from django.contrib.auth.decorators import login_required
+from el_pagination.decorators import page_template
+from el_pagination.views import AjaxListView
+
+from publications.forms import PublicationForm
+from user_profile.forms import SearchForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
-from django.db import IntegrityError
-from django.shortcuts import get_object_or_404, HttpResponse
-from django.contrib.auth import get_user_model
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from user_profile.forms import SearchForm
-from publications.forms import PublicationForm
-import json
+from .models import UserGroups, LikeGroup
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -31,7 +35,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
         form = self.get_form()
 
         owner = get_object_or_404(get_user_model(),
-                                    pk=request.POST['owner'])
+                                  pk=request.POST['owner'])
 
         # Comprobamos si somos el mismo usuario
         if self.request.user.pk != owner.pk:
@@ -55,6 +59,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
         print(form.errors)
         return self.form_invalid(form=form)
 
+
 user_group_create = login_required(UserGroupCreate.as_view(), login_url='/')
 
 
@@ -66,11 +71,14 @@ class UserGroupList(ListView):
     model = UserGroups
     template_name = "groups/list_group.html"
 
+
 group_list = login_required(UserGroupList.as_view(), login_url='/')
 
 
 @login_required(login_url='/')
-def group_profile(request, groupname):
+@page_template('groups/user_entries.html')
+def group_profile(request, groupname, template='groups/group_profile.html',
+                  extra_context=None):
     """
     Vista del perfil de un grupo
     :param request:
@@ -78,23 +86,31 @@ def group_profile(request, groupname):
     """
     user = request.user
     group_profile = get_object_or_404(UserGroups,
-                                      slug__iexact=groupname)
+                                      slug__exact=groupname)
     follow_group = UserGroups.objects.is_follow(group_id=group_profile.id,
                                                 user_id=user)
-    print('Usuario: {} sigue a: {}, {}'.format(user.username, group_profile.name, follow_group))
-    template = "groups/group_profile.html"
     self_initial = {'author': user.pk, 'board_owner': user.pk}
     group_initial = {'owner': user.pk}
     likes = LikeGroup.objects.filter(to_like=group_profile).count()
     user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
+    users_in_group = group_profile.users.count()
+
     context = {'searchForm': SearchForm(request.POST),
                'publicationSelfForm': PublicationForm(initial=self_initial),
                'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
                'follow_group': follow_group,
                'likes': likes,
-               'user_like_group': user_like_group}
-    return render_to_response(template, context, context_instance=RequestContext(request))
+               'user_like_group': user_like_group,
+               'users_in_group': users_in_group,
+               'notifications': user.notifications.unread(),
+               'user_list': group_profile.users.all().values('user__username', 'user__first_name',
+                                                             'user__last_name')}
+
+    if extra_context is not None:
+        context.update(extra_context)
+
+    return render(request, template, context)
 
 
 @login_required(login_url='/')
@@ -102,7 +118,6 @@ def follow_group(request):
     """
     Vista para seguir a un grupo
     """
-    response = "error"
     if request.method == 'POST':
         if request.is_ajax():
             user = request.user
@@ -112,18 +127,25 @@ def follow_group(request):
                                       pk=group_id)
             try:
                 if user.pk != group.owner.pk:
-                    obj, created = group.users.get_or_create(user=user, rol='N')
+                    obj, created = group.users.get_or_create(
+                        user=user, rol='N')
                 else:
-                    return HttpResponse(json.dumps(response), content_type='application/javascript')
+                    return JsonResponse({
+                        'response': "own_group",
+                    })
             except IntegrityError:
                 created = False
             if not created:
-                response = "in_group"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                return JsonResponse({
+                    'response': "in_group"
+                })
             group.save()
-            response = "user_add"
-            return HttpResponse(json.dumps(response), content_type='application/javascript')
-    return HttpResponse(json.dumps(response), content_type='application/javascript')
+            return JsonResponse({
+                'response': "user_add"
+            })
+    return JsonResponse({
+        'response': "error"
+    })
 
 
 @login_required(login_url='/')
@@ -156,7 +178,6 @@ def like_group(request):
     """
     Funcion para dar like al perfil
     """
-    response = "error"
     if request.method == 'POST':
         if request.is_ajax():
             user = request.user
@@ -164,18 +185,51 @@ def like_group(request):
             group = get_object_or_404(UserGroups,
                                       pk=group_id)
 
+            print('user_pk: {} owner_pk: {}'.format(user.pk, group.owner.pk))
             if user.pk == group.owner.pk:
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                return JsonResponse(
+                    {'response': 'own_group'})
 
-            like, created = LikeGroup.objects.get_or_create(from_like=user, to_like=group)
-
+            like, created = LikeGroup.objects.get_or_create(
+                from_like=user, to_like=group)
+            print('Like: {}'.format(like))
             if not created:
                 like.delete()
-                response = "no_like"
+                return JsonResponse({'response': 'no_like'})
             else:
-                response = "like"
-            print('Like: {}'.format(like))
-            return HttpResponse(json.dumps(response), content_type='application/javascript')
-    return HttpResponse(json.dumps(response), content_type='application/javascript')
+                return JsonResponse({'response': 'like'})
+    return JsonResponse(
+        {'response': 'error'})
 
 
+class FollowersGroup(AjaxListView):
+    """
+    Vista con los seguidores (usuarios) de un grupo
+    """
+    context_object_name = 'user_list'
+    template_name = 'groups/followers.html'
+    page_template = 'groups/followers_page.html'
+
+    def get_queryset(self):
+        return UserGroups.objects.get(slug__exact=self.kwargs['groupname']).users.all()
+
+
+followers_group = login_required(FollowersGroup.as_view(), login_url='/')
+
+
+class LikeListGroup(AjaxListView):
+    """
+    Vista con los usuarios que han dado like a un grupo
+    """
+    context_object_name = 'like_list'
+    template_name = 'groups/user_likes.html'
+    page_template = 'groups/user_list_page.html'
+
+    def get_queryset(self):
+        group = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
+        return LikeGroup.objects.filter(to_like=group).values('from_like__username',
+                                                              'from_like__first_name', 'from_like__last_name',
+                                                              'from_like__profile__backImage')
+
+
+likes_group = login_required(LikeListGroup.as_view(), login_url='/')

@@ -6,16 +6,18 @@
 }
 
 [class*="entypo-"]:before {
-  font-family: 'entypo', sans-serif;
+    font-family: 'entypo', sans-serif;
 }
 
 body {
     padding: 0;
     background-color: #e0e0e0;
 }
+
 .container {
     min-width: 80%;
 }
+
 .button {
     background: #DCE0E0;
     position: relative;
@@ -74,7 +76,7 @@ body {
     font-family: Open Sans;
     font-weight: 400;
     border-left: 1px solid #fff;
-    border-left: 1px solid rgba(255,255,255,0.35);
+    border-left: 1px solid rgba(255, 255, 255, 0.35);
     color: #fff;
     font-size: 16px;
     left: 0;
@@ -96,6 +98,7 @@ body {
 .preloader-wrapper {
     left: 47%;
 }
+
 .loaderOut {
     opacity: 0;
 }

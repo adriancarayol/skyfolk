@@ -25,7 +25,10 @@ $whitewithopacity: rgba(255, 255, 255, .8)
     margin-right: 7px
     &:hover
       color: $blueskyfolk
+
 .wrapper-p
+  & .avatar_from_url
+
   & .current-avatar
     box-shadow: 0 1px 5px $shadowcolor
     min-height: 30%
@@ -56,7 +59,7 @@ $whitewithopacity: rgba(255, 255, 255, .8)
         display: inline-block
     & input[type="radio"]
       display: none
-    & #id_avatar
+    & .file_avatar
       overflow: hidden
       padding: 7px
       &::-webkit-file-upload-button
@@ -66,20 +69,25 @@ $whitewithopacity: rgba(255, 255, 255, .8)
         display: inline-block
         white-space: nowrap
         -webkit-user-select: none
-    & label[for="id_avatar"]
-      display: none
-    & img, label
-      position: relative
-      display: inline-block
-    & img
-      margin-left: 30px
-    & label
-      margin-bottom: 20px
-.wrapper-p
+    .list-avatar
+      label[for="id_avatar"]
+        display: none
+    .list-avatar
+      img, label
+        position: relative
+        display: inline-block
+    .list-avatar
+      img
+        margin-left: 30px
+    .list-avatar
+      label
+        margin-bottom: 20px
+
+.delete-avatars, .list-avatar
   .active
     border: 4px solid $blueskyfolk
 
-  /* DELETE AVATAR */
+/* DELETE AVATAR */
 .delete-avatars
   & input[type="checkbox"]
     display: none
@@ -97,7 +105,7 @@ $whitewithopacity: rgba(255, 255, 255, .8)
       display: inline-block
 
 /* IF AVATAR EMPTY */
-#id_avatar
+.file_avatar
   overflow: hidden
   padding: 7px
   &::-webkit-file-upload-button

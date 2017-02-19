@@ -1,10 +1,9 @@
-from .. import models
-from .helpers import PhotologueBaseTest
 from .factories import GalleryFactory, PhotoFactory
+from .helpers import PhotologueBaseTest
+from .. import models
 
 
 class GalleryTest(PhotologueBaseTest):
-
     def setUp(self):
         """Create a test gallery with 2 photos."""
         super(GalleryTest, self).setUp()

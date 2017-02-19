@@ -1,8 +1,8 @@
 /*jslint forin: true */
 
-;(function($) {
+;(function ($) {
     $.fn.extend({
-        mention: function(options) {
+        mention: function (options) {
             this.opts = {
                 users: [],
                 delimiter: '@',
@@ -13,7 +13,7 @@
             };
 
             var settings = $.extend({}, this.opts, options),
-                _checkDependencies = function() {
+                _checkDependencies = function () {
                     if (typeof $ == 'undefined') {
                         throw new Error("jQuery is Required");
                     }
@@ -24,7 +24,7 @@
                     }
                     return true;
                 },
-                _extractCurrentQuery = function(query, caratPos) {
+                _extractCurrentQuery = function (query, caratPos) {
                     var i;
                     for (i = caratPos; i >= 0; i--) {
                         if (query[i] == settings.delimiter) {
@@ -33,16 +33,16 @@
                     }
                     return query.substring(i, caratPos);
                 },
-                _matcher = function(itemProps) {
+                _matcher = function (itemProps) {
                     var i;
 
-                    if(settings.emptyQuery){
-	                    var q = (this.query.toLowerCase()),
-	                    	caratPos = this.$element[0].selectionStart,
-	                    	lastChar = q.slice(caratPos-1,caratPos);
-	                    if(lastChar==settings.delimiter){
-		                    return true;
-	                    }
+                    if (settings.emptyQuery) {
+                        var q = (this.query.toLowerCase()),
+                            caratPos = this.$element[0].selectionStart,
+                            lastChar = q.slice(caratPos - 1, caratPos);
+                        if (lastChar == settings.delimiter) {
+                            return true;
+                        }
                     }
 
                     for (i in settings.queryBy) {
@@ -50,7 +50,7 @@
                             var item = itemProps[settings.queryBy[i]].toLowerCase(),
                                 usernames = (this.query.toLowerCase()).match(new RegExp(settings.delimiter + '\\w+', "g")),
                                 j;
-                            if ( !! usernames) {
+                            if (!!usernames) {
                                 for (j = 0; j < usernames.length; j++) {
                                     var username = (usernames[j].substring(1)).toLowerCase(),
                                         re = new RegExp(settings.delimiter + item, "g"),
@@ -64,7 +64,7 @@
                         }
                     }
                 },
-                _updater = function(item) {
+                _updater = function (item) {
                     var data = this.query,
                         caratPos = this.$element[0].selectionStart,
                         i;
@@ -75,15 +75,15 @@
                         }
                     }
                     var replace = data.substring(i, caratPos),
-                    	textBefore = data.substring(0, i),
-                    	textAfter = data.substring(caratPos),
-                    	data = textBefore + settings.delimiter + item + textAfter;
+                        textBefore = data.substring(0, i),
+                        textAfter = data.substring(caratPos),
+                        data = textBefore + settings.delimiter + item + textAfter;
 
                     this.tempQuery = data;
 
                     return data;
                 },
-                _sorter = function(items) {
+                _sorter = function (items) {
                     if (items.length && settings.sensitive) {
                         var currentUser = _extractCurrentQuery(this.query, this.$element[0].selectionStart).substring(1),
                             i, len = items.length,
@@ -121,9 +121,9 @@
                     }
                     return items;
                 },
-                _render = function(items) {
+                _render = function (items) {
                     var that = this;
-                    items = $(items).map(function(i, item) {
+                    items = $(items).map(function (i, item) {
 
                         i = $(that.options.item).attr('data-value', item.username);
 
@@ -150,7 +150,7 @@
 
             $.fn.typeahead.Constructor.prototype.render = _render;
 
-            return this.each(function() {
+            return this.each(function () {
                 var _this = $(this);
                 if (_checkDependencies()) {
                     _this.typeahead($.extend({

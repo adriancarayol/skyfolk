@@ -1,23 +1,22 @@
-{% load url from future %}
 {% load i18n %}
 <!DOCTYPE html>
 <html>
-  <!-- codigo del modulo allauth -->
-  <head>
+<!-- codigo del modulo allauth -->
+<head>
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     {% endblock %}
-    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/setup.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/setup.css">
 
-    <link type="text/css" rel="stylesheet" href="{{STATIC_URL}}css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/materialize.min.css" media="screen,projection"/>
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.0.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/materialize.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/materialize.min.js"></script>
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
-  </head>
-  <body>
-    {% block body %}
-        {% comment "No es necesario" %}
+</head>
+<body>
+{% block body %}
+    {% comment "No es necesario" %}
     {% if messages %}
     <div class="div-messages">
       <strong>{% trans "Messages" %}:</strong>
@@ -29,41 +28,46 @@
     </div>
     {% endif %}
     {% endcomment %}
-<div class="display-info-reset-password">
-<div class="navbar-fixed">
-    <nav>
-      <div class="nav-wrapper white z-depth-1">
-          <a title="Inicio" href="/inicio" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
-          {% block base-title %}
-          
-          {% endblock %}
-      </div>
-    </nav>
-  </div>
+    <div class="display-info-reset-password">
+        <div class="navbar-fixed">
+            <nav>
+                <div class="nav-wrapper white z-depth-1">
+                    <a title="Inicio" href="/inicio" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
+                    {% block base-title %}
 
-</div>
-<div class="row">
-     {% block menu %}
-    <div class="col l4 offset-l4 col s12">
-    <div class="menu">
-      <strong>¿No necesitas recuperar o restablecer tu contraseña?</strong>
-      <ul>
-  {% if user.is_authenticated %}
-  <li><a class="waves-effect waves-light btn blue lighten-2" href="{% url 'account_email' %}">Change E-mail</a></li>
-  <li><a class="waves-effect waves-light btn blue lighten-2" href="{% url 'account_logout' %}">Sign Out</a></li>
-  {% else %}
-  <li><a class="waves-effect waves-light btn blue lighten-2" onclick="javascript:location.href='{% url 'account_login' %}'">Iniciar Sesión</a></li>
-  <li><a class="waves-effect waves-light btn blue lighten-2" onclick="javascript:location.href='{% url 'account_signup' %}'">Registrarme</a></li>
-  {% endif %}
-      </ul>
+                    {% endblock %}
+                </div>
+            </nav>
+        </div>
+
     </div>
+    <div class="row">
+        {% block menu %}
+            <div class="col l4 offset-l4 col s12">
+                <div class="menu">
+                    <strong>¿No necesitas recuperar o restablecer tu contraseña?</strong>
+                    <ul>
+                        {% if user.is_authenticated %}
+                            <li><a class="waves-effect waves-light btn blue lighten-2" href="{% url 'account_email' %}">Change
+                                E-mail</a></li>
+                            <li><a class="waves-effect waves-light btn blue lighten-2"
+                                   href="{% url 'account_logout' %}">Sign Out</a></li>
+                        {% else %}
+                            <li><a class="waves-effect waves-light btn blue lighten-2"
+                                   onclick="javascript:location.href='{% url 'account_login' %}'">Iniciar Sesión</a>
+                            </li>
+                            <li><a class="waves-effect waves-light btn blue lighten-2"
+                                   onclick="javascript:location.href='{% url 'account_signup' %}'">Registrarme</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        {% endblock %}
     </div>
-     {% endblock %}
-</div>
     {% block content %}
     {% endblock %}
-    {% endblock %}
-    {% block extra_body %}
-    {% endblock %}
-  </body>
+{% endblock %}
+{% block extra_body %}
+{% endblock %}
+</body>
 </html>

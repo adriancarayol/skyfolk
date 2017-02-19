@@ -1,13 +1,16 @@
+import hashlib
+import uuid
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.utils.http import urlencode
+from taggit.managers import TaggableManager
+
 import publications
 import timeline
 from notifications.models import Notification
-from datetime import datetime
-import hashlib
-from django.utils.http import urlencode
-from taggit.managers import TaggableManager
 from photologue.models import Photo
 
 RELATIONSHIP_FOLLOWING = 1
@@ -91,7 +94,7 @@ class UserProfileManager(models.Manager):
         """
         is_first_time_login = None
         user_profile = None
-        
+
         try:
             user_profile = self.get(user__id=user.pk)
         except ObjectDoesNotExist:
@@ -103,7 +106,7 @@ class UserProfileManager(models.Manager):
         if is_first_time_login:
             user_profile.is_first_login = False
             user_profile.save()
-        
+
         return is_first_time_login
 
     def get_last_login_user(self):
@@ -144,8 +147,8 @@ class UserProfile(models.Model):
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     is_first_login = models.BooleanField(default=True)
     tags = TaggableManager(blank=True)
+    personal_pin = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     objects = UserProfileManager()
-
 
     def __unicode__(self):
         return "{}'s profile".format(self.user.username)
@@ -153,22 +156,28 @@ class UserProfile(models.Model):
     class Meta:
         db_table = 'user_profile'
 
-
     @property
     def group_name(self):
         """
         Devuelve el nombre del canal para enviar las notificaciones
         """
         return "users-%s" % self.pk
-    """
-    def account_verified(self):
-        if self.user.is_authenticated:
-            result = EmailAddress.objects.filter(email=self.user.email)
-            if len(result):
-                return result[0].verified
-        return False
-    """
-    
+
+    @property
+    def notification_channel(self):
+        """
+        Devuelve el nombre del canal notification para cada usuario
+        """
+        return "notification-%s" % self.pk
+
+    @property
+    def news_channel(self):
+        """
+        Devuelve el nombre del canal para enviar actualizaciones
+        al tablon de inicio
+        """
+        return "news-%s" % self.pk
+
     def save(self, *args, **kwargs):
         # delete old image when replacing by updating the file
         try:
@@ -242,15 +251,14 @@ class UserProfile(models.Model):
             return "all"
 
         # Si el perfil es privado
-        if self.user.pk != user_pk and\
+        if self.user.pk != user_pk and \
                         self.privacity == UserProfile.NOTHING:
             return "nothing"
 
         # Si el perfil esta bloqueado
-        if self.user.pk != user_pk and\
+        if self.user.pk != user_pk and \
                 self.is_blocked(user_profile):
             return "block"
-
 
         # Recuperamos la relacion de "seguidor"
         try:
@@ -261,10 +269,9 @@ class UserProfile(models.Model):
             relation_follower = None
 
         # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
-        if self.user.pk != user_pk and\
-                                    self.privacity == UserProfile.ONLYFOLLOWERS and not relation_follower:
+        if self.user.pk != user_pk and \
+                        self.privacity == UserProfile.ONLYFOLLOWERS and not relation_follower:
             return "followers"
-
 
         # Recuperamos la relacion de "seguir"
         try:
@@ -275,9 +282,9 @@ class UserProfile(models.Model):
             relation_follow = None
 
         # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
-        if self.user.pk != user_pk and\
-                        self.privacity == UserProfile.ONLYFOLLOWERSANDFOLLOWS and not\
-                        (relation_follower or relation_follow):
+        if self.user.pk != user_pk and \
+                        self.privacity == UserProfile.ONLYFOLLOWERSANDFOLLOWS and not \
+                (relation_follower or relation_follow):
             return "both"
 
         # Si el nivel de privacidad es TODOS
@@ -369,10 +376,14 @@ class UserProfile(models.Model):
                                                                     'user__last_name',
                                                                     'user__profile__backImage').order_by('id')
 
-    '''def get_friends(self):
-        return self.get_relationships(RELATIONSHIP_FRIEND).values('user__id', 'user__username', 'user__first_name',
-                                                                  'user__last_name',
-                                                                  'user__profile__backImage').order_by('id')'''
+
+    # Obtener canal de noticias de mis seguidores
+    def get_all_follower_values(self):
+        """
+        Devuelve el canal de noticias de mis seguidores
+        """
+        return self.get_relationships(RELATIONSHIP_FOLLOWER)
+
     # methods blocks
     def add_block(self, profile):
         """
@@ -389,8 +400,8 @@ class UserProfile(models.Model):
         :return Devuelve la lista de bloqueados del perfil instanciado:
         """
         return self.get_relationships(RELATIONSHIP_BLOCKED).values('user__id', 'user__username', 'user__first_name',
-                                                                    'user__last_name',
-                                                                    'user__profile__backImage',
+                                                                   'user__last_name',
+                                                                   'user__profile__backImage',
                                                                    'user__profile__pk').order_by('id')
 
     def is_blocked(self, profile):
@@ -437,7 +448,7 @@ class UserProfile(models.Model):
         Obtengo los likes que me han dado.
         :return: Devuelve los likes recibidos
         """
-        return self.likeprofiles.filter(from_likeprofile__to_like=self)
+        return LikeProfile.objects.get_all_likes_to_me(self)
 
     def has_like(self, profile):
         """
@@ -495,8 +506,10 @@ class UserProfile(models.Model):
         :param profile => Perfil que quiero seguir:
         :param notify => Notificacion generada:
         """
-        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING,
-                                                     notification=notify)
+        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
+        # Si existe la peticion de amistad, actualizamos la notificacion
+        obj.notification = notify
+        obj.save()
         return obj
 
     def get_follow_request(self, profile):
@@ -571,22 +584,30 @@ class UserProfile(models.Model):
         created_follower.save()
         created_follow.save()
 
+        # Creamos historia en el perfil del usuario que seguimos
         t, created = timeline.models.Timeline.objects.get_or_create(author=self, profile=profile,
-                                       verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                           profile.user.username,
-                                           profile.user.username, self.user.username,
-                                           self.user.username),
-                                       type='new_relation')
-        t_, created_ = timeline.models.Timeline.objects.get_or_create(author=profile, profile=self,
-                                                      verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                          self.user.username, self.user.username,
-                                                          profile.user.username,
-                                                          profile.user.username),
-                                                      type='new_relation')
+                                                                    verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                                        profile.user.username,
+                                                                        profile.user.username,
+                                                                        self.user.username,
+                                                                        self.user.username),
+                                                                    type='new_relation')
+        # Creamos historia en nuestro perfil
+        t2, created2 = timeline.models.Timeline.objects.get_or_create(author=profile, profile=self,
+                                                                      verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                                          self.user.username,
+                                                                          self.user.username,
+                                                                          profile.user.username,
+                                                                          profile.user.username),
+                                                                      type='new_relation')
+        # Actualizamos fecha en el timeline
         if not created:
+            t.insertion_date = datetime.now()
             t.save()
-        if not created_:
-            t.save()
+        # Actualizamos fecha en el timeline
+        if not created2:
+            t2.insertion_date = datetime.now()
+            t2.save()
 
         return True
 
@@ -600,36 +621,6 @@ class UserProfile(models.Model):
         Devuelve el numero de contenido multimedia de un perfil.
         """
         return Photo.objects.filter(owner=self.user).count()
-
-    @property
-    def pin(self):
-        # PIN format: pk + token + diff
-        print('>>>>>>> get_pin()')
-        str_pk = str(self.pk)
-        length = len(str_pk)
-        if length < self.PIN_LENGTH:
-            diff = self.PIN_LENGTH - length - 1
-            # the value used as pickle needs generate a number with 8 digits as minimal length
-            pickle = 87654321.13
-            if length >= 3 and length < 6:
-                pickle = 876543.13
-            elif length >= 6 and length < 9:
-                pickle = 8765.13
-            token = str(self.pk * pickle).replace('.', '')[-diff:]
-            str_pk = '{}{}{}'.format(str_pk, token, diff)
-            return str_pk
-        else:
-            return str_pk
-
-    def get_pk_for_pin(pin):
-        """
-        Obtiene el pk para el pin
-        :return Devuelve el pk para un pin pasado como parametro:
-        """
-        if len(pin) == 9:
-            diff = int(pin[-1:])
-            return pin[:-(diff + 1)]
-        return None
 
     @property
     def gravatar(self, size=120):
@@ -664,11 +655,11 @@ class Relationship(models.Model):
         unique_together = ('from_person', 'to_person', 'status')
 
 
-
 class LikeProfileQuerySet(models.QuerySet):
     """
         Query Manager para usuarios favoritos
     """
+
     def get_all_likes(self, from_like):
         """
         Devuelve todos los me gusta dados por un perfil en concreto.
@@ -709,6 +700,7 @@ class LikeProfileManager(models.Manager):
     """
         Manager para usuarios que me gustan
     """
+
     def get_queryset(self):
         return LikeProfileQuerySet(self.model, using=self._db)
 
@@ -763,7 +755,8 @@ class LikeProfile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username, self.to_like.user.username, self.created)
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username,
+                                                                self.to_like.user.username, self.created)
 
     objects = LikeProfileManager()
 
@@ -791,6 +784,7 @@ class AffinityUserManager(models.Manager):
     """
         Manager para ultimos usuarios visitados por afinidad/tiempo
     """
+
     def get_all_relations(self, emitterid):
         """
         Devuelve todas las relaciones <<ultimos usuarios visitados>>
@@ -844,7 +838,7 @@ class AffinityUserManager(models.Manager):
         :return devuelve relaciones de mayor a menor afinidad:
         """
         return self.filter(emitter=emitterid).order_by('-affinity')
-    
+
     def check_limit(self, emitterid):
         """
         Comprueba el limite de usuarios en la lista de favoritos
@@ -883,7 +877,8 @@ class AffinityUser(models.Model):
     objects = AffinityUserManager()
 
     def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username, self.created)
+        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username,
+                                                                self.created)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, increment=True):
         """
@@ -899,6 +894,7 @@ class AuthDevicesQuerySet(models.QuerySet):
     """
         Query Manager para Auth Devices
     """
+
     def get_auth_device(self, user, token):
         """
         Devuelve el objeto device relacionando usuario con dispositivos a los que se conecta a skyfolk.
@@ -920,6 +916,7 @@ class AuthDevicesManager(models.Manager):
     """
         Manager para Auth Devices
     """
+
     def get_queryset(self):
         return AuthDevicesQuerySet(self.model, using=self._db)
 

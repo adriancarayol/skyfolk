@@ -17,6 +17,7 @@ class InboxOutput(Node):
         else:
             return "%s" % (count)
 
+
 def do_print_inbox_count(parser, token):
     """
     A templatetag to show the unread-count for a logged in user.
@@ -41,6 +42,7 @@ def do_print_inbox_count(parser, token):
         return InboxOutput(bits[2])
     else:
         return InboxOutput()
+
 
 register = Library()
 register.tag('inbox_count', do_print_inbox_count)

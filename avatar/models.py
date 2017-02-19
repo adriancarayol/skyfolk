@@ -1,9 +1,9 @@
 import binascii
 import datetime
-
 import os
 
 from PIL import Image
+from django.conf import settings
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
@@ -14,9 +14,7 @@ from django.utils.encoding import force_text
 from django.utils.module_loading import import_string
 from django.utils.translation import ugettext as _
 
-
 from avatar.utils import get_username, force_bytes, invalidate_cache
-from django.conf import settings
 
 try:
     from django.utils.timezone import now
@@ -24,6 +22,7 @@ except ImportError:
     now = datetime.datetime.now
 
 import hashlib
+
 avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
 
@@ -55,11 +54,12 @@ def avatar_path_handler(instance=None, filename=None, size=None, ext=None):
             else:
                 filename = hashlib.md5(force_bytes(filename)).hexdigest()
             filename = filename + ext
-    if size: # Descomentar esto para hacer resize a un avatar (si se cambia los gifs no funcionan.)
+    if size:  # Descomentar esto para hacer resize a un avatar (si se cambia los gifs no funcionan.)
         pass
-        #tmppath.extend(['resized', str(size)])
+        # tmppath.extend(['resized', str(size)])
     tmppath.append(os.path.basename(filename))
     return os.path.join(*tmppath)
+
 
 avatar_file_path = import_string(settings.AVATAR_PATH_HANDLER)
 
@@ -81,6 +81,7 @@ class Avatar(models.Model):
                                storage=avatar_storage,
                                blank=True)
     date_uploaded = models.DateTimeField(default=now)
+    url_image = models.URLField(max_length=255, blank=True, null=True)
 
     class Meta:
         app_label = 'avatar'
@@ -109,6 +110,7 @@ class Avatar(models.Model):
         try:
             orig = self.avatar.storage.open(self.avatar.name, 'rb')
             image = Image.open(orig)
+            ext = image.format
             quality = quality or settings.AVATAR_THUMB_QUALITY
             w, h = image.size
             if w != size or h != size:
@@ -118,7 +120,7 @@ class Avatar(models.Model):
                 else:
                     diff = int((h - w) / 2)
                     image = image.crop((0, diff, w, h - diff))
-                if image.mode not in ("RGB", "RGBA"):
+                if ext.lower() in ['.jpg', '.jpeg', '.png'] and image.mode not in ("RGB", "RGBA"):
                     image = image.convert("RGB")
                 image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
                 thumb = six.BytesIO()
@@ -128,7 +130,7 @@ class Avatar(models.Model):
                 thumb_file = File(orig)
             thumb = self.avatar.storage.save(self.avatar_name(size), thumb_file)
         except IOError:
-            return  "Ups, eso no ha funcionado, intenta subir otra imágen."
+            return "Ups, eso no ha funcionado, intenta subir otra imágen."
 
     def avatar_url(self, size):
         return self.avatar.storage.url(self.avatar_name(size))
@@ -143,6 +145,7 @@ class Avatar(models.Model):
             size=size,
             ext=ext
         )
+
 
 def invalidate_avatar_cache(sender, instance, **kwargs):
     invalidate_cache(instance.user)

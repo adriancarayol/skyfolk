@@ -5,18 +5,14 @@ from sys import version_info
 
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-from . import settings
-
-
 try:
     from ._unicode_characters import UNICODE_ALIAS
 except ImportError as exc:
     UNICODE_ALIAS = {}
 
-
+from . import settings
 
 __all__ = ('Emoji',)
-
 
 UNICODE_WIDE = True
 try:
@@ -28,6 +24,7 @@ except ValueError:  # pragma: no cover
     UNICODE_SURROGATE_MIN = 55296  # U+D800
     UNICODE_SURROGATE_MAX = 57343  # U+DFFF
 
+
     def convert_unicode_surrogates(surrogate_pair):
         return unicodedata.normalize('NFKD', surrogate_pair)
 except NameError:
@@ -37,7 +34,7 @@ PYTHON3 = False
 if version_info[0] == 3:
     PYTHON3 = True
 else:
-    from _python2 import hex_to_unicode
+    from ._python2 import hex_to_unicode
 
 
 class Emoji(object):
@@ -117,8 +114,8 @@ class Emoji(object):
         """A list of all emoji names without file extension."""
         if not cls._files:
             for f in os.listdir(cls._image_path):
-                if(not f.startswith('.') and
-                   os.path.isfile(os.path.join(cls._image_path, f))):
+                if (not f.startswith('.') and
+                        os.path.isfile(os.path.join(cls._image_path, f))):
                     cls._files.append(os.path.splitext(f)[0])
 
         return cls._files
@@ -166,9 +163,9 @@ class Emoji(object):
             #
             # Is there any reason to do this even if Python got wide
             # support enabled?
-            if(not UNICODE_WIDE and not surrogate_character and
-               ord(character) >= UNICODE_SURROGATE_MIN and
-               ord(character) <= UNICODE_SURROGATE_MAX):
+            if (not UNICODE_WIDE and not surrogate_character and
+                        ord(character) >= UNICODE_SURROGATE_MIN and
+                        ord(character) <= UNICODE_SURROGATE_MAX):
                 surrogate_character = character
                 continue
 
@@ -204,6 +201,7 @@ class Emoji(object):
         `replace_unicode` (default: True).
 
         """
+
         def _hex_to_unicode(hex_code):
             if PYTHON3:
                 hex_code = '{0:0>8}'.format(hex_code)

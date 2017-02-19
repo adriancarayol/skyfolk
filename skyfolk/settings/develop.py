@@ -1,6 +1,6 @@
-from .base import *
 from django.conf.global_settings import SECRET_KEY
 
+from .base import *
 
 SECRET_KEY = 'develop'
 

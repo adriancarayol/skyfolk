@@ -3,34 +3,35 @@
 {% load el_pagination_tags %}
 {% paginate object_list %}
 {% for item in object_list %}
-            <div class="col l3 m10 s12">
-                <div class="personal-card">
-                <div class="row">
-                    <div class="col s12">
-                        <div class="header">
-                           {% if item.backImage and item.backImage|file_exists %}
-                               <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.backImage }}">
-                               {% else %}
-                               <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
-                            {% endif %}
-                            <i class="fa fa-heart fa-2x like-him">
-                            </i>
-                            <div class="bg-user">
-                                 <div onclick="location.href='/profile/{{ item.user.username }}'" class="profile-user-bg">{% avatar item.user.username %}</div>
-                            </div>
+    <div class="col l3 m10 s12">
+        <div class="personal-card">
+            <div class="row">
+                <div class="col s12">
+                    <div class="header">
+                        {% if item.from_like__backImage and item.from_like__backImage|file_exists %}
+                            <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.from_like__backImage }}">
+                        {% else %}
+                            <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                        {% endif %}
+                        <i class="fa fa-heart fa-2x like-him">
+                        </i>
+                        <div class="bg-user">
+                            <div onclick="location.href='/profile/{{ item.from_like__user__username }}'"
+                                 class="profile-user-bg">{% avatar item.from_like__user__username %}</div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col s12">
-                        <div class="name-friend">
-                        <a href="/profile/{{ item.user.username }}">@{{ item.user.username }} </a><br><br>
-                            <p>{{ item.user.first_name }} {{item.user.last_name}}</p>
-                        </div>
-                    </div>
-                </div>
                 </div>
             </div>
-            {% endfor %}
-            {% show_more %}
+            <div class="row">
+                <div class="col s12">
+                    <div class="name-friend">
+                        <a href="/profile/{{ item.from_like.user.username }}">@{{ item.from_like__user__username }} </a><br><br>
+                        <p>{{ item.from_like__user__first_name }} {{ item.from_like__user__last_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% show_more %}
 

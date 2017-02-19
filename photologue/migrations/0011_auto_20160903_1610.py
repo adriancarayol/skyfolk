@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import migrations, models
 import taggit.managers
 from django.conf import settings
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('taggit', '0002_auto_20150616_2121'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -23,12 +22,15 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='photo',
             name='tags',
-            field=taggit.managers.TaggableManager(to='taggit.Tag', verbose_name='Tags', blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem'),
+            field=taggit.managers.TaggableManager(to='taggit.Tag', verbose_name='Tags', blank=True,
+                                                  help_text='A comma-separated list of tags.',
+                                                  through='taggit.TaggedItem'),
         ),
         migrations.AlterField(
             model_name='photo',
             name='slug',
-            field=models.SlugField(max_length=250, verbose_name='slug', help_text='A "slug" is a unique URL-friendly title for an object.'),
+            field=models.SlugField(max_length=250, verbose_name='slug',
+                                   help_text='A "slug" is a unique URL-friendly title for an object.'),
         ),
         migrations.AlterField(
             model_name='photo',

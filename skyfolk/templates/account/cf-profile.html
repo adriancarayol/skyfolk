@@ -3,94 +3,98 @@
 	Template para la configuracion del perfil de usuario
 {% endcomment %}
 {% block additional_files %}
-{% load i18n avatar_tags %}
-{% endblock%}
+    {% load i18n avatar_tags %}
+{% endblock %}
 {% block cf-title %}
-<div class="hgroup">
-	<h4 class="cn"> Perfil </h4>
-	<h6 class="ch"> Cambia datos de tu perfil</h6>
-</div>
+    <div class="hgroup">
+        <h4 class="cn"> Perfil </h4>
+        <h6 class="ch"> Cambia datos de tu perfil</h6>
+    </div>
 {% endblock %}
 {% block cf-form %}
-	<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
-	<div class="col l12 m12 s12 wrapper-profilex">
-		{% if user_profile.profile.backImage %}
-			<div class="col l12 m12 s12 profilex" style="background: url('{{user_profile.profile.backImage.url}}') no-repeat center center; background-size: cover;">
-		{% else %}
-			<div class="col l12 m12 s12 profilex" style="background: url('{{STATIC_URL}}img/nuevo_back.png') no-repeat center center; background-size: cover;">
-		{% endif %}
-		<!-- Si el usuario tiene imagen, lo redireccionamos a change -->
-		<div data-title="Imágen de perfil" class="img-profile">
-			{% if request.user|has_avatar %}
-			<a href="{% url 'avatar_change' %}">
-			{% else %} {% comment %} Si no, le proponemos añadir una nueva imagen {% endcomment %}
-			<a href="{% url 'avatar_add' %}">
-			{% endif %}
-			{% avatar user %}
-			</a>
-    	<a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i class="fa fa-trash"></i></a>
-        <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i class="fa fa-plus"></i></a>
-		</div>
-		</div>
-		<div class="col l12 m12 s12 index-wrapper">
-            <div class="row">
-                  <div class="row">
-                      <div class="red-text">{{ user_form.first_name.errors}}</div>
-                    <div class="input-field col s12">
-                      <i class="material-icons prefix">perm_identity</i>
-                      {{ user_form.first_name }}
-                      <label for="id_first_name">{% trans "Name" %}</label>
-                    </div>
-                  </div>
+    <form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
+        <div class="col l12 m12 s12 wrapper-profilex">
+            {% if user_profile.profile.backImage %}
+                <div class="col l12 m12 s12 profilex"
+                     style="background: url('{{ user_profile.profile.backImage.url }}') no-repeat center center; background-size: cover;">
+            {% else %}
+                <div class="col l12 m12 s12 profilex"
+                     style="background: url('{{ STATIC_URL }}img/nuevo_back.png') no-repeat center center; background-size: cover;">
+            {% endif %}
+            <!-- Si el usuario tiene imagen, lo redireccionamos a change -->
+            <div data-title="Imágen de perfil" class="img-profile">
+                {% if request.user|has_avatar %}
+                    <a href="{% url 'avatar_change' %}">
+                {% else %} {% comment %} Si no, le proponemos añadir una nueva imagen {% endcomment %}
+                    <a href="{% url 'avatar_add' %}">
+                {% endif %}
+                {% avatar user %}
+                </a>
+                <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
+                        class="fa fa-trash"></i></a>
+                <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
+                        class="fa fa-plus"></i></a>
             </div>
+            </div>
+            <div class="col l12 m12 s12 index-wrapper">
+                <div class="row">
+                    <div class="row">
+                        <div class="red-text">{{ user_form.first_name.errors }}</div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">perm_identity</i>
+                            {{ user_form.first_name }}
+                            <label for="id_first_name">{% trans "Name" %}</label>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="row">
-                  <div class="row">
-                      <div class="red-text">{{ user_form.last_name.errors }}</div>
-                    <div class="input-field col s12">
-                      <i class="material-icons prefix">perm_identity</i>
-                      {{ user_form.last_name }}
-                      <label for="id_last_name">Apellido</label>
+                <div class="row">
+                    <div class="row">
+                        <div class="red-text">{{ user_form.last_name.errors }}</div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">perm_identity</i>
+                            {{ user_form.last_name }}
+                            <label for="id_last_name">Apellido</label>
+                        </div>
                     </div>
-                  </div>
-            </div>
-            <div class="row">
-				<div class="backimage-usr">
-					<p>{{ perfil_form.backImage.errors }}</p>
-					<p>Elige una imagen de fondo.</p>
-					<p>{{ perfil_form.backImage }}</p>
-				</div>
-            </div>
-            <div class="row">
-                  <div class="row">
-                      <div class="red-text">{{ perfil_form.status.errors }}</div>
-                    <div class="input-field col s12">
-                      <i class="material-icons prefix">insert_emoticon</i>
-                      {{ perfil_form.status }}
-                      <label for="id_status">Di como te sientes</label>
+                </div>
+                <div class="row">
+                    <div class="backimage-usr">
+                        <p>{{ perfil_form.backImage.errors }}</p>
+                        <p>Elige una imagen de fondo.</p>
+                        <p>{{ perfil_form.backImage }}</p>
                     </div>
-                  </div>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="red-text">{{ perfil_form.status.errors }}</div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">insert_emoticon</i>
+                            {{ perfil_form.status }}
+                            <label for="id_status">Di como te sientes</label>
+                        </div>
+                    </div>
+                </div>
             </div>
-		</div>
-			</div>
-				<button class="btn btn-info right blue darken-1" id="boton-perfil" type="submit">Salvar cambios</button>
-		</div>
-	</form>
-	{% comment %}
+            </div>
+            <button class="btn btn-info right blue darken-1" id="boton-perfil" type="submit">Salvar cambios</button>
+        </div>
+    </form>
+    {% comment %}
 		Para evitar cadenas de texto muy largas (a la hora de mostrar el nombre del fichero)
 	{% endcomment %}
-	<script async>
-       jQuery("a").each(function(i, value) {
-	   var hyperlink = jQuery(value);
-	   var text = hyperlink.text();
+    <script async>
+        jQuery("a").each(function (i, value) {
+            var hyperlink = jQuery(value);
+            var text = hyperlink.text();
 
-	   if(text.length > 25) {
-	      hyperlink.text(text.substring(0, 21) + "...");
-	   }
-	});
-	</script>
+            if (text.length > 25) {
+                hyperlink.text(text.substring(0, 21) + "...");
+            }
+        });
+    </script>
 
-	<script>
-  	$('.menu-config').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
-	</script>
+    <script>
+        $('.menu-config').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
 {% endblock %}

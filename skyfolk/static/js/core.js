@@ -23,7 +23,7 @@ $(document).ready(function () {
 
     /* Mensaje flotante (perfil ajeno) */
     // #compose-new-no-comments
-    $("#publish").click(function () {
+    $("#publish, #compose-new-no-comments").click(function () {
         $(page_wrapper).each(function () {
             var displaying = $(this).css("display");
             $(page_wrapper).find("#message2").val('');
@@ -41,7 +41,7 @@ $(document).ready(function () {
         });
     });
     /* Mensaje flotante (perfil propio) */
-    $("#publish2, #publish3").click(function () {
+    $("#publish2, #publish3, #compose-self-new-no-comments").click(function () {
         $(self_page_wrapper).each(function () {
             var displaying = $(this).css("display");
             $(self_page_wrapper).find("#message2").val('');
@@ -63,6 +63,11 @@ $(document).ready(function () {
 
     $("#new_group").click(function () {
         $('#create_group').toggle();
+    });
+
+    /* Close nuevo grupo */
+    $("#btn_close_group").click(function () {
+        $('#create_group').hide();
     });
 
     /* Close page-wrapper (mensaje) */
@@ -92,7 +97,7 @@ $(document).ready(function () {
         AJAX_submit_publication(data, 'publication');
     });
 
-    /* Submit creacion (perfil ajeno) */
+    /* Submit reply publication º*/
     $('button.enviar').on('click', function (event) {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
@@ -197,11 +202,11 @@ $(document).ready(function () {
             $(atj).hide(); // Oculta atajos de teclado.
             $(ampliado).hide(); // Oculta mensaje ampliado.
             $(personalInfo).hide(); // Oculta informacion personal
+            $("#create_group").hide(); // Oculta form para crear grupo
             $(searchInput).val("");
             $(searchInput).blur();
             /* OCULTAR MENUS VERTICALES (NOTIFICACION Y MENU USUARIO */
             $('.side-nav').sideNav('hide');
-            $('#upload_photo').hide();
         }
     });
     /* Focus on input search */
@@ -238,17 +243,7 @@ $(document).ready(function () {
                 swal.showInputError("You need to write something!");
                 return false
             }
-            if ((inputValue.length != 9) && (is_numeric(inputValue))) {
-                swal.showInputError("Wrong PIN format!");
-                return false
-            }
-            var _tipo;
-            if (!is_numeric(inputValue)) {
-                _tipo = 'username';
-            } else {
-                _tipo = 'pin'
-            }
-            AJAX_addNewFriendByUsernameOrPin(inputValue, _tipo);
+            AJAX_addNewFriendByUsernameOrPin(inputValue);
         });
     });
 
@@ -371,13 +366,12 @@ function AJAX_delete_notification(slug, id) {
     });
 }
 
-function AJAX_addNewFriendByUsernameOrPin(valor, tipo) {
+function AJAX_addNewFriendByUsernameOrPin(valor) {
     $.ajax({
         type: "POST",
         url: "/add_friend_by_pin/",
         data: {
             'valor': valor,
-            'tipo': tipo,
             'csrfmiddlewaretoken': csrftoken
         },
         dataType: "json",

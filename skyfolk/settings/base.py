@@ -3,6 +3,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
+from django.core.validators import MaxLengthValidator
+
 # from django.core.exceptions import ImproperlyConfigured
 
 
@@ -30,28 +32,29 @@ THIRD_PARTY_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'rest_framework',   # REST framework
+    'rest_framework',  # REST framework
     'django_messages',  # mensajes entre usuarios
     # 'achievements',   # achivements       Portando a Python3
     'emoji',
-    'avatar',   # Avatares para usuarios.
-    'channels', # django-channels
-    'photologue',   # photologue original
+    'avatar',  # Avatares para usuarios.
+    'channels',  # django-channels
+    'photologue',  # photologue original
     'sortedm2m',
-    'taggit',   # para etiquetas
-    'el_pagination',    # Para paginacion
-    'notifications',    # notificaciones
+    'taggit',  # para etiquetas
+    'el_pagination',  # Para paginacion
+    'notifications',  # notificaciones
     'dal',  # autocompletado
     'dal_select2',
+    'django_celery_results',
 )
 
 FIRST_PARTY_APPS = (
     'landing',  # página de inicio
-    'user_profile', # perfil de usuario
-    'publications', # publicaciones en el perfil
-    'text_processor',   # Formatea un texto para incorporar emoticonos, hashtags...
+    'user_profile',  # perfil de usuario
+    'publications',  # publicaciones en el perfil
+    'text_processor',  # Formatea un texto para incorporar emoticonos, hashtags...
     'timeline',
-    'about',    # sobre los autores
+    'about',  # sobre los autores
     'latest_news',
     'user_groups',  # Para grupos de usuarios
     'support',  # modulo para ofrecer soporte al usuario
@@ -69,18 +72,19 @@ AUTHENTICATION_BACKENDS = (
 
 # auth and allauth settings
 LOGIN_REDIRECT_URL = '/'
-#SOCIALACCOUNT_QUERY_EMAIL = True
-#SOCIALACCOUNT_PROVIDERS = {
+# SOCIALACCOUNT_QUERY_EMAIL = True
+# SOCIALACCOUNT_PROVIDERS = {
 #    'facebook': {
 #        'SCOPE': ['email', 'publish_stream'],
 #        'METHOD': 'js_sdk'  # instead of 'oauth2'
 #    }
-#}
+# }
 
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
 ACCOUNT_FORMS = {'login': 'user_profile.forms.CustomLoginForm'}
 ACCOUNT_SIGNUP_FORM_CLASS = 'user_profile.forms.SignupForm'
+ACCOUNT_USERNAME_VALIDATORS = [MaxLengthValidator(15)]
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
 ACCOUNT_UNIQUE_EMAIL = True
@@ -112,8 +116,8 @@ REST_FRAMEWORK = {
 # django-taggit
 TAGGIT_CASE_INSENSITIVE = True
 
-#NOTIFICATION
-NOTIFICATIONS_USE_JSONFIELD=True
+# NOTIFICATION
+NOTIFICATIONS_USE_JSONFIELD = True
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -133,7 +137,7 @@ AUTO_LOGOUT_DELAY = 60
 # Configuracion para django-el-pagination
 
 EL_PAGINATION_LOADING = """<img src="/static/img/ripple.gif" alt="loading" />"""
-
+EL_PAGINATION_PER_PAGE = 20
 
 ROOT_URLCONF = 'skyfolk.urls'
 
@@ -141,36 +145,46 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-                    os.path.join(BASE_DIR, 'skyfolk/templates')
-                ],
+            os.path.join(BASE_DIR, 'skyfolk/templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
                 # Required by allauth template tags
-                "django.core.context_processors.request",
                 # allauth specific context processors
-                #"allauth.account.context_processors.account",
-                #"allauth.socialaccount.context_processors.socialaccount",
-                "django.core.context_processors.static",
-                "django.core.context_processors.media",
+                # "allauth.account.context_processors.account",
+                # "allauth.socialaccount.context_processors.socialaccount",
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request'
             ],
         },
     },
 ]
 
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
+# rabbitmq
+rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
+rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % rabbitmq_host
 
+# celery
+# Celery settings
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+# use json format for everything
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "BACKEND": "asgi_rabbitmq.RabbitmqChannelLayer",
         "CONFIG": {
-            "hosts": [(redis_host, 6379)],
+            "url": rabbitmq_url
         },
         "ROUTING": "skyfolk.routing.channel_routing",
     },
@@ -185,7 +199,7 @@ TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-#FILE_CHARSET="utf-8"
+# FILE_CHARSET="utf-8"
 
 SITE_ID = 1
 
@@ -206,6 +220,7 @@ MEDIA_URL = '/media/'
 NOTIFICATIONS_SOFT_DELETE = True
 ''' Permite enviar datos arbitrarios en las notificaciones '''
 NOTIFICATIONS_USE_JSONFIELD = True
+
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),

@@ -1,9 +1,9 @@
 from django.test import TestCase
+
 from .factories import PhotoFactory, PhotoSizeFactory
 
 
 class PhotologueBaseTest(TestCase):
-
     def setUp(self):
         self.s = PhotoSizeFactory(name='testPhotoSize',
                                   width=100,

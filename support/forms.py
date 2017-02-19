@@ -1,11 +1,12 @@
 # encoding:utf-8
 from django import forms
-from .models import SupportPasswordModel
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
-from django.core.mail import send_mail
+
+from .models import SupportPasswordModel
 
 
 class SupportPasswordForm(forms.ModelForm):
@@ -14,9 +15,10 @@ class SupportPasswordForm(forms.ModelForm):
     a un problema relacionado con el password
     de un usuario.
     """
+
     class Meta:
         model = SupportPasswordModel
-        exclude = ('user', )
+        exclude = ('user',)
 
         widgets = {
             'description': forms.Textarea(attrs={
@@ -25,7 +27,7 @@ class SupportPasswordForm(forms.ModelForm):
                 'placeholder': 'Describe tu problema aqui',
             }),
             'title': forms.TextInput(attrs={
-               'placeholder': 'Pon un titulo a tu problema',
+                'placeholder': 'Pon un titulo a tu problema',
             }),
         }
         labels = {
@@ -41,7 +43,8 @@ class SupportPasswordForm(forms.ModelForm):
     username_or_email = forms.CharField(max_length=128, required=True,
                                         label=_('Nombre de usuario o email de la cuenta'),
                                         widget=forms.TextInput(
-                                            attrs={'placeholder': _('Introduce el nombre de usuario o email de tu cuenta')}))
+                                            attrs={'placeholder': _(
+                                                'Introduce el nombre de usuario o email de tu cuenta')}))
 
     def send_email(self, title, description, email):
         send_mail(

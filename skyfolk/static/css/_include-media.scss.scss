@@ -17,13 +17,11 @@
 //
 //      This project is licensed under the terms of the MIT license
 
-
 ////
 /// include-media library public configuration
 /// @author Eduardo Boucas
 /// @access public
 ////
-
 
 ///
 /// Creates a list of global breakpoints
@@ -32,11 +30,10 @@
 ///  $breakpoints: ('phone': 320px);
 ///
 $breakpoints: (
-  'phone': 320px,
-  'tablet': 768px,
-  'desktop': 1024px
+        'phone': 320px,
+        'tablet': 768px,
+        'desktop': 1024px
 ) !default;
-
 
 ///
 /// Creates a list of static expressions or media types
@@ -50,15 +47,14 @@ $breakpoints: (
 ///  );
 ///
 $media-expressions: (
-  'screen': 'screen',
-  'print': 'print',
-  'handheld': 'handheld',
-  'landscape': '(orientation: landscape)',
-  'portrait': '(orientation: portrait)',
-  'retina2x': '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
-  'retina3x': '(-webkit-min-device-pixel-ratio: 3), (min-resolution: 350dpi)'
+        'screen': 'screen',
+        'print': 'print',
+        'handheld': 'handheld',
+        'landscape': '(orientation: landscape)',
+        'portrait': '(orientation: portrait)',
+        'retina2x': '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
+        'retina3x': '(-webkit-min-device-pixel-ratio: 3), (min-resolution: 350dpi)'
 ) !default;
-
 
 ///
 /// Defines a number to be added or subtracted from each unit when declaring breakpoints with exclusive intervals
@@ -82,9 +78,9 @@ $media-expressions: (
 ///  @media (min-width: 2.1rem) {}
 ///
 $unit-intervals: (
-  'px': 1,
-  'em': 0.01,
-  'rem': 0.1
+        'px': 1,
+        'em': 0.01,
+        'rem': 0.1
 ) !default;
 
 ///
@@ -176,7 +172,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
 /// @access private
 ////
 
-
 ///
 /// Log a message either with `@error` if supported
 /// else with `@warn`, using `feature-exists('at-error')`
@@ -195,7 +190,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
   @return $message;
 }
 
-
 ///
 /// Wrapper mixin for the log function so it can be used with a more friendly
 /// API than `@if log('..') {}` or `$_: log('..')`. Basically, use the function
@@ -205,15 +199,16 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
 /// @param {String} $message - Message to log
 ///
 @mixin log($message) {
-  @if log($message) {}
+  @if log($message) {
+  }
 }
-
 
 ///
 /// Function with no `@return` called next to `@warn` in Sass 3.3
 /// to trigger a compiling error and stop the process.
 ///
-@function noop() {}
+@function noop() {
+}
 
 ///
 /// Determines whether a list of conditions is intercepted by the static breakpoint.
@@ -226,7 +221,8 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
   $no-media-breakpoint-value: map-get($breakpoints, $im-no-media-breakpoint);
 
   @if not $no-media-breakpoint-value {
-    @if log('`#{$im-no-media-breakpoint}` is not a valid breakpoint.') {}
+    @if log('`#{$im-no-media-breakpoint}` is not a valid breakpoint.') {
+    }
   }
 
   @each $condition in $conditions {
@@ -254,7 +250,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
 /// @access private
 ////
 
-
 ///
 /// Get operator of an expression
 ///
@@ -277,7 +272,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
   $_: log('No operator found in `#{$expression}`.');
 }
 
-
 ///
 /// Get dimension of an expression, based on a found operator
 ///
@@ -298,7 +292,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
   @return $dimension;
 }
 
-
 ///
 /// Get dimension prefix based on an operator
 ///
@@ -309,7 +302,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
 @function get-expression-prefix($operator) {
   @return if(index(('<', '<=', '≤'), $operator), 'max', 'min');
 }
-
 
 ///
 /// Get value of an expression, based on a found operator
@@ -348,7 +340,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
 
   @return $value;
 }
-
 
 ///
 /// Parse an expression to return a valid media-query expression
@@ -403,7 +394,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
 /// @access private
 ////
 
-
 ///
 /// Casts a string into a number
 ///
@@ -442,7 +432,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
 
   @return if($minus, -$result, $result);
 }
-
 
 ///
 /// Add `$unit` to `$value`
@@ -522,7 +511,6 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
 /// @access public
 ////
 
-
 ///
 /// Generates a media query based on a list of conditions
 ///
@@ -554,7 +542,8 @@ $im-no-media-expressions: ('screen', 'portrait', 'landscape') !default;
   } @else if ($im-media-support and length($conditions) > 0) {
     @media #{unquote(parse-expression(nth($conditions, 1)))} {
       // Recursive call
-      @include media(slice($conditions, 2)...) {
+      @include media(slice($conditions, 2)
+      ...) {
         @content;
       }
     }

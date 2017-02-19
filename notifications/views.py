@@ -1,17 +1,17 @@
+from distutils.version import StrictVersion
+
 from django import get_version
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.forms import model_to_dict
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-from user_profile.forms import SearchForm
+
 from publications.forms import PublicationForm
-from .utils import slug2id
+from user_profile.forms import SearchForm
 from .models import Notification
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from distutils.version import StrictVersion
+from .utils import slug2id
+
 if StrictVersion(get_version()) >= StrictVersion('1.7.0'):
     from django.http import JsonResponse
 else:
@@ -19,8 +19,10 @@ else:
     import json
     from django.http import HttpResponse
 
+
     def date_handler(obj):
         return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
 
     def JsonResponse(data):
         return HttpResponse(
@@ -48,6 +50,7 @@ class NotificationViewList(ListView):
 
         return ctx
 
+
 class AllNotificationsList(NotificationViewList):
     """
     Index page for authenticated user
@@ -62,7 +65,6 @@ class AllNotificationsList(NotificationViewList):
 
 
 class UnreadNotificationsList(NotificationViewList):
-
     def get_queryset(self):
         return self.request.user.notifications.unread()
 
@@ -77,6 +79,7 @@ def mark_all_as_read(request):
         return redirect(_next)
     return redirect('notifications:all')
 
+
 @login_required
 def mark_all_as_deleted(request):
     request.user.notifications.mark_all_as_deleted()
@@ -85,6 +88,7 @@ def mark_all_as_deleted(request):
     if _next:
         return redirect(_next)
     return redirect('notifications:all')
+
 
 @login_required
 def mark_as_read(request, slug=None):
@@ -100,6 +104,7 @@ def mark_as_read(request, slug=None):
 
     return redirect('notifications:all')
 
+
 @login_required
 def mark_all_as_unread(request):
     request.user.notifications.mark_all_as_unread()
@@ -108,6 +113,8 @@ def mark_all_as_unread(request):
     if _next:
         return redirect(_next)
     return redirect('notifications:all')
+
+
 @login_required
 def mark_as_unread(request, slug=None):
     id = slug2id(slug)
@@ -152,39 +159,4 @@ def live_unread_notification_count(request):
         data = {
             'unread_count': request.user.notifications.unread().count(),
         }
-    return JsonResponse(data)
-
-
-def live_unread_notification_list(request):
-    if not request.user.is_authenticated():
-        data = {
-           'unread_count': 0,
-           'unread_list': []
-        }
-        return JsonResponse(data)
-
-    try:
-        num_to_fetch = request.GET.get('max', 5)  # If they don't specify, make it 5.
-        num_to_fetch = int(num_to_fetch)
-        num_to_fetch = max(1, num_to_fetch)  # if num_to_fetch is negative, force at least one fetched notifications
-        num_to_fetch = min(num_to_fetch, 100)  # put a sane ceiling on the number retrievable
-    except ValueError:
-        num_to_fetch = 5  # If casting to an int fails, just make it 5.
-
-    unread_list = []
-
-    for n in request.user.notifications.unread()[0:num_to_fetch]:
-        struct = model_to_dict(n)
-        if n.actor:
-            struct['actor'] = str(n.actor)
-        if n.target:
-            struct['target'] = str(n.target)
-        if n.action_object:
-            struct['action_object'] = str(n.action_object)
-        struct['slug'] = n.slug  # por defecto no tenemos el slug
-        unread_list.append(struct)
-    data = {
-        'unread_count': request.user.notifications.unread().count(),
-        'unread_list': unread_list
-    }
     return JsonResponse(data)

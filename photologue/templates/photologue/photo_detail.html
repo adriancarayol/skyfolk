@@ -6,115 +6,156 @@
 {% block title %} <title>{{ object.title }} por: {{ object.owner }}</title> {% endblock %}
 
 {% block include_files %}
-    <link rel="stylesheet" href="{{STATIC_URL}}css/gallery.css" onload="if(media!='all')media='all'"> <!-- Estilos para la galeria de fotos -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/photo_detail.css" onload="if(media!='all')media='all'"> <!-- Estilos para el contenedor de la imagen -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css" onload="if(media!='all')media='all'">
+    <!-- Estilos para la galeria de fotos -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/photo_detail.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/comentarios.css" onload="if(media!='all')media='all'">
+    <!-- Estilos para el contenedor de la imagen -->
 {% endblock %}
 
 {% block content %}
-<div class="container">
-<div class="row">
-        <div class="col l12 m12 s12 container-photo">
-            <div class="photo">
+    <div class="container">
+        <div class="row">
+            <div class="col l12 m12 s12 container-photo">
+                <div class="photo">
                     <div class="col l8 m12 s12 photo-body" data-id="{{ object.pk }}">
-                     <a href="{{ object.image.url }}">
-                         <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
-                     </a>
+                        <a href="{{ object.image.url }}">
+                            <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
+                        </a>
                         <div class="col s12 photo-details">
-                                <div class="legend-user-image">
-                                    {% avatar object.owner.username %}
-                                </div>
-                                <div class="col l8 m8 s8 legend-user-data">
-                                    <a href="/profile/{{ object.owner.username }}">@{{ object.owner.username }}</a>
-                                    <i class="photo-title">{{ object.title }}{% if object.caption %}<p>{{ object.caption|safe }} </p>{% endif %}</i>
-                                    <i class="photo-date"><i class="fa fa-clock-o" aria-hidden="true"></i> {% trans "Published" %} {{ object.date_added|naturaltime }}</i>
-                                </div>
-                                <div class="col l12 m12 s12 tags-content">
-                                    {% for tag in photo.tags.all %}
-                                            <blockquote>{{ tag.name }}</blockquote>
-                                    {% endfor %}
-                                </div>
+                            <div class="legend-user-image">
+                                {% avatar object.owner.username %}
+                            </div>
+                            <div class="col l8 m8 s8 legend-user-data">
+                                <a href="/profile/{{ object.owner.username }}">@{{ object.owner.username }}</a>
+                                <i class="photo-title">{{ object.title }}{% if object.caption %}
+                                    <p>{{ object.caption|safe }} </p>{% endif %}</i>
+                                <i class="photo-date"><i class="fa fa-clock-o"
+                                                         aria-hidden="true"></i> {% trans "Published" %} {{ object.date_added|naturaltime }}
+                                </i>
+                            </div>
+                            <div class="col l12 m12 s12 tags-content">
+                                {% for tag in photo.tags.all %}
+                                    <blockquote>{{ tag.name }}</blockquote>
+                                {% endfor %}
+                            </div>
                         </div>
-                    {% if request.user.pk == object.owner_id %}
-                        <div class="row">
-                            <div class="col s12">
-                                <div class="divider"></div>
-                                <div class="row">
-                                    <div class="author-controls">
-                                        <a id="edit-photo" class="waves-effect waves-light btn right green">Editar</a>
-                                        <a id="del-photo" class="waves-effect waves-light btn right red">Eliminar</a>
-                                        <div class="edit-form" id="wrapper-edit-form">
-                                            <form method="post" accept-charset="utf-8" action="{% url "photologue:edit-photo" object.pk %}">{% csrf_token %}
-                                                <div class="row">
-                                                    {{ form.title.errors }}
-                                                    <div class="input-field col s12">
-                                                        <i class="material-icons prefix">title</i>
-                                                        {{ form.title }}
-                                                        <label for="id_title">{% trans "title" %}</label>
+                        {% if request.user.pk == object.owner_id %}
+                            <div class="row">
+                                <div class="col s12">
+                                    <div class="divider"></div>
+                                    <div class="row">
+                                        <div class="author-controls">
+                                            <a id="edit-photo"
+                                               class="waves-effect waves-light btn right green">Editar</a>
+                                            <a id="del-photo"
+                                               class="waves-effect waves-light btn right red">Eliminar</a>
+                                            <div class="edit-form" id="wrapper-edit-form">
+                                                <form method="post" accept-charset="utf-8"
+                                                      action="{% url "photologue:edit-photo" object.pk %}">{% csrf_token %}
+                                                    <div class="row">
+                                                        {{ form.title.errors }}
+                                                        <div class="input-field col s12">
+                                                            <i class="material-icons prefix">title</i>
+                                                            {{ form.title }}
+                                                            <label for="id_title">{% trans "title" %}</label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    {{ form.caption.errors }}
-                                                    <div class="input-field col s12">
-                                                        <i class="material-icons prefix">closed_caption</i>
-                                                        {{ form.caption }}
-                                                        <label for="id_caption">{% trans "caption" %}</label>
+                                                    <div class="row">
+                                                        {{ form.caption.errors }}
+                                                        <div class="input-field col s12">
+                                                            <i class="material-icons prefix">closed_caption</i>
+                                                            {{ form.caption }}
+                                                            <label for="id_caption">{% trans "caption" %}</label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    {{ form.tags.errors }}
-                                                    <div class="input-field col s12">
-                                                        <i class="material-icons prefix">label</i>
-                                                        {{ form.tags }}
-                                                        <label for="id_caption">{{ form.tags.help_text }}</label>
+                                                    <div class="row">
+                                                        {{ form.tags.errors }}
+                                                        <div class="input-field col s12">
+                                                            <i class="material-icons prefix">label</i>
+                                                            {{ form.tags }}
+                                                            <label for="id_caption">{{ form.tags.help_text }}</label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    <button class="waves-effect waves-light btn blue darken-1 right" type="submit" >Editar
-                                                    <i class="material-icons right">mode_edit</i>
-                                                    </button>
-                                                </div>
-                                            </form>
+                                                    <div class="row">
+                                                        <button class="waves-effect waves-light btn blue darken-1 right"
+                                                                type="submit">Editar
+                                                            <i class="material-icons right">mode_edit</i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
                         <div class="row">
-                            {% if next %}
-                            <a href="{{ next.get_absolute_url }}">
-                                <img class="responsive-img" src="{{next.get_thumbnail_url}}">
-                            </a>
-                            {% endif %}
                             {% if previous %}
                                 <a href="{{ previous.get_absolute_url }}">
                                     <img class="responsive-img" src="{{ previous.get_thumbnail_url }}">
                                 </a>
                             {% endif %}
+                            {% if next %}
+                                <a href="{{ next.get_absolute_url }}">
+                                    <img class="responsive-img" src="{{ next.get_thumbnail_url }}">
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
-            {% comment %}
-                    <div class="gallery-details">
-                      {% if object.public_galleries %}
-                            <p>{% trans "This photo is found in the following galleries" %}:</p>
-                            <table>
-                                {% for gallery in object.public_galleries %}
-                                    <tr>
-                                        <td>{% previous_in_gallery object gallery %}</td>
-                                        <td class="text-center"><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></td>
-                                        <td>{% next_in_gallery object gallery %}</td>
-                                    </tr>
+                    {% comment %}
+                <div class="gallery-details">
+                    {% if object.public_galleries %}
+                    <p>{% trans "This photo is found in the following galleries" %}:</p>
+                    <table>
+                        {% for gallery in object.public_galleries %}
+                        <tr>
+                            <td>{% previous_in_gallery object gallery %}</td>
+                            <td class="text-center"><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></td>
+                            <td>{% next_in_gallery object gallery %}</td>
+                        </tr>
                         {% endfor %}
                     </table>
-                {% endif %}
+                    {% endif %}
+                </div>
+                {% endcomment %}
+                    <div id="tab-messages" class="col l4 m12 s12 photo-messages sidebar card">
+                        <ul class="unstyled table fullwidth links">
+                            <li class="tab active">
+                                <a class="active">Comentarios</a>
+                            </li>
+                        </ul>
+                        <div id="messages-wrapper">
+                            {% if publications|length == 0 %}
+                                <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                                <div class="no-comments" id="without-comments">
+                                    <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+                                </div>
+                            {% else %}
+                                {% include "photologue/publications_entries.html" %}
+                            {% endif %}
+                            <div class="row form-wrapper">
+                                <form id="message-photo-form" action="" method="post">{% csrf_token %}
+                                    {{ publication_photo.csrftoken }}
+                                    {{ publication_photo }}
+                                    <button type="submit" id="send_form_photo_publi"
+                                            class="waves-effect waves-light btn right blue">
+                                        Enviar<i class="material-icons right">send</i></button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    {% endcomment %}
-            <div class="col l4 m12 s12 photo-messages">
-                <h1>Comentarios</h1>
-            </div>
+                </div>
             </div>
         </div>
-</div>
-</div>
-    <script async src="{{STATIC_URL}}js/photo_gallery.js" type="text/javascript"></script>
+    </div>
+    <script async src="{{ STATIC_URL }}js/photo_gallery.js" type="text/javascript"></script>
+    <script async src="{{ STATIC_URL }}js/photo_detail.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/socket_photo.js"></script>
+    <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+    <script>
+        UTILS.init([{{ user.pk }}]);
+        UTILS.conn_socket();
+    </script>
+
 {% endblock %}

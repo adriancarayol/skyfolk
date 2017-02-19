@@ -6,7 +6,6 @@ from django.utils import timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('notifications', '0003_notification_data'),
     ]

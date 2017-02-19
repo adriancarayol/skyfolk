@@ -5,16 +5,16 @@ import unittest
 
 from django import VERSION
 from django.conf import settings
-from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from ..models import Image, Photo, PHOTOLOGUE_DIR, PHOTOLOGUE_CACHEDIRTAG
+from django.core.files.storage import default_storage
+
 from .factories import LANDSCAPE_IMAGE_PATH, QUOTING_IMAGE_PATH, \
     UNICODE_IMAGE_PATH, NONSENSE_IMAGE_PATH, GalleryFactory, PhotoFactory
 from .helpers import PhotologueBaseTest
+from ..models import Image, Photo, PHOTOLOGUE_DIR, PHOTOLOGUE_CACHEDIRTAG
 
 
 class PhotoTest(PhotologueBaseTest):
-
     def tearDown(self):
         """Delete any extra test files (if created)."""
         super(PhotoTest, self).tearDown()
@@ -106,7 +106,6 @@ class PhotoTest(PhotologueBaseTest):
 
 
 class PhotoManagerTest(PhotologueBaseTest):
-
     """Some tests for the methods on the Photo manager class."""
 
     def setUp(self):
@@ -127,7 +126,6 @@ class PhotoManagerTest(PhotologueBaseTest):
 
 
 class PreviousNextTest(PhotologueBaseTest):
-
     """Tests for the methods that provide the previous/next photos in a gallery."""
 
     def setUp(self):
@@ -217,18 +215,17 @@ class PreviousNextTest(PhotologueBaseTest):
 
 
 class ImageModelTest(PhotologueBaseTest):
-
     def setUp(self):
         super(ImageModelTest, self).setUp()
 
         # Unicode image has unicode in the path
-        #self.pu = TestPhoto(name='portrait')
+        # self.pu = TestPhoto(name='portrait')
         self.pu = PhotoFactory()
         self.pu.image.save(os.path.basename(UNICODE_IMAGE_PATH),
                            ContentFile(open(UNICODE_IMAGE_PATH, 'rb').read()))
 
         # Nonsense image contains nonsense
-        #self.pn = TestPhoto(name='portrait')
+        # self.pn = TestPhoto(name='portrait')
         self.pn = PhotoFactory()
         self.pn.image.save(os.path.basename(NONSENSE_IMAGE_PATH),
                            ContentFile(open(NONSENSE_IMAGE_PATH, 'rb').read()))

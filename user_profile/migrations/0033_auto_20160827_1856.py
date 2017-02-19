@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('photologue', '0010_auto_20160105_1307'),
         ('user_profile', '0032_auto_20160820_1235'),

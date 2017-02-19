@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('photologue', '0008_auto_20150509_1557'),
     ]
@@ -15,6 +14,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='photo',
             name='date_taken',
-            field=models.DateTimeField(blank=True, help_text='Date image was taken; is obtained from the image EXIF data.', null=True, verbose_name='date taken'),
+            field=models.DateTimeField(blank=True,
+                                       help_text='Date image was taken; is obtained from the image EXIF data.',
+                                       null=True, verbose_name='date taken'),
         ),
     ]

@@ -1,9 +1,9 @@
 from django.test import TestCase
+
 from .factories import GalleryFactory
 
 
 class RequestGalleryTest(TestCase):
-
     urls = 'photologue.tests.test_urls'
 
     def setUp(self):

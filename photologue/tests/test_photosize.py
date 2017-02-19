@@ -5,7 +5,6 @@ from .helpers import PhotologueBaseTest
 
 
 class PhotoSizeNameTest(PhotologueBaseTest):
-
     def test_valid_name(self):
         """We are restricted in what names we can enter."""
 

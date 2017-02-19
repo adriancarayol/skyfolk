@@ -6,8 +6,6 @@ Template para el perfil de cada usuario
 {% load avatar_tags %}
 {% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
-    <!-- Mostrar objetos al hacer scroll -->
-
 {% endblock %}
 
 {% block extra-js %}
@@ -43,19 +41,19 @@ Template para el perfil de cada usuario
                         {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
                         {% include "account/card-user.html" %}
                         {% comment %}
-                PIN ARRIBA IZQUIERDA
-                {% endcomment %}
+				PIN ARRIBA IZQUIERDA
+				{% endcomment %}
                         {% include "account/pin-left-top.html" %}
                         <!-- PIN PEQUEÑO - 2 -->
                         {% comment %}
-                PIN ARRIBA DERECHA
-                {% endcomment %}
+				PIN ARRIBA DERECHA
+				{% endcomment %}
                         {% include "account/pin-right-top.html" %}
 
                     </div>
                     {% comment %}
-            PIN ABAJO
-            {% endcomment %}
+			PIN ABAJO
+			{% endcomment %}
                     {% include "account/pin-bottom.html" %}
 
                 </div>
@@ -78,27 +76,29 @@ Template para el perfil de cada usuario
                                     </ul>
                                     <div class="unstyled content" id="hood-tabs">
                                         {% comment %}
-                                Incluimos el tab timeline
-                                {% endcomment %}
+								Incluimos el tab timeline
+								{% endcomment %}
                                         {% include "account/tab-timeline.html" %}
                                         {% comment %}
-                                Incluimos el tab comentarios
-                                {% endcomment %}
+								Incluimos el tab comentarios
+								{% endcomment %}
                                         <div id="tab-comentarios">
                                             {% if publications|length == 0 %}
                                                 <!-- Si el usuario no tiene comentarios, proponemos uno -->
                                                 <div class="no-comments" id="without-comments">
                                                     <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-                                                    <a id="compose-new-no-comments" class="no-comments-new-comment">
+                                                    <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
+                                                       class="no-comments-new-comment">
                                                         <i class="fa fa-paper-plane fa-lg"></i>
                                                     </a>
                                                 </div>
+                                            {% else %}
+                                                {% include "account/profile_comments.html" %}
                                             {% endif %}
-                                            {% include "account/profile_comments.html" %}
                                         </div>
                                         {% comment %}
-                                Incluimos el tab amigos
-                                {% endcomment %}
+								Incluimos el tab amigos
+								{% endcomment %}
                                         {% include "account/tab-amigos.html" %}
                                     </div>
                                 </div>
@@ -111,58 +111,58 @@ Template para el perfil de cada usuario
             {% comment %}
 <script type="text/javascript">
 
-    //first set the value you will be using.
-   var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
-   var MEDIA_URL = "{{MEDIA_URL}}";
+//first set the value you will be using.
+var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
+var MEDIA_URL = "{{MEDIA_URL}}";
 
-   var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
-   var stopRequests = false;
-   var idRequestsTimer = null;
-   if(requests){
-       idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
+var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
+var stopRequests = false;
+var idRequestsTimer = null;
+if(requests){
+	idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
 
-   }
+}
 </script>
 {% endcomment %}
             <!-- Esto es para las menciones a usuarios -->
             <!--
-            <script type="text/javascript">
-                $(document).ready(function() {
-                    $.ajax({
-                        url: '/get_mentions/',
-                type: 'POST',
-                data: {
-                    'slug': $("#profileId").html(),
-                },
-                dataType: 'json',
-                success: function(data) {
-                    $("#message2").mention({
-                        queryBy: ['name', 'username'],
-                      users: [{
-                          username: "sarah",
-                          name: "Sarah Jones",
-                          image: "http://placekitten.com/25/25"
-                      }, {
-                          username: "bigCat",
-                          name: "Scott Pfaff",
-                          image: "http://placekitten.com/25/25"
-                      }, {
-                          username: "coderDude",
-                          name: "Roger Penn",
-                          image: "http://placekitten.com/25/25"
-                      }]
-                    });
-                },
-                error: function(rs, e) {
-                    alert("No se puede.");
-                }
-                    });
+                <script type="text/javascript">
+            $(document).ready(function() {
+                $.ajax({
+                    url: '/get_mentions/',
+                    type: 'POST',
+                    data: {
+                        'slug': $("#profileId").html(),
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        $("#message2").mention({
+                            queryBy: ['name', 'username'],
+                            users: [{
+                                username: "sarah",
+                                name: "Sarah Jones",
+                                image: "http://placekitten.com/25/25"
+                            }, {
+                                username: "bigCat",
+                                name: "Scott Pfaff",
+                                image: "http://placekitten.com/25/25"
+                            }, {
+                                username: "coderDude",
+                                name: "Roger Penn",
+                                image: "http://placekitten.com/25/25"
+                            }]
+                        });
+                    },
+                    error: function(rs, e) {
+                        alert("No se puede.");
+                    }
                 });
+            });
 
-            </script> -->
+                </script> -->
             {% comment %}
-Para el manejo de las pestañas del usuario
-{% endcomment %}
+	Para el manejo de las pestañas del usuario
+	{% endcomment %}
             <script type="text/javascript">
                 $('#tab-container').easytabs({
                     defaultTab: "#li-tab-comentarios",
@@ -196,8 +196,8 @@ Para el manejo de las pestañas del usuario
                 };
                 var userList = new List('tab-amigos', options);
             </script>
+
             <script src="{{ STATIC_URL }}js/socket.js"></script>
-            <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
             <script>
                 UTILS.init([{{ user.pk }}]);
                 UTILS.conn_socket();

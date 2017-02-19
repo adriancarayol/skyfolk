@@ -5,7 +5,6 @@ from django.db import models, migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('user_profile', '0015_remove_userprofile_timeline'),
         ('timeline', '0001_initial'),

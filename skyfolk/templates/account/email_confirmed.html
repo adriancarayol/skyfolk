@@ -15,13 +15,15 @@
 <h1>{% trans "Confirm E-mail Address" %}</h1>
 {% block cf-title %}
     <div class="hgroup">
-	<h4 class="cn"> Email </h4>
-	<h6 class="ch"> {% trans "Confirm E-mail Address" %} </h6>
-</div>
+        <h4 class="cn"> Email </h4>
+        <h6 class="ch"> {% trans "Confirm E-mail Address" %} </h6>
+    </div>
 {% endblock %}
 
 {% block cf-form %}
-{% user_display email_address.user as user_display %}
-        
-<p class="information-text">{% blocktrans with email_address.email as email %}You have confirmed that <a href="mailto:{{email}}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+    {% user_display email_address.user as user_display %}
+
+    <p class="information-text">{% blocktrans with email_address.email as email %}You have confirmed that
+        <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}
+        .{% endblocktrans %}</p>
 {% endblock %}

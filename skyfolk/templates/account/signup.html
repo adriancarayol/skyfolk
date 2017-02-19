@@ -2,80 +2,85 @@
 {% comment %}
 	Template para el registro
 {% endcomment %}
-{% load url from future %}
 {% load i18n %}
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 {% block extra_head %}
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
 {% endblock %}
 {% block content %}
 
-<!--
+    <!--
 <h1>{% trans "Sign Up" %}</h1>
 -->
 
-<!--<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>-->
-<div class="row">
-<div class="block-form block-formregister">
-    <a class="reco-passwd" title="Consejos para una buena contraseña." href="/tips/password/"><i class="fa fa-lock"></i></a>
-	<form class="signup form-3" id="signup_form" method="post" action="{% url 'account_signup' %}">{% csrf_token %}
-	<div class="form-group">
-        <div class="row">
-            {{ form.first_name.errors }}
-            <div class="input-field col s11">
-                <i class="material-icons prefix">perm_identity</i>
-                {{ form.first_name }}
-                <label for="id_first_name">{% trans "Name" %}</label>
-            </div>
+    <!--<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}
+        ">sign in</a>.{% endblocktrans %}</p>-->
+    <div class="row">
+        <div class="block-form block-formregister">
+            <a class="reco-passwd" title="Consejos para una buena contraseña." href="/tips/password/"><i
+                    class="fa fa-lock"></i></a>
+            <form class="signup form-3" id="signup_form" method="post"
+                  action="{% url 'account_signup' %}">{% csrf_token %}
+                <div class="form-group">
+                    <div class="row">
+                        {{ form.first_name.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">perm_identity</i>
+                            {{ form.first_name }}
+                            <label for="id_first_name">{% trans "Name" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.last_name.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">perm_identity</i>
+                            {{ form.last_name }}
+                            <label for="id_last_name">Apellido</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.username.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">account_circle</i>
+                            {{ form.username }}
+                            <label for="id_username">{% trans "Username" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.email.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">email</i>
+                            {{ form.email }}
+                            <label for="id_username">{% trans "Email" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.password1.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">vpn_key</i>
+                            {{ form.password1 }}
+                            <label for="id_password1">{% trans "Password" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.password2.errors }}
+                        <div class="input-field col s11">
+                            <i class="material-icons prefix">vpn_key</i>
+                            {{ form.password2 }}
+                            <label for="id_password2">{% trans "Password (again)" %}</label>
+                        </div>
+                    </div>
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                    {% endif %}
+                </div>
+                <button class="waves-effect waves-light btn blue lighten-2 right"
+                        type="submit">{% trans "Sign In" %}</button>
+                <button type="button" class="waves-effect waves-light btn blue lighten-2 left"
+                        onclick="location.href='{{ signup_url }}'"><!--{% trans "Sign Up" %}-->Limpiar
+                </button>
+            </form>
         </div>
-        <div class="row">
-            {{ form.last_name.errors }}
-            <div class="input-field col s11">
-                <i class="material-icons prefix">perm_identity</i>
-                {{ form.last_name }}
-                <label for="id_last_name">Apellido</label>
-            </div>
-        </div>
-        <div class="row">
-            {{ form.username.errors }}
-            <div class="input-field col s11">
-                <i class="material-icons prefix">account_circle</i>
-                {{ form.username }}
-                <label for="id_username">{% trans "Username" %}</label>
-            </div>
-        </div>
-        <div class="row">
-            {{ form.email.errors }}
-            <div class="input-field col s11">
-                <i class="material-icons prefix">email</i>
-                {{ form.email }}
-                <label for="id_username">{% trans "Email" %}</label>
-            </div>
-        </div>
-        <div class="row">
-            {{ form.password1.errors }}
-            <div class="input-field col s11">
-                <i class="material-icons prefix">vpn_key</i>
-                {{ form.password1 }}
-                <label for="id_password1">{% trans "Password" %}</label>
-            </div>
-        </div>
-        <div class="row">
-            {{ form.password2.errors }}
-            <div class="input-field col s11">
-                <i class="material-icons prefix">vpn_key</i>
-                {{ form.password2 }}
-                <label for="id_password2">{% trans "Password (again)" %}</label>
-            </div>
-        </div>
-	  {% if redirect_field_value %}
-	  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-	  {% endif %}
-	  </div>
-	  <button class="waves-effect waves-light btn blue lighten-2 right" type="submit">{% trans "Sign In" %}</button>
-	  <button type="button" class="waves-effect waves-light btn blue lighten-2 left" onclick="location.href='{{ signup_url }}'"><!--{% trans "Sign Up" %}-->Limpiar</button>
-	</form>
-</div>
-</div>
+    </div>
 {% endblock %}

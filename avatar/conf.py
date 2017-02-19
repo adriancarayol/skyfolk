@@ -1,7 +1,6 @@
-from django.conf import settings
 from PIL import Image
-
 from appconf import AppConf
+from django.conf import settings
 
 
 class AvatarConf(AppConf):
@@ -17,7 +16,7 @@ class AvatarConf(AppConf):
     DEFAULT_URL = '/img/nuevo.png'
     MAX_AVATARS_PER_USER = 5
     MAX_SIZE = 1024 * 1024
-    THUMB_FORMAT = 'GIF' # Cambiar a jpeg si no se desean movimientos.
+    THUMB_FORMAT = 'GIF'  # Cambiar a jpeg si no se desean movimientos.
     THUMB_QUALITY = 85
     HASH_FILENAMES = True
     HASH_USERDIRNAMES = False

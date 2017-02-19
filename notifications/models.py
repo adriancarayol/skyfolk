@@ -1,10 +1,15 @@
+import json
+from distutils.version import StrictVersion
+
+from django import get_version
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django import get_version
+from django.forms import model_to_dict
 from django.utils import timezone
+
 from avatar.models import Avatar
-from distutils.version import StrictVersion
 from .utils import get_author_avatar
+
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
 else:
@@ -19,8 +24,10 @@ from .signals import notify
 
 from model_utils import Choices
 from jsonfield.fields import JSONField
-
+from channels import Group as group_channel
 from django.contrib.auth.models import Group
+from user_profile import models as user_profile
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 # SOFT_DELETE = getattr(settings, 'NOTIFICATIONS_SOFT_DELETE', False)
@@ -39,7 +46,6 @@ def assert_soft_delete():
 
 
 class NotificationQuerySet(models.query.QuerySet):
-
     def unread(self, include_deleted=False):
         """Return only unread items in the current queryset"""
         if is_soft_delete() and not include_deleted:
@@ -169,7 +175,7 @@ class Notification(models.Model):
     objects = NotificationQuerySet.as_manager()
 
     class Meta:
-        ordering = ('-timestamp', )
+        ordering = ('-timestamp',)
         app_label = 'notifications'
 
     def __unicode__(self):
@@ -214,12 +220,12 @@ class Notification(models.Model):
             self.unread = True
             self.save()
 
+
 # 'NOTIFY_USE_JSONFIELD' is for backward compatibility
 # As app name is 'notifications', let's use 'NOTIFICATIONS' consistently from now
 EXTRA_DATA = getattr(settings, 'NOTIFY_USE_JSONFIELD', None)
 if EXTRA_DATA is None:
     EXTRA_DATA = getattr(settings, 'NOTIFICATIONS_USE_JSONFIELD', False)
-
 
 
 def notify_handler(verb, **kwargs):
@@ -234,7 +240,7 @@ def notify_handler(verb, **kwargs):
     optional_objs = [
         (kwargs.pop(opt, None), opt)
         for opt in ('target', 'action_object')
-    ]
+        ]
     public = bool(kwargs.pop('public', True))
     description = kwargs.pop('description', None)
     timestamp = kwargs.pop('timestamp', timezone.now())
@@ -248,11 +254,11 @@ def notify_handler(verb, **kwargs):
 
     for recipient in recipients:
         actor_avatar = get_author_avatar(authorpk=actor)
-        newnotify = Notification(
+        newnotify, created = Notification.objects.get_or_create(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),
             actor_object_id=actor.pk,
-            actor_avatar=actor_avatar, # URL del avatar del usuario que hace la peticion
+            actor_avatar=actor_avatar,  # URL del avatar del usuario que hace la peticion
             verb=text_type(verb),
             public=public,
             description=description,
@@ -271,8 +277,23 @@ def notify_handler(verb, **kwargs):
             newnotify.data = kwargs
 
         newnotify.save()
-
-        return newnotify # add by adrian
+        recipient_profile = user_profile.UserProfile.objects.get(user__username__exact=recipient.username)
+        data = model_to_dict(newnotify)
+        if newnotify.actor:
+            data['actor'] = str(newnotify.actor)
+        if newnotify.target:
+            data['target'] = str(newnotify.target)
+        if newnotify.action_object:
+            data['action_object'] = str(newnotify.action_object)
+        if newnotify.slug:
+            data['slug'] = str(newnotify.slug)
+        if newnotify.timestamp:
+            data['timestamp'] = str(naturaltime(newnotify.timestamp))
+        # Enviamos notificacion al canal del receptor
+        group_channel(recipient_profile.notification_channel).send({
+            "text": json.dumps(data)
+        })
+        return newnotify  # add by adrian
 
 
 # connect the signal

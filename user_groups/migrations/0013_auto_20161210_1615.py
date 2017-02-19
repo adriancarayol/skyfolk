@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('user_groups', '0012_auto_20161202_1908'),
     ]
@@ -26,7 +25,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='usergroups',
             name='likes',
-            field=models.ManyToManyField(related_name='likesToGroup', through='user_groups.LikeGroup', to='user_groups.UserGroups'),
+            field=models.ManyToManyField(related_name='likesToGroup', through='user_groups.LikeGroup',
+                                         to='user_groups.UserGroups'),
         ),
         migrations.AlterUniqueTogether(
             name='likegroup',

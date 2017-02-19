@@ -1,16 +1,15 @@
 import copy
 
-from django.test import TestCase
-from django.contrib.auth.models import User
 from django import VERSION
+from django.contrib.auth.models import User
+from django.test import TestCase
 
-from ..models import Gallery, Photo
 from .factories import GalleryFactory, PhotoFactory, SAMPLE_ZIP_PATH, SAMPLE_NOT_IMAGE_ZIP_PATH, \
     IGNORED_FILES_ZIP_PATH, LANDSCAPE_IMAGE_PATH
+from ..models import Gallery, Photo
 
 
 class GalleryUploadTest(TestCase):
-
     """Testing the admin page that allows users to upload zips."""
 
     def setUp(self):
@@ -182,9 +181,9 @@ class GalleryUploadTest(TestCase):
 
         self.assertQuerysetEqual(Photo.objects.all(),
                                  [
-                                 '<Photo: This is a test title 1>',
-                                 '<Photo: This is a test title 2>',
-                                 '<Photo: This is a test title 3>'
+                                     '<Photo: This is a test title 1>',
+                                     '<Photo: This is a test title 2>',
+                                     '<Photo: This is a test title 3>'
                                  ],
                                  ordered=False)
 

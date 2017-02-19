@@ -1,12 +1,12 @@
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
-from rest_framework import routers, viewsets, routers
+from django.views.generic import TemplateView
+from rest_framework import routers
 
 from about.views import about
 from api import views
-from django.views.generic import TemplateView
 
 admin.autodiscover()
 
@@ -15,8 +15,7 @@ router = routers.DefaultRouter()
 router.register(r'api/users', views.UserViewSet)
 router.register(r'api/groups', views.GroupViewSet)
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     # Importamos las URLS del resto de apps:
     url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
@@ -49,15 +48,15 @@ urlpatterns = patterns(
     # Urls para el modulo emoji
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Django-avatar
-    (r'^/', include('avatar.urls')),
+    url(r'^', include('avatar.urls')),
     # notificaciones
     # url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls',
     # namespace='notifications')),
     url('^inbox/notifications/', include('notifications.urls',
-        namespace='notifications')),
+                                         namespace='notifications')),
     # django-photologue
-    url(r'^', include('photologue.urls', namespace='photologue')), # original photologue
-)
+    url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
+]
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

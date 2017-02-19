@@ -1,14 +1,16 @@
+import json
+
+from channels import Group
 from django.contrib.auth.models import User
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
 from django.db.models import Q
-from user_profile.models import Relationship
-from channels import Group
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from .utils import get_author_avatar
 from taggit.managers import TaggableManager
-import json
+from photologue.models import Photo
 from text_processor.format_text import TextProcessor
 from user_groups.models import UserGroups
+from user_profile.models import Relationship
+from .utils import get_author_avatar
 
 class PublicationManager(models.Manager):
     list_display = ['tag_list']
@@ -104,11 +106,10 @@ class PublicationManager(models.Manager):
 
 
 class PublicationBase(models.Model):
-    content = models.TextField(blank=False)
-    author = models.ForeignKey(User, related_name='publications')
+    content = models.TextField(blank=False, null=True)
     image = models.ImageField(upload_to='publicationimages',
                               verbose_name='Image', blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
     tags = TaggableManager(blank=True)
 
     class Meta:
@@ -116,8 +117,11 @@ class PublicationBase(models.Model):
         ordering = ('-created',)
 
 
-
 class Publication(PublicationBase):
+    """
+    Modelo para las publicaciones de usuario (en perfiles de usuarios)
+    """
+    author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
@@ -170,26 +174,27 @@ class Publication(PublicationBase):
         }
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
-                "text": json.dumps(notification)
-            })
+            "text": json.dumps(notification)
+        }, immediately=True)
 
     def save(self, new_comment=False, *args, **kwargs):
+        """
+        Modificacion del metodo save, enviamos el comentario al
+        perfil si es un comentario nuevo
+        """
         if new_comment:
-            print('NOTIFICACION ENVIADA POR EL SOCKET...')
             result = super(Publication, self).save(*args, **kwargs)
             self.add_hashtag()
-            if not self.parent:
-                self.send_notification()
-            else:
-                self.send_notification(type="reply")
             return result
         else:
             super(Publication, self).save(*args, **kwargs)
 
-class PublicationGroup(models.Model):
+
+class PublicationGroup(PublicationBase):
+    g_author = models.ForeignKey(User, null=True)
     board_group = models.ForeignKey(UserGroups, related_name='board_group')
     user_give_me_like = models.ManyToManyField(User, blank=True,
-            related_name='likes_group_me')
+                                               related_name='likes_group_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_group_me')
     user_share_me = models.ManyToManyField(User, blank=True,
@@ -197,9 +202,82 @@ class PublicationGroup(models.Model):
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply_group')
 
-
-    #TODO objects = PublicationManager()
+    # TODO objects = PublicationManager()
 
     def __str__(self):
         return self.content
+
+
+class PublicationPhoto(PublicationBase):
+    """
+    Modelo para las publicaciones en las fotos
+    """
+    p_author = models.ForeignKey(User, null=True)
+    board_photo = models.ForeignKey(Photo, related_name='board_photo')
+    user_give_me_like = models.ManyToManyField(User, blank=True,
+                                               related_name='likes_photo_me')
+    user_give_me_hate = models.ManyToManyField(User, blank=True,
+                                               related_name='hate_photo_me')
+    user_share_me = models.ManyToManyField(User, blank=True,
+                                           related_name='share_photo_me')
+    parent = models.ForeignKey('self', blank=True, null=True,
+                               related_name='reply_photo')
+
+    def __str__(self):
+        return self.content
+
+    def add_hashtag(self):
+        """
+        Añadimos los hashtags encontrados a la
+        lista de tags => atributo "tags"
+        """
+        hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
+        print('>>> HASHTAGS')
+        print(hashtags)
+        for tag in hashtags:
+            if tag.endswith((',', '.')):
+                tag = tag[:-1]
+            self.tags.add(tag)
+        self.content = TextProcessor.get_format_text(self.content, self.p_author, hashtags)
+
+    def send_notification(self, type="pub"):
+        """
+         Enviamos a través del socket a todos aquellos usuarios
+         que esten visitando el perfil donde se publica el comentario.
+        """
+        if type == "pub":
+            id_parent = ''
+        else:
+            id_parent = self.parent.id
+
+        notification = {
+            "id": self.pk,
+            "content": self.content,
+            "avatar_path": get_author_avatar(authorpk=self.author),
+            "author_username": self.author.username,
+            "author_first_name": self.author.first_name,
+            "author_last_name": self.author.last_name,
+            "created": naturaltime(self.created),
+            "type": type,
+            "parent": id_parent,
+        }
+        # Enviamos a todos los usuarios que visitan el perfil
+        Group(self.board_photo.group_name).send({
+            "text": json.dumps(notification)
+        })
+
+    def save(self, new_comment=False, *args, **kwargs):
+        if new_comment:
+            print('NOTIFICACION ENVIADA POR EL SOCKET...')
+            result = super(PublicationPhoto, self).save(*args, **kwargs)
+            self.add_hashtag()
+            if not self.parent:
+                self.send_notification()
+            else:
+                self.send_notification(type="reply")
+            return result
+        else:
+            super(PublicationPhoto, self).save(*args, **kwargs)
+
+
 

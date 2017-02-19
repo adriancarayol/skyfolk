@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('timeline', '0016_remove_timeline_users_add_me'),
     ]
@@ -18,7 +17,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='timeline',
             name='type',
-            field=models.CharField(choices=[('publication', 'publication'), ('new_relation', 'new_relation')], default='publication', max_length=20),
+            field=models.CharField(choices=[('publication', 'publication'), ('new_relation', 'new_relation')],
+                                   default='publication', max_length=20),
         ),
         migrations.AddField(
             model_name='timeline',

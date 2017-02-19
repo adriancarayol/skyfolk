@@ -3,79 +3,86 @@
 {% block title %} <title>Skyfolk</title> {% endblock %}
 
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/news.css"/>
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/news.css"/>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col s12 wrapper-news">
-                {% comment "Usuarios con mayor afinidad" %}
-                    Lista de los 6 usuarios con mayor afinidad.
-                {% endcomment %}
-                <div class="row">
-                    {% for fav in mix %}
-                        <div class="col l2 m12 s12">
-                            <div class="notice-item">
-                                <div class="col l3 m2 s3 img">
-                                    {% avatar fav.0 %}
-                                </div>
-                                <div class="col l8 m9 s8 author">
-                                    <a href="/profile/{{ fav.1 }}">@{{ fav.1 }}</a><i>{{ fav.2 }} {{ fav.3 }}</i>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                {% comment %}
-                <div class="row">
-                    {% for fav in fav_users %}
-                        <div class="col l2 m12 s12">
-                            <div class="notice-item">
-                                <div class="col l3 m2 s3 img">
-                                    {% avatar fav.to_like.user %}
-                                </div>
-                                <div class="col l8 m9 s8 author">
-                                    <a href="/profile/{{ fav.to_like.user }}">@{{ fav.to_like.user.username }}</a><i>{{ fav.to_like.user.first_name }} {{ fav.to_like.last_name }}</i>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="row">
-                    {% for affinity in affinity_users %}
-                        <div class="col l2 m12 s12">
-                            <div class="notice-item">
-                                <div class="col l3 m2 s3 img">
-                                    {% avatar affinity.receiver.user %}
-                                </div>
-                                <div class="col l8 m9 s8 author">
-                                    <a href="/profile/{{ affinity.receiver.user }}">@{{ affinity.receiver.user.username }}</a><i>{{ affinity.receiver.user.first_name }} {{ affinity.receiver.last_name }}</i>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                {% endcomment %}
-                <div class="divider"></div>
-                <br>
-                {% for pub in publications %}
-                    <div class="col l3 m12 s12">
-                        <div class="notice-item">
-                            <div class="col l3 m2 s3 img">
-                                {% avatar pub.author.username %}
-                            </div>
-                            <div class="col l8 m9 s8 author">
-                                <a href="/profile/{{ pub.author.username }}">@{{ pub.author.username }}</a><i>{{ pub.author.first_name }} {{ pub.author.last_name }}</i>
-                                <i class="pub-date">{{ pub.created }}</i>
-                            </div>
-                            <div class="col l9 m10 s9 contenido">
-                                <p>{{ pub.content|safe }}</p>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+<div class="container">
+	<div class="row">
+		<div class="col s12 wrapper-news">
+			{% comment "Usuarios con mayor afinidad" %}
+			Lista de los 6 usuarios con mayor afinidad.
+			{% endcomment %}
+			<div class="row">
+				{% for fav in mix %}
+				<div class="col l2 m12 s12">
+					<div class="notice-item">
+						<div class="col l3 m2 s3 img">
+							{% avatar fav.0 %}
+						</div>
+						<div class="col l8 m9 s8 author">
+							<a href="/profile/{{ fav.1 }}">@{{ fav.1 }}</a><i>{{ fav.2 }} {{ fav.3 }}</i>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			{% comment %}
+			<div class="row">
+				{% for fav in fav_users %}
+				<div class="col l2 m12 s12">
+					<div class="notice-item">
+						<div class="col l3 m2 s3 img">
+							{% avatar fav.to_like.user %}
+						</div>
+						<div class="col l8 m9 s8 author">
+							<a href="/profile/{{ fav.to_like.user }}">@{{ fav.to_like.user.username }}</a><i>{{ fav.to_like.user.first_name }} {{ fav.to_like.last_name }}</i>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			<div class="row">
+				{% for affinity in affinity_users %}
+				<div class="col l2 m12 s12">
+					<div class="notice-item">
+						<div class="col l3 m2 s3 img">
+							{% avatar affinity.receiver.user %}
+						</div>
+						<div class="col l8 m9 s8 author">
+							<a href="/profile/{{ affinity.receiver.user }}">@{{ affinity.receiver.user.username }}</a><i>{{ affinity.receiver.user.first_name }} {{ affinity.receiver.last_name }}</i>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			{% endcomment %}
+			<div class="divider"></div>
+			<br>
+			<div id="stream-publications">
+				{% for pub in publications %}
+				<div data-id="{{ pub.id }}" class="col l3 m12 s12">
+					<div class="notice-item">
+						<div class="col l3 m2 s3 img">
+							{% avatar pub.author.username %}
+						</div>
+						<div class="col l8 m9 s8 author">
+							<a href="/profile/{{ pub.author.username }}">@{{ pub.author.username }}</a><i>{{ pub.author.first_name }} {{ pub.author.last_name }}</i>
+							<i class="pub-date">{{ pub.created }}</i>
+						</div>
+						<div class="col l9 m10 s9 contenido">
+							<p>{{ pub.content|safe }}</p>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+<script src="{{ STATIC_URL }}js/socket_news.js" type="text/javascript"></script>
+<script>
+UTILS_E.init([{{ user.pk }}]);
+UTILS_E.conn_socket();
+</script>
 {% endblock %}

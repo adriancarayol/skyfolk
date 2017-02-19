@@ -1,9 +1,8 @@
-from django.db.models.query import QuerySet
 from django.conf import settings
+from django.db.models.query import QuerySet
 
 
 class SharedQueries(object):
-
     """Some queries that are identical for Gallery and Photo."""
 
     def is_public(self):

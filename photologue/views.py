@@ -1,28 +1,32 @@
+import json
+import os
 import warnings
 
+from PIL import Image
+from django.contrib.auth.decorators import login_required
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.urlresolvers import reverse
+from django.http import JsonResponse
+from django.http import QueryDict, HttpResponse
+from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+from django.utils.six import BytesIO
+from django.views.generic.base import RedirectView
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.base import RedirectView
-
-from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response, get_object_or_404
-
-from .models import Photo, Gallery
-from publications.forms import PublicationForm
-from user_profile.forms import SearchForm
-
-from django.contrib.auth.decorators import login_required
-# from django.contrib.auth import get_user_model
-from django.template import RequestContext
-from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
-from django.http import QueryDict, HttpResponse
-import json
-from django.shortcuts import redirect
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
+
+from publications.forms import PublicationForm, PublicationPhotoForm
+from publications.models import PublicationPhoto
+from user_profile.forms import SearchForm
 from user_profile.models import UserProfile
+from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
+from .models import Photo, Gallery
+
+
 # Gallery views.
 
 
@@ -89,14 +93,15 @@ def collection_list(request, username,
     print('>>>>>>> TAGNAME {}'.format(tagname))
     object_list = Photo.objects.filter(owner__username=username, tags__name__exact=tagname)
     context = {'publicationSelfForm': publicationForm,
-                    'searchForm': searchForm,
-                    'object_list': object_list, 'form': form,
-                    'form_zip': form_zip}
+               'searchForm': searchForm,
+               'object_list': object_list, 'form': form,
+               'form_zip': form_zip,
+               'notifications': user.notifications.unread()}
 
     if extra_context is not None:
         context.update(extra_context)
 
-    return render_to_response(template, context, context_instance=RequestContext(request))
+    return render(request, template, context)
 
 
 class PhotoListView(AjaxListView):
@@ -127,6 +132,7 @@ class PhotoListView(AjaxListView):
         context['user_gallery'] = self.kwargs['username']
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
+        context['notifications'] = user.notifications.unread()
         return context
 
     def user_pass_test(self):
@@ -143,8 +149,8 @@ class PhotoListView(AjaxListView):
         return True
 
 
-
 photo_list = login_required(PhotoListView.as_view())
+
 
 def upload_photo(request):
     """
@@ -156,20 +162,70 @@ def upload_photo(request):
         import pprint  # Para imprimir el file y los datos del form
         pprint.pprint(request.POST)
         pprint.pprint(request.FILES)
-        form = UploadFormPhoto(data=request.POST, files=request.FILES)
+
+        form = UploadFormPhoto(request.POST, request.FILES or None)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = user
+            if 'image' in request.FILES:
+                crop_image(obj, request)
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
-            return redirect('/multimedia/'+user.username+'/')
+            data = {
+                'result': True,
+                'state': 200,
+                'message': 'Success',
+                'gallery': '/multimedia/' + user.username
+            }
+            return JsonResponse({'data': data})
         else:
-            print(form.errors)
+            data = {
+                'result': True,
+                'state': 415,
+                'message': 'Success',
+            }
+            return JsonResponse({'data': data})
     else:
-        return HttpResponse(
-            json.dumps({"nothing to see": "this isn't happening"}),
-            content_type="application/json"
-        )
+        data = {
+            'result': True,
+            'state': 405,
+            'message': 'Success',
+        }
+        return JsonResponse({'data': data})
+
+
+def crop_image(obj, request):
+    """
+    Recortar imagen
+    """
+    img_data = dict(request.POST.items())
+    x = None  # Coordinate x
+    y = None  # Coordinate y
+    w = None  # Width
+    h = None  # Height
+    rotate = None  # Rotate
+    is_cutted = True
+    for key, value in img_data.items():  # Recorremos las opciones de recorte
+        if key == "avatar_cut" and value == 'false':  # Comprobamos si el usuario ha recortado la foto
+            is_cutted = False
+            break
+        if key == "avatar_data":
+            str_value = json.loads(value)
+            print(str_value)
+            x = str_value.get('x')
+            y = str_value.get('y')
+            w = str_value.get('width')
+            h = str_value.get('height')
+            rotate = str_value.get('rotate')
+    if is_cutted:
+        im = Image.open(request.FILES['image']).convert('RGBA')
+        tempfile = im.rotate(-rotate, expand=True)
+        tempfile = tempfile.crop((int(x), int(y), int(w + x), int(h + y)))
+        tempfile_io = BytesIO()
+        tempfile_io.seek(0, os.SEEK_END)
+        tempfile.save(tempfile_io, format='PNG')
+        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.png', 'image/png', tempfile_io.tell(), None)
+        obj.image = image_file
 
 
 def upload_zip_form(request):
@@ -192,6 +248,7 @@ def upload_zip_form(request):
             json.dumps({"nothing to see": "no post method"}),
             content_type="application/json"
         )
+
 
 @login_required()
 def delete_photo(request):
@@ -245,7 +302,7 @@ def edit_photo(request, photo_id):
                 json.dumps(response_data),
                 content_type="application/json"
             )
-        return redirect('/multimedia/'+user.username+'/')
+        return redirect('/multimedia/' + user.username + '/')
     else:
         return HttpResponse(
             json.dumps({'Nothing to see': 'This isnt happening'}),
@@ -283,19 +340,23 @@ class PhotoDetailView(DetailView):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
+        initial_photo = {'p_author': user.pk, 'board_photo': self.get_object()}
         context['form'] = EditFormPhoto(instance=self.object)
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
+        context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
+        context['publications'] = PublicationPhoto.objects.filter(board_photo=self.get_object())
+        context['notifications'] = user.notifications.unread()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:
-            next = self.object.get_next_by_date_added()
-            context['next'] = next if next.owner == self.request.user else None
+            next = self.object.get_next_in_gallery()
+            context['next'] = next
         except Photo.DoesNotExist:
             pass
         # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
         try:
-            previous = self.object.get_previous_by_date_added()
-            context['previous'] = previous if previous.owner == self.request.user else None
+            previous = self.object.get_previous_in_gallery()
+            context['previous'] = previous
         except Photo.DoesNotExist:
             pass
         return context

@@ -1,30 +1,38 @@
+import logging
 import os
 import random
-from datetime import datetime
-from inspect import isclass
-import logging
-from io import BytesIO
-from importlib import import_module
-import exifread
+import tempfile
 import unicodedata
+import uuid
+from datetime import datetime
+from importlib import import_module
+from inspect import isclass
+from io import BytesIO
+from os.path import splitext
+from urllib.parse import urlparse
 
-from django.utils.timezone import now
-from django.db import models
-from django.db.models.signals import post_save
+import exifread
+import requests
 from django.conf import settings
-from django.core.files.base import ContentFile
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile, File
 from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.db import models
+from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text, smart_str, filepath_to_uri
-from django.utils.functional import curry
-from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-from django.core.validators import RegexValidator
-from django.contrib.sites.models import Site
+from django.utils.functional import curry
+from django.utils.timezone import now
+from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
-from django.contrib.auth.models import User
+
+from .validators import validate_extension
+from .validators import validate_file_extension
 
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
@@ -161,7 +169,6 @@ size_method_map = {}
 
 
 class TagField(models.CharField):
-
     """Tags have been removed from Photologue, but the migrations still refer to them so this
     Tagfield definition is left here.
     """
@@ -242,6 +249,7 @@ class Gallery(models.Model):
             return self.public().count()
         else:
             return self.photos.filter(sites__id=settings.SITE_ID).count()
+
     photo_count.short_description = _('count')
 
     def public(self):
@@ -253,14 +261,19 @@ class Gallery(models.Model):
         Return all photos that belong to this gallery but don't share the
         gallery's site.
         """
-        return self.photos.filter(is_public=True)\
-                          .exclude(sites__id__in=self.sites.all())
+        return self.photos.filter(is_public=True) \
+            .exclude(sites__id__in=self.sites.all())
 
 
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
-                              upload_to=get_storage_path)
+                              upload_to=get_storage_path, validators=[validate_file_extension])
+
+    thumbnail = models.ImageField(_('thumbnail'),
+                                  max_length=IMAGE_FIELD_MAX_LENGTH,
+                                  upload_to=get_storage_path, null=True, blank=True)
+
     date_taken = models.DateTimeField(_('date taken'),
                                       null=True,
                                       blank=True,
@@ -300,10 +313,11 @@ class ImageModel(models.Model):
         else:
             if hasattr(self, 'get_absolute_url'):
                 return u'<a href="%s"><img src="%s"></a>' % \
-                    (self.get_absolute_url(), func())
+                       (self.get_absolute_url(), func())
             else:
                 return u'<a href="%s"><img src="%s"></a>' % \
-                    (self.image.url, func())
+                       (self.image.url, func())
+
     admin_thumbnail.short_description = _('Thumbnail')
     admin_thumbnail.allow_tags = True
 
@@ -405,7 +419,7 @@ class ImageModel(models.Model):
             new_dimensions = (int(round(cur_width * ratio)),
                               int(round(cur_height * ratio)))
             if new_dimensions[0] > cur_width or \
-               new_dimensions[1] > cur_height:
+                            new_dimensions[1] > cur_height:
                 if not photosize.upscale:
                     return im
             im = im.resize(new_dimensions, Image.ANTIALIAS)
@@ -427,7 +441,7 @@ class ImageModel(models.Model):
             im = photosize.effect.pre_process(im)
         # Rotate if found & necessary
         if 'Image Orientation' in self.EXIF() and \
-                self.EXIF().get('Image Orientation').values[0] in IMAGE_EXIF_ORIENTATION_MAP:
+                        self.EXIF().get('Image Orientation').values[0] in IMAGE_EXIF_ORIENTATION_MAP:
             im = im.transpose(
                 IMAGE_EXIF_ORIENTATION_MAP[self.EXIF().get('Image Orientation').values[0]])
         # Resize/crop image
@@ -544,6 +558,8 @@ class Photo(ImageModel):
     sites = models.ManyToManyField(Site, verbose_name=_(u'sites'),
                                    blank=True)
 
+    url_image = models.URLField(max_length=255, blank=True, null=True)
+
     objects = PhotoQuerySet.as_manager()
 
     class Meta:
@@ -555,9 +571,53 @@ class Photo(ImageModel):
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title + 'by' + str(self.owner.username)  + str(self.date_added.timestamp()))
+    @property
+    def group_name(self):
+        """
+        Devuelve el nombre del canal para enviar notificaciones
+        """
+        return "photos-%s" % self.pk
+
+    def save(self, created=True, *args, **kwargs):
+        if created:
+            self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(uuid.uuid1()))
+            self.get_remote_image()
         super(Photo, self).save(*args, **kwargs)
+
+    def get_remote_image(self):
+        """
+        Obtiene la url introducida por el usuario
+        """
+
+        if not self.url_image and not self.image:
+            raise ValueError('Select image')
+
+        if self.url_image and not self.image:
+            if len(self.url_image) > 255:
+                raise ValueError('URL is very long.')
+
+            parsed = urlparse(self.url_image)
+            name, ext = splitext(parsed.path)
+            validate_extension(ext)
+
+            response = requests.head(self.url_image)
+            print('Response aqui: {}'.format(response.headers))
+
+            if int(response.headers.get('content-length', None)) > 1000000:
+                raise ValueError('Image so big')
+
+            request = requests.get(self.url_image, stream=True)
+
+            if request.status_code != requests.codes.ok:
+                raise ValueError('Cant get image')
+
+            tmp = tempfile.NamedTemporaryFile()
+
+            for block in request.iter_content(1024 * 8):
+                if not block:
+                    break
+                tmp.write(block)
+            self.image.save(self.slug, File(tmp))
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])
@@ -566,13 +626,13 @@ class Photo(ImageModel):
         """Return the public galleries to which this photo belongs."""
         return self.galleries.filter(is_public=True)
 
-    def get_previous_in_gallery(self, gallery):
+    def get_previous_in_gallery(self):
         """Find the neighbour of this photo in the supplied gallery.
         We assume that the gallery and all its photos are on the same site.
         """
         if not self.is_public:
             raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = gallery.photos.is_public()
+        photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
             raise ValueError('Photo does not belong to gallery.')
         previous = None
@@ -581,14 +641,13 @@ class Photo(ImageModel):
                 return previous
             previous = photo
 
-
-    def get_next_in_gallery(self, gallery):
+    def get_next_in_gallery(self):
         """Find the neighbour of this photo in the supplied gallery.
         We assume that the gallery and all its photos are on the same site.
         """
         if not self.is_public:
             raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = gallery.photos.is_public()
+        photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
             raise ValueError('Photo does not belong to gallery.')
         matched = False
@@ -634,6 +693,7 @@ class BaseEffect(models.Model):
 
     def admin_sample(self):
         return u'<img src="%s">' % self.sample_url()
+
     admin_sample.short_description = 'Sample'
     admin_sample.allow_tags = True
 
@@ -675,7 +735,6 @@ class BaseEffect(models.Model):
 
 
 class PhotoEffect(BaseEffect):
-
     """ A pre-defined effect to apply to photos """
     transpose_method = models.CharField(_('rotate or flip'),
                                         max_length=15,
@@ -762,7 +821,7 @@ class Watermark(BaseEffect):
 
     def delete(self):
         assert self._get_pk_val() is not None, "%s object can't be deleted because its %s attribute is set to None." \
-            % (self._meta.object_name, self._meta.pk.attname)
+                                               % (self._meta.object_name, self._meta.pk.attname)
         super(Watermark, self).delete()
         self.image.storage.delete(self.image.name)
 
@@ -773,7 +832,6 @@ class Watermark(BaseEffect):
 
 @python_2_unicode_compatible
 class PhotoSize(models.Model):
-
     """About the Photosize name: it's used to create get_PHOTOSIZE_url() methods,
     so the name has to follow the same restrictions as any Python method name,
     e.g. no spaces or non-ascii characters."""
@@ -786,7 +844,7 @@ class PhotoSize(models.Model):
                                 '"thumbnail", "display", "small", "main_page_widget".'),
                             validators=[RegexValidator(regex='^[a-z0-9_]+$',
                                                        message='Use only plain lowercase letters (ASCII), numbers and '
-                                                       'underscores.'
+                                                               'underscores.'
                                                        )]
                             )
     width = models.PositiveIntegerField(_('width'),
@@ -796,7 +854,7 @@ class PhotoSize(models.Model):
     height = models.PositiveIntegerField(_('height'),
                                          default=0,
                                          help_text=_(
-        'If height is set to "0" the image will be scaled to the supplied width'))
+                                             'If height is set to "0" the image will be scaled to the supplied width'))
     quality = models.PositiveIntegerField(_('quality'),
                                           choices=JPEG_QUALITY_CHOICES,
                                           default=70,
@@ -858,7 +916,7 @@ class PhotoSize(models.Model):
 
     def delete(self):
         assert self._get_pk_val() is not None, "%s object can't be deleted because its %s attribute is set to None." \
-            % (self._meta.object_name, self._meta.pk.attname)
+                                               % (self._meta.object_name, self._meta.pk.attname)
         self.clear_cache()
         super(PhotoSize, self).delete()
 
@@ -867,6 +925,7 @@ class PhotoSize(models.Model):
 
     def _set_size(self, value):
         self.width, self.height = value
+
     size = property(_get_size, _set_size)
 
 
@@ -913,5 +972,7 @@ def add_default_site(instance, created, **kwargs):
     if instance.sites.exists():
         return
     instance.sites.add(Site.objects.get_current())
+
+
 post_save.connect(add_default_site, sender=Gallery)
 post_save.connect(add_default_site, sender=Photo)

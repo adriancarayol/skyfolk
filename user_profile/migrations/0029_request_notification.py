@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('notifications', '0009_auto_20160712_2214'),
         ('user_profile', '0028_auto_20160713_2028'),
