@@ -26,20 +26,3 @@ def send_to_stream(user_id, pub_id):
                 "text": json.dumps(publication.content)
             }, immediately=True) for follower_channel in
                 profile.get_all_follower_values() ]
-
-@app.task(name="send_to_profile")
-def send_to_profile(pub_id, type):
-    publication = None
-    try:
-        publication = Publication.objects.get(id=pub_id)
-    except ObjectDoesNotExist:
-        pass
-
-    if publication:
-        logger.info("Sent to profile")
-        if type:
-            publication.send_notification(type=type)
-        else:
-            publication.send_notification()
-
-
