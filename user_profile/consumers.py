@@ -24,7 +24,7 @@ def connect_blog(message, username):
     try:
         profile_blog = UserProfile.objects.get(user__username=username)
         visibility = profile_blog.is_visible(user.profile, user.pk)
-        if visibility != ("all" or None):
+        if visibility and visibility != 'all':
             logging.warning('User: {} no puede conectarse al socket de: profile: {}'.format(user.username, username))
             message.reply_channel.send({"accept": False})
             return
@@ -66,6 +66,7 @@ def disconnect_blog(message, username):
     # won't fail - just like the set() type.
     Group(profile_blog.group_name).discard(message.reply_channel)
 
+# Para recibir notificaciones privadas
 @channel_session_user_from_http
 def ws_connect(message):
     username = message.user.username

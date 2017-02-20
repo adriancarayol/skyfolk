@@ -3,7 +3,7 @@ from channels import route
 #from notifications.consumers import ws_connect
 from photologue.consumers import connect_photo, disconnect_photo
 from user_profile.consumers import connect_blog, disconnect_blog, ws_connect
-from latest_news.consumers import ws_connect_news
+from latest_news.consumers import ws_connect_news, disconnect_news
 
 # The channel routing defines what channels get handled by what consumers,
 # including optional matching on message attributes. WebSocket messages of all
@@ -18,10 +18,12 @@ channel_routing = [
     # channels en fotos
     route("websocket.connect", connect_photo, path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
     route("websocket.disconnect", disconnect_photo, path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
-    # channels para notificationes
+    # channels para notificaciones
     route("websocket.connect", ws_connect, path=r'^.*/notification/$'),
-    # channels para inicio
+    # channels para inicio (conectar)
     route("websocket.connect", ws_connect_news, path=r'^/inicio/news/$'),
+    # channels para inicio (desconectar)
+    route("websocket.disconnect", disconnect_news, path=r'^/inicio/news/$'),
     # A default "http.request" route is always inserted by Django at the end of the routing list
     # that routes all unmatched HTTP requests to the Django view system. If you want lower-level
     # HTTP handling - e.g. long-polling - you can do it here and route by path, and let the rest

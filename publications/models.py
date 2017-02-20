@@ -164,7 +164,7 @@ class Publication(PublicationBase):
         notification = {
             "id": self.pk,
             "content": self.content,
-            "avatar_path": get_author_avatar(authorpk=self.author),
+            "avatar_path": get_author_avatar(authorpk=self.author.id), 
             "author_username": self.author.username,
             "author_first_name": self.author.first_name,
             "author_last_name": self.author.last_name,
