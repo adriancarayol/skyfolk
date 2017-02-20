@@ -106,7 +106,7 @@ class PublicationManager(models.Manager):
 
 
 class PublicationBase(models.Model):
-    content = models.TextField(blank=False, null=True)
+    content = models.TextField(blank=False, null=True, max_length=500)
     image = models.ImageField(upload_to='publicationimages',
                               verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
@@ -164,7 +164,7 @@ class Publication(PublicationBase):
         notification = {
             "id": self.pk,
             "content": self.content,
-            "avatar_path": get_author_avatar(authorpk=self.author.id), 
+            "avatar_path": get_author_avatar(authorpk=self.author.id),
             "author_username": self.author.username,
             "author_first_name": self.author.first_name,
             "author_last_name": self.author.last_name,
@@ -175,7 +175,7 @@ class Publication(PublicationBase):
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
             "text": json.dumps(notification)
-        }, immediately=True)
+        })
 
     def save(self, new_comment=False, *args, **kwargs):
         """

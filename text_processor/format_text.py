@@ -15,14 +15,26 @@ logger = get_task_logger(__name__)
 class TextProcessor():
     def __get_mentions_text(emitter, text):
         menciones = re.findall('\\@[a-zA-Z0-9_]+', text)
+        print('Len antes: {}'.format(len(menciones)))
+        menciones = set(menciones)
+        print('Len despues: {}'.format(len(menciones)))
         for mencion in menciones:
             if User.objects.filter(username=mencion[1:]):
                 try:
                     recipientprofile = User.objects.get(username=mencion[1:])
                 except ObjectDoesNotExist:
-                    pass
+                    continue
+
+                privacity = recipientprofile.profile.is_visible(emitter.profile, emitter.pk)
+                if privacity and privacity != 'all':
+                    continue
+
                 if emitter.pk != recipientprofile.pk:
-                    send_mention_notification(emitter.id, recipientprofile.id)
+                    notify.send(emitter, actor=emitter.username,
+                            recipient=recipientprofile,
+                            verb=u'¡te ha mencionado en su tablón!',
+                            description='Mencion')
+
                 text = text.replace(mencion,
                                     '<a href="/profile/%s">%s</a>' %
                                     (mencion[1:], mencion))
@@ -41,18 +53,5 @@ class TextProcessor():
         formatText = cls.__get_mentions_text(emitter, formatText)
         formatText = formatText.replace('\n', '').replace('\r', '')
         return formatText
-
-@app.task(name="send_mention_notification")
-def send_mention_notification(emitter_id, recipient_id):
-    logger.info("Sent mention notification")
-    try:
-        emitter = User.objects.get(id=emitter_id)
-        recipient = User.objects.get(id=recipient_id)
-    except ObjectDoesNotExist:
-        return
-    notify.send(emitter, actor=emitter.username,
-                            recipient=recipient,
-                            verb=u'¡te ha mencionado en su tablón!',
-                            description='Mencion')
 
 
