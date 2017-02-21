@@ -18,8 +18,11 @@
                                             <a class="fecha_"
                                                target="_blank">{{ item.from_timeline__insertion_date }}</a><em></em>
                                         </span>
-                <div id="p" class="parrafo comment">
+                <div id="timeline-id-content" class="parrafo timeline-content">
                     {{ item.from_timeline__publication__content|replace_decorators|safe }}
+                </div>
+                <div class="show-more">
+                    <a href="#">+ Mostrar más</a>
                 </div>
                 <div class="contenidoadicional">
                     <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->
@@ -65,8 +68,11 @@
                                     <a class="fecha_"
                                        target="_blank">{{ item.from_timeline__insertion_date }}</a><em></em>
                                 </span>
-                <div id="p" class="parrafo comment">
+                <div id="timeline-id-content" class="parrafo timeline-content">
                     {{ item.from_timeline__verb|safe }}
+                </div>
+                <div class="show-more">
+                    <a href="#">+ Mostrar más</a>
                 </div>
                 <div class="contenidoadicional">
                     <!--<img src="http://archive.eusa.eu/files/News/2012/photoc-camera_w2.jpg" title="random_photo" alt="random_photo">-->

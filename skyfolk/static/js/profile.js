@@ -2,11 +2,14 @@ var countFriendList = 1;
 var countPublicationsList = 1;
 var countTimeLine = 1;
 var flag_reply = false;
+var showLimitChar = 90;
 
 $(document).ready(function () {
+    var tab_comentarios = $('#tab-comentarios');
+    var tab_timeline = $('#tab-timeline');
+
     /* Show more - Show less */
-    $('#tab-comentarios').find('.wrapper').each(function () {
-        var showLimitChar = 90;
+    $(tab_comentarios).find('.wrapper').each(function () {
         var comment = $(this).find('.wrp-comment');
         var text = comment.text();
         var show = $(this).find('.show-more a');
@@ -17,9 +20,36 @@ $(document).ready(function () {
         }
     });
 
-    $("#tab-comentarios").on('click', '.show-more a', function () {
+    $(tab_comentarios).on('click', '.show-more a', function () {
         var $this = $(this);
         var $content = $this.parent().prev("div.comment").find(".wrp-comment");
+        var linkText = $this.text().toUpperCase();
+
+        if (linkText === "+ MOSTRAR MÁS") {
+            linkText = "- Mostrar menos";
+            $content.css('height', 'auto');
+        } else {
+            linkText = "+ Mostrar más";
+            $content.css('height', '2.6em');
+        }
+        $this.text(linkText);
+        return false;
+    });
+
+    $(tab_timeline).find('.timeline-pub').each(function () {
+        var comment = $(this).find('#timeline-id-content');
+        var text = comment.text();
+        var show = $(this).find('.show-more a');
+        text = text.replace(/\s\s+/g, ' ');
+
+        if (text.length < showLimitChar) {
+            $(show).css('display', 'none');
+        }
+    });
+
+    $(tab_timeline).on('click', '.show-more a', function () {
+        var $this = $(this);
+        var $content = $this.parent().prev("#timeline-id-content");
         var linkText = $this.text().toUpperCase();
 
         if (linkText === "+ MOSTRAR MÁS") {
@@ -108,27 +138,8 @@ $(document).ready(function () {
         $(toClose).hide();
     }
 
-    /*
-     var id_pub = $(caja_publicacion).attr('id').split('-')[1]  // obtengo id
-     var id_user = $(caja_publicacion).data('id')// obtengo id
-     var data = {
-     userprofile_id: id_user,
-     publication_id: id_pub
-     };
-     //event.preventDefault(); //stop submit
-     $.ajax({
-     url: '/timeline/addToTimeline/',
-     type: 'POST',
-     dataType: 'json',
-     data: data,
-     success: function(data) {
-     // borrar caja publicacion
-     if (data==true) {
-     $(caja_publicacion).css('background-color', 'tomato');
-
-     */
     /* Borrar publicacion */
-    $('#tab-comentarios').on('click', '#options-comments .fa-trash', function () {
+    $(tab_comentarios).on('click', '#options-comments .fa-trash', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         //alert($(caja_comentario).html());
         swal({
@@ -151,7 +162,7 @@ $(document).ready(function () {
 
     /* Borrar timeline */
 
-    $('#tab-timeline').find('.controles .fa-trash').on('click', function () {
+    $(tab_timeline).find('.controles .fa-trash').on('click', function () {
         var div_timeline = $(this).closest('.timeline-pub');
         swal({
             title: "Are you sure?",
@@ -249,7 +260,7 @@ $(document).ready(function () {
     });
 
     $("#li-tab-comentarios").click(function () {
-        $('#tab-comentarios').css({
+        $(tab_comentarios).css({
             "overflow": "auto"
         });
 
