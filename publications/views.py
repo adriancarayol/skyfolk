@@ -16,15 +16,6 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-handler = logging.FileHandler('publication_log.log')
-handler.setLevel(logging.INFO)
-
-# create a logging format
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-
-# add the handlers to the logger
-logger.addHandler(handler)
 
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
@@ -65,7 +56,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.board_owner = board_owner
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.save()
+                publication.save(new_comment=True)
                 logger.debug('>>>> PUBLICATION: ')
                 t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
                                                             profile=publication.board_owner.profile)
@@ -106,7 +97,7 @@ class PublicationSelfNewView(AjaxableResponseMixin, CreateView):
                 publication.board_owner = emitter
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
-                publication.save()
+                publication.save(new_comment=True)
                 logger.debug('>>>> PUBLICATION: ')
                 t, created = Timeline.objects.get_or_create(publication=publication, author=emitter.profile,
                                                             profile=emitter.profile)
@@ -186,18 +177,25 @@ def delete_publication(request):
         # print request.POST['userprofile_id']
         # print request.POST['publication_id']
         user = request.user
-
+        publication_id = request.POST['publication_id']
+        logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = Publication.objects.get(author=user,
-                                                  id=request.POST['publication_id'])
+            publication = Publication.objects.get(id=publication_id)
         except ObjectDoesNotExist:
             response = False
             return HttpResponse(json.dumps(response),
                                 content_type='application/json'
                                 )
+        logger.info('publication_author: {} publication_board_owner: {} request.user: {}'.format(
+            publication.author.username, publication.board_owner.username, user.username))
+
         # Borramos publicacion
-        user.profile.remove_publication(publicationid=publication.id)
+        if user.id == publication.author.id or user.id == publication.board_owner.id:
+            publication.deleted = True
+            publication.save(update_fields=['deleted'])
+            logger.info('Publication deleted: {}'.format(publication.id))
+
         # Borramos timeline del comentario
         try:
             Timeline.objects.get(publication__pk=request.POST['publication_id']).delete()
@@ -284,7 +282,7 @@ def add_hate(request):
         logger.info("(USUARIO PETICIÓN): " + user.username)
         logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
-        if user.pk != publication.author.pk and request.user not in publication.user_give_me_like.all() \
+        if user.pk != publication.author.pk and user not in publication.user_give_me_like.all() \
                 and user not in publication.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
@@ -292,7 +290,7 @@ def add_hate(request):
             # tampoco si el usuario ya ha dado like antes.
             logger.debug("Incrementando hate")
             try:
-                publication.user_give_me_hate.add(request.user)  # add users like
+                publication.user_give_me_hate.add(user)  # add users like
                 publication.save()
                 response = True
                 statuslike = 1
@@ -300,11 +298,11 @@ def add_hate(request):
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif user.pk != publication.author.pk and request.user in publication.author.user_give_me_hate.all() \
+        elif user.pk != publication.author.pk and user in publication.user_give_me_hate.all() \
                 and user not in publication.user_give_me_like.all():
             logger.debug("Decrementando hate")
             try:
-                publication.user_give_me_hate.remove(request.user)
+                publication.user_give_me_hate.remove(user)
                 publication.save()
                 response = True
                 statuslike = 2

@@ -322,7 +322,7 @@ class UserProfile(models.Model):
         :param publicationid => Identificador de la publicación:
         :return:
         """
-        publications.models.Publication.objects.get(pk=publicationid).delete()
+        publications.models.Publication.objects.get(pk=publicationid, author=self.user)
 
     def get_publicationsToMe(self):
         """

@@ -11,6 +11,7 @@ from text_processor.format_text import TextProcessor
 from user_groups.models import UserGroups
 from user_profile.models import Relationship
 from .utils import get_author_avatar
+from user_profile.tasks import send_to_stream
 
 
 class PublicationManager(models.Manager):
@@ -164,7 +165,7 @@ class Publication(PublicationBase):
             id_parent = self.parent.id
 
         notification = {
-            "id": self.pk,
+            "id": self.id,
             "content": self.content,
             "avatar_path": get_author_avatar(authorpk=self.author.id),
             "author_username": self.author.username,
@@ -178,6 +179,18 @@ class Publication(PublicationBase):
         Group(self.board_owner.profile.group_name).send({
             "text": json.dumps(notification)
         })
+
+    def save(self, new_comment=False, *args, **kwargs):
+        super(Publication, self).save(*args, **kwargs)
+
+        if new_comment and not self.deleted and not self.parent:
+            self.send_notification()
+        elif new_comment and not self.deleted:
+            self.send_notification(type="reply")
+
+        # Enviamos al tablon de noticias (inicio)
+        if new_comment and self.author == self.board_owner:
+            send_to_stream.delay(self.author.id, self.id)
 
 
 class PublicationGroup(PublicationBase):
@@ -258,7 +271,6 @@ class PublicationPhoto(PublicationBase):
 
     def save(self, new_comment=False, *args, **kwargs):
         if new_comment:
-            print('NOTIFICACION ENVIADA POR EL SOCKET...')
             result = super(PublicationPhoto, self).save(*args, **kwargs)
             self.add_hashtag()
             if not self.parent:
@@ -268,6 +280,3 @@ class PublicationPhoto(PublicationBase):
             return result
         else:
             super(PublicationPhoto, self).save(*args, **kwargs)
-
-
-
