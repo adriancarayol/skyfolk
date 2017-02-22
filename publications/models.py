@@ -12,6 +12,7 @@ from user_groups.models import UserGroups
 from user_profile.models import Relationship
 from .utils import get_author_avatar
 
+
 class PublicationManager(models.Manager):
     list_display = ['tag_list']
 
@@ -27,7 +28,7 @@ class PublicationManager(models.Manager):
         # filtros: from_publication__profile=self -> retorna los comentarios
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
-        pubs = self.filter(author=author_pk, parent=None).order_by(
+        pubs = self.filter(author=author_pk, parent=None, deleted=False).order_by(
             'created').reverse()
 
         print('>>>>pubs: {}'.format(pubs))
@@ -47,7 +48,7 @@ class PublicationManager(models.Manager):
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(Q(author=user_pk) & Q(board_owner=user_pk),
-                           author=user_pk, parent=None).order_by('created') \
+                           author=user_pk, parent=None, deleted=False).order_by('created') \
             .reverse()
 
         print('>>>>pubs: {}'.format(pubs))
@@ -55,7 +56,7 @@ class PublicationManager(models.Manager):
         # Agregar replicas de los comentarios
         for pub in pubs:
             print('pub: {}'.format(pub.id))
-            reply = self.filter(parent=pub.id).order_by('created')
+            reply = self.filter(parent=pub.id, deleted=False).order_by('created')
             print('REPLIES: {}'.format(reply))
             pub.replies = reply
 
@@ -67,7 +68,7 @@ class PublicationManager(models.Manager):
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(Q(author=user_pk) | Q(board_owner=board_owner_pk),
-                           board_owner=board_owner_pk, parent=None).order_by(
+                           board_owner=board_owner_pk, parent=None, deleted=False).order_by(
             'created').reverse()
 
         print('>>>>pubs: {}'.format(pubs))
@@ -87,7 +88,7 @@ class PublicationManager(models.Manager):
         # owner_pk -> clave del propietario del perfil donde se publica. C) pa-
         # rent -> clave del padre de la replica.
         pubs = self.filter(Q(author=user_pk) & Q(board_owner=board_owner_pk),
-                           board_owner=board_owner_pk, parent=parent).order_by(
+                           board_owner=board_owner_pk, parent=parent, deleted=False).order_by(
             'created').reverse()
 
         return pubs
@@ -95,7 +96,7 @@ class PublicationManager(models.Manager):
     def get_friend_publications(self, user_pk):
         # Obtiene las publicaciones de todos los seguidos por un usuario
         relation = Relationship.objects.filter(Q(from_person=user_pk) & Q(status=1))
-        pubs = self.filter(author__profile__to_people__in=relation).order_by('created').reverse()
+        pubs = self.filter(author__profile__to_people__in=relation, deleted=False).order_by('created').reverse()
         return pubs
 
     def tag_list(self, obj):
@@ -111,6 +112,7 @@ class PublicationBase(models.Model):
                               verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     tags = TaggableManager(blank=True)
+    deleted = models.BooleanField(default='False')
 
     class Meta:
         abstract = True
@@ -176,18 +178,6 @@ class Publication(PublicationBase):
         Group(self.board_owner.profile.group_name).send({
             "text": json.dumps(notification)
         })
-
-    def save(self, new_comment=False, *args, **kwargs):
-        """
-        Modificacion del metodo save, enviamos el comentario al
-        perfil si es un comentario nuevo
-        """
-        if new_comment:
-            result = super(Publication, self).save(*args, **kwargs)
-            self.add_hashtag()
-            return result
-        else:
-            super(Publication, self).save(*args, **kwargs)
 
 
 class PublicationGroup(PublicationBase):

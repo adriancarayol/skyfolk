@@ -1,0 +1,63 @@
+2017-02-22 00:08:22,185 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:08:22,185 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:08:22,186 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 00:08:22,187 - publications.views - INFO - Incrementando like
+2017-02-22 00:08:22,345 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado1
+2017-02-22 00:09:26,041 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:09:26,041 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:09:26,042 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 00:09:26,043 - publications.views - INFO - Incrementando like
+2017-02-22 00:09:26,193 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado1
+2017-02-22 00:11:24,750 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:11:24,750 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:11:24,751 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 00:11:24,753 - publications.views - INFO - Decrementando like
+2017-02-22 00:11:24,869 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado2
+2017-02-22 00:27:38,728 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:27:38,728 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:27:38,728 - publications.views - INFO - (PERFIL DE USUARIO): carayol PK_ID -> 1
+2017-02-22 00:27:38,728 - publications.views - INFO - Fin like comentario ---> ResponseFalse Estado0
+2017-02-22 00:27:44,477 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:27:44,477 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:27:44,478 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 00:27:44,480 - publications.views - INFO - Decrementando like
+2017-02-22 00:27:44,614 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado2
+2017-02-22 00:27:47,180 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:27:47,180 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:27:47,181 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 00:27:47,182 - publications.views - INFO - Incrementando like
+2017-02-22 00:27:47,383 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado1
+2017-02-22 00:37:51,007 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:37:51,007 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:37:51,008 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 00:37:51,009 - publications.views - INFO - Incrementando like
+2017-02-22 00:37:51,154 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado1
+2017-02-22 00:38:14,230 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:38:14,230 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:38:14,230 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 00:38:14,232 - publications.views - INFO - Decrementando like
+2017-02-22 00:38:14,345 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado2
+2017-02-22 00:56:37,812 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 00:56:37,812 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 00:56:37,813 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 00:56:37,815 - publications.views - INFO - Decrementando like
+2017-02-22 00:56:37,975 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado2
+2017-02-22 01:02:02,440 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 01:02:02,440 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 01:02:02,441 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 01:02:02,442 - publications.views - INFO - Incrementando like
+2017-02-22 01:02:02,620 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado1
+2017-02-22 01:03:59,913 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 01:03:59,913 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 01:03:59,914 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 01:03:59,916 - publications.views - INFO - Decrementando like
+2017-02-22 01:04:00,093 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado2
+2017-02-22 01:04:26,862 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 01:04:26,862 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 01:04:26,864 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 01:04:26,865 - publications.views - INFO - Incrementando like
+2017-02-22 01:04:27,018 - publications.views - INFO - Fin like comentario ---> ResponseTrue Estado1
+2017-02-22 01:10:20,787 - publications.views - INFO - USUARIO DA LIKE
+2017-02-22 01:10:20,787 - publications.views - INFO - (USUARIO PETICIÓN): carayol PK_ID -> 1
+2017-02-22 01:10:20,788 - publications.views - INFO - (PERFIL DE USUARIO): jej PK_ID -> 3
+2017-02-22 01:10:20,790 - publications.views - INFO - Decrementando like

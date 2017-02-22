@@ -8,6 +8,7 @@ from channels import Group
 
 logger = get_task_logger(__name__)
 
+
 @app.task(name="send_to_stream")
 def send_to_stream(user_id, pub_id):
     profile = None
