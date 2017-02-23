@@ -13,7 +13,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 
 DEBUG = False
 ALLOWED_HOSTS = ['.skyfolk.net', '127.0.0.1']
-
+# Allowed html content.
+ALLOWED_TAGS = "p div br code pre h1 h2 h3 h4 hr span s sub sup b i img strong strike em underline super table thead tr th td tbody".split()
+ALLOWED_STYLES = 'color font-weight background-color width height'.split()
+ALLOWED_ATTRIBUTES = {
+    '*': ['class', 'style'],
+    'a': ['href', 'rel'],
+    'img': ['src', 'alt', 'width', 'height'],
+    'table': ['border', 'cellpadding', 'cellspacing'],
+}
 # Application definition
 DEFAULT_APPS = (
     'django.contrib.admin',
@@ -52,7 +60,6 @@ FIRST_PARTY_APPS = (
     'landing',  # página de inicio
     'user_profile',  # perfil de usuario
     'publications',  # publicaciones en el perfil
-    'text_processor',  # Formatea un texto para incorporar emoticonos, hashtags...
     'timeline',
     'about',  # sobre los autores
     'latest_news',
@@ -91,6 +98,9 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/accounts/login'
+EXTERNAL_LOGIN_URL = None
+EXTERNAL_SIGNUP_URL = None
+EXTERNAL_LOGOUT_URL = None
 # / DJANGO ALL AUTH CONFIG
 
 # CONFIG E-MAIL
@@ -103,6 +113,7 @@ EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'skyfolk <no-reply@skyfolk.net>'
 # SESSION EXPIRATION
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+SESSION_UPDATE_SECONDS = 10 * 60
 # REST FRAMEWORK
 #                   http://www.django-rest-framework.org/
 REST_FRAMEWORK = {
@@ -175,9 +186,8 @@ rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % rabbitmq_host
 # Celery settings
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 # use json format for everything
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_CONFIG = 'skyfolk.celeryconf'
+
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
 CHANNEL_LAYERS = {

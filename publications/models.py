@@ -1,4 +1,6 @@
 import json
+import re
+import bleach
 
 from channels import Group
 from django.contrib.auth.models import User
@@ -7,11 +9,20 @@ from django.db import models
 from django.db.models import Q
 from taggit.managers import TaggableManager
 from photologue.models import Photo
-from text_processor.format_text import TextProcessor
 from user_groups.models import UserGroups
 from user_profile.models import Relationship
 from .utils import get_author_avatar
 from user_profile.tasks import send_to_stream
+from django.core.exceptions import ObjectDoesNotExist
+from notifications.signals import notify
+from django.conf import settings
+from emoji import Emoji
+
+# Los tags HTML que permitimos en los comentarios
+ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
+ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
+ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
+ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
 
 
 class PublicationManager(models.Manager):
@@ -146,13 +157,51 @@ class Publication(PublicationBase):
         lista de tags => atributo "tags"
         """
         hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
-        print('>>> HASHTAGS')
-        print(hashtags)
+        hashtags = set(hashtags)
         for tag in hashtags:
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
             self.tags.add(tag)
-        self.content = TextProcessor.get_format_text(self.content, self.author, hashtags)
+            self.content = self.content.replace(tag,
+                                                '<a href="/search/">{0}</a>'.format(tag))
+
+
+    def add_mentions(self):
+        """
+        Buscamos menciones en el contenido del mensaje
+        y enviamos un mensaje al usuario
+        """
+        menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
+        menciones = set(menciones)
+        for mencion in menciones:
+            try:
+                recipientprofile = User.objects.get(username=mencion[1:])
+            except ObjectDoesNotExist:
+                continue
+
+            privacity = recipientprofile.profile.is_visible(self.author.profile, self.author.pk)
+            if privacity and privacity != 'all':
+                continue
+
+            if self.author.pk != recipientprofile.pk:
+                notify.send(self.author, actor=self.author.username,
+                            recipient=recipientprofile,
+                            verb=u'¡te ha mencionado en su tablón!',
+                            description='Mencion')
+
+            self.content = self.content.replace(mencion,
+                                                '<a href="/profile/%s">%s</a>' %
+                                                (mencion[1:], mencion))
+
+    def parse_content(self):
+        """
+        Parseamos el contenido en busca de
+        tags html no permitidos y los eliminamos
+        """
+        self.content = Emoji.replace(self.content)
+        self.content = self.content.replace('\n', '').replace('\r', '')
+        self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
+                                    attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
 
     def send_notification(self, type="pub"):
         """
@@ -241,7 +290,6 @@ class PublicationPhoto(PublicationBase):
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
             self.tags.add(tag)
-        self.content = TextProcessor.get_format_text(self.content, self.p_author, hashtags)
 
     def send_notification(self, type="pub"):
         """

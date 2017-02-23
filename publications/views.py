@@ -52,6 +52,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
+
                 publication.author = emitter
                 publication.board_owner = board_owner
                 if publication.content.isspace():
@@ -60,47 +61,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 logger.debug('>>>> PUBLICATION: ')
                 t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
                                                             profile=publication.board_owner.profile)
-                return self.form_valid(form=form)
-            except IntegrityError as e:
-                logger.debug("views.py line 48 -> {}".format(e))
-
-        return self.form_invalid(form=form)
-
-
-class PublicationSelfNewView(AjaxableResponseMixin, CreateView):
-    """
-    Crear una publicación para mi perfil.
-    """
-    form_class = PublicationForm
-    model = Publication
-    http_method_names = [u'post']
-    success_url = '/thanks/'
-
-    def __init__(self, *args, **kwargs):
-        super(PublicationSelfNewView, self).__init__(*args, **kwargs)
-        self.object = None
-
-    def post(self, request, *args, **kwargs):
-        # form = PublicationForm(request.POST)
-        form = self.get_form()
-        emitter = get_object_or_404(get_user_model(),
-                                    pk=request.POST['author'])
-
-        publication = None
-        logger.debug('POST DATA: {}'.format(request.POST))
-        logger.debug('tipo emitter: {}'.format(type(emitter)))
-        if form.is_valid():
-            try:
-                publication._some = 'some'
-                publication = form.save(commit=False)
-                publication.author = emitter
-                publication.board_owner = emitter
-                if publication.content.isspace():
-                    raise IntegrityError('El comentario esta vacio')
-                publication.save(new_comment=True)
-                logger.debug('>>>> PUBLICATION: ')
-                t, created = Timeline.objects.get_or_create(publication=publication, author=emitter.profile,
-                                                            profile=emitter.profile)
                 return self.form_valid(form=form)
             except IntegrityError as e:
                 logger.debug("views.py line 48 -> {}".format(e))
