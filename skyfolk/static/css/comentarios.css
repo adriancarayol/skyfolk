@@ -33,7 +33,7 @@ a, a:visited {
 }
 
 .comment .wrp-comment {
-	height: 2.6em;
+	height: auto;
 }
 
 .comment-tab {

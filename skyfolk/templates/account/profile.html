@@ -181,9 +181,20 @@ if(requests){
                 {{ block.super }}
                 <script src="{{ STATIC_URL }}js/el-pagination.js"></script>
                 <script>
-                    $.endlessPaginate({
+                    $('#tab-comentarios').endlessPaginate({
                         paginateOnScroll: true,
                         paginateOnScrollMargin: 20,
+                        id: '#tab-comentarios'
+                    });
+                    $('#tab-timeline').endlessPaginate({
+                        paginateOnScroll: true,
+                        paginateOnScrollMargin: 20,
+                        id: '#tab-timeline'
+                    });
+                    $('#tab-amigos').endlessPaginate({
+                        paginateOnScroll: true,
+                        paginateOnScrollMargin: 20,
+                        id: 'tab-amigos'
                     });
                 </script>
             {% endblock %}

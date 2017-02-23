@@ -1,5 +1,5 @@
-$.getJSON('/emoji/all.json', function (data) {
-    $('#message2').textcomplete([
+    $.getJSON('/emoji/all.json', function (data) {
+    $('#message2, #message-reply').textcomplete([
         { // emoji strategy
             match: /\B:([\-+\w]*)$/,
             search: function (term, callback) {

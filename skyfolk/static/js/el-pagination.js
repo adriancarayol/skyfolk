@@ -32,7 +32,9 @@
                 // If paginate-on-scroll is on, this margin will be used.
                 paginateOnScrollMargin: 1,
                 // If paginate-on-scroll is on, it is possible to define chunks.
-                paginateOnScrollChunkSize: 0
+                paginateOnScrollChunkSize: 0,
+                // id of element with scroll bar
+                id: null
             },
             settings = $.extend(defaults, options);
 
@@ -79,20 +81,38 @@
 
             // On scroll pagination.
             if (settings.paginateOnScroll) {
-                var win = $(window),
-                    doc = $(document);
-                doc.scroll(function () {
-                    if (doc.height() - win.height() -
-                        win.scrollTop() <= settings.paginateOnScrollMargin) {
-                        // Do not paginate on scroll if chunks are used and
-                        // the current chunk is complete.
-                        var chunckSize = settings.paginateOnScrollChunkSize;
-                        if (!chunckSize || loadedPages % chunckSize) {
-                            element.find(settings.moreSelector).click();
-                        } else {
-                            element.find(settings.moreSelector).addClass('endless_chunk_complete');
+                var win = $(window);
+                var doc = $(document);
+                var scrolled_object = ( settings.id ) ? $(settings.id) : element;
+                scrolled_object.scroll(function(){
+                        var should_update = false;
+                        if (settings.id)
+                        {
+                            var scrollHeight = scrolled_object.prop('scrollHeight');
+                            var divHeight = scrolled_object.height();
+                            var scrollerEndPoint = scrollHeight - divHeight;
+                            var divScrollerTop = scrolled_object.scrollTop();
+                            if (divScrollerTop+settings.paginateOnScrollMargin>=scrollerEndPoint)
+                            {
+                                should_update = true;
+                            }
+                        } else // page is scrolling
+                        {
+                            if (doc.height() - win.height() - win.scrollTop() <= settings.paginateOnScrollMargin)
+                            {
+                                should_update = true;
+                            }
                         }
-                    }
+
+                        if(should_update)
+                        {
+                            // Do not paginate on scroll if chunks are used and
+                            // the current chunk is complete.
+                            var chunckSize = settings.paginateOnScrollChunkSize;
+                            if (!chunckSize || loadedPages % chunckSize) {
+                                scrolled_object.find(settings.moreSelector).click();
+                            }
+                        }
                 });
             }
 
