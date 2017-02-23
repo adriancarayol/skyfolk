@@ -183,11 +183,8 @@ rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
 rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % rabbitmq_host
 
 # celery
-# Celery settings
-BROKER_URL = 'amqp://guest:guest@localhost:5672//'
-# use json format for everything
 CELERY_CONFIG = 'skyfolk.celeryconf'
-
+CELERY_RESULT_BACKEND = 'django-db'
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
 CHANNEL_LAYERS = {

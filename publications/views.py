@@ -154,6 +154,7 @@ def delete_publication(request):
         if user.id == publication.author.id or user.id == publication.board_owner.id:
             publication.deleted = True
             publication.save(update_fields=['deleted'])
+            Publication.objects.filter(parent=publication).update(deleted=True)
             logger.info('Publication deleted: {}'.format(publication.id))
 
         # Borramos timeline del comentario

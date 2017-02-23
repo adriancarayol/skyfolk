@@ -328,3 +328,16 @@ class PublicationPhoto(PublicationBase):
             return result
         else:
             super(PublicationPhoto, self).save(*args, **kwargs)
+
+
+
+
+class PublicationDeleted(models.Model):
+    """
+    Contiene las publicaciones eliminadas por los usuarios
+    """
+    author = models.ForeignKey(User, null=True)
+    content = models.TextField(blank=False, null=True, max_length=500)
+    image = models.ImageField(verbose_name='publication_deleted_image', blank=True, null=True)
+    created = models.DateTimeField(null=True)
+
