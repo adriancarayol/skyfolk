@@ -54,6 +54,7 @@ THIRD_PARTY_APPS = (
     'dal',  # autocompletado
     'dal_select2',
     'django_celery_results',
+    'easy_thumbnails',
     'dash',
     'dash.contrib.layouts.android',
     'dash.contrib.layouts.bootstrap2',

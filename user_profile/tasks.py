@@ -24,7 +24,7 @@ def send_to_stream(user_id, pub_id):
         pass
     if profile:
         logger.info("Sent to followers stream")
-        [ Group(follower_channel.news_channel).send({
-                "text": json.dumps(publication.content)
-            }) for follower_channel in
-                profile.get_all_follower_values() ]
+        [Group(follower_channel.news_channel).send({
+            "text": json.dumps(publication.content)
+        }) for follower_channel in
+         profile.get_all_follower_values()]

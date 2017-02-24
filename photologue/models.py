@@ -34,6 +34,10 @@ from taggit.managers import TaggableManager
 from .validators import validate_extension
 from .validators import validate_file_extension
 
+from django.dispatch import receiver
+from easy_thumbnails.signals import saved_file
+from easy_thumbnails.fields import ThumbnailerImageField
+from .tasks import generate_thumbnails
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
 try:
@@ -269,10 +273,6 @@ class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
                               upload_to=get_storage_path, validators=[validate_file_extension])
-
-    thumbnail = models.ImageField(_('thumbnail'),
-                                  max_length=IMAGE_FIELD_MAX_LENGTH,
-                                  upload_to=get_storage_path, null=True, blank=True)
 
     date_taken = models.DateTimeField(_('date taken'),
                                       null=True,
@@ -559,6 +559,10 @@ class Photo(ImageModel):
                                    blank=True)
 
     url_image = models.URLField(max_length=255, blank=True, null=True)
+
+    thumbnail = ThumbnailerImageField(_('thumbnail'),
+                                      max_length=IMAGE_FIELD_MAX_LENGTH,
+                                      upload_to=get_storage_path, null=True, blank=True, resize_source=dict(size=(100, 100), sharpen=True))
 
     objects = PhotoQuerySet.as_manager()
 
@@ -976,3 +980,11 @@ def add_default_site(instance, created, **kwargs):
 
 post_save.connect(add_default_site, sender=Gallery)
 post_save.connect(add_default_site, sender=Photo)
+
+
+@receiver(saved_file)
+def generate_thumbnails_async(sender, thumbnail, **kwargs):
+    print(sender)
+    generate_thumbnails.delay(
+        model=sender, pk=thumbnail.instance.pk,
+        field=thumbnail.field.name)

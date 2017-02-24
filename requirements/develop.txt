@@ -68,3 +68,4 @@ bleach
 beautifulsoup4
 django-dash
 selenium
+easy-thumbnails>=2.3
