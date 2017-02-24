@@ -5,4 +5,4 @@ class UserProfileAppConfiguration(AppConfig):
     name = 'user_profile'
 
     def ready(self):
-        from user_profile import signals
+        super(UserProfileAppConfiguration, self).ready()

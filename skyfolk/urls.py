@@ -5,7 +5,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
 # from rest_framework import routers
 
-from about.views import about
 # from api import views
 
 admin.autodiscover()
@@ -38,7 +37,7 @@ urlpatterns = [
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
-    url(r'^about/([^/]+)/$', about),
+    url(r'^about/', include('about.urls')),
     # Recomendacion password para usuarios
     url(r'^tips/password/$', TemplateView.as_view(
         template_name='about/password_recommendation.html')),

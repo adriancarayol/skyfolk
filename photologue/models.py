@@ -33,11 +33,7 @@ from taggit.managers import TaggableManager
 
 from .validators import validate_extension
 from .validators import validate_file_extension
-
-from django.dispatch import receiver
-from easy_thumbnails.signals import saved_file
 from easy_thumbnails.fields import ThumbnailerImageField
-from .tasks import generate_thumbnails
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
 try:
@@ -980,10 +976,3 @@ def add_default_site(instance, created, **kwargs):
 
 post_save.connect(add_default_site, sender=Gallery)
 post_save.connect(add_default_site, sender=Photo)
-
-
-@receiver(saved_file)
-def generate_thumbnails_async(sender, thumbnail, **kwargs):
-    generate_thumbnails.delay(
-        model=sender, pk=thumbnail.instance.pk,
-        field=thumbnail.field.name)
