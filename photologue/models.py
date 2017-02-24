@@ -984,7 +984,6 @@ post_save.connect(add_default_site, sender=Photo)
 
 @receiver(saved_file)
 def generate_thumbnails_async(sender, thumbnail, **kwargs):
-    print(sender)
     generate_thumbnails.delay(
         model=sender, pk=thumbnail.instance.pk,
         field=thumbnail.field.name)
