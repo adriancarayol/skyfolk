@@ -66,3 +66,5 @@ asgi_rabbitmq
 django-celery-results
 bleach
 beautifulsoup4
+django-dash
+selenium

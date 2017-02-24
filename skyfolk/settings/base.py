@@ -17,7 +17,7 @@ ALLOWED_HOSTS = ['.skyfolk.net', '127.0.0.1']
 ALLOWED_TAGS = "p div br code pre h1 h2 h3 h4 hr span s sub sup b i img strong strike em underline super table thead tr th td tbody".split()
 ALLOWED_STYLES = 'color font-weight background-color width height'.split()
 ALLOWED_ATTRIBUTES = {
-    '*': ['class', 'style'],
+    '*': ['style'],
     'a': ['href', 'rel'],
     'img': ['src', 'alt', 'width', 'height'],
     'table': ['border', 'cellpadding', 'cellspacing'],
@@ -54,6 +54,17 @@ THIRD_PARTY_APPS = (
     'dal',  # autocompletado
     'dal_select2',
     'django_celery_results',
+    'dash',
+    'dash.contrib.layouts.android',
+    'dash.contrib.layouts.bootstrap2',
+    'dash.contrib.layouts.windows8',
+    'dash.contrib.plugins.dummy',
+    'dash.contrib.plugins.image',
+    'dash.contrib.plugins.memo',
+    'dash.contrib.plugins.rss_feed',
+    'dash.contrib.plugins.url',
+    'dash.contrib.plugins.video',
+    'dash.contrib.plugins.weather',
 )
 
 FIRST_PARTY_APPS = (
@@ -171,6 +182,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request'
             ],
@@ -227,7 +239,6 @@ MEDIA_URL = '/media/'
 NOTIFICATIONS_SOFT_DELETE = True
 ''' Permite enviar datos arbitrarios en las notificaciones '''
 NOTIFICATIONS_USE_JSONFIELD = True
-
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),

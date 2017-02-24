@@ -14,6 +14,7 @@ from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import Publication, PublicationPhoto
 from timeline.models import Timeline
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from bs4 import BeautifulSoup
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
             raise IntegrityError("No have permissions")
 
         publication = None
+        is_correct_content = False
         logger.debug('POST DATA: {}'.format(request.POST))
         logger.debug('tipo emitter: {}'.format(type(emitter)))
         logger.debug('tipo board_owner: {}'.format(type(board_owner)))
@@ -56,14 +58,32 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 publication.author = emitter
                 publication.board_owner = board_owner
-                if publication.content.isspace():
+
+                publication.add_hashtag() # add hashtags
+                publication.add_mentions() # add mentions
+                publication.parse_content() # parse publication content
+
+                soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
+                for tag in soup.find_all(recursive=True):
+                    if tag.text and not tag.text.isspace():
+                        is_correct_content = True
+                        break
+
+                if not is_correct_content: # Si el contenido no es valido, lanzamos excepcion
+                    logger.info('Publicacion contiene espacios o no tiene texto')
                     raise IntegrityError('El comentario esta vacio')
-                publication.save(new_comment=True)
+
+                if publication.content.isspace(): # Comprobamos si el comentario esta vacio
+                    raise IntegrityError('El comentario esta vacio')
+
+                publication.save(new_comment=True) # Guardamos la publicacion si no hay errores
                 logger.debug('>>>> PUBLICATION: ')
+
+                # Creamos el timeline y enlazamos publicacion con timeline
                 t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
                                                             profile=publication.board_owner.profile)
                 return self.form_valid(form=form)
-            except IntegrityError as e:
+            except Exception as e:
                 logger.debug("views.py line 48 -> {}".format(e))
 
         return self.form_invalid(form=form)
