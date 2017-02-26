@@ -1,6 +1,6 @@
 var UTILS = UTILS || (function () {
         var _args = {};
-        var _showLimitChar = 90;
+        var _max_height_comment = 60;
         return {
             init: function (args) {
                 _args = args;
@@ -85,7 +85,7 @@ var UTILS = UTILS || (function () {
                         // See if there's a div to replace it in, or if we should add a new one
                         var existing = $('#pub-' + data.id);
                         var no_comments = $('#without-comments');
-                        var comment_length = data.content.replace(/\s\s+/g, ' ');
+
                         /* Comprobamos si el elemento existe, si es asi lo modifcamos */
                         if (existing.length) {
                             existing.html(content);
@@ -97,9 +97,11 @@ var UTILS = UTILS || (function () {
                         if ($(no_comments).is(':visible')) {
                             $(no_comments).fadeOut();
                         }
-
+                        var wrapper_content = $('#pub-' + data.id + '').find('.wrp-comment');
                         /* Comprobamos la longitud del nuevo comentario */
-                        if (comment_length.length < _showLimitChar) {
+                        if ($(wrapper_content).height() > _max_height_comment) {
+                            $(wrapper_content).css('height', '2.6em');
+                        } else {
                             $(show).css('display', 'none');
                         }
                     }

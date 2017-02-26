@@ -3,6 +3,7 @@
 {% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load humanize %}
 <div class="row">
     <div class="col l12 m12 s12">
         <div class="user-card card">
@@ -169,17 +170,17 @@
             <ul id="user-stats" class="stats">
                 <li>
                     <a href="/followers/{{ user_profile.username }}"><strong
-                            id="followers-stats">{{ followers }}</strong><span>Seguidores</span></a>
+                            id="followers-stats">{{ followers|intword }}</strong><span>Seguidores</span></a>
                 </li>
                 <li>
                     <a id="likes"
-                       href="{% url "user_profile:like_list" username=user_profile.username %}"><strong>{{ n_likes }}</strong>
+                       href="{% url "user_profile:like_list" username=user_profile.username %}"><strong>{{ n_likes|intword }}</strong>
                         <span title="me gusta">Me gusta</span>
                     </a>
                 </li>
                 <li>
                     <a class="to_gallery"
-                       href="/multimedia/{{ user_profile.username }}/"><strong>{{ multimedia_count }}</strong><span>Fotos y vídeos</span></a>
+                       href="/multimedia/{{ user_profile.username }}/"><strong>{{ multimedia_count|intword }}</strong><span>Fotos y vídeos</span></a>
                 </li>
             </ul>
         </div>

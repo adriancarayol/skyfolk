@@ -1243,13 +1243,16 @@ class RecommendationUsers(ListView):
     def get_queryset(self):
         user = self.request.user
         if not user.profile.tags:
-            return None
+            return UserProfile.objects.filter(privacity=UserProfile.ALL).order_by('?')[:20]
         related_items = TaggedItem.objects.none().order_by('count')
         current_item = UserProfile.objects.get(user=user)
         for tag in current_item.tags.all():
             related_items |= tag.taggit_taggeditem_items.all()
         ids = related_items.values_list('object_id', flat=True)
-        return UserProfile.objects.filter(id__in=ids).exclude(user=user)
+        users = UserProfile.objects.filter(id__in=ids).exclude(user=user)
+        if not users:
+            users = UserProfile.objects.filter(privacity=UserProfile.ALL).order_by('?').exclude(user=user)[:20]
+        return users
 
     def get_context_data(self, **kwargs):
         context = super(RecommendationUsers, self).get_context_data(**kwargs)

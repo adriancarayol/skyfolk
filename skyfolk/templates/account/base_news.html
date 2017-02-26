@@ -1,5 +1,6 @@
 {% extends "account/base_interface.html" %}
 {% load avatar_tags %}
+{% load humanize %}
 {% block title %} <title>Skyfolk</title> {% endblock %}
 
 {% block extra-css %}
@@ -68,7 +69,7 @@
 						</div>
 						<div class="col l8 m9 s8 author">
 							<a href="/profile/{{ pub.author.username }}">@{{ pub.author.username }}</a><i>{{ pub.author.first_name }} {{ pub.author.last_name }}</i>
-							<i class="pub-date">{{ pub.created }}</i>
+							<i class="pub-date">{{ pub.created|naturaltime }}</i>
 						</div>
 						<div class="col l9 m10 s9 contenido">
 							<p>{{ pub.content|safe }}</p>

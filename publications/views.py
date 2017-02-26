@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
@@ -13,6 +14,10 @@ from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import Publication, PublicationPhoto
 from timeline.models import Timeline
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from bs4 import BeautifulSoup
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
@@ -43,60 +48,43 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
             raise IntegrityError("No have permissions")
 
         publication = None
-        print('POST DATA: {}'.format(request.POST))
-        print('tipo emitter: {}'.format(type(emitter)))
-        print('tipo board_owner: {}'.format(type(board_owner)))
+        is_correct_content = False
+        logger.debug('POST DATA: {}'.format(request.POST))
+        logger.debug('tipo emitter: {}'.format(type(emitter)))
+        logger.debug('tipo board_owner: {}'.format(type(board_owner)))
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
+
                 publication.author = emitter
                 publication.board_owner = board_owner
-                if publication.content.isspace():
+
+                publication.add_hashtag() # add hashtags
+                publication.add_mentions() # add mentions
+                publication.parse_content() # parse publication content
+
+                soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
+                for tag in soup.find_all(recursive=True):
+                    if tag.text and not tag.text.isspace():
+                        is_correct_content = True
+                        break
+
+                if not is_correct_content: # Si el contenido no es valido, lanzamos excepcion
+                    logger.info('Publicacion contiene espacios o no tiene texto')
                     raise IntegrityError('El comentario esta vacio')
-                publication.save(new_comment=True)
-                print('>>>> PUBLICATION: ')
+
+                if publication.content.isspace(): # Comprobamos si el comentario esta vacio
+                    raise IntegrityError('El comentario esta vacio')
+
+                publication.save(new_comment=True) # Guardamos la publicacion si no hay errores
+                logger.debug('>>>> PUBLICATION: ')
+
+                # Creamos el timeline y enlazamos publicacion con timeline
                 t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
                                                             profile=publication.board_owner.profile)
                 return self.form_valid(form=form)
-            except IntegrityError as e:
-                print("views.py line 48 -> {}".format(e))
-
-        return self.form_invalid(form=form)
-
-
-class PublicationSelfNewView(AjaxableResponseMixin, CreateView):
-    """
-    Crear una publicación para mi perfil.
-    """
-    form_class = PublicationForm
-    model = Publication
-    http_method_names = [u'post']
-    success_url = '/thanks/'
-
-    def post(self, request, *args, **kwargs):
-        self.object = None
-        # form = PublicationForm(request.POST)
-        form = self.get_form()
-        emitter = get_object_or_404(get_user_model(),
-                                    pk=request.POST['author'])
-
-        publication = None
-        print('POST DATA: {}'.format(request.POST))
-        print('tipo emitter: {}'.format(type(emitter)))
-        if form.is_valid():
-            try:
-                publication = form.save(commit=False)
-                publication.author = emitter
-                publication.board_owner = emitter
-                if publication.content.isspace():
-                    raise IntegrityError('El comentario esta vacio')
-                publication.save(new_comment=True)
-                print('>>>> PUBLICATION: ')
-                t, created = Timeline.objects.get_or_create(publication=publication, author=emitter.profile,
-                                                            profile=emitter.profile)
-                return self.form_valid(form=form)
-            except IntegrityError as e:
-                print("views.py line 48 -> {}".format(e))
+            except Exception as e:
+                logger.debug("views.py line 48 -> {}".format(e))
 
         return self.form_invalid(form=form)
 
@@ -133,19 +121,19 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     http_method_names = [u'post']
     success_url = '/thanks/'
 
-    def post(self, request, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        super(PublicationPhotoView, self).__init__(*args, **kwargs)
         self.object = None
-        form = self.get_form()
 
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
         emitter = get_object_or_404(get_user_model(),
                                     pk=request.POST.get('p_author', None))
 
         photo = get_object_or_404(Photo, pk=request.POST.get('board_photo', None))
-        import pprint
-        pprint.pprint(request.POST)
         publication = None
-        print('POST DATA: {}'.format(request.POST))
-        print('tipo emitter: {}'.format(type(emitter)))
+        logger.debug('POST DATA: {}'.format(request.POST))
+        logger.debug('tipo emitter: {}'.format(type(emitter)))
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
@@ -154,85 +142,96 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():
                     raise IntegrityError('El comentario esta vacio')
                 publication.save(new_comment=True)
-                print('>>>> PUBLICATION: ')
-                """t, created = Timeline.objects.get_or_create(publication=publication, author=emitter.profile,
-                                                            profile=emitter.profile)"""
+                logger.debug('>>>> PUBLICATION: '.format(publication))
+
                 return self.form_valid(form=form)
             except IntegrityError as e:
-                print("views.py line 48 -> {}".format(e))
+                logger.debug("views.py line 48 -> {}".format(e))
 
         return self.form_invalid(form=form)
 
 
 def delete_publication(request):
-    print('>>>>>>>> PETICION AJAX BORRAR PUBLICACION')
+    logger.debug('>>>>>>>> PETICION AJAX BORRAR PUBLICACION')
+    response = False
     if request.POST:
         # print request.POST['userprofile_id']
         # print request.POST['publication_id']
-        obj_userprofile = get_object_or_404(
-            get_user_model(),
-            pk=request.POST['userprofile_id']
-        )
-        print(obj_userprofile)
+        user = request.user
+        publication_id = request.POST['publication_id']
+        logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
+        # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            obj_userprofile.profile.remove_publication(
-                publicationid=request.POST['publication_id']
-            )
-            try:
-                t = Timeline.objects.get(publication__pk=request.POST['publication_id']).delete()
-            except ObjectDoesNotExist:
-                pass
-
-            response = True
+            publication = Publication.objects.get(id=publication_id)
         except ObjectDoesNotExist:
             response = False
+            return HttpResponse(json.dumps(response),
+                                content_type='application/json'
+                                )
+        logger.info('publication_author: {} publication_board_owner: {} request.user: {}'.format(
+            publication.author.username, publication.board_owner.username, user.username))
 
-        return HttpResponse(json.dumps(response),
-                            content_type='application/json'
-                            )
+        # Borramos publicacion
+        if user.id == publication.author.id or user.id == publication.board_owner.id:
+            publication.deleted = True
+            publication.save(update_fields=['deleted'])
+            Publication.objects.filter(parent=publication).update(deleted=True)
+            logger.info('Publication deleted: {}'.format(publication.id))
+
+        # Borramos timeline del comentario
+        try:
+            Timeline.objects.get(publication__pk=request.POST['publication_id']).delete()
+        except ObjectDoesNotExist:
+            pass
+
+        response = True
+    return HttpResponse(json.dumps(response),
+                        content_type='application/json'
+                        )
 
 
 def add_like(request):
     response = False
     statuslike = 0
-    data = []
     if request.POST:
+        user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
-        pub = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        # que vamos a incrementar sus likes
-        user_profile = get_object_or_404(
-            get_user_model(),
-            pk=pub.author.id
-        )
+
+        try:
+            publication = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        except ObjectDoesNotExist:
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
+
 
         # Mostrar los usuarios que han dado un me gusta a ese comentario
-        print("(USUARIO PETICIÓN): " + request.user.username + " PK_ID -> " + str(request.user.pk))
-        print("(PERFIL DE USUARIO): " + user_profile.username + " PK_ID -> " + str(user_profile.pk))
-        print("(USERS QUE HICIERON LIKE): ")
-        print(pub.user_give_me_like.all())
+        logger.info("USUARIO DA LIKE")
+        logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
+        logger.info("(PERFIL DE USUARIO): " + publication.author.username + " PK_ID -> " + str(publication.author.pk))
 
-        if request.user.pk != user_profile.pk and not request.user in pub.user_give_me_like.all() \
-                and not request.user in pub.user_give_me_hate.all():
+        if user.pk != publication.author.pk and user not in publication.user_give_me_like.all() \
+                and user not in publication.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
             # tampoco si el usuario ya ha dado like antes.
-            print("Incrementando like")
+            logger.info("Incrementando like")
             try:
-                pub.user_give_me_like.add(request.user)  # add users like
-                pub.save()
+                publication.user_give_me_like.add(request.user)  # add users like
+                publication.save()
                 response = True
                 statuslike = 1
 
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif request.user.pk != user_profile.pk and request.user in pub.user_give_me_like.all() \
-                and not request.user in pub.user_give_me_hate.all():
-            print("Decrementando like")
+
+        elif user.pk != publication.author.pk and user in publication.user_give_me_like.all() \
+                and user not in publication.user_give_me_hate.all():
+            logger.info("Decrementando like")
             try:
-                pub.user_give_me_like.remove(request.user)
-                pub.save()
+                publication.user_give_me_like.remove(request.user)
+                publication.save()
                 response = True
                 statuslike = 2
             except ObjectDoesNotExist:
@@ -241,7 +240,7 @@ def add_like(request):
         else:
             response = False
             statuslike = 0
-    print("Fin like comentario ---> Response" + str(response)
+    logger.info("Fin like comentario ---> Response" + str(response)
           + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
@@ -252,42 +251,41 @@ def add_hate(request):
     statuslike = 0
     data = []
     if request.POST:
+        user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
-        pub = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        # que vamos a incrementar sus likes
-        user_profile = get_object_or_404(
-            get_user_model(),
-            pk=pub.author.id
-        )
+        try:
+            publication = Publication.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        except ObjectDoesNotExist:
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
         # Mostrar los usuarios que han dado un me gusta a ese comentario
-        print("(USUARIO PETICIÓN): " + request.user.username)
-        print("(PERFIL DE USUARIO): " + user_profile.username)
-        print("(USERS QUE HICIERON LIKE): ")
-        print(pub.user_give_me_hate.all())
+        logger.info("USUARIO DA HATE")
+        logger.info("(USUARIO PETICIÓN): " + user.username)
+        logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
-        if request.user.pk != user_profile.pk and request.user not in pub.user_give_me_like.all() \
-                and request.user not in pub.user_give_me_hate.all():
+        if user.pk != publication.author.pk and user not in publication.user_give_me_like.all() \
+                and user not in publication.user_give_me_hate.all():
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
             # tampoco si el usuario ya ha dado like antes.
-            print("Incrementando like")
+            logger.debug("Incrementando hate")
             try:
-                pub.user_give_me_hate.add(request.user)  # add users like
-                pub.save()
+                publication.user_give_me_hate.add(user)  # add users like
+                publication.save()
                 response = True
                 statuslike = 1
 
             except ObjectDoesNotExist:
                 response = False
                 statuslike = 0
-        elif request.user.pk != user_profile.pk and request.user in pub.user_give_me_hate.all() \
-                and not request.user in pub.user_give_me_like.all():
-            print("Decrementando like")
+        elif user.pk != publication.author.pk and user in publication.user_give_me_hate.all() \
+                and user not in publication.user_give_me_like.all():
+            logger.debug("Decrementando hate")
             try:
-                pub.user_give_me_hate.remove(request.user)
-                pub.save()
+                publication.user_give_me_hate.remove(user)
+                publication.save()
                 response = True
                 statuslike = 2
             except ObjectDoesNotExist:
@@ -296,7 +294,7 @@ def add_hate(request):
         else:
             response = False
             statuslike = 0
-    print("Fin like comentario ---> Response" + str(response)
+    logger.info("Fin like comentario ---> Response" + str(response)
           + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')

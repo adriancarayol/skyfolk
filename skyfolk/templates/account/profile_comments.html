@@ -69,7 +69,7 @@
 					<span class="hate-comment">
 						<i class="fa fa-heart fa-stack-1x"></i>
 						<i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-						<i class="fa hate-value">{{ hates }}</i>
+						<i class="fa hate-value">{{ hates|intword }}</i>
 					</span>
 				</li>
 				{% else %}
@@ -83,13 +83,13 @@
 				{% endif %}
 				{% endwith %}
 				<li title="¡Me gusta!" class="like-comment"><i id="like-heart"
-						    class="fa fa-heart">{{ pub.pk|total_likes }}</i></li>
+						    class="fa fa-heart"> {{ pub.pk|total_likes|intword }}</i></li>
 				<li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
 					</i></li>
 					<li title="Responder" class="reply-comment"><i class="fa fa-reply"
 						    id="reply-caja-comentario-{{ pub.pk }}"></i></li>
 					<li title="Añadir a mi timeline" class="add-timeline"><i
-				       class="fa fa-tag"> {{ pub.pk|total_shares }}</i></li>
+				       class="fa fa-tag"> {{ pub.pk|total_shares|intword }}</i></li>
 			</ul>
 		</div>
 	</div>

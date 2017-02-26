@@ -20,15 +20,15 @@ var UTILS_E = UTILS_E || (function () {
 				var content = '<div class=\"col l3 m12 s12\" data-id="' + data.id + '">';
 				content += '<div class=\"notice-item\">';
 				content += '<div class=\"col l3 m2 s3 img\">';
-				content += '<img src="'+data.img+'"></div>';
+				content += '<img src="'+data.author_avatar+'"></div>';
 				content += '<div class=\"col l8 m9 s8 author\">';
-				content += '<a href=\"/profile/\"'+data.author+'>'+data.author+'</a><i>'+data.author_first_name + ' ' + data.author_last_name +'</i>';
+				content += '<a href=\"/profile/\"'+data.author_username+'>'+data.author_username+'</a><i>'+data.author_first_name + ' ' + data.author_last_name +'</i>';
 				content += '<i class=\"pub-date\">'+data.created+'</i></div>';
 				content += '<div class=\"col l9 m10 s9 contenido\"><p>'+data.content+'</p></div>';
 				content += '</div></div>';
 				// See if there's a div to replace it in, or if we should add a new one
 				var list_notifications = $('#stream-publications');
-				var existing = $(list_notifications).find("[data-id='" + data.id + "']");
+				var existing = $(list_notifications).find("[data-id='" + message.id + "']");
 				/* Comprobamos si el elemento existe, si es asi lo modifcamos */
 				if (existing.length) {
 					existing.html(content);
