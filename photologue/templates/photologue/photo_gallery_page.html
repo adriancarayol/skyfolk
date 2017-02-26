@@ -15,8 +15,12 @@
                         {% endfor %}
                     </div>
                 {% endif %}
-                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" title="{{ photo.title }}"
+
+            <img src=" {% if photo.thumbnail %}{{ photo.thumbnail.url }}{% else %}{{ photo.image.url }}{% endif %}" alt="{{ photo.title }}" title="{{ photo.title }}"
                      onclick="location.href='{{ photo.get_absolute_url }}'">
+
+
+
             </div>
             <div class="col s12 legend-content">
                 <div class="legend-user-image">

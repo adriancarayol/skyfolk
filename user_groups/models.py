@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
-
+from django.contrib.auth.models import Group
 
 def upload_small_group_image(instance, filename):
     return '%s/small_group_image/%s' % (instance.name, filename)
@@ -86,11 +86,11 @@ class UserGroupsManager(models.Manager):
         return self.get_queryset().is_follow(group_id=group_id, user_id=user_id)
 
 
-class UserGroups(models.Model):
+class UserGroups(Group):
     """
         Modelo para la creacion de grupos de usuarios.
     """
-    name = models.CharField(max_length=128, unique=True)
+    # name = models.CharField(max_length=128, unique=True)
     slug = models.SlugField(max_length=256, unique=True, null=True)
     description = models.TextField(max_length=1024, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
