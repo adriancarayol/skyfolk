@@ -105,7 +105,7 @@ class UserProfileManager(models.Manager):
 
         if is_first_time_login:
             user_profile.is_first_login = False
-            user_profile.save()
+            user_profile.save(update_fields=['is_first_login'])
 
         return is_first_time_login
 
