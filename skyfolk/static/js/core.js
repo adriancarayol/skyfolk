@@ -508,6 +508,7 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
 
 }
 
+/*
 function addNewPublication(type, user_pk, board_owner_pk, parent) {
     if (type == "reply") {
         console.log(type + " " + user_pk + " " + board_owner_pk + " " + parent);
@@ -524,7 +525,7 @@ function addNewPublication(type, user_pk, board_owner_pk, parent) {
         })
     }
 }
-
+*/
 
 function AJAX_submit_publication(data, type, pks) {
     type = typeof type !== 'undefined' ? type : "reply"; //default para type

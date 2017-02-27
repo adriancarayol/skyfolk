@@ -53,7 +53,7 @@ def profile_view(request, username,
     print('Temas de interes del usuario: {} {}'.format(username, user_profile.profile.tags.names()))
     context = {}
     # Privacidad del usuario
-    privacity = user_profile.profile.is_visible(user.profile, user.pk)
+    privacity = user_profile.profile.is_visible(user.profile)
 
     # Para escribir mensajes en mi propio perfil.
     self_initial = {'author': user.pk, 'board_owner': user.pk}
@@ -1042,7 +1042,7 @@ def changepass_confirmation(request):
 
 # Modificacion del template para desactivar una cuenta
 class DeactivateAccount(FormView):
-    template_name = 'account/account_inactive.html'
+    template_name = 'account/cf-account_inactive.html'
     form_class = DeactivateUserForm
     success_url = reverse_lazy('account_logout')
 

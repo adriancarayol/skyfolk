@@ -179,7 +179,7 @@ class Publication(PublicationBase):
             except ObjectDoesNotExist:
                 continue
 
-            privacity = recipientprofile.profile.is_visible(self.author.profile, self.author.pk)
+            privacity = recipientprofile.profile.is_visible(self.author.profile)
             if privacity and privacity != 'all':
                 continue
 
