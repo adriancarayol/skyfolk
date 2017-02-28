@@ -3,10 +3,11 @@
 from __future__ import unicode_literals
 
 import autoslug.fields
-import dash.helpers
+import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
-import django.db.models.deletion
+
+import dash.helpers
 
 
 class Migration(migrations.Migration):

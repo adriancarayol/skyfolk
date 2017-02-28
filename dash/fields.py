@@ -1,5 +1,5 @@
+from django.db.models import Max
 from django.db.models import fields
-from django.db.models import Avg, Max
 
 
 class OrderField(fields.IntegerField):

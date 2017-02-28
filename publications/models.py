@@ -124,7 +124,7 @@ class PublicationBase(models.Model):
                               verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     tags = TaggableManager(blank=True)
-    deleted = models.BooleanField(default='False')
+    deleted = models.BooleanField(default=False, blank=True)
 
     class Meta:
         abstract = True

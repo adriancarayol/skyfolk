@@ -4,38 +4,23 @@ __copyright__ = 'Copyright (c) 2013 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
 
 import unittest
-
-from optparse import OptionParser
 from time import sleep
 
-from six import print_
-
-from django.test import TestCase
-from django.test import RequestFactory
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import LiveServerTestCase
-from django.test import Client
-from django.contrib.staticfiles.management.commands import collectstatic
-from django.conf import settings
-
+from django.test import RequestFactory
+from django.test import TestCase
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import WebDriverException
+from six import print_
 
-from selenium.webdriver.firefox.webdriver import WebDriver
-# from selenium.webdriver.remote.webdriver import WebDriver as RemoveWebDriver
-# from selenium.webdriver.support.wait import WebDriverWait
-
-from dash.discover import autodiscover
-from dash.base import plugin_registry, layout_registry
-from dash.base import get_registered_plugins, get_registered_layouts, get_layout
-from dash.utils import get_occupied_cells, get_user_plugins
+from dash.base import get_registered_layouts, get_layout
 from dash.models import DashboardEntry
-from dash.management.commands import dash_sync_plugins
 from dash.settings import WAIT_BETWEEN_TEST_STEPS, WAIT_AT_TEST_END
-#from dash.compat import User
-from django.contrib.auth import get_user_model
+from dash.utils import get_occupied_cells, get_user_plugins
 
 DASH_TEST_USER_USERNAME = 'test_admin'
 DASH_TEST_USER_PASSWORD = 'test'

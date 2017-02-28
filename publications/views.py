@@ -181,9 +181,10 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     http_method_names = [u'post']
     success_url = '/thanks/'
 
-    def __init__(self, *args, **kwargs):
-        super(PublicationPhotoView, self).__init__(*args, **kwargs)
+    def __init__(self):
         self.object = None
+        super(PublicationPhotoView, self).__init__()
+
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -210,7 +211,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
         return self.form_invalid(form=form)
 
-publication_photo_view = login_required(PublicationPhotoView, login_url='/')
+publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
 
 @login_required(login_url='/')
 def delete_publication(request):

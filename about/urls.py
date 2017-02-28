@@ -1,4 +1,5 @@
 from django.conf.urls import url
+
 from about.views import EntryListView
 
 urlpatterns = [
