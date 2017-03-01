@@ -13,12 +13,14 @@ $(document).ready(function () {
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
-        menuWidth: 300
+        menuWidth: 300,
+        draggable: true
     });
 
     $(".button-right-notify").sideNav({
         edge: 'right', // Choose the horizontal origin
-        menuWidth: 340
+        menuWidth: 340,
+        dragable: true
     });
 
     /* Mensaje flotante (perfil ajeno) */
