@@ -65,7 +65,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.board_owner = board_owner
 
                 publication.add_hashtag()  # add hashtags
-                publication.add_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
@@ -81,7 +80,11 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise IntegrityError('El comentario esta vacio')
 
-                publication.save(new_comment=True)  # Guardamos la publicacion si no hay errores
+                publication.save() # Creamos publicacion
+                publication.parse_mentions()  # add mentions
+                publication.save(update_fields=['content'], new_comment=True)  # Guardamos la publicacion si no hay errores
+
+
                 logger.debug('>>>> PUBLICATION: ')
 
                 # Creamos el timeline y enlazamos publicacion con timeline

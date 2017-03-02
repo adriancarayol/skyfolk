@@ -310,52 +310,6 @@ $(document).ready(function () {
 
 }); // END DOCUMENT READY */
 
-function addFriendToHtmlList(item) {
-
-    if (item.user__profile__image) {
-        $(tab_amigos).find("ul.list").append('<li id="friend-' + item.user__id + '"><img src="' + MEDIA_URL + item.user__profile__image + '"  class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
-
-        //SI NO EXISTE LA URL DE LA IMAGEN, SE CAMBIA POR EL AVATAR POR DEFECTO. QUITAR ESTO CUANDO
-        //SE PUEDAN SUBIR IMAGENES SIN QUE DESAPAREZCAN MAS TARDE
-        imageselector = $(tab_amigos).find("ul.list #friend-" + item.user__id + " img.friend-avatar")
-        URL_CHECK = MEDIA_URL + item.user__profile__image;
-        URL_CHANGE = STATIC_URL + 'img/default.png';
-        //Check image URL;
-        (function (imageselector, URL_CHECK, URL_CHANGE) {
-
-            $.ajax({
-                url: URL_CHECK,
-                type: 'HEAD',
-                data: {
-                    'csrfmiddlewaretoken': csrftoken
-                },
-                dataType: "json",
-                error: function () {
-                    //url not exists
-                    //wait secs
-
-                    setTimeout(function () {
-
-                        //forma chula
-                        imageselector.fadeOut("slow", function () {
-                            imageselector.attr("src", URL_CHANGE);
-                        });
-                        imageselector.fadeIn("slow");
-
-                    }, 750);
-
-                }
-
-            });
-
-        })(imageselector, URL_CHECK, URL_CHANGE);
-
-    } else {
-        $(tab_amigos).find("ul.list").append('<li id="friend-' + item.user__id + '"><img src="' + STATIC_URL + 'img/generic-avatar.png" class="friend-avatar img-responsive"><a href="/profile/' + item.user__username + '">' + item.user__first_name + ' ' + item.user__last_name + ' (' + item.user__username + ')</a></li>');
-    }
-
-
-}
 
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/
 function AJAX_likeprofile(status) {
@@ -401,11 +355,6 @@ function AJAX_likeprofile(status) {
         });
     }
 
-}
-
-
-function addItemToFriendList(name, lastname) {
-    $("#tab-amigos").find("ul").append('<li><img src="{{STATIC_URL}}img/generic-avatar.png" class="img-responsive"><a>' + name + ' ' + lastname + '</a></li>');
 }
 
 

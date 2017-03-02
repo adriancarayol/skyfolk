@@ -22,14 +22,9 @@
                      style="background: url('{{ STATIC_URL }}img/nuevo_back.png') no-repeat center center; background-size: cover;">
             {% endif %}
             <!-- Si el usuario tiene imagen, lo redireccionamos a change -->
-            <div data-title="Imágen de perfil" class="img-profile">
-                {% if request.user|has_avatar %}
-                    <a href="{% url 'avatar_change' %}">
-                {% else %} {% comment %} Si no, le proponemos añadir una nueva imagen {% endcomment %}
-                    <a href="{% url 'avatar_add' %}">
-                {% endif %}
-                {% avatar user %}
-                </a>
+            <div id="avatar-profile" title="Imágen de perfil" class="img-profile"
+                 style="background-image: url({% avatar_url user_profile %}); background-repeat: no-repeat; background-position: center;
+                         background-size: 100% 100%">
                 <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
                         class="fa fa-trash"></i></a>
                 <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
@@ -94,6 +89,17 @@
         });
     </script>
 
+    <script>
+        $(document).ready(function () {
+            $('#avatar-profile').on('click', function () {
+                {% if user_profile|has_avatar %}
+                    window.location.href = "{% url 'avatar_change' %}";
+                {% else %}
+                    window.location.href = "{% url 'avatar_add' %}";
+                {% endif %}
+            });
+        });
+    </script>
     <script>
         $('.menu-config').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
     </script>

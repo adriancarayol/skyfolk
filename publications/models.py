@@ -166,7 +166,7 @@ class Publication(PublicationBase):
                                                 '<a href="/search/">{0}</a>'.format(tag))
 
 
-    def add_mentions(self):
+    def parse_mentions(self):
         """
         Buscamos menciones en el contenido del mensaje
         y enviamos un mensaje al usuario
@@ -187,7 +187,7 @@ class Publication(PublicationBase):
                 notify.send(self.author, actor=self.author.username,
                             recipient=recipientprofile,
                             verb=u'¡te ha mencionado en su tablón!',
-                            description='Mencion')
+                            description='<a href="%s">Ver</a>' % ('/publication/'+str(self.id)))
 
             self.content = self.content.replace(mencion,
                                                 '<a href="/profile/%s">%s</a>' %
