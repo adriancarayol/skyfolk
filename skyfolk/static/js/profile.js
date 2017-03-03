@@ -14,10 +14,10 @@ $(document).ready(function () {
         var show = $(this).find('.show-more a');
 
         if ($(comment).height() > max_height_comment) {
+            $(show).show();
             $(comment).css('height', '2.6em');
-
         } else {
-            $(show).css('display', 'none');
+            //$(show).css('display', 'none');
         }
     });
 

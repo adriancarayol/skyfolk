@@ -5,11 +5,12 @@
 {% load el_pagination_tags %}
 
 {% paginate publications %}
-<div class="wrapper-reply">
+<div class="row wrapper-reply">
     {% include "account/new_reply.html" %}
     <!-- RESPUESTAS A COMENTARIOS -->
     {% for pub in publications %}
-        <div class="comment-reply">
+        <div class="row">
+        <div class="comment-reply col offset-l2 l9 m12 s12">
             <div class="avatar-reply">{% avatar pub.author %}</div>
             <div class="author-reply">
                 <a href="/profile/{{ pub.author }}">{{ pub.author }}</a>
@@ -47,6 +48,7 @@
                 </ul>
             </div>
         </div>
-        </div>
     {% endfor %}
+    </div>
+</div>
 {% show_more %}

@@ -2,12 +2,11 @@ a, a:visited {
     color: #4099FF;
     text-decoration: none;
 }
-
+.container {
+    margin-top: 2.6em !important;
+}
 .wrapper {
-    margin: 30px auto;
-    min-width: 100%;
     min-height: 155px;
-    width: 100%;
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -35,13 +34,15 @@ a, a:visited {
     text-align: center;
     margin-right: 10%;
 }
+.show-more a {
+    display: none;
+}
 
 .articulo {
     float: right;
     margin-right: 5.5%;
     position: relative;
     width: 70%;
-    border-bottom: 1px solid #eee;
     margin-top: 20px;
     height: 100%;
 }
@@ -51,7 +52,7 @@ a, a:visited {
     height: 20px;
 }
 
-.h22 {
+.author-header {
     margin: 1px 0 7px;
     font-size: 1.2rem;
     font-weight: 600;
@@ -60,7 +61,7 @@ a, a:visited {
 
 .parrafo {
     font-size: 1.1rem;
-    line-height: 1.5rem;
+    line-height: 2rem;
     word-wrap: break-word;
     margin-bottom: 25px;
 }
@@ -210,11 +211,9 @@ a.fontawesome-cog:hover {
     transform: translateZ(0);
 }
 
-.options_comentarios {
-    position: relative;
-    display: block;
-    width: 90%;
-    height: auto;
+.options_comentarios ul {
+    padding-top: 1%;
+    margin-right: 4%;
 }
 
 .options_comentarios ul li {
@@ -226,7 +225,7 @@ a.fontawesome-cog:hover {
 }
 
 .options_comentarios ul .like-comment, .quote-comment, .reply-comment, .add-timeline {
-    margin-left: 5%;
+    margin-left: 3%;
 }
 
 .options_comentarios ul .fa-stack, .trash-comment {
@@ -325,6 +324,7 @@ a.fontawesome-cog:hover {
 
 .wrapper-reply .reply-options ul .fa-stack {
     margin-top: 1.25%;
+    top: -5px;
 }
 
 .hate-with-values {
@@ -334,7 +334,7 @@ a.fontawesome-cog:hover {
 .comment-reply {
     clear: both;
     padding: 2%;
-    margin: 1%;
+    margin-bottom: 2%;
     color: #666;
     border-right: 2px solid #1e88e5;
     box-shadow: 0 1px 5px #bdbdbd;
