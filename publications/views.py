@@ -9,7 +9,6 @@ from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
-from django.views.generic import ListView
 from django.views.generic.edit import CreateView
 from el_pagination.views import AjaxListView
 
@@ -18,7 +17,7 @@ from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import Publication, PublicationPhoto
 from timeline.models import Timeline
 from user_profile.forms import SearchForm
-from user_profile.models import UserProfile
+from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 
 logging.basicConfig(level=logging.INFO)
@@ -138,20 +137,21 @@ class PublicationDetailView(AjaxListView):
         super(PublicationDetailView, self).__init__()
 
     def dispatch(self, request, *args, **kwargs):
-        self.publication = get_object_or_404(Publication, id=self.kwargs['publication_id'])
+        self.publication = get_object_or_404(Publication, id=self.kwargs['publication_id'], deleted=False)
         if self.user_pass_test():
             return super(PublicationDetailView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('user_profile:profile', username=self.publication.author.username   )
 
     def get_queryset(self):
-        return Publication.objects.filter(parent=self.publication.pk)
+        return Publication.objects.filter(parent=self.publication.pk, deleted=False).order_by('created')
 
     def get_context_data(self, **kwargs):
         context = super(PublicationDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
         context['publication'] = self.publication
+        context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['notifications'] = user.notifications.unread()

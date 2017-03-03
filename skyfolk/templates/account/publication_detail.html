@@ -83,6 +83,9 @@
                                 </ul>
                             </div>
                         </div>
+                        {% with publication as pub %}
+                            {% include "account/new_reply.html" %}
+                        {% endwith %}
                     </div>
                 </div>
             </div>

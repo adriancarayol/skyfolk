@@ -6,49 +6,49 @@
 
 {% paginate publications %}
 <div class="row wrapper-reply">
-    {% include "account/new_reply.html" %}
     <!-- RESPUESTAS A COMENTARIOS -->
     {% for pub in publications %}
         <div class="row">
-        <div class="comment-reply col offset-l2 l9 m12 s12">
-            <div class="avatar-reply">{% avatar pub.author %}</div>
-            <div class="author-reply">
-                <a href="/profile/{{ pub.author }}">{{ pub.author }}</a>
-                <i class="reply-created">{{ pub.created|naturaltime }}</i>
-            </div>
-            <div class="row">
-                <div class="content-reply">{{ pub|safe|replace_decorators|safe }}</div>
-            </div>
-            <div class="divider"></div>
-            <div class="reply-options">
-                <ul>
-                    <li class="add-reply-timeline">
-                        <i class="fa fa-tag"></i>
-                    </li>
-                    <li class="reply-reply">
-                        <i class="fa fa-reply"></i>
-                    </li>
-                    <li class="quote-reply">
-                        <i class="fa fa-quote-left"></i>
-                    </li>
-                    <li class="like-reply">
-                        <i class="fa fa-heart"></i>
-                    </li>
-                    <li title="No me gusta" class="fa-stack" id="fa-hate">
+            <div class="comment-reply col offset-l2 l9 m12 s12">
+                <div class="avatar-reply">{% avatar pub.author %}</div>
+                <div class="author-reply">
+                    <a href="/profile/{{ pub.author }}">{{ pub.author }}</a>
+                    <i class="reply-created">{{ pub.created|naturaltime }}</i>
+                </div>
+                <div class="row">
+                    <div class="content-reply">{{ pub|safe|replace_decorators|safe }}</div>
+                </div>
+                <div class="divider"></div>
+                <div class="reply-options">
+                    <ul>
+                        <li class="add-reply-timeline">
+                            <i class="fa fa-tag"></i>
+                        </li>
+                        <li class="reply-reply">
+                            <i class="fa fa-reply"></i>
+                        </li>
+                        <li class="quote-reply">
+                            <i class="fa fa-quote-left"></i>
+                        </li>
+                        <li class="like-reply">
+                            <i class="fa fa-heart"></i>
+                        </li>
+                        <li title="No me gusta" class="fa-stack" id="fa-hate">
 						<span class="hate-comment">
 							<i class="fa fa-heart fa-stack-1x"></i>
 							<i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
 							<i class="fa hate-value"></i>
 						</span>
-                    </li>
-                    <li class="del-reply">
-                        <i class="fa fa-trash"></i>
-                    </li>
+                        </li>
+                        <li class="del-reply">
+                            <i class="fa fa-trash"></i>
+                        </li>
 
-                </ul>
+                    </ul>
+                </div>
             </div>
+            {% include "account/new_reply.html" %}
         </div>
     {% endfor %}
-    </div>
 </div>
 {% show_more %}
