@@ -213,6 +213,16 @@ if(requests){
                 UTILS.init([{{ user.pk }}]);
                 UTILS.conn_socket();
             </script>
+            {% comment "Add follow to tab %}
+                Add follow to profile tab
+            {% endcomment %}
+            {% if user_profile.id == request.user.id %}
+                <script>
+                    function addItemToFriendList(name, lastname, username, avatar_url) {
+                        $("#tab-amigos").find("ul").append('<li><img src="' + avatar_url + '" alt="' + username + '" width="120" height="120"><a>' + name + ' ' + lastname + (username) + '</a></li>');
+                    }
+                </script>
+            {% endif %}
         {% else %}
             <h1 class="account-disabled">Cuenta desactivada.</h1>
         {% endif %}

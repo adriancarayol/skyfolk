@@ -10,6 +10,7 @@ from dash.base import BaseDashboardPlugin
 from dash.contrib.plugins.video.forms import VideoForm
 from dash.factory import plugin_factory
 
+
 # ********************************************************************************
 # ******************************* Base Video plugin ******************************
 # ********************************************************************************

@@ -4,6 +4,7 @@ from six import print_
 from dash.base import get_registered_layout_uids, get_registered_plugin_uids
 from dash.models import DashboardEntry
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         """

@@ -30,7 +30,7 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser
-
+from publications.utils import get_author_avatar
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -53,7 +53,7 @@ def profile_view(request, username,
     print('Temas de interes del usuario: {} {}'.format(username, user_profile.profile.tags.names()))
     context = {}
     # Privacidad del usuario
-    privacity = user_profile.profile.is_visible(user.profile, user.pk)
+    privacity = user_profile.profile.is_visible(user.profile)
 
     # Para escribir mensajes en mi propio perfil.
     self_initial = {'author': user.pk, 'board_owner': user.pk}
@@ -470,6 +470,11 @@ def add_friend_by_username_or_pin(request):
     """
     print('ADD FRIEND BY USERNAME OR PIN')
     response = 'no_added_friend'
+    friend = None
+    data = {
+        'response': response,
+        'friend': friend
+    }
     if request.method == 'POST':
         pin = str(request.POST.get('valor'))
         if len(pin) > 15:
@@ -486,32 +491,42 @@ def add_friend_by_username_or_pin(request):
             try:
                 friend = UserProfile.objects.get(personal_pin=pin)
             except ObjectDoesNotExist:
-                return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
+                data['response'] = 'no_match'
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             if user.is_follow(friend):
-                return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+                data['response'] = 'its_your_friend'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
             is_blocked = friend.is_blocked(user)
 
             if is_blocked:
-                response = "user_blocked"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                data['response'] = 'user_blocked'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
             blocked_profile = user.is_blocked(friend)
 
             if blocked_profile:
-                response = "blocked_profile"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                data['response'] = 'blocked_profile'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
             no_need_petition = friend.privacity == UserProfile.ALL
             if no_need_petition:
                 created = user.add_direct_relationship(profile=friend)
                 if created:
-                    response = "added_friend"
-                    return HttpResponse(json.dumps(response), content_type='application/javascript')
+                    data['response'] = 'added_friend'
+                    data['friend_username'] = friend.user.username
+                    data['friend_avatar'] = get_author_avatar(friend.user)
+                    data['friend_first_name'] = friend.user.first_name
+                    data['friend_last_name'] = friend.user.last_name
+                    return HttpResponse(json.dumps(data), content_type='application/javascript')
+
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(friend)
@@ -542,38 +557,48 @@ def add_friend_by_username_or_pin(request):
             user = user_request.profile
 
             if user.user.username == username:
-                return HttpResponse(json.dumps('your_own_username'), content_type='application/javascript')
+                data['response'] = 'your_own_username'
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
-            friend = None
             try:
                 friend = UserProfile.objects.get(user__username=username)
             except ObjectDoesNotExist:
-                return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
+                data['response'] = 'no_match'
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             if user.is_follow(friend):  # if user.is_friend(friend):
-                return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+                data['response'] = 'its_your_friend'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
             is_blocked = friend.is_blocked(user)
 
             if is_blocked:
-                response = "user_blocked"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                data['response'] = 'user_blocked'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
             blocked_profile = user.is_blocked(friend)
 
             if blocked_profile:
-                response = "blocked_profile"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                data['response'] = 'blocked_profile'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
             no_need_petition = friend.privacity == UserProfile.ALL
             if no_need_petition:
                 created = user.add_direct_relationship(profile=friend)
                 if created:
-                    response = "added_friend"
-                    return HttpResponse(json.dumps(response), content_type='application/javascript')
+                    data['response'] = 'added_friend'
+                    data['friend_username'] = friend.user.username
+                    data['friend_avatar'] = get_author_avatar(friend.user)
+                    data['friend_first_name'] = friend.user.first_name
+                    data['friend_last_name'] = friend.user.last_name
+                    return HttpResponse(json.dumps(data), content_type='application/javascript')
+
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(
@@ -600,7 +625,12 @@ def add_friend_by_username_or_pin(request):
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-    return HttpResponse(json.dumps(response), content_type='application/javascript')
+    data['response'] = response
+    data['friend_username'] = friend.user.username
+    data['friend_avatar'] = get_author_avatar(friend.user)
+    data['friend_first_name'] = friend.user.first_name
+    data['friend_last_name'] = friend.user.last_name
+    return HttpResponse(json.dumps(data), content_type='application/javascript')
 
 
 @login_required(login_url='/')
@@ -1042,7 +1072,7 @@ def changepass_confirmation(request):
 
 # Modificacion del template para desactivar una cuenta
 class DeactivateAccount(FormView):
-    template_name = 'account/account_inactive.html'
+    template_name = 'account/cf-account_inactive.html'
     form_class = DeactivateUserForm
     success_url = reverse_lazy('account_logout')
 

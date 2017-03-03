@@ -1,23 +1,23 @@
 from django import forms
-from django.contrib import admin
-from django.contrib.admin import helpers
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin.views.decorators import staff_member_required
-from django.utils.decorators import method_decorator
 from django.conf.urls import url
+from django.contrib import admin
+from django.contrib import messages
+from django.contrib.admin import helpers
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.contrib import messages
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
 
 from .base import get_registered_plugins, get_registered_layouts
 from .constants import ACTION_CHOICE_REPLACE
+from .forms import BulkChangeDashboardPluginsForm
 from .models import (
     DashboardWorkspace,
     DashboardEntry,
     DashboardPlugin,
     DashboardSettings
 )
-from .forms import BulkChangeDashboardPluginsForm
 
 staff_member_required_m = method_decorator(staff_member_required)
 

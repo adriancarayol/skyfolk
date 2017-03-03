@@ -19,16 +19,18 @@
                     <img src="{{ STATIC_URL }}img/nuevo_back.png" class="user-bg">
                 {% endif %}
                 {% if not isFollower %}
-                    <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
+                    <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
+                          data-tooltip="Acerca de {{ user_profile.username }}"></span>
                 {% else %}
-                    <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }} - ¡Te sigue!"
+                    <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
+                          data-tooltip="Acerca de {{ user_profile.username }} - ¡Te sigue!"
                           style="color: #1e88e5"></span>
                 {% endif %}
                 <!--<input type="checkbox" id="button-menu"  />-->
                 {% if user.is_authenticated and user.username != user_profile.username %}
                     <!-- si es usuario esta visitando un perfil que no es el suyo -->
                     <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
-                    <script async type="text/javascript">
+                    <script type="text/javascript">
                         $(window).load(function () {
                             var addFriend = document.getElementById('addfriend');
                             {% if isFriend == True %}

@@ -47,7 +47,7 @@ urlpatterns = [
     # Urls para el modulo emoji
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Django-avatar
-    #url(r'^', include('avatar.urls')),
+    url(r'^', include('avatar.urls')),
     # notificaciones
     # url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls',
     # namespace='notifications')),
