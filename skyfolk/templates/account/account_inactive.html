@@ -1,35 +1,75 @@
-{% extends "account/base_cf.html" %}
+{% extends "account/base.html" %}
 
 {% load i18n %}
 
-{% block head_title %}{% trans "Account Inactive" %}{% endblock %}
-{% block extra-css %}
-{% endblock %}
-{% block cf-title %}
-    <div class="hgroup">
-        <h4 class="cn"> Eliminar cuenta </h4>
-        <h6 class="ch"> Elimina tu cuenta de skyfolk. </h6>
-    </div>
-{% endblock %}
+{% block head_title %}Skyfolk - {% trans "Account Inactive" %}{% endblock %}
 
-{% block cf-form %}
-    <div class="wrapper disable-account-wrapper">
-        {% if not user.is_active %}
-            <p class="account-dissable">{% trans "Account Inactive" %}</p>
-        {% endif %}
-        <form action="." method="POST">{% csrf_token %}
-            {{ form.is_active.errors }}
-            <p>
-                {{ form.is_active }}
-                <label for="id_is_active"></label>
-                <span>{{ form.is_active.help_text|safe }}</span>
-            </p>
-            {% if user.is_active %}
-                <button class="btn btn-primary" type="submit" name="action">{% trans "Confirm" %}</button>
-            {% endif %}
-        </form>
+{% block body %}
+    {% comment "No es necesario" %}
+    {% if messages %}
+    <div class="div-messages">
+      <strong>{% trans "Messages" %}:</strong>
+      <ul>
+  {% for message in messages %}
+  <li>{{message}}</li>
+  {% endfor %}
+      </ul>
     </div>
-    <script>
-        $('.menu-config').find('li:nth-child(8)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': 'tomato'});
-    </script>
+    {% endif %}
+    {% endcomment %}
+    <div class="display-info-reset-password">
+        <div class="navbar-fixed">
+            <nav>
+                <div class="nav-wrapper white z-depth-1">
+                    <a title="Inicio" href="/inicio" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
+                    {% block base-title %}
+
+                    {% endblock %}
+                </div>
+            </nav>
+        </div>
+
+    </div>
+    <div class="row">
+        {% block menu %}
+            <div class="col l4 offset-l4 col s12">
+                <div class="menu">
+                    <strong>También puedes...</strong>
+                    <ul>
+                        {% if user.is_authenticated %}
+                            <li><a class="waves-effect waves-light btn blue lighten-2" href="{% url 'account_email' %}">Change
+                                E-mail</a></li>
+                            <li><a class="waves-effect waves-light btn blue lighten-2"
+                                   href="{% url 'account_logout' %}">Sign Out</a></li>
+                        {% else %}
+                            <li><a class="waves-effect waves-light btn blue lighten-2"
+                                   onclick="javascript:location.href='{% url 'account_login' %}'">Iniciar Sesión</a>
+                            </li>
+                            <li><a class="waves-effect waves-light btn blue lighten-2"
+                                   onclick="javascript:location.href='{% url 'account_signup' %}'">Registrarme</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            </div>
+        {% endblock %}
+    {% block content %}
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h3 class="center grey-text">{% trans "Account Inactive" %}</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <h6 class="center grey-text">{% trans "This account is inactive." %}</h6>
+                    <p class="center grey-text">Puedes ponerte en contacto con el administrador para activar la cuenta
+                        de nuevo.</p>
+                    <address class="center">
+                        <a href="mailto:help@skyfolk.net">Administrador</a>
+                    </address>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
 {% endblock %}

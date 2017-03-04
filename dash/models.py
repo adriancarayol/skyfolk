@@ -12,7 +12,6 @@ from .base import (
     plugin_registry,
     get_registered_plugins
 )
-from .fields import OrderField
 from .helpers import slugify_workspace
 
 __title__ = 'dash.models'

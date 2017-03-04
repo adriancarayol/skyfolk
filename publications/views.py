@@ -1,20 +1,24 @@
 import json
 import logging
 
+from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView
+from django.shortcuts import redirect
 from django.views.generic.edit import CreateView
+from el_pagination.views import AjaxListView
 
 from photologue.models import Photo
 from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import Publication, PublicationPhoto
 from timeline.models import Timeline
+from user_profile.forms import SearchForm
+from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from bs4 import BeautifulSoup
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -42,7 +46,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         board_owner = get_object_or_404(get_user_model(),
                                         pk=request.POST['board_owner'])
 
-        privacity = board_owner.profile.is_visible(self.request.user.profile, self.request.user.pk)
+        privacity = board_owner.profile.is_visible(self.request.user.profile)
 
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
@@ -59,9 +63,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.author = emitter
                 publication.board_owner = board_owner
 
-                publication.add_hashtag() # add hashtags
-                publication.add_mentions() # add mentions
-                publication.parse_content() # parse publication content
+                publication.add_hashtag()  # add hashtags
+                publication.parse_content()  # parse publication content
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):
@@ -69,14 +72,18 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                         is_correct_content = True
                         break
 
-                if not is_correct_content: # Si el contenido no es valido, lanzamos excepcion
+                if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
                     logger.info('Publicacion contiene espacios o no tiene texto')
                     raise IntegrityError('El comentario esta vacio')
 
-                if publication.content.isspace(): # Comprobamos si el comentario esta vacio
+                if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise IntegrityError('El comentario esta vacio')
 
-                publication.save(new_comment=True) # Guardamos la publicacion si no hay errores
+                publication.save() # Creamos publicacion
+                publication.parse_mentions()  # add mentions
+                publication.save(update_fields=['content'], new_comment=True)  # Guardamos la publicacion si no hay errores
+
+
                 logger.debug('>>>> PUBLICATION: ')
 
                 # Creamos el timeline y enlazamos publicacion con timeline
@@ -89,6 +96,11 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         return self.form_invalid(form=form)
 
 
+publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
+
+
+# TODO: Esto no es necesario, creo que con pagination queda solucionado
+"""
 class PublicationsListView(AjaxableResponseMixin, ListView):
     model = Publication
     template_name = 'account/tab-comentarios.html'
@@ -110,6 +122,57 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
                 self.request.GET.get('parent'))
         else:
             return self.queryset
+"""
+
+class PublicationDetailView(AjaxListView):
+    """
+    Vista extendida de una publicacion
+    """
+    context_object_name = "publications"
+    template_name = "account/publication_detail.html"
+    page_template = "account/publication_detail_entry.html"
+
+    def __init__(self):
+        self.publication = None
+        super(PublicationDetailView, self).__init__()
+
+    def dispatch(self, request, *args, **kwargs):
+        self.publication = get_object_or_404(Publication, id=self.kwargs['publication_id'], deleted=False)
+        if self.user_pass_test():
+            return super(PublicationDetailView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('user_profile:profile', username=self.publication.author.username   )
+
+    def get_queryset(self):
+        return Publication.objects.filter(parent=self.publication.pk, deleted=False).order_by('created')
+
+    def get_context_data(self, **kwargs):
+        context = super(PublicationDetailView, self).get_context_data(**kwargs)
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
+        context['publication'] = self.publication
+        context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
+        context['publicationSelfForm'] = PublicationForm(initial=initial)
+        context['searchForm'] = SearchForm()
+        context['notifications'] = user.notifications.unread()
+        return context
+
+    def user_pass_test(self):
+        """
+        Comprueba si un usuario tiene permisos
+        para ver la galeria solicitada.
+        """
+        user = self.request.user
+        user_profile = self.publication.author.profile
+
+        visibility = user_profile.is_visible(user.profile)
+
+        if visibility == ("nothing" or "both" or "followers" or "block"):
+            return False
+        return True
+
+
+publication_detail = login_required(PublicationDetailView.as_view(), login_url='/')
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -121,9 +184,10 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     http_method_names = [u'post']
     success_url = '/thanks/'
 
-    def __init__(self, *args, **kwargs):
-        super(PublicationPhotoView, self).__init__(*args, **kwargs)
+    def __init__(self):
         self.object = None
+        super(PublicationPhotoView, self).__init__()
+
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -150,7 +214,9 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
         return self.form_invalid(form=form)
 
+publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
 
+@login_required(login_url='/')
 def delete_publication(request):
     logger.debug('>>>>>>>> PETICION AJAX BORRAR PUBLICACION')
     response = False
@@ -190,6 +256,7 @@ def delete_publication(request):
                         )
 
 
+@login_required(login_url='/')
 def add_like(request):
     response = False
     statuslike = 0
@@ -202,7 +269,6 @@ def add_like(request):
         except ObjectDoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
-
 
         # Mostrar los usuarios que han dado un me gusta a ese comentario
         logger.info("USUARIO DA LIKE")
@@ -241,11 +307,12 @@ def add_like(request):
             response = False
             statuslike = 0
     logger.info("Fin like comentario ---> Response" + str(response)
-          + " Estado" + str(statuslike))
+                + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
 
 
+@login_required(login_url='/')
 def add_hate(request):
     response = False
     statuslike = 0
@@ -295,6 +362,6 @@ def add_hate(request):
             response = False
             statuslike = 0
     logger.info("Fin like comentario ---> Response" + str(response)
-          + " Estado" + str(statuslike))
+                + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')

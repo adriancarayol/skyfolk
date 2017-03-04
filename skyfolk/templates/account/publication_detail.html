@@ -1,0 +1,108 @@
+{% extends "account/base_interface.html" %}
+{% load decorators %}
+{% load avatar_tags %}
+{% load app_filters %}
+{% load humanize %}
+{% load el_pagination_tags %}
+
+{% block title %} <title> Skyfolk - Publicacion {{ publication.id }}</title> {% endblock %}
+{% block extra-css %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="row">
+                    <div class="col offset-l1 l10 m12 s12 wrapper" id="pub-{{ publication.pk }}"
+                         data-id="{{ user.pk }}">
+                        <div class="row">
+                            <div class="image col l2 m2 s2">
+                                <div class="usr-img img-responsive">{% avatar publication.author %}</div>
+                            </div>
+                            <div class="articulo col offset-s1 s8">
+                                <h2 class="author-header"><a
+                                        href="/profile/{{ publication.author.username }}">{{ publication.author.username }}</a>
+                                    ha
+                                    comentado:
+                                </h2>
+                                <div class="row">
+                                    <div class="parrafo comment">
+                                        <a target="_blank">{{ publication.created|naturaltime }}</a><br>
+                                        <div class="wrp-comment">{{ publication.content|replace_decorators|safe }}</div>
+                                    </div>
+
+                                    <div class="show-more" id="show-comment-{{ publication.pk }}">
+                                        <a href="#">+ Mostrar más</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="divider"></div>
+                            <div class="options_comentarios col s12" id="options-comments">
+                                <ul>
+                                    {% if user.is_authenticated and user.username == publication.author.username %}
+                                        <!-- Si estamos visitando un perfil que no es el nuestro -->
+                                        <li class="trash-comment" title="Borrar comentario"><i
+                                                class="fa fa-trash"></i></li>
+                                    {% elif user.is_authenticated and user.username == user_profile.username %}
+                                        <!-- Si estamos visitando nuestro propio perfil -->
+                                        <li class="trash-comment" title="Borrar comentario"><i
+                                                class="fa fa-trash"></i></li>
+                                    {% endif %}
+                                    {% with hates=publication.pk|total_hates %}
+                                        {% if hates > 0 %}
+                                            <li title="No me gusta" class="fa-stack hate-with-values" id="fa-hate">
+                                                    <span class="hate-comment">
+                                                        <i class="fa fa-heart fa-stack-1x"></i>
+                                                        <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
+                                                        <i class="fa hate-value">{{ hates }}</i>
+                                                    </span>
+                                            </li>
+                                        {% else %}
+                                            <li title="No me gusta" class="fa-stack" id="fa-hate">
+                                                    <span class="hate-comment">
+                                                        <i class="fa fa-heart fa-stack-1x"></i>
+                                                        <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
+                                                        <i class="fa hate-value"></i>
+                                                    </span>
+                                            </li>
+                                        {% endif %}
+                                    {% endwith %}
+                                    <li title="¡Me gusta!" class="like-comment"><i id="like-heart"
+                                                                                   class="fa fa-heart"> {{ publication.pk|total_likes|intword }}</i>
+                                    </li>
+                                    <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
+                                    </i></li>
+                                    <li title="Responder" class="reply-comment"><i class="fa fa-reply"
+                                                                                   id="reply-caja-comentario-{{ publication.pk }}"></i>
+                                    </li>
+                                    <li title="Añadir a mi timeline" class="add-timeline"><i
+                                            class="fa fa-tag"> {{ publication.pk|total_shares|intword }}</i></li>
+                                </ul>
+                            </div>
+                        </div>
+                        {% with publication as pub %}
+                            {% include "account/new_reply.html" %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include "account/publication_detail_entry.html" %}
+    </div>
+    <script src="{{ STATIC_URL }}js/publication_detail.js"></script>
+    {% block js %}
+        {{ block.super }}
+        <script src="{{ STATIC_URL }}js/el-pagination.js"></script>
+        <script>
+            $.endlessPaginate({
+                paginateOnScroll: true,
+                paginateOnScrollMargin: 20,
+                id: '#publication-thread'
+            });
+        </script>
+    {% endblock %}
+{% endblock %}
+

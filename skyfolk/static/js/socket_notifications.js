@@ -43,7 +43,7 @@ var UTILS_N = UTILS_N || (function () {
 				if (typeof data.level !== 'undefined' && data.level == 'friendrequest') {
 					content = content + " <div class=\"notification-buttons\"><" +
 						'button data-notification="' + data.slug + '" onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "accept" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="accept-response waves-effect waves-light btn white-text green"><i class="material-icons">done</i></button>\<' +
-						'button data-notification="' + data.slug + '" onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "rejected" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
+						'button data-notification="' + data.slug + '"onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "rejected" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
 						'/div>';
 				}
 				content += "<a href=\"#!\" class=\"secondary-content\"><i class=\"material-icons\">people<\/i><\/a></li>";

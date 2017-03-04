@@ -37,7 +37,7 @@ urlpatterns = [
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
-    url(r'^about/', include('about.urls')),
+    url(r'^', include('about.urls')),
     # Recomendacion password para usuarios
     url(r'^tips/password/$', TemplateView.as_view(
         template_name='about/password_recommendation.html')),
@@ -47,7 +47,7 @@ urlpatterns = [
     # Urls para el modulo emoji
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Django-avatar
-    #url(r'^', include('avatar.urls')),
+    url(r'^', include('avatar.urls')),
     # notificaciones
     # url('^(?P<username>[\w-]+)/notifications/', include('notifications.urls',
     # namespace='notifications')),

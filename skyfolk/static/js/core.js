@@ -13,12 +13,14 @@ $(document).ready(function () {
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
-        menuWidth: 300
+        menuWidth: 300,
+        draggable: true
     });
 
     $(".button-right-notify").sideNav({
         edge: 'right', // Choose the horizontal origin
-        menuWidth: 340
+        menuWidth: 340,
+        dragable: true
     });
 
     /* Mensaje flotante (perfil ajeno) */
@@ -361,7 +363,7 @@ function AJAX_delete_notification(slug, id) {
                 $(currentValue).html(parseInt($(currentValue).html()) - 1);
         },
         error: function (rs, e) {
-            alert('ERROR: ' + rs.responseText + e);
+
         }
     });
 }
@@ -375,7 +377,10 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
             'csrfmiddlewaretoken': csrftoken
         },
         dataType: "json",
-        success: function (response) {
+        success: function (data) {
+            console.log(data);
+            var response = data.response;
+
             if (response == "added_friend") {
                 swal({
                     title: "Success!",
@@ -385,6 +390,8 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     showConfirmButton: true
                 }, function () {
                     $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                    if (data.friend_username)
+                        addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
                 });
             } else if (response == 'your_own_pin') {
                 swal({
@@ -508,23 +515,24 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
 
 }
 
-function addNewPublication(type, user_pk, board_owner_pk, parent) {
-    if (type == "reply") {
-        console.log(type + " " + user_pk + " " + board_owner_pk + " " + parent);
-        $.get("/publication/list/?type=reply&user_pk=" + user_pk + "&board_owner_pk" + board_owner_pk + ",parent=" + parent, function (data) {
-            console.log(data);
-            $("#tab-comentarios").prepend(data).fadeIn('slow/400/fast');
-        })
-    } else {
-        $.get("/publication/list/", function (data) {
-            if ($("#tab-comentarios").find(".no-comments").length) {
-                $("#tab-comentarios").find(".no-comments").remove()
-            }
-            $("#tab-comentarios").prepend(data).fadeIn('slow/400/fast')
-        })
-    }
-}
-
+/*
+ function addNewPublication(type, user_pk, board_owner_pk, parent) {
+ if (type == "reply") {
+ console.log(type + " " + user_pk + " " + board_owner_pk + " " + parent);
+ $.get("/publication/list/?type=reply&user_pk=" + user_pk + "&board_owner_pk" + board_owner_pk + ",parent=" + parent, function (data) {
+ console.log(data);
+ $("#tab-comentarios").prepend(data).fadeIn('slow/400/fast');
+ })
+ } else {
+ $.get("/publication/list/", function (data) {
+ if ($("#tab-comentarios").find(".no-comments").length) {
+ $("#tab-comentarios").find(".no-comments").remove()
+ }
+ $("#tab-comentarios").prepend(data).fadeIn('slow/400/fast')
+ })
+ }
+ }
+ */
 
 function AJAX_submit_publication(data, type, pks) {
     type = typeof type !== 'undefined' ? type : "reply"; //default para type

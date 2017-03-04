@@ -80,7 +80,7 @@ def collection_list(request, username,
 
     # Para comprobar si tengo permisos para ver el contenido de la coleccion
     user_profile = get_object_or_404(UserProfile, user__username=username)
-    visibility = user_profile.is_visible(user.profile, user.pk)
+    visibility = user_profile.is_visible(user.profile)
     if visibility == ("nothing" or "both" or "followers" or "block"):
         return redirect('user_profile:profile', username=user_profile.user.username)
 
@@ -142,7 +142,7 @@ class PhotoListView(AjaxListView):
         """
         user = self.request.user
         user_profile = UserProfile.objects.get(user__username=self.username)
-        visibility = user_profile.is_visible(user.profile, user.pk)
+        visibility = user_profile.is_visible(user.profile)
 
         if visibility == ("nothing" or "both" or "followers" or "block"):
             return False
@@ -368,7 +368,7 @@ class PhotoDetailView(DetailView):
         """
         user = self.request.user
         user_profile = get_object_or_404(UserProfile, user__username=self.username)
-        visibility = user_profile.is_visible(user.profile, user.pk)
+        visibility = user_profile.is_visible(user.profile)
 
         if visibility == ("nothing" or ("both" or "followers") or "block"):
             return False

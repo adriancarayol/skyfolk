@@ -34,33 +34,11 @@ Template para el perfil de cada usuario
     <div class="container">
         {% if user_profile.is_active %}
             <div class="row">
+                {% include "account/card-user.html" %}
+            </div>
+            <div class="row clearfix">
                 <div class="col l8 m12 s12">
-                    <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
-                    <div class="container">
-                        <!-- Para el diseño de la rama develop, se cambia col-md-6 por col-md-12 -->
-                        {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
-                        {% include "account/card-user.html" %}
-                        {% comment %}
-				PIN ARRIBA IZQUIERDA
-				{% endcomment %}
-                        {% include "account/pin-left-top.html" %}
-                        <!-- PIN PEQUEÑO - 2 -->
-                        {% comment %}
-				PIN ARRIBA DERECHA
-				{% endcomment %}
-                        {% include "account/pin-right-top.html" %}
-
-                    </div>
-                    {% comment %}
-			PIN ABAJO
-			{% endcomment %}
-                    {% include "account/pin-bottom.html" %}
-
-                </div>
-
-                <div class="col l4 m12 s12">
-                    <div class="container">
-                        <div class="col l12 m12 s12">
+                        <div class="col s12">
                             <div id="div-separator">
                                 <div class="sidebar card" id="tab-container">
                                     <div class="ventana-pin">
@@ -104,7 +82,29 @@ Template para el perfil de cada usuario
                                 </div>
                             </div>
                         </div>
+                </div>
+                <div class="col l4 m12 s12">
+                    <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
+                    <div class="row">
+                        <!-- Para el diseño de la rama develop, se cambia col-md-6 por col-md-12 -->
+                        {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
+
+                        {% comment %}
+				PIN ARRIBA IZQUIERDA
+				{% endcomment %}
+                        {% include "account/pin-left-top.html" %}
+                        <!-- PIN PEQUEÑO - 2 -->
+                        {% comment %}
+				PIN ARRIBA DERECHA
+				{% endcomment %}
+                        {% include "account/pin-right-top.html" %}
+
                     </div>
+                    {% comment %}
+			PIN ABAJO
+			{% endcomment %}
+                    {% include "account/pin-bottom.html" %}
+
                 </div>
             </div>
             </div>
@@ -213,6 +213,16 @@ if(requests){
                 UTILS.init([{{ user.pk }}]);
                 UTILS.conn_socket();
             </script>
+            {% comment "Add follow to tab %}
+                Add follow to profile tab
+            {% endcomment %}
+            {% if user_profile.id == request.user.id %}
+                <script>
+                    function addItemToFriendList(name, lastname, username, avatar_url) {
+                        $("#tab-amigos").find("ul").append('<li><img src="' + avatar_url + '" alt="' + username + '" width="120" height="120"><a>' + name + ' ' + lastname + (username) + '</a></li>');
+                    }
+                </script>
+            {% endif %}
         {% else %}
             <h1 class="account-disabled">Cuenta desactivada.</h1>
         {% endif %}

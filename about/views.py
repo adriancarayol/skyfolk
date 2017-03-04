@@ -1,4 +1,5 @@
 from el_pagination.views import AjaxListView
+
 from .models import PublicationBlog
 
 

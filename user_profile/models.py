@@ -238,14 +238,14 @@ class UserProfile(models.Model):
             from_people__status=status,
             from_people__to_person=self)
 
-    def is_visible(self, user_profile, user_pk):
+    def is_visible(self, user_profile):
         """
         Devuelve si el perfil que estamos visitando
         es visible por nosotros.
         :param user_pk, user_profile:
         :return template que determina si el perfil es visible:
         """
-
+        user_pk = user_profile.user.pk
         # Si estoy visitando mi propio perfil
         if self.user.pk == user_pk:
             return "all"
