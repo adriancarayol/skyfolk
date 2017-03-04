@@ -37,7 +37,7 @@ urlpatterns = [
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
-    url(r'^about/', include('about.urls')),
+    url(r'^', include('about.urls')),
     # Recomendacion password para usuarios
     url(r'^tips/password/$', TemplateView.as_view(
         template_name='about/password_recommendation.html')),

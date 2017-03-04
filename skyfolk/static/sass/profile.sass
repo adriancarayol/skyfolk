@@ -36,20 +36,20 @@ $followcolor: #64b5f6
   border-radius: 100%
   color: #000
 
-.premium header
+.premium .header
   background: #1d2122
   padding: 1.5em 40% 1.5em 1em
   position: relative
   border-radius: 0.3rem
 
-.premium header h1
+.premium .header h1
   color: #c5c5c5
   margin: 0
 
-.premium header h1 span
+.premium .header h1 span
   color: #f9f9f9
 
-.premium header p
+.premium .header p
   color: #bfc5c8
   margin: 0
 
@@ -102,6 +102,9 @@ $followcolor: #64b5f6
 .user-card .user-avatar
   text-align: center
 
+.user-card .user-avatar
+  height: 351.567px
+
 .user-card .user-avatar .user-bg
   width: 100%
   min-height: 351.567px
@@ -127,31 +130,35 @@ $followcolor: #64b5f6
   width: 120px
   height: 120px
 
-/* Recolocamos la caja y la imagen */
-
-@media only screen and (max-width: 500px)
-  .caja
-    left: 0
-
 /* Posicionamiento default */
 .caja
-  left: 14px
-  position: relative
+  width: 90px
+  cursor: pointer
+  position: absolute
+  left: 0
+  right: 29px
+  top: -196px
+  margin-left: auto
+  margin-right: auto
+  -webkit-transition: .5s
+  -moz-transition: .5s
+  -o-transition: .5s
+  transition: .5s
 
-.user-card header
+.user-card .header
   text-align: center
-  padding: 0 1.5em
   display: block
-  margin-top: -40px
 
-.user-card header h1
+.user-card .header h1
   margin-top: 3.35em
   margin-bottom: 0
 
-.user-card header p
+.user-card .header p
   color: #717a7e
-  font-size: 1.2em
-  margin-top: 0
+  font-size: 1.4em
+  font-weight: bold
+  top: 8px
+  position: relative
 
 .user-card .status, .user-profile-name
   color: #75787b
@@ -163,7 +170,14 @@ $followcolor: #64b5f6
   padding: 0
   list-style: none
   display: table
-  width: 100.15%
+  width: 100%
+
+.user-card .user-stats
+  position: absolute
+  margin-top: -40px
+  background-color: #fff
+  border-radius: 3px
+  padding: 0 !important
 
 .user-card .stats li
   margin: 0
@@ -171,7 +185,6 @@ $followcolor: #64b5f6
   width: 33.33334%
   display: table-cell
   text-align: center
-  border-left: 0.1em solid transparent
 
 .user-card .stats li:first-child
   border-left: 0
@@ -906,11 +919,9 @@ ul.table > li
   color: rgba(44, 44, 44, 0.666)
   font-size: 25px
   position: relative
-  display: inline-block
   float: right
-  margin-right: 14px
+  padding: 5px
   text-shadow: grey 1px 1px 1px
-  margin-top: 7px
 
 .fa-paw:hover
   -webkit-transform: rotate(15deg) scale(1.3)
