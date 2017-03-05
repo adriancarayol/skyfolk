@@ -1,3 +1,4 @@
+{% load humanize %}
 <div class="alert alert-block alert-{{ notice.level }}">
     <a title="Borrar notificación" class="close pull-right" href="{% url 'notifications:delete' notice.slug %}">
         <i class="fa fa-trash" aria-hidden="true"></i>
@@ -17,9 +18,9 @@
             of {{ notice.target }}
         {% endif %}
     </h5>
-    <p class="notice-timesince">{{ notice.timesince }} ago</p>
+    <p class="notice-timesince">{{ notice.timestamp|naturaltime }}</p>
     {% if notice.description %}
-        of <p class="notice-description">{{ notice.description|linebreaksbr }}</p>
+        <p class="notice-description">{{ notice.description|safe|linebreaksbr }}</p>
     {% endif %}
     {% if notice.level == "friendrequest" %}
         <div class="notification-buttons">

@@ -143,7 +143,6 @@ $(document).ready(function () {
     /* Borrar publicacion */
     $(tab_comentarios).on('click', '#options-comments .fa-trash', function () {
         var caja_publicacion = $(this).closest('.wrapper');
-        //alert($(caja_comentario).html());
         swal({
             title: "Are you sure?",
             text: "You will not be able to recover this publication!",
