@@ -127,7 +127,7 @@ a, a:visited {
     box-shadow: 0 0 1px 0 rgba(50, 50, 50, 0.75);
 }
 
-.wrapper .box .zoom-pub .fa-expand {
+.wrapper .box .zoom-pub .fa-plus-square-o {
     color: #212121;
     font-size: 100%;
     -webkit-transition: all 0.1s linear;

@@ -99,13 +99,7 @@ $(document).ready(function () {
     /* Abrir respuesta a comentario */
     $('#div-separator').on('click', '#options-comments .fa-reply', function () {
         var id_ = $(this).attr("id").slice(6);
-        if (flag_reply) {
-            $("#" + id_).slideUp("fast");
-            flag_reply = false
-        } else {
-            $("#" + id_).slideDown("fast");
-            flag_reply = true
-        }
+        $("#" + id_).slideToggle("fast");
     });
 
     function replyComment(caja_pub) {
@@ -116,15 +110,14 @@ $(document).ready(function () {
 
     /* Expandir comentario */
 
-    $('.fa-expand').on('click', function () {
+    $('.zoom-pub').on('click', function () {
         var caja_pub = $(this).closest('.wrapper');
         expandComment(caja_pub);
     });
 
     function expandComment(caja_pub) {
         var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
-        var commentToExpand = document.getElementById('expand-' + id_pub);
-        $(commentToExpand).fadeToggle("fast");
+        window.location.href = '/publication/' + id_pub;
     }
 
     /* Cerrar comentario expandido */
