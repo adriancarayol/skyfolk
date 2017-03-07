@@ -97,9 +97,22 @@ $(document).ready(function () {
     });
 
     /* Abrir respuesta a comentario */
-    $('#div-separator').on('click', '#options-comments .fa-reply', function () {
+    $(tab_comentarios).on('click', '#options-comments .fa-reply', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
+    });
+
+    /* Editar comentario */
+    $(tab_comentarios).on('click', '#edit-comment-content', function () {
+        var id = $(this).attr('data-id');
+        $("#author-controls-" + id).slideToggle("fast");
+    });
+
+    $(tab_comentarios).on('click', '#submit_edit_publication', function (event) {
+        event.preventDefault();
+        var id = $(this).attr('data-id');
+        var content = $(this).closest('#author-controls-' + id).find('#edit_comment_content').val();
+        AJAX_edit_publication(id, content);
     });
 
     function replyComment(caja_pub) {
@@ -110,7 +123,7 @@ $(document).ready(function () {
 
     /* Expandir comentario */
 
-    $('.zoom-pub').on('click', function () {
+    $(tab_comentarios).on('click', '.wrapper .zoom-pub', function () {
         var caja_pub = $(this).closest('.wrapper');
         expandComment(caja_pub);
     });
@@ -350,6 +363,38 @@ function AJAX_likeprofile(status) {
 }
 
 
+/* EDIT PUBLICATION */
+function AJAX_edit_publication(pub, content) {
+    var data = {
+        'id': pub,
+        'content': content
+    };
+    $.ajax({
+        url: '/publication/edit/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+
+        success: function (data) {
+            var response = data.data;
+            console.log(data.data);
+            // borrar caja publicacion
+            if (response == true) {
+                $('#author-controls-' + pub).fadeToggle("fast");
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to delete publish.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
+        }
+    });
+}
+
 /*****************************************************/
 /********** AJAX para botones de comentarios *********/
 /*****************************************************/
@@ -404,7 +449,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         publication_id: id_pub,
         'csrfmiddlewaretoken': csrftoken
     };
-    //event.preventDefault(); //stop submit
+
     $.ajax({
         url: '/publication/add_like/',
         type: 'POST',

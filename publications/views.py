@@ -1,5 +1,6 @@
 import json
 import logging
+import datetime
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -11,9 +12,9 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView
 from el_pagination.views import AjaxListView
-
+from django.http import JsonResponse
 from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm
+from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit
 from publications.models import Publication, PublicationPhoto
 from timeline.models import Timeline
 from user_profile.forms import SearchForm
@@ -79,10 +80,10 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise IntegrityError('El comentario esta vacio')
 
-                publication.save() # Creamos publicacion
+                publication.save()  # Creamos publicacion
                 publication.parse_mentions()  # add mentions
-                publication.save(update_fields=['content'], new_comment=True)  # Guardamos la publicacion si no hay errores
-
+                publication.save(update_fields=['content'],
+                                 new_comment=True)  # Guardamos la publicacion si no hay errores
 
                 logger.debug('>>>> PUBLICATION: ')
 
@@ -97,7 +98,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
 
 publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
-
 
 # TODO: Esto no es necesario, creo que con pagination queda solucionado
 """
@@ -124,6 +124,7 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
             return self.queryset
 """
 
+
 class PublicationDetailView(AjaxListView):
     """
     Vista extendida de una publicacion
@@ -141,7 +142,7 @@ class PublicationDetailView(AjaxListView):
         if self.user_pass_test():
             return super(PublicationDetailView, self).dispatch(request, *args, **kwargs)
         else:
-            return redirect('user_profile:profile', username=self.publication.author.username   )
+            return redirect('user_profile:profile', username=self.publication.author.username)
 
     def get_queryset(self):
         return Publication.objects.filter(parent=self.publication.pk, deleted=False).order_by('created')
@@ -188,7 +189,6 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         self.object = None
         super(PublicationPhotoView, self).__init__()
 
-
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         emitter = get_object_or_404(get_user_model(),
@@ -214,7 +214,9 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
         return self.form_invalid(form=form)
 
+
 publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
+
 
 @login_required(login_url='/')
 def delete_publication(request):
@@ -365,3 +367,44 @@ def add_hate(request):
                 + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
+
+
+def edit_publication(request):
+    """
+    Permite al creador de la publicacion
+    editar el contenido de la publicacion
+    """
+    if request.method == 'POST':
+        user = request.user
+        publication = get_object_or_404(Publication, id=request.POST['id'])
+
+        if publication.author.id != user.id:
+            return JsonResponse({'data': "No tienes permisos para editar este comentario"})
+
+        print(request.POST.get('content', None))
+        publication.content = request.POST.get('content', None)
+
+        publication.add_hashtag()  # add hashtags
+        publication.parse_content()  # parse publication content
+        is_correct_content = False
+        soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
+        for tag in soup.find_all(recursive=True):
+            if tag.text and not tag.text.isspace():
+                is_correct_content = True
+                break
+
+        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+            logger.info('Publicacion contiene espacios o no tiene texto')
+            raise IntegrityError('El comentario esta vacio')
+
+        if publication.content.isspace():  # Comprobamos si el comentario esta vacio
+            raise IntegrityError('El comentario esta vacio')
+
+        publication.save()  # Creamos publicacion
+        publication.parse_mentions()  # add mentions
+        publication.created = datetime.datetime.now()
+        publication.save(update_fields=['content', 'created'],
+                             new_comment=True)  # Guardamos la publicacion si no hay errores
+
+        return JsonResponse({'data': True})
+    return JsonResponse({'data': "No puedes acceder a esta URL."})

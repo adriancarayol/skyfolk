@@ -165,7 +165,6 @@ class Publication(PublicationBase):
             self.content = self.content.replace(tag,
                                                 '<a href="/search/">{0}</a>'.format(tag))
 
-
     def parse_mentions(self):
         """
         Buscamos menciones en el contenido del mensaje
