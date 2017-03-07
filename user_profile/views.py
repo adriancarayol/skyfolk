@@ -22,7 +22,7 @@ from taggit.models import TaggedItem
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
-from publications.forms import PublicationForm, ReplyPublicationForm
+from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit
 from publications.models import Publication
 from timeline.models import Timeline
 from user_groups.forms import FormUserGroup
@@ -31,6 +31,7 @@ from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser
 from publications.utils import get_author_avatar
+
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -159,6 +160,8 @@ def profile_view(request, username,
     initial = {'author': user.pk, 'board_owner': user_profile.pk}
     context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
     context['publicationForm'] = PublicationForm(initial=initial)
+    context['publication_edit'] = PublicationEdit()
+
     # cargar lista comentarios
     try:
         if user_profile.username == username:

@@ -22,31 +22,8 @@ var UTILS = UTILS || (function () {
                         var content = "";
                         content += '  <div class=\"wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
                         content += "            <div class=\"box\">";
-                        content += '            <span id="check-' + data.id + '" class=\"zoom-pub\"><i class=\"fa fa-expand fa-lg\"><\/i><\/span>';
-                        content += "            <!-- Check para ampliar el mensaje... -->";
-                        content += '                  <div class=\"ampliado\" id="expand-' + data.id + '">';
-                        content += "                      <div class=\"cerrar_ampliado\"><i class=\"fa fa-close\"><\/i><\/div>";
-                        content += "                      <div class=\"nombre_image\">";
-                        content += "                    <ul>";
-                        content += '                      <li><i class="first">' + data.author_first_name + " " + data.author_last_name + '<\/i><\/li>';
-                        content += '                      <li><a class=\"name\" href="/profile/' + data.author_username + '">' + data.author_username + '<\/a><\/li>';
-                        content += "                    </ul>";
-                        content += '                    <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
-                        content += "                      </div>";
-                        content += "                    <div class=\"parrafo comment-tab\">";
-                        content += "                     <a href=\"\/profile\/{{ pub.author.username }}\">{{pub.author.username}}<\/a>";
-                        content += '                        <a target="_blank">' + data.created + '</a><br><br>';
-                        content += data.content;
-                        content += "                    </div>";
-                        content += "                      <div class=\"wrapper-reply\">";
-                        content += "                        <!-- RESPUESTAS A COMENTARIOS -->";
-                        content += "                        <div class=\"comment-reply\">";
-                        content += '                        <div class="avatar-reply"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
-                        content += '                            <div class="author-reply"><span class="triangle"> <\/span><a href="/profile/' + data.author_username + '">' + data.author_username + '</a></div>';
-                        content += '                              <div class="content-reply">' + data.content + '<\/div>';
-                        content += "                        </div>";
-                        content += "                    </div>";
-                        content += "                  </div>";
+                        content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
+                        content += '            <span data-id="' + data.id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
                         content += "      <div class=\"image\">";
                         content += '        <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
                         content += "      </div>";
@@ -88,7 +65,7 @@ var UTILS = UTILS || (function () {
 
                         /* Comprobamos si el elemento existe, si es asi lo modifcamos */
                         if (existing.length) {
-                            existing.html(content);
+                            existing.replaceWith(content);
                         } else {
                             $("#tab-comentarios").prepend(content);
                         }

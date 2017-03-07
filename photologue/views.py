@@ -293,7 +293,7 @@ def edit_photo(request, photo_id):
     form = EditFormPhoto(request.POST or None, instance=photo)
     user = request.user
     if form.is_valid():
-        if photo.owner.pk == request.user.pk:
+        if photo.owner.pk == user.pk:
             response_data = {'msg': 'Photo was edited!'}
             form.save()
         else:

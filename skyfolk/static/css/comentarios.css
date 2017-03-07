@@ -112,7 +112,16 @@ a, a:visited {
     height: 100%;
 }
 
-.wrapper .box .zoom-pub {
+.wrapper .author-controls {
+    display: none;
+    clear: both;
+}
+
+.wrapper .author-controls .edit-comment-btn {
+    margin-right: 2%;
+}
+
+.wrapper .box .top-options {
     position: relative;
     width: 20px;
     height: 20px;
@@ -127,7 +136,7 @@ a, a:visited {
     box-shadow: 0 0 1px 0 rgba(50, 50, 50, 0.75);
 }
 
-.wrapper .box .zoom-pub .fa-plus-square-o {
+.wrapper .box .zoom-pub .fa-plus-square-o, .wrapper .box .edit-comment .fa-pencil {
     color: #212121;
     font-size: 100%;
     -webkit-transition: all 0.1s linear;
@@ -136,11 +145,11 @@ a, a:visited {
     cursor: pointer;
 }
 
-.wrapper .box .zoom-pub .fa-expand:hover {
+.wrapper .box .zoom-pub .fa-plus-square-o:hover, .wrapper .box .edit-comment .fa-pencil:hover {
     color: #1e88e5;
 }
 
-.wrapper .box .zoom-pub:hover {
+.wrapper .box .zoom-pub:hover, .wrapper .box .edit-comment:hover {
     -webkit-box-shadow: 0 0 1px 0 #1e88e5;
     -moz-box-shadow: 0 0 1px 0 #1e88e5;
     box-shadow: 0 0 1px 0 #1e88e5;
@@ -619,11 +628,11 @@ a.fontawesome-cog:hover {
 }
 
 .options_comentarios ul .like-comment, .quote-comment, .reply-comment, .add-timeline {
-    margin-left: 5%;
+    margin-left: 2.5%;
 }
 
 .options_comentarios ul .fa-stack, .trash-comment {
-    margin-left: 2.5%;
+    margin-left: 1.25%;
 }
 
 .hate-with-values {
