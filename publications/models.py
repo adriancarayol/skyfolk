@@ -5,7 +5,7 @@ import bleach
 from channels import Group
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
 from taggit.managers import TaggableManager
 from photologue.models import Photo
@@ -63,6 +63,7 @@ class PublicationManager(models.Manager):
                            author=user_pk, parent=None, deleted=False).order_by('created') \
             .reverse()
 
+        print('LONGITUD PUBS: {}'.format(len(pubs)))
         print('>>>>pubs: {}'.format(pubs))
 
         # Agregar replicas de los comentarios
@@ -202,7 +203,7 @@ class Publication(PublicationBase):
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
 
-    def send_notification(self, type="pub"):
+    def send_notification(self, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
@@ -223,18 +224,21 @@ class Publication(PublicationBase):
             "type": type,
             "parent": id_parent,
         }
+        if is_edited:
+            notification['is_edited'] = True
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
             "text": json.dumps(notification)
         })
 
-    def save(self, new_comment=False, *args, **kwargs):
+    @transaction.atomic
+    def save(self, new_comment=False, is_edited=False, *args, **kwargs):
         super(Publication, self).save(*args, **kwargs)
 
         if new_comment and not self.deleted and not self.parent:
-            self.send_notification()
+            self.send_notification(is_edited=is_edited)
         elif new_comment and not self.deleted:
-            self.send_notification(type="reply")
+            self.send_notification(type="reply", is_edited=is_edited)
 
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:
@@ -327,8 +331,6 @@ class PublicationPhoto(PublicationBase):
             return result
         else:
             super(PublicationPhoto, self).save(*args, **kwargs)
-
-
 
 
 class PublicationDeleted(models.Model):

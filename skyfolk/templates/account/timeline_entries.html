@@ -6,20 +6,20 @@
 
 {% paginate timeline using "timeline_entries" %}
 {% for item in timeline %}
-    {% if item.from_timeline__type == "publication" %}
-        <div class="timeline-pub" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}"
-             data-publication="{{ item.from_timeline__publication__id }}">
+    {% if item.publication %}
+        <div class="timeline-pub" id="tim-{{ item.publication.id }}" data-id="{{ user.pk }}"
+             data-publication="{{ item.publication.id }}">
             <div class="second">
                                 <span class="acontecimiento">
                                     {% avatar item.user__username %}
                                         </span>
                 <span class="head">
-                                            <a href="/profile/{{ item.from_timeline__publication__author__username }}">{{ item.from_timeline__publication__author__username }}</a>
+                                            <a href="/profile/{{ item.publication.author }}">{{ item.publication.author }}</a>
                                             <a class="fecha_"
-                                               target="_blank">{{ item.from_timeline__insertion_date }}</a><em></em>
+                                               target="_blank">{{ item.publication.created }}</a><em></em>
                                         </span>
                 <div id="timeline-id-content" class="parrafo timeline-content">
-                    {{ item.from_timeline__publication__content|replace_decorators|safe }}
+                    {{ item.publication.content }}
                 </div>
                 <div class="show-more">
                     <a href="#">+ Mostrar más</a>
@@ -30,12 +30,12 @@
                 <div class="controles" id="controls-timeline">
                     <ul>
                         <li id="add-timeline" class="fa fa-tag fa-lg"><i
-                                class="fa">{{ item.from_timeline__publication__id|total_shares }}</i></li>
+                                class="fa">{{ item.publication.id|total_shares }}</i></li>
                         <li class="fa fa-reply fa-lg"></li>
                         <li class="fa fa-quote-left fa-lg"></li>
-                        {% if item.from_timeline__publication__likes > 0 %}
+                        {% if item.publication.id > 0 %}
                             <li class="fa fa-heart fa-lg" id="like-heart-timeline"><i
-                                    class="fa">{{ item.from_timeline__publication__likes }}</i></li>
+                                    class="fa">{{ item.publication.id }}</i></li>
                         {% else %}
                             <li class="fa fa-heart fa-lg" id="like-heart-timeline"><i class="fa"></i></li>
                         {% endif %}
@@ -44,8 +44,8 @@
                                                     <span class="timeline-hate-comment">
                                                         <i class="fa fa-heart fa-stack-1x fa-lg"></i>
                                                         <i class="fa fa-bolt fa-stack-1x fa-lg fa-inverse"></i>
-                                                        {% if item.from_timeline__publication__hates > 0 %}
-                                                            <i class="fa timeline-hate-value">{{ item.from_timeline__publication__hates }}</i>
+                                                        {% if item.publication.id > 0 %}
+                                                            <i class="fa timeline-hate-value">{{ item.publication.id }}</i>
                                                         {% else %}
                                                             <i class="fa timeline-hate-value"></i>
                                                         {% endif %}

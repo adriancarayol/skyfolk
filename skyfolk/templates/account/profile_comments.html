@@ -74,26 +74,17 @@
                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
                     {% endif %}
                     {% with hates=pub.pk|total_hates %}
-                        {% if hates > 0 %}
-                            <li title="No me gusta" class="fa-stack hate-with-values" id="fa-hate">
+                        <li title="No me gusta" class="fa-stack" id="fa-hate">
 					<span class="hate-comment">
 						<i class="fa fa-heart fa-stack-1x"></i>
 						<i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-						<i class="fa hate-value">{{ hates|intword }}</i>
+						<i class="fa hate-value">{% if hates > 0 %}{{ hates|intword }}{% endif %}</i>
 					</span>
-                            </li>
-                        {% else %}
-                            <li title="No me gusta" class="fa-stack" id="fa-hate">
-					<span class="hate-comment">
-						<i class="fa fa-heart fa-stack-1x"></i>
-						<i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-						<i class="fa hate-value"></i>
-					</span>
-                            </li>
-                        {% endif %}
+                        </li>
                     {% endwith %}
-                    <li title="¡Me gusta!" class="like-comment"><i id="like-heart"
-                                                                   class="fa fa-heart"> {{ pub.pk|total_likes|intword }}</i>
+                    <li id="like-heart" title="¡Me gusta!" class="like-comment">
+                        <i class="fa fa-heart"></i>
+                        <i id="like-value" class="fa">{{ pub.pk|total_likes|intword }}</i>
                     </li>
                     <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
                     </i></li>

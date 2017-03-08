@@ -181,7 +181,7 @@ def profile_view(request, username,
 
     # cargar lista de timeline
     try:
-        timeline = user_profile.profile.getTimelineToMe()
+        timeline = Timeline.objects.get_user_profile_events(user_profile.pk)
     except ObjectDoesNotExist:
         timeline = None
 
@@ -199,6 +199,7 @@ def profile_view(request, username,
 
     if not created and profile_visit:
         profile_visit.save()
+
 
     # Contenido de las tres tabs
     context['publications'] = publications
