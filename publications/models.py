@@ -17,6 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
 from django.conf import settings
 from emoji import Emoji
+from mptt.models import MPTTModel, TreeForeignKey
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -46,11 +47,11 @@ class PublicationManager(models.Manager):
         print('>>>>pubs: {}'.format(pubs))
 
         # Agregar replicas de los comentarios
-        for pub in pubs:
-            print('pub: {}'.format(pub.id))
-            reply = self.filter(parent=pub.id).order_by('created')
-            print('REPLIES: {}'.format(reply))
-            pub.replies = reply
+        # for pub in pubs:
+        #     print('pub: {}'.format(pub.id))
+        #     reply = self.filter(parent=pub.id).order_by('created')
+        #     print('REPLIES: {}'.format(reply))
+        #     pub.replies = reply
 
         return pubs
 
@@ -60,8 +61,7 @@ class PublicationManager(models.Manager):
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(Q(author=user_pk) & Q(board_owner=user_pk),
-                           author=user_pk, parent=None, deleted=False).order_by('created') \
-            .reverse()
+                           author=user_pk, deleted=False)
 
         print('LONGITUD PUBS: {}'.format(len(pubs)))
         print('>>>>pubs: {}'.format(pubs))
@@ -81,8 +81,7 @@ class PublicationManager(models.Manager):
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(Q(author=user_pk) | Q(board_owner=board_owner_pk),
-                           board_owner=board_owner_pk, parent=None, deleted=False).order_by(
-            'created').reverse()
+                           board_owner=board_owner_pk, deleted=False)
 
         print('>>>>pubs: {}'.format(pubs))
 
@@ -119,7 +118,7 @@ class PublicationManager(models.Manager):
         return u", ".join(o.name for o in obj.tags.all())
 
 
-class PublicationBase(models.Model):
+class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)
     image = models.ImageField(upload_to='publicationimages',
                               verbose_name='Image', blank=True, null=True)
@@ -129,7 +128,9 @@ class PublicationBase(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ('-created',)
+
+    class MPTTMeta:
+        order_insertion_by = ['-created']
 
 
 class Publication(PublicationBase):
@@ -144,8 +145,8 @@ class Publication(PublicationBase):
                                                related_name='hates_me')
     user_share_me = models.ManyToManyField(User, blank=True,
                                            related_name='share_me')
-    parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply')
+    parent = TreeForeignKey('self', blank=True, null=True,
+                            related_name='reply', db_index=True)
 
     objects = PublicationManager()
 
@@ -187,7 +188,7 @@ class Publication(PublicationBase):
                 notify.send(self.author, actor=self.author.username,
                             recipient=recipientprofile,
                             verb=u'¡te ha mencionado en su tablón!',
-                            description='<a href="%s">Ver</a>' % ('/publication/'+str(self.id)))
+                            description='<a href="%s">Ver</a>' % ('/publication/' + str(self.id)))
 
             self.content = self.content.replace(mencion,
                                                 '<a href="/profile/%s">%s</a>' %
@@ -341,4 +342,3 @@ class PublicationDeleted(models.Model):
     content = models.TextField(blank=False, null=True, max_length=500)
     image = models.ImageField(verbose_name='publication_deleted_image', blank=True, null=True)
     created = models.DateTimeField(null=True)
-

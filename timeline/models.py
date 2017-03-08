@@ -17,11 +17,6 @@ class TimelineManager(models.Manager):
 
         events = timeline.events.all()
 
-        for e in events:
-            if e.publication:
-                reply = Publication.objects.filter(parent=e.publication.pk, deleted=False).order_by('-created')
-                e.replies = reply
-
         return events
 
 

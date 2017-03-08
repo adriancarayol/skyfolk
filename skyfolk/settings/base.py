@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.url',
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
+    'mptt',
 )
 
 FIRST_PARTY_APPS = (

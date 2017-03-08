@@ -252,7 +252,7 @@ def delete_publication(request):
 
         # Borramos timeline del comentario
         try:
-            Timeline.objects.get(events__publication=request.POST['publication_id']).delete()
+            EventTimeline.objects.filter(publication=request.POST['publication_id']).delete()
         except ObjectDoesNotExist:
             pass
 
