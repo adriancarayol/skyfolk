@@ -67,11 +67,11 @@ class PublicationManager(models.Manager):
         print('>>>>pubs: {}'.format(pubs))
 
         # Agregar replicas de los comentarios
-        for pub in pubs:
-            print('pub: {}'.format(pub.id))
-            reply = self.filter(parent=pub.id, deleted=False).order_by('created')
-            print('REPLIES: {}'.format(reply))
-            pub.replies = reply
+        # for pub in pubs:
+        #     print('pub: {}'.format(pub.id))
+        #     reply = self.filter(parent=pub.id, deleted=False).order_by('created')
+        #     print('REPLIES: {}'.format(reply))
+        #     pub.replies = reply
 
         return pubs
 
@@ -87,11 +87,11 @@ class PublicationManager(models.Manager):
         print('>>>>pubs: {}'.format(pubs))
 
         # Agregar replicas de los comentarios
-        for pub in pubs:
-            print('pub: {}'.format(pub.id))
-            reply = self.filter(parent=pub.id).order_by('created')
-            print('REPLIES: {}'.format(reply))
-            pub.replies = reply
+        # for pub in pubs:
+        #     print('pub: {}'.format(pub.id))
+        #     reply = self.filter(parent=pub.id).order_by('created')
+        #     print('REPLIES: {}'.format(reply))
+        #     pub.replies = reply
 
         return pubs
 

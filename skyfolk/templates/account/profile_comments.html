@@ -123,7 +123,7 @@
         <div class="wrapper-reply">
             {% include "account/new_reply.html" %}
             <!-- RESPUESTAS A COMENTARIOS -->
-            {% for reply in pub.replies %}
+            {% for reply in pub.reply.all %}
                 <div class="comment-reply">
                     <div class="avatar-reply">{% avatar reply.author %}</div>
                     <div class="author-reply">
