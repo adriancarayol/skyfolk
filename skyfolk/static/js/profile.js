@@ -458,20 +458,27 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = heart;
-            var countLikes = numLikes.innerHTML;
+            var numLikes = $(heart).find('#like-value');
+            var countLikes = numLikes.text();
             if (response == true) {
-                $(heart).css('color', '#f06292');
-                if (status == 1) {
-                    countLikes++;
-                } else if (status == 2) {
-                    $(heart).css('color', '#555');
-                    countLikes--;
-                }
-                if (countLikes == 0) {
-                    numLikes.innerHTML = " ";
+                if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                    if (status == 1) {
+                        $(heart).css('color', '#f06292');
+                        countLikes++;
+                    } else if (status == 2) {
+                        $(heart).css('color', '#555');
+                        countLikes--;
+                    }
+                    if (countLikes == 0) {
+                        numLikes.text('');
+                    } else {
+                        numLikes.text(countLikes);
+                    }
                 } else {
-                    numLikes.innerHTML = " " + countLikes;
+                    if (status == 1)
+                        $(heart).css('color', '#f06292');
+                    if (status == 2)
+                        $(heart).css('color', '#555');
                 }
             } else {
                 swal({
@@ -522,17 +529,25 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
             var numLikes = $(heart).find(".hate-value");
             var countLikes = numLikes.text();
             if (response == true) {
-                if (status == statusOk) {
-                    $(heart).css('color', '#ba68c8');
-                    countLikes++;
-                } else if (status == statusNo) {
-                    $(heart).css('color', '#555');
-                    countLikes--;
-                }
-                if (countLikes == 0) {
-                    numLikes.text(" ");
+                if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                    if (status === statusOk) {
+                        $(heart).css('color', '#ba68c8');
+                        countLikes++;
+                    } else if (status === statusNo) {
+                        $(heart).css('color', '#555');
+                        countLikes--;
+                    }
+                    if (countLikes == 0) {
+                        numLikes.text("");
+                    } else {
+                        numLikes.text(countLikes);
+                    }
                 } else {
-                    numLikes.text(countLikes);
+                    if (status === statusOk) {
+                        $(heart).css('color', '#ba68c8');
+                    } else if (status === statusNo) {
+                        $(heart).css('color', '#555');
+                    }
                 }
             } else {
                 swal({

@@ -1,10 +1,9 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from model_utils import Choices
+from django.db.models import Q
 
 from publications.models import Publication
-from user_profile.models import UserProfile
+from django.utils.translation import gettext as _
 
 
 # TODO
@@ -13,42 +12,37 @@ class TimelineManager(models.Manager):
     def get_timeline(self, timelinepk):
         return self.get(pk=timelinepk)
 
-    def remove_timeline(self, timelinepk, userpk):
-        timeline = self.get(pk=timelinepk)
-        try:
-            pub = timeline.publication
-        except ObjectDoesNotExist:
-            pub = None
-        if pub:
-            pub.user_share_me.remove(userpk)
-        timeline.delete()
+    def get_user_profile_events(self, user_pk):
+        timeline = self.get(timeline_owner=user_pk)
 
-    def get_author_timeline(self, authorpk):
-        timeline = self.filter(author=authorpk).order_by('insertion_date').reverse()
+        events = timeline.events.all()
 
-        return timeline
+        for e in events:
+            if e.publication:
+                reply = Publication.objects.filter(parent=e.publication.pk, deleted=False).order_by('-created')
+                e.replies = reply
+
+        return events
+
+
+class EventTimeline(models.Model):
+    """
+    Representa un evento en el timeline
+    """
+    EVENT_CHOICES = (
+        (1, _("publication")),
+        (2, _("new_relation")),
+        (3, _("notice")),
+        (4, _("relevant")),
+        (5, _("image"))
+    )
+    publication = models.ForeignKey(Publication, related_name='publication', null=True)
+    event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
+    author = models.ForeignKey(User, related_name='owner_event', null=True)
+    created = models.DateTimeField(auto_now_add=True)
 
 
 class Timeline(models.Model):
-    publication = models.ForeignKey(Publication, null=True, related_name='publications')
-    author = models.ForeignKey(UserProfile, related_name='from_timeline', null=True)
-    profile = models.ForeignKey(UserProfile, related_name='to_timeline')
-    insertion_date = models.DateTimeField(auto_now_add=True)
-    verb = models.CharField(max_length=255, null=True)
-    TYPES = Choices('publication', 'new_relation')
-    type = models.CharField(choices=TYPES, default=TYPES.publication, max_length=20)
-
+    events = models.ManyToManyField(EventTimeline, related_name='events')
+    timeline_owner = models.OneToOneField(User, related_name='owner_timeline')
     objects = TimelineManager()
-
-    class Meta:
-        ordering = ('-insertion_date',)
-
-    def __unicode__(self):
-        if self.publication.content:
-            return self.publication.content
-        if self.verb:
-            return self.verb
-
-    # Mostrar contenido en formato string.
-    def __str__(self):
-        return self.self.__unicode__()

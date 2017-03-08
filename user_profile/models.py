@@ -139,10 +139,8 @@ class UserProfile(models.Model):
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
-    timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False,
-                                      related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
-    ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
+    # ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     is_first_login = models.BooleanField(default=True)
@@ -292,19 +290,6 @@ class UserProfile(models.Model):
             return "all"
         # else...
         return None
-
-    # Methods of timeline
-    def getTimelineToMe(self):
-        """
-        Devuelve los objetos timeline para mi perfil (hacia mi)
-        :return devuelve los objetos timeline para mi perfil:
-        """
-        return self.timeline_to.filter(
-            from_timeline__profile=self).values('user__username', 'from_timeline__publication__content',
-                                                'from_timeline__id', 'from_timeline__publication__author__username',
-                                                'from_timeline__insertion_date', 'from_timeline__publication__id',
-                                                'from_timeline__type', 'from_timeline__verb').order_by(
-            'from_timeline__insertion_date').reverse()
 
     # Methods of publications (Old => Usar PublicationManager)
 

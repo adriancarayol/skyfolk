@@ -6,7 +6,8 @@ from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
-
+from timeline.models import Timeline
+from django.db import transaction
 from user_profile.models import UserProfile, AuthDevices
 
 
@@ -18,7 +19,8 @@ class CustomLoginForm(LoginForm):
         self.fields["auth_browser"].widget = forms.HiddenInput()
 
     def login(self, request, redirect_url=None):
-        user_profile = UserProfile.objects.get(user=self.user)
+        user_profile, created_profile = UserProfile.objects.get_or_create(user=self.user) # Crear si no existe
+        timeline, created_timeline = Timeline.objects.get_or_create(timeline_owner=self.user) # Crear si no existe
         auth_token_device = self.cleaned_data['auth_browser']
         if auth_token_device:
             try:
@@ -103,11 +105,13 @@ class SignupForm(forms.Form):
                                 required=True,
                                 widget=forms.TextInput(attrs={'placeholder': _('Apellido')}), validators=[alphanumeric])
 
+    @transaction.atomic
     def save(self, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()  # Guardamos el usuario
         user.profile.save()  # Creamos el perfil
+        Timeline.objects.create(timeline_owner=user) # Creamos timeline del usuario
 
 
 class UserForm(forms.ModelForm):

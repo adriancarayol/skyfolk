@@ -16,10 +16,11 @@ from django.http import JsonResponse
 from photologue.models import Photo
 from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit
 from publications.models import Publication, PublicationPhoto
-from timeline.models import Timeline
+from timeline.models import Timeline, EventTimeline
 from user_profile.forms import SearchForm
 from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from django.db import transaction
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -88,8 +89,10 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 logger.debug('>>>> PUBLICATION: ')
 
                 # Creamos el timeline y enlazamos publicacion con timeline
-                t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
-                                                            profile=publication.board_owner.profile)
+                event, created = EventTimeline.objects.get_or_create(author=self.request.user, publication=publication)
+                timeline = Timeline.objects.get(timeline_owner=self.request.user)
+                timeline.events.add(event)
+
                 return self.form_valid(form=form)
             except Exception as e:
                 logger.debug("views.py line 48 -> {}".format(e))
@@ -98,6 +101,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
 
 publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
+publication_new_view = transaction.atomic(publication_new_view)
 
 # TODO: Esto no es necesario, creo que con pagination queda solucionado
 """
@@ -248,7 +252,7 @@ def delete_publication(request):
 
         # Borramos timeline del comentario
         try:
-            Timeline.objects.get(publication__pk=request.POST['publication_id']).delete()
+            Timeline.objects.get(events__publication=request.POST['publication_id']).delete()
         except ObjectDoesNotExist:
             pass
 
@@ -404,7 +408,7 @@ def edit_publication(request):
         publication.parse_mentions()  # add mentions
         publication.created = datetime.datetime.now()
         publication.save(update_fields=['content', 'created'],
-                             new_comment=True)  # Guardamos la publicacion si no hay errores
+                         new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
 
         return JsonResponse({'data': True})
     return JsonResponse({'data': "No puedes acceder a esta URL."})
