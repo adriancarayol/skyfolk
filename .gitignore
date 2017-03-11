@@ -23,4 +23,4 @@ Web.config
 *.swo
 celerybeat-schedule
 celerybeat.pid
-
+geckodriver.log
