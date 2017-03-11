@@ -43,7 +43,7 @@ def connect_photo(message, slug):
             "close": True,
         })
         return
-    visibility = user_profile.is_visible(user.profile, user.pk)
+    visibility = user_profile.is_visible(user.profile)
     if visibility and visibility != 'all':
         logging.warning('User: {} no puede conectarse al socket de: photo: {}'.format(user.username, username))
         message.reply_channel.send({

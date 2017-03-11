@@ -14,7 +14,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
     Adaptador modificado para django-allauth.
     """
 
-    def clean_username(self, username):
+    def clean_username(self, username, **kwargs):
         reg = re.compile('^[a-zA-Z0-9_]{1,15}$')
         if not reg.match(username):
             if len(username) > 15:

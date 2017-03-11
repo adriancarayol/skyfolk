@@ -33,7 +33,7 @@ from taggit.managers import TaggableManager
 
 from .validators import validate_extension
 from .validators import validate_file_extension
-
+from .tasks import generate_thumbnails
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
 try:
@@ -167,7 +167,6 @@ IMAGE_FILTERS_HELP_TEXT = _('Chain multiple filters using the following pattern 
 
 size_method_map = {}
 
-
 class TagField(models.CharField):
     """Tags have been removed from Photologue, but the migrations still refer to them so this
     Tagfield definition is left here.
@@ -269,10 +268,6 @@ class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
                               upload_to=get_storage_path, validators=[validate_file_extension])
-
-    thumbnail = models.ImageField(_('thumbnail'),
-                                  max_length=IMAGE_FIELD_MAX_LENGTH,
-                                  upload_to=get_storage_path, null=True, blank=True)
 
     date_taken = models.DateTimeField(_('date taken'),
                                       null=True,
@@ -560,6 +555,10 @@ class Photo(ImageModel):
 
     url_image = models.URLField(max_length=255, blank=True, null=True)
 
+    thumbnail = models.ImageField(_('thumbnail'),
+                                      upload_to=get_storage_path,
+                                      null=True, blank=True)
+
     objects = PhotoQuerySet.as_manager()
 
     class Meta:
@@ -579,7 +578,7 @@ class Photo(ImageModel):
         return "photos-%s" % self.pk
 
     def save(self, created=True, *args, **kwargs):
-        if created:
+        if created and not self.slug:
             self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(uuid.uuid1()))
             self.get_remote_image()
         super(Photo, self).save(*args, **kwargs)
@@ -974,5 +973,14 @@ def add_default_site(instance, created, **kwargs):
     instance.sites.add(Site.objects.get_current())
 
 
+def generate_thumb(instance, created, **kwargs):
+    """
+    Generamos thumbnail
+    """
+    if created:
+        generate_thumbnails.delay(instance=instance.pk)
+
+
 post_save.connect(add_default_site, sender=Gallery)
 post_save.connect(add_default_site, sender=Photo)
+post_save.connect(generate_thumb, sender=Photo)

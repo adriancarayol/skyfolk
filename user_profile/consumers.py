@@ -23,7 +23,7 @@ def connect_blog(message, username):
 
     try:
         profile_blog = UserProfile.objects.get(user__username=username)
-        visibility = profile_blog.is_visible(user.profile, user.pk)
+        visibility = profile_blog.is_visible(user.profile)
         if visibility and visibility != 'all':
             logging.warning('User: {} no puede conectarse al socket de: profile: {}'.format(user.username, username))
             message.reply_channel.send({"accept": False})

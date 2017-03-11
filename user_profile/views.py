@@ -22,7 +22,7 @@ from taggit.models import TaggedItem
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
-from publications.forms import PublicationForm, ReplyPublicationForm
+from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit
 from publications.models import Publication
 from timeline.models import Timeline
 from user_groups.forms import FormUserGroup
@@ -30,6 +30,7 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser
+from publications.utils import get_author_avatar
 
 
 @login_required(login_url='/')
@@ -53,7 +54,7 @@ def profile_view(request, username,
     print('Temas de interes del usuario: {} {}'.format(username, user_profile.profile.tags.names()))
     context = {}
     # Privacidad del usuario
-    privacity = user_profile.profile.is_visible(user.profile, user.pk)
+    privacity = user_profile.profile.is_visible(user.profile)
 
     # Para escribir mensajes en mi propio perfil.
     self_initial = {'author': user.pk, 'board_owner': user.pk}
@@ -159,6 +160,8 @@ def profile_view(request, username,
     initial = {'author': user.pk, 'board_owner': user_profile.pk}
     context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
     context['publicationForm'] = PublicationForm(initial=initial)
+    context['publication_edit'] = PublicationEdit()
+
     # cargar lista comentarios
     try:
         if user_profile.username == username:
@@ -178,7 +181,7 @@ def profile_view(request, username,
 
     # cargar lista de timeline
     try:
-        timeline = user_profile.profile.getTimelineToMe()
+        timeline = Timeline.objects.get_user_profile_events(user_profile.pk)
     except ObjectDoesNotExist:
         timeline = None
 
@@ -196,6 +199,7 @@ def profile_view(request, username,
 
     if not created and profile_visit:
         profile_visit.save()
+
 
     # Contenido de las tres tabs
     context['publications'] = publications
@@ -470,6 +474,11 @@ def add_friend_by_username_or_pin(request):
     """
     print('ADD FRIEND BY USERNAME OR PIN')
     response = 'no_added_friend'
+    friend = None
+    data = {
+        'response': response,
+        'friend': friend
+    }
     if request.method == 'POST':
         pin = str(request.POST.get('valor'))
         if len(pin) > 15:
@@ -486,32 +495,42 @@ def add_friend_by_username_or_pin(request):
             try:
                 friend = UserProfile.objects.get(personal_pin=pin)
             except ObjectDoesNotExist:
-                return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
+                data['response'] = 'no_match'
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             if user.is_follow(friend):
-                return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+                data['response'] = 'its_your_friend'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
             is_blocked = friend.is_blocked(user)
 
             if is_blocked:
-                response = "user_blocked"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                data['response'] = 'user_blocked'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
             blocked_profile = user.is_blocked(friend)
 
             if blocked_profile:
-                response = "blocked_profile"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                data['response'] = 'blocked_profile'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
             no_need_petition = friend.privacity == UserProfile.ALL
             if no_need_petition:
                 created = user.add_direct_relationship(profile=friend)
                 if created:
-                    response = "added_friend"
-                    return HttpResponse(json.dumps(response), content_type='application/javascript')
+                    data['response'] = 'added_friend'
+                    data['friend_username'] = friend.user.username
+                    data['friend_avatar'] = get_author_avatar(friend.user)
+                    data['friend_first_name'] = friend.user.first_name
+                    data['friend_last_name'] = friend.user.last_name
+                    return HttpResponse(json.dumps(data), content_type='application/javascript')
+
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(friend)
@@ -542,38 +561,48 @@ def add_friend_by_username_or_pin(request):
             user = user_request.profile
 
             if user.user.username == username:
-                return HttpResponse(json.dumps('your_own_username'), content_type='application/javascript')
+                data['response'] = 'your_own_username'
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
-            friend = None
             try:
                 friend = UserProfile.objects.get(user__username=username)
             except ObjectDoesNotExist:
-                return HttpResponse(json.dumps('no_match'), content_type='application/javascript')
+                data['response'] = 'no_match'
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             if user.is_follow(friend):  # if user.is_friend(friend):
-                return HttpResponse(json.dumps('its_your_friend'), content_type='application/javascript')
+                data['response'] = 'its_your_friend'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
             is_blocked = friend.is_blocked(user)
 
             if is_blocked:
-                response = "user_blocked"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                data['response'] = 'user_blocked'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
             blocked_profile = user.is_blocked(friend)
 
             if blocked_profile:
-                response = "blocked_profile"
-                return HttpResponse(json.dumps(response), content_type='application/javascript')
+                data['response'] = 'blocked_profile'
+                data['friend'] = friend.user.username
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
             no_need_petition = friend.privacity == UserProfile.ALL
             if no_need_petition:
                 created = user.add_direct_relationship(profile=friend)
                 if created:
-                    response = "added_friend"
-                    return HttpResponse(json.dumps(response), content_type='application/javascript')
+                    data['response'] = 'added_friend'
+                    data['friend_username'] = friend.user.username
+                    data['friend_avatar'] = get_author_avatar(friend.user)
+                    data['friend_first_name'] = friend.user.first_name
+                    data['friend_last_name'] = friend.user.last_name
+                    return HttpResponse(json.dumps(data), content_type='application/javascript')
+
             # enviamos peticion de amistad
             try:
                 friend_request = user.get_follow_request(
@@ -600,7 +629,12 @@ def add_friend_by_username_or_pin(request):
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-    return HttpResponse(json.dumps(response), content_type='application/javascript')
+    data['response'] = response
+    data['friend_username'] = friend.user.username
+    data['friend_avatar'] = get_author_avatar(friend.user)
+    data['friend_first_name'] = friend.user.first_name
+    data['friend_last_name'] = friend.user.last_name
+    return HttpResponse(json.dumps(data), content_type='application/javascript')
 
 
 @login_required(login_url='/')
@@ -1042,7 +1076,7 @@ def changepass_confirmation(request):
 
 # Modificacion del template para desactivar una cuenta
 class DeactivateAccount(FormView):
-    template_name = 'account/account_inactive.html'
+    template_name = 'account/cf-account_inactive.html'
     form_class = DeactivateUserForm
     success_url = reverse_lazy('account_logout')
 
@@ -1243,13 +1277,16 @@ class RecommendationUsers(ListView):
     def get_queryset(self):
         user = self.request.user
         if not user.profile.tags:
-            return None
+            return UserProfile.objects.filter(privacity=UserProfile.ALL).order_by('?')[:20]
         related_items = TaggedItem.objects.none().order_by('count')
         current_item = UserProfile.objects.get(user=user)
         for tag in current_item.tags.all():
             related_items |= tag.taggit_taggeditem_items.all()
         ids = related_items.values_list('object_id', flat=True)
-        return UserProfile.objects.filter(id__in=ids).exclude(user=user)
+        users = UserProfile.objects.filter(id__in=ids).exclude(user=user)
+        if not users:
+            users = UserProfile.objects.filter(privacity=UserProfile.ALL).order_by('?').exclude(user=user)[:20]
+        return users
 
     def get_context_data(self, **kwargs):
         context = super(RecommendationUsers, self).get_context_data(**kwargs)

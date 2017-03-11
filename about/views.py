@@ -1,17 +1,12 @@
-from django.shortcuts import render
+from el_pagination.views import AjaxListView
+
+from .models import PublicationBlog
 
 
-def about(request, view):
-    plantilla = None
-    if view == 'home':
-        plantilla = 'about/aboutSkyfolk.html'
-    elif view == 'us':
-        plantilla = 'about/aboutUs.html'
-    elif view == 'project':
-        plantilla = 'about/project.html'
-    elif view == 'team':
-        plantilla = 'about/team.html'
-    elif view == "special":
-        plantilla = 'about/special.html'
+class EntryListView(AjaxListView):
+    context_object_name = "publications_blog"
+    template_name = "about/publications.html"
+    page_template = 'about/entry_list_page.html'
 
-    return render(request, plantilla)
+    def get_queryset(self):
+        return PublicationBlog.objects.all()

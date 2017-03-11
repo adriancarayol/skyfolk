@@ -3,6 +3,7 @@
 {% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load humanize %}
 <div class="row">
     <div class="col l12 m12 s12">
         <div class="user-card card">
@@ -11,57 +12,89 @@
                 <a><i class="fa fa-expand"></i></a>
                 <a><i class="fa fa-thumb-tack"></i></a>
             </div>
-            <div class="user-avatar">
-                {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
-                    <img src="{{ user_profile.profile.backImage.url }}" class="user-bg">
-                {% else %}
-                    <img src="{{ STATIC_URL }}img/nuevo_back.png" class="user-bg">
-                {% endif %}
-                {% if not isFollower %}
-                    <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }}"></span>
-                {% else %}
-                    <span class="fa fa-paw fa-lg" title="Acerca de {{ user_profile.username }} - ¡Te sigue!"
-                          style="color: #1e88e5"></span>
-                {% endif %}
-                <!--<input type="checkbox" id="button-menu"  />-->
-                {% if user.is_authenticated and user.username != user_profile.username %}
-                    <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                    <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
-                    <script async type="text/javascript">
-                        $(window).load(function () {
-                            var addFriend = document.getElementById('addfriend');
-                            {% if isFriend == True %}
-                                $(addFriend).replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
-                            {% elif isBlocked == True %}
-                                $(addFriend).replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
-                                $('#bloq-user').css('color', '#FF6347');
-                            {% elif existFollowRequest == True %}
-                                $(addFriend).replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>' + ' ' + '</div>');
-                            {% endif %}
-                        });
-                    </script>
-                {% endif %}
-                <div class="caja">
-                    <div class="item">
-                        <div class="user-pic">{% avatar user_profile class="user-pic" %}</div>
-                        <span class="informacion">
-                {% if user.is_authenticated and user.username == user_profile.username %}
-                    <!-- Si el usuario esta visitando su propio perfil -->
-                    <span id="configurationOnProfile" class="fa fa-cog" title="Configuracion"></span>
-                    <span onclick="location.href='{% url "user_groups:list-group" %}'" id="conf" class="fa fa-users"
-                          title="Grupos"></span>
-                    <span id="publish3" class="fa fa-paper-plane" title="Escribir"></span>
-                {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
-                    <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!"
-                          onclick=AJAX_likeprofile('anonymous')></span>
-                {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                    <span id="addfriend" class="fa fa-plus" title="Seguir"
-                          onclick=AJAX_requestfriend('noabort');></span>
-                    <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!"
-                          onclick=AJAX_likeprofile('noabort');></span>
-                    <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
-                {% endif %}
-               </span>
+            <div class="row">
+                <div class="user-avatar">
+                    {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
+                        <img src="{{ user_profile.profile.backImage.url }}" class="user-bg">
+                    {% else %}
+                        <img src="{{ STATIC_URL }}img/nuevo_back.png" class="user-bg">
+                    {% endif %}
+                    <!--<input type="checkbox" id="button-menu"  />-->
+                    {% if user.is_authenticated and user.username != user_profile.username %}
+                        <!-- si es usuario esta visitando un perfil que no es el suyo -->
+                        <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
+                        <script type="text/javascript">
+                            $(window).load(function () {
+                                var addFriend = document.getElementById('addfriend');
+                                {% if isFriend == True %}
+                                    $(addFriend).replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                                {% elif isBlocked == True %}
+                                    $(addFriend).replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
+                                    $('#bloq-user').css('color', '#FF6347');
+                                {% elif existFollowRequest == True %}
+                                    $(addFriend).replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>' + ' ' + '</div>');
+                                {% endif %}
+                            });
+                        </script>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l8 m12 s12 user-stats z-depth-1-half">
+                    <div class="caja">
+                        <div class="item">
+                            <div class="user-pic">{% avatar user_profile class="user-pic" %}</div>
+                            <div class="informacion">
+                                {% if user.is_authenticated and user.username == user_profile.username %}
+                                    <!-- Si el usuario esta visitando su propio perfil -->
+                                    <span id="configurationOnProfile" class="fa fa-cog" title="Configuracion"></span>
+                                    <span onclick="location.href='{% url "user_groups:list-group" %}'" id="conf"
+                                          class="fa fa-users"
+                                          title="Grupos"></span>
+                                    <span id="publish3" class="fa fa-paper-plane" title="Escribir"></span>
+                                {% elif not user.is_authenticated %} <!-- si es usuario anonimo -->
+                                    <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!"
+                                          onclick=AJAX_likeprofile('anonymous')></span>
+                                {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
+                                    <span id="addfriend" class="fa fa-plus" title="Seguir"
+                                          onclick=AJAX_requestfriend('noabort');></span>
+                                    <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!"
+                                          onclick=AJAX_likeprofile('noabort');></span>
+                                    <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header">
+                        <p class="user-profile-name">@{{ user_profile.username }}</p>
+                        <p id="profileId" hidden>{{ user_profile.profile.id }}</p>
+                        {% if user_profile.profile.status != None %}
+                            <p class="status"> - {{ user_profile.profile.status }}</p>
+                        {% endif %}
+                        {% if not isFollower %}
+                            <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
+                                  data-tooltip="Acerca de {{ user_profile.username }}"></span>
+                        {% else %}
+                            <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
+                                  data-tooltip="Acerca de {{ user_profile.username }} - ¡Te sigue!"
+                                  style="color: #1e88e5"></span>
+                        {% endif %}
+                        <ul id="user-stats" class="stats">
+                            <li>
+                                <a href="/followers/{{ user_profile.username }}"><strong
+                                        id="followers-stats">{{ followers|intword }}</strong><span>Seguidores</span></a>
+                            </li>
+                            <li>
+                                <a id="likes"
+                                   href="{% url "user_profile:like_list" username=user_profile.username %}"><strong>{{ n_likes|intword }}</strong>
+                                    <span title="me gusta">Me gusta</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="to_gallery"
+                                   href="/multimedia/{{ user_profile.username }}/"><strong>{{ multimedia_count|intword }}</strong><span>Fotos y vídeos</span></a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -159,29 +192,6 @@
                     </div>
                 </div>
             </div>
-            <header>
-                <p class="user-profile-name">@{{ user_profile.username }}</p>
-                <p id="profileId" hidden>{{ user_profile.profile.id }}</p>
-                {% if user_profile.profile.status != None %}
-                    <p class="status"> - {{ user_profile.profile.status }}</p>
-                {% endif %}
-            </header>
-            <ul id="user-stats" class="stats">
-                <li>
-                    <a href="/followers/{{ user_profile.username }}"><strong
-                            id="followers-stats">{{ followers }}</strong><span>Seguidores</span></a>
-                </li>
-                <li>
-                    <a id="likes"
-                       href="{% url "user_profile:like_list" username=user_profile.username %}"><strong>{{ n_likes }}</strong>
-                        <span title="me gusta">Me gusta</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="to_gallery"
-                       href="/multimedia/{{ user_profile.username }}/"><strong>{{ multimedia_count }}</strong><span>Fotos y vídeos</span></a>
-                </li>
-            </ul>
         </div>
     </div>
 </div>

@@ -105,7 +105,7 @@ class UserProfileManager(models.Manager):
 
         if is_first_time_login:
             user_profile.is_first_login = False
-            user_profile.save()
+            user_profile.save(update_fields=['is_first_login'])
 
         return is_first_time_login
 
@@ -139,10 +139,8 @@ class UserProfile(models.Model):
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
-    timeline = models.ManyToManyField('self', through='timeline.Timeline', symmetrical=False,
-                                      related_name='timeline_to')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
-    ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
+    # ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     is_first_login = models.BooleanField(default=True)
@@ -238,14 +236,14 @@ class UserProfile(models.Model):
             from_people__status=status,
             from_people__to_person=self)
 
-    def is_visible(self, user_profile, user_pk):
+    def is_visible(self, user_profile):
         """
         Devuelve si el perfil que estamos visitando
         es visible por nosotros.
         :param user_pk, user_profile:
         :return template que determina si el perfil es visible:
         """
-
+        user_pk = user_profile.user.pk
         # Si estoy visitando mi propio perfil
         if self.user.pk == user_pk:
             return "all"
@@ -293,19 +291,6 @@ class UserProfile(models.Model):
         # else...
         return None
 
-    # Methods of timeline
-    def getTimelineToMe(self):
-        """
-        Devuelve los objetos timeline para mi perfil (hacia mi)
-        :return devuelve los objetos timeline para mi perfil:
-        """
-        return self.timeline_to.filter(
-            from_timeline__profile=self).values('user__username', 'from_timeline__publication__content',
-                                                'from_timeline__id', 'from_timeline__publication__author__username',
-                                                'from_timeline__insertion_date', 'from_timeline__publication__id',
-                                                'from_timeline__type', 'from_timeline__verb').order_by(
-            'from_timeline__insertion_date').reverse()
-
     # Methods of publications (Old => Usar PublicationManager)
 
     def get_publication(self, publicationid):
@@ -322,7 +307,7 @@ class UserProfile(models.Model):
         :param publicationid => Identificador de la publicación:
         :return:
         """
-        publications.models.Publication.objects.get(pk=publicationid).delete()
+        publications.models.Publication.objects.get(pk=publicationid, author=self.user)
 
     def get_publicationsToMe(self):
         """

@@ -3,17 +3,17 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
-from rest_framework import routers
 
-from about.views import about
-from api import views
+# from rest_framework import routers
+
+# from api import views
 
 admin.autodiscover()
 
 # REST Framework
-router = routers.DefaultRouter()
-router.register(r'api/users', views.UserViewSet)
-router.register(r'api/groups', views.GroupViewSet)
+# router = routers.DefaultRouter()
+# router.register(r'api/users', views.UserViewSet)
+# router.register(r'api/groups', views.GroupViewSet)
 
 urlpatterns = [
     # Importamos las URLS del resto de apps:
@@ -30,7 +30,7 @@ urlpatterns = [
     # url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
     # {'document_root': settings.MEDIA_ROOT}),
     # url publications
-    url(r'^', include('publications.urls'), name="publications"),
+    url(r'^', include('publications.urls', namespace="publications"), name="publications"),
     # urls timeline
     url(r'^', include('timeline.urls'), name="timeline"),
     # url novedades e inicio
@@ -38,13 +38,13 @@ urlpatterns = [
     # url mensajes privados
     url(r'^messages/', include('django_messages.urls'), name="inbox"),
     # About skyfolk
-    url(r'^about/([^/]+)/$', about),
+    url(r'^', include('about.urls')),
     # Recomendacion password para usuarios
     url(r'^tips/password/$', TemplateView.as_view(
         template_name='about/password_recommendation.html')),
     # Importamos las urls de REST Framework
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # url(r'^', include(router.urls)),
+    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # Urls para el modulo emoji
     url(r'^emoji/', include('emoji.urls', namespace="emoji")),
     # Django-avatar
@@ -56,6 +56,10 @@ urlpatterns = [
                                          namespace='notifications')),
     # django-photologue
     url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
+    # django-dash URLs:
+    url(r'^dashboard/', include('dash.urls')),
+    url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
+    url(r'^', include('dash.contrib.apps.public_dashboard.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
