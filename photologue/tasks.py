@@ -4,7 +4,7 @@ from skyfolk.celery import app
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
+from django.core.exceptions import ObjectDoesNotExist
 
 def flat(*nums):
     'Build a tuple of ints from float or integer arguments. Useful because PIL crop and resize require integer points.'
@@ -54,13 +54,19 @@ def cropped_thumbnail(img, size):
 
 @app.task()
 def generate_thumbnails(instance):
-    photo_to_crop = photologue.models.Photo.objects.get(pk=instance)
-    thumb = cropped_thumbnail(photo_to_crop, flat(300.0, 300.0))
-    tempfile_io = BytesIO()
-    thumb.save(tempfile_io, format='PNG')
-    tempfile_io.seek(0, os.SEEK_END)
-    image_file = InMemoryUploadedFile(tempfile_io, None, 'thumb.png', 'image/png', tempfile_io.tell(), None)
-    photo_to_crop.thumbnail.save('thumb.png', image_file)
-    photo_to_crop.save(created=False)
+    exist_photo = True
+    try:
+        photo_to_crop = photologue.models.Photo.objects.get(pk=instance)
+    except ObjectDoesNotExist:
+        exist_photo = False
+
+    if exist_photo: # Si la foto existe
+        thumb = cropped_thumbnail(photo_to_crop, flat(300.0, 300.0))
+        tempfile_io = BytesIO()
+        thumb.save(tempfile_io, format='PNG')
+        tempfile_io.seek(0, os.SEEK_END)
+        image_file = InMemoryUploadedFile(tempfile_io, None, 'thumb.png', 'image/png', tempfile_io.tell(), None)
+        photo_to_crop.thumbnail.save('thumb.png', image_file)
+        photo_to_crop.save(created=False)
 
 
