@@ -7,7 +7,6 @@ from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
 from timeline.models import Timeline
-from django.db import transaction
 from user_profile.models import UserProfile, AuthDevices
 
 
@@ -105,8 +104,7 @@ class SignupForm(forms.Form):
                                 required=True,
                                 widget=forms.TextInput(attrs={'placeholder': _('Apellido')}), validators=[alphanumeric])
 
-    @transaction.atomic
-    def save(self, user):
+    def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()  # Guardamos el usuario
