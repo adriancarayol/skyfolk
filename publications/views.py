@@ -21,6 +21,7 @@ from user_profile.forms import SearchForm
 from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from django.db import transaction
+from emoji import Emoji
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -83,15 +84,11 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 publication.save()  # Creamos publicacion
                 publication.parse_mentions()  # add mentions
+                publication.content = Emoji.replace(publication.content)
                 publication.save(update_fields=['content'],
                                  new_comment=True)  # Guardamos la publicacion si no hay errores
 
                 logger.debug('>>>> PUBLICATION: ')
-
-                # Creamos el timeline y enlazamos publicacion con timeline
-                event, created = EventTimeline.objects.get_or_create(author=self.request.user, publication=publication)
-                timeline = Timeline.objects.get(timeline_owner=self.request.user)
-                timeline.events.add(event)
 
                 return self.form_valid(form=form)
             except Exception as e:

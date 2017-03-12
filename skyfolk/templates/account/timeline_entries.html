@@ -58,18 +58,18 @@
                 </div>
             </div>
         </div>
-    {% elif item.from_timeline__type == "new_relation" %}
-        <div class="timeline-pub" id="tim-{{ item.from_timeline__id }}" data-id="{{ user.pk }}">
+    {% elif item.event_type == 2 %}
+        <div class="timeline-pub" id="tim-{{ item.id }}" data-id="{{ user.pk }}">
             <div class="second">
                                 <span class="acontecimiento">
-                                    {% avatar item.user__username %}
+                                    {% avatar item.author.username %}
                                 </span>
                 <span class="head">
                                     <a class="fecha_"
-                                       target="_blank">{{ item.from_timeline__insertion_date }}</a><em></em>
+                                       target="_blank">{{ item.created }}</a><em></em>
                                 </span>
                 <div id="timeline-id-content" class="parrafo timeline-content">
-                    {{ item.from_timeline__verb|safe }}
+                    {{ item.content|safe }}
                 </div>
                 <div class="show-more">
                     <a href="#">+ Mostrar más</a>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="controles" id="controls-timeline">
                     <ul>
-                        {% if user.username == user_profile.username %}
+                        {% if user.username == item.author.username %}
                             <li class="fa fa-trash fa-lg"></li>
                         {% endif %}
                     </ul>

@@ -361,7 +361,6 @@ class UserProfile(models.Model):
                                                                     'user__last_name',
                                                                     'user__profile__backImage').order_by('id')
 
-
     # Obtener canal de noticias de mis seguidores
     def get_all_follower_values(self):
         """

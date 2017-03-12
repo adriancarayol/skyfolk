@@ -33,7 +33,9 @@ class EventTimeline(models.Model):
     )
     publication = models.ForeignKey(Publication, related_name='publication', null=True)
     event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
+    content = models.CharField(max_length=255, blank=True, null=True)
     author = models.ForeignKey(User, related_name='owner_event', null=True)
+    profile = models.ForeignKey(User, related_name='profile_event', null=True)
     created = models.DateTimeField(auto_now_add=True)
 
 

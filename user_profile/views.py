@@ -784,29 +784,6 @@ def respond_friend_request(request):
                     created_2.save()
 
                     print('user.profile: {} emitter_profile: {}'.format(user.username, emitter_profile.user.username))
-                    # Creamos historia en nuestro perfil
-                    t, created = Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
-                                                                verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                                    emitter_profile.user.username,
-                                                                    emitter_profile.user.username, user.username,
-                                                                    user.username),
-                                                                type='new_relation')
-                    # Creamos historia en el perfil que seguimos
-                    t2, created2 = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
-                                                                  verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                                      user.username, user.username,
-                                                                      emitter_profile.user.username,
-                                                                      emitter_profile.user.username),
-                                                                  type='new_relation')
-
-                    # Actualizamos fecha en el timeline
-                    if not created:
-                        t.insertion_date = datetime.now()
-                        t.save()
-                    # Actualizamos fecha en el timeline
-                    if not created2:
-                        t.insertion_date = datetime.now()
-                        t.save()
 
                     # enviamos notificacion informando del evento
                     notify.send(user, actor=user.username,

@@ -21,7 +21,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
                 raise ValidationError(_('El nombre de usuario no puede exceder los 15 caracteres'))
             else:
                 raise ValidationError(_('El nombre de usuario solo puede tener letras, numeros y _'))
-        username = get_adapter().clean_username(username=username)
+        username = super(MyAccountAdapter, self).clean_username(username=username)
         return username
 
     def get_login_redirect_url(self, request):

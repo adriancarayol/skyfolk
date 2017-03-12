@@ -16,7 +16,6 @@ from user_profile.tasks import send_to_stream
 from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
 from django.conf import settings
-from emoji import Emoji
 from mptt.models import MPTTModel, TreeForeignKey
 
 # Los tags HTML que permitimos en los comentarios
@@ -126,11 +125,11 @@ class PublicationBase(MPTTModel):
     tags = TaggableManager(blank=True)
     deleted = models.BooleanField(default=False, blank=True)
 
-    class Meta:
-        abstract = True
-
     class MPTTMeta:
         order_insertion_by = ['-created']
+
+    class Meta:
+        abstract = True
 
 
 class Publication(PublicationBase):
@@ -199,7 +198,6 @@ class Publication(PublicationBase):
         Parseamos el contenido en busca de
         tags html no permitidos y los eliminamos
         """
-        self.content = Emoji.replace(self.content)
         self.content = self.content.replace('\n', '').replace('\r', '')
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
