@@ -7,7 +7,8 @@
 
 {% paginate publications %}
 {% recursetree publications %}
-    <div class="wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
+    <div class="wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}" {% if node.level > 0 and node.level < 3 %}style="min-width: 90% !important;
+                max-width: 90%;"{% endif %}>
         <div class="box">
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
@@ -168,10 +169,10 @@
             {% endcomment %}
         </div>
         {% if not node.is_leaf_node %}
-        <ul class="children">
-            {{ children }}
-        </ul>
-    {% endif %}
+            <ul class="children">
+                {{ children }}
+            </ul>
+        {% endif %}
     </div>
 {% endrecursetree %}
 {% show_more %}
