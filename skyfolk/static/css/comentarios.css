@@ -13,6 +13,12 @@ a, a:visited {
 }
 
 /*1 */
+.children .wrapper {
+    min-width: 90% !important;
+    max-width: 90%;
+    border-right: 3px solid #1e88e5;
+}
+
 .wrapper {
     margin: 30px auto;
     min-width: 100%;

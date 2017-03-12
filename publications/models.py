@@ -40,8 +40,7 @@ class PublicationManager(models.Manager):
         # filtros: from_publication__profile=self -> retorna los comentarios
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
-        pubs = self.filter(author=author_pk, parent=None, deleted=False).order_by(
-            'created').reverse()
+        pubs = self.filter(author=author_pk, parent=None, deleted=False)
 
         print('>>>>pubs: {}'.format(pubs))
 

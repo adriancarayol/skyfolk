@@ -124,7 +124,7 @@
         {% endif %}
         <div class="wrapper-reply">
             {% include "account/new_reply.html" %}
-            <!-- RESPUESTAS A COMENTARIOS -->
+            {% comment %}
             {% for reply in node.reply.all %}
                 <div class="comment-reply">
                     <div class="avatar-reply">{% avatar reply.author %}</div>
@@ -165,6 +165,7 @@
                     </div>
                 </div>
             {% endfor %}
+            {% endcomment %}
         </div>
         {% if not node.is_leaf_node %}
         <ul class="children">
