@@ -1,4 +1,5 @@
 # encoding:utf-8
+import logging
 from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.models import User
@@ -6,8 +7,10 @@ from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
-from timeline.models import Timeline
 from user_profile.models import UserProfile, AuthDevices
+
+logging.basicConfig(level=logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 class CustomLoginForm(LoginForm):
@@ -18,10 +21,14 @@ class CustomLoginForm(LoginForm):
         self.fields["auth_browser"].widget = forms.HiddenInput()
 
     def login(self, request, redirect_url=None):
-        user_profile, created_profile = UserProfile.objects.get_or_create(user=self.user) # Crear si no existe
-        timeline, created_timeline = Timeline.objects.get_or_create(timeline_owner=self.user) # Crear si no existe
+        try:
+            user_profile = UserProfile.objects.get(user=self.user)
+        except UserProfile.DoesNotExist:
+            user_profile = None
+            logger.warning("LOGIN: No existe instancia UserProfile para el usuario : %s " % self.user.username)
+
         auth_token_device = self.cleaned_data['auth_browser']
-        if auth_token_device:
+        if auth_token_device and user_profile:
             try:
                 components = auth_token_device.split()
                 device, created = AuthDevices.objects.get_or_create(user_profile=user_profile,
@@ -108,8 +115,6 @@ class SignupForm(forms.Form):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()  # Guardamos el usuario
-        user.profile.save()  # Creamos el perfil
-        Timeline.objects.create(timeline_owner=user) # Creamos timeline del usuario
 
 
 class UserForm(forms.ModelForm):
