@@ -20,7 +20,7 @@ def handle_new_user(sender, instance, created, **kwargs):
 @receiver(post_save, sender=EventTimeline)
 def handle_new_event(sender, instance, created, **kwargs):
     if created:
-        timeline = Timeline.objects.get(timeline_owner=instance.author)
+        timeline = Timeline.objects.get(timeline_owner=instance.profile)
         timeline.events.add(instance)
         logger.info("POST SAVE : New event added in timeline : %s " % instance.author)
 
@@ -31,5 +31,6 @@ def handle_new_event(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Publication)
 def handle_new_publication(sender, instance, created, **kwargs):
     if created:
-        EventTimeline.objects.create(author=instance.author, publication=instance)
+        EventTimeline.objects.create(author=instance.author, publication=instance,
+                                     profile=instance.board_owner)
         logger.info("POST SAVE : New event created by user : %s " % instance.author)

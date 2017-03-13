@@ -164,14 +164,16 @@ def profile_view(request, username,
 
     # cargar lista comentarios
     try:
-        if user_profile.username == username:
-            publications = Publication.objects.get_friend_profile_publications(
-                user_pk=user_profile.pk,
-                board_owner_pk=user_profile.pk)
-        else:
-            publications = Publication.objects.get_user_profile_publications(
-                user_pk=user.pk,
-                board_owner_pk=user_profile.pk)
+        # if user_profile.username == username:
+        publications = [node.get_descendants(include_self=True)[:10]
+                        for node in
+                        Publication.objects.filter(board_owner=user_profile, deleted=False, parent=None)[:20]]
+        # else:
+        # publications = Publication.objects.get_user_profile_publications(
+        #   user_pk=user.pk,
+        #  board_owner_pk=user_profile.pk)
+
+        # publications = Publication.objects.filter(board_owner=user_profile, deleted=False, level__lte=0).get_descendants(include_self=False)
         print('>>>>>>> LISTA PUBLICACIONES: ')
         # print publications
         print(publications)
@@ -199,7 +201,6 @@ def profile_view(request, username,
 
     if not created and profile_visit:
         profile_visit.save()
-
 
     # Contenido de las tres tabs
     context['publications'] = publications

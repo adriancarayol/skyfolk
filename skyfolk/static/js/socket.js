@@ -21,7 +21,10 @@ var UTILS = UTILS || (function () {
                     if (data.type === "pub") {
                         if (!data.is_edited) {
                             var content = "";
-                            content += '  <div class=\"wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
+                            if (data.level > 0 && data.level < 3) {
+                                content += ' <div class="wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 90% !important; max-width: 90%;">';
+                            } else
+                                content += ' <div class=\"wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
                             content += "            <div class=\"box\">";
                             content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
                             content += '            <span data-id="' + data.id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
@@ -70,7 +73,14 @@ var UTILS = UTILS || (function () {
                             existing.find('.comment a').text(data.created);
                             existing.find('.wrp-comment').text(data.content);
                         } else {
-                            $("#tab-comentarios").prepend(content);
+                            var parent = $('#pub-' + data.parent);
+                            if (parent.length) {
+                                var children_list = $(parent).find('.children').first();
+                                if (!children_list.length) {
+                                    children_list = $(parent).find('.wrapper-reply').after('<ul class="children"></ul>');
+                                }
+                                $(children_list).prepend(content);
+                            } else $("#tab-comentarios").prepend(content);
                         }
                         var show = $('div#pub-' + data.id + '').find('#show-comment-' + data.id + '');
                         /* Eliminamos el div de "Este perfil no tiene comentarios" */
@@ -85,27 +95,27 @@ var UTILS = UTILS || (function () {
                             $(show).css('display', 'none');
                         }
                     }
-                    else if (data.type === "reply" && !data.is_edited) {
-                        var content = "";
-                        content += "                <div class=\"wrapper-reply\">";
-                        content += "";
-                        content += "                <!-- RESPUESTAS A COMENTARIOS -->";
-                        content += "";
-                        content += "                <div class=\"comment-reply\">";
-                        content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"><\/div>';
-                        content += "                    <div class=\"author-reply\">";
-                        content += '                      <a href="/profile/' + data.author_username + '">' + data.author_username + '</a>';
-                        content += '                      <i class="reply-created">' + data.created + '<\/i>';
-                        content += "                    </div>";
-                        content += '                      <div class="content-reply">' + data.content + '</div>';
-                        content += "                </div>";
-                        content += "";
-                        content += "                </div>";
-                        content += "    </div>";
+                    /*else if (data.type === "reply" && !data.is_edited) {
+                     var content = "";
+                     content += "                <div class=\"wrapper-reply\">";
+                     content += "";
+                     content += "                <!-- RESPUESTAS A COMENTARIOS -->";
+                     content += "";
+                     content += "                <div class=\"comment-reply\">";
+                     content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"><\/div>';
+                     content += "                    <div class=\"author-reply\">";
+                     content += '                      <a href="/profile/' + data.author_username + '">' + data.author_username + '</a>';
+                     content += '                      <i class="reply-created">' + data.created + '<\/i>';
+                     content += "                    </div>";
+                     content += '                      <div class="content-reply">' + data.content + '</div>';
+                     content += "                </div>";
+                     content += "";
+                     content += "                </div>";
+                     content += "    </div>";
 
-                        var pub = $('#pub-' + data.parent);
-                        $(pub).append(content);
-                    }
+                     var pub = $('#pub-' + data.parent);
+                     $(pub).append(content);
+                     }*/
                 };
 
                 // Helpful debugging

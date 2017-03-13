@@ -6,7 +6,7 @@ from .models import Publication
 
 
 class PublicationBaseAdmin(admin.ModelAdmin):
-    list_display = ('author', 'content', 'parent', 'created', )
+    list_display = ('author', 'content', 'created', )
     list_filter = ('created', 'author', )
 
 
