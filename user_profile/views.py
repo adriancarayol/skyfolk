@@ -22,7 +22,7 @@ from taggit.models import TaggedItem
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
-from publications.forms import PublicationForm, ReplyPublicationForm
+from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit
 from publications.models import Publication
 from timeline.models import Timeline
 from user_groups.forms import FormUserGroup
@@ -31,6 +31,7 @@ from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser
 from publications.utils import get_author_avatar
+
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -159,6 +160,8 @@ def profile_view(request, username,
     initial = {'author': user.pk, 'board_owner': user_profile.pk}
     context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
     context['publicationForm'] = PublicationForm(initial=initial)
+    context['publication_edit'] = PublicationEdit()
+
     # cargar lista comentarios
     try:
         if user_profile.username == username:
@@ -178,7 +181,7 @@ def profile_view(request, username,
 
     # cargar lista de timeline
     try:
-        timeline = user_profile.profile.getTimelineToMe()
+        timeline = Timeline.objects.get_user_profile_events(user_profile.pk)
     except ObjectDoesNotExist:
         timeline = None
 
@@ -196,6 +199,7 @@ def profile_view(request, username,
 
     if not created and profile_visit:
         profile_visit.save()
+
 
     # Contenido de las tres tabs
     context['publications'] = publications
@@ -780,29 +784,6 @@ def respond_friend_request(request):
                     created_2.save()
 
                     print('user.profile: {} emitter_profile: {}'.format(user.username, emitter_profile.user.username))
-                    # Creamos historia en nuestro perfil
-                    t, created = Timeline.objects.get_or_create(author=user.profile, profile=emitter_profile,
-                                                                verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                                    emitter_profile.user.username,
-                                                                    emitter_profile.user.username, user.username,
-                                                                    user.username),
-                                                                type='new_relation')
-                    # Creamos historia en el perfil que seguimos
-                    t2, created2 = Timeline.objects.get_or_create(author=emitter_profile, profile=user.profile,
-                                                                  verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                                      user.username, user.username,
-                                                                      emitter_profile.user.username,
-                                                                      emitter_profile.user.username),
-                                                                  type='new_relation')
-
-                    # Actualizamos fecha en el timeline
-                    if not created:
-                        t.insertion_date = datetime.now()
-                        t.save()
-                    # Actualizamos fecha en el timeline
-                    if not created2:
-                        t.insertion_date = datetime.now()
-                        t.save()
 
                     # enviamos notificacion informando del evento
                     notify.send(user, actor=user.username,

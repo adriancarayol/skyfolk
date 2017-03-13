@@ -63,3 +63,18 @@ class PublicationPhotoForm(forms.ModelForm):
         self.fields['p_author'].widget = forms.HiddenInput()
         self.fields['board_photo'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
+
+
+class PublicationEdit(forms.ModelForm):
+    """
+    Formulario para editar una publicacion existente
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(PublicationEdit, self).__init__(*args, **kwargs)
+        self.fields['content'].widget.attrs['class'] = 'materialize-textarea'
+        self.fields['content'].widget.attrs['id'] = 'edit_comment_content'
+
+    class Meta:
+        model = Publication
+        fields = ['content', ]

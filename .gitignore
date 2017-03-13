@@ -21,3 +21,6 @@ Web.config
 *~
 *.swp
 *.swo
+celerybeat-schedule
+celerybeat.pid
+geckodriver.log

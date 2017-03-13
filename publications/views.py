@@ -1,5 +1,6 @@
 import json
 import logging
+import datetime
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -11,14 +12,16 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.views.generic.edit import CreateView
 from el_pagination.views import AjaxListView
-
+from django.http import JsonResponse
 from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm
+from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit
 from publications.models import Publication, PublicationPhoto
-from timeline.models import Timeline
+from timeline.models import Timeline, EventTimeline
 from user_profile.forms import SearchForm
 from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from django.db import transaction
+from emoji import Emoji
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -79,16 +82,14 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise IntegrityError('El comentario esta vacio')
 
-                publication.save() # Creamos publicacion
+                publication.save()  # Creamos publicacion
                 publication.parse_mentions()  # add mentions
-                publication.save(update_fields=['content'], new_comment=True)  # Guardamos la publicacion si no hay errores
-
+                publication.content = Emoji.replace(publication.content)
+                publication.save(update_fields=['content'],
+                                 new_comment=True)  # Guardamos la publicacion si no hay errores
 
                 logger.debug('>>>> PUBLICATION: ')
 
-                # Creamos el timeline y enlazamos publicacion con timeline
-                t, created = Timeline.objects.get_or_create(publication=publication, author=publication.author.profile,
-                                                            profile=publication.board_owner.profile)
                 return self.form_valid(form=form)
             except Exception as e:
                 logger.debug("views.py line 48 -> {}".format(e))
@@ -97,7 +98,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
 
 publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
-
+publication_new_view = transaction.atomic(publication_new_view)
 
 # TODO: Esto no es necesario, creo que con pagination queda solucionado
 """
@@ -124,6 +125,7 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
             return self.queryset
 """
 
+
 class PublicationDetailView(AjaxListView):
     """
     Vista extendida de una publicacion
@@ -141,7 +143,7 @@ class PublicationDetailView(AjaxListView):
         if self.user_pass_test():
             return super(PublicationDetailView, self).dispatch(request, *args, **kwargs)
         else:
-            return redirect('user_profile:profile', username=self.publication.author.username   )
+            return redirect('user_profile:profile', username=self.publication.author.username)
 
     def get_queryset(self):
         return Publication.objects.filter(parent=self.publication.pk, deleted=False).order_by('created')
@@ -188,7 +190,6 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         self.object = None
         super(PublicationPhotoView, self).__init__()
 
-
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         emitter = get_object_or_404(get_user_model(),
@@ -214,7 +215,9 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
         return self.form_invalid(form=form)
 
+
 publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
+
 
 @login_required(login_url='/')
 def delete_publication(request):
@@ -241,12 +244,13 @@ def delete_publication(request):
         if user.id == publication.author.id or user.id == publication.board_owner.id:
             publication.deleted = True
             publication.save(update_fields=['deleted'])
-            Publication.objects.filter(parent=publication).update(deleted=True)
+            # Publication.objects.filter(parent=publication).update(deleted=True)
+            publication.get_descendants().update(deleted=True)
             logger.info('Publication deleted: {}'.format(publication.id))
 
         # Borramos timeline del comentario
         try:
-            Timeline.objects.get(publication__pk=request.POST['publication_id']).delete()
+            EventTimeline.objects.filter(publication=request.POST['publication_id']).delete()
         except ObjectDoesNotExist:
             pass
 
@@ -365,3 +369,44 @@ def add_hate(request):
                 + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
+
+
+def edit_publication(request):
+    """
+    Permite al creador de la publicacion
+    editar el contenido de la publicacion
+    """
+    if request.method == 'POST':
+        user = request.user
+        publication = get_object_or_404(Publication, id=request.POST['id'])
+
+        if publication.author.id != user.id:
+            return JsonResponse({'data': "No tienes permisos para editar este comentario"})
+
+        print(request.POST.get('content', None))
+        publication.content = request.POST.get('content', None)
+
+        publication.add_hashtag()  # add hashtags
+        publication.parse_content()  # parse publication content
+        is_correct_content = False
+        soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
+        for tag in soup.find_all(recursive=True):
+            if tag.text and not tag.text.isspace():
+                is_correct_content = True
+                break
+
+        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+            logger.info('Publicacion contiene espacios o no tiene texto')
+            raise IntegrityError('El comentario esta vacio')
+
+        if publication.content.isspace():  # Comprobamos si el comentario esta vacio
+            raise IntegrityError('El comentario esta vacio')
+
+        publication.save()  # Creamos publicacion
+        publication.parse_mentions()  # add mentions
+        publication.created = datetime.datetime.now()
+        publication.save(update_fields=['content', 'created'],
+                         new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
+
+        return JsonResponse({'data': True})
+    return JsonResponse({'data': "No puedes acceder a esta URL."})

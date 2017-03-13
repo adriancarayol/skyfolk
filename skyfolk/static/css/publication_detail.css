@@ -291,9 +291,8 @@ a.fontawesome-cog:hover {
     box-shadow: 0 0 5px #1e88e5;
 }
 
-.wrapper-reply .enviar {
+.reply-form .enviar {
     margin-right: 2%;
-    margin-top: -7%;
     margin-bottom: 1.25%;
 }
 

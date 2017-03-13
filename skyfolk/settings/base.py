@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
 DEBUG = False
-ALLOWED_HOSTS = ['.skyfolk.net', '127.0.0.1']
+ALLOWED_HOSTS = ['.skyfolk.net']
 # Allowed html content.
 ALLOWED_TAGS = "p div br code pre h1 h2 h3 h4 hr span s sub sup b i img strong strike em underline super table thead tr th td tbody".split()
 ALLOWED_STYLES = 'color font-weight background-color width height'.split()
@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.url',
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
+    'mptt',
 )
 
 FIRST_PARTY_APPS = (
@@ -103,11 +104,11 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_ADAPTER = 'user_profile.adapter.MyAccountAdapter'
 ACCOUNT_FORMS = {'login': 'user_profile.forms.CustomLoginForm'}
 ACCOUNT_SIGNUP_FORM_CLASS = 'user_profile.forms.SignupForm'
-ACCOUNT_USERNAME_VALIDATORS = [MaxLengthValidator(15)]
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/accounts/login'
 EXTERNAL_LOGIN_URL = None

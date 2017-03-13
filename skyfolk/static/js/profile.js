@@ -97,15 +97,22 @@ $(document).ready(function () {
     });
 
     /* Abrir respuesta a comentario */
-    $('#div-separator').on('click', '#options-comments .fa-reply', function () {
+    $(tab_comentarios).on('click', '#options-comments .fa-reply', function () {
         var id_ = $(this).attr("id").slice(6);
-        if (flag_reply) {
-            $("#" + id_).slideUp("fast");
-            flag_reply = false
-        } else {
-            $("#" + id_).slideDown("fast");
-            flag_reply = true
-        }
+        $("#" + id_).slideToggle("fast");
+    });
+
+    /* Editar comentario */
+    $(tab_comentarios).on('click', '#edit-comment-content', function () {
+        var id = $(this).attr('data-id');
+        $("#author-controls-" + id).slideToggle("fast");
+    });
+
+    $(tab_comentarios).on('click', '#submit_edit_publication', function (event) {
+        event.preventDefault();
+        var id = $(this).attr('data-id');
+        var content = $(this).closest('#author-controls-' + id).find('#edit_comment_content').val();
+        AJAX_edit_publication(id, content);
     });
 
     function replyComment(caja_pub) {
@@ -116,15 +123,14 @@ $(document).ready(function () {
 
     /* Expandir comentario */
 
-    $('.fa-expand').on('click', function () {
+    $(tab_comentarios).on('click', '.wrapper .zoom-pub', function () {
         var caja_pub = $(this).closest('.wrapper');
         expandComment(caja_pub);
     });
 
     function expandComment(caja_pub) {
         var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
-        var commentToExpand = document.getElementById('expand-' + id_pub);
-        $(commentToExpand).fadeToggle("fast");
+        window.location.href = '/publication/' + id_pub;
     }
 
     /* Cerrar comentario expandido */
@@ -143,7 +149,6 @@ $(document).ready(function () {
     /* Borrar publicacion */
     $(tab_comentarios).on('click', '#options-comments .fa-trash', function () {
         var caja_publicacion = $(this).closest('.wrapper');
-        //alert($(caja_comentario).html());
         swal({
             title: "Are you sure?",
             text: "You will not be able to recover this publication!",
@@ -358,6 +363,38 @@ function AJAX_likeprofile(status) {
 }
 
 
+/* EDIT PUBLICATION */
+function AJAX_edit_publication(pub, content) {
+    var data = {
+        'id': pub,
+        'content': content
+    };
+    $.ajax({
+        url: '/publication/edit/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+
+        success: function (data) {
+            var response = data.data;
+            console.log(data.data);
+            // borrar caja publicacion
+            if (response == true) {
+                $('#author-controls-' + pub).fadeToggle("fast");
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to delete publish.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
+        }
+    });
+}
+
 /*****************************************************/
 /********** AJAX para botones de comentarios *********/
 /*****************************************************/
@@ -412,7 +449,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         publication_id: id_pub,
         'csrfmiddlewaretoken': csrftoken
     };
-    //event.preventDefault(); //stop submit
+
     $.ajax({
         url: '/publication/add_like/',
         type: 'POST',
@@ -421,20 +458,27 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = heart;
-            var countLikes = numLikes.innerHTML;
+            var numLikes = $(heart).find('#like-value');
+            var countLikes = numLikes.text();
             if (response == true) {
-                $(heart).css('color', '#f06292');
-                if (status == 1) {
-                    countLikes++;
-                } else if (status == 2) {
-                    $(heart).css('color', '#555');
-                    countLikes--;
-                }
-                if (countLikes == 0) {
-                    numLikes.innerHTML = " ";
+                if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                    if (status == 1) {
+                        $(heart).css('color', '#f06292');
+                        countLikes++;
+                    } else if (status == 2) {
+                        $(heart).css('color', '#555');
+                        countLikes--;
+                    }
+                    if (countLikes == 0) {
+                        numLikes.text('');
+                    } else {
+                        numLikes.text(countLikes);
+                    }
                 } else {
-                    numLikes.innerHTML = " " + countLikes;
+                    if (status == 1)
+                        $(heart).css('color', '#f06292');
+                    if (status == 2)
+                        $(heart).css('color', '#555');
                 }
             } else {
                 swal({
@@ -485,17 +529,25 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
             var numLikes = $(heart).find(".hate-value");
             var countLikes = numLikes.text();
             if (response == true) {
-                if (status == statusOk) {
-                    $(heart).css('color', '#ba68c8');
-                    countLikes++;
-                } else if (status == statusNo) {
-                    $(heart).css('color', '#555');
-                    countLikes--;
-                }
-                if (countLikes == 0) {
-                    numLikes.text(" ");
+                if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                    if (status === statusOk) {
+                        $(heart).css('color', '#ba68c8');
+                        countLikes++;
+                    } else if (status === statusNo) {
+                        $(heart).css('color', '#555');
+                        countLikes--;
+                    }
+                    if (countLikes == 0) {
+                        numLikes.text("");
+                    } else {
+                        numLikes.text(countLikes);
+                    }
                 } else {
-                    numLikes.text(countLikes);
+                    if (status === statusOk) {
+                        $(heart).css('color', '#ba68c8');
+                    } else if (status === statusNo) {
+                        $(heart).css('color', '#555');
+                    }
                 }
             } else {
                 swal({

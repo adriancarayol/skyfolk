@@ -8,8 +8,27 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">
 {% endblock %}
-{% block content %}
 
+{% block content %}
+{% block extra_js %}
+    <script type="text/javascript">
+        jQuery(window).load(function() {
+            console.log('DONE');
+            $('#id_username').focus();
+            jQuery.fn.preventDoubleSubmission = function() {
+                 var last_clicked, time_since_clicked;
+                 $(this).bind('submit', function(event) {
+                     if (last_clicked) {
+                         time_since_clicked = event.timeStamp - last_clicked;
+                     }
+                     last_clicked = event.timeStamp;
+                     return !(time_since_clicked < 2000);
+                 });
+             };
+            $('#signup_form').preventDoubleSubmission();
+        });
+    </script>
+{% endblock extra_js %}
     <!--
 <h1>{% trans "Sign Up" %}</h1>
 -->

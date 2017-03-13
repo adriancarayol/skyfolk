@@ -3,13 +3,24 @@
 {% load app_filters %}
 {% load humanize %}
 {% load el_pagination_tags %}
+{% load mptt_tags %}
 
 {% paginate publications %}
-{% for pub in publications %}
-<div class="wrapper" id="pub-{{ pub.pk }}" data-id="{{ user.pk }}">
-	<div class="box">
-		<span id="check-{{ pub.pk }}" class="zoom-pub"><i class="fa fa-expand fa-lg"> </i></span>
-		<!-- Check para ampliar el mensaje... -->
+{% recursetree publications %}
+    <div class="wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}" {% if node.level > 0 and node.level < 3 %}style="min-width: 90% !important;
+                max-width: 90%;"{% endif %}>
+        <div class="box">
+            <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
+                  data-delay="50"
+                  data-tooltip="Ver conversación completa"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
+            {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}
+                <span data-id="{{ node.pk }}" id="edit-comment-content" class="top-options edit-comment tooltipped"
+                      data-position="bottom"
+                      data-delay="50"
+                      data-tooltip="Editar comentario"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+            {% endif %}
+            <!-- Check para ampliar el mensaje... -->
+            {% comment %}
 		<div class="ampliado" id="expand-{{ pub.pk }}">
 			<div class="cerrar_ampliado"><i class="fa fa-close"></i></div>
 			<div class="nombre_image">
@@ -25,9 +36,9 @@
 				{{ pub.content|replace_decorators|safe }}
 			</div>
 			<div class="wrapper-reply">
-				{% comment %}
+
 				{% include "account/new_reply.html" %}
-				{% endcomment %}
+
 				<!-- RESPUESTAS A COMENTARIOS -->
 				{% for reply in pub.replies %}
 				<div class="comment-reply">
@@ -38,105 +49,130 @@
 				</div>
 				{% endfor %}
 			</div>
-		</div>
-		<div class="image">
-			<div class="usr-img img-responsive">{% avatar pub.author %}</div>
-		</div>
-	</div>
-	<div class="articulo">
-		<h2 class="h22"><a href="/profile/{{ pub.author.username }}">{{ pub.author.username }}</a> ha comentado:
-		</h2>
-		<div class="parrafo comment">
-			<a target="_blank">{{ pub.created|naturaltime }}</a><br>
-			<div class="wrp-comment">{{ pub.content|replace_decorators|safe }}</div>
-		</div>
-		<div class="show-more" id="show-comment-{{ pub.pk }}">
-			<a href="#">+ Mostrar más</a>
-		</div>
-		<!-- OPCIONES DE COMENTARIOS -->
-		<div class="options_comentarios" id="options-comments">
-			<ul class="opciones">
-				{% if user.is_authenticated and user.username == pub.author.username %}
-				<!-- Si estamos visitando un perfil que no es el nuestro -->
-				<li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
-				{% elif user.is_authenticated and user.username == user_profile.username %}
-				<!-- Si estamos visitando nuestro propio perfil -->
-				<li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
-				{% endif %}
-				{% with hates=pub.pk|total_hates %}
-				{% if hates > 0 %}
-				<li title="No me gusta" class="fa-stack hate-with-values" id="fa-hate">
+
+        </div>
+        {% endcomment %}
+            <div class="image">
+                <div class="usr-img img-responsive">{% avatar node.author %}</div>
+            </div>
+        </div>
+        <div class="articulo">
+            <h2 class="h22"><a href="/profile/{{ node.author.username }}">{{ node.author.username }}</a> ha comentado:
+            </h2>
+            <div class="parrafo comment">
+                <a target="_blank">{{ node.created|naturaltime }}</a><br>
+                <div class="wrp-comment">{{ node.content|replace_decorators|safe }}</div>
+            </div>
+            <div class="show-more" id="show-comment-{{ node.pk }}">
+                <a href="#">+ Mostrar más</a>
+            </div>
+            <!-- OPCIONES DE COMENTARIOS -->
+            <div class="options_comentarios" id="options-comments">
+                <ul class="opciones">
+                    {% if user.is_authenticated and user.username == node.author.username %}
+                        <!-- Si estamos visitando un perfil que no es el nuestro -->
+                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
+                    {% elif user.is_authenticated and user.username == user_profile.username %}
+                        <!-- Si estamos visitando nuestro propio perfil -->
+                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
+                    {% endif %}
+                    {% with hates=node.pk|total_hates %}
+                        <li title="No me gusta" class="fa-stack" id="fa-hate">
 					<span class="hate-comment">
 						<i class="fa fa-heart fa-stack-1x"></i>
 						<i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-						<i class="fa hate-value">{{ hates|intword }}</i>
+						<i class="fa hate-value">{% if hates > 0 %}{{ hates|intword }}{% endif %}</i>
 					</span>
-				</li>
-				{% else %}
-				<li title="No me gusta" class="fa-stack" id="fa-hate">
-					<span class="hate-comment">
-						<i class="fa fa-heart fa-stack-1x"></i>
-						<i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-						<i class="fa hate-value"></i>
-					</span>
-				</li>
-				{% endif %}
-				{% endwith %}
-				<li title="¡Me gusta!" class="like-comment"><i id="like-heart"
-						    class="fa fa-heart"> {{ pub.pk|total_likes|intword }}</i></li>
-				<li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
-					</i></li>
-					<li title="Responder" class="reply-comment"><i class="fa fa-reply"
-						    id="reply-caja-comentario-{{ pub.pk }}"></i></li>
-					<li title="Añadir a mi timeline" class="add-timeline"><i
-				       class="fa fa-tag"> {{ pub.pk|total_shares|intword }}</i></li>
-			</ul>
-		</div>
-	</div>
-	<div class="wrapper-reply">
-		{% include "account/new_reply.html" %}
-		<!-- RESPUESTAS A COMENTARIOS -->
-		{% for reply in pub.replies %}
-		<div class="comment-reply">
-			<div class="avatar-reply">{% avatar reply.author %}</div>
-			<div class="author-reply">
-				<a href="/profile/{{ reply.author }}">{{ reply.author }}</a>
-				<i class="reply-created">{{ reply.created|naturaltime }}</i>
-			</div>
-			<div class="row">
-				<div class="content-reply">{{ reply|safe|replace_decorators|safe }}</div>
-			</div>
-			<div class="divider"></div>
-			<div class="reply-options">
-				<ul>
-					<li class="add-reply-timeline">
-						<i class="fa fa-tag"></i>
-					</li>
-					<li class="reply-reply">
-						<i class="fa fa-reply"></i>
-					</li>
-					<li class="quote-reply">
-						<i class="fa fa-quote-left"></i>
-					</li>
-					<li class="like-reply">
-						<i class="fa fa-heart"></i>
-					</li>
-					<li title="No me gusta" class="fa-stack" id="fa-hate">
+                        </li>
+                    {% endwith %}
+                    <li id="like-heart" title="¡Me gusta!" class="like-comment">
+                        <i class="fa fa-heart"></i>
+                        <i id="like-value" class="fa">{{ node.pk|total_likes|intword }}</i>
+                    </li>
+                    <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
+                    </i></li>
+                    <li title="Responder" class="reply-comment"><i class="fa fa-reply"
+                                                                   id="reply-caja-comentario-{{ node.pk }}"></i></li>
+                    <li title="Añadir a mi timeline" class="add-timeline"><i
+                            class="fa fa-tag"> {{ node.pk|total_shares|intword }}</i></li>
+                </ul>
+            </div>
+        </div>
+        {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}
+            <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}" class="author-controls">
+                <div class="row">
+                    <div class="col s12">
+                        <form method="post" accept-charset="utf-8">{% csrf_token %}
+                            <div class="row">
+                                {{ publication_edit.content.errors }}
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">create</i>
+                                    {{ publication_edit.content }}
+                                    <label for="id_caption">Contenido</label>
+                                </div>
+                                <div class="row">
+                                    <button data-id="{{ node.pk }}"
+                                            class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
+                                            type="submit" id="submit_edit_publication">Editar
+                                        <i class="material-icons right">mode_edit</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="wrapper-reply">
+            {% include "account/new_reply.html" %}
+            {% comment %}
+            {% for reply in node.reply.all %}
+                <div class="comment-reply">
+                    <div class="avatar-reply">{% avatar reply.author %}</div>
+                    <div class="author-reply">
+                        <a href="/profile/{{ reply.author }}">{{ reply.author }}</a>
+                        <i class="reply-created">{{ reply.created|naturaltime }}</i>
+                    </div>
+                    <div class="row">
+                        <div class="content-reply">{{ reply|safe|replace_decorators|safe }}</div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="reply-options">
+                        <ul>
+                            <li class="add-reply-timeline">
+                                <i class="fa fa-tag"></i>
+                            </li>
+                            <li class="reply-reply">
+                                <i class="fa fa-reply"></i>
+                            </li>
+                            <li class="quote-reply">
+                                <i class="fa fa-quote-left"></i>
+                            </li>
+                            <li class="like-reply">
+                                <i class="fa fa-heart"></i>
+                            </li>
+                            <li title="No me gusta" class="fa-stack" id="fa-hate">
 						<span class="hate-comment">
 							<i class="fa fa-heart fa-stack-1x"></i>
 							<i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
 							<i class="fa hate-value"></i>
 						</span>
-					</li>
-					<li class="del-reply">
-						<i class="fa fa-trash"></i>
-					</li>
+                            </li>
+                            <li class="del-reply">
+                                <i class="fa fa-trash"></i>
+                            </li>
 
-				</ul>
-			</div>
-		</div>
-		{% endfor %}
-	</div>
-</div>
-{% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+            {% endcomment %}
+        </div>
+        {% if not node.is_leaf_node %}
+            <ul class="children">
+                {{ children }}
+            </ul>
+        {% endif %}
+    </div>
+{% endrecursetree %}
 {% show_more %}

@@ -5,7 +5,7 @@ import bleach
 from channels import Group
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
 from taggit.managers import TaggableManager
 from photologue.models import Photo
@@ -16,7 +16,7 @@ from user_profile.tasks import send_to_stream
 from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
 from django.conf import settings
-from emoji import Emoji
+from mptt.models import MPTTModel, TreeForeignKey
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -40,17 +40,16 @@ class PublicationManager(models.Manager):
         # filtros: from_publication__profile=self -> retorna los comentarios
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
-        pubs = self.filter(author=author_pk, parent=None, deleted=False).order_by(
-            'created').reverse()
+        pubs = self.filter(author=author_pk, parent=None, deleted=False)
 
         print('>>>>pubs: {}'.format(pubs))
 
         # Agregar replicas de los comentarios
-        for pub in pubs:
-            print('pub: {}'.format(pub.id))
-            reply = self.filter(parent=pub.id).order_by('created')
-            print('REPLIES: {}'.format(reply))
-            pub.replies = reply
+        # for pub in pubs:
+        #     print('pub: {}'.format(pub.id))
+        #     reply = self.filter(parent=pub.id).order_by('created')
+        #     print('REPLIES: {}'.format(reply))
+        #     pub.replies = reply
 
         return pubs
 
@@ -60,17 +59,17 @@ class PublicationManager(models.Manager):
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(Q(author=user_pk) & Q(board_owner=user_pk),
-                           author=user_pk, parent=None, deleted=False).order_by('created') \
-            .reverse()
+                           author=user_pk, deleted=False)
 
+        print('LONGITUD PUBS: {}'.format(len(pubs)))
         print('>>>>pubs: {}'.format(pubs))
 
         # Agregar replicas de los comentarios
-        for pub in pubs:
-            print('pub: {}'.format(pub.id))
-            reply = self.filter(parent=pub.id, deleted=False).order_by('created')
-            print('REPLIES: {}'.format(reply))
-            pub.replies = reply
+        # for pub in pubs:
+        #     print('pub: {}'.format(pub.id))
+        #     reply = self.filter(parent=pub.id, deleted=False).order_by('created')
+        #     print('REPLIES: {}'.format(reply))
+        #     pub.replies = reply
 
         return pubs
 
@@ -80,17 +79,16 @@ class PublicationManager(models.Manager):
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
         pubs = self.filter(Q(author=user_pk) | Q(board_owner=board_owner_pk),
-                           board_owner=board_owner_pk, parent=None, deleted=False).order_by(
-            'created').reverse()
+                           board_owner=board_owner_pk, deleted=False)
 
         print('>>>>pubs: {}'.format(pubs))
 
         # Agregar replicas de los comentarios
-        for pub in pubs:
-            print('pub: {}'.format(pub.id))
-            reply = self.filter(parent=pub.id).order_by('created')
-            print('REPLIES: {}'.format(reply))
-            pub.replies = reply
+        # for pub in pubs:
+        #     print('pub: {}'.format(pub.id))
+        #     reply = self.filter(parent=pub.id).order_by('created')
+        #     print('REPLIES: {}'.format(reply))
+        #     pub.replies = reply
 
         return pubs
 
@@ -118,7 +116,7 @@ class PublicationManager(models.Manager):
         return u", ".join(o.name for o in obj.tags.all())
 
 
-class PublicationBase(models.Model):
+class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)
     image = models.ImageField(upload_to='publicationimages',
                               verbose_name='Image', blank=True, null=True)
@@ -126,9 +124,11 @@ class PublicationBase(models.Model):
     tags = TaggableManager(blank=True)
     deleted = models.BooleanField(default=False, blank=True)
 
+    class MPTTMeta:
+        order_insertion_by = ['-created']
+
     class Meta:
         abstract = True
-        ordering = ('-created',)
 
 
 class Publication(PublicationBase):
@@ -143,8 +143,8 @@ class Publication(PublicationBase):
                                                related_name='hates_me')
     user_share_me = models.ManyToManyField(User, blank=True,
                                            related_name='share_me')
-    parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply')
+    parent = TreeForeignKey('self', blank=True, null=True,
+                            related_name='reply', db_index=True)
 
     objects = PublicationManager()
 
@@ -164,7 +164,6 @@ class Publication(PublicationBase):
             self.tags.add(tag)
             self.content = self.content.replace(tag,
                                                 '<a href="/search/">{0}</a>'.format(tag))
-
 
     def parse_mentions(self):
         """
@@ -187,7 +186,7 @@ class Publication(PublicationBase):
                 notify.send(self.author, actor=self.author.username,
                             recipient=recipientprofile,
                             verb=u'¡te ha mencionado en su tablón!',
-                            description='<a href="%s">Ver</a>' % ('/publication/'+str(self.id)))
+                            description='<a href="%s">Ver</a>' % ('/publication/' + str(self.id)))
 
             self.content = self.content.replace(mencion,
                                                 '<a href="/profile/%s">%s</a>' %
@@ -198,12 +197,11 @@ class Publication(PublicationBase):
         Parseamos el contenido en busca de
         tags html no permitidos y los eliminamos
         """
-        self.content = Emoji.replace(self.content)
         self.content = self.content.replace('\n', '').replace('\r', '')
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
 
-    def send_notification(self, type="pub"):
+    def send_notification(self, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
@@ -224,18 +222,21 @@ class Publication(PublicationBase):
             "type": type,
             "parent": id_parent,
         }
+        if is_edited:
+            notification['is_edited'] = True
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
             "text": json.dumps(notification)
         })
 
-    def save(self, new_comment=False, *args, **kwargs):
+    @transaction.atomic
+    def save(self, new_comment=False, is_edited=False, *args, **kwargs):
         super(Publication, self).save(*args, **kwargs)
 
         if new_comment and not self.deleted and not self.parent:
-            self.send_notification()
+            self.send_notification(is_edited=is_edited)
         elif new_comment and not self.deleted:
-            self.send_notification(type="reply")
+            self.send_notification(type="reply", is_edited=is_edited)
 
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:
@@ -330,8 +331,6 @@ class PublicationPhoto(PublicationBase):
             super(PublicationPhoto, self).save(*args, **kwargs)
 
 
-
-
 class PublicationDeleted(models.Model):
     """
     Contiene las publicaciones eliminadas por los usuarios
@@ -340,4 +339,3 @@ class PublicationDeleted(models.Model):
     content = models.TextField(blank=False, null=True, max_length=500)
     image = models.ImageField(verbose_name='publication_deleted_image', blank=True, null=True)
     created = models.DateTimeField(null=True)
-

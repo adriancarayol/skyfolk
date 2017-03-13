@@ -5,8 +5,8 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-
 from user_profile.models import UserProfile
+from allauth.account.adapter import get_adapter
 
 
 class MyAccountAdapter(DefaultAccountAdapter):
@@ -21,6 +21,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
                 raise ValidationError(_('El nombre de usuario no puede exceder los 15 caracteres'))
             else:
                 raise ValidationError(_('El nombre de usuario solo puede tener letras, numeros y _'))
+        username = super(MyAccountAdapter, self).clean_username(username=username)
         return username
 
     def get_login_redirect_url(self, request):

@@ -24,7 +24,7 @@ def send_to_stream(user_id, pub_id):
         publication = publications.models.Publication.objects.get(id=pub_id)
     except ObjectDoesNotExist:
         pass
-    if profile:
+    if profile and publication:
         logger.info("Sent to followers stream")
         data = {
             'id': publication.id,

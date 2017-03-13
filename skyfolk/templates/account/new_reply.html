@@ -1,7 +1,7 @@
 {% comment %}
 Nueva respuesta a una publicacion
 {% endcomment %}
-<div class="hidden" id="caja-comentario-{{ pub.pk }}">
+<div class="hidden" id="caja-comentario-{{ node.pk }}">
     <!-- REPLY FORM -->
     <form class="reply-form" action="" method="post">{% csrf_token %}
         {{ reply_publication_form.csrftoken }}
@@ -18,7 +18,7 @@ Nueva respuesta a una publicacion
                 </div>
             </div>
         </div>
-        <button type="submit" id="reply-{{ pub.pk }}" class="waves-effect waves-light btn right blue enviar">Enviar<i
+        <button type="submit" id="reply-{{ node.pk }}" class="waves-effect waves-light btn right blue enviar">Enviar<i
                 class="material-icons right">send</i></button>
     </form>
 </div>
