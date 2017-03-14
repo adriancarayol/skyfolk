@@ -17,6 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
 from django.conf import settings
 from mptt.models import MPTTModel, TreeForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -58,8 +59,9 @@ class PublicationManager(models.Manager):
         # filtros: from_publication__profile=self -> retorna los comentarios
         # hechos al propietario por amigos o el mismo propietario.
         # from_publication__replies=None -> retorna solo los comentarios padre.
-        pubs = self.filter(Q(author=user_pk) & Q(board_owner=user_pk),
-                           author=user_pk, deleted=False)
+        # pubs = self.filter(Q(author=user_pk) & Q(board_owner=user_pk),
+        #                   author=user_pk, deleted=False)
+        pubs = self.filter(board_owner=board_owner_pk)
 
         print('LONGITUD PUBS: {}'.format(len(pubs)))
         print('>>>>pubs: {}'.format(pubs))
@@ -124,11 +126,16 @@ class PublicationBase(MPTTModel):
     tags = TaggableManager(blank=True)
     deleted = models.BooleanField(default=False, blank=True)
 
-    class MPTTMeta:
-        order_insertion_by = ['-created']
-
     class Meta:
         abstract = True
+
+    def get_content_type(self):
+        """:return: Content type for this instance."""
+        return ContentType.objects.get_for_model(self)
+
+    def get_content_type_id(self):
+        """:return: Content type ID for this instance"""
+        return self.get_content_type().pk
 
 
 class Publication(PublicationBase):
@@ -146,7 +153,10 @@ class Publication(PublicationBase):
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
 
-    objects = PublicationManager()
+    # objects = PublicationManager()
+
+    class MPTTMeta:
+        order_insertion_by = ['-created']
 
     def __str__(self):
         return self.content
@@ -206,9 +216,10 @@ class Publication(PublicationBase):
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
-        if type == "pub":
-            id_parent = ''
-        else:
+
+        id_parent = None
+
+        if self.parent:
             id_parent = self.parent.id
 
         notification = {
@@ -221,7 +232,9 @@ class Publication(PublicationBase):
             "created": naturaltime(self.created),
             "type": type,
             "parent": id_parent,
+            "level": self.get_level()
         }
+
         if is_edited:
             notification['is_edited'] = True
         # Enviamos a todos los usuarios que visitan el perfil
@@ -229,14 +242,15 @@ class Publication(PublicationBase):
             "text": json.dumps(notification)
         })
 
-    @transaction.atomic
     def save(self, new_comment=False, is_edited=False, *args, **kwargs):
         super(Publication, self).save(*args, **kwargs)
 
-        if new_comment and not self.deleted and not self.parent:
-            self.send_notification(is_edited=is_edited)
-        elif new_comment and not self.deleted:
-            self.send_notification(type="reply", is_edited=is_edited)
+        if new_comment:
+            if not self.deleted:
+                self.send_notification(is_edited=is_edited)  # Enviar publicacion por socket
+
+        # elif new_comment and not self.deleted:
+        #    self.send_notification(type="reply", is_edited=is_edited)
 
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:

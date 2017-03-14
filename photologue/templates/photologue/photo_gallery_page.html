@@ -16,9 +16,10 @@
                     </div>
                 {% endif %}
 
-            <img src=" {% if photo.thumbnail %}{{ photo.thumbnail.url }}{% else %}{{ photo.image.url }}{% endif %}" alt="{{ photo.title }}" title="{{ photo.title }}"
+                <img src="
+                        {% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}"
+                     alt="{{ photo.title }}" title="{{ photo.title }}"
                      onclick="location.href='{{ photo.get_absolute_url }}'">
-
 
 
             </div>

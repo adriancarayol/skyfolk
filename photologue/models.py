@@ -34,6 +34,7 @@ from taggit.managers import TaggableManager
 from .validators import validate_extension
 from .validators import validate_file_extension
 from .tasks import generate_thumbnails
+
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
 try:
@@ -167,6 +168,7 @@ IMAGE_FILTERS_HELP_TEXT = _('Chain multiple filters using the following pattern 
 
 size_method_map = {}
 
+
 class TagField(models.CharField):
     """Tags have been removed from Photologue, but the migrations still refer to them so this
     Tagfield definition is left here.
@@ -267,7 +269,7 @@ class Gallery(models.Model):
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
-                              upload_to=get_storage_path, validators=[validate_file_extension])
+                              upload_to=get_storage_path, validators=[validate_file_extension], null=True)
 
     date_taken = models.DateTimeField(_('date taken'),
                                       null=True,
@@ -527,7 +529,8 @@ class ImageModel(models.Model):
         # The data loss scenarios mentioned in the docs hopefully do not apply
         # to Photologue!
         super(ImageModel, self).delete()
-        self.image.storage.delete(self.image.name)
+        if self.image:
+            self.image.storage.delete(self.image.name)
 
 
 @python_2_unicode_compatible
@@ -556,8 +559,8 @@ class Photo(ImageModel):
     url_image = models.URLField(max_length=255, blank=True, null=True)
 
     thumbnail = models.ImageField(_('thumbnail'),
-                                      upload_to=get_storage_path,
-                                      null=True, blank=True)
+                                  upload_to=get_storage_path,
+                                  null=True, blank=True)
 
     objects = PhotoQuerySet.as_manager()
 
@@ -602,21 +605,21 @@ class Photo(ImageModel):
             response = requests.head(self.url_image)
             print('Response aqui: {}'.format(response.headers))
 
-            if int(response.headers.get('content-length', None)) > 1000000:
-                raise ValueError('Image so big')
+            if int(response.headers.get('content-length', None)) < 1000000:
+                # raise ValueError('Image so big')
 
-            request = requests.get(self.url_image, stream=True)
+                request = requests.get(self.url_image, stream=True)
 
-            if request.status_code != requests.codes.ok:
-                raise ValueError('Cant get image')
+                if request.status_code != requests.codes.ok:
+                    raise ValueError('Cant get image')
 
-            tmp = tempfile.NamedTemporaryFile()
+                tmp = tempfile.NamedTemporaryFile()
 
-            for block in request.iter_content(1024 * 8):
-                if not block:
-                    break
-                tmp.write(block)
-            self.image.save(self.slug, File(tmp))
+                for block in request.iter_content(1024 * 8):
+                    if not block:
+                        break
+                    tmp.write(block)
+                self.image.save(self.slug, File(tmp))
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])

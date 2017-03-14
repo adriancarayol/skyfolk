@@ -19,9 +19,15 @@
             <div class="col l12 m12 s12 container-photo">
                 <div class="photo">
                     <div class="col l8 m12 s12 photo-body" data-id="{{ object.pk }}">
-                        <a href="{{ object.image.url }}">
-                            <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
-                        </a>
+                        {% if object.image %}
+                            <a href="{{ object.image.url }}">
+                                <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
+                            </a>
+                        {% else %}
+                            <a href="{{ object.url_image }}">
+                                <img src="{{ object.url_image }}" class="thumbnail" alt="{{ object.title }}">
+                            </a>
+                        {% endif %}
                         <div class="col s12 photo-details">
                             <div class="legend-user-image">
                                 {% avatar object.owner.username %}
