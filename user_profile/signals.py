@@ -36,6 +36,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                          event_type=2)
         if not created:
             e.created = datetime.now()
+            e.save(update_fields=["created"])
     if instance.status == 1:
         e2, created2 = EventTimeline.objects.get_or_create(author=instance.from_person.user,
                                                            profile=instance.from_person.user,
@@ -45,8 +46,9 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                                instance.to_person.user.username,
                                                                instance.to_person.user.username),
                                                            event_type=2)
-        if not created:
+        if not created2:
             e2.created = datetime.now()
+            e2.save(update_fields=["created"])
 
     logger.info(
         "POST_SAVE : New relationship, user1: {} - user2: {}".format(instance.from_person.user.username,

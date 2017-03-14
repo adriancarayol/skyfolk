@@ -568,31 +568,6 @@ class UserProfile(models.Model):
         created_follower.save()
         created_follow.save()
 
-        # Creamos historia en el perfil del usuario que seguimos
-        t, created = timeline.models.Timeline.objects.get_or_create(author=self, profile=profile,
-                                                                    verb='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                                        profile.user.username,
-                                                                        profile.user.username,
-                                                                        self.user.username,
-                                                                        self.user.username),
-                                                                    type='new_relation')
-        # Creamos historia en nuestro perfil
-        t2, created2 = timeline.models.Timeline.objects.get_or_create(author=profile, profile=self,
-                                                                      verb='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                                          self.user.username,
-                                                                          self.user.username,
-                                                                          profile.user.username,
-                                                                          profile.user.username),
-                                                                      type='new_relation')
-        # Actualizamos fecha en el timeline
-        if not created:
-            t.insertion_date = datetime.now()
-            t.save()
-        # Actualizamos fecha en el timeline
-        if not created2:
-            t2.insertion_date = datetime.now()
-            t2.save()
-
         return True
 
     # Funcion despreciable

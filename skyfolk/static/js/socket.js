@@ -70,8 +70,8 @@ var UTILS = UTILS || (function () {
 
                         /* Comprobamos si el elemento existe, si es asi lo modifcamos */
                         if (existing.length) {
-                            existing.find('.comment a').text(data.created);
-                            existing.find('.wrp-comment').text(data.content);
+                            existing.find('.comment a').first().text(data.created);
+                            existing.find('.wrp-comment').first().text(data.content);
                         } else {
                             var parent = $('#pub-' + data.parent);
                             if (parent.length) {
