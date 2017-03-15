@@ -22,7 +22,8 @@ from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from django.db import transaction
 from emoji import Emoji
-from django.core import serializers
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from .utils import get_author_avatar
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -426,9 +427,20 @@ def load_more_comments(request):
 
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
-        data = {
-            'response': True,
-            'pubs':  serializers.serialize('json', publication.get_descendants(), fields=('id', 'content'))
-        }
+
+        list = []
+        if not publication.parent:
+            for row in publication.get_descendants().filter(level__lte=1):
+                list.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                             'author_username': row.author.username, 'user_id': user.id,
+                             'author_avatar': get_author_avatar(row.author)})
+            data['pubs'] = json.dumps(list)
+        else:
+            for row in publication.get_descendants():
+                list.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                             'author_username': row.author.username, 'user_id': user.id,
+                             'author_avatar': get_author_avatar(row.author)})
+            data['pubs'] = json.dumps(list)
+        data['response'] = True
         return JsonResponse(data)
     return JsonResponse(data)

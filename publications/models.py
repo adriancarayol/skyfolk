@@ -137,6 +137,13 @@ class PublicationBase(MPTTModel):
         """:return: Content type ID for this instance"""
         return self.get_content_type().pk
 
+    def get_children_count(self):
+        """
+        Util para contar cuantos nodos hijos inmediatos tiene la raiz (el comentario raiz)
+        :return: El numero de nodos hijo
+        """
+        return self.get_descendants().filter(level__lte=1).count()
+
 
 class Publication(PublicationBase):
     """

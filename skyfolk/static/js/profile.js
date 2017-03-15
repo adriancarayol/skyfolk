@@ -234,29 +234,29 @@ $(document).ready(function () {
     /* FUNCIONES AJAX PARA TABS DE PERFIL */
 
     /*$(tab_amigos).bind('scroll', function () {
-        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-            countFriendList++;
-            $.ajax({
-                type: "POST",
-                url: "/load_friends/",
-                data: {
-                    'slug': countFriendList,
-                    'csrfmiddlewaretoken': csrftoken
-                },
-                dataType: "json",
-                success: function (response) {
+     if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+     countFriendList++;
+     $.ajax({
+     type: "POST",
+     url: "/load_friends/",
+     data: {
+     'slug': countFriendList,
+     'csrfmiddlewaretoken': csrftoken
+     },
+     dataType: "json",
+     success: function (response) {
 
-                    //load friends
-                    for (var i = 0; i < response.length; i++) {
-                        addFriendToHtmlList(response[i]);
-                    }
-                },
-                error: function (rs, e) {
+     //load friends
+     for (var i = 0; i < response.length; i++) {
+     addFriendToHtmlList(response[i]);
+     }
+     },
+     error: function (rs, e) {
 
-                }
-            });
-        }
-    });*/
+     }
+     });
+     }
+     });*/
 
 
     /**/
@@ -370,6 +370,60 @@ function AJAX_likeprofile(status) {
 
 }
 
+function add_loaded_publication(pub, data) {
+    var publications = JSON.parse(data);
+    var existing = $('#pub-' + pub);
+    if (existing.length) {
+        var children_list = $(existing).find('.children').first();
+        if (!children_list.length) {
+            children_list = $(existing).find('.wrapper-reply').after('<ul class="children"></ul>');
+        }
+        var content = "";
+        for (var i = 0; i < publications.length; i++) {
+            content = ' <div class="wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 90% !important; max-width: 90%;">';
+            content += "            <div class=\"box\">";
+            content += '            <span id="check-' + 0 + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
+            content += '            <span data-id="' + 0 + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
+            content += "      <div class=\"image\">";
+            content += '        <div class="usr-img img-responsive"><img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"></div>';
+            content += "      </div>";
+            content += "</div>";
+            content += "";
+            content += "                <div class=\"articulo\">";
+            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >' + publications[i].author_username + '</a> ha comentado:  </h2>';
+            content += "                  <div class=\"parrafo comment\">";
+            content += '                    <a target="_blank">' + publications[i].created + '<\/a><br>';
+            content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
+            content += "                  </div>";
+            content += '                    <div class="show-more" id="show-comment-' + publications[i].id + '">';
+            content += "                        <a href=\"#\">+ Mostrar más<\/a>";
+            content += "                    </div>";
+            content += "              <!-- OPCIONES DE COMENTARIOS -->";
+            content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
+            content += "                    <ul class=\"opciones\">";
+            content += "        ";
+            content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
+            content += "                            <li title=\"No me gusta\" class=\"fa-stack\" id=\"fa-hate\">";
+            content += "                                <span class=\"hate-comment\">";
+            content += "                                    <i class=\"fa fa-heart fa-stack-1x\"><\/i>";
+            content += "                                    <i class=\"fa fa-bolt fa-stack-1x fa-inverse\"><\/i>";
+            content += "                                    <i class=\"fa hate-value\"><\/i>";
+            content += "                                </span>";
+            content += "                            </li>";
+            content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-heart"></i><i id="like-value" class="fa"></i></li>';
+            content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
+            content += "                       <\/i><\/li>";
+            content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
+            content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+            content += "                    </ul>";
+            content += "                </div>";
+            content += "                </div>";
+            content += "    </div>";
+            $(children_list).prepend(content);
+        }
+    }
+}
+
 /* LOAD MORE COMMENTS */
 function AJAX_load_publications(pub, loader) {
     var data = {
@@ -385,7 +439,7 @@ function AJAX_load_publications(pub, loader) {
         success: function (data) {
             var response = data.response;
             if (response == true) {
-                console.log(data.pubs);
+                add_loaded_publication(pub, data.pubs);
             } else {
                 swal({
                     title: "Fail",
@@ -718,6 +772,7 @@ function AJAX_remove_bloq() {
         }
     });
 }
+
 /*****************************************************/
 /********** AJAX para borrado de timeline ***********/
 /****************************************************/
