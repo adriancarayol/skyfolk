@@ -22,6 +22,7 @@ from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from django.db import transaction
 from emoji import Emoji
+from django.core import serializers
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -410,3 +411,24 @@ def edit_publication(request):
 
         return JsonResponse({'data': True})
     return JsonResponse({'data': "No puedes acceder a esta URL."})
+
+
+@login_required(login_url='/')
+def load_more_comments(request):
+    data = {
+        'response': False
+    }
+    if request.method == 'POST':
+        user = request.user
+        pub_id = request.POST.get('id', None)
+        publication = Publication.objects.get(id=pub_id)
+        privacity = publication.author.profile.is_visible(user.profile)
+
+        if privacity and privacity != 'all':
+            raise IntegrityError("No have permissions")
+        data = {
+            'response': True,
+            'pubs':  serializers.serialize('json', publication.get_descendants(), fields=('id', 'content'))
+        }
+        return JsonResponse(data)
+    return JsonResponse(data)

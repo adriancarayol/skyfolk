@@ -173,7 +173,6 @@ def profile_view(request, username,
         #   user_pk=user.pk,
         #  board_owner_pk=user_profile.pk)
 
-        # publications = Publication.objects.filter(board_owner=user_profile, deleted=False, level__lte=0).get_descendants(include_self=False)
         print('>>>>>>> LISTA PUBLICACIONES: ')
         # print publications
         print(publications)

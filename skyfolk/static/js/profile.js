@@ -233,7 +233,7 @@ $(document).ready(function () {
 
     /* FUNCIONES AJAX PARA TABS DE PERFIL */
 
-    $(tab_amigos).bind('scroll', function () {
+    /*$(tab_amigos).bind('scroll', function () {
         if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
             countFriendList++;
             $.ajax({
@@ -256,7 +256,7 @@ $(document).ready(function () {
                 }
             });
         }
-    });
+    });*/
 
 
     /**/
@@ -313,6 +313,14 @@ $(document).ready(function () {
         }
     });
 
+    /* LOAD MORE ON CLICK */
+    $(tab_comentarios).on('click', '#load_more_publications', function () {
+        var loader = $(this).next().find('#load_publications_image');
+        $(loader).fadeIn();
+        AJAX_load_publications($(this).data("id"), loader);
+        return false;
+    });
+
 }); // END DOCUMENT READY */
 
 
@@ -362,12 +370,45 @@ function AJAX_likeprofile(status) {
 
 }
 
+/* LOAD MORE COMMENTS */
+function AJAX_load_publications(pub, loader) {
+    var data = {
+        'id': pub,
+        'csrfmiddlewaretoken': csrftoken
+    };
+    $.ajax({
+        url: '/publication/load/more/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+
+        success: function (data) {
+            var response = data.response;
+            if (response == true) {
+                console.log(data.pubs);
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to load more publications.",
+                    type: "error"
+                });
+            }
+        },
+        complete: function () {
+            $(loader).fadeOut();
+        },
+        error: function (rs, e) {
+        }
+    });
+}
 
 /* EDIT PUBLICATION */
 function AJAX_edit_publication(pub, content) {
     var data = {
         'id': pub,
-        'content': content
+        'content': content,
+        'csrfmiddlewaretoken': csrftoken
     };
     $.ajax({
         url: '/publication/edit/',
