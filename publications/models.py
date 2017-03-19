@@ -27,6 +27,9 @@ ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
 
 
 class PublicationManager(models.Manager):
+    """
+    Despreciado
+    """
     list_display = ['tag_list']
 
     # Functions of publications

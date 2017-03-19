@@ -18,10 +18,7 @@ a, a:visited {
 }
 
 .wrapper {
-    margin: 30px auto;
-    min-width: 100%;
     min-height: 155px;
-    width: 100%;
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -55,13 +52,8 @@ a, a:visited {
 }
 
 .articulo {
-    float: left;
-    left: 37px;
     position: relative;
-    width: 80%;
-    border-bottom: 1px solid #eee;
-    margin-top: 20px;
-    margin-bottom: 12px;
+    margin-top: 10px;
 }
 
 .articulo .emoji, .comment-reply .emoji {
@@ -92,17 +84,10 @@ a, a:visited {
 }
 
 .image {
-    float: left;
     position: relative;
-    top: 9px;
-    left: 9px;
     cursor: pointer;
     box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
-    padding: 0 0;
-    width: 10%;
-    height: 10%;
     border-radius: 3px;
-    overflow: hidden;
 }
 
 .usr-img {
@@ -616,11 +601,9 @@ a.fontawesome-cog:hover {
 }
 
 /* OPCIONES COMENTARIOS */
-.options_comentarios {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: auto;
+.options_comentarios ul {
+    padding-top: 1%;
+    margin-right: 4%;
 }
 
 .options_comentarios ul li {
@@ -632,11 +615,15 @@ a.fontawesome-cog:hover {
 }
 
 .options_comentarios ul .like-comment, .quote-comment, .reply-comment, .add-timeline {
-    margin-left: 2.5%;
+    margin-left: 3%;
 }
 
 .options_comentarios ul .fa-stack, .trash-comment {
-    margin-left: 1.25%;
+    margin-left: 2.5%;
+}
+
+.hate-with-values {
+    margin-right: 2.5% !important;
 }
 
 .options_comentarios ul li:hover {
