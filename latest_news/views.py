@@ -5,11 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView
-
+from django.db.models import Q
 from publications.forms import PublicationForm
 from publications.models import Publication
 from user_profile.forms import SearchForm
-from user_profile.models import AffinityUser, LikeProfile
+from user_profile.models import AffinityUser, LikeProfile, Relationship
 
 
 class News(TemplateView):
@@ -73,7 +73,10 @@ class News(TemplateView):
         # print('LISTA MEZCLADA: {}'.format(self.__mix_queryset(affinity=affinity_users, favs=fav_users)))
 
         try:
-            publications = Publication.objects.get_friend_publications(user_profile.profile)
+            publications = Publication.objects.filter(
+                author__profile__to_people__in=Relationship.objects.filter(
+                    Q(from_person=user_profile.profile) & Q(status=1)),
+                board_owner=user_profile, deleted=False, parent=None)
         except ObjectDoesNotExist:
             publications = None
 

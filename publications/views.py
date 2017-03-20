@@ -22,6 +22,8 @@ from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from django.db import transaction
 from emoji import Emoji
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from .utils import get_author_avatar
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -410,3 +412,35 @@ def edit_publication(request):
 
         return JsonResponse({'data': True})
     return JsonResponse({'data': "No puedes acceder a esta URL."})
+
+
+@login_required(login_url='/')
+def load_more_comments(request):
+    data = {
+        'response': False
+    }
+    if request.method == 'POST':
+        user = request.user
+        pub_id = request.POST.get('id', None)
+        publication = Publication.objects.get(id=pub_id)
+        privacity = publication.author.profile.is_visible(user.profile)
+
+        if privacity and privacity != 'all':
+            raise IntegrityError("No have permissions")
+
+        list = []
+        if not publication.parent:
+            for row in publication.get_descendants().filter(level__lte=1):
+                list.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                             'author_username': row.author.username, 'user_id': user.id,
+                             'author_avatar': get_author_avatar(row.author)})
+            data['pubs'] = json.dumps(list)
+        else:
+            for row in publication.get_descendants():
+                list.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                             'author_username': row.author.username, 'user_id': user.id,
+                             'author_avatar': get_author_avatar(row.author)})
+            data['pubs'] = json.dumps(list)
+        data['response'] = True
+        return JsonResponse(data)
+    return JsonResponse(data)

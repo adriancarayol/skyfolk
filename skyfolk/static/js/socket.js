@@ -21,28 +21,37 @@ var UTILS = UTILS || (function () {
                     if (data.type === "pub") {
                         if (!data.is_edited) {
                             var content = "";
+                            content += '<div class="row">';
+                            content += '<div class="col s12">';
                             if (data.level > 0 && data.level < 3) {
-                                content += ' <div class="wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 90% !important; max-width: 90%;">';
+                                content += ' <div class="wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 98% !important;">';
                             } else
                                 content += ' <div class=\"wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
                             content += "            <div class=\"box\">";
                             content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
                             content += '            <span data-id="' + data.id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
-                            content += "      <div class=\"image\">";
+                            content += '<div class="row">';
+                            content += "                <div class=\"articulo col s12\">";
+                            content += '<div class="row">';
+                            content += "      <div class=\"image col l1 m2 s2\">";
                             content += '        <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
                             content += "      </div>";
-                            content += "</div>";
-                            content += "";
-                            content += "                <div class=\"articulo\">";
-                            content += '                  <h2 class="h22"><a href="/profile/' + data.author_username + '" >' + data.author_username + '</a> ha comentado:  </h2>';
-                            content += "                  <div class=\"parrafo comment\">";
+                            content += '<div class=col l8 m12 s8">';
+                            content += '                  <h2 class="h22"><a href="/profile/' + data.author_username + '" >@' + data.author_username + '</a></h2>';
                             content += '                    <a target="_blank">' + data.created + '<\/a><br>';
+                            content += '<div class="row">';
+                            content += "                  <div class=\"parrafo comment\">";
                             content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
                             content += "                  </div>";
                             content += '                    <div class="show-more" id="show-comment-' + data.id + '">';
                             content += "                        <a href=\"#\">+ Mostrar más<\/a>";
                             content += "                    </div>";
-                            content += "              <!-- OPCIONES DE COMENTARIOS -->";
+                            content += "                    </div>";
+                            content += "                    </div>";
+                            content += "                    </div>";
+                            content += "                    </div>";
+                            content += '<div class="row">';
+                            content += '<div class="divider"></div>';
                             content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
                             content += "                    <ul class=\"opciones\">";
                             content += "        ";
@@ -63,6 +72,9 @@ var UTILS = UTILS || (function () {
                             content += "                </div>";
                             content += "                </div>";
                             content += "    </div>";
+                            content += "    </div>";
+                            content += "    </div>";
+                            content += "    </div>";
                         }
                         // See if there's a div to replace it in, or if we should add a new one
                         var existing = $('#pub-' + data.id);
@@ -70,8 +82,8 @@ var UTILS = UTILS || (function () {
 
                         /* Comprobamos si el elemento existe, si es asi lo modifcamos */
                         if (existing.length) {
-                            existing.find('.comment a').text(data.created);
-                            existing.find('.wrp-comment').text(data.content);
+                            existing.find('.comment a').first().text(data.created);
+                            existing.find('.wrp-comment').first().text(data.content);
                         } else {
                             var parent = $('#pub-' + data.parent);
                             if (parent.length) {

@@ -20,4 +20,6 @@ urlpatterns = [
         name='publication_detail'),
     url(r'^publication/edit/$', publications_views.edit_publication,
         name='publication_edit'),
+    url(r'^publication/load/more/', publications_views.load_more_comments,
+        name='publication_load_more'),
 ]

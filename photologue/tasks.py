@@ -60,7 +60,7 @@ def generate_thumbnails(instance):
     except ObjectDoesNotExist:
         exist_photo = False
 
-    if exist_photo: # Si la foto existe
+    if exist_photo and photo_to_crop.image: # Si la foto existe
         thumb = cropped_thumbnail(photo_to_crop, flat(300.0, 300.0))
         tempfile_io = BytesIO()
         thumb.save(tempfile_io, format='PNG')
