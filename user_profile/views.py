@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 from allauth.account.views import PasswordChangeView, EmailView
 from dal import autocomplete
@@ -168,15 +167,6 @@ def profile_view(request, username,
         publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1)[:10]
                         for node in
                         Publication.objects.filter(board_owner=user_profile, deleted=False, parent=None)[:20]]
-        # else:
-        # publications = Publication.objects.get_user_profile_publications(
-        #   user_pk=user.pk,
-        #  board_owner_pk=user_profile.pk)
-
-        print('>>>>>>> LISTA PUBLICACIONES: ')
-        # print publications
-        print(publications)
-
     except ObjectDoesNotExist:
         publications = None
 

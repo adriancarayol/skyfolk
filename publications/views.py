@@ -421,26 +421,43 @@ def load_more_comments(request):
     }
     if request.method == 'POST':
         user = request.user
-        pub_id = request.POST.get('id', None)
-        publication = Publication.objects.get(id=pub_id)
+        pub_id = request.POST.get('id', None)  # publicacion padre
+        last_pub = request.POST.get('last_pub', None)  # Ultima publicacion add
+        try:
+            publication = Publication.objects.get(id=pub_id)
+        except ObjectDoesNotExist:
+            return JsonResponse(data)
         privacity = publication.author.profile.is_visible(user.profile)
 
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
 
-        list = []
-        if not publication.parent:
-            for row in publication.get_descendants().filter(level__lte=1):
-                list.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                             'author_username': row.author.username, 'user_id': user.id,
-                             'author_avatar': get_author_avatar(row.author)})
-            data['pubs'] = json.dumps(list)
-        else:
-            for row in publication.get_descendants():
-                list.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                             'author_username': row.author.username, 'user_id': user.id,
-                             'author_avatar': get_author_avatar(row.author)})
-            data['pubs'] = json.dumps(list)
+        list_responses = []
+
+        if not publication.parent:  # Si es publicacion padre, devolvemos solo sus hijos (nivel 1)
+            if not last_pub:
+                for row in publication.get_descendants().filter(level__lte=1, deleted=False)[:20]:
+                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                           'author_username': row.author.username, 'user_id': user.id,
+                                           'author_avatar': get_author_avatar(row.author)})
+            else:
+                for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False):
+                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                           'author_username': row.author.username, 'user_id': user.id,
+                                           'author_avatar': get_author_avatar(row.author)})
+            data['pubs'] = json.dumps(list_responses)
+        else:  # Si es publicacion respuesta, devolvemos todos los niveles
+            if not last_pub:
+                for row in publication.get_descendants().filter(deleted=False)[:20]:
+                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                           'author_username': row.author.username, 'user_id': user.id,
+                                           'author_avatar': get_author_avatar(row.author), 'level': row.level})
+            else:
+                for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub):
+                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                           'author_username': row.author.username, 'user_id': user.id,
+                                           'author_avatar': get_author_avatar(row.author), 'level': row.level})
+            data['pubs'] = json.dumps(list_responses)
         data['response'] = True
         return JsonResponse(data)
     return JsonResponse(data)
