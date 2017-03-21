@@ -488,7 +488,7 @@ def load_more_skyline(request):
             return JsonResponse(data)
 
         publications = Publication.objects.filter(board_owner=publication.board_owner, deleted=False, parent=None,
-                                                   id__lt=pub_id)[:20]
+                                                  id__lt=pub_id)[:20]
         list_responses = []
 
         for row in publications:

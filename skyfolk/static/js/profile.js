@@ -325,15 +325,26 @@ $(document).ready(function () {
         AJAX_load_publications($(this).data("id"), loader, last_pub_id, this);
         return false;
     });
-    /* LOAD MORE ON CLICK (SKYLINE) */
-    $(tab_comentarios).on('click', '#load_more_skyline', function () {
-        var loader = $(this).next().find('#load_publications_image');
-        $(loader).fadeIn();
-        AJAX_load_skyline($(this).data("id"), loader, this);
-        return false;
-    });
-
 }); // END DOCUMENT READY */
+
+
+var didScroll = false;
+
+$(window).scroll(function () {
+    if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+        didScroll = true;
+    }
+});
+
+setInterval(function () {
+    if (didScroll) {
+        didScroll = false;
+        var input_skyline = $('#load_more_skyline');
+        var loader = $(input_skyline).next().find('#load_publications_image');
+        $(loader).fadeIn();
+        AJAX_load_skyline(loader, input_skyline);
+    }
+}, 250);
 
 
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/
@@ -384,6 +395,10 @@ function AJAX_likeprofile(status) {
 
 function add_loaded_publication(pub, data, btn, is_skyline) {
     var publications = JSON.parse(data);
+
+    if (publications === undefined || publications.length <= 0)
+        return;
+
     var existing = $('#pub-' + pub);
     if (undefined !== existing && existing.length && !is_skyline) {
         var children_list = $(existing).find('.children').first();
@@ -448,6 +463,12 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "    </div>";
             $(children_list).append(content);
         }
+        var child_count = $(btn).find('#child_count');
+        var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
+        if (result_child_count > 0)
+            $(child_count).html(result_child_count);
+        else
+            $(btn).remove();
     } else if (is_skyline) {
         for (i = 0; i < publications.length; i++) {
             content = '<div class="row">';
@@ -503,15 +524,10 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                </div>";
             content += "    </div>";
             content += "    </div>";
-            $('#tab-comentarios').append(content);
+            $('#tab-comentarios').find('#loader_skyline').before(content);
         }
+        $(btn).val(publications[publications.length - 1].id);
     }
-    var child_count = $(btn).find('#child_count');
-    var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
-    if (result_child_count > 0)
-        $(child_count).html(result_child_count);
-    else
-        $(btn).remove();
 }
 /* LOAD MORE COMMENTS */
 function AJAX_load_publications(pub, loader, last_pub, btn) {
@@ -547,7 +563,8 @@ function AJAX_load_publications(pub, loader, last_pub, btn) {
     });
 }
 
-function AJAX_load_skyline(pub, loader, btn) {
+function AJAX_load_skyline(loader, btn) {
+    var pub = $(btn).val();
     var data = {
         'id': pub,
         'csrfmiddlewaretoken': csrftoken

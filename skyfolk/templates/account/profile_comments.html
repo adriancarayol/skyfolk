@@ -156,13 +156,9 @@
 {% endfor %}
 {% if publications|length > 19 %}
     {% with publications|last as last_pub %}
-        <div class="row">
+        <div class="row" id="loader_skyline">
             <div class="col s12">
-                <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
-                   href="#"
-                   id="load_more_skyline"
-                   data-id="{{ last_pub.0.id }}"><i class=" material-icons left">expand_more</i>Cargar
-                    comentarios</a>
+                <input id="load_more_skyline" type="hidden" value="{{ last_pub.0.id }}">
                 <div>
                     <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
                          title="Loading..."
