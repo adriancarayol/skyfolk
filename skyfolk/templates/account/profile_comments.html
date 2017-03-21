@@ -136,7 +136,7 @@
                                                href="#"
                                                id="load_more_publications"
                                                data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
-                                                comentarios ({{ descendants|add:"-9" }})</a>
+                                                comentarios (<span id="child_count">{{ descendants|add:"-9" }}</span>)</a>
                                         {% endif %}
                                     {% endwith %}
                                 {% endif %}

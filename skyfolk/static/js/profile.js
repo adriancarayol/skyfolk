@@ -322,7 +322,7 @@ $(document).ready(function () {
         if (undefined !== last_pub && last_pub.length) {
             last_pub_id = last_pub.toString().split('-')[1];
         }
-        AJAX_load_publications($(this).data("id"), loader, last_pub_id);
+        AJAX_load_publications($(this).data("id"), loader, last_pub_id, this);
         return false;
     });
 
@@ -375,12 +375,12 @@ function AJAX_likeprofile(status) {
 
 }
 
-function add_loaded_publication(pub, data) {
+function add_loaded_publication(pub, data, btn) {
     var publications = JSON.parse(data);
     var existing = $('#pub-' + pub);
-    if (existing.length) {
+    if (undefined !== existing && existing.length) {
         var children_list = $(existing).find('.children').first();
-        if (!children_list.length) {
+        if (undefined === children_list || !children_list.length) {
             children_list = $(existing).find('.wrapper-reply').after('<ul class="children"></ul>');
         }
         var content = "";
@@ -440,11 +440,17 @@ function add_loaded_publication(pub, data) {
             content += "    </div>";
             $(children_list).append(content);
         }
+        var child_count = $(btn).find('#child_count');
+        var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
+        if (result_child_count > 0)
+            $(child_count).html(result_child_count);
+        else
+            $(btn).remove();
     }
 }
 
 /* LOAD MORE COMMENTS */
-function AJAX_load_publications(pub, loader, last_pub) {
+function AJAX_load_publications(pub, loader, last_pub, btn) {
     var data = {
         'id': pub,
         'last_pub': last_pub,
@@ -459,7 +465,7 @@ function AJAX_load_publications(pub, loader, last_pub) {
         success: function (data) {
             var response = data.response;
             if (response == true) {
-                add_loaded_publication(pub, data.pubs);
+                add_loaded_publication(pub, data.pubs, btn);
             } else {
                 swal({
                     title: "Fail",

@@ -441,7 +441,7 @@ def load_more_comments(request):
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_avatar': get_author_avatar(row.author)})
             else:
-                for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False):
+                for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False)[:20]:
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_avatar': get_author_avatar(row.author)})
@@ -453,7 +453,7 @@ def load_more_comments(request):
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
             else:
-                for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub):
+                for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub)[:20]:
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
