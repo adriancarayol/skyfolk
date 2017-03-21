@@ -136,7 +136,8 @@
                                                href="#"
                                                id="load_more_publications"
                                                data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
-                                                comentarios (<span id="child_count">{{ descendants|add:"-9" }}</span>)</a>
+                                                comentarios (<span
+                                                        id="child_count">{{ descendants|add:"-9" }}</span>)</a>
                                         {% endif %}
                                     {% endwith %}
                                 {% endif %}
@@ -153,3 +154,21 @@
         </div>
     {% endrecursetree %}
 {% endfor %}
+{% if publications|length > 19 %}
+    {% with publications|last as last_pub %}
+        <div class="row">
+            <div class="col s12">
+                <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
+                   href="#"
+                   id="load_more_skyline"
+                   data-id="{{ last_pub.0.id }}"><i class=" material-icons left">expand_more</i>Cargar
+                    comentarios</a>
+                <div>
+                    <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
+                         title="Loading..."
+                         alt="Loading..." style="display: none;">
+                </div>
+            </div>
+        </div>
+    {% endwith %}
+{% endif %}

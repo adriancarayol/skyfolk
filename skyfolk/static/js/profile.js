@@ -325,6 +325,13 @@ $(document).ready(function () {
         AJAX_load_publications($(this).data("id"), loader, last_pub_id, this);
         return false;
     });
+    /* LOAD MORE ON CLICK (SKYLINE) */
+    $(tab_comentarios).on('click', '#load_more_skyline', function () {
+        var loader = $(this).next().find('#load_publications_image');
+        $(loader).fadeIn();
+        AJAX_load_skyline($(this).data("id"), loader, this);
+        return false;
+    });
 
 }); // END DOCUMENT READY */
 
@@ -375,16 +382,17 @@ function AJAX_likeprofile(status) {
 
 }
 
-function add_loaded_publication(pub, data, btn) {
+function add_loaded_publication(pub, data, btn, is_skyline) {
     var publications = JSON.parse(data);
     var existing = $('#pub-' + pub);
-    if (undefined !== existing && existing.length) {
+    if (undefined !== existing && existing.length && !is_skyline) {
         var children_list = $(existing).find('.children').first();
         if (undefined === children_list || !children_list.length) {
             children_list = $(existing).find('.wrapper-reply').after('<ul class="children"></ul>');
         }
         var content = "";
-        for (var i = 0; i < publications.length; i++) {
+        var i;
+        for (i = 0; i < publications.length; i++) {
             content = '<div class="row">';
             content += '<div class="col s12">';
             if (publications[i].level > 0 && publications[i].level < 3) {
@@ -440,15 +448,71 @@ function add_loaded_publication(pub, data, btn) {
             content += "    </div>";
             $(children_list).append(content);
         }
-        var child_count = $(btn).find('#child_count');
-        var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
-        if (result_child_count > 0)
-            $(child_count).html(result_child_count);
-        else
-            $(btn).remove();
+    } else if (is_skyline) {
+        for (i = 0; i < publications.length; i++) {
+            content = '<div class="row">';
+            content += '<div class="col s12">';
+            if (publications[i].level > 0 && publications[i].level < 3) {
+                content += ' <div class="col s12 wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 98% !important;">';
+            } else
+                content += ' <div class=\"col s12 wrapper\" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '">';
+            content += "            <div class=\"box\">";
+            content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
+            content += '            <span data-id="' + data.id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
+            content += '<div class="row">';
+            content += "                <div class=\"articulo col s12\">";
+            content += '<div class="row">';
+            content += "      <div class=\"image col l1 m2 s2\">";
+            content += '        <div class="usr-img img-responsive"><img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"></div>';
+            content += "      </div>";
+            content += '<div class="col l8 m12 s8">';
+            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a></h2>';
+            content += '                    <a target="_blank">' + publications[i].created + '<\/a><br>';
+            content += '<div class="row">';
+            content += "                  <div class=\"parrafo comment\">";
+            content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
+            content += "                  </div>";
+            content += '                    <div class="show-more" id="show-comment-' + publications[i].id + '">';
+            content += "                        <a href=\"#\">+ Mostrar más<\/a>";
+            content += "                    </div>";
+            content += "                    </div>";
+            content += "                    </div>";
+            content += "                    </div>";
+            content += "                    </div>";
+            content += "                    </div>";
+            content += '<div class="row">';
+            content += '<div class="divider"></div>';
+            content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
+            content += "                    <ul class=\"opciones\">";
+            content += "        ";
+            content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
+            content += "                            <li title=\"No me gusta\" class=\"fa-stack\" id=\"fa-hate\">";
+            content += "                                <span class=\"hate-comment\">";
+            content += "                                    <i class=\"fa fa-heart fa-stack-1x\"><\/i>";
+            content += "                                    <i class=\"fa fa-bolt fa-stack-1x fa-inverse\"><\/i>";
+            content += "                                    <i class=\"fa hate-value\"><\/i>";
+            content += "                                </span>";
+            content += "                            </li>";
+            content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-heart"></i><i id="like-value" class="fa"></i></li>';
+            content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
+            content += "                       <\/i><\/li>";
+            content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
+            content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+            content += "                    </ul>";
+            content += "                </div>";
+            content += "                </div>";
+            content += "    </div>";
+            content += "    </div>";
+            $('#tab-comentarios').append(content);
+        }
     }
+    var child_count = $(btn).find('#child_count');
+    var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
+    if (result_child_count > 0)
+        $(child_count).html(result_child_count);
+    else
+        $(btn).remove();
 }
-
 /* LOAD MORE COMMENTS */
 function AJAX_load_publications(pub, loader, last_pub, btn) {
     var data = {
@@ -465,7 +529,39 @@ function AJAX_load_publications(pub, loader, last_pub, btn) {
         success: function (data) {
             var response = data.response;
             if (response == true) {
-                add_loaded_publication(pub, data.pubs, btn);
+                add_loaded_publication(pub, data.pubs, btn, false);
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to load more publications.",
+                    type: "error"
+                });
+            }
+        },
+        complete: function () {
+            $(loader).fadeOut();
+        },
+        error: function (rs, e) {
+        }
+    });
+}
+
+function AJAX_load_skyline(pub, loader, btn) {
+    var data = {
+        'id': pub,
+        'csrfmiddlewaretoken': csrftoken
+    };
+    $.ajax({
+        url: '/publication/load/skyline/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+
+        success: function (data) {
+            var response = data.response;
+            if (response == true) {
+                add_loaded_publication(pub, data.pubs, btn, true);
             } else {
                 swal({
                     title: "Fail",
