@@ -119,12 +119,28 @@
                         </ul>
                         <div class="row">
                             <div class="col s12">
-                                <a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#"
-                                   id="load_more_publications"
-                                   data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
-                                    comentarios ({% if not node.is_root_node %}
-                                        {{ node.get_descendant_count }}{% else %}
-                                        {{ node.get_children_count }}{% endif %})</a>
+                                {% if not node.is_root_node %}
+                                    {% with node.get_descendant_count as descendants %}
+                                        {% if descendants > 0 %}
+                                            <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
+                                               href="#"
+                                               id="load_more_publications"
+                                               data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
+                                                comentarios ({{ descendants }})</a>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% else %}
+                                    {% with node.get_children_count as descendants %}
+                                        {% if descendants > 8 %}
+                                            <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
+                                               href="#"
+                                               id="load_more_publications"
+                                               data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
+                                                comentarios (<span
+                                                        id="child_count">{{ descendants|add:"-9" }}</span>)</a>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endif %}
                                 <div>
                                     <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
                                          title="Loading..."
@@ -138,3 +154,17 @@
         </div>
     {% endrecursetree %}
 {% endfor %}
+{% if publications|length > 19 %}
+    {% with publications|last as last_pub %}
+        <div class="row" id="loader_skyline">
+            <div class="col s12">
+                <input id="load_more_skyline" type="hidden" value="{{ last_pub.0.id }}">
+                <div>
+                    <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
+                         title="Loading..."
+                         alt="Loading..." style="display: none;">
+                </div>
+            </div>
+        </div>
+    {% endwith %}
+{% endif %}

@@ -24,9 +24,9 @@ var UTILS = UTILS || (function () {
                             content += '<div class="row">';
                             content += '<div class="col s12">';
                             if (data.level > 0 && data.level < 3) {
-                                content += ' <div class="wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 98% !important;">';
+                                content += ' <div class="col s12 wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 98% !important;">';
                             } else
-                                content += ' <div class=\"wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
+                                content += ' <div class=\"col s12 wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
                             content += "            <div class=\"box\">";
                             content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
                             content += '            <span data-id="' + data.id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
@@ -36,7 +36,7 @@ var UTILS = UTILS || (function () {
                             content += "      <div class=\"image col l1 m2 s2\">";
                             content += '        <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
                             content += "      </div>";
-                            content += '<div class=col l8 m12 s8">';
+                            content += '<div class="col l8 m12 s8">';
                             content += '                  <h2 class="h22"><a href="/profile/' + data.author_username + '" >@' + data.author_username + '</a></h2>';
                             content += '                    <a target="_blank">' + data.created + '<\/a><br>';
                             content += '<div class="row">';
@@ -45,6 +45,7 @@ var UTILS = UTILS || (function () {
                             content += "                  </div>";
                             content += '                    <div class="show-more" id="show-comment-' + data.id + '">';
                             content += "                        <a href=\"#\">+ Mostrar más<\/a>";
+                            content += "                    </div>";
                             content += "                    </div>";
                             content += "                    </div>";
                             content += "                    </div>";
@@ -71,8 +72,6 @@ var UTILS = UTILS || (function () {
                             content += "                    </ul>";
                             content += "                </div>";
                             content += "                </div>";
-                            content += "    </div>";
-                            content += "    </div>";
                             content += "    </div>";
                             content += "    </div>";
                         }

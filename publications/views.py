@@ -416,31 +416,86 @@ def edit_publication(request):
 
 @login_required(login_url='/')
 def load_more_comments(request):
+    """
+    Carga respuestas de un comentario padre (carga comentarios hijos (nivel 1) de un comentario padre (nivel 0))
+    o carga comentarios a respuestas (cargar comentarios descendientes (nivel > 1) de un comentario hijo (nivel 1))
+    """
     data = {
         'response': False
     }
     if request.method == 'POST':
         user = request.user
-        pub_id = request.POST.get('id', None)
-        publication = Publication.objects.get(id=pub_id)
-        privacity = publication.author.profile.is_visible(user.profile)
+        pub_id = request.POST.get('id', None)  # publicacion padre
+        last_pub = request.POST.get('last_pub', None)  # Ultima publicacion add
+        try:
+            publication = Publication.objects.get(id=pub_id)
+        except ObjectDoesNotExist:
+            return JsonResponse(data)
+        privacity = publication.board_owner.profile.is_visible(user.profile)
 
         if privacity and privacity != 'all':
-            raise IntegrityError("No have permissions")
+            return JsonResponse(data)
 
-        list = []
-        if not publication.parent:
-            for row in publication.get_descendants().filter(level__lte=1):
-                list.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                             'author_username': row.author.username, 'user_id': user.id,
-                             'author_avatar': get_author_avatar(row.author)})
-            data['pubs'] = json.dumps(list)
-        else:
-            for row in publication.get_descendants():
-                list.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                             'author_username': row.author.username, 'user_id': user.id,
-                             'author_avatar': get_author_avatar(row.author)})
-            data['pubs'] = json.dumps(list)
+        list_responses = []
+
+        if not publication.parent:  # Si es publicacion padre, devolvemos solo sus hijos (nivel 1)
+            if not last_pub:
+                for row in publication.get_descendants().filter(level__lte=1, deleted=False)[:20]:
+                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                           'author_username': row.author.username, 'user_id': user.id,
+                                           'author_avatar': get_author_avatar(row.author)})
+            else:
+                for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False)[:20]:
+                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                           'author_username': row.author.username, 'user_id': user.id,
+                                           'author_avatar': get_author_avatar(row.author)})
+            data['pubs'] = json.dumps(list_responses)
+        else:  # Si es publicacion respuesta, devolvemos todos los niveles
+            if not last_pub:
+                for row in publication.get_descendants().filter(deleted=False)[:20]:
+                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                           'author_username': row.author.username, 'user_id': user.id,
+                                           'author_avatar': get_author_avatar(row.author), 'level': row.level})
+            else:
+                for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub)[:20]:
+                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                           'author_username': row.author.username, 'user_id': user.id,
+                                           'author_avatar': get_author_avatar(row.author), 'level': row.level})
+            data['pubs'] = json.dumps(list_responses)
         data['response'] = True
-        return JsonResponse(data)
+    return JsonResponse(data)
+
+
+@login_required(login_url='/')
+def load_more_skyline(request):
+    """
+    Carga comentarios de nivel 0 en el skyline del perfil
+    """
+    data = {
+        'response': False
+    }
+    if request.method == 'POST':
+        user = request.user
+        pub_id = request.POST.get('id', None)  # ultima publicacion en skyline
+        try:
+            publication = Publication.objects.get(id=pub_id)
+        except ObjectDoesNotExist:
+            return JsonResponse(data)
+
+        privacity = publication.board_owner.profile.is_visible(user.profile)
+
+        if privacity and privacity != 'all':
+            return JsonResponse(data)
+
+        publications = Publication.objects.filter(board_owner=publication.board_owner, deleted=False, parent=None,
+                                                  id__lt=pub_id)[:20]
+        list_responses = []
+
+        for row in publications:
+            list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+                                   'author_username': row.author.username, 'user_id': user.id,
+                                   'author_avatar': get_author_avatar(row.author), 'level': row.level})
+
+        data['pubs'] = json.dumps(list_responses)
+        data['response'] = True
     return JsonResponse(data)
