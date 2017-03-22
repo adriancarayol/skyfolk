@@ -33,7 +33,7 @@
                                         <h2 class="h22"><a
                                                 href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         </h2>
-                                        <a target="_blank">{{ node.created|naturaltime }}</a>
+                                        <a target="_blank" id="pub-created">{{ node.created|naturaltime }}</a>
                                         <div class="row">
                                             <div class="parrafo comment">
                                                 <div class="wrp-comment">{{ node.content|replace_decorators|safe }}</div>

@@ -564,6 +564,8 @@ function AJAX_load_publications(pub, loader, last_pub, btn) {
 }
 
 function AJAX_load_skyline(loader, btn) {
+    if ($(btn) === undefined || !($(btn).length)) return;
+
     var pub = $(btn).val();
     var data = {
         'id': pub,
