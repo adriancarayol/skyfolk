@@ -75,11 +75,11 @@ class News(TemplateView):
         try:
             publications = Publication.objects.filter(
                 author__profile__to_people__in=Relationship.objects.filter(
-                    Q(from_person=user_profile.profile) & Q(status=1)),
-                board_owner=user_profile, deleted=False, parent=None)
+                    Q(from_person=user_profile.profile) & Q(status=1)), deleted=False, parent=None)
         except ObjectDoesNotExist:
             publications = None
 
+        print(publications)
         context = {'publications': publications,
                    'publicationSelfForm': publicationForm,
                    'searchForm': searchForm,
