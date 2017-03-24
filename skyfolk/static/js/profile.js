@@ -325,6 +325,15 @@ $(document).ready(function () {
         AJAX_load_publications($(this).data("id"), loader, last_pub_id, this);
         return false;
     });
+
+    /* LOAD MORE SKYLINE ON CLICK */
+    $(tab_comentarios).on('click', '#load_more_skyline', function () {
+        var input_skyline = $(this);
+        var loader = $(input_skyline).next().find('#load_publications_image');
+        $(loader).fadeIn();
+        AJAX_load_skyline(loader, input_skyline);
+        return false;
+    });
 }); // END DOCUMENT READY */
 
 
@@ -526,7 +535,9 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "    </div>";
             $('#tab-comentarios').find('#loader_skyline').before(content);
         }
-        $(btn).val(publications[publications.length - 1].id);
+        $(btn).data("id", publications[publications.length - 1].id);
+        if (publications.length <=19)
+            $(btn).remove();
     }
 }
 /* LOAD MORE COMMENTS */
@@ -566,7 +577,7 @@ function AJAX_load_publications(pub, loader, last_pub, btn) {
 function AJAX_load_skyline(loader, btn) {
     if ($(btn) === undefined || !($(btn).length)) return;
 
-    var pub = $(btn).val();
+    var pub = $(btn).data("id");
     var data = {
         'id': pub,
         'csrfmiddlewaretoken': csrftoken
