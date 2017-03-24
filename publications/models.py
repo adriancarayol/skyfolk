@@ -147,6 +147,9 @@ class PublicationBase(MPTTModel):
         """
         return self.get_descendants().filter(level__lte=1, deleted=False).count()
 
+    def get_descendants_not_deleted(self):
+        return self.get_descendants().filter(deleted=False).count()
+
 
 class Publication(PublicationBase):
     """

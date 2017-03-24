@@ -536,7 +536,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             $('#tab-comentarios').find('#loader_skyline').before(content);
         }
         $(btn).data("id", publications[publications.length - 1].id);
-        if (publications.length <=19)
+        if (publications.length <= 19)
             $(btn).remove();
     }
 }

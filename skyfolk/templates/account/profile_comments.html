@@ -120,7 +120,7 @@
                         <div class="row">
                             <div class="col s12">
                                 {% if not node.is_root_node %}
-                                    {% with node.get_descendant_count as descendants %}
+                                    {% with node.get_descendants_not_deleted as descendants %}
                                         {% if descendants > 0 %}
                                             <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
                                                href="#"
