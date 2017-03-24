@@ -33,7 +33,7 @@
                                         <h2 class="h22"><a
                                                 href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         </h2>
-                                        <a target="_blank">{{ node.created|naturaltime }}</a>
+                                        <a target="_blank" id="pub-created">{{ node.created|naturaltime }}</a>
                                         <div class="row">
                                             <div class="parrafo comment">
                                                 <div class="wrp-comment">{{ node.content|replace_decorators|safe }}</div>
@@ -158,7 +158,11 @@
     {% with publications|last as last_pub %}
         <div class="row" id="loader_skyline">
             <div class="col s12">
-                <input id="load_more_skyline" type="hidden" value="{{ last_pub.0.id }}">
+                <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
+                   href="#"
+                   id="load_more_skyline"
+                   data-id="{{ last_pub.0.id }}"><i class=" material-icons left">expand_more</i>Cargar
+                    comentarios</a>
                 <div>
                     <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
                          title="Loading..."
