@@ -18,6 +18,7 @@ from notifications.signals import notify
 from django.conf import settings
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import gettext as _
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -155,6 +156,13 @@ class Publication(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
+    EVENT_CHOICES = (
+        (1, _("publication")),
+        (2, _("new_relation")),
+        (3, _("notice")),
+        (4, _("relevant")),
+        (5, _("image"))
+    )
     author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner')
     user_give_me_like = models.ManyToManyField(User, blank=True,
@@ -165,6 +173,7 @@ class Publication(PublicationBase):
                                            related_name='share_me')
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
+    event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
 
     # objects = PublicationManager()
 

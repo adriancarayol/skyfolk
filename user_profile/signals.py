@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from .models import UserProfile, Relationship
-from timeline.models import EventTimeline
+from timeline.models import Publication
 from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
@@ -26,26 +26,26 @@ def save_user_profile(sender, instance, **kwargs):
 @receiver(post_save, sender=Relationship)
 def handle_new_relationship(sender, instance, created, **kwargs):
     if instance.status == 2:
-        e, created = EventTimeline.objects.get_or_create(author=instance.from_person.user,
-                                                         profile=instance.from_person.user,
-                                                         content='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+        e, created = Publication.objects.get_or_create(author=instance.from_person.user,
+                                                       board_owner=instance.from_person.user,
+                                                       content='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                           instance.from_person.user.username,
+                                                           instance.from_person.user.username,
+                                                           instance.to_person.user.username,
+                                                           instance.to_person.user.username),
+                                                       event_type=2)
+        if not created:
+            e.created = datetime.now()
+            e.save(update_fields=["created"])
+    if instance.status == 1:
+        e2, created2 = Publication.objects.get_or_create(author=instance.from_person.user,
+                                                         board_owner=instance.from_person.user,
+                                                         content='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
                                                              instance.from_person.user.username,
                                                              instance.from_person.user.username,
                                                              instance.to_person.user.username,
                                                              instance.to_person.user.username),
                                                          event_type=2)
-        if not created:
-            e.created = datetime.now()
-            e.save(update_fields=["created"])
-    if instance.status == 1:
-        e2, created2 = EventTimeline.objects.get_or_create(author=instance.from_person.user,
-                                                           profile=instance.from_person.user,
-                                                           content='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                               instance.from_person.user.username,
-                                                               instance.from_person.user.username,
-                                                               instance.to_person.user.username,
-                                                               instance.to_person.user.username),
-                                                           event_type=2)
         if not created2:
             e2.created = datetime.now()
             e2.save(update_fields=["created"])

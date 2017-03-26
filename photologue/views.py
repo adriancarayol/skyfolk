@@ -350,6 +350,7 @@ class PhotoDetailView(DetailView):
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         try:
             next = self.object.get_next_in_gallery()
+
             context['next'] = next
         except Photo.DoesNotExist:
             pass

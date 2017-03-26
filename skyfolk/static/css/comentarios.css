@@ -25,6 +25,7 @@ a, a:visited {
     box-shadow: 0 0 10px #ddd;
     overflow: hidden;
     height: auto;
+    margin-top: 2.5%;
 }
 
 .comment {

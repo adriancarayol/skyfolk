@@ -6,4 +6,3 @@ class TimelineAppConfiguration(AppConfig):
 
     def ready(self):
         super(TimelineAppConfiguration, self).ready()
-        import timeline.signals
