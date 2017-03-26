@@ -23,7 +23,6 @@ from notifications.signals import notify
 from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit
 from publications.models import Publication
-from timeline.models import Timeline
 from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
@@ -170,12 +169,6 @@ def profile_view(request, username,
     except ObjectDoesNotExist:
         publications = None
 
-    # cargar lista de timeline
-    try:
-        timeline = Timeline.objects.get_user_profile_events(user_profile.pk)
-    except ObjectDoesNotExist:
-        timeline = None
-
     # Establece la afinidad al perfil visitado.
     if user.pk != user_profile.pk:
         AffinityUser.objects.check_limit(emitterid=user_profile.profile)
@@ -193,7 +186,6 @@ def profile_view(request, username,
 
     # Contenido de las tres tabs
     context['publications'] = publications
-    context['timeline'] = timeline
     context['friends_top12'] = num_follows
 
     if extra_context is not None:

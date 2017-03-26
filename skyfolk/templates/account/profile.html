@@ -47,19 +47,19 @@ Template para el perfil de cada usuario
                                         <a><i class="fa fa-thumb-tack"></i></a>
                                     </div>
                                     <ul class="unstyled table fullwidth links">
-                                        <li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>
+                                        {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}
                                         <li class="tab" id="li-tab-comentarios"><a
-                                                href="#tab-comentarios">Comentarios</a></li>
+                                                href="#tab-comentarios">skyline</a></li>
                                         <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
                                     </ul>
                                     <div class="unstyled content" id="hood-tabs">
                                         {% comment %}
-								Incluimos el tab timeline
-								{% endcomment %}
+								            Incluimos el tab timeline
                                         {% include "account/tab-timeline.html" %}
+                                        {% endcomment %}
                                         {% comment %}
-								Incluimos el tab comentarios
-								{% endcomment %}
+								            Incluimos el tab comentarios
+								        {% endcomment %}
                                         <div id="tab-comentarios">
                                             {% if publications|length == 0 %}
                                                 <!-- Si el usuario no tiene comentarios, proponemos uno -->

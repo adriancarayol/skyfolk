@@ -6,8 +6,6 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from publications.models import Publication
-from timeline.models import Timeline
-
 
 def add_to_timeline(request):
     response = False

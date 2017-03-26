@@ -16,7 +16,6 @@ from django.http import JsonResponse
 from photologue.models import Photo
 from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit
 from publications.models import Publication, PublicationPhoto
-from timeline.models import Timeline, EventTimeline
 from user_profile.forms import SearchForm
 from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -68,7 +67,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.author = emitter
                 publication.board_owner = board_owner
 
-                publication.add_hashtag()  # add hashtags
                 publication.parse_content()  # parse publication content
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
@@ -87,6 +85,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.save()  # Creamos publicacion
                 publication.parse_mentions()  # add mentions
                 publication.content = Emoji.replace(publication.content)
+                publication.add_hashtag()  # add hashtags
                 publication.save(update_fields=['content'],
                                  new_comment=True)  # Guardamos la publicacion si no hay errores
 
@@ -249,12 +248,6 @@ def delete_publication(request):
             # Publication.objects.filter(parent=publication).update(deleted=True)
             publication.get_descendants().update(deleted=True)
             logger.info('Publication deleted: {}'.format(publication.id))
-
-        # Borramos timeline del comentario
-        try:
-            EventTimeline.objects.filter(publication=request.POST['publication_id']).delete()
-        except ObjectDoesNotExist:
-            pass
 
         response = True
     return HttpResponse(json.dumps(response),
