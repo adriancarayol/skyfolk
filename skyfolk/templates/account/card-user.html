@@ -13,12 +13,11 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <a><i class="fa fa-thumb-tack"></i></a>
             </div>
             <div class="row">
-                <div class="user-avatar">
-                    {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
-                    <img src="{{ user_profile.profile.backImage.url }}" class="user-bg">
+                <div class="user-avatar" style="background: {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
+                    url({{ user_profile.profile.backImage.url }})
                     {% else %}
-                    <img src="{{ STATIC_URL }}img/nuevo_back.png" class="user-bg">
-                    {% endif %}
+                    url({{ STATIC_URL }}img/nuevo_back.png)
+                    {% endif %} no-repeat center center; background-size: cover;">
                     <!--<input type="checkbox" id="button-menu"  />-->
                     {% if user.is_authenticated and user.username != user_profile.username %}
                     <!-- si es usuario esta visitando un perfil que no es el suyo -->
