@@ -191,7 +191,7 @@ $(document).ready(function () {
 
 
     /* Agregar timeline */
-    $(document).on('click', '#options-comments .fa-tag', function () {
+    $(document).on('click', '#options-comments #add_to_skyline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         AJAX_add_timeline(caja_publicacion, tag, "publication");
@@ -210,26 +210,6 @@ $(document).ready(function () {
         var heart = this;
         AJAX_add_hate(caja_publicacion, heart, "publication");
     });
-
-    /* Añadir publicacion de timeline a mi timeline */
-    $(wrapper_timeline).find('#controls-timeline').find('#add-timeline').on('click', function () {
-        var caja_publicacion = $(this).closest('.timeline-pub');
-        var tag = this;
-        AJAX_add_timeline(caja_publicacion, tag, "timeline");
-    });
-    /* Añadir me gusta a comentario en timeline */
-    $(wrapper_timeline).find('#controls-timeline').find('#like-heart-timeline').on('click', function () {
-        var caja_publicacion = $(this).closest('.timeline-pub');
-        var heart = this;
-        AJAX_add_like(caja_publicacion, heart, "timeline");
-    });
-    /* Añadir no me gusta a comentario en timeline */
-    $(wrapper_timeline).find('#controls-timeline').find('#fa-hate-timeline').on('click', function () {
-        var caja_publicacion = $(this).closest('.timeline-pub');
-        var heart = this;
-        AJAX_add_hate(caja_publicacion, heart, "timeline");
-    });
-
 
     /* FUNCIONES AJAX PARA TABS DE PERFIL */
 
@@ -464,7 +444,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
             content += "                       <\/i><\/li>";
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
             content += "                    </ul>";
             content += "                </div>";
             content += "                </div>";
@@ -527,7 +507,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
             content += "                       <\/i><\/li>";
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
             content += "                    </ul>";
             content += "                </div>";
             content += "                </div>";
@@ -715,8 +695,20 @@ function AJAX_add_like(caja_publicacion, heart, type) {
                     } else if (status == 2) {
                         $(heart).css('color', '#555');
                         countLikes--;
+                    } else if (status == 3) {
+                        $(heart).css('color', '#f06292');
+                        var hatesObj = $(heart).prev();
+                        var hates = hatesObj.find(".hate-value");
+                        var countHates = hates.text();
+                        countHates--;
+                        if (countHates <= 0) {
+                            hates.text('');
+                        } else
+                            hates.text(countHates);
+                        $(hatesObj).css('color', '#555');
+                        countLikes++;
                     }
-                    if (countLikes == 0) {
+                    if (countLikes <= 0) {
                         numLikes.text('');
                     } else {
                         numLikes.text(countLikes);
@@ -771,23 +763,36 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
         success: function (data) {
             var statusOk = 1;
             var statusNo = 2;
+            var statusInLike = 3;
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find(".hate-value");
-            var countLikes = numLikes.text();
+            var numHates = $(heart).find(".hate-value");
+            var countHates = numHates.text();
             if (response == true) {
-                if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
                     if (status === statusOk) {
                         $(heart).css('color', '#ba68c8');
-                        countLikes++;
+                        countHates++;
                     } else if (status === statusNo) {
                         $(heart).css('color', '#555');
+                        countHates--;
+                    } else if (status === statusInLike) {
+                        $(heart).css('color', '#ba68c8');
+                        countHates++;
+                        var likesObj = $(heart).next();
+                        var likes = likesObj.find("#like-value");
+                        var countLikes = likes.text();
                         countLikes--;
+                        if (countLikes <= 0) {
+                            likes.text('');
+                        } else
+                            likes.text(countLikes);
+                        $(likesObj).css('color', '#555');
                     }
-                    if (countLikes == 0) {
-                        numLikes.text("");
+                    if (countHates <= 0) {
+                        numHates.text("");
                     } else {
-                        numLikes.text(countLikes);
+                        numHates.text(countHates);
                     }
                 } else {
                     if (status === statusOk) {
@@ -831,9 +836,9 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
         publication_id: id_pub,
         'csrfmiddlewaretoken': csrftoken
     };
-    //event.preventDefault(); //stop submit
+
     $.ajax({
-        url: '/timeline/add_to_timeline/',
+        url: '/publication/share/publication/',
         type: 'POST',
         dataType: 'json',
         data: data,

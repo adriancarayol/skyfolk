@@ -26,7 +26,9 @@
                         <div class="row">
                             <div class="articulo col s12">
                                 <div class="row">
-                                    <div class="image col l1 m2 s2" {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}title="¡Eres el autor!" style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
+                                    <div class="image col l1 m2 s2"
+                                         {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}title="¡Eres el autor!"
+                                         style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
                                         <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                     </div>
                                     <div class="col l8 m12 s8">
@@ -52,34 +54,34 @@
                             <div class="options_comentarios" id="options-comments">
                                 <ul class="opciones">
                                     {% if user.is_authenticated and user.username == node.author.username %}
-                                        <!-- Si estamos visitando un perfil que no es el nuestro -->
+                                        {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
                                     {% elif user.is_authenticated and user.username == user_profile.username %}
-                                        <!-- Si estamos visitando nuestro propio perfil -->
+                                        {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
-                                    {% endif %}
-                                    {% with hates=node.pk|total_hates %}
-                                        <li title="No me gusta" class="fa-stack" id="fa-hate">
-					<span class="hate-comment">
-						<i class="fa fa-heart fa-stack-1x"></i>
-						<i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-						<i class="fa hate-value">{% if hates > 0 %}{{ hates|intword }}{% endif %}</i>
-					</span>
+                                    {% elif user.is_authenticated and user.pk != node.author.pk %} {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
+                                        {% with hates=node.pk|total_hates %}
+                                            <li title="No me gusta" class="hate-comment" id="fa-hate">
+                                                <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                                <i class="fa hate-value">{% if hates > 0 %}{{ hates|intword }}{% endif %}</i>
+                                            </li>
+                                        {% endwith %}
+                                        <li id="like-heart" title="¡Me gusta!" class="like-comment">
+                                            <i class="fa fa-angle-up" aria-hidden="true"></i>
+                                            <i id="like-value" class="fa">{{ node.pk|total_likes|intword }}</i>
                                         </li>
-                                    {% endwith %}
-                                    <li id="like-heart" title="¡Me gusta!" class="like-comment">
-                                        <i class="fa fa-heart"></i>
-                                        <i id="like-value" class="fa">{{ node.pk|total_likes|intword }}</i>
-                                    </li>
+                                    {% endif %}
                                     <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
                                     </i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
-                                    <li title="Añadir a mi timeline" class="add-timeline"><i
+                                {% if user.is_authenticated and user.pk != node.author.pk%}
+                                    <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
                                             class="fa fa-tag"> {{ node.pk|total_shares|intword }}</i></li>
+                                {% endif %}
                                 </ul>
                             </div>
                         </div>

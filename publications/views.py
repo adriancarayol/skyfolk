@@ -23,6 +23,8 @@ from django.db import transaction
 from emoji import Emoji
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
+from django.db import transaction
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -256,6 +258,7 @@ def delete_publication(request):
 
 
 @login_required(login_url='/')
+@transaction.atomic
 def add_like(request):
     response = False
     statuslike = 0
@@ -274,44 +277,78 @@ def add_like(request):
         logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
         logger.info("(PERFIL DE USUARIO): " + publication.author.username + " PK_ID -> " + str(publication.author.pk))
 
-        if user.pk != publication.author.pk and user not in publication.user_give_me_like.all() \
-                and user not in publication.user_give_me_hate.all():
+        if user.pk != publication.author.pk:
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
-            # tampoco si el usuario ya ha dado like antes.
-            logger.info("Incrementando like")
-            try:
-                publication.user_give_me_like.add(request.user)  # add users like
-                publication.save()
-                response = True
-                statuslike = 1
+            in_like = False
+            in_hate = False
 
-            except ObjectDoesNotExist:
-                response = False
-                statuslike = 0
+            if user in publication.user_give_me_like.all(): # Usuario en lista de likes
+                in_like = True
 
-        elif user.pk != publication.author.pk and user in publication.user_give_me_like.all() \
-                and user not in publication.user_give_me_hate.all():
-            logger.info("Decrementando like")
-            try:
-                publication.user_give_me_like.remove(request.user)
-                publication.save()
-                response = True
-                statuslike = 2
-            except ObjectDoesNotExist:
-                response = False
-                statuslike = 0
+            if user in publication.user_give_me_hate.all(): # Usuario en lista de hate
+                in_hate = True
+
+            if in_like and in_hate: # Si esta en ambas listas (situacion no posible)
+                publication.user_give_me_like.remove(user)
+                publication.user_give_me_hate.remove(user)
+                logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+
+            if in_hate: # Si ha dado antes unlike
+                logger.info("Incrementando like")
+                logger.info("Decrementando hate")
+                try:
+                    publication.user_give_me_hate.remove(user) # remove from hates
+                    publication.user_give_me_like.add(user)  # add to like
+                    publication.save()
+                    response = True
+                    statuslike = 3
+
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
+                data = json.dumps({'response': response, 'statuslike': statuslike})
+                return HttpResponse(data, content_type='application/json')
+
+            elif in_like: # Si ha dado antes like
+                logger.info("Decrementando like")
+                try:
+                    publication.user_give_me_like.remove(request.user)
+                    publication.save()
+                    response = True
+                    statuslike = 2
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
+                data = json.dumps({'response': response, 'statuslike': statuslike})
+                return HttpResponse(data, content_type='application/json')
+
+            else: # Si no ha dado like ni unlike
+                try:
+                    publication.user_give_me_like.add(user)
+                    publication.save()
+                    response = True
+                    statuslike = 1
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
         else:
             response = False
             statuslike = 0
+
     logger.info("Fin like comentario ---> Response" + str(response)
                 + " Estado" + str(statuslike))
+
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
 
 
 @login_required(login_url='/')
+@transaction.atomic
 def add_hate(request):
     response = False
     statuslike = 0
@@ -330,37 +367,70 @@ def add_hate(request):
         logger.info("(USUARIO PETICIÓN): " + user.username)
         logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
-        if user.pk != publication.author.pk and user not in publication.user_give_me_like.all() \
-                and user not in publication.user_give_me_hate.all():
+        if user.pk != publication.author.pk:
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
             # tampoco si el usuario ya ha dado like antes.
-            logger.debug("Incrementando hate")
-            try:
-                publication.user_give_me_hate.add(user)  # add users like
-                publication.save()
-                response = True
-                statuslike = 1
+            in_like = False
+            in_hate = False
 
-            except ObjectDoesNotExist:
-                response = False
-                statuslike = 0
-        elif user.pk != publication.author.pk and user in publication.user_give_me_hate.all() \
-                and user not in publication.user_give_me_like.all():
-            logger.debug("Decrementando hate")
-            try:
+            if user in publication.user_give_me_like.all(): # Usuario en lista de likes
+                in_like = True
+
+            if user in publication.user_give_me_hate.all(): # Usuario en lista de hate
+                in_hate = True
+
+            if in_like and in_hate: # Si esta en ambas listas (situacion no posible)
+                publication.user_give_me_like.remove(user)
                 publication.user_give_me_hate.remove(user)
-                publication.save()
-                response = True
-                statuslike = 2
-            except ObjectDoesNotExist:
-                response = False
-                statuslike = 0
+                logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+
+            if in_like: # Si ha dado antes like
+                logger.info("Incrementando hate")
+                logger.info("Decrementando like")
+                try:
+                    publication.user_give_me_like.remove(user) # remove from like
+                    publication.user_give_me_hate.add(user)  # add to hate
+                    publication.save()
+                    response = True
+                    statuslike = 3
+
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
+                data = json.dumps({'response': response, 'statuslike': statuslike})
+                return HttpResponse(data, content_type='application/json')
+
+            elif in_hate: # Si ha dado antes hate
+                logger.info("Decrementando hate")
+                try:
+                    publication.user_give_me_hate.remove(request.user)
+                    publication.save()
+                    response = True
+                    statuslike = 2
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
+                data = json.dumps({'response': response, 'statuslike': statuslike})
+                return HttpResponse(data, content_type='application/json')
+
+            else: # Si no ha dado like ni unlike
+                try:
+                    publication.user_give_me_hate.add(user)
+                    publication.save()
+                    response = True
+                    statuslike = 1
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
         else:
             response = False
             statuslike = 0
-    logger.info("Fin like comentario ---> Response" + str(response)
+
+    logger.info("Fin hate comentario ---> Response" + str(response)
                 + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
@@ -492,3 +562,45 @@ def load_more_skyline(request):
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True
     return JsonResponse(data)
+
+
+@login_required(login_url='/')
+def share_publication(request):
+    """
+    Copia la publicacion de otro skyline
+    y se comparte en el tuyo
+    """
+    response = False
+    print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
+    if request.POST:
+        obj_userprofile = get_object_or_404(
+            get_user_model(), pk=request.POST['userprofile_id']
+        )
+
+        obj_pub = request.POST['publication_id']
+        user = request.user
+
+        try:
+            pub_to_add = Publication.objects.get(pk=obj_pub)
+
+            if pub_to_add.author == user:
+                return HttpResponse(json.dumps(response), content_type='application/json')
+
+            privacity = pub_to_add.author.profile.is_visible(user.profile)
+
+            if privacity and privacity != 'all':
+                return HttpResponse(json.dumps(response), content_type='application/json')
+
+            if user in pub_to_add.user_share_me.all():
+                pub_to_add.user_share_me.remove(user)
+            else:
+                pub_to_add.user_share_me.add(user)
+
+            pub_to_add.save()
+            response = True
+            logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.user_share_me.count()))
+
+        except ObjectDoesNotExist:
+            response = False
+
+        return HttpResponse(json.dumps(response), content_type='application/json')

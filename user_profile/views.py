@@ -165,7 +165,9 @@ def profile_view(request, username,
         # if user_profile.username == username:
         publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1)[:10]
                         for node in
-                        Publication.objects.filter(board_owner=user_profile, deleted=False, parent=None)[:20]]
+                        Publication.objects.filter(
+                            Q(user_share_me__id__exact=user_profile.id) | Q(board_owner=user_profile), deleted=False,
+                            parent=None)[:20]]
     except ObjectDoesNotExist:
         publications = None
 
