@@ -62,15 +62,13 @@
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
                                     {% elif user.is_authenticated and user.pk != node.author.pk %} {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
-                                        {% with hates=node.pk|total_hates %}
                                             <li title="No me gusta" class="hate-comment" id="fa-hate">
                                                 <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                                <i class="fa hate-value">{% if hates > 0 %}{{ hates|intword }}{% endif %}</i>
+                                                <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
                                             </li>
-                                        {% endwith %}
                                         <li id="like-heart" title="¡Me gusta!" class="like-comment">
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                            <i id="like-value" class="fa">{{ node.pk|total_likes|intword }}</i>
+                                            <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
                                         </li>
                                     {% endif %}
                                     <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
@@ -80,7 +78,7 @@
                                     </li>
                                 {% if user.is_authenticated and user.pk != node.author.pk%}
                                     <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
-                                            class="fa fa-tag"> {{ node.pk|total_shares|intword }}</i></li>
+                                            class="fa fa-tag"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
                                 {% endif %}
                                 </ul>
                             </div>

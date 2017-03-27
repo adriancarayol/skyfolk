@@ -9,7 +9,6 @@ from django.utils.http import urlencode
 from taggit.managers import TaggableManager
 
 import publications
-import timeline
 from notifications.models import Notification
 from photologue.models import Photo
 

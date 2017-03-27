@@ -301,6 +301,8 @@ def add_like(request):
                 try:
                     publication.user_give_me_hate.remove(user) # remove from hates
                     publication.user_give_me_like.add(user)  # add to like
+                    publication.hated -= 1
+                    publication.liked += 1
                     publication.save()
                     response = True
                     statuslike = 3
@@ -316,6 +318,7 @@ def add_like(request):
                 logger.info("Decrementando like")
                 try:
                     publication.user_give_me_like.remove(request.user)
+                    publication.liked -= 1
                     publication.save()
                     response = True
                     statuslike = 2
@@ -329,6 +332,7 @@ def add_like(request):
             else: # Si no ha dado like ni unlike
                 try:
                     publication.user_give_me_like.add(user)
+                    publication.liked += 1
                     publication.save()
                     response = True
                     statuslike = 1
@@ -392,6 +396,8 @@ def add_hate(request):
                 try:
                     publication.user_give_me_like.remove(user) # remove from like
                     publication.user_give_me_hate.add(user)  # add to hate
+                    publication.liked -= 1
+                    publication.hated += 1
                     publication.save()
                     response = True
                     statuslike = 3
@@ -407,6 +413,7 @@ def add_hate(request):
                 logger.info("Decrementando hate")
                 try:
                     publication.user_give_me_hate.remove(request.user)
+                    publication.hated -= 1
                     publication.save()
                     response = True
                     statuslike = 2
@@ -420,6 +427,7 @@ def add_hate(request):
             else: # Si no ha dado like ni unlike
                 try:
                     publication.user_give_me_hate.add(user)
+                    publication.hated += 1
                     publication.save()
                     response = True
                     statuslike = 1
@@ -593,8 +601,10 @@ def share_publication(request):
 
             if user in pub_to_add.user_share_me.all():
                 pub_to_add.user_share_me.remove(user)
+                pub_to_add.shared -= 1
             else:
                 pub_to_add.user_share_me.add(user)
+                pub_to_add.shared += 1
 
             pub_to_add.save()
             response = True

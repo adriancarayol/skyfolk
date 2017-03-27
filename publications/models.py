@@ -167,6 +167,9 @@ class Publication(PublicationBase):
     board_owner = models.ForeignKey(User, related_name='board_owner')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
+    liked = models.PositiveIntegerField(default=0)
+    hated = models.PositiveIntegerField(default=0)
+    shared = models.PositiveIntegerField(default=0)
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_me')
     user_share_me = models.ManyToManyField(User, blank=True,

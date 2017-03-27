@@ -31,8 +31,6 @@ urlpatterns = [
     # {'document_root': settings.MEDIA_ROOT}),
     # url publications
     url(r'^', include('publications.urls', namespace="publications"), name="publications"),
-    # urls timeline
-    url(r'^', include('timeline.urls'), name="timeline"),
     # url novedades e inicio
     url(r'^', include('latest_news.urls', namespace="latest_news"), name="news"),
     # url mensajes privados
