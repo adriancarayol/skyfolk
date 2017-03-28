@@ -29,7 +29,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
     if instance.status == 2:
         e, created = Publication.objects.get_or_create(author=instance.from_person.user,
                                                        board_owner=instance.from_person.user,
-                                                       content='¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                       content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
                                                            instance.from_person.user.username,
                                                            instance.from_person.user.username,
                                                            instance.to_person.user.username,
@@ -41,7 +41,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
     if instance.status == 1:
         e2, created2 = Publication.objects.get_or_create(author=instance.from_person.user,
                                                          board_owner=instance.from_person.user,
-                                                         content='¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                         content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
                                                              instance.from_person.user.username,
                                                              instance.from_person.user.username,
                                                              instance.to_person.user.username,

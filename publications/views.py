@@ -8,10 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
-from el_pagination.views import AjaxListView
 from django.http import JsonResponse
 from photologue.models import Photo
 from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit
@@ -19,7 +17,6 @@ from publications.models import Publication, PublicationPhoto, SharedPublication
 from user_profile.forms import SearchForm
 from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from django.db import transaction
 from emoji import Emoji
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
@@ -128,55 +125,27 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
 """
 
 
-class PublicationDetailView(AjaxListView):
+def publication_detail(request, publication_id):
     """
-    Vista extendida de una publicacion
+    Muestra el thread de una conversacion
     """
-    context_object_name = "publications"
-    template_name = "account/publication_detail.html"
-    page_template = "account/publication_detail_entry.html"
+    user = request.user
+    try:
+        publication = Publication.objects.get_queryset_descendants(
+            Publication.objects.filter(id=publication_id, deleted=False), include_self=True)
+    except ObjectDoesNotExist:
+        return Http404
 
-    def __init__(self):
-        self.publication = None
-        super(PublicationDetailView, self).__init__()
+    privacity = publication[0].author.profile.is_visible(user.profile)
 
-    def dispatch(self, request, *args, **kwargs):
-        self.publication = get_object_or_404(Publication, id=self.kwargs['publication_id'], deleted=False)
-        if self.user_pass_test():
-            return super(PublicationDetailView, self).dispatch(request, *args, **kwargs)
-        else:
-            return redirect('user_profile:profile', username=self.publication.author.username)
+    if privacity and privacity != 'all':
+        return redirect('user_profile:profile', username=publication.board_owner.username)
 
-    def get_queryset(self):
-        return Publication.objects.filter(parent=self.publication.pk, deleted=False).order_by('created')
+    context = {
+        'publication': publication
+    }
 
-    def get_context_data(self, **kwargs):
-        context = super(PublicationDetailView, self).get_context_data(**kwargs)
-        user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publication'] = self.publication
-        context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
-        context['notifications'] = user.notifications.unread()
-        return context
-
-    def user_pass_test(self):
-        """
-        Comprueba si un usuario tiene permisos
-        para ver la galeria solicitada.
-        """
-        user = self.request.user
-        user_profile = self.publication.author.profile
-
-        visibility = user_profile.is_visible(user.profile)
-
-        if visibility == ("nothing" or "both" or "followers" or "block"):
-            return False
-        return True
-
-
-publication_detail = login_required(PublicationDetailView.as_view(), login_url='/')
+    return render(request, "account/publication_detail.html", context)
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -277,6 +246,12 @@ def add_like(request):
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
+        privacity = publication.author.profile.is_visible(user.profile)
+
+        if privacity and privacity != 'all':
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
+
         # Mostrar los usuarios que han dado un me gusta a ese comentario
         logger.info("USUARIO DA LIKE")
         logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
@@ -371,6 +346,12 @@ def add_hate(request):
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
+        privacity = publication.author.profile.is_visible(user.profile)
+
+        if privacity and privacity != 'all':
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
+
         # Mostrar los usuarios que han dado un me gusta a ese comentario
         logger.info("USUARIO DA HATE")
         logger.info("(USUARIO PETICIÓN): " + user.username)
@@ -460,6 +441,9 @@ def edit_publication(request):
 
         if publication.author.id != user.id:
             return JsonResponse({'data': "No tienes permisos para editar este comentario"})
+
+        if publication.event_type != 1:
+            return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
         print(request.POST.get('content', None))
         publication.content = request.POST.get('content', None)
@@ -607,9 +591,10 @@ def share_publication(request):
             shared, created = SharedPublication.objects.get_or_create(by_user=user, publication=pub_to_add)
 
             if created:
-                Publication.objects.create(content='Ha compartido de: <a href="/profile/%s">%s</a>' % (
-                pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared, author=user,
-                                           board_owner=user, event_type=6)
+                Publication.objects.create(
+                    content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
+                        pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared, author=user,
+                    board_owner=user, event_type=6)
                 pub_to_add.shared += 1
 
             if not created and shared:

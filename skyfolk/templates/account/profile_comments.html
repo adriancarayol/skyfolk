@@ -16,12 +16,14 @@
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
                         {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}
+                            {% if node.event_type == 1 %}
                             <span data-id="{{ node.pk }}" id="edit-comment-content"
                                   class="top-options edit-comment tooltipped"
                                   data-position="bottom"
                                   data-delay="50"
                                   data-tooltip="Editar comentario"><i class="fa fa-pencil"
                                                                       aria-hidden="true"></i></span>
+                            {% endif %}
                         {% endif %}
                         <div class="row">
                             <div class="articulo col s12">
@@ -31,7 +33,7 @@
                                          style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
                                         <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                     </div>
-                                    <div class="col l8 m12 s8">
+                                    <div class="col l10 m12 s9">
                                         <h2 class="h22"><a
                                                 href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         </h2>
@@ -39,14 +41,43 @@
                                         <div class="row">
                                             <div class="parrafo comment">
                                                 <div class="wrp-comment">{{ node.content|replace_decorators|safe }}</div>
-                                                {% if node.shared_publication %}
-                                                    <blockquote>{{ node.shared_publication.publication|safe }}</blockquote>
-                                                {% endif %}
                                             </div>
                                             <div class="show-more" id="show-comment-{{ node.pk }}">
                                                 <a href="#">+ Mostrar más</a>
                                             </div>
                                         </div>
+                                        {% if node.event_type == 2 %}
+                                            <style>
+                                                .comment .fa-user-plus {
+                                                    color: #1e88e5;
+                                                    font-style: normal;
+                                                }
+                                            </style>
+                                        {% endif %}
+                                        {% if node.shared_publication %}
+                                            <style>
+                                                .card-content img {
+                                                    width: 70px;
+                                                    height: 70px;
+                                                    box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
+                                                }
+                                                .comment .fa-share {
+                                                    color: #1e88e5;
+                                                    font-style: normal;
+                                                }
+                                            </style>
+                                            <div class="card grey lighten-5">
+                                                <div class="card-content black-text">
+                                                    {% avatar node.shared_publication.publication.author %}<br>
+                                                    <span class="card-title"><a href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
+                                                        <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
+                                                    <p>{{ node.shared_publication.publication.content|safe }}.</p>
+                                                </div>
+                                                <div class="card-action">
+                                                    <a class="blue-text text-darken-2" href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
+                                                </div>
+                                            </div>
+                                            {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -64,11 +95,12 @@
                                         {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
-                                    {% elif user.is_authenticated and user.pk != node.author.pk %} {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
-                                            <li title="No me gusta" class="hate-comment" id="fa-hate">
-                                                <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                                <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
-                                            </li>
+                                    {% elif user.is_authenticated and user.pk != node.author.pk %}
+                                        {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
+                                        <li title="No me gusta" class="hate-comment" id="fa-hate">
+                                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                            <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
+                                        </li>
                                         <li id="like-heart" title="¡Me gusta!" class="like-comment">
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
                                             <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
@@ -79,15 +111,16 @@
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
-                                {% if user.is_authenticated and user.pk != node.author.pk%}
-                                    <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
-                                            class="fa fa-tag"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
-                                {% endif %}
+                                    {% if user.is_authenticated and user.pk != node.author.pk %}
+                                        <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
+                                                class="fa fa-tag">{% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>
                     </div>
                     {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}
+                        {% if node.event_type == 1  %}
                         <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
                              class="author-controls">
                             <div class="row">
@@ -112,6 +145,7 @@
                                 </div>
                             </div>
                         </div>
+                        {% endif %}
                     {% endif %}
                     <div class="wrapper-reply">
                         {% include "account/new_reply.html" %}
