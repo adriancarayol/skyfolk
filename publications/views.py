@@ -15,7 +15,7 @@ from el_pagination.views import AjaxListView
 from django.http import JsonResponse
 from photologue.models import Photo
 from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit
-from publications.models import Publication, PublicationPhoto
+from publications.models import Publication, PublicationPhoto, SharedPublication
 from user_profile.forms import SearchForm
 from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -24,7 +24,6 @@ from emoji import Emoji
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from django.db import transaction
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -223,6 +222,7 @@ publication_photo_view = login_required(PublicationPhotoView.as_view(), login_ur
 
 
 @login_required(login_url='/')
+@transaction.atomic
 def delete_publication(request):
     logger.debug('>>>>>>>> PETICION AJAX BORRAR PUBLICACION')
     response = False
@@ -249,6 +249,11 @@ def delete_publication(request):
             publication.save(update_fields=['deleted'])
             # Publication.objects.filter(parent=publication).update(deleted=True)
             publication.get_descendants().update(deleted=True)
+            shared = publication.shared_publication  # Comprobamos si es un comentario de compartir
+            if shared:
+                shared.publication.shared -= 1
+                shared.publication.save()
+                shared.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
 
         response = True
@@ -284,22 +289,22 @@ def add_like(request):
             in_like = False
             in_hate = False
 
-            if user in publication.user_give_me_like.all(): # Usuario en lista de likes
+            if user in publication.user_give_me_like.all():  # Usuario en lista de likes
                 in_like = True
 
-            if user in publication.user_give_me_hate.all(): # Usuario en lista de hate
+            if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
                 in_hate = True
 
-            if in_like and in_hate: # Si esta en ambas listas (situacion no posible)
+            if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
                 publication.user_give_me_like.remove(user)
                 publication.user_give_me_hate.remove(user)
                 logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
 
-            if in_hate: # Si ha dado antes unlike
+            if in_hate:  # Si ha dado antes unlike
                 logger.info("Incrementando like")
                 logger.info("Decrementando hate")
                 try:
-                    publication.user_give_me_hate.remove(user) # remove from hates
+                    publication.user_give_me_hate.remove(user)  # remove from hates
                     publication.user_give_me_like.add(user)  # add to like
                     publication.hated -= 1
                     publication.liked += 1
@@ -314,7 +319,7 @@ def add_like(request):
                 data = json.dumps({'response': response, 'statuslike': statuslike})
                 return HttpResponse(data, content_type='application/json')
 
-            elif in_like: # Si ha dado antes like
+            elif in_like:  # Si ha dado antes like
                 logger.info("Decrementando like")
                 try:
                     publication.user_give_me_like.remove(request.user)
@@ -329,7 +334,7 @@ def add_like(request):
                 data = json.dumps({'response': response, 'statuslike': statuslike})
                 return HttpResponse(data, content_type='application/json')
 
-            else: # Si no ha dado like ni unlike
+            else:  # Si no ha dado like ni unlike
                 try:
                     publication.user_give_me_like.add(user)
                     publication.liked += 1
@@ -379,22 +384,22 @@ def add_hate(request):
             in_like = False
             in_hate = False
 
-            if user in publication.user_give_me_like.all(): # Usuario en lista de likes
+            if user in publication.user_give_me_like.all():  # Usuario en lista de likes
                 in_like = True
 
-            if user in publication.user_give_me_hate.all(): # Usuario en lista de hate
+            if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
                 in_hate = True
 
-            if in_like and in_hate: # Si esta en ambas listas (situacion no posible)
+            if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
                 publication.user_give_me_like.remove(user)
                 publication.user_give_me_hate.remove(user)
                 logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
 
-            if in_like: # Si ha dado antes like
+            if in_like:  # Si ha dado antes like
                 logger.info("Incrementando hate")
                 logger.info("Decrementando like")
                 try:
-                    publication.user_give_me_like.remove(user) # remove from like
+                    publication.user_give_me_like.remove(user)  # remove from like
                     publication.user_give_me_hate.add(user)  # add to hate
                     publication.liked -= 1
                     publication.hated += 1
@@ -409,7 +414,7 @@ def add_hate(request):
                 data = json.dumps({'response': response, 'statuslike': statuslike})
                 return HttpResponse(data, content_type='application/json')
 
-            elif in_hate: # Si ha dado antes hate
+            elif in_hate:  # Si ha dado antes hate
                 logger.info("Decrementando hate")
                 try:
                     publication.user_give_me_hate.remove(request.user)
@@ -424,7 +429,7 @@ def add_hate(request):
                 data = json.dumps({'response': response, 'statuslike': statuslike})
                 return HttpResponse(data, content_type='application/json')
 
-            else: # Si no ha dado like ni unlike
+            else:  # Si no ha dado like ni unlike
                 try:
                     publication.user_give_me_hate.add(user)
                     publication.hated += 1
@@ -599,16 +604,22 @@ def share_publication(request):
             if privacity and privacity != 'all':
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
-            if user in pub_to_add.user_share_me.all():
-                pub_to_add.user_share_me.remove(user)
-                pub_to_add.shared -= 1
-            else:
-                pub_to_add.user_share_me.add(user)
+            shared, created = SharedPublication.objects.get_or_create(by_user=user, publication=pub_to_add)
+
+            if created:
+                Publication.objects.create(content='Ha compartido de: <a href="/profile/%s">%s</a>' % (
+                pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared, author=user,
+                                           board_owner=user, event_type=6)
                 pub_to_add.shared += 1
+
+            if not created and shared:
+                shared.delete()
+                Publication.objects.get(shared_publication=shared).delete()
+                pub_to_add.shared -= 1
 
             pub_to_add.save()
             response = True
-            logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.user_share_me.count()))
+            logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
 
         except ObjectDoesNotExist:
             response = False

@@ -152,6 +152,18 @@ class PublicationBase(MPTTModel):
         return self.get_descendants().filter(deleted=False).count()
 
 
+class SharedPublication(models.Model):
+    """
+    Modelo para comparticiones compartidas (copiadas de un skyline a otro)
+    """
+    by_user = models.ForeignKey(User, related_name='shared_by_user')
+    created = models.DateTimeField(auto_now_add=True)
+    publication = models.ForeignKey('Publication', null=True)
+
+    class Meta:
+        unique_together = ('by_user', 'publication')
+
+
 class Publication(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
@@ -161,18 +173,19 @@ class Publication(PublicationBase):
         (2, _("new_relation")),
         (3, _("notice")),
         (4, _("relevant")),
-        (5, _("image"))
+        (5, _("image")),
+        (6, _("shared"))
     )
     author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
+    user_give_me_hate = models.ManyToManyField(User, blank=True,
+                                               related_name='hates_me')
     liked = models.PositiveIntegerField(default=0)
     hated = models.PositiveIntegerField(default=0)
     shared = models.PositiveIntegerField(default=0)
-    user_give_me_hate = models.ManyToManyField(User, blank=True,
-                                               related_name='hates_me')
-    user_share_me = models.ManyToManyField(User, blank=True,
+    shared_publication = models.ForeignKey(SharedPublication, blank=True, null=True,
                                            related_name='share_me')
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)

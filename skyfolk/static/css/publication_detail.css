@@ -224,16 +224,8 @@ a.fontawesome-cog:hover {
     cursor: pointer;
 }
 
-.options_comentarios ul .like-comment, .quote-comment, .reply-comment, .add-timeline {
+.options_comentarios ul .like-comment, .quote-comment, .reply-comment, .add-timeline, .hate-comment, .trash-comment {
     margin-left: 3%;
-}
-
-.options_comentarios ul .fa-stack, .trash-comment {
-    margin-left: 2.5%;
-}
-
-.hate-with-values {
-    margin-right: 2.5% !important;
 }
 
 .options_comentarios ul li:hover {
@@ -270,12 +262,6 @@ a.fontawesome-cog:hover {
 
 .options_comentarios ul .hate-comment:hover {
     color: #3f51b5;
-}
-
-.options_comentarios ul .fa-stack .hate-value, .wrapper-reply .reply-options ul .fa-stack .hate-value {
-    position: relative;
-    float: right;
-    left: 4px;
 }
 
 /* RESPUESTAS A COMENTARIOS */
@@ -317,17 +303,8 @@ a.fontawesome-cog:hover {
     margin-left: 2.5%;
 }
 
-.wrapper-reply .reply-options ul .fa-stack, .wrapper-reply .reply-options ul .del-reply {
+.wrapper-reply .reply-options ul .wrapper-reply .reply-options ul .del-reply {
     margin-left: 1.25%;
-}
-
-.wrapper-reply .reply-options ul .fa-stack {
-    margin-top: 1.25%;
-    top: -5px;
-}
-
-.hate-with-values {
-    margin-right: 2.5% !important;
 }
 
 .comment-reply {

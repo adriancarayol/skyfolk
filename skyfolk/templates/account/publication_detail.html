@@ -42,44 +42,37 @@
                             <div class="divider"></div>
                             <div class="options_comentarios col s12" id="options-comments">
                                 <ul>
-                                    {% if user.is_authenticated and user.username == publication.author.username %}
-                                        <!-- Si estamos visitando un perfil que no es el nuestro -->
-                                        <li class="trash-comment" title="Borrar comentario"><i
-                                                class="fa fa-trash"></i></li>
+                                    {% if user.is_authenticated and user.username == node.author.username %}
+                                        {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
+                                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
+                                        </li>
                                     {% elif user.is_authenticated and user.username == user_profile.username %}
-                                        <!-- Si estamos visitando nuestro propio perfil -->
-                                        <li class="trash-comment" title="Borrar comentario"><i
-                                                class="fa fa-trash"></i></li>
+                                        {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
+                                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
+                                        </li>
+                                    {% elif user.is_authenticated and user.pk != node.author.pk %}
+                                        {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
+                                        <li title="No me gusta" class="hate-comment" id="fa-hate">
+                                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                            <i class="fa hate-value">
+                                                {% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
+                                        </li>
+                                        <li id="like-heart" title="¡Me gusta!" class="like-comment">
+                                            <i class="fa fa-angle-up" aria-hidden="true"></i>
+                                            <i id="like-value" class="fa">
+                                                {% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
+                                        </li>
                                     {% endif %}
-                                    {% with hates=publication.pk|total_hates %}
-                                        {% if hates > 0 %}
-                                            <li title="No me gusta" class="fa-stack hate-with-values" id="fa-hate">
-                                                    <span class="hate-comment">
-                                                        <i class="fa fa-heart fa-stack-1x"></i>
-                                                        <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-                                                        <i class="fa hate-value">{{ hates }}</i>
-                                                    </span>
-                                            </li>
-                                        {% else %}
-                                            <li title="No me gusta" class="fa-stack" id="fa-hate">
-                                                    <span class="hate-comment">
-                                                        <i class="fa fa-heart fa-stack-1x"></i>
-                                                        <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-                                                        <i class="fa hate-value"></i>
-                                                    </span>
-                                            </li>
-                                        {% endif %}
-                                    {% endwith %}
-                                    <li title="¡Me gusta!" class="like-comment"><i id="like-heart"
-                                                                                   class="fa fa-heart"> {{ publication.pk|total_likes|intword }}</i>
-                                    </li>
                                     <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
                                     </i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ publication.pk }}"></i>
                                     </li>
-                                    <li title="Añadir a mi timeline" class="add-timeline"><i
-                                            class="fa fa-tag"> {{ publication.pk|total_shares|intword }}</i></li>
+                                    {% if user.is_authenticated and user.pk != node.author.pk %}
+                                        <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
+                                                class="fa fa-tag">
+                                            {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>

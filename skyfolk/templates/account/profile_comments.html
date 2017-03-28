@@ -39,6 +39,9 @@
                                         <div class="row">
                                             <div class="parrafo comment">
                                                 <div class="wrp-comment">{{ node.content|replace_decorators|safe }}</div>
+                                                {% if node.shared_publication %}
+                                                    <blockquote>{{ node.shared_publication.publication|safe }}</blockquote>
+                                                {% endif %}
                                             </div>
                                             <div class="show-more" id="show-comment-{{ node.pk }}">
                                                 <a href="#">+ Mostrar más</a>

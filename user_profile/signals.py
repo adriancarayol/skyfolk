@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile, Relationship
 from publications.models import Publication
 from datetime import datetime
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -53,3 +54,27 @@ def handle_new_relationship(sender, instance, created, **kwargs):
     logger.info(
         "POST_SAVE : New relationship, user1: {} - user2: {}".format(instance.from_person.user.username,
                                                                      instance.to_person.user.username))
+
+
+def handle_login(sender, user, request, **kwargs):
+    try:
+        profile = UserProfile.objects.get(user=user)
+        profile.is_online = True
+        profile.save(update_fields=['is_online'])
+    except Exception:
+        pass
+    print('login, is_online: {}'.format(user.profile.is_online))
+
+
+def handle_logout(sender, user, request, **kwargs):
+    try:
+        profile = UserProfile.objects.get(user=user)
+        profile.is_online = False
+        profile.save(update_fields=['is_online'])
+    except Exception:
+        pass
+    print('logout, is_online: {}'.format(user.profile.is_online))
+
+
+user_logged_in.connect(handle_login)
+user_logged_out.connect(handle_logout)
