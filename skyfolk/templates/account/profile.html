@@ -33,55 +33,91 @@ Template para el perfil de cada usuario
 
     <div class="container">
         {% if user_profile.is_active %}
+            {% comment %}
+            Formulario para citar un comentario
+            {% endcomment %}
+            <div class="row">
+                <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper">
+                    <div class="row">
+                        <div id="status" class="col s12 title-page-wrapper">
+                            <h4><i class="fa fa-quote-right" aria-hidden="true"></i> Citar publicacion</h4>
+                            <h6>Comparte esta publicación con tus seguidores</h6>
+                        </div>
+                    </div>
+                    <form id="share_publication_form" action="" method="post">{% csrf_token %}
+                        {{ publication_shared.csrftoken }}
+                        <div class="row">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    {{ publication_shared.content }}
+                                    <label for="shared_comment_content">Escribe tu mensaje</label>
+                                </div>
+                            </div>
+                        </div>
+                        {{ publication_shared.author }}
+                        {{ publication_shared.board_owner }}
+                        <div class="row">
+                            <div class="col s12">
+                                <button type="submit" id="share_publication"
+                                        class="waves-effect waves-light btn right blue">
+                                    Citar<i class="material-icons right">send</i></button>
+                                <button type="button" id="close_share_publication"
+                                        class="waves-effect waves-light btn right transparent black-text">Cerrar<i
+                                        class="material-icons right">close</i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div class="row">
                 {% include "account/card-user.html" %}
             </div>
             <div class="row clearfix">
                 <div class="col l8 m12 s12">
-                        <div class="col s12">
-                            <div id="div-separator">
-                                <div class="sidebar card" id="tab-container">
-                                    <div class="ventana-pin">
-                                        <a><i class="fa fa-times"></i></a>
-                                        <a><i class="fa fa-expand"></i></a>
-                                        <a><i class="fa fa-thumb-tack"></i></a>
-                                    </div>
-                                    <ul class="unstyled table fullwidth links">
-                                        {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}
-                                        <li class="tab" id="li-tab-comentarios"><a
-                                                href="#tab-comentarios">skyline</a></li>
-                                        <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
-                                    </ul>
-                                    <div class="unstyled content" id="hood-tabs">
-                                        {% comment %}
+                    <div class="col s12">
+                        <div id="div-separator">
+                            <div class="sidebar card" id="tab-container">
+                                <div class="ventana-pin">
+                                    <a><i class="fa fa-times"></i></a>
+                                    <a><i class="fa fa-expand"></i></a>
+                                    <a><i class="fa fa-thumb-tack"></i></a>
+                                </div>
+                                <ul class="unstyled table fullwidth links">
+                                    {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}
+                                    <li class="tab" id="li-tab-comentarios"><a
+                                            href="#tab-comentarios">skyline</a></li>
+                                    <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
+                                </ul>
+                                <div class="unstyled content" id="hood-tabs">
+                                    {% comment %}
 								            Incluimos el tab timeline
                                         {% include "account/tab-timeline.html" %}
                                         {% endcomment %}
-                                        {% comment %}
+                                    {% comment %}
 								            Incluimos el tab comentarios
 								        {% endcomment %}
-                                        <div id="tab-comentarios">
-                                            {% if publications|length == 0 %}
-                                                <!-- Si el usuario no tiene comentarios, proponemos uno -->
-                                                <div class="no-comments" id="without-comments">
-                                                    <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-                                                    <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
-                                                       class="no-comments-new-comment">
-                                                        <i class="fa fa-paper-plane fa-lg"></i>
-                                                    </a>
-                                                </div>
-                                            {% else %}
-                                                {% include "account/profile_comments.html" %}
-                                            {% endif %}
-                                        </div>
-                                        {% comment %}
+                                    <div id="tab-comentarios">
+                                        {% if publications|length == 0 %}
+                                            <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                                            <div class="no-comments" id="without-comments">
+                                                <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+                                                <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
+                                                   class="no-comments-new-comment">
+                                                    <i class="fa fa-paper-plane fa-lg"></i>
+                                                </a>
+                                            </div>
+                                        {% else %}
+                                            {% include "account/profile_comments.html" %}
+                                        {% endif %}
+                                    </div>
+                                    {% comment %}
 								Incluimos el tab amigos
 								{% endcomment %}
-                                        {% include "account/tab-amigos.html" %}
-                                    </div>
+                                    {% include "account/tab-amigos.html" %}
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </div>
                 <div class="col l4 m12 s12">
                     <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->

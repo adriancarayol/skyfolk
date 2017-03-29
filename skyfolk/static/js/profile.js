@@ -194,6 +194,7 @@ $(document).ready(function () {
     $(document).on('click', '#options-comments #add_to_skyline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
+        //$('#share-publication-wrapper').show();
         AJAX_add_timeline(caja_publicacion, tag, "publication");
     });
 
@@ -444,7 +445,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
             content += "                       <\/i><\/li>";
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>";
             content += "                    </ul>";
             content += "                </div>";
             content += "                </div>";
@@ -507,7 +508,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
             content += "                       <\/i><\/li>";
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>";
             content += "                    </ul>";
             content += "                </div>";
             content += "                </div>";
@@ -836,8 +837,9 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
         publication_id: id_pub,
         'csrfmiddlewaretoken': csrftoken
     };
-    var shared_tag = $(tag).find('.fa-tag');
+    var shared_tag = $(tag).find('.fa-quote-right');
     var count_shared = $(shared_tag).text();
+    count_shared = count_shared.replace(/ /g,'');
     $.ajax({
         url: '/publication/share/publication/',
         type: 'POST',
@@ -852,9 +854,9 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
                         if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
                             count_shared++;
                             if (count_shared > 0) {
-                                $(shared_tag).text(count_shared)
+                                $(shared_tag).text(" " + count_shared)
                             } else {
-                                $(shared_tag).text("");
+                                $(shared_tag).text(" ");
                             }
                         }
                     }
@@ -863,9 +865,9 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
                         if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
                             count_shared--;
                             if (count_shared > 0) {
-                                $(shared_tag).text(count_shared)
+                                $(shared_tag).text(" " + count_shared)
                             } else {
-                                $(shared_tag).text("");
+                                $(shared_tag).text(" ");
                             }
                         }
                     }

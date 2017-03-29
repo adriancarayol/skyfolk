@@ -21,7 +21,7 @@ from taggit.models import TaggedItem
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
-from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit
+from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
 from publications.models import Publication
 from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
@@ -159,6 +159,7 @@ def profile_view(request, username,
     context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
     context['publicationForm'] = PublicationForm(initial=initial)
     context['publication_edit'] = PublicationEdit()
+    context['publication_shared'] = SharedPublicationForm(initial=initial)
 
     # cargar lista comentarios
     try:

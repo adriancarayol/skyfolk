@@ -15,8 +15,10 @@
             <div class="row">
                 <div class="col s12">
                     <div class="row">
-                        <div class="col offset-l1 {% if node.is_root_node %}l10 m12 s12 {% else %}l9 m11 s11{% endif %} wrapper" id="pub-{{ node.pk }}"
-                             data-id="{{ user.pk }}" {% if not node.is_root_node %}style="border-right: 2px solid #1e88e5;" {% endif %}>
+                        <div class="col offset-l1 {% if node.is_root_node %}l10 m12 s12 {% else %}l9 m11 s11{% endif %} wrapper"
+                             id="pub-{{ node.pk }}"
+                             data-id="{{ user.pk }}"
+                             {% if not node.is_root_node %}style="border-right: 2px solid #1e88e5;" {% endif %}>
                             <div class="row">
                                 <div class="image col l2 m2 s2">
                                     <div class="usr-img img-responsive">{% avatar node.author %}</div>
@@ -37,6 +39,41 @@
                                             <a href="#">+ Mostrar más</a>
                                         </div>
                                     </div>
+                                    {% if node.event_type == 2 %}
+                                        <style>
+                                            .comment .fa-user-plus {
+                                                color: #1e88e5;
+                                                font-style: normal;
+                                            }
+                                        </style>
+                                    {% endif %}
+                                    {% if node.shared_publication %}
+                                        <style>
+                                            .card-content img {
+                                                width: 70px;
+                                                height: 70px;
+                                                box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
+                                            }
+
+                                            .comment .fa-share {
+                                                color: #1e88e5;
+                                                font-style: normal;
+                                            }
+                                        </style>
+                                        <div class="card grey lighten-5">
+                                            <div class="card-content black-text">
+                                                {% avatar node.shared_publication.publication.author %}<br>
+                                                <span class="card-title"><a
+                                                        href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
+                                                        <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
+                                                <p>{{ node.shared_publication.publication.content|safe }}.</p>
+                                            </div>
+                                            <div class="card-action">
+                                                <a class="blue-text text-darken-2"
+                                                   href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="row">
@@ -66,8 +103,6 @@
                                                     {% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
                                             </li>
                                         {% endif %}
-                                        <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
-                                        </i></li>
                                         <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                        id="reply-caja-comentario-{{ node.pk }}"></i>
                                         </li>

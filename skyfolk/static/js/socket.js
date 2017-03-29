@@ -68,7 +68,7 @@ var UTILS = UTILS || (function () {
                             content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
                             content += "                       <\/i><\/li>";
                             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + data.id + '"><\/i><\/li>';
-                            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+                            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>";
                             content += "                    </ul>";
                             content += "                </div>";
                             content += "                </div>";

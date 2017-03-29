@@ -131,14 +131,15 @@ def publication_detail(request, publication_id):
     """
     user = request.user
     try:
-        publication = Publication.objects.filter(id=publication_id, deleted=False).get_descendants(include_self=True).filter(deleted=False)
+        request_pub = Publication.objects.get(id=publication_id, deleted=False)
+        publication = request_pub.get_descendants(include_self=True).filter(deleted=False)
     except ObjectDoesNotExist:
         return Http404
 
-    privacity = publication[0].author.profile.is_visible(user.profile)
+    privacity = request_pub.author.profile.is_visible(user.profile)
 
     if privacity and privacity != 'all':
-        return redirect('user_profile:profile', username=publication.board_owner.username)
+        return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
     context = {
         'publication': publication

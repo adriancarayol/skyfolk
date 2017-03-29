@@ -106,14 +106,12 @@
                                             <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
                                         </li>
                                     {% endif %}
-                                    <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
-                                    </i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
                                     {% if user.is_authenticated and user.pk != node.author.pk %}
                                         <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline" {% if node.pk|user_in_shared_list:user.pk %}style="color: #bbdefb;"{% endif %}><i
-                                                class="fa fa-tag">{% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
+                                                class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
                                     {% endif %}
                                 </ul>
                             </div>
