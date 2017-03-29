@@ -836,16 +836,39 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
         publication_id: id_pub,
         'csrfmiddlewaretoken': csrftoken
     };
-
+    var shared_tag = $(tag).find('.fa-tag');
+    var count_shared = $(shared_tag).text();
     $.ajax({
         url: '/publication/share/publication/',
         type: 'POST',
         dataType: 'json',
         data: data,
         success: function (data) {
-            // borrar caja publicacion
-            if (data == true) {
-                $(tag).css('color', '#bbdefb');
+            var response = data.response;
+            if (response == true) {
+                var status = data.status;
+                    if (status == 1) {
+                        $(tag).css('color', '#bbdefb');
+                        if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                            count_shared++;
+                            if (count_shared > 0) {
+                                $(shared_tag).text(count_shared)
+                            } else {
+                                $(shared_tag).text("");
+                            }
+                        }
+                    }
+                    else if (status == 2) {
+                        $(tag).css('color', '#555');
+                        if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                            count_shared--;
+                            if (count_shared > 0) {
+                                $(shared_tag).text(count_shared)
+                            } else {
+                                $(shared_tag).text("");
+                            }
+                        }
+                    }
             } else {
                 swal({
                     title: "Fail",

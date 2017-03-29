@@ -248,6 +248,18 @@ class Publication(PublicationBase):
         self.content = self.content.replace('\n', '').replace('\r', '')
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+        bold = re.findall('\*[^\*]+\*', self.content)
+        ''' Bold para comentario '''
+        for b in bold:
+            self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
+        ''' Italic para comentario '''
+        italic = re.findall('~[^~]+~', self.content)
+        for i in italic:
+            self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
+        ''' Tachado para comentario '''
+        tachado = re.findall('\^[^\^]+\^', self.content)
+        for i in tachado:
+            self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
 
     def send_notification(self, type="pub", is_edited=False):
         """

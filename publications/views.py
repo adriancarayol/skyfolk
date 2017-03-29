@@ -131,8 +131,7 @@ def publication_detail(request, publication_id):
     """
     user = request.user
     try:
-        publication = Publication.objects.get_queryset_descendants(
-            Publication.objects.filter(id=publication_id, deleted=False), include_self=True)
+        publication = Publication.objects.filter(id=publication_id, deleted=False).get_descendants(include_self=True).filter(deleted=False)
     except ObjectDoesNotExist:
         return Http404
 
@@ -562,12 +561,14 @@ def load_more_skyline(request):
 
 
 @login_required(login_url='/')
+@transaction.atomic
 def share_publication(request):
     """
     Copia la publicacion de otro skyline
     y se comparte en el tuyo
     """
     response = False
+    status = 0
     print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
     if request.POST:
         obj_userprofile = get_object_or_404(
@@ -596,15 +597,21 @@ def share_publication(request):
                         pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared, author=user,
                     board_owner=user, event_type=6)
                 pub_to_add.shared += 1
+                pub_to_add.save()
+                response = True
+                status = 1 # Representa la comparticion de la publicacion
+                logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
+                return HttpResponse(json.dumps({'response': response, 'status': status}), content_type='application/json')
 
             if not created and shared:
-                shared.delete()
                 Publication.objects.get(shared_publication=shared).delete()
                 pub_to_add.shared -= 1
-
-            pub_to_add.save()
-            response = True
-            logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
+                shared.delete()
+                pub_to_add.save()
+                response = True
+                status = 2 # Representa la eliminacion de la comparticion
+                logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
+                return HttpResponse(json.dumps({'response': response, 'status': status}), content_type='application/json')
 
         except ObjectDoesNotExist:
             response = False

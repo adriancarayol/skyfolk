@@ -30,7 +30,7 @@
                                     <div class="row">
                                         <div class="parrafo comment">
                                             <a target="_blank">{{ node.created|naturaltime }}</a><br>
-                                            <div class="wrp-comment">{{ node.content|replace_decorators|safe }}</div>
+                                            <div class="wrp-comment">{{ node.content|safe }}</div>
                                         </div>
 
                                         <div class="show-more" id="show-comment-{{ node.pk }}">

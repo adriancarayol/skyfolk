@@ -40,7 +40,7 @@
                                         <a target="_blank" id="pub-created">{{ node.created|naturaltime }}</a>
                                         <div class="row">
                                             <div class="parrafo comment">
-                                                <div class="wrp-comment">{{ node.content|replace_decorators|safe }}</div>
+                                                <div class="wrp-comment">{{ node.content|safe }}</div>
                                             </div>
                                             <div class="show-more" id="show-comment-{{ node.pk }}">
                                                 <a href="#">+ Mostrar más</a>
@@ -97,11 +97,11 @@
                                         </li>
                                     {% elif user.is_authenticated and user.pk != node.author.pk %}
                                         {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
-                                        <li title="No me gusta" class="hate-comment" id="fa-hate">
+                                        <li title="No me gusta" class="hate-comment" id="fa-hate" {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
                                             <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
                                         </li>
-                                        <li id="like-heart" title="¡Me gusta!" class="like-comment">
+                                        <li id="like-heart" title="¡Me gusta!" class="like-comment" {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
                                             <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
                                         </li>
@@ -112,7 +112,7 @@
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
                                     {% if user.is_authenticated and user.pk != node.author.pk %}
-                                        <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
+                                        <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline" {% if node.pk|user_in_shared_list:user.pk %}style="color: #bbdefb;"{% endif %}><i
                                                 class="fa fa-tag">{% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
                                     {% endif %}
                                 </ul>
