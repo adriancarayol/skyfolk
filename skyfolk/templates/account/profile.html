@@ -37,7 +37,7 @@ Template para el perfil de cada usuario
             Formulario para citar un comentario
             {% endcomment %}
             <div class="row">
-                <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper">
+                <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper" data-id="">
                     <div class="row">
                         <div id="status" class="col s12 title-page-wrapper">
                             <h4><i class="fa fa-quote-right" aria-hidden="true"></i> Citar publicacion</h4>
@@ -50,7 +50,7 @@ Template para el perfil de cada usuario
                             <div class="row">
                                 <div class="input-field col s12">
                                     {{ publication_shared.content }}
-                                    <label for="shared_comment_content">Escribe tu mensaje</label>
+                                    <label for="shared_comment_content">Escribe un comentario adicional</label>
                                 </div>
                             </div>
                         </div>
@@ -62,7 +62,7 @@ Template para el perfil de cada usuario
                                         class="waves-effect waves-light btn right blue">
                                     Citar<i class="material-icons right">send</i></button>
                                 <button type="button" id="close_share_publication"
-                                        class="waves-effect waves-light btn right transparent black-text">Cerrar<i
+                                        class="waves-effect waves-light btn right transparent black-text">Cancelar<i
                                         class="material-icons right">close</i></button>
                             </div>
                         </div>

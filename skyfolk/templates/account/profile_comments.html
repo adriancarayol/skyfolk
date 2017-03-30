@@ -110,7 +110,7 @@
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
                                     {% if user.is_authenticated and user.pk != node.author.pk %}
-                                        <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline" {% if node.pk|user_in_shared_list:user.pk %}style="color: #bbdefb;"{% endif %}><i
+                                        <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline" {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline" style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
                                                 class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
                                     {% endif %}
                                 </ul>

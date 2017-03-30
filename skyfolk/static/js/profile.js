@@ -6,7 +6,8 @@ $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
     var tab_timeline = $('#tab-timeline');
     var tab_amigos = $('#tab-amigos');
-    var wrapper_timeline = $(tab_timeline).find('#wrapperx-timeline');
+    // var wrapper_timeline = $(tab_timeline).find('#wrapperx-timeline');
+    var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Show more - Show less */
     $(tab_comentarios).find('.wrapper').each(function () {
@@ -167,35 +168,32 @@ $(document).ready(function () {
         });
     });
 
-    /* Borrar timeline */
-
-    $(tab_timeline).find('.controles .fa-trash').on('click', function () {
-        var div_timeline = $(this).closest('.timeline-pub');
-        swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this history!",
-            type: "warning",
-            animation: "slide-from-top",
-            showConfirmButton: true,
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No God, please no!",
-            closeOnConfirm: true
-        }, function (isConfirm) {
-            if (isConfirm) {
-                AJAX_delete_timeline(div_timeline);
-            }
-        });
+    /* Agregar skyline */
+    $(document).on('click', '#options-comments #add_to_skyline', function () {
+        var tag = this;
+        $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
+        $(wrapper_shared_pub).show();
     });
 
+    /* Compartir a skyline */
+    $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
+        event.preventDefault();
+        var content = $(wrapper_shared_pub).find('#shared_comment_content').val();
+        var pub_id = $(wrapper_shared_pub).attr('data-id');
+        var tag = $('#pub-'+pub_id).find('.add-timeline').first();
+        AJAX_add_timeline(pub_id, tag, content);
+    });
 
-    /* Agregar timeline */
-    $(document).on('click', '#options-comments #add_to_skyline', function () {
+    /* Cerrar div de compartir publicacion */
+    $('#close_share_publication').click(function () {
+        $(wrapper_shared_pub).hide();
+    });
+
+    /* Eliminar skyline */
+    $(document).on('click', '#options-comments #remove_from_skyline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
-        //$('#share-publication-wrapper').show();
-        AJAX_add_timeline(caja_publicacion, tag, "publication");
+        AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
@@ -303,7 +301,7 @@ $(document).ready(function () {
         if (undefined !== last_pub && last_pub.length) {
             last_pub_id = last_pub.toString().split('-')[1];
         }
-        AJAX_load_publications($(this).data("id"), loader, last_pub_id, this);
+        AJAX_load_publications($(this).attr("data-id"), loader, last_pub_id, this);
         return false;
     });
 
@@ -516,7 +514,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "    </div>";
             $('#tab-comentarios').find('#loader_skyline').before(content);
         }
-        $(btn).data("id", publications[publications.length - 1].id);
+        $(btn).attr("data-id", publications[publications.length - 1].id);
         if (publications.length <= 19)
             $(btn).remove();
     }
@@ -558,7 +556,7 @@ function AJAX_load_publications(pub, loader, last_pub, btn) {
 function AJAX_load_skyline(loader, btn) {
     if ($(btn) === undefined || !($(btn).length)) return;
 
-    var pub = $(btn).data("id");
+    var pub = $(btn).attr("data-id");
     var data = {
         'id': pub,
         'csrfmiddlewaretoken': csrftoken
@@ -629,7 +627,7 @@ function AJAX_edit_publication(pub, content) {
 
 function AJAX_delete_publication(caja_publicacion) {
     var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
+    var id_user = $(caja_publicacion).attr('data-id'); // obtengo id
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
@@ -669,9 +667,9 @@ function AJAX_add_like(caja_publicacion, heart, type) {
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).data('publication'); // obtengo id
+        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
+    var id_user = $(caja_publicacion).attr('data-id'); // obtengo id
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
@@ -747,9 +745,9 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).data('publication'); // obtengo id
+        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
+    var id_user = $(caja_publicacion).attr('id'); // obtengo id
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
@@ -823,23 +821,18 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
 /*****************************************************/
 /********** AJAX para agregar al TIMELINE *********/
 /*****************************************************/
+function AJAX_add_timeline(pub_id, tag, data_pub) {
 
-function AJAX_add_timeline(caja_publicacion, tag, type) {
-    var id_pub;
-    if (type.localeCompare("publication") == 0) {
-        id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
-    } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).data('publication'); // obtengo id
-    }
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
     var data = {
-        userprofile_id: id_user,
-        publication_id: id_pub,
+        'publication_id': pub_id,
+        'content': data_pub,
         'csrfmiddlewaretoken': csrftoken
     };
+
     var shared_tag = $(tag).find('.fa-quote-right');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g,'');
+
     $.ajax({
         url: '/publication/share/publication/',
         type: 'POST',
@@ -850,7 +843,6 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
             if (response == true) {
                 var status = data.status;
                     if (status == 1) {
-                        $(tag).css('color', '#bbdefb');
                         if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
                             count_shared++;
                             if (count_shared > 0) {
@@ -859,9 +851,10 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
                                 $(shared_tag).text(" ");
                             }
                         }
-                    }
-                    else if (status == 2) {
-                        $(tag).css('color', '#555');
+                        $(tag).attr("id", "remove_from_skyline");
+                        $(tag).css('color', '#bbdefb');
+                        $('#share-publication-wrapper').hide();
+                    } else if (status == 2) {
                         if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
                             count_shared--;
                             if (count_shared > 0) {
@@ -870,6 +863,8 @@ function AJAX_add_timeline(caja_publicacion, tag, type) {
                                 $(shared_tag).text(" ");
                             }
                         }
+                        $(tag).attr("id", "add_to_skyline");
+                        $(tag).css('color', '#555');
                     }
             } else {
                 swal({
@@ -951,44 +946,6 @@ function AJAX_remove_bloq() {
             }
         }, error: function (rs, e) {
             // alert(rs.responseText + " " + e);
-        }
-    });
-}
-
-/*****************************************************/
-/********** AJAX para borrado de timeline ***********/
-/****************************************************/
-
-function AJAX_delete_timeline(div_timeline) {
-    var id_pub = $(div_timeline).attr('id').split('-')[1];  // obtengo id
-    var id_user = $(div_timeline).data('id'); // obtengo id
-    var data = {
-        userprofile_id: id_user,
-        timeline_id: id_pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-    //alert("id pub: " + id_pub + " id_user: " + id_user);
-    //event.preventDefault(); //stop submit
-    $.ajax({
-        url: '/timeline/remove_timeline/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-        success: function (data) {
-            // borrar caja timeline
-            if (data == true) {
-                $(div_timeline).fadeToggle("fast");
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to delete publish.",
-                    type: "error"
-                });
-            }
-        },
-        error: function (rs, e) {
-            // alert('ERROR: ' + rs.responseText + " " + e);
         }
     });
 }
