@@ -8,7 +8,7 @@ class PublicationForm(forms.ModelForm):
         model = Publication
         # Excluir atributos en el formulario.
         exclude = ['image', 'created', 'likes', 'user_give_me_like', 'hates',
-                   'user_give_me_hate', 'user_share_me', 'tags', 'deleted']
+                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 'event_type', 'liked', 'hated', 'shared']
 
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
@@ -29,7 +29,7 @@ class ReplyPublicationForm(forms.ModelForm):
         model = Publication
         # Excluir atributos en el formulario.
         exclude = ['image', 'created', 'likes', 'user_give_me_like', 'hates',
-                   'user_give_me_hate', 'user_share_me', 'tags', 'deleted']
+                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 'event_type', 'liked', 'hated', 'shared']
 
     def __init__(self, *args, **kwargs):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)
@@ -74,6 +74,22 @@ class PublicationEdit(forms.ModelForm):
         super(PublicationEdit, self).__init__(*args, **kwargs)
         self.fields['content'].widget.attrs['class'] = 'materialize-textarea'
         self.fields['content'].widget.attrs['id'] = 'edit_comment_content'
+
+    class Meta:
+        model = Publication
+        fields = ['content', ]
+
+
+class SharedPublicationForm(forms.ModelForm):
+    """
+    Formulario para compartir una publicacion existente
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(SharedPublicationForm, self).__init__(*args, **kwargs)
+        self.fields['content'].widget.attrs['class'] = 'materialize-textarea'
+        self.fields['content'].widget.attrs['id'] = 'shared_comment_content'
+        self.fields['content'].required = False
 
     class Meta:
         model = Publication

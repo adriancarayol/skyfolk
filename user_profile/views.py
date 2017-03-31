@@ -21,9 +21,8 @@ from taggit.models import TaggedItem
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
-from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit
+from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
 from publications.models import Publication
-from timeline.models import Timeline
 from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
@@ -160,21 +159,18 @@ def profile_view(request, username,
     context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
     context['publicationForm'] = PublicationForm(initial=initial)
     context['publication_edit'] = PublicationEdit()
+    context['publication_shared'] = SharedPublicationForm(initial=initial)
 
     # cargar lista comentarios
     try:
         # if user_profile.username == username:
         publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1)[:10]
                         for node in
-                        Publication.objects.filter(board_owner=user_profile, deleted=False, parent=None)[:20]]
+                        Publication.objects.filter(
+                            board_owner=user_profile, deleted=False,
+                            parent=None)[:20]]
     except ObjectDoesNotExist:
         publications = None
-
-    # cargar lista de timeline
-    try:
-        timeline = Timeline.objects.get_user_profile_events(user_profile.pk)
-    except ObjectDoesNotExist:
-        timeline = None
 
     # Establece la afinidad al perfil visitado.
     if user.pk != user_profile.pk:
@@ -193,7 +189,6 @@ def profile_view(request, username,
 
     # Contenido de las tres tabs
     context['publications'] = publications
-    context['timeline'] = timeline
     context['friends_top12'] = num_follows
 
     if extra_context is not None:

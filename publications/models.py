@@ -18,6 +18,7 @@ from notifications.signals import notify
 from django.conf import settings
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.utils.translation import gettext as _
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -147,21 +148,48 @@ class PublicationBase(MPTTModel):
         """
         return self.get_descendants().filter(level__lte=1, deleted=False).count()
 
+    def get_descendants_not_deleted(self):
+        return self.get_descendants().filter(deleted=False).count()
+
+
+class SharedPublication(models.Model):
+    """
+    Modelo para comparticiones compartidas (copiadas de un skyline a otro)
+    """
+    by_user = models.ForeignKey(User, related_name='shared_by_user')
+    created = models.DateTimeField(auto_now_add=True)
+    publication = models.ForeignKey('Publication', null=True)
+
+    class Meta:
+        unique_together = ('by_user', 'publication')
+
 
 class Publication(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
+    EVENT_CHOICES = (
+        (1, _("publication")),
+        (2, _("new_relation")),
+        (3, _("notice")),
+        (4, _("relevant")),
+        (5, _("image")),
+        (6, _("shared"))
+    )
     author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_me')
-    user_share_me = models.ManyToManyField(User, blank=True,
+    liked = models.PositiveIntegerField(default=0)
+    hated = models.PositiveIntegerField(default=0)
+    shared = models.PositiveIntegerField(default=0)
+    shared_publication = models.ForeignKey(SharedPublication, blank=True, null=True,
                                            related_name='share_me')
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
+    event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
 
     # objects = PublicationManager()
 
@@ -220,6 +248,18 @@ class Publication(PublicationBase):
         self.content = self.content.replace('\n', '').replace('\r', '')
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+        bold = re.findall('\*[^\*]+\*', self.content)
+        ''' Bold para comentario '''
+        for b in bold:
+            self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
+        ''' Italic para comentario '''
+        italic = re.findall('~[^~]+~', self.content)
+        for i in italic:
+            self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
+        ''' Tachado para comentario '''
+        tachado = re.findall('\^[^\^]+\^', self.content)
+        for i in tachado:
+            self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
 
     def send_notification(self, type="pub", is_edited=False):
         """

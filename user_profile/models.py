@@ -9,7 +9,6 @@ from django.utils.http import urlencode
 from taggit.managers import TaggableManager
 
 import publications
-import timeline
 from notifications.models import Notification
 from photologue.models import Photo
 
@@ -144,6 +143,7 @@ class UserProfile(models.Model):
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     is_first_login = models.BooleanField(default=True)
+    is_online = models.BooleanField(default=False)
     tags = TaggableManager(blank=True)
     personal_pin = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     objects = UserProfileManager()

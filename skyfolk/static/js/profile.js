@@ -6,7 +6,8 @@ $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
     var tab_timeline = $('#tab-timeline');
     var tab_amigos = $('#tab-amigos');
-    var wrapper_timeline = $(tab_timeline).find('#wrapperx-timeline');
+    // var wrapper_timeline = $(tab_timeline).find('#wrapperx-timeline');
+    var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Show more - Show less */
     $(tab_comentarios).find('.wrapper').each(function () {
@@ -167,34 +168,32 @@ $(document).ready(function () {
         });
     });
 
-    /* Borrar timeline */
-
-    $(tab_timeline).find('.controles .fa-trash').on('click', function () {
-        var div_timeline = $(this).closest('.timeline-pub');
-        swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this history!",
-            type: "warning",
-            animation: "slide-from-top",
-            showConfirmButton: true,
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No God, please no!",
-            closeOnConfirm: true
-        }, function (isConfirm) {
-            if (isConfirm) {
-                AJAX_delete_timeline(div_timeline);
-            }
-        });
+    /* Agregar skyline */
+    $(document).on('click', '#options-comments #add_to_skyline', function () {
+        var tag = this;
+        $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
+        $(wrapper_shared_pub).show();
     });
 
+    /* Compartir a skyline */
+    $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
+        event.preventDefault();
+        var content = $(wrapper_shared_pub).find('#shared_comment_content').val();
+        var pub_id = $(wrapper_shared_pub).attr('data-id');
+        var tag = $('#pub-'+pub_id).find('.add-timeline').first();
+        AJAX_add_timeline(pub_id, tag, content);
+    });
 
-    /* Agregar timeline */
-    $(document).on('click', '#options-comments .fa-tag', function () {
+    /* Cerrar div de compartir publicacion */
+    $('#close_share_publication').click(function () {
+        $(wrapper_shared_pub).hide();
+    });
+
+    /* Eliminar skyline */
+    $(document).on('click', '#options-comments #remove_from_skyline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
-        AJAX_add_timeline(caja_publicacion, tag, "publication");
+        AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
@@ -210,26 +209,6 @@ $(document).ready(function () {
         var heart = this;
         AJAX_add_hate(caja_publicacion, heart, "publication");
     });
-
-    /* Añadir publicacion de timeline a mi timeline */
-    $(wrapper_timeline).find('#controls-timeline').find('#add-timeline').on('click', function () {
-        var caja_publicacion = $(this).closest('.timeline-pub');
-        var tag = this;
-        AJAX_add_timeline(caja_publicacion, tag, "timeline");
-    });
-    /* Añadir me gusta a comentario en timeline */
-    $(wrapper_timeline).find('#controls-timeline').find('#like-heart-timeline').on('click', function () {
-        var caja_publicacion = $(this).closest('.timeline-pub');
-        var heart = this;
-        AJAX_add_like(caja_publicacion, heart, "timeline");
-    });
-    /* Añadir no me gusta a comentario en timeline */
-    $(wrapper_timeline).find('#controls-timeline').find('#fa-hate-timeline').on('click', function () {
-        var caja_publicacion = $(this).closest('.timeline-pub');
-        var heart = this;
-        AJAX_add_hate(caja_publicacion, heart, "timeline");
-    });
-
 
     /* FUNCIONES AJAX PARA TABS DE PERFIL */
 
@@ -322,7 +301,7 @@ $(document).ready(function () {
         if (undefined !== last_pub && last_pub.length) {
             last_pub_id = last_pub.toString().split('-')[1];
         }
-        AJAX_load_publications($(this).data("id"), loader, last_pub_id, this);
+        AJAX_load_publications($(this).attr("data-id"), loader, last_pub_id, this);
         return false;
     });
 
@@ -464,7 +443,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
             content += "                       <\/i><\/li>";
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>";
             content += "                    </ul>";
             content += "                </div>";
             content += "                </div>";
@@ -527,7 +506,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
             content += "                       <\/i><\/li>";
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
+            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>";
             content += "                    </ul>";
             content += "                </div>";
             content += "                </div>";
@@ -535,8 +514,8 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "    </div>";
             $('#tab-comentarios').find('#loader_skyline').before(content);
         }
-        $(btn).data("id", publications[publications.length - 1].id);
-        if (publications.length <=19)
+        $(btn).attr("data-id", publications[publications.length - 1].id);
+        if (publications.length <= 19)
             $(btn).remove();
     }
 }
@@ -577,7 +556,7 @@ function AJAX_load_publications(pub, loader, last_pub, btn) {
 function AJAX_load_skyline(loader, btn) {
     if ($(btn) === undefined || !($(btn).length)) return;
 
-    var pub = $(btn).data("id");
+    var pub = $(btn).attr("data-id");
     var data = {
         'id': pub,
         'csrfmiddlewaretoken': csrftoken
@@ -648,7 +627,7 @@ function AJAX_edit_publication(pub, content) {
 
 function AJAX_delete_publication(caja_publicacion) {
     var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
+    var id_user = $(caja_publicacion).attr('data-id'); // obtengo id
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
@@ -688,9 +667,9 @@ function AJAX_add_like(caja_publicacion, heart, type) {
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).data('publication'); // obtengo id
+        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
+    var id_user = $(caja_publicacion).attr('data-id'); // obtengo id
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
@@ -715,8 +694,20 @@ function AJAX_add_like(caja_publicacion, heart, type) {
                     } else if (status == 2) {
                         $(heart).css('color', '#555');
                         countLikes--;
+                    } else if (status == 3) {
+                        $(heart).css('color', '#f06292');
+                        var hatesObj = $(heart).prev();
+                        var hates = hatesObj.find(".hate-value");
+                        var countHates = hates.text();
+                        countHates--;
+                        if (countHates <= 0) {
+                            hates.text('');
+                        } else
+                            hates.text(countHates);
+                        $(hatesObj).css('color', '#555');
+                        countLikes++;
                     }
-                    if (countLikes == 0) {
+                    if (countLikes <= 0) {
                         numLikes.text('');
                     } else {
                         numLikes.text(countLikes);
@@ -754,9 +745,9 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).data('publication'); // obtengo id
+        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
+    var id_user = $(caja_publicacion).attr('id'); // obtengo id
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
@@ -771,23 +762,36 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
         success: function (data) {
             var statusOk = 1;
             var statusNo = 2;
+            var statusInLike = 3;
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find(".hate-value");
-            var countLikes = numLikes.text();
+            var numHates = $(heart).find(".hate-value");
+            var countHates = numHates.text();
             if (response == true) {
-                if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
                     if (status === statusOk) {
                         $(heart).css('color', '#ba68c8');
-                        countLikes++;
+                        countHates++;
                     } else if (status === statusNo) {
                         $(heart).css('color', '#555');
+                        countHates--;
+                    } else if (status === statusInLike) {
+                        $(heart).css('color', '#ba68c8');
+                        countHates++;
+                        var likesObj = $(heart).next();
+                        var likes = likesObj.find("#like-value");
+                        var countLikes = likes.text();
                         countLikes--;
+                        if (countLikes <= 0) {
+                            likes.text('');
+                        } else
+                            likes.text(countLikes);
+                        $(likesObj).css('color', '#555');
                     }
-                    if (countLikes == 0) {
-                        numLikes.text("");
+                    if (countHates <= 0) {
+                        numHates.text("");
                     } else {
-                        numLikes.text(countLikes);
+                        numHates.text(countHates);
                     }
                 } else {
                     if (status === statusOk) {
@@ -817,30 +821,51 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
 /*****************************************************/
 /********** AJAX para agregar al TIMELINE *********/
 /*****************************************************/
+function AJAX_add_timeline(pub_id, tag, data_pub) {
 
-function AJAX_add_timeline(caja_publicacion, tag, type) {
-    var id_pub;
-    if (type.localeCompare("publication") == 0) {
-        id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
-    } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).data('publication'); // obtengo id
-    }
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
     var data = {
-        userprofile_id: id_user,
-        publication_id: id_pub,
+        'publication_id': pub_id,
+        'content': data_pub,
         'csrfmiddlewaretoken': csrftoken
     };
-    //event.preventDefault(); //stop submit
+
+    var shared_tag = $(tag).find('.fa-quote-right');
+    var count_shared = $(shared_tag).text();
+    count_shared = count_shared.replace(/ /g,'');
+
     $.ajax({
-        url: '/timeline/add_to_timeline/',
+        url: '/publication/share/publication/',
         type: 'POST',
         dataType: 'json',
         data: data,
         success: function (data) {
-            // borrar caja publicacion
-            if (data == true) {
-                $(tag).css('color', '#bbdefb');
+            var response = data.response;
+            if (response == true) {
+                var status = data.status;
+                    if (status == 1) {
+                        if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                            count_shared++;
+                            if (count_shared > 0) {
+                                $(shared_tag).text(" " + count_shared)
+                            } else {
+                                $(shared_tag).text(" ");
+                            }
+                        }
+                        $(tag).attr("id", "remove_from_skyline");
+                        $(tag).css('color', '#bbdefb');
+                        $('#share-publication-wrapper').hide();
+                    } else if (status == 2) {
+                        if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                            count_shared--;
+                            if (count_shared > 0) {
+                                $(shared_tag).text(" " + count_shared)
+                            } else {
+                                $(shared_tag).text(" ");
+                            }
+                        }
+                        $(tag).attr("id", "add_to_skyline");
+                        $(tag).css('color', '#555');
+                    }
             } else {
                 swal({
                     title: "Fail",
@@ -921,44 +946,6 @@ function AJAX_remove_bloq() {
             }
         }, error: function (rs, e) {
             // alert(rs.responseText + " " + e);
-        }
-    });
-}
-
-/*****************************************************/
-/********** AJAX para borrado de timeline ***********/
-/****************************************************/
-
-function AJAX_delete_timeline(div_timeline) {
-    var id_pub = $(div_timeline).attr('id').split('-')[1];  // obtengo id
-    var id_user = $(div_timeline).data('id'); // obtengo id
-    var data = {
-        userprofile_id: id_user,
-        timeline_id: id_pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-    //alert("id pub: " + id_pub + " id_user: " + id_user);
-    //event.preventDefault(); //stop submit
-    $.ajax({
-        url: '/timeline/remove_timeline/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-        success: function (data) {
-            // borrar caja timeline
-            if (data == true) {
-                $(div_timeline).fadeToggle("fast");
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to delete publish.",
-                    type: "error"
-                });
-            }
-        },
-        error: function (rs, e) {
-            // alert('ERROR: ' + rs.responseText + " " + e);
         }
     });
 }

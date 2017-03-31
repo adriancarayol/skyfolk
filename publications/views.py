@@ -8,22 +8,20 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
-from el_pagination.views import AjaxListView
 from django.http import JsonResponse
 from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit
-from publications.models import Publication, PublicationPhoto
-from timeline.models import Timeline, EventTimeline
+from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit, SharedPublicationForm
+from publications.models import Publication, PublicationPhoto, SharedPublication
 from user_profile.forms import SearchForm
 from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from django.db import transaction
 from emoji import Emoji
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
+from django.db import transaction
+from .utils import parse_string
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -68,7 +66,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.author = emitter
                 publication.board_owner = board_owner
 
-                publication.add_hashtag()  # add hashtags
                 publication.parse_content()  # parse publication content
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
@@ -87,6 +84,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.save()  # Creamos publicacion
                 publication.parse_mentions()  # add mentions
                 publication.content = Emoji.replace(publication.content)
+                publication.add_hashtag()  # add hashtags
                 publication.save(update_fields=['content'],
                                  new_comment=True)  # Guardamos la publicacion si no hay errores
 
@@ -128,55 +126,27 @@ class PublicationsListView(AjaxableResponseMixin, ListView):
 """
 
 
-class PublicationDetailView(AjaxListView):
+def publication_detail(request, publication_id):
     """
-    Vista extendida de una publicacion
+    Muestra el thread de una conversacion
     """
-    context_object_name = "publications"
-    template_name = "account/publication_detail.html"
-    page_template = "account/publication_detail_entry.html"
+    user = request.user
+    try:
+        request_pub = Publication.objects.get(id=publication_id, deleted=False)
+        publication = request_pub.get_descendants(include_self=True).filter(deleted=False)
+    except ObjectDoesNotExist:
+        return Http404
 
-    def __init__(self):
-        self.publication = None
-        super(PublicationDetailView, self).__init__()
+    privacity = request_pub.author.profile.is_visible(user.profile)
 
-    def dispatch(self, request, *args, **kwargs):
-        self.publication = get_object_or_404(Publication, id=self.kwargs['publication_id'], deleted=False)
-        if self.user_pass_test():
-            return super(PublicationDetailView, self).dispatch(request, *args, **kwargs)
-        else:
-            return redirect('user_profile:profile', username=self.publication.author.username)
+    if privacity and privacity != 'all':
+        return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
-    def get_queryset(self):
-        return Publication.objects.filter(parent=self.publication.pk, deleted=False).order_by('created')
+    context = {
+        'publication': publication
+    }
 
-    def get_context_data(self, **kwargs):
-        context = super(PublicationDetailView, self).get_context_data(**kwargs)
-        user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publication'] = self.publication
-        context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
-        context['notifications'] = user.notifications.unread()
-        return context
-
-    def user_pass_test(self):
-        """
-        Comprueba si un usuario tiene permisos
-        para ver la galeria solicitada.
-        """
-        user = self.request.user
-        user_profile = self.publication.author.profile
-
-        visibility = user_profile.is_visible(user.profile)
-
-        if visibility == ("nothing" or "both" or "followers" or "block"):
-            return False
-        return True
-
-
-publication_detail = login_required(PublicationDetailView.as_view(), login_url='/')
+    return render(request, "account/publication_detail.html", context)
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -222,6 +192,7 @@ publication_photo_view = login_required(PublicationPhotoView.as_view(), login_ur
 
 
 @login_required(login_url='/')
+@transaction.atomic
 def delete_publication(request):
     logger.debug('>>>>>>>> PETICION AJAX BORRAR PUBLICACION')
     response = False
@@ -248,13 +219,12 @@ def delete_publication(request):
             publication.save(update_fields=['deleted'])
             # Publication.objects.filter(parent=publication).update(deleted=True)
             publication.get_descendants().update(deleted=True)
+            shared = publication.shared_publication  # Comprobamos si es un comentario de compartir
+            if shared:
+                shared.publication.shared -= 1
+                shared.publication.save()
+                shared.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
-
-        # Borramos timeline del comentario
-        try:
-            EventTimeline.objects.filter(publication=request.POST['publication_id']).delete()
-        except ObjectDoesNotExist:
-            pass
 
         response = True
     return HttpResponse(json.dumps(response),
@@ -263,6 +233,7 @@ def delete_publication(request):
 
 
 @login_required(login_url='/')
+@transaction.atomic
 def add_like(request):
     response = False
     statuslike = 0
@@ -276,49 +247,93 @@ def add_like(request):
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
+        privacity = publication.author.profile.is_visible(user.profile)
+
+        if privacity and privacity != 'all':
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
+
         # Mostrar los usuarios que han dado un me gusta a ese comentario
         logger.info("USUARIO DA LIKE")
         logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
         logger.info("(PERFIL DE USUARIO): " + publication.author.username + " PK_ID -> " + str(publication.author.pk))
 
-        if user.pk != publication.author.pk and user not in publication.user_give_me_like.all() \
-                and user not in publication.user_give_me_hate.all():
+        if user.pk != publication.author.pk:
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
-            # tampoco si el usuario ya ha dado like antes.
-            logger.info("Incrementando like")
-            try:
-                publication.user_give_me_like.add(request.user)  # add users like
-                publication.save()
-                response = True
-                statuslike = 1
+            in_like = False
+            in_hate = False
 
-            except ObjectDoesNotExist:
-                response = False
-                statuslike = 0
+            if user in publication.user_give_me_like.all():  # Usuario en lista de likes
+                in_like = True
 
-        elif user.pk != publication.author.pk and user in publication.user_give_me_like.all() \
-                and user not in publication.user_give_me_hate.all():
-            logger.info("Decrementando like")
-            try:
-                publication.user_give_me_like.remove(request.user)
-                publication.save()
-                response = True
-                statuslike = 2
-            except ObjectDoesNotExist:
-                response = False
-                statuslike = 0
+            if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
+                in_hate = True
+
+            if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
+                publication.user_give_me_like.remove(user)
+                publication.user_give_me_hate.remove(user)
+                logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+
+            if in_hate:  # Si ha dado antes unlike
+                logger.info("Incrementando like")
+                logger.info("Decrementando hate")
+                try:
+                    publication.user_give_me_hate.remove(user)  # remove from hates
+                    publication.user_give_me_like.add(user)  # add to like
+                    publication.hated -= 1
+                    publication.liked += 1
+                    publication.save()
+                    response = True
+                    statuslike = 3
+
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
+                data = json.dumps({'response': response, 'statuslike': statuslike})
+                return HttpResponse(data, content_type='application/json')
+
+            elif in_like:  # Si ha dado antes like
+                logger.info("Decrementando like")
+                try:
+                    publication.user_give_me_like.remove(request.user)
+                    publication.liked -= 1
+                    publication.save()
+                    response = True
+                    statuslike = 2
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
+                data = json.dumps({'response': response, 'statuslike': statuslike})
+                return HttpResponse(data, content_type='application/json')
+
+            else:  # Si no ha dado like ni unlike
+                try:
+                    publication.user_give_me_like.add(user)
+                    publication.liked += 1
+                    publication.save()
+                    response = True
+                    statuslike = 1
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
         else:
             response = False
             statuslike = 0
+
     logger.info("Fin like comentario ---> Response" + str(response)
                 + " Estado" + str(statuslike))
+
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
 
 
 @login_required(login_url='/')
+@transaction.atomic
 def add_hate(request):
     response = False
     statuslike = 0
@@ -332,42 +347,85 @@ def add_hate(request):
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
+        privacity = publication.author.profile.is_visible(user.profile)
+
+        if privacity and privacity != 'all':
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
+
         # Mostrar los usuarios que han dado un me gusta a ese comentario
         logger.info("USUARIO DA HATE")
         logger.info("(USUARIO PETICIÓN): " + user.username)
         logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
-        if user.pk != publication.author.pk and user not in publication.user_give_me_like.all() \
-                and user not in publication.user_give_me_hate.all():
+        if user.pk != publication.author.pk:
             # Si el escritor del comentario
             # es el que pulsa el boton de like
             # no dejamos que incremente el contador
             # tampoco si el usuario ya ha dado like antes.
-            logger.debug("Incrementando hate")
-            try:
-                publication.user_give_me_hate.add(user)  # add users like
-                publication.save()
-                response = True
-                statuslike = 1
+            in_like = False
+            in_hate = False
 
-            except ObjectDoesNotExist:
-                response = False
-                statuslike = 0
-        elif user.pk != publication.author.pk and user in publication.user_give_me_hate.all() \
-                and user not in publication.user_give_me_like.all():
-            logger.debug("Decrementando hate")
-            try:
+            if user in publication.user_give_me_like.all():  # Usuario en lista de likes
+                in_like = True
+
+            if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
+                in_hate = True
+
+            if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
+                publication.user_give_me_like.remove(user)
                 publication.user_give_me_hate.remove(user)
-                publication.save()
-                response = True
-                statuslike = 2
-            except ObjectDoesNotExist:
-                response = False
-                statuslike = 0
+                logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+
+            if in_like:  # Si ha dado antes like
+                logger.info("Incrementando hate")
+                logger.info("Decrementando like")
+                try:
+                    publication.user_give_me_like.remove(user)  # remove from like
+                    publication.user_give_me_hate.add(user)  # add to hate
+                    publication.liked -= 1
+                    publication.hated += 1
+                    publication.save()
+                    response = True
+                    statuslike = 3
+
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
+                data = json.dumps({'response': response, 'statuslike': statuslike})
+                return HttpResponse(data, content_type='application/json')
+
+            elif in_hate:  # Si ha dado antes hate
+                logger.info("Decrementando hate")
+                try:
+                    publication.user_give_me_hate.remove(request.user)
+                    publication.hated -= 1
+                    publication.save()
+                    response = True
+                    statuslike = 2
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
+
+                data = json.dumps({'response': response, 'statuslike': statuslike})
+                return HttpResponse(data, content_type='application/json')
+
+            else:  # Si no ha dado like ni unlike
+                try:
+                    publication.user_give_me_hate.add(user)
+                    publication.hated += 1
+                    publication.save()
+                    response = True
+                    statuslike = 1
+                except IntegrityError:
+                    response = False
+                    statuslike = 0
         else:
             response = False
             statuslike = 0
-    logger.info("Fin like comentario ---> Response" + str(response)
+
+    logger.info("Fin hate comentario ---> Response" + str(response)
                 + " Estado" + str(statuslike))
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
@@ -385,7 +443,9 @@ def edit_publication(request):
         if publication.author.id != user.id:
             return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
-        print(request.POST.get('content', None))
+        if publication.event_type != 1:
+            return JsonResponse({'data': "No puedes editar este tipo de comentario"})
+
         publication.content = request.POST.get('content', None)
 
         publication.add_hashtag()  # add hashtags
@@ -499,3 +559,86 @@ def load_more_skyline(request):
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True
     return JsonResponse(data)
+
+
+@login_required(login_url='/')
+@transaction.atomic
+def share_publication(request):
+    """
+    Copia la publicacion de otro skyline
+    y se comparte en el tuyo
+    """
+    response = False
+    status = 0
+    print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
+    if request.POST:
+        obj_pub = request.POST.get('publication_id', None)
+        user = request.user
+        form = SharedPublicationForm(request.POST or None)
+
+        if form.is_valid():
+            try:
+                pub_to_add = Publication.objects.get(pk=obj_pub)
+
+                if pub_to_add.author == user:
+                    return HttpResponse(json.dumps(response), content_type='application/json')
+
+                privacity = pub_to_add.author.profile.is_visible(user.profile)
+
+                if privacity and privacity != 'all':
+                    return HttpResponse(json.dumps(response), content_type='application/json')
+
+                shared, created = SharedPublication.objects.get_or_create(by_user=user, publication=pub_to_add)
+
+                if created:
+                    content = request.POST.get('content', None)
+
+                    if content:
+
+                        is_correct_content = False
+                        pub_content = parse_string(content) # Comprobamos que el comentario sea correcto
+                        soup = BeautifulSoup(pub_content)  # Buscamos si entre los tags hay contenido
+                        for tag in soup.find_all(recursive=True):
+                            if tag.text and not tag.text.isspace():
+                                is_correct_content = True
+                                break
+
+                        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+                            logger.info('Publicacion contiene espacios o no tiene texto')
+                            raise IntegrityError('El comentario esta vacio')
+
+                        if pub_content.isspace():  # Comprobamos si el comentario esta vacio
+                            raise IntegrityError('El comentario esta vacio')
+
+                        Publication.objects.create(
+                            content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
+                                pub_to_add.author.username, pub_to_add.author.username, pub_content), shared_publication=shared,
+                            author=user,
+                            board_owner=user, event_type=6)
+                    else:
+                        Publication.objects.create(
+                            content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
+                                pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared, author=user,
+                            board_owner=user, event_type=6)
+
+                    pub_to_add.shared += 1
+                    pub_to_add.save()
+                    response = True
+                    status = 1 # Representa la comparticion de la publicacion
+                    logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
+                    return HttpResponse(json.dumps({'response': response, 'status': status}), content_type='application/json')
+
+                if not created and shared:
+                    Publication.objects.get(shared_publication=shared).delete()
+                    pub_to_add.shared -= 1
+                    shared.delete()
+                    pub_to_add.save()
+                    response = True
+                    status = 2 # Representa la eliminacion de la comparticion
+                    logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
+                    return HttpResponse(json.dumps({'response': response, 'status': status}), content_type='application/json')
+
+            except ObjectDoesNotExist:
+                response = False
+
+        return HttpResponse(json.dumps(response), content_type='application/json')

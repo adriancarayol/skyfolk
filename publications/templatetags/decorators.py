@@ -2,51 +2,29 @@ import re
 
 from django import template
 
-from publications.models import Publication
+from publications.models import Publication, SharedPublication
 
 register = template.Library()
 
-
-# Remplaza ocurrencias en el contenido del comentario
-@register.filter(name='replace_decorators')
-def replace_tags(value):
-    bold = re.findall('\*[^\*]+\*', value)
-    ''' Bold para comentario '''
-    for b in bold:
-        value = value.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
-    ''' Italic para comentario '''
-    italic = re.findall('~[^~]+~', value)
-    for i in italic:
-        value = value.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
-    ''' Tachado para comentario '''
-    tachado = re.findall('\^[^\^]+\^', value)
-    for i in tachado:
-        value = value.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
-    return value
-
-
 # Devuelve el numero total de veces que se ha compartido un comentario
-@register.filter(name='total_shares')
-def total_shares(pub):
-    total = Publication.objects.get(pk=pub).user_share_me.count()
-    if total > 0:
-        return total
-    else:
-        return ""
+@register.filter(name='user_in_liked_list')
+def user_in_liked_list(pub, user_pk):
+    if Publication.objects.filter(id=pub, user_give_me_like__id=user_pk).exists():
+        return True
+    return False
 
 
 # Devuelve el numero total de me gustas
-@register.filter(name='total_likes')
-def total_likes(pub):
-    total = Publication.objects.get(pk=pub).user_give_me_like.count()
-    if total > 0:
-        return total
-    else:
-        return ""
+@register.filter(name='user_in_hated_list')
+def user_in_hated_list(pub, user_pk):
+    if Publication.objects.filter(id=pub, user_give_me_hate__id=user_pk).exists():
+        return True
+    return False
 
 
 # Devuelve el numero total de no me gusta
-@register.filter(name='total_hates')
-def total_hates(pub):
-    total = Publication.objects.get(pk=pub).user_give_me_hate.count()
-    return total
+@register.filter(name='user_in_shared_list')
+def user_in_shared_list(pub, user_pk):
+    if SharedPublication.objects.filter(publication_id=pub, by_user=user_pk).exists():
+        return True
+    return False

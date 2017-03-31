@@ -642,6 +642,7 @@ class Photo(ImageModel):
             if photo == self:
                 return previous
             previous = photo
+        return None
 
     def get_next_in_gallery(self):
         """Find the neighbour of this photo in the supplied gallery.

@@ -6,7 +6,7 @@ from celery.utils.log import get_task_logger
 logger = get_task_logger(__name__)
 
 
-@periodic_task(run_every=crontab(minute="*/1"))
+@periodic_task(run_every=crontab(hour=4, minute=30, day_of_week=1))
 def clean_deleted_publications():
     publications = Publication.objects.filter(deleted=True)
     for publication in publications:
