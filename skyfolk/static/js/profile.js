@@ -485,6 +485,16 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                        <a href=\"#\">+ Mostrar más<\/a>";
             content += "                    </div>";
             content += "                    </div>";
+            if (publications[i].event_type === 2) {
+                         content += '<div class="card grey lighten-5">';
+            content += '<div class="card-content black-text">';
+            content += '<img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"><br>';
+            content += '<span class="card-title"><a href="/profile/'+publications[i].author_username+'">@'+publications[i].author_username+'</a>';
+            content += '<i class="blue-text text-darken-2"> '+publications[i].created+'</i></span>';
+            content += '<p>'+publications[i].content+'</p></div>';
+            content += '<div class="card-action">';
+            content += '<a class="blue-text text-darken-2" href="/publication/'+publications[i].id+'">Ver</a></div></div>';
+            }
             content += "                    </div>";
             content += "                    </div>";
             content += "                    </div>";
@@ -949,3 +959,4 @@ function AJAX_remove_bloq() {
         }
     });
 }
+
