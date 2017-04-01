@@ -18,10 +18,12 @@ from user_profile.forms import SearchForm
 from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from emoji import Emoji
+from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from django.db import transaction
 from .utils import parse_string
+from dal import autocomplete
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -596,7 +598,7 @@ def share_publication(request):
                     if content:
 
                         is_correct_content = False
-                        pub_content = parse_string(content) # Comprobamos que el comentario sea correcto
+                        pub_content = parse_string(content)  # Comprobamos que el comentario sea correcto
                         soup = BeautifulSoup(pub_content)  # Buscamos si entre los tags hay contenido
                         for tag in soup.find_all(recursive=True):
                             if tag.text and not tag.text.isspace():
@@ -612,21 +614,24 @@ def share_publication(request):
 
                         Publication.objects.create(
                             content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
-                                pub_to_add.author.username, pub_to_add.author.username, pub_content), shared_publication=shared,
+                                pub_to_add.author.username, pub_to_add.author.username, pub_content),
+                            shared_publication=shared,
                             author=user,
                             board_owner=user, event_type=6)
                     else:
                         Publication.objects.create(
                             content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
-                                pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared, author=user,
+                                pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared,
+                            author=user,
                             board_owner=user, event_type=6)
 
                     pub_to_add.shared += 1
                     pub_to_add.save()
                     response = True
-                    status = 1 # Representa la comparticion de la publicacion
+                    status = 1  # Representa la comparticion de la publicacion
                     logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
-                    return HttpResponse(json.dumps({'response': response, 'status': status}), content_type='application/json')
+                    return HttpResponse(json.dumps({'response': response, 'status': status}),
+                                        content_type='application/json')
 
                 if not created and shared:
                     Publication.objects.get(shared_publication=shared).delete()
@@ -634,9 +639,10 @@ def share_publication(request):
                     shared.delete()
                     pub_to_add.save()
                     response = True
-                    status = 2 # Representa la eliminacion de la comparticion
+                    status = 2  # Representa la eliminacion de la comparticion
                     logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
-                    return HttpResponse(json.dumps({'response': response, 'status': status}), content_type='application/json')
+                    return HttpResponse(json.dumps({'response': response, 'status': status}),
+                                        content_type='application/json')
 
             except ObjectDoesNotExist:
                 response = False

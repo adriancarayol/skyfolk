@@ -1,5 +1,5 @@
 from django import forms
-
+from dal import autocomplete
 from publications.models import Publication, PublicationPhoto
 
 

@@ -1,4 +1,4 @@
-    $.getJSON('/emoji/all.json', function (data) {
+$.getJSON('/emoji/all.json', function (data) {
     $('#message2, #message-reply').textcomplete([
         { // emoji strategy
             match: /\B:([\-+\w]*)$/,
