@@ -1,3 +1,4 @@
+var keyPressTimeout;
 $(window).ready(function () {
     $("#loader").fadeOut("slow");
 
@@ -273,6 +274,40 @@ $(document).ready(function () {
         return false;
     });
 
+    // Search users
+    $('#id_searchText').on("keydown", function (event) {
+        clearTimeout(keyPressTimeout);
+        keyPressTimeout = setTimeout(function () {
+                var data = {
+                    'value': $('#id_searchText').val()
+                };
+                $.ajax({
+                    url: '/pre_search/users/',
+                    type: "GET",
+                    dataType: "json",
+                    data: data,
+                    success: function (result) {
+                        $('#id_searchText').atwho({
+                            at: '',
+                            searchKey: "username",
+                            insertTpl: "${username}",
+                            displayTpl: "<li data-value='(${username}, ${username})'><img src='${avatar}' width='30px' height='30px'> ${username} <small>${first_name} ${last_name}</small></li>",
+                            data: result.result,
+                            limit: 20,
+                            callback: {
+                                filter: function (query, data, search_key) {
+                                    return $.map(data, function (item, i) {
+                                        return item[search_key].toLowerCase().indexOf(query) < 0 ? null : item
+                                    })
+                                }
+                            }
+                        });
+                    }
+                });
+            },
+            250
+        );
+    });
 }); // END DOCUMENT READY
 
 /* COMPLEMENTARIO PARA PETICIONES AJAX */

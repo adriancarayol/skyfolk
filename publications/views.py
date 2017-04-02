@@ -12,10 +12,8 @@ from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
 from django.http import JsonResponse
 from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit, SharedPublicationForm
+from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm
 from publications.models import Publication, PublicationPhoto, SharedPublication
-from user_profile.forms import SearchForm
-from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from emoji import Emoji
 from django.contrib.auth.models import User
@@ -23,7 +21,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from django.db import transaction
 from .utils import parse_string
-from dal import autocomplete
+from django.db.models import Q
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -16,6 +16,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
+from django.http import JsonResponse
 from taggit.models import TaggedItem
 
 from notifications.models import Notification
@@ -1303,3 +1304,25 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
             users = users.filter(username__istartswith=self.q)
 
         return users
+
+def search_users(request):
+    """
+    Busqueda de usuarios por AJAX
+    """
+    user = request.user
+
+    if user.is_authenticated() and request.is_ajax():
+        value = request.GET.get('value', None)
+
+        query = User.objects.filter(~Q(profile__privacity='N'),
+                                    username__icontains=value)[:20]
+        result = []
+        for user in query:
+            user_json = {}
+            user_json['username'] = user.username
+            user_json['first_name'] = user.first_name
+            user_json['last_name'] = user.last_name
+            user_json['avatar'] = get_author_avatar(user)
+            result.append(user_json)
+
+        return JsonResponse({'result': result})
