@@ -29,7 +29,7 @@
                             <div class="articulo col s12">
                                 <div class="row">
                                     <div class="image col l1 m2 s2"
-                                         {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}title="¡Eres el autor!"
+                                         {% if user.is_authenticated and user.id == node.author.id %}title="¡Eres el autor!"
                                          style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
                                         <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                     </div>
@@ -71,7 +71,7 @@
                                                     {% avatar node.shared_publication.publication.author %}<br>
                                                     <span class="card-title"><a href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
-                                                    <p>{{ node.shared_publication.publication.content|safe }}.</p>
+                                                    <p>{{ node.shared_publication.publication.content|safe }}</p>
                                                 </div>
                                                 <div class="card-action">
                                                     <a class="blue-text text-darken-2" href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
@@ -95,7 +95,8 @@
                                         {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
-                                    {% elif user.is_authenticated and user.pk != node.author.pk %}
+                                    {% endif %}
+                                    {% if user.is_authenticated and user.id != node.author.id %}
                                         {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
                                         <li title="No me gusta" class="hate-comment" id="fa-hate" {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -106,13 +107,11 @@
                                             <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
                                         </li>
                                     {% endif %}
+                                    <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline" {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline" style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
+                                                class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
-                                    {% if user.is_authenticated and user.pk != node.author.pk %}
-                                        <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline" {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline" style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                                class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
-                                    {% endif %}
                                 </ul>
                             </div>
                         </div>

@@ -33,7 +33,11 @@ var UTILS = UTILS || (function () {
                             content += '<div class="row">';
                             content += "                <div class=\"articulo col s12\">";
                             content += '<div class="row">';
-                            content += "      <div class=\"image col l1 m2 s2\">";
+                            if (_args == data.author_id) {
+                                content += "      <div class=\"image col l1 m2 s2\" style=\"box-shadow: 0 1px 5px rgba(129, 199, 132, 1);\">";
+                            } else {
+                                content += "      <div class=\"image col l1 m2 s2\">";
+                            }
                             content += '        <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
                             content += "      </div>";
                             content += '<div class="col l8 m12 s8">';
@@ -55,20 +59,18 @@ var UTILS = UTILS || (function () {
                             content += '<div class="divider"></div>';
                             content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
                             content += "                    <ul class=\"opciones\">";
-                            content += "        ";
-                            content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
-                            content += "                            <li title=\"No me gusta\" class=\"fa-stack\" id=\"fa-hate\">";
-                            content += "                                <span class=\"hate-comment\">";
-                            content += "                                    <i class=\"fa fa-heart fa-stack-1x\"><\/i>";
-                            content += "                                    <i class=\"fa fa-bolt fa-stack-1x fa-inverse\"><\/i>";
-                            content += "                                    <i class=\"fa hate-value\"><\/i>";
-                            content += "                                </span>";
-                            content += "                            </li>";
-                            content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-heart"></i><i id="like-value" class="fa"></i></li>';
-                            content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
-                            content += "                       <\/i><\/li>";
+                            if (_args == data.board_owner_id || data.author_id == _args) {
+                                content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
+                            }
+                            if (_args != data.author_id) {
+                                content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
+                                content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
+                                content += '                                <i class="fa hate-value"></i>';
+                                content += "                            </li>";
+                                content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa"></i></li>';
+                            }
+                            content += '                       <li title=\"Añadir a mi skyline\" data-id="'+data.id+'" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>';
                             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + data.id + '"><\/i><\/li>';
-                            content += "                       <li title=\"Añadir a mi skyline\" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>";
                             content += "                    </ul>";
                             content += "                </div>";
                             content += "                </div>";

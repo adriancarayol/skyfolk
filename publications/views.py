@@ -67,7 +67,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 publication.author = emitter
                 publication.board_owner = board_owner
-
                 publication.parse_content()  # parse publication content
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
@@ -84,13 +83,12 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     raise IntegrityError('El comentario esta vacio')
 
                 publication.save()  # Creamos publicacion
-                publication.parse_mentions()  # add mentions
-                publication.content = Emoji.replace(publication.content)
                 publication.add_hashtag()  # add hashtags
+                publication.parse_mentions()  # add mentions
+                publication.content = Emoji.replace(publication.content)  # Add emoji img
+                form.save_m2m()  # Saving tags
                 publication.save(update_fields=['content'],
                                  new_comment=True)  # Guardamos la publicacion si no hay errores
-
-                logger.debug('>>>> PUBLICATION: ')
 
                 return self.form_valid(form=form)
             except Exception as e:
@@ -505,11 +503,13 @@ def load_more_comments(request):
                 for row in publication.get_descendants().filter(level__lte=1, deleted=False)[:20]:
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
+                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                            'author_avatar': get_author_avatar(row.author)})
             else:
                 for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False)[:20]:
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
+                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                            'author_avatar': get_author_avatar(row.author)})
             data['pubs'] = json.dumps(list_responses)
         else:  # Si es publicacion respuesta, devolvemos todos los niveles
@@ -517,11 +517,13 @@ def load_more_comments(request):
                 for row in publication.get_descendants().filter(deleted=False)[:20]:
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
+                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
             else:
                 for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub)[:20]:
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
+                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
             data['pubs'] = json.dumps(list_responses)
         data['response'] = True
@@ -556,6 +558,7 @@ def load_more_skyline(request):
         for row in publications:
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                    'author_username': row.author.username, 'user_id': user.id,
+                                   'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                    'author_avatar': get_author_avatar(row.author), 'level': row.level})
 
         data['pubs'] = json.dumps(list_responses)
@@ -581,9 +584,6 @@ def share_publication(request):
         if form.is_valid():
             try:
                 pub_to_add = Publication.objects.get(pk=obj_pub)
-
-                if pub_to_add.author == user:
-                    return HttpResponse(json.dumps(response), content_type='application/json')
 
                 privacity = pub_to_add.author.profile.is_visible(user.profile)
 

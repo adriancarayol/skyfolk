@@ -276,6 +276,8 @@ class Publication(PublicationBase):
             "id": self.id,
             "content": self.content,
             "avatar_path": get_author_avatar(authorpk=self.author.id),
+            "author_id": self.author_id,
+            "board_owner_id": self.board_owner_id,
             "author_username": self.author.username,
             "author_first_name": self.author.first_name,
             "author_last_name": self.author.last_name,

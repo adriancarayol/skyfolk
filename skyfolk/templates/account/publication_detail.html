@@ -90,7 +90,8 @@
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="fa fa-trash"></i>
                                             </li>
-                                        {% elif user.is_authenticated and user.pk != node.author.pk %}
+                                        {% endif %}
+                                        {% if user.is_authenticated and user.id != node.author.id %}
                                             {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
                                             <li title="No me gusta" class="hate-comment" id="fa-hate">
                                                 <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -103,14 +104,12 @@
                                                     {% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
                                             </li>
                                         {% endif %}
+                                        <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
+                                                    class="fa fa-tag">
+                                                {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
                                         <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                        id="reply-caja-comentario-{{ node.pk }}"></i>
                                         </li>
-                                        {% if user.is_authenticated and user.pk != node.author.pk %}
-                                            <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
-                                                    class="fa fa-tag">
-                                                {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
-                                        {% endif %}
                                     </ul>
                                 </div>
                             </div>
