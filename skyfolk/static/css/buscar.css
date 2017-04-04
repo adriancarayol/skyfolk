@@ -315,7 +315,7 @@
     height: auto;
     position: relative;
     display: block;
-    z-index: 9999;
+    z-index: 1;
 }
 
 .query-options .list-vertical {
