@@ -633,8 +633,9 @@ class Photo(ImageModel):
         We assume that the gallery and all its photos are on the same site.
         """
         if not self.is_public:
-            raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = Photo.objects.filter(owner=self.owner)
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+            return None
+        photos = Photo.objects.filter(owner=self.owner, is_public=True)
         if self not in photos:
             raise ValueError('Photo does not belong to gallery.')
         previous = None
@@ -649,7 +650,37 @@ class Photo(ImageModel):
         We assume that the gallery and all its photos are on the same site.
         """
         if not self.is_public:
-            raise ValueError('Cannot determine neighbours of a non-public photo.')
+            return None
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+        photos = Photo.objects.filter(owner=self.owner, is_public=True)
+        if self not in photos:
+            raise ValueError('Photo does not belong to gallery.')
+        matched = False
+        for photo in photos:
+            if matched:
+                return photo
+            if photo == self:
+                matched = True
+        return None
+
+    def get_previous_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied gallery.
+        We assume that the gallery and all its photos are on the same site.
+        """
+        photos = Photo.objects.filter(owner=self.owner)
+        if self not in photos:
+            raise ValueError('Photo does not belong to gallery.')
+        previous = None
+        for photo in photos:
+            if photo == self:
+                return previous
+            previous = photo
+        return None
+
+    def get_next_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied gallery.
+        We assume that the gallery and all its photos are on the same site.
+        """
         photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
             raise ValueError('Photo does not belong to gallery.')

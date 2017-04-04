@@ -1,4 +1,5 @@
 import zipfile
+import uuid
 
 try:
     from zipfile import BadZipFile
@@ -55,7 +56,7 @@ class UploadZipForm(forms.Form):
                                    help_text=_('Uncheck this to make the uploaded '
                                                'gallery and included photographs private.'))
 
-    tags = TagField(help_text=_('A comma-separated list of tags.'))
+    tags = TagField(help_text=_('A comma-separated list of tags.'), required=False)
 
     def clean_zip_file(self):
         """Open the zip file a first time, to check that it is a valid zip archive.
@@ -125,9 +126,10 @@ class UploadZipForm(forms.Form):
 
             # A photo might already exist with the same slug. So it's somewhat inefficient,
             # but we loop until we find a slug that's available.
+            user = self.request.user
             while True:
                 photo_title = ' '.join([photo_title_root, str(count)])
-                slug = slugify(photo_title)
+                slug = slugify(photo_title + 'by' + str(user.username) + str(uuid.uuid1()))
                 if Photo.objects.filter(slug=slug).exists():
                     count += 1
                     continue

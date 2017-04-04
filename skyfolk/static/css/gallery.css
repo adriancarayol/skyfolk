@@ -12,11 +12,8 @@
   left: 0;
   z-index: 9998;
   display: none; }
-<<<<<<< HEAD
-=======
   .container .upload_form button {
     margin-right: 10px; }
->>>>>>> work
 .container .endless_more, .container .endless_loading {
   clear: both;
   text-align: center; }

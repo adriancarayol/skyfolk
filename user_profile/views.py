@@ -131,7 +131,10 @@ def profile_view(request, username,
             pass
     # Recuperamos el numero de contenido multimedia que tiene el perfil
     try:
-        multimedia_count = user_profile.profile.get_num_multimedia()
+        if user.username == username:
+            multimedia_count = user_profile.profile.get_total_num_multimedia()
+        else:
+            multimedia_count = user_profile.profile.get_num_multimedia()
     except ObjectDoesNotExist:
         multimedia_count = 0
     # Comprobamos si existe una peticion de seguimiento

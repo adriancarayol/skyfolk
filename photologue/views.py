@@ -25,7 +25,7 @@ from user_profile.forms import SearchForm
 from user_profile.models import UserProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo, Gallery
-
+from django.db.models import Q
 
 # Gallery views.
 
@@ -91,7 +91,12 @@ def collection_list(request, username,
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
     print('>>>>>>> TAGNAME {}'.format(tagname))
-    object_list = Photo.objects.filter(owner__username=username, tags__name__exact=tagname)
+    if user.username == username:
+        object_list = Photo.objects.filter(Q(is_public=True) | Q(is_public=False), owner__username=username, 
+                                        tags__name__exact=tagname)
+    else:
+        object_list = Photo.objects.filter(owner__username=username, 
+                                        tags__name__exact=tagname, is_public=True)
     context = {'publicationSelfForm': publicationForm,
                'searchForm': searchForm,
                'object_list': object_list, 'form': form,
@@ -121,7 +126,9 @@ class PhotoListView(AjaxListView):
             return redirect('user_profile:profile', username=self.username)
 
     def get_queryset(self):
-        return Photo.objects.filter(owner__username=self.username)
+        if self.request.user.username == self.username:
+            return Photo.objects.filter(Q(is_public=True) | Q(is_public=False), owner__username=self.username)
+        return Photo.objects.filter(owner__username=self.username, is_public=True)
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)
@@ -230,7 +237,7 @@ def crop_image(obj, request):
 
 def upload_zip_form(request):
     """
-    Función para subir un .zip a la galeria de un usuario
+    Funcion para subir un .zip a la galeria de un usuario
     """
     user = request.user
     if request.method == 'POST':
@@ -327,6 +334,9 @@ class PhotoDetailView(DetailView):
         photo = self.get_object()
         self.username = photo.owner.username
 
+        if not photo.is_public and self.username != self.request.user.username:
+            return redirect('user_profile:profile', username=self.username)
+
         if self.user_pass_test():
             return super(PhotoDetailView, self).dispatch(request, *args, **kwargs)
         else:
@@ -339,27 +349,43 @@ class PhotoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
+        photo = self.get_object()
         initial = {'author': user.pk, 'board_owner': user.pk}
         initial_photo = {'p_author': user.pk, 'board_photo': self.get_object()}
         context['form'] = EditFormPhoto(instance=self.object)
         context['publicationSelfForm'] = PublicationForm(initial=initial)
         context['searchForm'] = SearchForm()
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
-        context['publications'] = PublicationPhoto.objects.filter(board_photo=self.get_object())
+        context['publications'] = PublicationPhoto.objects.filter(board_photo=photo)
         context['notifications'] = user.notifications.unread()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
-        try:
-            next = self.object.get_next_in_gallery()
 
-            context['next'] = next
-        except Photo.DoesNotExist:
-            pass
-        # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
-        try:
-            previous = self.object.get_previous_in_gallery()
-            context['previous'] = previous
-        except Photo.DoesNotExist:
-            pass
+
+        if photo.is_public:
+            try:
+                next = self.object.get_next_in_gallery()
+                context['next'] = next
+            except Photo.DoesNotExist:
+                pass
+            # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
+            try:
+                previous = self.object.get_previous_in_gallery()
+                context['previous'] = previous
+            except Photo.DoesNotExist:
+                pass
+        elif not photo.is_public and photo.owner.id == user.id:
+            try:
+                next = self.object.get_next_in_own_gallery()
+
+                context['next'] = next
+            except Photo.DoesNotExist:
+                pass
+            # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
+            try:
+                previous = self.object.get_previous_in_own_gallery()
+                context['previous'] = previous
+            except Photo.DoesNotExist:
+                pass
         return context
 
     def user_pass_test(self):
