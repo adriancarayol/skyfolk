@@ -1,6 +1,7 @@
 import json
 import re
 import bleach
+import requests
 
 from channels import Group
 from django.contrib.auth.models import User
@@ -19,6 +20,7 @@ from django.conf import settings
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext as _
+from bs4 import BeautifulSoup
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -248,6 +250,16 @@ class Publication(PublicationBase):
         self.content = self.content.replace('\n', '').replace('\r', '')
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+        
+        # Parseo de la URL y mostramos un resumen del contenido de la URL
+        #TODO
+        link_url = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', self.content)
+        for u in link_url:
+            url = requests.get(u)
+            soup = BeautifulSoup(url.text)
+            metas = soup.findAll("meta")
+            print([ meta.attrs['content'] for meta in metas if 'name' in meta.attrs and meta.attrs['name'] == 'description' ])
+
         bold = re.findall('\*[^\*]+\*', self.content)
         ''' Bold para comentario '''
         for b in bold:
