@@ -12,7 +12,7 @@ from taggit.managers import TaggableManager
 from photologue.models import Photo
 from user_groups.models import UserGroups
 from user_profile.models import Relationship
-from .utils import get_author_avatar
+from .utils import get_author_avatar, remove_duplicates_in_list
 from user_profile.tasks import send_to_stream
 from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
@@ -154,6 +154,17 @@ class PublicationBase(MPTTModel):
         return self.get_descendants().filter(deleted=False).count()
 
 
+class ExtraContent(models.Model):
+    """
+    Modelo para contenido extra/adicional de una publicacion,
+    por ejemplo, informacion resumida de una URL
+    """
+    title = models.CharField(max_length=64)
+    description = models.CharField(max_length=256)
+    image = models.ImageField(null=True, upload_to='publication_extra_image', 
+                                verbose_name='extra_image')
+    url = models.URLField()
+
 class SharedPublication(models.Model):
     """
     Modelo para comparticiones compartidas (copiadas de un skyline a otro)
@@ -192,6 +203,7 @@ class Publication(PublicationBase):
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
     event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
+    extra_content = models.ForeignKey(ExtraContent, null=True, related_name='extra_content')
 
     # objects = PublicationManager()
 
@@ -253,23 +265,37 @@ class Publication(PublicationBase):
         
         # Parseo de la URL y mostramos un resumen del contenido de la URL
         #TODO
-        link_url = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', self.content)
-        for u in link_url:
-            url = requests.get(u)
-            soup = BeautifulSoup(url.text)
-            metas = soup.findAll("meta")
-            print([ meta.attrs['content'] for meta in metas if 'name' in meta.attrs and meta.attrs['name'] == 'description' ])
+
+        link_url = re.findall(r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?', self.content)
+        if link_url and len(link_url) > 0:
+            new_l = remove_duplicates_in_list(link_url)
+            for u in new_l: # Crear hyperlink
+                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
+
+            url = new_l[-1] # Get last url
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text)
+            # First get the meta description tag
+            description = soup.find('meta', attrs={'name':'og:description'}) or soup.find('meta', attrs={'property':'description'}) or soup.find('meta', attrs={'name':'description'})
+
+            # If description meta tag was found, then get the content attribute and save it to db entry
+            if description:
+                extra_content = ExtraContent.objects.create(title="Prueba", description=description.get('content'), url=url)
+                self.extra_content = extra_content
 
         bold = re.findall('\*[^\*]+\*', self.content)
+        bold = list(set(bold))
         ''' Bold para comentario '''
         for b in bold:
             self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
         ''' Italic para comentario '''
         italic = re.findall('~[^~]+~', self.content)
+        italic = list(set(italic))
         for i in italic:
             self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
         ''' Tachado para comentario '''
         tachado = re.findall('\^[^\^]+\^', self.content)
+        tachado = list(set(tachado))
         for i in tachado:
             self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
 
