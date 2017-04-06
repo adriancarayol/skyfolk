@@ -268,11 +268,8 @@ class Publication(PublicationBase):
 
         link_url = re.findall(r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?', self.content)
         if link_url and len(link_url) > 0:
-            new_l = remove_duplicates_in_list(link_url)
-            for u in new_l: # Crear hyperlink
-                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
 
-            url = new_l[-1] # Get last url
+            url = link_url[-1] # Get last url
             response = requests.get(url)
             soup = BeautifulSoup(response.text)
             # First get the meta description tag
@@ -283,22 +280,23 @@ class Publication(PublicationBase):
                 extra_content = ExtraContent.objects.create(title="Prueba", description=description.get('content'), url=url)
                 self.extra_content = extra_content
 
+        """
         bold = re.findall('\*[^\*]+\*', self.content)
         bold = list(set(bold))
-        ''' Bold para comentario '''
+        
         for b in bold:
             self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
-        ''' Italic para comentario '''
+        
         italic = re.findall('~[^~]+~', self.content)
         italic = list(set(italic))
         for i in italic:
             self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
-        ''' Tachado para comentario '''
+        
         tachado = re.findall('\^[^\^]+\^', self.content)
         tachado = list(set(tachado))
         for i in tachado:
             self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
-
+        """
     def send_notification(self, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios

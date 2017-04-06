@@ -1,5 +1,7 @@
 from django import forms
 from publications.models import Publication, PublicationPhoto
+from django_summernote.widgets import SummernoteWidget
+
 
 class PublicationForm(forms.ModelForm):
     class Meta:
@@ -11,13 +13,7 @@ class PublicationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs.update({
-            'placeholder': 'Escribe tu mensaje aqui...',
-            'id': 'message2', 'contenteditable': 'true',
-            'class': 'materialize-textarea',
-            'required': 'required',
-        })
-        self.fields['content'].label = ''
+        self.fields['content'].widget = SummernoteWidget(attrs={'height': 'auto', 'width': '100%'})
         self.fields['author'].widget = forms.HiddenInput()
         self.fields['board_owner'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
