@@ -5,12 +5,14 @@ $(window).ready(function () {
 });
 
 $(document).ready(function () {
-    // Materialize.updateTextFields();
-    $('select').material_select();
-
     var page_wrapper = $('#page-wrapper');
     var self_page_wrapper = $('#self-page-wrapper');
     var _group_profile = $('#group-profile');
+
+    $('select').material_select();
+
+    $('textarea#message2, textarea#message3').characterCounter();
+
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
@@ -29,14 +31,14 @@ $(document).ready(function () {
     $("#publish, #compose-new-no-comments").click(function () {
         $(page_wrapper).each(function () {
             var displaying = $(this).css("display");
-            $(page_wrapper).find("#message2").val('');
+            $(page_wrapper).find("#message3").val('');
             if (displaying == "none") {
                 $(this).fadeOut('slow', function () {
                     $(this).css("display", "block");
                 });
-                $(this).find('#message2').focus();
+                $(this).find('#message3').focus();
             } else {
-                $(this).find('#message2').blur();
+                $(this).find('#message3').blur();
                 $(this).fadeIn('slow', function () {
                     $(this).css("display", "none");
                 });
@@ -76,7 +78,7 @@ $(document).ready(function () {
     /* Close page-wrapper (mensaje) */
     $(page_wrapper).find('#close').on('click', function (event) {
         event.preventDefault();
-        $(page_wrapper).find('#message2').val('');
+        $(page_wrapper).find('#message3').val('');
         $(page_wrapper).hide();
     });
     /* Close self-page-wrapper (mensaje propio) */
@@ -131,7 +133,7 @@ $(document).ready(function () {
     });
 
     /* Atajo para enviar comentarios mas rapido */
-    $(page_wrapper).find('#message2').keypress(function (e) {
+    $(page_wrapper).find('#message3').keypress(function (e) {
         //tecla ENTER presinada + Shift
         if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
             $('#sendformpubli').click();
@@ -161,7 +163,7 @@ $(document).ready(function () {
         if (key == 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(page_wrapper).toggle();
-            $(page_wrapper).find('#message2').focus();
+            $(page_wrapper).find('#message3').focus();
             return false;
         }
     });
@@ -194,8 +196,8 @@ $(document).ready(function () {
             var atj = document.getElementById('atajos-keyboard-profile');
             var personalInfo = document.getElementsByClassName('info-paw');
             var searchInput = document.getElementById('id_searchText');
-            var messageWrapperMessage2 = $(page_wrapper).find('#message2');
-            var messageWrapperMessage3 = $(self_page_wrapper).find('#message2');
+            var messageWrapperMessage3 = $(page_wrapper).find('#message3');
+            var messageWrapperMessage2 = $(self_page_wrapper).find('#message2');
 
             $(messageWrapperMessage2).blur(); // Focus del textarea off.
             $(messageWrapperMessage2).val("");

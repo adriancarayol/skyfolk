@@ -1,19 +1,37 @@
 from django import forms
 from publications.models import Publication, PublicationPhoto
-from django_summernote.widgets import SummernoteWidget
 
 
 class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
         # Excluir atributos en el formulario.
-        exclude = ['image', 'created', 'likes', 'user_give_me_like', 'hates',
+        exclude = ['created', 'likes', 'user_give_me_like', 'hates',
                    'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 
                    'event_type', 'liked', 'hated', 'shared', 'extra_content']
 
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
-        self.fields['content'].widget = SummernoteWidget(attrs={'height': 'auto', 'width': '100%'})
+
+        if self.initial:
+            if self.initial['author'] == self.initial['board_owner']: # Publico en mi perfil
+                self.fields['content'].widget.attrs.update({
+                'class': 'materialize-textarea',
+                'id': 'message2',
+                'data-length': '500',
+                'placeholder': 'Escribe tu mensaje aqui...',
+                'required': 'required',
+                })
+            else: # Publico en perfil ajeno
+                self.fields['content'].widget.attrs.update({
+                'class': 'materialize-textarea',
+                'id': 'message3',
+                'data-length': '500',
+                'placeholder': 'Escribe tu mensaje aqui...',
+                'required': 'required',
+                })
+
+        self.fields['content'].label = ''
         self.fields['author'].widget = forms.HiddenInput()
         self.fields['board_owner'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
@@ -31,7 +49,7 @@ class ReplyPublicationForm(forms.ModelForm):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({
             'placeholder': 'Escribe tu mensaje aqui...',
-            'id': 'message-reply', 'contenteditable': 'true',
+            'id': 'message-reply',
             'class': 'materialize-textarea',
             'required': 'required',
         })
@@ -51,7 +69,7 @@ class PublicationPhotoForm(forms.ModelForm):
         super(PublicationPhotoForm, self).__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({
             'placeholder': 'Escribe tu mensaje aqui...',
-            'id': 'message-photo', 'contenteditable': 'true',
+            'id': 'message-photo',
             'class': 'materialize-textarea',
             'required': 'required',
         })

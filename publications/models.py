@@ -280,7 +280,7 @@ class Publication(PublicationBase):
                 extra_content = ExtraContent.objects.create(title="Prueba", description=description.get('content'), url=url)
                 self.extra_content = extra_content
 
-        """
+        
         bold = re.findall('\*[^\*]+\*', self.content)
         bold = list(set(bold))
         
@@ -296,7 +296,7 @@ class Publication(PublicationBase):
         tachado = list(set(tachado))
         for i in tachado:
             self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
-        """
+        
     def send_notification(self, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios

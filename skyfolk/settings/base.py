@@ -66,8 +66,7 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.url',
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
-    'mptt',
-    'django_summernote',
+    'mptt'
 )
 
 

@@ -1317,8 +1317,7 @@ def search_users(request):
     if user.is_authenticated() and request.is_ajax():
         value = request.GET.get('value', None)
 
-        query = User.objects.filter(~Q(profile__privacity='N'),
-                                    username__icontains=value)[:20]
+        query = User.objects.filter(~Q(profile__privacity='N') & (Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value)))[:20]
         result = []
         for user in query:
             user_json = {}
