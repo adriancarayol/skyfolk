@@ -1,0 +1,1 @@
+function toProfile(a){document.location.href=a}

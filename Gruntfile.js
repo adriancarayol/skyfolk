@@ -1,11 +1,28 @@
 module.exports = function (grunt) {
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-
-        concat: {
+        uglify: {
             app: {
-                src: ['skyfolk/static/js/app/**/*.js'],
-                dest: 'build/static/js/mix-js/app.js'
+                files: [{
+                    src: 'skyfolk/static/js/**/*.js',
+                    dest: 'skyfolk/static/js/min/',
+                    expand: true,    // allow dynamic building
+                    ext: '.min.js'   // replace .js to .min.js
+                }]
+            }
+        },
+        sass: {
+            dist: {
+                options: {
+                    sourceMap: true,
+                    outputStyle: 'compressed'
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'skyfolk/static/sass',
+                    src: ['*.sass'],
+                    dest: 'skyfolk/static/css',
+                    ext: '.css'
+                }]
             }
         }
     });
@@ -13,8 +30,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-sass');
-    grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('default', []);
+    grunt.registerTask('default', ['sass', 'uglify']);
 };
