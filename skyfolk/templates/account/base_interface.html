@@ -54,18 +54,17 @@ Base para la interfaz en comun de todos los usuarios.
                         </div>
                     </div>
                     <form id="message-form2" action="" method="post">{% csrf_token %}
-                        {{ publicationForm.csrftoken }}
                         <div class="row">
                             <div class="row">
                                 <div class="input-field col s12">
-                                    {{ publicationForm.content }}
+                                    <textarea class="materialize-textarea" cols="40" data-length="500" id="message3" maxlength="500" name="content" placeholder="Escribe tu mensaje aqui..." rows="10" required=""></textarea>
                                     <label for="message3">Escribe tu mensaje</label>
                                 </div>
                             </div>
                         </div>
-                        {{ publicationForm.author }}
-                        {{ publicationForm.board_owner }}
-                        {{ publicationForm.parent }}
+                        <input id="author" name="author" type="hidden" value="{{ request.user.id }}">
+                        <input id="board_owner" name="board_owner" type="hidden" value="{{ user_profile.id }}">
+                        <input id="parent" name="parent" type="hidden">
                         <div class="row">
                             <div class="col s12">
                                 <button type="submit" id="sendformpubli"
@@ -99,18 +98,17 @@ Base para la interfaz en comun de todos los usuarios.
                     </div>
                 </div>
                 <form id="message-form2" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    {{ publicationSelfForm.csrftoken }}
                     <div class="row">
                         <div class="row">
                             <div class="input-field col s12">
-                                {{ publicationSelfForm.content }}
+                                <textarea class="materialize-textarea" cols="40" data-length="500" id="message2" maxlength="500" name="content" placeholder="Escribe tu mensaje aqui..." rows="10" required=""></textarea>
                                 <label for="message2">Escribe tu mensaje</label>
                             </div>
                         </div>
                     </div>
-                    {{ publicationSelfForm.author }}
-                    {{ publicationSelfForm.board_owner }}
-                    {{ publicationSelfForm.parent }}
+                    <input id="self_author" name="author" type="hidden" value="{{ request.user.id }}">
+                    <input id="self_board_owner" name="board_owner" type="hidden" value="{{ request.user.id }}">
+                    <input id="self_parent" name="parent" type="hidden">
                     <div class="row">
                         <div class="col s12">
                             <button type="submit" id="sendselfformpubli"

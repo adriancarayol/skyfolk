@@ -124,11 +124,10 @@
                                 <div class="col s12">
                                     <form method="post" accept-charset="utf-8">{% csrf_token %}
                                         <div class="row">
-                                            {{ publication_edit.content.errors }}
                                             <div class="input-field col s12">
                                                 <i class="material-icons prefix">create</i>
-                                                {{ publication_edit.content }}
-                                                <label for="id_caption">Contenido</label>
+                                                <textarea class="materialize-textarea" id="id_caption-{{ node.pk }}" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>
+                                                <label for="id_caption-{{ node.pk }}">Contenido</label>
                                             </div>
                                             <div class="row">
                                                 <button data-id="{{ node.pk }}"

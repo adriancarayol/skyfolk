@@ -55,12 +55,11 @@ def profile_view(request, username,
     privacity = user_profile.profile.is_visible(user.profile)
 
     # Para escribir mensajes en mi propio perfil.
-    self_initial = {'author': user.pk, 'board_owner': user.pk}
     group_initial = {'owner': user.pk}
     context['user_profile'] = user_profile
     context['searchForm'] = SearchForm(request.POST)
     context['privacity'] = privacity
-    context['publicationSelfForm'] = PublicationForm(initial=self_initial)
+    context['publicationSelfForm'] = PublicationForm()
     context['groupForm'] = FormUserGroup(initial=group_initial)
     context['notifications'] = user.notifications.unread()
 
@@ -159,8 +158,8 @@ def profile_view(request, username,
 
     # Para escribir mensajes en perfiles ajenos
     initial = {'author': user.pk, 'board_owner': user_profile.pk}
-    context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
-    context['publicationForm'] = PublicationForm(initial=initial)
+    context['reply_publication_form'] = ReplyPublicationForm()
+    context['publicationForm'] = PublicationForm()
     context['publication_edit'] = PublicationEdit()
     context['publication_shared'] = SharedPublicationForm(initial=initial)
 

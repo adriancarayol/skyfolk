@@ -16,12 +16,11 @@ from publications.forms import PublicationForm, PublicationPhotoForm, SharedPubl
 from publications.models import Publication, PublicationPhoto, SharedPublication
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from emoji import Emoji
-from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from django.db import transaction
 from .utils import parse_string
-from django.db.models import Q
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -38,7 +37,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        # form = PublicationForm(request.POST)
+
         form = self.get_form()
         emitter = get_object_or_404(get_user_model(),
                                     pk=request.POST['author'])
@@ -54,7 +53,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
 
-        publication = None
         is_correct_content = False
         logger.debug('POST DATA: {}'.format(request.POST))
         logger.debug('tipo emitter: {}'.format(type(emitter)))

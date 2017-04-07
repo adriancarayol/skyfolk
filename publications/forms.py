@@ -13,6 +13,7 @@ class PublicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
 
+        """
         if self.initial:
             if self.initial['author'] == self.initial['board_owner']: # Publico en mi perfil
                 self.fields['content'].widget.attrs.update({
@@ -35,6 +36,7 @@ class PublicationForm(forms.ModelForm):
         self.fields['author'].widget = forms.HiddenInput()
         self.fields['board_owner'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
+        """
 
 
 class ReplyPublicationForm(forms.ModelForm):
@@ -47,16 +49,6 @@ class ReplyPublicationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs.update({
-            'placeholder': 'Escribe tu mensaje aqui...',
-            'id': '',
-            'class': 'materialize-textarea message-reply',
-            'required': 'required',
-        })
-        self.fields['content'].label = ''
-        self.fields['author'].widget = forms.HiddenInput()
-        self.fields['board_owner'].widget = forms.HiddenInput()
-        self.fields['parent'].widget = forms.HiddenInput()
 
 
 class PublicationPhotoForm(forms.ModelForm):
@@ -83,11 +75,8 @@ class PublicationEdit(forms.ModelForm):
     """
     Formulario para editar una publicacion existente
     """
-
     def __init__(self, *args, **kwargs):
         super(PublicationEdit, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs['class'] = 'materialize-textarea'
-        self.fields['content'].widget.attrs['id'] = 'edit_comment_content'
 
     class Meta:
         model = Publication

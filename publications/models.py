@@ -302,7 +302,6 @@ class Publication(PublicationBase):
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
-
         id_parent = None
 
         if self.parent:
@@ -336,9 +335,6 @@ class Publication(PublicationBase):
         if new_comment:
             if not self.deleted:
                 self.send_notification(is_edited=is_edited)  # Enviar publicacion por socket
-
-        # elif new_comment and not self.deleted:
-        #    self.send_notification(type="reply", is_edited=is_edited)
 
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:

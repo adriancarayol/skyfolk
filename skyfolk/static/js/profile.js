@@ -112,7 +112,7 @@ $(document).ready(function () {
     $(tab_comentarios).on('click', '#submit_edit_publication', function (event) {
         event.preventDefault();
         var id = $(this).attr('data-id');
-        var content = $(this).closest('#author-controls-' + id).find('#edit_comment_content').val();
+        var content = $(this).closest('#author-controls-' + id).find('#id_caption-'+ id).val();
         AJAX_edit_publication(id, content);
     });
 
