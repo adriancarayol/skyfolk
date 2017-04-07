@@ -103,7 +103,7 @@ $(document).ready(function () {
         AJAX_submit_publication(data, 'publication');
     });
 
-    /* Submit reply publication º*/
+    /* Submit reply publication */
     $('button.enviar').on('click', function (event) {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
@@ -328,12 +328,14 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 var csrftoken = getCookie('csrftoken');
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
 $.ajaxSetup({
     beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -593,7 +595,7 @@ function AJAX_submit_publication(data, type, pks) {
             }
             if (type == "reply") {
                 var caja_comentarios = $('#caja-comentario-' + pks[2]);
-                $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
+                $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type == "publication") {
                 $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.

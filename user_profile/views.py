@@ -50,7 +50,6 @@ def profile_view(request, username,
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
 
-    print('Temas de interes del usuario: {} {}'.format(username, user_profile.profile.tags.names()))
     context = {}
     # Privacidad del usuario
     privacity = user_profile.profile.is_visible(user.profile)

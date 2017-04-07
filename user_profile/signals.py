@@ -63,7 +63,7 @@ def handle_login(sender, user, request, **kwargs):
         profile.save(update_fields=['is_online'])
     except Exception:
         pass
-    print('login, is_online: {}'.format(user.profile.is_online))
+    logger.info('login, is_online: {}'.format(user.profile.is_online))
 
 
 def handle_logout(sender, user, request, **kwargs):
@@ -73,7 +73,7 @@ def handle_logout(sender, user, request, **kwargs):
         profile.save(update_fields=['is_online'])
     except Exception:
         pass
-    print('logout, is_online: {}'.format(user.profile.is_online))
+    logger.info('logout, is_online: {}'.format(user.profile.is_online))
 
 
 user_logged_in.connect(handle_login)

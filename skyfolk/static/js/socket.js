@@ -19,6 +19,7 @@ var UTILS = UTILS || (function () {
                     var data = JSON.parse(message.data);
                     // Create the inner content of the post div
                     if (data.type === "pub") {
+                        console.log(csrftoken);
                         if (!data.is_edited) {
                             var content = "";
                             content += '<div class="row">';
@@ -75,7 +76,7 @@ var UTILS = UTILS || (function () {
                             content += "                </div>";
                             content += "                </div>";
                             content += "    </div>";
-                            content += "    </div>";
+                            content += "    </div></div></div>";
                         }
                         // See if there's a div to replace it in, or if we should add a new one
                         var existing = $('#pub-' + data.id);

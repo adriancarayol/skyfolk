@@ -49,8 +49,8 @@ class ReplyPublicationForm(forms.ModelForm):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({
             'placeholder': 'Escribe tu mensaje aqui...',
-            'id': 'message-reply',
-            'class': 'materialize-textarea',
+            'id': '',
+            'class': 'materialize-textarea message-reply',
             'required': 'required',
         })
         self.fields['content'].label = ''
