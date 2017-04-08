@@ -3,10 +3,11 @@ module.exports = function (grunt) {
         uglify: {
             app: {
                 files: [{
-                    src: 'skyfolk/static/js/**/*.js',
-                    dest: 'skyfolk/static/js/min/',
                     expand: true,    // allow dynamic building
-                    ext: '.min.js'   // replace .js to .min.js
+                    ext: '.min.js',   // replace .js to .min.js
+                    cwd : 'skyfolk/static/js',
+                    src: '**/*.js',
+                    dest: 'skyfolk/static/js/min/',
                 }]
             }
         },
@@ -24,12 +25,32 @@ module.exports = function (grunt) {
                     ext: '.css'
                 }]
             }
+        },
+        imagemin: {                         
+            dynamic: {                         
+              files: [{
+                expand: true,
+                cwd: 'skyfolk/static/img/',   
+                src: ['**/*.{png,jpg,gif}'],
+                dest: 'skyfolk/static/dist/img'
+            }]
+        },
+        users: {
+            files: [{
+                expand: true,
+                cwd: 'skyfolk/media/',   
+                src: ['**/*.{png,jpg,gif}'],
+                dest: ''
+            }]
         }
-    });
+    },
+});
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-contrib-imagemin');
 
-    grunt.registerTask('default', ['sass', 'uglify']);
+
+    grunt.registerTask('default', ['sass', 'uglify', 'imagemin']);
 };

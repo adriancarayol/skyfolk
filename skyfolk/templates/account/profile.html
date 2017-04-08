@@ -27,7 +27,7 @@ Template para el perfil de cada usuario
 {% endblock %}
 
 {% block content %}
-    <script src="{{ STATIC_URL }}js/profile.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/min/profile.min.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/jquery.easytabs.js" type="text/javascript"></script>
     <script async src="{{ STATIC_URL }}js/jquery.hashchange.min.js" type="text/javascript"></script>
 
@@ -219,7 +219,7 @@ if(requests){
                 var userList = new List('tab-amigos', options);
             </script>
 
-            <script src="{{ STATIC_URL }}js/socket.js"></script>
+            <script src="{{ STATIC_URL }}js/min/socket.min.js"></script>
             <script>
                 UTILS.init([{{ user.pk }}]);
                 UTILS.conn_socket();

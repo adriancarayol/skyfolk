@@ -90,9 +90,12 @@ class SharedPublicationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SharedPublicationForm, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs['class'] = 'materialize-textarea'
-        self.fields['content'].widget.attrs['id'] = 'shared_comment_content'
-        self.fields['content'].required = False
+        self.fields['content'].widget.attrs.update({
+            'class': 'materialize-textarea',
+            'id': 'shared_comment_content',
+            'required': 'false',
+            'placeholder': 'Añade un comentario...'
+        })
 
     class Meta:
         model = Publication
