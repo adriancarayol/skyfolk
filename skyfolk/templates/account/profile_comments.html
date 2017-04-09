@@ -54,7 +54,7 @@
                                                 }
                                             </style>
                                         {% endif %}
-                                        {% if node.shared_publication %}
+                                        {% if node.shared_publication %} {% comment %} Para publicaciones que contienen citas {% endcomment %}
                                             <style>
                                                 .card-content img {
                                                     width: 70px;
@@ -72,12 +72,40 @@
                                                     <span class="card-title"><a href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
                                                     <p>{{ node.shared_publication.publication.content|safe }}</p>
+                                                    {% if node.shared_publication.publication.extra_content %} {% comment %} Para publicaciones con URL {% endcomment %}
+                                                            <div class="card small">
+                                                                <div class="card-image">
+                                                                  <img src="{% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                  <span class="card-title">{{ node.shared_publication.publication.extra_content.title }}</span>
+                                                                </div>
+                                                                <div class="card-content">
+                                                                  <p>{{ node.shared_publication.publication.extra_content.description }}.</p>
+                                                                </div>
+                                                                <div class="card-action">
+                                                                  <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
+                                                                </div>
+                                                              </div>
+                                                    {% endif %}
                                                 </div>
                                                 <div class="card-action">
                                                     <a class="blue-text text-darken-2" href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
                                                 </div>
                                             </div>
                                             {% endif %}
+                                    {% if node.extra_content %} {% comment %} Para publicaciones con URL {% endcomment %}
+                                            <div class="card small">
+                                                <div class="card-image">
+                                                  <img src="{% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                  <span class="card-title">{{ node.extra_content.title }}</span>
+                                                </div>
+                                                <div class="card-content">
+                                                  <p>{{ node.extra_content.description }}.</p>
+                                                </div>
+                                                <div class="card-action">
+                                                  <a href="{{ node.extra_content.url }}">Ver</a>
+                                                </div>
+                                              </div>
+                                    {% endif %}
                                     </div>
                                 </div>
                             </div>

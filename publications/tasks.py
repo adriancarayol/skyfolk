@@ -12,5 +12,13 @@ def clean_deleted_publications():
     for publication in publications:
         pub, created = PublicationDeleted.objects.get_or_create(author=publication.author, content=publication.content,
                                           image=publication.image, created=publication.created)
+        extra_content = publication.extra_content
+        shared = publication.shared_publication
+        if extra_content:
+            extra_content.delete()
+        if shared:
+            shared.publication.shared -= 1
+            shared.publication.save()
+            shared.delete()
         publication.delete()
         logger.info("Publication safe deleted {}".format(pub.id))

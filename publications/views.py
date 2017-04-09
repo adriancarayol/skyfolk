@@ -220,6 +220,9 @@ def delete_publication(request):
                 shared.publication.shared -= 1
                 shared.publication.save()
                 shared.delete()
+            extra_content = publication.extra_content
+            if extra_content:
+                extra_content.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
 
         response = True

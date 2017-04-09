@@ -161,9 +161,9 @@ class ExtraContent(models.Model):
     """
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
-    image = models.ImageField(null=True, upload_to='publication_extra_image', 
-                                verbose_name='extra_image')
+    image = models.URLField(null=True, blank=True)
     url = models.URLField()
+
 
 class SharedPublication(models.Model):
     """
@@ -184,7 +184,7 @@ class Publication(PublicationBase):
     EVENT_CHOICES = (
         (1, _("publication")),
         (2, _("new_relation")),
-        (3, _("notice")),
+        (3, _("link")),
         (4, _("relevant")),
         (5, _("image")),
         (6, _("shared"))
@@ -262,41 +262,53 @@ class Publication(PublicationBase):
         self.content = self.content.replace('\n', '').replace('\r', '')
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
-        
-        # Parseo de la URL y mostramos un resumen del contenido de la URL
-        #TODO
-
-        link_url = re.findall(r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?', self.content)
+        # Buscamos el el contenido del mensaje una URL y mostramos un breve resumen de ella
+        link_url = re.findall(
+            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
+            self.content)
         if link_url and len(link_url) > 0:
 
-            url = link_url[-1] # Get last url
+            url = link_url[-1]  # Get last url
             response = requests.get(url)
             soup = BeautifulSoup(response.text)
             # First get the meta description tag
-            description = soup.find('meta', attrs={'name':'og:description'}) or soup.find('meta', attrs={'property':'description'}) or soup.find('meta', attrs={'name':'description'})
+            description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
+                'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
+            title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
+                'property': 'og:title'}) or soup.find('meta', attrs={'name': 'title'})
+            image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
+                'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
 
-            # If description meta tag was found, then get the content attribute and save it to db entry
+            self.event_type = 3
+            extra_content = ExtraContent.objects.create(url=url)
             if description:
-                extra_content = ExtraContent.objects.create(title="Prueba", description=description.get('content'), url=url)
-                self.extra_content = extra_content
+                extra_content.description = description.get('content', None)
+            if title:
+                extra_content.title = title.get('content', None)
+            if image:
+                extra_content.image = image.get('content', None)
+            extra_content.save()
+            self.extra_content = extra_content
 
-        
+
+
+
         bold = re.findall('\*[^\*]+\*', self.content)
         bold = list(set(bold))
-        
+
         for b in bold:
             self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
-        
+
         italic = re.findall('~[^~]+~', self.content)
         italic = list(set(italic))
         for i in italic:
             self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
-        
+
         tachado = re.findall('\^[^\^]+\^', self.content)
         tachado = list(set(tachado))
         for i in tachado:
             self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
-        
+
     def send_notification(self, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
