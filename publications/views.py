@@ -20,10 +20,19 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from django.db import transaction
 from .utils import parse_string
-
+from django.middleware import csrf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def get_or_create_csrf_token(request):
+    token = request.META.get('CSRF_COOKIE', None)
+    if token is None:
+        token = csrf.get_token(request)
+        request.META['CSRF_COOKIE'] = token
+    request.META['CSRF_COOKIE_USED'] = True
+    return token
 
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
@@ -84,7 +93,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
                 form.save_m2m()  # Saving tags
                 publication.save(update_fields=['content'],
-                                 new_comment=True)  # Guardamos la publicacion si no hay errores
+                                 new_comment=True, csrf_token=get_or_create_csrf_token(
+                        self.request))  # Guardamos la publicacion si no hay errores
 
                 return self.form_valid(form=form)
             except Exception as e:

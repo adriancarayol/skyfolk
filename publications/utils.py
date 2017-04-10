@@ -59,6 +59,7 @@ def parse_string(content):
 
     return content
 
+
 def remove_duplicates_in_list(seq):
     seen = set()
     seen_add = seen.add

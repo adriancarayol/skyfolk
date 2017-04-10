@@ -1,4 +1,5 @@
 var keyPressTimeout;
+
 $(window).ready(function () {
     $("#loader").fadeOut("slow");
 
@@ -8,6 +9,7 @@ $(document).ready(function () {
     var page_wrapper = $('#page-wrapper');
     var self_page_wrapper = $('#self-page-wrapper');
     var _group_profile = $('#group-profile');
+    var tab_comentarios = $('#tab-comentarios');
 
     $('select').material_select();
 
@@ -104,7 +106,7 @@ $(document).ready(function () {
     });
 
     /* Submit reply publication */
-    $('button.enviar').on('click', function (event) {
+    $(tab_comentarios).on('click', 'button.enviar', function (event) {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();

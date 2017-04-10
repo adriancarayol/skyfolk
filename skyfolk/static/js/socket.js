@@ -19,7 +19,6 @@ var UTILS = UTILS || (function () {
                     var data = JSON.parse(message.data);
                     // Create the inner content of the post div
                     if (data.type === "pub") {
-                        console.log(csrftoken);
                         if (!data.is_edited) {
                             var content = "";
                             content += '<div class="row">';
@@ -76,6 +75,22 @@ var UTILS = UTILS || (function () {
                             content += "                </div>";
                             content += "                </div>";
                             content += "    </div>";
+                            content += '<div class="wrapper-reply">';
+                            content += '<div class="hidden" id="caja-comentario-'+data.id+'">';
+                            content += '<form class="reply-form" action="" method="post">';
+                            content += '<input type="hidden" name="csrfmiddlewaretoken" value="'+data.token+'">';
+                            content += '<input id="id_author" name="author" type="hidden" value="'+data.author_id+'">';
+                            content += '<input id="id_board_owner" name="board_owner" type="hidden" value="'+data.board_owner_id+'">';
+                            content += '<input id="id_parent" name="parent" type="hidden">';
+                            content += '<div class="row">';
+                            content += '<div class="col s12">';
+                            content += '<div class="row">';
+                            content += '<div class="input-field col s12">';
+                            content += '<textarea class="materialize-textarea message-reply" id="message-reply-'+data.id+'" cols="40" maxlength="500" name="content" placeholder="Responder a @'+data.author_username+'" rows="10" required=""></textarea>';
+                            content += '<label for="message-reply-'+data.id+'">Escribe tu mensaje aqui...</label>';
+                            content += '</div></div></div></div>';
+                            content += '<button type="button" id="reply-'+data.id+'" class="waves-effect waves-light btn right blue enviar">Enviar<i class="material-icons right">send</i></button>';
+                            content += '</form></div></div>';
                             content += "    </div></div></div>";
                         }
                         // See if there's a div to replace it in, or if we should add a new one

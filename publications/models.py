@@ -267,7 +267,7 @@ class Publication(PublicationBase):
             r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
             self.content)
         if link_url and len(link_url) > 0:
-            for u in list(set(link_url)): # Convertimos URL a hipervinculo
+            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
                 self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
 
             url = link_url[-1]  # Get last url
@@ -308,7 +308,7 @@ class Publication(PublicationBase):
         for i in tachado:
             self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
 
-    def send_notification(self, type="pub", is_edited=False):
+    def send_notification(self, csrf_token=None, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
@@ -330,22 +330,22 @@ class Publication(PublicationBase):
             "created": naturaltime(self.created),
             "type": type,
             "parent": id_parent,
-            "level": self.get_level()
+            "level": self.get_level(),
+            'is_edited': is_edited,
+            'token': csrf_token
         }
 
-        if is_edited:
-            notification['is_edited'] = True
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
             "text": json.dumps(notification)
         })
 
-    def save(self, new_comment=False, is_edited=False, *args, **kwargs):
+    def save(self, csrf_token=None, new_comment=False, is_edited=False, *args, **kwargs):
         super(Publication, self).save(*args, **kwargs)
 
         if new_comment:
             if not self.deleted:
-                self.send_notification(is_edited=is_edited)  # Enviar publicacion por socket
+                self.send_notification(csrf_token=csrf_token, is_edited=is_edited)  # Enviar publicacion por socket
 
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:

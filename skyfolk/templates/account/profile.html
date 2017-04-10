@@ -219,7 +219,7 @@ if(requests){
                 var userList = new List('tab-amigos', options);
             </script>
 
-            <script src="{{ STATIC_URL }}js/min/socket.min.js"></script>
+            <script src="{{ STATIC_URL }}js/socket.js"></script>
             <script>
                 UTILS.init([{{ user.pk }}]);
                 UTILS.conn_socket();
