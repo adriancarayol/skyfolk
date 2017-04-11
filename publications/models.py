@@ -163,6 +163,7 @@ class ExtraContent(models.Model):
     description = models.CharField(max_length=256)
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
+    publication = models.ForeignKey('Publication', related_name='publication_extra_content')
 
 
 class SharedPublication(models.Model):
@@ -281,16 +282,20 @@ class Publication(PublicationBase):
             image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
                 'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
 
+
             self.event_type = 3
-            extra_content = ExtraContent.objects.create(url=url)
+            extra_c, created = ExtraContent.objects.get_or_create(url=url, publication=self)
+
             if description:
-                extra_content.description = description.get('content', None)[:265]
+                extra_c.description = description.get('content', None)[:265]
             if title:
-                extra_content.title = title.get('content', None)[:63]
+                extra_c.title = title.get('content', None)[:63]
             if image:
-                extra_content.image = image.get('content', None)
-            extra_content.save()
-            self.extra_content = extra_content
+                extra_c.image = image.get('content', None)
+            extra_c.save()
+            self.extra_content = extra_c
+        else:
+            self.extra_content = None
 
         bold = re.findall('\*[^\*]+\*', self.content)
         bold = list(set(bold))

@@ -1,6 +1,6 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save
-from .models import Publication
+from django.db.models.signals import post_save, pre_save
+from .models import Publication, ExtraContent
 import logging
 
 
@@ -12,3 +12,9 @@ logger = logging.getLogger(__name__)
 def publication_handler(sender, instance, created, **kwargs):
     if created:
         logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))
+    if instance.extra_content: # Para publicaciones editadas
+        ExtraContent.objects.filter(publication=instance.id).exclude(url=instance.extra_content.url).delete()
+    else:
+        ExtraContent.objects.filter(publication=instance.id).delete()
+
+

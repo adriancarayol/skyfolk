@@ -76,7 +76,7 @@
                                                             <div class="card small">
                                                                 <div class="card-image">
                                                                   <img src="{% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
-                                                                  <span class="card-title black-text">{{ node.shared_publication.publication.extra_content.title }}</span>
+                                                                  <span class="card-title white-text">{{ node.shared_publication.publication.extra_content.title }}</span>
                                                                 </div>
                                                                 <div class="card-content">
                                                                   <p>{{ node.shared_publication.publication.extra_content.description }}.</p>
@@ -96,7 +96,7 @@
                                             <div class="card small">
                                                 <div class="card-image">
                                                   <img src="{% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
-                                                  <span class="card-title black-text">{{ node.extra_content.title }}</span>
+                                                  <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">
                                                   <p>{{ node.extra_content.description }}.</p>

@@ -72,7 +72,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 publication.author = emitter
                 publication.board_owner = board_owner
-                publication.parse_content()  # parse publication content
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):
@@ -90,6 +89,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.save()  # Creamos publicacion
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()  # add mentions
+                publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
                 form.save_m2m()  # Saving tags
                 publication.save(update_fields=['content'],
@@ -452,7 +452,7 @@ def edit_publication(request):
         if publication.author.id != user.id:
             return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
-        if publication.event_type != 3:
+        if publication.event_type != 1 and publication.event_type != 3:
             return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
         publication.content = request.POST.get('content', None)
@@ -473,10 +473,9 @@ def edit_publication(request):
         if publication.content.isspace():  # Comprobamos si el comentario esta vacio
             raise IntegrityError('El comentario esta vacio')
 
-        publication.save()  # Creamos publicacion
         publication.parse_mentions()  # add mentions
         publication.created = datetime.datetime.now()
-        publication.save(update_fields=['content', 'created'],
+        publication.save(update_fields=['content','created', 'extra_content'],
                          new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
 
         return JsonResponse({'data': True})

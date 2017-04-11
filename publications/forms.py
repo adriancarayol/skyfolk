@@ -93,9 +93,9 @@ class SharedPublicationForm(forms.ModelForm):
         self.fields['content'].widget.attrs.update({
             'class': 'materialize-textarea',
             'id': 'shared_comment_content',
-            'required': 'false',
             'placeholder': 'Añade un comentario...'
         })
+        self.fields['content'].required = False
 
     class Meta:
         model = Publication
