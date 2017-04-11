@@ -15,8 +15,8 @@
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
-                        {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}
-                            {% if node.event_type == 1 %}
+                        {% if user.is_authenticated and request.user.id == node.author.id %}
+                            {% if node.event_type == 1 or node.event_type == 3 %}
                             <span data-id="{{ node.pk }}" id="edit-comment-content"
                                   class="top-options edit-comment tooltipped"
                                   data-position="bottom"
@@ -144,8 +144,8 @@
                             </div>
                         </div>
                     </div>
-                    {% if user.is_authenticated and user.username == node.author.username or user.is_authenticated and user.username == user_profile.username %}
-                        {% if node.event_type == 1  %}
+                    {% if user.is_authenticated and user.username == node.author.username %}
+                        {% if node.event_type == 1  or node.event_type == 3 %}
                         <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
                              class="author-controls">
                             <div class="row">

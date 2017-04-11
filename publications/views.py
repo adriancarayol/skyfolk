@@ -452,7 +452,7 @@ def edit_publication(request):
         if publication.author.id != user.id:
             return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
-        if publication.event_type != 1:
+        if publication.event_type != 3:
             return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
         publication.content = request.POST.get('content', None)

@@ -625,7 +625,7 @@ function AJAX_edit_publication(pub, content) {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',
-                    text: "Failed to delete publish.",
+                    text: "Failed to edit publish.",
                     type: "error"
                 });
             }

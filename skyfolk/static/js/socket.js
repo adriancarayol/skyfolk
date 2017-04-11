@@ -75,6 +75,21 @@ var UTILS = UTILS || (function () {
                             content += "                </div>";
                             content += "                </div>";
                             content += "    </div>";
+                            if (_args == data.author_id) {
+                                content += '<div data-user-id="'+data.author_id+'" id="author-controls-'+data.id+'" class="author-controls">';
+                                content += '<div class="row">';
+                                content += '<div class="col s12">';
+                                content += '<form method="post" accept-charset="utf-8">';
+                                content += '<input type="hidden" name="csrfmiddlewaretoken" value="'+data.token+'">';
+                                content += '<div class="row">';
+                                content += '<div class="input-field col s12">';
+                                content += '<i class="material-icons prefix">create</i>';
+                                content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-'+data.id+'" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
+                                content += '<label for="id_caption-'+data.id+'">Editar comentario</label></div>';
+                                content += '<div class="row">';
+                                content += '<button data-id="'+data.id+'" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button" id="submit_edit_publication">Editar<i class="material-icons right">mode_edit</i></button>';
+                                content += '</div></div></form></div></div></div>';
+                            }
                             content += '<div class="wrapper-reply">';
                             content += '<div class="hidden" id="caja-comentario-'+data.id+'">';
                             content += '<form class="reply-form" action="" method="post">';
@@ -124,27 +139,6 @@ var UTILS = UTILS || (function () {
                             $(show).css('display', 'none');
                         }
                     }
-                    /*else if (data.type === "reply" && !data.is_edited) {
-                     var content = "";
-                     content += "                <div class=\"wrapper-reply\">";
-                     content += "";
-                     content += "                <!-- RESPUESTAS A COMENTARIOS -->";
-                     content += "";
-                     content += "                <div class=\"comment-reply\">";
-                     content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"><\/div>';
-                     content += "                    <div class=\"author-reply\">";
-                     content += '                      <a href="/profile/' + data.author_username + '">' + data.author_username + '</a>';
-                     content += '                      <i class="reply-created">' + data.created + '<\/i>';
-                     content += "                    </div>";
-                     content += '                      <div class="content-reply">' + data.content + '</div>';
-                     content += "                </div>";
-                     content += "";
-                     content += "                </div>";
-                     content += "    </div>";
-
-                     var pub = $('#pub-' + data.parent);
-                     $(pub).append(content);
-                     }*/
                 };
 
                 // Helpful debugging
