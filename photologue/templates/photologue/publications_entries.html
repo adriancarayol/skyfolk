@@ -22,7 +22,7 @@
                 <div class="parrafo comment-tab">
                     <a href="/profile/{{ pub.p_author.username }}">{{ pub.p_author.username }}</a>
                     <a target="_blank">{{ pub.created|naturaltime }}</a><br><br>
-                    {{ pub.content|replace_decorators|safe }}
+                    {{ pub.content|safe }}
                 </div>
                 <div class="wrapper-reply">
                     {% comment %}
@@ -34,7 +34,7 @@
                             <div class="avatar-reply">{% avatar reply.p_author %}</div>
                             <div class="author-reply"><span class="triangle"> </span><a
                                     href="/profile/{{ reply.p_author }}">{{ reply.p_author }}</a></div>
-                            <div class="content-reply">{{ reply|safe|replace_decorators|safe }}</div>
+                            <div class="content-reply">{{ reply|safe }}</div>
                         </div>
                     {% endfor %}
                 </div>
@@ -48,7 +48,7 @@
             </h2>
             <div class="parrafo comment">
                 <a target="_blank">{{ pub.created|naturaltime }}</a><br>
-                <div class="wrp-comment">{{ pub.content|replace_decorators|safe }}</div>
+                <div class="wrp-comment">{{ pub.content|safe }}</div>
             </div>
             <div class="show-more" id="show-comment-{{ pub.pk }}">
                 <a href="#">+ Mostrar más</a>
@@ -102,7 +102,7 @@
                         <a href="/profile/{{ reply.author }}">{{ reply.author }}</a>
                         <i class="reply-created">{{ reply.created|naturaltime }}</i>
                     </div>
-                    <div class="content-reply">{{ reply|safe|replace_decorators|safe }}</div>
+                    <div class="content-reply">{{ reply|safe }}</div>
                 </div>
             {% endfor %}
         </div>
