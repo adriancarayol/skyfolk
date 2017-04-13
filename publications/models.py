@@ -323,6 +323,12 @@ class Publication(PublicationBase):
         if self.parent:
             id_parent = self.parent.id
 
+        extra_c = self.extra_content
+
+        have_extra_content = False
+        if extra_c:
+            have_extra_content = True
+
         notification = {
             "id": self.id,
             "content": self.content,
@@ -337,8 +343,16 @@ class Publication(PublicationBase):
             "parent": id_parent,
             "level": self.get_level(),
             'is_edited': is_edited,
-            'token': csrf_token
+            'token': csrf_token,
+            'event_type': self.event_type,
+            'extra_content': have_extra_content,
         }
+
+        if have_extra_content:
+            notification['extra_content_title'] = extra_c.title
+            notification['extra_content_description'] = extra_c.description
+            notification['extra_content_image'] = extra_c.image
+            notification['extra_content_url'] = extra_c.url
 
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
