@@ -319,9 +319,13 @@ class Publication(PublicationBase):
          que esten visitando el perfil donde se publica el comentario.
         """
         id_parent = None
+        author_parent = None
+        avatar_parent = None
 
         if self.parent:
             id_parent = self.parent.id
+            author_parent = self.parent.author.username
+            avatar_parent = get_author_avatar(self.parent.author)
 
         extra_c = self.extra_content
 
@@ -346,6 +350,8 @@ class Publication(PublicationBase):
             'token': csrf_token,
             'event_type': self.event_type,
             'extra_content': have_extra_content,
+            'parent_author': author_parent,
+            'parent_avatar': avatar_parent
         }
 
         if have_extra_content:

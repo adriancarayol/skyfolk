@@ -23,7 +23,7 @@ var UTILS = UTILS || (function () {
                             var content = "";
                             content += '<div class="row">';
                             content += '<div class="col s12">';
-                            if (data.level > 0 && data.level < 3) {
+                            if (data.level > 0) {
                                 content += ' <div class="col s12 wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 98% !important;">';
                             } else
                                 content += ' <div class=\"col s12 wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
@@ -43,8 +43,15 @@ var UTILS = UTILS || (function () {
                             content += '        <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
                             content += "      </div>";
                             content += '<div class="col l10 m12 s9">';
-                            content += '                  <h2 class="h22"><a href="/profile/' + data.author_username + '" >@' + data.author_username + '</a></h2>';
-                            content += '                    <a target="_blank">' + data.created + '<\/a><br>';
+                            content += '                  <h2 class="h22"><a href="/profile/' + data.author_username + '" >@' + data.author_username + '</a>';
+                            if (data.parent) {
+                                content += '<span class="chip">';
+                                content += '<img src="' + data.parent_avatar + '" alt="'+data.author_parent+'">';
+                                content += '<i class="fa fa-reply"></i> <a href="/profile/'+ data.parent_author +'">@'+ data.parent_author +'</a>';
+                                content += '</span>';
+                            }
+                            content += '</h2>';
+                            content += '                    <p id="pub-created" class="blue-text text-darken-2">' + data.created + '<\/p><br>';
                             content += '<div class="row">';
                             content += "                  <div class=\"parrafo comment\">";
                             content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
@@ -113,7 +120,7 @@ var UTILS = UTILS || (function () {
                             content += '<div class="hidden" id="caja-comentario-' + data.id + '">';
                             content += '<form class="reply-form" action="" method="post">';
                             content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + data.token + '">';
-                            content += '<input id="id_author" name="author" type="hidden" value="' + data.author_id + '">';
+                            content += '<input id="id_author" name="author" type="hidden" value="' + _args + '">';
                             content += '<input id="id_board_owner" name="board_owner" type="hidden" value="' + data.board_owner_id + '">';
                             content += '<input id="id_parent" name="parent" type="hidden">';
                             content += '<div class="row">';
@@ -138,11 +145,15 @@ var UTILS = UTILS || (function () {
                         } else {
                             var parent = $('#pub-' + data.parent);
                             if (parent.length) {
-                                var children_list = $(parent).find('.children').first();
-                                if (!children_list.length) {
-                                    children_list = $(parent).find('.wrapper-reply').after('<ul class="children"></ul>');
+                                if (data.level == 1) {
+                                    var children_list = $(parent).find('.children').first();
+                                    if (!children_list.length) {
+                                        children_list = $(parent).find('.wrapper-reply').after('<ul class="children"></ul>');
+                                    }
+                                    $(children_list).prepend(content);
+                                } else {
+                                    $(parent).after(content);
                                 }
-                                $(children_list).prepend(content);
                             } else $("#tab-comentarios").prepend(content);
                         }
                         var show = $('div#pub-' + data.id + '').find('#show-comment-' + data.id + '');

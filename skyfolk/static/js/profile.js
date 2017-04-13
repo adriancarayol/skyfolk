@@ -418,8 +418,15 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '        <div class="usr-img img-responsive"><img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"></div>';
             content += "      </div>";
             content += '<div class="col l10 m12 s9">';
-            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a></h2>';
-            content += '                    <a target="_blank">' + publications[i].created + '<\/a><br>';
+            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a>';
+            if (publications[i].parent) {
+                content += '<span class="chip">';
+                content += '<img src="' + publications[i].parent_avatar + '" alt="' + publications[i].parent_author + '">';
+                content += '<i class="fa fa-reply"></i> <a href="/profile/' + publications[i].parent_author + '">@' + publications[i].parent_author + '</a>';
+                content += '</span>';
+            }
+            content += '</h2>';
+            content += '                    <p id="pub-created" class="blue-text text-darken-2">' + publications[i].created + '<\/p><br>';
             content += '<div class="row">';
             content += "                  <div class=\"parrafo comment\">";
             content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
@@ -488,7 +495,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '<div class="hidden" id="caja-comentario-' + publications[i].id + '">';
             content += '<form class="reply-form" action="" method="post">';
             content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-            content += '<input id="id_author" name="author" type="hidden" value="' + publications[i].author_id + '">';
+            content += '<input id="id_author" name="author" type="hidden" value="' + publications[i].user_id + '">';
             content += '<input id="id_board_owner" name="board_owner" type="hidden" value="' + publications[i].board_owner_id + '">';
             content += '<input id="id_parent" name="parent" type="hidden">';
             content += '<div class="row">';
@@ -541,8 +548,16 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '        <div class="usr-img img-responsive"><img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"></div>';
             content += "      </div>";
             content += '<div class="col l10 m12 s9">';
-            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a></h2>';
-            content += '                    <a target="_blank">' + publications[i].created + '<\/a><br>';
+            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a>';
+
+            if (publications[i].parent) {
+                content += '<span class="chip">';
+                content += '<img src="' + publications[i].parent_avatar + '" alt="' + publications[i].parent_author + '">';
+                content += '<i class="fa fa-reply"></i> <a href="/profile/' + publications[i].parent_author + '">@' + publications[i].parent_author + '</a>';
+                content += '</span>';
+            }
+            content += '</h2>';
+            content += '                    <p id="pub-created" class="blue-text text-darken-2">' + publications[i].created + '<\/p><br>';
             content += '<div class="row">';
             content += "                  <div class=\"parrafo comment\">";
             content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
@@ -621,7 +636,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '<div class="hidden" id="caja-comentario-' + publications[i].id + '">';
             content += '<form class="reply-form" action="" method="post">';
             content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-            content += '<input id="id_author" name="author" type="hidden" value="' + publications[i].author_id + '">';
+            content += '<input id="id_author" name="author" type="hidden" value="' + publications[i].user_id + '">';
             content += '<input id="id_board_owner" name="board_owner" type="hidden" value="' + publications[i].board_owner_id + '">';
             content += '<input id="id_parent" name="parent" type="hidden">';
             content += '<div class="row">';

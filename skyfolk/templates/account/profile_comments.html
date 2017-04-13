@@ -17,12 +17,12 @@
                   data-tooltip="Ver conversación completa"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
                         {% if user.is_authenticated and request.user.id == node.author.id %}
                             {% if node.event_type == 1 or node.event_type == 3 %}
-                            <span data-id="{{ node.pk }}" id="edit-comment-content"
-                                  class="top-options edit-comment tooltipped"
-                                  data-position="bottom"
-                                  data-delay="50"
-                                  data-tooltip="Editar comentario"><i class="fa fa-pencil"
-                                                                      aria-hidden="true"></i></span>
+                                <span data-id="{{ node.pk }}" id="edit-comment-content"
+                                      class="top-options edit-comment tooltipped"
+                                      data-position="bottom"
+                                      data-delay="50"
+                                      data-tooltip="Editar comentario"><i class="fa fa-pencil"
+                                                                          aria-hidden="true"></i></span>
                             {% endif %}
                         {% endif %}
                         <div class="row">
@@ -36,8 +36,14 @@
                                     <div class="col l10 m12 s9">
                                         <h2 class="h22"><a
                                                 href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
+                                            {% if node.parent %}
+                                                <span class="chip">
+                                                        {% avatar node.parent.author %}
+                                                        <i class="fa fa-reply"></i> <a href="/profile/{{ node.parent.author }}">@{{ node.parent.author }}</a>
+                                                </span>
+                                            {% endif %}
                                         </h2>
-                                        <a target="_blank" id="pub-created">{{ node.created|naturaltime }}</a>
+                                       <p id="pub-created" class="blue-text text-darken-2">{{ node.created|naturaltime }}</p>
                                         <div class="row">
                                             <div class="parrafo comment">
                                                 <div class="wrp-comment">{{ node.content|safe }}</div>
@@ -54,13 +60,15 @@
                                                 }
                                             </style>
                                         {% endif %}
-                                        {% if node.shared_publication %} {% comment %} Para publicaciones que contienen citas {% endcomment %}
+                                        {% if node.shared_publication %}
+                                            {% comment %} Para publicaciones que contienen citas {% endcomment %}
                                             <style>
                                                 .card-content img {
                                                     width: 70px;
                                                     height: 70px;
                                                     box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
                                                 }
+
                                                 .comment .fa-share {
                                                     color: #1e88e5;
                                                     font-style: normal;
@@ -69,43 +77,49 @@
                                             <div class="card grey lighten-5">
                                                 <div class="card-content black-text">
                                                     {% avatar node.shared_publication.publication.author %}<br>
-                                                    <span class="card-title"><a href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
+                                                    <span class="card-title"><a
+                                                            href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
                                                     <p>{{ node.shared_publication.publication.content|safe }}</p>
-                                                    {% if node.shared_publication.publication.extra_content %} {% comment %} Para publicaciones con URL {% endcomment %}
-                                                            <div class="card small">
-                                                                <div class="card-image">
-                                                                  <img src="{% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
-                                                                  <span class="card-title white-text">{{ node.shared_publication.publication.extra_content.title }}</span>
-                                                                </div>
-                                                                <div class="card-content">
-                                                                  <p>{{ node.shared_publication.publication.extra_content.description }}.</p>
-                                                                </div>
-                                                                <div class="card-action">
-                                                                  <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
-                                                                </div>
-                                                              </div>
+                                                    {% if node.shared_publication.publication.extra_content %}
+                                                        {% comment %} Para publicaciones con URL {% endcomment %}
+                                                        <div class="card small">
+                                                            <div class="card-image">
+                                                                <img src="
+                                                                        {% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                <span class="card-title white-text">{{ node.shared_publication.publication.extra_content.title }}</span>
+                                                            </div>
+                                                            <div class="card-content">
+                                                                <p>{{ node.shared_publication.publication.extra_content.description }}.</p>
+                                                            </div>
+                                                            <div class="card-action">
+                                                                <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
+                                                            </div>
+                                                        </div>
                                                     {% endif %}
                                                 </div>
                                                 <div class="card-action">
-                                                    <a class="blue-text text-darken-2" href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
+                                                    <a class="blue-text text-darken-2"
+                                                       href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
                                                 </div>
                                             </div>
-                                            {% endif %}
-                                    {% if node.extra_content %} {% comment %} Para publicaciones con URL {% endcomment %}
+                                        {% endif %}
+                                        {% if node.extra_content %}
+                                            {% comment %} Para publicaciones con URL {% endcomment %}
                                             <div class="card small">
                                                 <div class="card-image">
-                                                  <img src="{% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
-                                                  <span class="card-title white-text">{{ node.extra_content.title }}</span>
+                                                    <img src="
+                                                            {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                    <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">
-                                                  <p>{{ node.extra_content.description }}</p>
+                                                    <p>{{ node.extra_content.description }}</p>
                                                 </div>
                                                 <div class="card-action">
-                                                  <a href="{{ node.extra_content.url }}">Ver</a>
+                                                    <a href="{{ node.extra_content.url }}">Ver</a>
                                                 </div>
-                                              </div>
-                                    {% endif %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -126,17 +140,21 @@
                                     {% endif %}
                                     {% if user.is_authenticated and user.id != node.author.id %}
                                         {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
-                                        <li title="No me gusta" class="hate-comment" id="fa-hate" {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
+                                        <li title="No me gusta" class="hate-comment" id="fa-hate"
+                                            {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
                                             <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
                                         </li>
-                                        <li id="like-heart" title="¡Me gusta!" class="like-comment" {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
+                                        <li id="like-heart" title="¡Me gusta!" class="like-comment"
+                                            {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
                                             <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
                                         </li>
                                     {% endif %}
-                                    <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline" {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline" style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                                class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
+                                    <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
+                                        {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
+                                        style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
+                                            class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
@@ -146,29 +164,33 @@
                     </div>
                     {% if user.is_authenticated and user.username == node.author.username %}
                         {% if node.event_type == 1  or node.event_type == 3 %}
-                        <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
-                             class="author-controls">
-                            <div class="row">
-                                <div class="col s12">
-                                    <form method="post" accept-charset="utf-8">{% csrf_token %}
-                                        <div class="row">
-                                            <div class="input-field col s12">
-                                                <i class="material-icons prefix">create</i>
-                                                <textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-{{ node.pk }}" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>
-                                                <label for="id_caption-{{ node.pk }}">Editar comentario</label>
-                                            </div>
+                            <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
+                                 class="author-controls">
+                                <div class="row">
+                                    <div class="col s12">
+                                        <form method="post" accept-charset="utf-8">{% csrf_token %}
                                             <div class="row">
-                                                <button data-id="{{ node.pk }}"
-                                                        class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
-                                                        type="button" id="submit_edit_publication">Editar
-                                                    <i class="material-icons right">mode_edit</i>
-                                                </button>
+                                                <div class="input-field col s12">
+                                                    <i class="material-icons prefix">create</i>
+                                                    <textarea class="materialize-textarea"
+                                                              placeholder="Escribe el contenido del nuevo mensaje"
+                                                              id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
+                                                              name="content" rows="10" required="required"
+                                                              style="height: 10.9969px;"></textarea>
+                                                    <label for="id_caption-{{ node.pk }}">Editar comentario</label>
+                                                </div>
+                                                <div class="row">
+                                                    <button data-id="{{ node.pk }}"
+                                                            class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
+                                                            type="button" id="submit_edit_publication">Editar
+                                                        <i class="material-icons right">mode_edit</i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         {% endif %}
                     {% endif %}
                     <div class="wrapper-reply">

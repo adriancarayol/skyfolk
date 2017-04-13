@@ -518,6 +518,8 @@ def load_more_comments(request):
                                            'event_type': row.event_type, 'extra_content': have_extra_content,
                                            'descendants': row.get_children_count(),
                                            'token': get_or_create_csrf_token(request),
+                                           'parent': True if row.parent else False,
+                                           'parent_author': row.parent.author.username,
                                            'author_avatar': get_author_avatar(row.author)})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
@@ -536,6 +538,8 @@ def load_more_comments(request):
                                            'event_type': row.event_type, 'extra_content': have_extra_content,
                                            'descendants': row.get_children_count(),
                                            'token': get_or_create_csrf_token(request),
+                                           'parent': True if row.parent else False,
+                                           'parent_author': row.parent.author.username,
                                            'author_avatar': get_author_avatar(row.author)})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
@@ -554,8 +558,9 @@ def load_more_comments(request):
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                            'event_type': row.event_type, 'extra_content': have_extra_content,
-                                           'descendants': row.get_descendants_not_deleted(),
                                            'token': get_or_create_csrf_token(request),
+                                           'parent': True if row.parent else False, 'parent_author': row.parent.author.username,
+                                           'parent_avatar': get_author_avatar(row.parent.author),
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
@@ -572,8 +577,9 @@ def load_more_comments(request):
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                            'event_type': row.event_type, 'extra_content': have_extra_content,
-                                           'descendants': row.get_descendants_not_deleted(),
                                            'token': get_or_create_csrf_token(request),
+                                           'parent': True if row.parent else False, 'parent_author': row.parent.author.username,
+                                           'parent_avatar': get_author_avatar(row.parent.author),
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
