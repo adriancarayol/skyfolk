@@ -1,6 +1,8 @@
 import json
 import logging
 import datetime
+import io
+import os
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -15,12 +17,14 @@ from photologue.models import Photo
 from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm
 from publications.models import Publication, PublicationPhoto, SharedPublication
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from emoji import Emoji
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from django.db import transaction
 from .utils import parse_string
 from django.middleware import csrf
+from PIL import Image
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -34,6 +38,15 @@ def get_or_create_csrf_token(request):
     request.META['CSRF_COOKIE_USED'] = True
     return token
 
+def _optimize_publication_image(instance, image_upload):
+    if image_upload:
+        image = Image.open(image_upload)
+        if image.mode != 'RGBA':
+            image = image.convert('RGBA')
+        output = io.BytesIO()
+        image.save(output, format='JPEG', quality=70)
+        output.seek(0)
+        instance.image = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(image_upload.name)[0], 'image/jpeg', output.tell(), None)
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
     """
@@ -86,6 +99,9 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise IntegrityError('El comentario esta vacio')
+
+
+                _optimize_publication_image(publication, request.FILES.get('image', None))
 
                 publication.save()  # Creamos publicacion
                 publication.add_hashtag()  # add hashtags
@@ -522,6 +538,7 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
+                                           'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author)})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
@@ -542,6 +559,7 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
+                                           'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author)})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
@@ -563,6 +581,7 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False, 'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author),
+                                           'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
@@ -582,6 +601,7 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False, 'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author),
+                                           'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
@@ -623,19 +643,20 @@ def load_more_skyline(request):
             have_extra_content = False
             if extra_c:
                 have_extra_content = True
-            if have_extra_content:
-                list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
+            
+            list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                        'author_username': row.author.username, 'user_id': user.id,
                                        'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                        'author_avatar': get_author_avatar(row.author), 'level': row.level,
                                        'event_type': row.event_type, 'extra_content': have_extra_content,
                                        'descendants': row.get_children_count(),
+                                       'image': row.image.url if row.image else None,
                                        'token': get_or_create_csrf_token(request)})
-                if have_extra_content:
-                    list_responses[-1]['extra_content_title'] = extra_c.title
-                    list_responses[-1]['extra_content_description'] = extra_c.description
-                    list_responses[-1]['extra_content_image'] = extra_c.image
-                    list_responses[-1]['extra_content_url'] = extra_c.url
+            if have_extra_content:
+                list_responses[-1]['extra_content_title'] = extra_c.title
+                list_responses[-1]['extra_content_description'] = extra_c.description
+                list_responses[-1]['extra_content_image'] = extra_c.image
+                list_responses[-1]['extra_content_url'] = extra_c.url
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True

@@ -229,9 +229,9 @@ def crop_image(obj, request):
         tempfile = im.rotate(-rotate, expand=True)
         tempfile = tempfile.crop((int(x), int(y), int(w + x), int(h + y)))
         tempfile_io = BytesIO()
-        tempfile_io.seek(0, os.SEEK_END)
-        tempfile.save(tempfile_io, format='PNG')
-        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.png', 'image/png', tempfile_io.tell(), None)
+        tempfile.save(tempfile_io, format='JPEG')
+        tempfile_io.seek(0)
+        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
         obj.image = image_file
 
 

@@ -359,7 +359,8 @@ class Publication(PublicationBase):
             'event_type': self.event_type,
             'extra_content': have_extra_content,
             'parent_author': author_parent,
-            'parent_avatar': avatar_parent
+            'parent_avatar': avatar_parent,
+            'image': self.image.url if self.image else None
         }
 
         if have_extra_content:

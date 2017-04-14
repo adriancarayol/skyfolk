@@ -77,6 +77,11 @@ var UTILS = UTILS || (function () {
                                 content += '<a href="' + data.extra_content_url + '">Ver</a>';
                                 content += '</div></div>';
                             }
+                            if (data.image) {
+                                content += '<div class="row">';
+                                content += '<div class="col s5">';
+                                content += '<img class="responsive-img" src="'+data.image+'" alt="Imagen de: '+data.author_username+'" title="Imagen de: '+data.author_username+'">';
+                            }
                             content += "                    </div>";
                             content += "                    </div>";
                             content += "                    </div>";

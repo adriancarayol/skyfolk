@@ -452,6 +452,11 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
                 content += '</div></div>';
             }
+            if (publications[i].image) {
+                                content += '<div class="row">';
+                                content += '<div class="col s5">';
+                                content += '<img class="responsive-img" src="'+publications[i].image+'" alt="Imagen de: '+publications[i].author_username+'" title="Imagen de: '+publications[i].author_username+'">';
+            }
             content += "                    </div>";
             content += "                    </div>";
             content += "                    </div>";
@@ -582,6 +587,11 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<div class="card-action">';
                 content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
                 content += '</div></div>';
+            }
+            if (publications[i].image) {
+                                content += '<div class="row">';
+                                content += '<div class="col s5">';
+                                content += '<img class="responsive-img" src="'+publications[i].image+'" alt="Imagen de: '+publications[i].author_username+'" title="Imagen de: '+publications[i].author_username+'">';
             }
             if (publications[i].event_type === 2) {
                 content += '<div class="card grey lighten-5">';
