@@ -124,9 +124,17 @@ class PublicationManager(models.Manager):
         return u", ".join(o.name for o in obj.tags.all())
 
 
+def upload_image_publication(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    return "%s/%s" % (instance.author, filename)
+
 class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)
-    image = models.ImageField(upload_to='publicationimages',
+    image = models.ImageField(upload_to=upload_image_publication,
                               verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     tags = TaggableManager(blank=True)

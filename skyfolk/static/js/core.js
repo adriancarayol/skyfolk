@@ -93,15 +93,15 @@ $(document).ready(function () {
     /* Submit publication */
     $(page_wrapper).find('#message-form2').on('submit', function (event) {
         event.preventDefault();
-        var data = $(page_wrapper).find('#message-form2').serialize();
+        var form = $(page_wrapper).find('#message-form2');
         AJAX_submit_publication(data, 'publication');
     });
 
     /* Submit publication (propio) */
     $(self_page_wrapper).find('#message-form3').on('submit', function (event) {
         event.preventDefault();
-        var data = $(self_page_wrapper).find('#message-form3').serialize();
-        AJAX_submit_publication(data, 'publication');
+        var form = $(self_page_wrapper).find('#message-form3');
+        AJAX_submit_publication(form, 'publication');
     });
 
     /* Submit reply publication */
@@ -114,7 +114,7 @@ $(document).ready(function () {
         var owner_pk = $(form).find('input[name=board_owner]').val();
         var data = $(form).serialize();
         var pks = [user_pk, owner_pk, parent_pk];
-        AJAX_submit_publication(data, 'reply', pks);
+        AJAX_submit_publication(form, 'reply', pks);
     });
 
     /* Submit creacion de grupo */
@@ -574,13 +574,18 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
  }
  */
 
-function AJAX_submit_publication(data, type, pks) {
+function AJAX_submit_publication(obj_form, type, pks) {
+    var form = new FormData($(obj_form).get(0));
+    form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     type = typeof type !== 'undefined' ? type : "reply"; //default para type
     $.ajax({
         url: '/publication/',
         type: 'POST',
-        dataType: 'json',
-        data: data,
+        data: form,
+        async: true,
+        contentType: false,
+        enctype: 'multipart/form-data',
+        processData: false,
         success: function (data) {
             var response = data.response;
             console.log('RESPONSE AQUI: ' + response + " type: " + type);

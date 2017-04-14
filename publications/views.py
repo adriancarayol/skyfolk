@@ -149,6 +149,7 @@ def publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
+
     context = {
         'publication': publication
     }

@@ -53,7 +53,7 @@ Base para la interfaz en comun de todos los usuarios.
                             {% endif %}
                         </div>
                     </div>
-                    <form id="message-form2" action="" method="post">{% csrf_token %}
+                    <form id="message-form2" action="" method="post" enctype="multiple/form-data">{% csrf_token %}
                         <div class="row">
                             <div class="row">
                                 <div class="input-field col s12">
@@ -75,13 +75,15 @@ Base para la interfaz en comun de todos los usuarios.
                                 <button type="button" id="close"
                                         class="waves-effect waves-light btn right transparent black-text">Cerrar<i
                                         class="material-icons right">close</i></button>
-                                <!--  <input type="submit" id="sendformpubli" value="Submit Feedback" /> -->
-                                <button title="Importar usuarios" class="waves-effect waves-light btn left blue"><i
-                                        class="material-icons">import_contacts</i></button>
-                                <button title="Adjuntar archivo" class="waves-effect waves-light btn left blue"><i
-                                        class="material-icons">attach_file</i></button>
-                                <button title="Localización" class="waves-effect waves-light btn left blue"><i
-                                        class="material-icons">location_on</i></button>
+                                <div class="file-field input-field">
+                                  <div class="btn">
+                                    <span>File</span>
+                                    <input id="id_image" name="image" type="file" multiple>
+                                  </div>
+                                  <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                                  </div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -121,13 +123,15 @@ Base para la interfaz en comun de todos los usuarios.
                             <button type="button" id="close"
                                     class="waves-effect waves-light btn right transparent black-text">Cerrar<i
                                     class="material-icons right">close</i></button>
-                            <!--  <input type="submit" id="sendselfformpubli" value="Submit Feedback" /> -->
-                            <button title="Importar usuarios" class="waves-effect waves-light btn left blue"><i
-                                    class="material-icons">import_contacts</i></button>
-                            <button title="Adjuntar archivo" class="waves-effect waves-light btn left blue"><i
-                                    class="material-icons">attach_file</i></button>
-                            <button title="Localización" class="waves-effect waves-light btn left blue"><i
-                                    class="material-icons">location_on</i></button>
+                            <div class="file-field input-field">
+                              <div class="btn">
+                                <span>File</span>
+                                <input id="id_image" name="image" type="file" multiple>
+                              </div>
+                              <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                              </div>
+                            </div>
                         </div>
                     </div>
                 </form>

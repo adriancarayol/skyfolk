@@ -1,11 +1,11 @@
 var UTILS = UTILS || (function () {
-        var _args = {};
-        var _max_height_comment = 60;
-        return {
-            init: function (args) {
-                _args = args;
-            },
-            conn_socket: function () {
+    var _args = {};
+    var _max_height_comment = 60;
+    return {
+        init: function (args) {
+            _args = args;
+        },
+        conn_socket: function () {
                 // Correctly decide between ws:// and wss://
                 var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
                 var ws_path = ws_scheme + '://' + window.location.host + window.location.pathname + "stream/";
@@ -24,9 +24,9 @@ var UTILS = UTILS || (function () {
                             content += '<div class="row">';
                             content += '<div class="col s12">';
                             if (data.level > 0) {
-                                content += ' <div class="col s12 wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 98% !important;">';
+                                content += ' <div class="col s12 wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 98% !important; border-right: 3px solid #1e88e5;">';
                             } else
-                                content += ' <div class=\"col s12 wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
+                            content += ' <div class=\"col s12 wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
                             content += "            <div class=\"box\">";
                             content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
                             if (_args == data.author_id && (data.event_type == 1 || data.event_type == 3)) {
@@ -150,9 +150,9 @@ var UTILS = UTILS || (function () {
                                     if (!children_list.length) {
                                         children_list = $(parent).find('.wrapper-reply').after('<ul class="children"></ul>');
                                     }
-                                    $(children_list).prepend(content);
+                                    $(children_list).append(content);
                                 } else {
-                                    $(parent).after(content);
+                                    $(parent).closest('.row').after(content);
                                 }
                             } else $("#tab-comentarios").prepend(content);
                         }

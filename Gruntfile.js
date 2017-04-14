@@ -7,7 +7,7 @@ module.exports = function (grunt) {
                     ext: '.min.js',   // replace .js to .min.js
                     cwd : 'skyfolk/static/js',
                     src: '**/*.js',
-                    dest: 'skyfolk/static/js/min/',
+                    dest: 'skyfolk/static/dist/js/',
                 }]
             }
         },

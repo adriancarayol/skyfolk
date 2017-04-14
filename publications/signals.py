@@ -1,7 +1,8 @@
-from django.dispatch import receiver
-from django.db.models.signals import post_save, pre_save
-from .models import Publication, ExtraContent
 import logging
+import os
+from django.dispatch import receiver
+from django.db.models.signals import post_save, pre_save, post_delete
+from .models import Publication, ExtraContent
 
 
 logging.basicConfig(level=logging.INFO)
@@ -18,3 +19,15 @@ def publication_handler(sender, instance, created, **kwargs):
         ExtraContent.objects.filter(publication=instance.id).delete()
 
 
+def _delete_image(path):
+	"""
+	Delete image (publication) from filesystem
+	"""
+	if os.path.isfile(path):
+		os.remove(path)
+
+
+@receiver(post_delete, sender=Publication)
+def publication_deleted(sender, instance, *args, **kwargs):
+	if instance.image:
+		_delete_image(instance.image.path)
