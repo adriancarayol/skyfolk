@@ -24,46 +24,8 @@ from publications.models import PublicationPhoto
 from user_profile.forms import SearchForm
 from user_profile.models import UserProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
-from .models import Photo, Gallery
+from .models import Photo
 from django.db.models import Q
-
-# Gallery views.
-
-
-class GalleryListView(ListView):
-    queryset = Gallery.objects.on_site().is_public()
-    paginate_by = 20
-
-
-class GalleryDetailView(DetailView):
-    queryset = Gallery.objects.on_site().is_public()
-
-
-class GalleryDateView(object):
-    queryset = Gallery.objects.on_site().is_public()
-    date_field = 'date_added'
-    allow_empty = True
-
-
-class GalleryDateDetailView(GalleryDateView, DateDetailView):
-    pass
-
-
-class GalleryArchiveIndexView(GalleryDateView, ArchiveIndexView):
-    pass
-
-
-class GalleryDayArchiveView(GalleryDateView, DayArchiveView):
-    pass
-
-
-class GalleryMonthArchiveView(GalleryDateView, MonthArchiveView):
-    pass
-
-
-class GalleryYearArchiveView(GalleryDateView, YearArchiveView):
-    make_object_list = True
-
 
 # Collection views
 @login_required(login_url='accounts/login')
@@ -246,15 +208,11 @@ def upload_zip_form(request):
             form.save(request=request)
             return redirect('/multimedia/' + user.username + '/')
         else:
-            return HttpResponse(
-                json.dumps({"nothing to see": "this isn't happening"}),
-                content_type="application/json"
-            )
+            # Cambiar por JsonResponse
+            return redirect('/multimedia/' + user.username + '/')
     else:
-        return HttpResponse(
-            json.dumps({"nothing to see": "no post method"}),
-            content_type="application/json"
-        )
+        # Cambiar por JsonResponse
+        return redirect('/multimedia/' + user.username + '/')
 
 
 @login_required()

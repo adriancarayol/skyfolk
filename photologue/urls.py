@@ -4,10 +4,10 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.decorators.http import require_POST
 from django.views.generic import RedirectView
 
-from .views import PhotoDetailView, GalleryListView, \
-    GalleryDetailView, PhotoArchiveIndexView, PhotoDateDetailView, PhotoDayArchiveView, \
-    PhotoYearArchiveView, PhotoMonthArchiveView, GalleryArchiveIndexView, GalleryYearArchiveView, \
-    GalleryDateDetailView, GalleryDayArchiveView, GalleryMonthArchiveView, GalleryDateDetailOldView, \
+from .views import PhotoDetailView, \
+    PhotoArchiveIndexView, PhotoDateDetailView, PhotoDayArchiveView, \
+    PhotoYearArchiveView, PhotoMonthArchiveView, \
+    GalleryDateDetailOldView, \
     GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
     PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, edit_photo, \
     upload_zip_form, upload_photo, collection_list
@@ -23,31 +23,10 @@ The new style will coexist with the existing 'pl-' prefix for a couple of releas
 """
 
 urlpatterns = [
-    url(r'^gallery/(?P<year>\d{4})/(?P<month>[0-9]{2})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
-        GalleryDateDetailView.as_view(month_format='%m'),
-        name='gallery-detail'),
-    url(r'^gallery/(?P<year>\d{4})/(?P<month>[0-9]{2})/(?P<day>\w{1,2})/$',
-        GalleryDayArchiveView.as_view(month_format='%m'),
-        name='gallery-archive-day'),
-    url(r'^gallery/(?P<year>\d{4})/(?P<month>[0-9]{2})/$',
-        GalleryMonthArchiveView.as_view(month_format='%m'),
-        name='gallery-archive-month'),
-    url(r'^gallery/(?P<year>\d{4})/$',
-        GalleryYearArchiveView.as_view(),
-        name='pl-gallery-archive-year'),
-    url(r'^gallery/$',
-        GalleryArchiveIndexView.as_view(),
-        name='pl-gallery-archive'),
     url(r'^$',
         RedirectView.as_view(
             url=reverse_lazy('photologue:pl-gallery-archive'), permanent=True),
         name='pl-photologue-root'),
-    url(r'^gallery/(?P<slug>[\-\d\w]+)/$',
-        GalleryDetailView.as_view(), name='pl-gallery'),
-    url(r'^gallerylist/$',
-        GalleryListView.as_view(),
-        name='gallery-list'),
-
     url(r'^photo/(?P<year>\d{4})/(?P<month>[0-9]{2})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
         PhotoDateDetailView.as_view(month_format='%m'),
         name='photo-detail'),

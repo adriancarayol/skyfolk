@@ -58,6 +58,7 @@
                     <div class="row">
                         {{ form.url_image.errors }}
                         <div class="input-field col s12">
+                            <i class="material-icons prefix">link</i>
                             {{ form.url_image }}
                             <label for="id_url_image">URL Imagen</label>
                         </div>
@@ -67,7 +68,7 @@
                         <div class="input-field col s12">
                             <i class="material-icons prefix">title</i>
                             {{ form.title }}
-                            <label for="id_title">{% trans "title" %}</label>
+                            <label for="id_title">{{ form.title.help_text }}</label>
                         </div>
                     </div>
                     <div class="row">
@@ -75,7 +76,7 @@
                         <div class="input-field col s12">
                             <i class="material-icons prefix">closed_caption</i>
                             {{ form.caption }}
-                            <label for="id_caption">{% trans "caption" %}</label>
+                            <label for="id_caption">{{ form.caption.help_text }}</label>
                         </div>
                     </div>
                     <div class="row">
@@ -87,10 +88,20 @@
                         </div>
                     </div>
                     <div class="row">
+                        {{ form.is_public.errors }}
+                        <div class="input-field col s12">
+                            <p>
+                                <input type="checkbox" id="id_is_public"/>
+                                <label for="id_is_public">{{ form_zip.is_public.help_text }}</label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
                         <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
                             <i class="material-icons right">file_upload</i>
                         </button>
-                        <button id="close_upload_form" class="waves-effect waves-light btn right transparent black-text btn-close"
+                        <button id="close_upload_form"
+                                class="waves-effect waves-light btn right transparent black-text btn-close"
                                 type="button">Cerrar
                             <i class="material-icons right">close</i>
                         </button>
@@ -102,9 +113,8 @@
                       enctype="multipart/form-data">{% csrf_token %}
                     <div class="row">
                         <div class="file-field input-field">
-                            {{ form_zip.zip_file.errors }}
                             <div class="btn blue darken-1 waves-effect waves-light">
-                                <span>{% trans "Upload a zip archive" %}</span>
+                                <span>{{ form_zip.zip_file.help_text }}</span>
                                 {{ form_zip.zip_file }}
                             </div>
                             <div class="file-path-wrapper">
@@ -113,53 +123,42 @@
                         </div>
                     </div>
                     <div class="row">
-                    {% comment %}
-                        {{ form_zip.title.errors }}
-                    {% endcomment %}
                         <div class="input-field col s12">
                             <i class="material-icons prefix">title</i>
-                            {{ form_zip.title }}
-                            <label for="id_title">{% trans "title" %}</label>
+                            {{ form_zip.title_collection }}
+                            <label for="id_title_collection">{{ form_zip.title_collection.help_text }}</label>
                         </div>
                     </div>
                     <div class="row">
-                        {{ form_zip.caption.errors }}
+                        {{ form_zip.caption_collection.errors }}
                         <div class="input-field col s12">
                             <i class="material-icons prefix">closed_caption</i>
-                            {{ form_zip.caption }}
-                            <label for="id_caption">{% trans "caption" %}</label>
+                            {{ form_zip.caption_collection }}
+                            <label for="id_caption_collection">{{ form_zip.caption_collection.help_text }}</label>
                         </div>
                     </div>
                     <div class="row">
-                        {{ form_zip.description.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">description</i>
-                            {{ form_zip.description }}
-                            <label for="id_caption">{% trans "description" %}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ form_zip.is_public.errors }}
+                        {{ form_zip.is_public_collection.errors }}
                         <p>
-                            {{ form_zip.is_public }}
-                            <label for="id_is_public">{% trans "Is public" %}</label>
-                            <i>{{ form_zip.is_public.help_text }}</i>
+                            {{ form_zip.is_public_collection }}
+                            <label for="id_is_public_collection">{{ form_zip.is_public_collection.help_text }}</label>
                         </p>
                     </div>
                     <div class="row">
-                        {{ form_zip.tags.errors }}
+                        {{ form_zip.tags_collection.errors }}
                         <div class="input-field col s12">
                             <i class="material-icons prefix">label</i>
-                            {{ form_zip.tags }}
-                            <label for="id_tags">{{ form_zip.tags.help_text }}</label>
+                            {{ form_zip.tags_collection }}
+                            <label for="id_tags_collection">{{ form_zip.tags_collection.help_text }}</label>
                         </div>
                     </div>
                     <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
                         <i class="material-icons right">file_upload</i>
                     </button>
-                    <button id="close_upload_zip_form" class="waves-effect waves-light btn right transparent black-text btn-close"
-                                type="button">Cerrar
-                            <i class="material-icons right">close</i>
+                    <button id="close_upload_zip_form"
+                            class="waves-effect waves-light btn right transparent black-text btn-close"
+                            type="button">Cerrar
+                        <i class="material-icons right">close</i>
                     </button>
                 </form>
             </div>

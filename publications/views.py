@@ -538,6 +538,7 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
+                                           'parent_avatar': get_author_avatar(row.parent.author),
                                            'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author)})
                     if have_extra_content:
@@ -559,6 +560,7 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
+                                           'parent_avatar': get_author_avatar(row.parent.author),
                                            'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author)})
                     if have_extra_content:
