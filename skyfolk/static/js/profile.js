@@ -460,7 +460,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '<div class="divider"></div>';
             content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
             content += "                    <ul class=\"opciones\">";
-            if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications.author_id) {
+            if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications[i].author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
             }
             if (publications[i].user_id != publications[i].author_id) {
@@ -601,7 +601,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '<div class="divider"></div>';
             content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
             content += "                    <ul class=\"opciones\">";
-            if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications.author_id) {
+            if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications[i].author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
             }
             if (publications[i].user_id != publications[i].author_id) {

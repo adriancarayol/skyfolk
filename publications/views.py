@@ -47,7 +47,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
     def post(self, request, *args, **kwargs):
         self.object = None
 
-        form = self.get_form()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
         emitter = get_object_or_404(get_user_model(),
                                     pk=request.POST['author'])
 
@@ -63,13 +64,13 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
             raise IntegrityError("No have permissions")
 
         is_correct_content = False
-        logger.debug('POST DATA: {}'.format(request.POST))
-        logger.debug('tipo emitter: {}'.format(type(emitter)))
-        logger.debug('tipo board_owner: {}'.format(type(board_owner)))
+        logger.info('POST DATA: {}'.format(request.POST))
+        logger.info('tipo emitter: {}'.format(type(emitter)))
+        logger.info('tipo board_owner: {}'.format(type(board_owner)))
+
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-
                 publication.author = emitter
                 publication.board_owner = board_owner
 

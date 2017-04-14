@@ -80,13 +80,13 @@ $(document).ready(function () {
     /* Close page-wrapper (mensaje) */
     $(page_wrapper).find('#close').on('click', function (event) {
         event.preventDefault();
-        $(page_wrapper).find('#message3').val('');
+        $(page_wrapper).find('#message2').val('');
         $(page_wrapper).hide();
     });
     /* Close self-page-wrapper (mensaje propio) */
     $(self_page_wrapper).find('#close').on('click', function (event) {
         event.preventDefault();
-        $(self_page_wrapper).find('#message2').val('');
+        $(self_page_wrapper).find('#message3').val('');
         $(self_page_wrapper).hide();
     });
 
@@ -94,14 +94,13 @@ $(document).ready(function () {
     $(page_wrapper).find('#message-form2').on('submit', function (event) {
         event.preventDefault();
         var data = $(page_wrapper).find('#message-form2').serialize();
-
         AJAX_submit_publication(data, 'publication');
     });
 
     /* Submit publication (propio) */
-    $(self_page_wrapper).find('#message-form2').on('submit', function (event) {
+    $(self_page_wrapper).find('#message-form3').on('submit', function (event) {
         event.preventDefault();
-        var data = $(self_page_wrapper).find('#message-form2').serialize();
+        var data = $(self_page_wrapper).find('#message-form3').serialize();
         AJAX_submit_publication(data, 'publication');
     });
 
