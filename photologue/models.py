@@ -30,6 +30,7 @@ from django.utils.functional import curry
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
+from mimetypes import guess_extension, guess_type
 
 from .validators import validate_extension
 from .validators import validate_file_extension
@@ -600,10 +601,10 @@ class Photo(ImageModel):
 
             parsed = urlparse(self.url_image)
             name, ext = splitext(parsed.path)
+
             validate_extension(ext)
 
             response = requests.head(self.url_image)
-            print('Response aqui: {}'.format(response.headers))
 
             if int(response.headers.get('content-length', None)) < 1000000:
                 # raise ValueError('Image so big')
@@ -619,7 +620,14 @@ class Photo(ImageModel):
                     if not block:
                         break
                     tmp.write(block)
-                self.image.save(self.slug, File(tmp))
+                # Comprobamos que se trata de una imagen
+                try:
+                    im = Image.open(tmp)
+                    im.verify()
+                except IOError:
+                    raise ValueError('Cant get image')
+
+                self.image.save(self.slug + ext, File(tmp))
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])
