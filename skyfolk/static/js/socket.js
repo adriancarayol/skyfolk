@@ -150,13 +150,14 @@ var UTILS = UTILS || (function () {
                         } else {
                             var parent = $('#pub-' + data.parent);
                             if (parent.length) {
-                                if (data.level == 1) {
+                                if (data.level == 1 || data.level == 2) {
                                     var children_list = $(parent).find('.children').first();
                                     if (!children_list.length) {
                                         children_list = $(parent).find('.wrapper-reply').after('<ul class="children"></ul>');
                                     }
-                                    $(children_list).append(content);
+                                    $(children_list).prepend(content);
                                 } else {
+
                                     $(parent).closest('.row').after(content);
                                 }
                             } else $("#tab-comentarios").prepend(content);

@@ -8,6 +8,7 @@
 {% block title %} <title> Skyfolk - Publicacion #{{ publication.0.id }}</title> {% endblock %}
 {% block extra-css %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
+    <script src="{{ STATIC_URL }}js/publication_detail.js" type="text/javascript"></script>
 {% endblock %}
 {% block content %}
     <div class="container" id="publication-thread">
@@ -23,18 +24,23 @@
                                 <div class="image col l2 m2 s2">
                                     <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                 </div>
-                                <div class="articulo col offset-s1 s8">
+                                <div class="articulo col s9">
                                     <h2 class="author-header"><a
-                                            href="/profile/{{ node.author.username }}">{{ node.author.username }}</a>
-                                        ha
-                                        comentado:
+                                            href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
+                                        {% if node.parent %}
+                                            <span class="chip">
+                                                        {% avatar node.parent.author %}
+                                                        <i class="fa fa-reply"></i> <a
+                                                    href="/publication/{{ node.parent.id }}">{{ node.parent.content|safe|truncatechars_html:80 }}</a>
+                                                </span>
+                                        {% endif %}
                                     </h2>
                                     <div class="row">
                                         <div class="parrafo comment">
-                                            <a target="_blank">{{ node.created|naturaltime }}</a><br>
+                                            <p id="pub-created"
+                                               class="blue-text text-darken-2">{{ node.created|naturaltime }}</p>
                                             <div class="wrp-comment">{{ node.content|safe }}</div>
                                         </div>
-
                                         <div class="show-more" id="show-comment-{{ node.pk }}">
                                             <a href="#">+ Mostrar más</a>
                                         </div>
@@ -66,11 +72,61 @@
                                                 <span class="card-title"><a
                                                         href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
-                                                <p>{{ node.shared_publication.publication.content|safe }}.</p>
+                                                <p>{{ node.shared_publication.publication.content|safe }}</p>
+                                                {% if node.shared_publication.publication.image %}
+                                                    <br>
+                                                    <div class="row">
+                                                        <div class="col s12">
+                                                            <img class="responsive-img"
+                                                                 src="{{ node.shared_publication.publication.image.url }}"
+                                                                 alt="Imagen de: {{ node.shared_publication.publication.author }}"
+                                                                 title="Imagen de: {{ node.shared_publication.publication.author }}">
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if node.shared_publication.publication.extra_content %}
+                                                    {% comment %} Para publicaciones con URL {% endcomment %}
+                                                    <div class="card small">
+                                                        <div class="card-image">
+                                                            <img src="{% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                            <span class="card-title white-text">{{ node.shared_publication.publication.extra_content.title }}</span>
+                                                        </div>
+                                                        <div class="card-content">
+                                                            <p>{{ node.shared_publication.publication.extra_content.description }}.</p>
+                                                        </div>
+                                                        <div class="card-action">
+                                                            <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                             <div class="card-action">
                                                 <a class="blue-text text-darken-2"
                                                    href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if node.image %}
+                                        <div class="row">
+                                            <div class="col s5">
+                                                <img class="responsive-img" src="{{ node.image.url }}"
+                                                     alt="Imagen de: {{ node.author }}"
+                                                     title="Imagen de: {{ node.author }}">
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if node.extra_content %}
+                                        {% comment %} Para publicaciones con URL {% endcomment %}
+                                        <div class="card small">
+                                            <div class="card-image">
+                                                <img src="{% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                <span class="card-title white-text">{{ node.extra_content.title }}</span>
+                                            </div>
+                                            <div class="card-content">
+                                                <p>{{ node.extra_content.description }}</p>
+                                            </div>
+                                            <div class="card-action">
+                                                <a href="{{ node.extra_content.url }}">Ver</a>
                                             </div>
                                         </div>
                                     {% endif %}
@@ -79,38 +135,37 @@
                             <div class="row">
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12" id="options-comments">
-                                    <ul>
-                                        {% if user.is_authenticated and user.username == node.author.username %}
-                                            {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                                            <li class="trash-comment" title="Borrar comentario"><i
-                                                    class="fa fa-trash"></i>
-                                            </li>
-                                        {% elif user.is_authenticated and user.username == user_profile.username %}
-                                            {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
-                                            <li class="trash-comment" title="Borrar comentario"><i
-                                                    class="fa fa-trash"></i>
-                                            </li>
-                                        {% endif %}
-                                        {% if user.is_authenticated and user.id != node.author.id %}
-                                            {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
-                                            <li title="No me gusta" class="hate-comment" id="fa-hate">
-                                                <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                                <i class="fa hate-value">
-                                                    {% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
-                                            </li>
-                                            <li id="like-heart" title="¡Me gusta!" class="like-comment">
-                                                <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                                <i id="like-value" class="fa">
-                                                    {% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
-                                            </li>
-                                        {% endif %}
-                                        <li title="Añadir a mi skyline" class="add-timeline" id="add_to_skyline"><i
-                                                    class="fa fa-tag">
-                                                {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
-                                        <li title="Responder" class="reply-comment"><i class="fa fa-reply"
-                                                                                       id="reply-caja-comentario-{{ node.pk }}"></i>
+                                    <ul class="opciones">
+                                    {% if user.is_authenticated and user.username == node.author.username %}
+                                        {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
+                                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
-                                    </ul>
+                                    {% elif user.is_authenticated and user.username == user_profile.username %}
+                                        {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
+                                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
+                                        </li>
+                                    {% endif %}
+                                    {% if user.is_authenticated and user.id != node.author.id %}
+                                        {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
+                                        <li title="No me gusta" class="hate-comment" id="fa-hate"
+                                            {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
+                                            <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                            <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
+                                        </li>
+                                        <li id="like-heart" title="¡Me gusta!" class="like-comment"
+                                            {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
+                                            <i class="fa fa-angle-up" aria-hidden="true"></i>
+                                            <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
+                                        </li>
+                                    {% endif %}
+                                    <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
+                                        {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
+                                        style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
+                                            class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
+                                    <li title="Responder" class="reply-comment"><i class="fa fa-reply"
+                                                                                   id="reply-caja-comentario-{{ node.pk }}"></i>
+                                    </li>
+                                </ul>
                                 </div>
                             </div>
                             {% with publication as pub %}
