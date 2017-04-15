@@ -170,7 +170,7 @@ def profile_view(request, username,
                         for node in
                         Publication.objects.filter(
                             board_owner=user_profile, deleted=False,
-                            parent=None)[:20]]
+                            parent=None)[:1]]
     except ObjectDoesNotExist:
         publications = None
 

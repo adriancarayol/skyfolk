@@ -649,7 +649,7 @@ def load_more_skyline(request):
             shared_pub = row.shared_publication
             have_shared_publication = False
             if shared_pub:
-                have_shared_publication
+                have_shared_publication = True
 
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                        'author_username': row.author.username, 'user_id': user.id,
@@ -666,10 +666,20 @@ def load_more_skyline(request):
                 list_responses[-1]['extra_content_url'] = extra_c.url
 
             if have_shared_publication:
-                #TODO: Add mas campos y hacer lo mismo con la funcion load_more_comments
+                list_responses[-1]['shared_pub_id'] = shared_pub.publication.pk
                 list_responses[-1]['shared_pub_content'] = shared_pub.publication.content
                 list_responses[-1]['shared_pub_author'] = shared_pub.publication.author.username
                 list_responses[-1]['shared_pub_avatar'] = get_author_avatar(shared_pub.publication.author)
+                list_responses[-1]['shared_created'] = naturaltime(shared_pub.publication.created)
+                list_responses[-1]['shared_image'] = shared_pub.publication.image.url if shared_pub.publication.image else None
+
+                shared_pub_extra_c = shared_pub.publication.extra_content
+
+                if shared_pub_extra_c:
+                    list_responses[-1]['shared_pub_extra_title'] = shared_pub.publication.extra_content.title
+                    list_responses[-1]['shared_pub_extra_description'] = shared_pub.publication.extra_content.description
+                    list_responses[-1]['shared_pub_extra_image'] = shared_pub.publication.extra_content.image if shared_pub.publication.extra_content.image else None
+                    list_responses[-1]['shared_pub_extra_url'] = shared_pub.publication.extra_content.url
 
 
         data['pubs'] = json.dumps(list_responses)

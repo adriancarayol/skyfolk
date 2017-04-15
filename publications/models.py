@@ -167,8 +167,8 @@ class ExtraContent(models.Model):
     Modelo para contenido extra/adicional de una publicacion,
     por ejemplo, informacion resumida de una URL
     """
-    title = models.CharField(max_length=64)
-    description = models.CharField(max_length=256)
+    title = models.CharField(max_length=64, default="")
+    description = models.CharField(max_length=256, default="")
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     publication = models.ForeignKey('Publication', related_name='publication_extra_content')

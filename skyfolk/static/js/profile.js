@@ -388,6 +388,8 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
         return;
 
     var existing = $('#pub-' + pub);
+    var pub_to_add;
+
     if (undefined !== existing && existing.length && !is_skyline) {
         var children_list = $(existing).find('.children').first();
         if (undefined === children_list || !children_list.length) {
@@ -396,6 +398,9 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
         var content = "";
         var i;
         for (i = 0; i < publications.length; i++) {
+            pub_to_add = $('pub-' + publications[i].id);
+            if (undefined !== pub_to_add && pub_to_add.length) continue;
+
             content = '<div class="row">';
             content += '<div class="col s12">';
             if (publications[i].level > 0 && publications[i].level < 3) {
@@ -531,6 +536,9 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             $(btn).remove();
     } else if (is_skyline) {
         for (i = 0; i < publications.length; i++) {
+            pub_to_add = $('pub-' + publications[i].id);
+            if (undefined !== pub_to_add && pub_to_add.length) continue;
+
             content = '<div class="row">';
             content += '<div class="col s12">';
             if (publications[i].level > 0 && publications[i].level < 3) {
@@ -593,15 +601,36 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                                 content += '<div class="col s5">';
                                 content += '<img class="responsive-img" src="'+publications[i].image+'" alt="Imagen de: '+publications[i].author_username+'" title="Imagen de: '+publications[i].author_username+'">';
             }
-            if (publications[i].event_type === 2) {
+            if (publications[i].event_type === 6) {
+                content += '<style>.comment .fa-share {color: #1e88e5;font-style: normal;}</style>';
                 content += '<div class="card grey lighten-5">';
                 content += '<div class="card-content black-text">';
-                content += '<img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"><br>';
-                content += '<span class="card-title"><a href="/profile/' + publications[i].author_username + '">@' + publications[i].author_username + '</a>';
-                content += '<i class="blue-text text-darken-2"> ' + publications[i].created + '</i></span>';
-                content += '<p>' + publications[i].content + '</p></div>';
+                content += '<img src="' + publications[i].shared_pub_avatar + '" alt="' + publications[i].shared_pub_author + '" width="70" height="70" style="box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);"><br>';
+                content += '<span class="card-title"><a href="/profile/' + publications[i].shared_pub_author + '">@' + publications[i].author_username + '</a>';
+                content += '<i class="blue-text text-darken-2"> ' + publications[i].shared_created + '</i></span>';
+                content += '<p>' + publications[i].shared_pub_content + '</p>';
+                if (publications[i].shared_image) {
+                    content += '<br><div class="row">';
+                    content += '<div class="col s7">';
+                    content += '<img class="responsive-img" src="'+publications[i].shared_image+'" alt="Imagen de: '+publications[i].shared_pub_author+'" title="Imagen de: '+ publications[i].shared_pub_author +'">';
+                    content += '</div></div>';
+                }
+                if (publications[i].shared_pub_extra_url !== undefined && publications[i].shared_pub_extra_url) {
+                    content += '<div class="card small">';
+                    content += '<div class="card-image">';
+                    if (publications[i].shared_pub_extra_image)
+                        content += '<img src="'+publications[i].shared_pub_extra_image+'">';
+                    else
+                        content += '<img src="/static/dist/img/nuevo_back.png">';
+                    content += '<span class="card-title white-text">'+publications[i].shared_pub_extra_title+'</span></div>';
+                    content += '<div class="card-content">';
+                    content += '<p>'+publications[i].shared_pub_extra_description+'</p></div>';
+                    content += '<div class="card-action">';
+                    content += '<a href="'+publications[i].shared_pub_extra_url+'">Ver</a></div></div></div>';
+
+                }
                 content += '<div class="card-action">';
-                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].id + '">Ver</a></div></div>';
+                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].shared_pub_id + '">Ver</a></div></div>';
             }
             content += "                    </div>";
             content += "                    </div>";
