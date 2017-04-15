@@ -81,6 +81,14 @@
                                                             href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
                                                     <p>{{ node.shared_publication.publication.content|safe }}</p>
+                                                    {% if node.shared_publication.publication.image %}
+                                                    <br>
+                                                    <div class="row">
+                                                        <div class="col s7">
+                                                            <img class="responsive-img" src="{{node.shared_publication.publication.image.url}}" alt="Imagen de: {{ node.shared_publication.publication.author }}" title="Imagen de: {{ node.shared_publication.publication.author }}">
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
                                                     {% if node.shared_publication.publication.extra_content %}
                                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                                         <div class="card small">

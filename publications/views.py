@@ -645,13 +645,18 @@ def load_more_skyline(request):
             have_extra_content = False
             if extra_c:
                 have_extra_content = True
-            
+
+            shared_pub = row.shared_publication
+            have_shared_publication = False
+            if shared_pub:
+                have_shared_publication
+
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                        'author_username': row.author.username, 'user_id': user.id,
                                        'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                        'author_avatar': get_author_avatar(row.author), 'level': row.level,
                                        'event_type': row.event_type, 'extra_content': have_extra_content,
-                                       'descendants': row.get_children_count(),
+                                       'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
                                        'image': row.image.url if row.image else None,
                                        'token': get_or_create_csrf_token(request)})
             if have_extra_content:
@@ -659,6 +664,13 @@ def load_more_skyline(request):
                 list_responses[-1]['extra_content_description'] = extra_c.description
                 list_responses[-1]['extra_content_image'] = extra_c.image
                 list_responses[-1]['extra_content_url'] = extra_c.url
+
+            if have_shared_publication:
+                #TODO: Add mas campos y hacer lo mismo con la funcion load_more_comments
+                list_responses[-1]['shared_pub_content'] = shared_pub.publication.content
+                list_responses[-1]['shared_pub_author'] = shared_pub.publication.author.username
+                list_responses[-1]['shared_pub_avatar'] = get_author_avatar(shared_pub.publication.author)
+
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True
