@@ -294,13 +294,19 @@ $(document).ready(function () {
                             at: '',
                             searchKey: "username",
                             insertTpl: "${username}",
-                            displayTpl: "<li data-value='(${username}, ${username})'><img src='${avatar}' width='30px' height='30px'> ${username} <small>${first_name} ${last_name}</small></li>",
+                            displayTpl: "<li class='search-live-item' data-value='${username}'><img src='${avatar}' width='30px' height='30px'>${username} <small>${first_name} ${last_name}</small></li>",
                             data: result.result,
-                            limit: 20,
+                            displayTimeout: 100,
                             callback: {
-                                filter: function (query, data, search_key) {
+                                filter: function (query, data, searchKey) {
                                     return $.map(data, function (item, i) {
-                                        return item[search_key].toLowerCase().indexOf(query) < 0 ? null : item
+                                        if (item[searchKey].toLowerCase().indexOf(query) < 0 ||
+                                            item['first_name'].toLowerCase().indexOf(query) < 0 ||
+                                            item['last_name'].toLowerCase().indexOf(query) < 0) {
+                                            return item;
+                                        } else {
+                                            return null;
+                                        }
                                     })
                                 }
                             }

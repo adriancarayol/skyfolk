@@ -161,7 +161,7 @@ def profile_view(request, username,
     context['reply_publication_form'] = ReplyPublicationForm()
     context['publicationForm'] = PublicationForm()
     context['publication_edit'] = PublicationEdit()
-    context['publication_shared'] = SharedPublicationForm(initial=initial)
+    context['publication_shared'] = SharedPublicationForm()
 
     # cargar lista comentarios
     try:

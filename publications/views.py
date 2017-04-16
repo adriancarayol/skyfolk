@@ -38,6 +38,7 @@ def get_or_create_csrf_token(request):
     request.META['CSRF_COOKIE_USED'] = True
     return token
 
+
 def _optimize_publication_image(instance, image_upload):
     if image_upload:
         image = Image.open(image_upload)
@@ -46,7 +47,9 @@ def _optimize_publication_image(instance, image_upload):
         output = io.BytesIO()
         image.save(output, format='JPEG', quality=70)
         output.seek(0)
-        instance.image = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(image_upload.name)[0], 'image/jpeg', output.tell(), None)
+        instance.image = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(image_upload.name)[0],
+                                              'image/jpeg', output.tell(), None)
+
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
     """
@@ -99,7 +102,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise IntegrityError('El comentario esta vacio')
-
 
                 _optimize_publication_image(publication, request.FILES.get('image', None))
 
@@ -165,9 +167,9 @@ def publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
-
     context = {
-        'publication': publication
+        'publication': publication,
+        'publication_shared': SharedPublicationForm()
     }
 
     return render(request, "account/publication_detail.html", context)
@@ -581,7 +583,8 @@ def load_more_comments(request):
                                            'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                            'event_type': row.event_type, 'extra_content': have_extra_content,
                                            'token': get_or_create_csrf_token(request),
-                                           'parent': True if row.parent else False, 'parent_author': row.parent.author.username,
+                                           'parent': True if row.parent else False,
+                                           'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author),
                                            'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
@@ -601,7 +604,8 @@ def load_more_comments(request):
                                            'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                            'event_type': row.event_type, 'extra_content': have_extra_content,
                                            'token': get_or_create_csrf_token(request),
-                                           'parent': True if row.parent else False, 'parent_author': row.parent.author.username,
+                                           'parent': True if row.parent else False,
+                                           'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author),
                                            'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
@@ -652,13 +656,13 @@ def load_more_skyline(request):
                 have_shared_publication = True
 
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                                       'author_username': row.author.username, 'user_id': user.id,
-                                       'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
-                                       'author_avatar': get_author_avatar(row.author), 'level': row.level,
-                                       'event_type': row.event_type, 'extra_content': have_extra_content,
-                                       'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
-                                       'image': row.image.url if row.image else None,
-                                       'token': get_or_create_csrf_token(request)})
+                                   'author_username': row.author.username, 'user_id': user.id,
+                                   'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
+                                   'author_avatar': get_author_avatar(row.author), 'level': row.level,
+                                   'event_type': row.event_type, 'extra_content': have_extra_content,
+                                   'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
+                                   'image': row.image.url if row.image else None,
+                                   'token': get_or_create_csrf_token(request)})
             if have_extra_content:
                 list_responses[-1]['extra_content_title'] = extra_c.title
                 list_responses[-1]['extra_content_description'] = extra_c.description
@@ -671,16 +675,18 @@ def load_more_skyline(request):
                 list_responses[-1]['shared_pub_author'] = shared_pub.publication.author.username
                 list_responses[-1]['shared_pub_avatar'] = get_author_avatar(shared_pub.publication.author)
                 list_responses[-1]['shared_created'] = naturaltime(shared_pub.publication.created)
-                list_responses[-1]['shared_image'] = shared_pub.publication.image.url if shared_pub.publication.image else None
+                list_responses[-1][
+                    'shared_image'] = shared_pub.publication.image.url if shared_pub.publication.image else None
 
                 shared_pub_extra_c = shared_pub.publication.extra_content
 
                 if shared_pub_extra_c:
                     list_responses[-1]['shared_pub_extra_title'] = shared_pub.publication.extra_content.title
-                    list_responses[-1]['shared_pub_extra_description'] = shared_pub.publication.extra_content.description
-                    list_responses[-1]['shared_pub_extra_image'] = shared_pub.publication.extra_content.image if shared_pub.publication.extra_content.image else None
+                    list_responses[-1][
+                        'shared_pub_extra_description'] = shared_pub.publication.extra_content.description
+                    list_responses[-1][
+                        'shared_pub_extra_image'] = shared_pub.publication.extra_content.image if shared_pub.publication.extra_content.image else None
                     list_responses[-1]['shared_pub_extra_url'] = shared_pub.publication.extra_content.url
-
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True

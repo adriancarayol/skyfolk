@@ -384,8 +384,11 @@ function AJAX_likeprofile(status) {
 function add_loaded_publication(pub, data, btn, is_skyline) {
     var publications = JSON.parse(data);
 
-    if (publications === undefined || publications.length <= 0)
+    if (publications === undefined || publications.length <= 0) {
+        if (is_skyline)
+            $(btn).remove();
         return;
+    }
 
     var existing = $('#pub-' + pub);
     var pub_to_add;
@@ -698,9 +701,11 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "    </div></div></div>";
             $('#tab-comentarios').find('#loader_skyline').before(content);
         }
-        $(btn).attr("data-id", publications[publications.length - 1].id);
-        if (publications.length <= 19)
+
+        if (publications === undefined || publications.length <= 20)
             $(btn).remove();
+        else
+            $(btn).attr("data-id", publications[publications.length - 1].id);
     }
 }
 /* LOAD MORE COMMENTS */

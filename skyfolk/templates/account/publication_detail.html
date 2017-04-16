@@ -12,6 +12,40 @@
 {% endblock %}
 {% block content %}
     <div class="container" id="publication-thread">
+        {% comment %}
+            Formulario para citar un comentario
+        {% endcomment %}
+        <div class="row">
+            <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper"
+                 data-id="" hidden>
+                <div class="row">
+                    <div id="status" class="col s12 title-page-wrapper">
+                        <h4><i class="fa fa-quote-right" aria-hidden="true"></i> Citar publicacion</h4>
+                        <h6>Comparte esta publicación con tus seguidores</h6>
+                    </div>
+                </div>
+                <form id="share_publication_form" action="" method="post">{% csrf_token %}
+                    <div class="row">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                {{ publication_shared.content }}
+                                <label for="shared_comment_content">Escribe un comentario adicional</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <button type="submit" id="share_publication"
+                                    class="waves-effect waves-light btn right blue">
+                                Citar<i class="material-icons right">send</i></button>
+                            <button type="button" id="close_share_publication"
+                                    class="waves-effect waves-light btn right transparent black-text">Cancelar<i
+                                    class="material-icons right">close</i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         {% recursetree publication %}
             <div class="row">
                 <div class="col s12">
@@ -88,7 +122,8 @@
                                                     {% comment %} Para publicaciones con URL {% endcomment %}
                                                     <div class="card small">
                                                         <div class="card-image">
-                                                            <img src="{% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                            <img src="
+                                                                    {% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
                                                             <span class="card-title white-text">{{ node.shared_publication.publication.extra_content.title }}</span>
                                                         </div>
                                                         <div class="card-content">
@@ -119,7 +154,8 @@
                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                         <div class="card small">
                                             <div class="card-image">
-                                                <img src="{% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                <img src="
+                                                        {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
                                                 <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                             </div>
                                             <div class="card-content">
@@ -136,40 +172,42 @@
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12" id="options-comments">
                                     <ul class="opciones">
-                                    {% if user.is_authenticated and user.username == node.author.username %}
-                                        {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
+                                        {% if user.is_authenticated and user.username == node.author.username %}
+                                            {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
+                                            <li class="trash-comment" title="Borrar comentario"><i
+                                                    class="fa fa-trash"></i>
+                                            </li>
+                                        {% elif user.is_authenticated and user.username == user_profile.username %}
+                                            {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
+                                            <li class="trash-comment" title="Borrar comentario"><i
+                                                    class="fa fa-trash"></i>
+                                            </li>
+                                        {% endif %}
+                                        {% if user.is_authenticated and user.id != node.author.id %}
+                                            {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
+                                            <li title="No me gusta" class="hate-comment" id="fa-hate"
+                                                {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
+                                                <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                                <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
+                                            </li>
+                                            <li id="like-heart" title="¡Me gusta!" class="like-comment"
+                                                {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
+                                                <i class="fa fa-angle-up" aria-hidden="true"></i>
+                                                <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
+                                            </li>
+                                        {% endif %}
+                                        <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
+                                            {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
+                                            style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
+                                                class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
+                                        <li title="Responder" class="reply-comment"><i class="fa fa-reply"
+                                                                                       id="reply-caja-comentario-{{ node.pk }}"></i>
                                         </li>
-                                    {% elif user.is_authenticated and user.username == user_profile.username %}
-                                        {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
-                                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
-                                        </li>
-                                    {% endif %}
-                                    {% if user.is_authenticated and user.id != node.author.id %}
-                                        {% comment %} Si el usuario esta logueado y no es al autor {% endcomment %}
-                                        <li title="No me gusta" class="hate-comment" id="fa-hate"
-                                            {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
-                                            <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                            <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
-                                        </li>
-                                        <li id="like-heart" title="¡Me gusta!" class="like-comment"
-                                            {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
-                                            <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                            <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
-                                        </li>
-                                    {% endif %}
-                                    <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
-                                        {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
-                                        style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                            class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
-                                    <li title="Responder" class="reply-comment"><i class="fa fa-reply"
-                                                                                   id="reply-caja-comentario-{{ node.pk }}"></i>
-                                    </li>
-                                </ul>
+                                    </ul>
                                 </div>
                             </div>
                             {% with publication as pub %}
-                                {% include "account/new_reply.html" %}
+                                {% include "account/new_reply_extend_publication.html" %}
                             {% endwith %}
                         </div>
                     </div>
