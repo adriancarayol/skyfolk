@@ -1,6 +1,7 @@
 import json
 import re
 import bleach
+import requests
 
 from channels import Group
 from django.contrib.auth.models import User
@@ -11,7 +12,7 @@ from taggit.managers import TaggableManager
 from photologue.models import Photo
 from user_groups.models import UserGroups
 from user_profile.models import Relationship
-from .utils import get_author_avatar
+from .utils import get_author_avatar, remove_duplicates_in_list
 from user_profile.tasks import send_to_stream
 from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
@@ -19,6 +20,7 @@ from django.conf import settings
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext as _
+from bs4 import BeautifulSoup
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -122,9 +124,17 @@ class PublicationManager(models.Manager):
         return u", ".join(o.name for o in obj.tags.all())
 
 
+def upload_image_publication(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    return "%s/%s" % (instance.author, filename)
+
 class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)
-    image = models.ImageField(upload_to='publicationimages',
+    image = models.ImageField(upload_to=upload_image_publication,
                               verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     tags = TaggableManager(blank=True)
@@ -152,6 +162,18 @@ class PublicationBase(MPTTModel):
         return self.get_descendants().filter(deleted=False).count()
 
 
+class ExtraContent(models.Model):
+    """
+    Modelo para contenido extra/adicional de una publicacion,
+    por ejemplo, informacion resumida de una URL
+    """
+    title = models.CharField(max_length=64, default="")
+    description = models.CharField(max_length=256, default="")
+    image = models.URLField(null=True, blank=True)
+    url = models.URLField()
+    publication = models.ForeignKey('Publication', related_name='publication_extra_content')
+
+
 class SharedPublication(models.Model):
     """
     Modelo para comparticiones compartidas (copiadas de un skyline a otro)
@@ -171,7 +193,7 @@ class Publication(PublicationBase):
     EVENT_CHOICES = (
         (1, _("publication")),
         (2, _("new_relation")),
-        (3, _("notice")),
+        (3, _("link")),
         (4, _("relevant")),
         (5, _("image")),
         (6, _("shared"))
@@ -190,6 +212,7 @@ class Publication(PublicationBase):
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
     event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
+    extra_content = models.ForeignKey(ExtraContent, null=True, related_name='extra_content')
 
     # objects = PublicationManager()
 
@@ -248,59 +271,115 @@ class Publication(PublicationBase):
         self.content = self.content.replace('\n', '').replace('\r', '')
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+        # Buscamos el el contenido del mensaje una URL y mostramos un breve resumen de ella
+        link_url = re.findall(
+            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
+            self.content)
+        if link_url and len(link_url) > 0:
+            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
+                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
+
+            url = link_url[-1]  # Get last url
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text)
+            # First get the meta description tag
+            description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
+                'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
+            title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
+                'property': 'og:title'}) or soup.find('meta', attrs={'name': 'title'})
+            image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
+                'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
+
+
+            self.event_type = 3
+            extra_c, created = ExtraContent.objects.get_or_create(url=url, publication=self)
+
+            if description:
+                extra_c.description = description.get('content', None)[:265]
+            if title:
+                extra_c.title = title.get('content', None)[:63]
+            if image:
+                extra_c.image = image.get('content', None)
+            extra_c.save()
+            self.extra_content = extra_c
+        else:
+            self.extra_content = None
+
         bold = re.findall('\*[^\*]+\*', self.content)
-        ''' Bold para comentario '''
+        bold = list(set(bold))
+
         for b in bold:
             self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
-        ''' Italic para comentario '''
+
         italic = re.findall('~[^~]+~', self.content)
+        italic = list(set(italic))
         for i in italic:
             self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
-        ''' Tachado para comentario '''
+
         tachado = re.findall('\^[^\^]+\^', self.content)
+        tachado = list(set(tachado))
         for i in tachado:
             self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
 
-    def send_notification(self, type="pub", is_edited=False):
+    def send_notification(self, csrf_token=None, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
-
         id_parent = None
+        author_parent = None
+        avatar_parent = None
 
         if self.parent:
             id_parent = self.parent.id
+            author_parent = self.parent.author.username
+            avatar_parent = get_author_avatar(self.parent.author)
+
+        extra_c = self.extra_content
+
+        have_extra_content = False
+        if extra_c:
+            have_extra_content = True
 
         notification = {
             "id": self.id,
             "content": self.content,
             "avatar_path": get_author_avatar(authorpk=self.author.id),
+            "author_id": self.author_id,
+            "board_owner_id": self.board_owner_id,
             "author_username": self.author.username,
             "author_first_name": self.author.first_name,
             "author_last_name": self.author.last_name,
             "created": naturaltime(self.created),
             "type": type,
             "parent": id_parent,
-            "level": self.get_level()
+            "level": self.get_level(),
+            'is_edited': is_edited,
+            'token': csrf_token,
+            'event_type': self.event_type,
+            'extra_content': have_extra_content,
+            'parent_author': author_parent,
+            'parent_avatar': avatar_parent,
+            'image': self.image.url if self.image else None
         }
 
-        if is_edited:
-            notification['is_edited'] = True
+        if have_extra_content:
+            notification['extra_content_title'] = extra_c.title
+            notification['extra_content_description'] = extra_c.description
+            notification['extra_content_image'] = extra_c.image
+            notification['extra_content_url'] = extra_c.url
+
         # Enviamos a todos los usuarios que visitan el perfil
         Group(self.board_owner.profile.group_name).send({
             "text": json.dumps(notification)
         })
 
-    def save(self, new_comment=False, is_edited=False, *args, **kwargs):
+    def save(self, csrf_token=None, new_comment=False, is_edited=False, *args, **kwargs):
         super(Publication, self).save(*args, **kwargs)
 
         if new_comment:
             if not self.deleted:
-                self.send_notification(is_edited=is_edited)  # Enviar publicacion por socket
-
-        # elif new_comment and not self.deleted:
-        #    self.send_notification(type="reply", is_edited=is_edited)
+                self.send_notification(csrf_token=csrf_token, is_edited=is_edited)  # Enviar publicacion por socket
 
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:

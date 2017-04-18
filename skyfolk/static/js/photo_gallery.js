@@ -2,11 +2,13 @@ $(document).ready(function () {
 
     $('select').material_select();
 
+    $('ul.tabs').tabs();
+
     $('#btn-upload-photo').on('click', function () {
         $('#upload_photo').toggle();
     });
 
-    $('#close_upload_form').on('click', function () {
+    $('#close_upload_form, #close_upload_zip_form').on('click', function () {
         $('#upload_photo').toggle();
     });
 

@@ -27,7 +27,7 @@ Template para el perfil de cada usuario
 {% endblock %}
 
 {% block content %}
-    <script async src="{{ STATIC_URL }}js/profile.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/profile.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/jquery.easytabs.js" type="text/javascript"></script>
     <script async src="{{ STATIC_URL }}js/jquery.hashchange.min.js" type="text/javascript"></script>
 
@@ -45,7 +45,6 @@ Template para el perfil de cada usuario
                         </div>
                     </div>
                     <form id="share_publication_form" action="" method="post">{% csrf_token %}
-                        {{ publication_shared.csrftoken }}
                         <div class="row">
                             <div class="row">
                                 <div class="input-field col s12">
@@ -54,8 +53,6 @@ Template para el perfil de cada usuario
                                 </div>
                             </div>
                         </div>
-                        {{ publication_shared.author }}
-                        {{ publication_shared.board_owner }}
                         <div class="row">
                             <div class="col s12">
                                 <button type="submit" id="share_publication"
@@ -212,28 +209,6 @@ if(requests){
                     $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
                 </script>
             {% endif %}
-
-            {% block js %}
-                {{ block.super }}
-                <script src="{{ STATIC_URL }}js/el-pagination.js"></script>
-                <script>
-                    $('#tab-comentarios').endlessPaginate({
-                        paginateOnScroll: true,
-                        paginateOnScrollMargin: 20,
-                        id: '#tab-comentarios'
-                    });
-                    $('#tab-timeline').endlessPaginate({
-                        paginateOnScroll: true,
-                        paginateOnScrollMargin: 20,
-                        id: '#tab-timeline'
-                    });
-                    $('#tab-amigos').endlessPaginate({
-                        paginateOnScroll: true,
-                        paginateOnScrollMargin: 20,
-                        id: '#tab-amigos'
-                    });
-                </script>
-            {% endblock %}
 
             <!-- Busqueda en tab-amigos -->
             <script>

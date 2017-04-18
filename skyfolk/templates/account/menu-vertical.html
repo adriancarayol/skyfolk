@@ -10,7 +10,7 @@
             {% if request.user.profile.backImage and request.user.profile.backImage|file_exists %}
                 <img class="background" src="{{ request.user.profile.backImage.url }}">
             {% else %}
-                <img class="background" src="{{ STATIC_URL }}img/nuevo_back.png">
+                <img class="background" src="{{ STATIC_URL }}dist/img/nuevo_back.png">
             {% endif %}
             <a href="/profile/{{ request.user }}">{% avatar user 64 %}</a>
             <a href="/profile/{{ request.user }}"><span class="white-text name">{{ request.user.username }}</span></a>

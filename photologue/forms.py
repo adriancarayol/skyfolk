@@ -1,4 +1,5 @@
 import zipfile
+import uuid
 
 try:
     from zipfile import BadZipFile
@@ -32,30 +33,22 @@ class UploadZipForm(forms.Form):
         self.request = kwargs.pop("request")
         super(UploadZipForm, self).__init__(*args, **kwargs)
 
-    zip_file = forms.FileField()
+    zip_file = forms.FileField(help_text=_('Selecciona un zip'))
 
-    title = forms.CharField(label=_('Title'),
+    title_collection = forms.CharField(
                             max_length=250,
                             required=False,
-                            help_text=_('All uploaded photos will be given a title made up of this title + a '
-                                        'sequential number.<br>This field is required if creating a new '
-                                        'gallery, but is optional when adding to an existing gallery - if '
-                                        'not supplied, the photo titles will be creating from the existing '
-                                        'gallery name.'))
+                            help_text=_('Añade un titulo a las imágenes'))
 
-    caption = forms.CharField(label=_('Caption'),
+    caption_collection = forms.CharField(
                               required=False,
-                              help_text=_('Caption will be added to all photos.'))
-    description = forms.CharField(label=_('Description'),
-                                  required=False,
-                                  help_text=_('A description of this Gallery. Only required for new galleries.'))
-    is_public = forms.BooleanField(label=_('Is public'),
+                              help_text=_('Añade una descripcion a las imágenes'))
+    is_public_collection = forms.BooleanField(
                                    initial=True,
                                    required=False,
-                                   help_text=_('Uncheck this to make the uploaded '
-                                               'gallery and included photographs private.'))
+                                   help_text=_('Activa esta casilla para marcar todas las imágenes como privadas'))
 
-    tags = TagField(help_text=_('A comma-separated list of tags.'))
+    tags_collection = TagField(help_text=_('Añade etiquetas a tu imágen'), required=False)
 
     def clean_zip_file(self):
         """Open the zip file a first time, to check that it is a valid zip archive.
@@ -75,17 +68,17 @@ class UploadZipForm(forms.Form):
         return zip_file
 
     def clean_title(self):
-        title = self.cleaned_data['title']
+        title = self.cleaned_data['title_collection']
         if not title:
             raise forms.ValidationError(_('Title is empty.'))
         return title
 
     def clean(self):
         cleaned_data = super(UploadZipForm, self).clean()
-        if not self['title'].errors:
+        if not self['title_collection'].errors:
             # If there's already an error in the title, no need to add another
             # error related to the same field.
-            if not cleaned_data.get('title', None):
+            if not cleaned_data.get('title_collection', None):
                 raise forms.ValidationError(
                     _('Enter a title for a new collection.'))
         return cleaned_data
@@ -121,26 +114,27 @@ class UploadZipForm(forms.Form):
                 logger.debug('File "{0}" is empty.'.format(filename))
                 continue
 
-            photo_title_root = self.cleaned_data['title'] if self.cleaned_data['title'] else None
+            photo_title_root = self.cleaned_data['title_collection'] if self.cleaned_data['title_collection'] else None
 
             # A photo might already exist with the same slug. So it's somewhat inefficient,
             # but we loop until we find a slug that's available.
+            user = self.request.user
             while True:
                 photo_title = ' '.join([photo_title_root, str(count)])
-                slug = slugify(photo_title)
+                slug = slugify(photo_title + 'by' + str(user.username) + str(uuid.uuid1()))
                 if Photo.objects.filter(slug=slug).exists():
                     count += 1
                     continue
                 break
 
-            tags = self.cleaned_data['tags']
+            tags = self.cleaned_data['tags_collection']
             photo = Photo.objects.create(title=photo_title,
                                          slug=slug,
-                                         caption=self.cleaned_data['caption'],
-                                         is_public=self.cleaned_data['is_public'],
+                                         caption=self.cleaned_data['caption_collection'],
+                                         is_public=self.cleaned_data['is_public_collection'],
                                          owner=self.request.user)
             # first add title tag.
-            photo.tags.add(self.cleaned_data['title'])
+            photo.tags.add(self.cleaned_data['title_collection'])
             for tag in tags:
                 photo.tags.add(tag)
             # Basic check that we have a valid image.
@@ -189,7 +183,14 @@ class UploadFormPhoto(forms.ModelForm):
 
     class Meta:
         model = Photo
-        exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug', 'is_public',)
+        exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug',)
+        help_texts = {
+            'url_image': 'Introduce una URL con una imagen',
+            'title': 'Añade un titulo a la imágen',
+            'caption': 'Añade una descripcion a la imágen',
+            'tags': 'Añade etiquetas a tu imágen',
+            'is_public': 'Activa esta casilla para marcar la imágen como privada',
+        }
 
 
 class EditFormPhoto(forms.ModelForm):

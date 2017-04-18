@@ -1,5 +1,4 @@
 from django import forms
-
 from publications.models import Publication, PublicationPhoto
 
 
@@ -7,21 +6,37 @@ class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
         # Excluir atributos en el formulario.
-        exclude = ['image', 'created', 'likes', 'user_give_me_like', 'hates',
-                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 'event_type', 'liked', 'hated', 'shared']
+        exclude = ['created', 'likes', 'user_give_me_like', 'hates',
+                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 
+                   'event_type', 'liked', 'hated', 'shared', 'extra_content']
 
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs.update({
-            'placeholder': 'Escribe tu mensaje aqui...',
-            'id': 'message2', 'contenteditable': 'true',
-            'class': 'materialize-textarea',
-            'required': 'required',
-        })
+
+        """
+        if self.initial:
+            if self.initial['author'] == self.initial['board_owner']: # Publico en mi perfil
+                self.fields['content'].widget.attrs.update({
+                'class': 'materialize-textarea',
+                'id': 'message2',
+                'data-length': '500',
+                'placeholder': 'Escribe tu mensaje aqui...',
+                'required': 'required',
+                })
+            else: # Publico en perfil ajeno
+                self.fields['content'].widget.attrs.update({
+                'class': 'materialize-textarea',
+                'id': 'message3',
+                'data-length': '500',
+                'placeholder': 'Escribe tu mensaje aqui...',
+                'required': 'required',
+                })
+
         self.fields['content'].label = ''
         self.fields['author'].widget = forms.HiddenInput()
         self.fields['board_owner'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
+        """
 
 
 class ReplyPublicationForm(forms.ModelForm):
@@ -29,20 +44,11 @@ class ReplyPublicationForm(forms.ModelForm):
         model = Publication
         # Excluir atributos en el formulario.
         exclude = ['image', 'created', 'likes', 'user_give_me_like', 'hates',
-                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 'event_type', 'liked', 'hated', 'shared']
+                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 
+                   'event_type', 'liked', 'hated', 'shared', 'extra_content']
 
     def __init__(self, *args, **kwargs):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs.update({
-            'placeholder': 'Escribe tu mensaje aqui...',
-            'id': 'message-reply', 'contenteditable': 'true',
-            'class': 'materialize-textarea',
-            'required': 'required',
-        })
-        self.fields['content'].label = ''
-        self.fields['author'].widget = forms.HiddenInput()
-        self.fields['board_owner'].widget = forms.HiddenInput()
-        self.fields['parent'].widget = forms.HiddenInput()
 
 
 class PublicationPhotoForm(forms.ModelForm):
@@ -55,7 +61,7 @@ class PublicationPhotoForm(forms.ModelForm):
         super(PublicationPhotoForm, self).__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({
             'placeholder': 'Escribe tu mensaje aqui...',
-            'id': 'message-photo', 'contenteditable': 'true',
+            'id': 'message-photo',
             'class': 'materialize-textarea',
             'required': 'required',
         })
@@ -69,11 +75,8 @@ class PublicationEdit(forms.ModelForm):
     """
     Formulario para editar una publicacion existente
     """
-
     def __init__(self, *args, **kwargs):
         super(PublicationEdit, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs['class'] = 'materialize-textarea'
-        self.fields['content'].widget.attrs['id'] = 'edit_comment_content'
 
     class Meta:
         model = Publication
@@ -87,8 +90,11 @@ class SharedPublicationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SharedPublicationForm, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs['class'] = 'materialize-textarea'
-        self.fields['content'].widget.attrs['id'] = 'shared_comment_content'
+        self.fields['content'].widget.attrs.update({
+            'class': 'materialize-textarea',
+            'id': 'shared_comment_content',
+            'placeholder': 'Añade un comentario...'
+        })
         self.fields['content'].required = False
 
     class Meta:

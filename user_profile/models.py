@@ -577,6 +577,12 @@ class UserProfile(models.Model):
     # Methods of multimedia
     def get_num_multimedia(self):
         """
+        Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
+        """
+        return Photo.objects.filter(owner=self.user, is_public=True).count()
+
+    def get_total_num_multimedia(self):
+        """
         Devuelve el numero de contenido multimedia de un perfil.
         """
         return Photo.objects.filter(owner=self.user).count()

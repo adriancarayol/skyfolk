@@ -120,7 +120,7 @@ function AJAX_like_group(_id) {
                 });
             }
         }, error: function (rs, e) {
-            // alert(rs.responseText);
+
         }
     });
 }

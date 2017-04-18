@@ -67,7 +67,10 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
     'mptt',
+    'tasks_server',
 )
+
+
 
 FIRST_PARTY_APPS = (
     'landing',  # página de inicio

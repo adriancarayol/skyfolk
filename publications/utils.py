@@ -58,3 +58,9 @@ def parse_string(content):
         content = content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
 
     return content
+
+
+def remove_duplicates_in_list(seq):
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]

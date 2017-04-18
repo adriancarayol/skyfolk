@@ -3,6 +3,7 @@ var max_height_comment = 60;
 $(document).ready(function () {
 
     var thread = $('#publication-thread');
+    var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Show more - Show less */
     $(thread).find('.wrapper').each(function () {
@@ -39,11 +40,45 @@ $(document).ready(function () {
         $("#" + id_).slideToggle("fast");
     });
 
-    /* Agregar timeline */
-    $(thread).on('click', '#options-comments .fa-tag', function () {
+    /* Submit reply publication */
+    $(thread).on('click', 'button.enviar', function (event) {
+        event.preventDefault();
+        var parent_pk = $(this).attr('id').split('-')[1];
+        var form = $(this).parent();
+        $(form).find('input[name=parent]').val(parent_pk);
+        var user_pk = $(form).find('input[name=author]').val();
+        var owner_pk = $(form).find('input[name=board_owner]').val();
+        var pks = [user_pk, owner_pk, parent_pk];
+        alert(pks);
+        AJAX_submit_publication(form, 'reply', pks);
+    });
+
+    /* Agregar skyline */
+    $(document).on('click', '#options-comments #add_to_skyline', function () {
+        var tag = this;
+        $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
+        $(wrapper_shared_pub).show();
+    });
+
+    /* Compartir a skyline */
+    $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
+        event.preventDefault();
+        var content = $(wrapper_shared_pub).find('#shared_comment_content').val();
+        var pub_id = $(wrapper_shared_pub).attr('data-id');
+        var tag = $('#pub-' + pub_id).find('.add-timeline').first();
+        AJAX_add_timeline(pub_id, tag, content);
+    });
+
+    /* Cerrar div de compartir publicacion */
+    $('#close_share_publication').click(function () {
+        $(wrapper_shared_pub).hide();
+    });
+
+    /* Eliminar skyline */
+    $(document).on('click', '#options-comments #remove_from_skyline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
-        AJAX_add_timeline(caja_publicacion, tag, "publication");
+        AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
@@ -63,7 +98,6 @@ $(document).ready(function () {
     /* Borrar publicacion */
     $(thread).on('click', '#options-comments .fa-trash', function () {
         var caja_publicacion = $(this).closest('.wrapper');
-        console.log(caja_publicacion);
         swal({
             title: "Are you sure?",
             text: "You will not be able to recover this publication!",
@@ -126,9 +160,9 @@ function AJAX_add_like(caja_publicacion, heart, type) {
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).data('publication'); // obtengo id
+        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
+    var id_user = $(caja_publicacion).attr('data-id'); // obtengo id
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
@@ -143,20 +177,39 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = heart;
-            var countLikes = numLikes.innerHTML;
+            var numLikes = $(heart).find('#like-value');
+            var countLikes = numLikes.text();
             if (response == true) {
-                $(heart).css('color', '#f06292');
-                if (status == 1) {
-                    countLikes++;
-                } else if (status == 2) {
-                    $(heart).css('color', '#555');
-                    countLikes--;
-                }
-                if (countLikes == 0) {
-                    numLikes.innerHTML = " ";
+                if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
+                    if (status == 1) {
+                        $(heart).css('color', '#f06292');
+                        countLikes++;
+                    } else if (status == 2) {
+                        $(heart).css('color', '#555');
+                        countLikes--;
+                    } else if (status == 3) {
+                        $(heart).css('color', '#f06292');
+                        var hatesObj = $(heart).prev();
+                        var hates = hatesObj.find(".hate-value");
+                        var countHates = hates.text();
+                        countHates--;
+                        if (countHates <= 0) {
+                            hates.text('');
+                        } else
+                            hates.text(countHates);
+                        $(hatesObj).css('color', '#555');
+                        countLikes++;
+                    }
+                    if (countLikes <= 0) {
+                        numLikes.text('');
+                    } else {
+                        numLikes.text(countLikes);
+                    }
                 } else {
-                    numLikes.innerHTML = " " + countLikes;
+                    if (status == 1)
+                        $(heart).css('color', '#f06292');
+                    if (status == 2)
+                        $(heart).css('color', '#555');
                 }
             } else {
                 swal({
@@ -185,15 +238,15 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).data('publication'); // obtengo id
+        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
-    var id_user = $(caja_publicacion).data('id'); // obtengo id
+    var id_user = $(caja_publicacion).attr('id'); // obtengo id
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
         'csrfmiddlewaretoken': csrftoken
     };
-
+    //event.preventDefault(); //stop submit
     $.ajax({
         url: '/publication/add_hate/',
         type: 'POST',
@@ -202,22 +255,43 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
         success: function (data) {
             var statusOk = 1;
             var statusNo = 2;
+            var statusInLike = 3;
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find(".hate-value");
-            var countLikes = numLikes.text();
+            var numHates = $(heart).find(".hate-value");
+            var countHates = numHates.text();
             if (response == true) {
-                if (status == statusOk) {
-                    $(heart).css('color', '#ba68c8');
-                    countLikes++;
-                } else if (status == statusNo) {
-                    $(heart).css('color', '#555');
-                    countLikes--;
-                }
-                if (countLikes == 0) {
-                    numLikes.text(" ");
+                if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
+                    if (status === statusOk) {
+                        $(heart).css('color', '#ba68c8');
+                        countHates++;
+                    } else if (status === statusNo) {
+                        $(heart).css('color', '#555');
+                        countHates--;
+                    } else if (status === statusInLike) {
+                        $(heart).css('color', '#ba68c8');
+                        countHates++;
+                        var likesObj = $(heart).next();
+                        var likes = likesObj.find("#like-value");
+                        var countLikes = likes.text();
+                        countLikes--;
+                        if (countLikes <= 0) {
+                            likes.text('');
+                        } else
+                            likes.text(countLikes);
+                        $(likesObj).css('color', '#555');
+                    }
+                    if (countHates <= 0) {
+                        numHates.text("");
+                    } else {
+                        numHates.text(countHates);
+                    }
                 } else {
-                    numLikes.text(countLikes);
+                    if (status === statusOk) {
+                        $(heart).css('color', '#ba68c8');
+                    } else if (status === statusNo) {
+                        $(heart).css('color', '#555');
+                    }
                 }
             } else {
                 swal({
@@ -227,6 +301,66 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
                     customClass: 'default-div',
                     animation: "slide-from-bottom",
                     showConfirmButton: false,
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
+            // alert('ERROR: ' + rs.responseText + e);
+        }
+    });
+}
+
+function AJAX_add_timeline(pub_id, tag, data_pub) {
+
+    var data = {
+        'publication_id': pub_id,
+        'content': data_pub,
+        'csrfmiddlewaretoken': csrftoken
+    };
+
+    var shared_tag = $(tag).find('.fa-quote-right');
+    var count_shared = $(shared_tag).text();
+    count_shared = count_shared.replace(/ /g, '');
+
+    $.ajax({
+        url: '/publication/share/publication/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: function (data) {
+            var response = data.response;
+            if (response == true) {
+                var status = data.status;
+                if (status == 1) {
+                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                        count_shared++;
+                        if (count_shared > 0) {
+                            $(shared_tag).text(" " + count_shared)
+                        } else {
+                            $(shared_tag).text(" ");
+                        }
+                    }
+                    $(tag).attr("id", "remove_from_skyline");
+                    $(tag).css('color', '#bbdefb');
+                    $('#share-publication-wrapper').hide();
+                } else if (status == 2) {
+                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                        count_shared--;
+                        if (count_shared > 0) {
+                            $(shared_tag).text(" " + count_shared)
+                        } else {
+                            $(shared_tag).text(" ");
+                        }
+                    }
+                    $(tag).attr("id", "add_to_skyline");
+                    $(tag).css('color', '#555');
+                }
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to add to timeline.",
                     type: "error"
                 });
             }

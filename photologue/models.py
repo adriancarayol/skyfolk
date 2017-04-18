@@ -30,6 +30,7 @@ from django.utils.functional import curry
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
+from mimetypes import guess_extension, guess_type
 
 from .validators import validate_extension
 from .validators import validate_file_extension
@@ -181,90 +182,6 @@ class TagField(models.CharField):
 
     def get_internal_type(self):
         return 'CharField'
-
-
-@python_2_unicode_compatible
-class Gallery(models.Model):
-    date_added = models.DateTimeField(_('date published'),
-                                      default=now)
-    title = models.CharField(_('title'),
-                             max_length=250,
-                             unique=True)
-    slug = models.SlugField(_('title slug'),
-                            unique=True,
-                            max_length=250,
-                            help_text=_('A "slug" is a unique URL-friendly title for an object.'))
-    description = models.TextField(_('description'),
-                                   blank=True)
-    is_public = models.BooleanField(_('is public'),
-                                    default=True,
-                                    help_text=_('Public galleries will be displayed '
-                                                'in the default views.'))
-    photos = SortedManyToManyField('photologue.Photo',
-                                   related_name='galleries',
-                                   verbose_name=_('photos'),
-                                   blank=True)
-    sites = models.ManyToManyField(Site, verbose_name=_(u'sites'),
-                                   blank=True)
-
-    objects = GalleryQuerySet.as_manager()
-
-    class Meta:
-        ordering = ['-date_added']
-        get_latest_by = 'date_added'
-        verbose_name = _('gallery')
-        verbose_name_plural = _('galleries')
-
-    def __str__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse('photologue:pl-gallery', args=[self.slug])
-
-    def latest(self, limit=LATEST_LIMIT, public=True):
-        if not limit:
-            limit = self.photo_count()
-        if public:
-            return self.public()[:limit]
-        else:
-            return self.photos.filter(sites__id=settings.SITE_ID)[:limit]
-
-    def sample(self, count=None, public=True):
-        """Return a sample of photos, ordered at random.
-        If the 'count' is not specified, it will return a number of photos
-        limited by the GALLERY_SAMPLE_SIZE setting.
-        """
-        if not count:
-            count = SAMPLE_SIZE
-        if count > self.photo_count():
-            count = self.photo_count()
-        if public:
-            photo_set = self.public()
-        else:
-            photo_set = self.photos.filter(sites__id=settings.SITE_ID)
-        return random.sample(set(photo_set), count)
-
-    def photo_count(self, public=True):
-        """Return a count of all the photos in this gallery."""
-        if public:
-            return self.public().count()
-        else:
-            return self.photos.filter(sites__id=settings.SITE_ID).count()
-
-    photo_count.short_description = _('count')
-
-    def public(self):
-        """Return a queryset of all the public photos in this gallery."""
-        return self.photos.is_public().filter(sites__id=settings.SITE_ID)
-
-    def orphaned_photos(self):
-        """
-        Return all photos that belong to this gallery but don't share the
-        gallery's site.
-        """
-        return self.photos.filter(is_public=True) \
-            .exclude(sites__id__in=self.sites.all())
-
 
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
@@ -600,10 +517,10 @@ class Photo(ImageModel):
 
             parsed = urlparse(self.url_image)
             name, ext = splitext(parsed.path)
+
             validate_extension(ext)
 
             response = requests.head(self.url_image)
-            print('Response aqui: {}'.format(response.headers))
 
             if int(response.headers.get('content-length', None)) < 1000000:
                 # raise ValueError('Image so big')
@@ -619,7 +536,14 @@ class Photo(ImageModel):
                     if not block:
                         break
                     tmp.write(block)
-                self.image.save(self.slug, File(tmp))
+                # Comprobamos que se trata de una imagen
+                try:
+                    im = Image.open(tmp)
+                    im.verify()
+                except IOError:
+                    raise ValueError('Cant get image')
+
+                self.image.save(self.slug + ext, File(tmp))
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])
@@ -633,8 +557,9 @@ class Photo(ImageModel):
         We assume that the gallery and all its photos are on the same site.
         """
         if not self.is_public:
-            raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = Photo.objects.filter(owner=self.owner)
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+            return None
+        photos = Photo.objects.filter(owner=self.owner, is_public=True)
         if self not in photos:
             raise ValueError('Photo does not belong to gallery.')
         previous = None
@@ -649,7 +574,37 @@ class Photo(ImageModel):
         We assume that the gallery and all its photos are on the same site.
         """
         if not self.is_public:
-            raise ValueError('Cannot determine neighbours of a non-public photo.')
+            return None
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+        photos = Photo.objects.filter(owner=self.owner, is_public=True)
+        if self not in photos:
+            raise ValueError('Photo does not belong to gallery.')
+        matched = False
+        for photo in photos:
+            if matched:
+                return photo
+            if photo == self:
+                matched = True
+        return None
+
+    def get_previous_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied gallery.
+        We assume that the gallery and all its photos are on the same site.
+        """
+        photos = Photo.objects.filter(owner=self.owner)
+        if self not in photos:
+            raise ValueError('Photo does not belong to gallery.')
+        previous = None
+        for photo in photos:
+            if photo == self:
+                return previous
+            previous = photo
+        return None
+
+    def get_next_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied gallery.
+        We assume that the gallery and all its photos are on the same site.
+        """
         photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
             raise ValueError('Photo does not belong to gallery.')
@@ -985,6 +940,5 @@ def generate_thumb(instance, created, **kwargs):
         generate_thumbnails.delay(instance=instance.pk)
 
 
-post_save.connect(add_default_site, sender=Gallery)
 post_save.connect(add_default_site, sender=Photo)
 post_save.connect(generate_thumb, sender=Photo)

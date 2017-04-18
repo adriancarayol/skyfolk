@@ -4,21 +4,21 @@ Nueva respuesta a una publicacion
 <div class="hidden" id="caja-comentario-{{ node.pk }}">
     <!-- REPLY FORM -->
     <form class="reply-form" action="" method="post">{% csrf_token %}
-        {{ reply_publication_form.csrftoken }}
-        {{ reply_publication_form.author }}
-        {{ reply_publication_form.board_owner }}
-        {{ reply_publication_form.parent }}
+        <input id="id_author" name="author" type="hidden" value="{{ request.user.id }}">
+        <input id="id_board_owner" name="board_owner" type="hidden" value="{{ user_profile.id }}">
+        <input id="id_parent" name="parent" type="hidden">
         <div class="row">
             <div class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        {{ reply_publication_form.content }}
-                        <label for="message-reply">Escribe tu mensaje aqui...</label>
+                        <textarea class="materialize-textarea message-reply" id="message-reply-{{ node.pk }}" cols="40" maxlength="500" name="content"
+                                  placeholder="Responder a @{{node.author}}" rows="10" required=""></textarea>
+                        <label for="message-reply-{{ node.pk }}">Escribe tu mensaje aqui...</label>
                     </div>
                 </div>
             </div>
         </div>
-        <button type="submit" id="reply-{{ node.pk }}" class="waves-effect waves-light btn right blue enviar">Enviar<i
+        <button type="button" id="reply-{{ node.pk }}" class="waves-effect waves-light btn right blue enviar">Enviar<i
                 class="material-icons right">send</i></button>
     </form>
 </div>

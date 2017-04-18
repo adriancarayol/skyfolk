@@ -1,6 +1,8 @@
 import json
 import logging
 import datetime
+import io
+import os
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -12,19 +14,41 @@ from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
 from django.http import JsonResponse
 from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm, PublicationEdit, SharedPublicationForm
+from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm
 from publications.models import Publication, PublicationPhoto, SharedPublication
-from user_profile.forms import SearchForm
-from .forms import ReplyPublicationForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from emoji import Emoji
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from .utils import get_author_avatar
 from django.db import transaction
 from .utils import parse_string
+from django.middleware import csrf
+from PIL import Image
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def get_or_create_csrf_token(request):
+    token = request.META.get('CSRF_COOKIE', None)
+    if token is None:
+        token = csrf.get_token(request)
+        request.META['CSRF_COOKIE'] = token
+    request.META['CSRF_COOKIE_USED'] = True
+    return token
+
+
+def _optimize_publication_image(instance, image_upload):
+    if image_upload:
+        image = Image.open(image_upload)
+        if image.mode != 'RGBA':
+            image = image.convert('RGBA')
+        output = io.BytesIO()
+        image.save(output, format='JPEG', quality=70)
+        output.seek(0)
+        instance.image = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(image_upload.name)[0],
+                                              'image/jpeg', output.tell(), None)
 
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
@@ -38,8 +62,9 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        # form = PublicationForm(request.POST)
-        form = self.get_form()
+
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
         emitter = get_object_or_404(get_user_model(),
                                     pk=request.POST['author'])
 
@@ -54,19 +79,16 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
 
-        publication = None
         is_correct_content = False
-        logger.debug('POST DATA: {}'.format(request.POST))
-        logger.debug('tipo emitter: {}'.format(type(emitter)))
-        logger.debug('tipo board_owner: {}'.format(type(board_owner)))
+        logger.info('POST DATA: {}'.format(request.POST))
+        logger.info('tipo emitter: {}'.format(type(emitter)))
+        logger.info('tipo board_owner: {}'.format(type(board_owner)))
+
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-
                 publication.author = emitter
                 publication.board_owner = board_owner
-
-                publication.parse_content()  # parse publication content
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):
@@ -81,14 +103,17 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise IntegrityError('El comentario esta vacio')
 
-                publication.save()  # Creamos publicacion
-                publication.parse_mentions()  # add mentions
-                publication.content = Emoji.replace(publication.content)
-                publication.add_hashtag()  # add hashtags
-                publication.save(update_fields=['content'],
-                                 new_comment=True)  # Guardamos la publicacion si no hay errores
+                _optimize_publication_image(publication, request.FILES.get('image', None))
 
-                logger.debug('>>>> PUBLICATION: ')
+                publication.save()  # Creamos publicacion
+                publication.add_hashtag()  # add hashtags
+                publication.parse_mentions()  # add mentions
+                publication.parse_content()  # parse publication content
+                publication.content = Emoji.replace(publication.content)  # Add emoji img
+                form.save_m2m()  # Saving tags
+                publication.save(update_fields=['content'],
+                                 new_comment=True, csrf_token=get_or_create_csrf_token(
+                        self.request))  # Guardamos la publicacion si no hay errores
 
                 return self.form_valid(form=form)
             except Exception as e:
@@ -143,7 +168,8 @@ def publication_detail(request, publication_id):
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
     context = {
-        'publication': publication
+        'publication': publication,
+        'publication_shared': SharedPublicationForm()
     }
 
     return render(request, "account/publication_detail.html", context)
@@ -224,6 +250,9 @@ def delete_publication(request):
                 shared.publication.shared -= 1
                 shared.publication.save()
                 shared.delete()
+            extra_content = publication.extra_content
+            if extra_content:
+                extra_content.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
 
         response = True
@@ -443,7 +472,7 @@ def edit_publication(request):
         if publication.author.id != user.id:
             return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
-        if publication.event_type != 1:
+        if publication.event_type != 1 and publication.event_type != 3:
             return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
         publication.content = request.POST.get('content', None)
@@ -464,10 +493,8 @@ def edit_publication(request):
         if publication.content.isspace():  # Comprobamos si el comentario esta vacio
             raise IntegrityError('El comentario esta vacio')
 
-        publication.save()  # Creamos publicacion
         publication.parse_mentions()  # add mentions
-        publication.created = datetime.datetime.now()
-        publication.save(update_fields=['content', 'created'],
+        publication.save(update_fields=['content', 'created', 'extra_content'],
                          new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
 
         return JsonResponse({'data': True})
@@ -501,26 +528,92 @@ def load_more_comments(request):
         if not publication.parent:  # Si es publicacion padre, devolvemos solo sus hijos (nivel 1)
             if not last_pub:
                 for row in publication.get_descendants().filter(level__lte=1, deleted=False)[:20]:
+                    extra_c = row.extra_content
+                    have_extra_content = False
+                    if extra_c:
+                        have_extra_content = True
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
+                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
+                                           'event_type': row.event_type, 'extra_content': have_extra_content,
+                                           'descendants': row.get_children_count(),
+                                           'token': get_or_create_csrf_token(request),
+                                           'parent': True if row.parent else False,
+                                           'parent_author': row.parent.author.username,
+                                           'parent_avatar': get_author_avatar(row.parent.author),
+                                           'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author)})
+                    if have_extra_content:
+                        list_responses[-1]['extra_content_title'] = extra_c.title
+                        list_responses[-1]['extra_content_description'] = extra_c.description
+                        list_responses[-1]['extra_content_image'] = extra_c.image
+                        list_responses[-1]['extra_content_url'] = extra_c.url
             else:
                 for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False)[:20]:
+                    extra_c = row.extra_content
+                    have_extra_content = False
+                    if extra_c:
+                        have_extra_content = True
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
+                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
+                                           'event_type': row.event_type, 'extra_content': have_extra_content,
+                                           'descendants': row.get_children_count(),
+                                           'token': get_or_create_csrf_token(request),
+                                           'parent': True if row.parent else False,
+                                           'parent_author': row.parent.author.username,
+                                           'parent_avatar': get_author_avatar(row.parent.author),
+                                           'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author)})
+                    if have_extra_content:
+                        list_responses[-1]['extra_content_title'] = extra_c.title
+                        list_responses[-1]['extra_content_description'] = extra_c.description
+                        list_responses[-1]['extra_content_image'] = extra_c.image
+                        list_responses[-1]['extra_content_url'] = extra_c.url
             data['pubs'] = json.dumps(list_responses)
         else:  # Si es publicacion respuesta, devolvemos todos los niveles
             if not last_pub:
                 for row in publication.get_descendants().filter(deleted=False)[:20]:
+                    extra_c = row.extra_content
+                    have_extra_content = False
+                    if extra_c:
+                        have_extra_content = True
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
+                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
+                                           'event_type': row.event_type, 'extra_content': have_extra_content,
+                                           'token': get_or_create_csrf_token(request),
+                                           'parent': True if row.parent else False,
+                                           'parent_author': row.parent.author.username,
+                                           'parent_avatar': get_author_avatar(row.parent.author),
+                                           'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
+                    if have_extra_content:
+                        list_responses[-1]['extra_content_title'] = extra_c.title
+                        list_responses[-1]['extra_content_description'] = extra_c.description
+                        list_responses[-1]['extra_content_image'] = extra_c.image
+                        list_responses[-1]['extra_content_url'] = extra_c.url
             else:
                 for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub)[:20]:
+                    extra_c = row.extra_content
+                    have_extra_content = False
+                    if extra_c:
+                        have_extra_content = True
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
+                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
+                                           'event_type': row.event_type, 'extra_content': have_extra_content,
+                                           'token': get_or_create_csrf_token(request),
+                                           'parent': True if row.parent else False,
+                                           'parent_author': row.parent.author.username,
+                                           'parent_avatar': get_author_avatar(row.parent.author),
+                                           'image': row.image.url if row.image else None,
                                            'author_avatar': get_author_avatar(row.author), 'level': row.level})
+                    if have_extra_content:
+                        list_responses[-1]['extra_content_title'] = extra_c.title
+                        list_responses[-1]['extra_content_description'] = extra_c.description
+                        list_responses[-1]['extra_content_image'] = extra_c.image
+                        list_responses[-1]['extra_content_url'] = extra_c.url
             data['pubs'] = json.dumps(list_responses)
         data['response'] = True
     return JsonResponse(data)
@@ -552,9 +645,48 @@ def load_more_skyline(request):
         list_responses = []
 
         for row in publications:
+            extra_c = row.extra_content
+            have_extra_content = False
+            if extra_c:
+                have_extra_content = True
+
+            shared_pub = row.shared_publication
+            have_shared_publication = False
+            if shared_pub:
+                have_shared_publication = True
+
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                    'author_username': row.author.username, 'user_id': user.id,
-                                   'author_avatar': get_author_avatar(row.author), 'level': row.level})
+                                   'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
+                                   'author_avatar': get_author_avatar(row.author), 'level': row.level,
+                                   'event_type': row.event_type, 'extra_content': have_extra_content,
+                                   'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
+                                   'image': row.image.url if row.image else None,
+                                   'token': get_or_create_csrf_token(request)})
+            if have_extra_content:
+                list_responses[-1]['extra_content_title'] = extra_c.title
+                list_responses[-1]['extra_content_description'] = extra_c.description
+                list_responses[-1]['extra_content_image'] = extra_c.image
+                list_responses[-1]['extra_content_url'] = extra_c.url
+
+            if have_shared_publication:
+                list_responses[-1]['shared_pub_id'] = shared_pub.publication.pk
+                list_responses[-1]['shared_pub_content'] = shared_pub.publication.content
+                list_responses[-1]['shared_pub_author'] = shared_pub.publication.author.username
+                list_responses[-1]['shared_pub_avatar'] = get_author_avatar(shared_pub.publication.author)
+                list_responses[-1]['shared_created'] = naturaltime(shared_pub.publication.created)
+                list_responses[-1][
+                    'shared_image'] = shared_pub.publication.image.url if shared_pub.publication.image else None
+
+                shared_pub_extra_c = shared_pub.publication.extra_content
+
+                if shared_pub_extra_c:
+                    list_responses[-1]['shared_pub_extra_title'] = shared_pub.publication.extra_content.title
+                    list_responses[-1][
+                        'shared_pub_extra_description'] = shared_pub.publication.extra_content.description
+                    list_responses[-1][
+                        'shared_pub_extra_image'] = shared_pub.publication.extra_content.image if shared_pub.publication.extra_content.image else None
+                    list_responses[-1]['shared_pub_extra_url'] = shared_pub.publication.extra_content.url
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True
@@ -580,9 +712,6 @@ def share_publication(request):
             try:
                 pub_to_add = Publication.objects.get(pk=obj_pub)
 
-                if pub_to_add.author == user:
-                    return HttpResponse(json.dumps(response), content_type='application/json')
-
                 privacity = pub_to_add.author.profile.is_visible(user.profile)
 
                 if privacity and privacity != 'all':
@@ -596,7 +725,7 @@ def share_publication(request):
                     if content:
 
                         is_correct_content = False
-                        pub_content = parse_string(content) # Comprobamos que el comentario sea correcto
+                        pub_content = parse_string(content)  # Comprobamos que el comentario sea correcto
                         soup = BeautifulSoup(pub_content)  # Buscamos si entre los tags hay contenido
                         for tag in soup.find_all(recursive=True):
                             if tag.text and not tag.text.isspace():
@@ -612,21 +741,24 @@ def share_publication(request):
 
                         Publication.objects.create(
                             content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
-                                pub_to_add.author.username, pub_to_add.author.username, pub_content), shared_publication=shared,
+                                pub_to_add.author.username, pub_to_add.author.username, pub_content),
+                            shared_publication=shared,
                             author=user,
                             board_owner=user, event_type=6)
                     else:
                         Publication.objects.create(
                             content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
-                                pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared, author=user,
+                                pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared,
+                            author=user,
                             board_owner=user, event_type=6)
 
                     pub_to_add.shared += 1
                     pub_to_add.save()
                     response = True
-                    status = 1 # Representa la comparticion de la publicacion
+                    status = 1  # Representa la comparticion de la publicacion
                     logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
-                    return HttpResponse(json.dumps({'response': response, 'status': status}), content_type='application/json')
+                    return HttpResponse(json.dumps({'response': response, 'status': status}),
+                                        content_type='application/json')
 
                 if not created and shared:
                     Publication.objects.get(shared_publication=shared).delete()
@@ -634,9 +766,10 @@ def share_publication(request):
                     shared.delete()
                     pub_to_add.save()
                     response = True
-                    status = 2 # Representa la eliminacion de la comparticion
+                    status = 2  # Representa la eliminacion de la comparticion
                     logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
-                    return HttpResponse(json.dumps({'response': response, 'status': status}), content_type='application/json')
+                    return HttpResponse(json.dumps({'response': response, 'status': status}),
+                                        content_type='application/json')
 
             except ObjectDoesNotExist:
                 response = False

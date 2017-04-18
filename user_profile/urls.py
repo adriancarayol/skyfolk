@@ -65,4 +65,6 @@ urlpatterns = [
     # Lista de usuarios que han dado like al perfil <<username>>
     url(r'^likes/(?P<username>[\w-]+)/$', user_profile_views.like_list,
         name='like_list'),
+    url(r'^pre_search/users/', user_profile_views.search_users,
+        name='pre_search_users'),
 ]

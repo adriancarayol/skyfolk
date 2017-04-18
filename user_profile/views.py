@@ -16,6 +16,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
+from django.http import JsonResponse
 from taggit.models import TaggedItem
 
 from notifications.models import Notification
@@ -49,18 +50,16 @@ def profile_view(request, username,
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
 
-    print('Temas de interes del usuario: {} {}'.format(username, user_profile.profile.tags.names()))
     context = {}
     # Privacidad del usuario
     privacity = user_profile.profile.is_visible(user.profile)
 
     # Para escribir mensajes en mi propio perfil.
-    self_initial = {'author': user.pk, 'board_owner': user.pk}
     group_initial = {'owner': user.pk}
     context['user_profile'] = user_profile
     context['searchForm'] = SearchForm(request.POST)
     context['privacity'] = privacity
-    context['publicationSelfForm'] = PublicationForm(initial=self_initial)
+    context['publicationSelfForm'] = PublicationForm()
     context['groupForm'] = FormUserGroup(initial=group_initial)
     context['notifications'] = user.notifications.unread()
 
@@ -130,7 +129,10 @@ def profile_view(request, username,
             pass
     # Recuperamos el numero de contenido multimedia que tiene el perfil
     try:
-        multimedia_count = user_profile.profile.get_num_multimedia()
+        if user.username == username:
+            multimedia_count = user_profile.profile.get_total_num_multimedia()
+        else:
+            multimedia_count = user_profile.profile.get_num_multimedia()
     except ObjectDoesNotExist:
         multimedia_count = 0
     # Comprobamos si existe una peticion de seguimiento
@@ -156,10 +158,10 @@ def profile_view(request, username,
 
     # Para escribir mensajes en perfiles ajenos
     initial = {'author': user.pk, 'board_owner': user_profile.pk}
-    context['reply_publication_form'] = ReplyPublicationForm(initial=initial)
-    context['publicationForm'] = PublicationForm(initial=initial)
+    context['reply_publication_form'] = ReplyPublicationForm()
+    context['publicationForm'] = PublicationForm()
     context['publication_edit'] = PublicationEdit()
-    context['publication_shared'] = SharedPublicationForm(initial=initial)
+    context['publication_shared'] = SharedPublicationForm()
 
     # cargar lista comentarios
     try:
@@ -1303,3 +1305,24 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
             users = users.filter(username__istartswith=self.q)
 
         return users
+
+def search_users(request):
+    """
+    Busqueda de usuarios por AJAX
+    """
+    user = request.user
+
+    if user.is_authenticated() and request.is_ajax():
+        value = request.GET.get('value', None)
+
+        query = User.objects.filter(~Q(profile__privacity='N') & (Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value)))[:20]
+        result = []
+        for user in query:
+            user_json = {}
+            user_json['username'] = user.username
+            user_json['first_name'] = user.first_name
+            user_json['last_name'] = user.last_name
+            user_json['avatar'] = get_author_avatar(user)
+            result.append(user_json)
+
+        return JsonResponse({'result': result})

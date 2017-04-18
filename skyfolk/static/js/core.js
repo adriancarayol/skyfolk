@@ -1,15 +1,20 @@
+var keyPressTimeout;
+
 $(window).ready(function () {
     $("#loader").fadeOut("slow");
 
 });
 
 $(document).ready(function () {
-    // Materialize.updateTextFields();
-    $('select').material_select();
-
     var page_wrapper = $('#page-wrapper');
     var self_page_wrapper = $('#self-page-wrapper');
     var _group_profile = $('#group-profile');
+    var tab_comentarios = $('#tab-comentarios');
+
+    $('select').material_select();
+
+    $('textarea#message2, textarea#message3').characterCounter();
+
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
@@ -28,14 +33,14 @@ $(document).ready(function () {
     $("#publish, #compose-new-no-comments").click(function () {
         $(page_wrapper).each(function () {
             var displaying = $(this).css("display");
-            $(page_wrapper).find("#message2").val('');
+            $(page_wrapper).find("#message3").val('');
             if (displaying == "none") {
                 $(this).fadeOut('slow', function () {
                     $(this).css("display", "block");
                 });
-                $(this).find('#message2').focus();
+                $(this).find('#message3').focus();
             } else {
-                $(this).find('#message2').blur();
+                $(this).find('#message3').blur();
                 $(this).fadeIn('slow', function () {
                     $(this).css("display", "none");
                 });
@@ -81,27 +86,26 @@ $(document).ready(function () {
     /* Close self-page-wrapper (mensaje propio) */
     $(self_page_wrapper).find('#close').on('click', function (event) {
         event.preventDefault();
-        $(self_page_wrapper).find('#message2').val('');
+        $(self_page_wrapper).find('#message3').val('');
         $(self_page_wrapper).hide();
     });
 
     /* Submit publication */
     $(page_wrapper).find('#message-form2').on('submit', function (event) {
         event.preventDefault();
-        var data = $(page_wrapper).find('#message-form2').serialize();
-
+        var form = $(page_wrapper).find('#message-form2');
         AJAX_submit_publication(data, 'publication');
     });
 
     /* Submit publication (propio) */
-    $(self_page_wrapper).find('#message-form2').on('submit', function (event) {
+    $(self_page_wrapper).find('#message-form3').on('submit', function (event) {
         event.preventDefault();
-        var data = $(self_page_wrapper).find('#message-form2').serialize();
-        AJAX_submit_publication(data, 'publication');
+        var form = $(self_page_wrapper).find('#message-form3');
+        AJAX_submit_publication(form, 'publication');
     });
 
-    /* Submit reply publication º*/
-    $('button.enviar').on('click', function (event) {
+    /* Submit reply publication */
+    $(tab_comentarios).on('click', 'button.enviar', function (event) {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
@@ -110,7 +114,7 @@ $(document).ready(function () {
         var owner_pk = $(form).find('input[name=board_owner]').val();
         var data = $(form).serialize();
         var pks = [user_pk, owner_pk, parent_pk];
-        AJAX_submit_publication(data, 'reply', pks);
+        AJAX_submit_publication(form, 'reply', pks);
     });
 
     /* Submit creacion de grupo */
@@ -130,7 +134,7 @@ $(document).ready(function () {
     });
 
     /* Atajo para enviar comentarios mas rapido */
-    $(page_wrapper).find('#message2').keypress(function (e) {
+    $(page_wrapper).find('#message3').keypress(function (e) {
         //tecla ENTER presinada + Shift
         if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
             $('#sendformpubli').click();
@@ -160,7 +164,7 @@ $(document).ready(function () {
         if (key == 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(page_wrapper).toggle();
-            $(page_wrapper).find('#message2').focus();
+            $(page_wrapper).find('#message3').focus();
             return false;
         }
     });
@@ -193,8 +197,8 @@ $(document).ready(function () {
             var atj = document.getElementById('atajos-keyboard-profile');
             var personalInfo = document.getElementsByClassName('info-paw');
             var searchInput = document.getElementById('id_searchText');
-            var messageWrapperMessage2 = $(page_wrapper).find('#message2');
-            var messageWrapperMessage3 = $(self_page_wrapper).find('#message2');
+            var messageWrapperMessage3 = $(page_wrapper).find('#message3');
+            var messageWrapperMessage2 = $(self_page_wrapper).find('#message2');
 
             $(messageWrapperMessage2).blur(); // Focus del textarea off.
             $(messageWrapperMessage2).val("");
@@ -273,6 +277,46 @@ $(document).ready(function () {
         return false;
     });
 
+    // Search users
+    $('#id_searchText').on("keydown", function (event) {
+        clearTimeout(keyPressTimeout);
+        keyPressTimeout = setTimeout(function () {
+                var data = {
+                    'value': $('#id_searchText').val()
+                };
+                $.ajax({
+                    url: '/pre_search/users/',
+                    type: "GET",
+                    dataType: "json",
+                    data: data,
+                    success: function (result) {
+                        $('#id_searchText').atwho({
+                            at: '',
+                            searchKey: "username",
+                            insertTpl: "${username}",
+                            displayTpl: "<li class='search-live-item' data-value='${username}'><img src='${avatar}' width='30px' height='30px'>${username} <small>${first_name} ${last_name}</small></li>",
+                            data: result.result,
+                            displayTimeout: 100,
+                            callback: {
+                                filter: function (query, data, searchKey) {
+                                    return $.map(data, function (item, i) {
+                                        if (item[searchKey].toLowerCase().indexOf(query) < 0 ||
+                                            item['first_name'].toLowerCase().indexOf(query) < 0 ||
+                                            item['last_name'].toLowerCase().indexOf(query) < 0) {
+                                            return item;
+                                        } else {
+                                            return null;
+                                        }
+                                    })
+                                }
+                            }
+                        });
+                    }
+                });
+            },
+            250
+        );
+    });
 }); // END DOCUMENT READY
 
 /* COMPLEMENTARIO PARA PETICIONES AJAX */
@@ -291,12 +335,14 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 var csrftoken = getCookie('csrftoken');
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
 $.ajaxSetup({
     beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -534,13 +580,18 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
  }
  */
 
-function AJAX_submit_publication(data, type, pks) {
+function AJAX_submit_publication(obj_form, type, pks) {
+    var form = new FormData($(obj_form).get(0));
+    form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     type = typeof type !== 'undefined' ? type : "reply"; //default para type
     $.ajax({
         url: '/publication/',
         type: 'POST',
-        dataType: 'json',
-        data: data,
+        data: form,
+        async: true,
+        contentType: false,
+        enctype: 'multipart/form-data',
+        processData: false,
         success: function (data) {
             var response = data.response;
             console.log('RESPONSE AQUI: ' + response + " type: " + type);
@@ -556,7 +607,7 @@ function AJAX_submit_publication(data, type, pks) {
             }
             if (type == "reply") {
                 var caja_comentarios = $('#caja-comentario-' + pks[2]);
-                $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
+                $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type == "publication") {
                 $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
