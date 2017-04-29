@@ -41,7 +41,7 @@ THIRD_PARTY_APPS = (
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',  # REST framework
-    'django_messages',  # mensajes entre usuarios
+    
     # 'achievements',   # achivements       Portando a Python3
     'emoji',
     'avatar',  # Avatares para usuarios.
@@ -68,6 +68,7 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.weather',
     'mptt',
     'tasks_server',
+    'postman',
 )
 
 
@@ -250,3 +251,4 @@ ADMINS = (
     ('lostcitizen', 'lostcitizen@gmail.com'),
 )
 MANAGERS = ADMINS
+POSTMAN_AUTO_MODERATE_AS = True

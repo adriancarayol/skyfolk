@@ -995,7 +995,7 @@ password_done = login_required(PassWordChangeDone.as_view())
 
 # Modificacion del formulario para cambiar contraseña
 class CustomPasswordChangeView(PasswordChangeView):
-    success_url = reverse_lazy("account_done_password")
+    success_url = reverse_lazy("user_profile:account_done_password")
 
     def get_context_data(self, **kwargs):
         ret = super(PasswordChangeView, self).get_context_data(**kwargs)
@@ -1016,6 +1016,8 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
 # Modificacion del formulario para manejar los emails
 class CustomEmailView(EmailView):
+    success_url = reverse_lazy('user_profile:account_email')
+
     def get_context_data(self, **kwargs):
         ret = super(EmailView, self).get_context_data(**kwargs)
         # NOTE: For backwards compatibility
@@ -1028,7 +1030,6 @@ class CustomEmailView(EmailView):
         ret['notifications'] = user.notifications.unread()
         # (end NOTE)
         return ret
-
 
 custom_email = login_required(CustomEmailView.as_view())
 

@@ -34,7 +34,7 @@ urlpatterns = [
     # url novedades e inicio
     url(r'^', include('latest_news.urls', namespace="latest_news"), name="news"),
     # url mensajes privados
-    url(r'^messages/', include('django_messages.urls'), name="inbox"),
+    
     # About skyfolk
     url(r'^', include('about.urls')),
     # Recomendacion password para usuarios
@@ -54,10 +54,12 @@ urlpatterns = [
                                          namespace='notifications')),
     # django-photologue
     url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
+    url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
     # django-dash URLs:
     url(r'^dashboard/', include('dash.urls')),
     url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
     url(r'^', include('dash.contrib.apps.public_dashboard.urls')),
+
 ]
 
 urlpatterns += staticfiles_urlpatterns()
