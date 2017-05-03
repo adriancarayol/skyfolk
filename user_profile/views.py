@@ -28,7 +28,7 @@ from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import UserProfile, AffinityUser
+from user_profile.models import UserProfile, AffinityUser, NodeProfile
 from publications.utils import get_author_avatar
 
 

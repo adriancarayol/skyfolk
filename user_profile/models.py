@@ -11,6 +11,9 @@ from taggit.managers import TaggableManager
 import publications
 from notifications.models import Notification
 from photologue.models import Photo
+from django_neomodel import DjangoNode
+from neomodel import StructuredNode, StringProperty, DateTimeProperty, UniqueIdProperty, Relationship
+
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_FOLLOWER = 2
@@ -114,6 +117,20 @@ class UserProfileManager(models.Manager):
         """
         return self.get_queryset().get_last_login_user()
 
+
+class NodeProfile(DjangoNode):
+    uid = UniqueIdProperty()
+    title = StringProperty(unique_index=True)
+    status = StringProperty(choices=(
+        ('Available', 'A'),
+        ('On loan', 'L'),
+        ('Damaged', 'D'),
+    ), default='Available')
+    created = DateTimeProperty(default=datetime.utcnow)
+    friends = Relationship('NodeProfile', 'FRIEND')
+
+    class Meta:
+        app_label = 'library'
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9

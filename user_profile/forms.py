@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
-from user_profile.models import UserProfile, AuthDevices
+from user_profile.models import UserProfile, AuthDevices, NodeProfile
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
