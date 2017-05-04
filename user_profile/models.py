@@ -12,7 +12,7 @@ import publications
 from notifications.models import Notification
 from photologue.models import Photo
 from django_neomodel import DjangoNode
-from neomodel import StructuredNode, StringProperty, DateTimeProperty, UniqueIdProperty, Relationship
+from neomodel import StructuredNode, StringProperty, DateTimeProperty, UniqueIdProperty, Relationship, RelationshipTo, One, IntegerProperty
 
 
 RELATIONSHIP_FOLLOWING = 1
@@ -128,6 +128,7 @@ class NodeProfile(DjangoNode):
     ), default='Available')
     created = DateTimeProperty(default=datetime.utcnow)
     friends = Relationship('NodeProfile', 'FRIEND')
+    profile = IntegerProperty(unique_index=True)
 
     class Meta:
         app_label = 'library'

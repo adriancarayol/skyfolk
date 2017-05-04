@@ -192,6 +192,7 @@ def profile_view(request, username,
     # Contenido de las tres tabs
     context['publications'] = publications
     context['friends_top12'] = num_follows
+    
 
     if extra_context is not None:
         context.update(extra_context)
