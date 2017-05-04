@@ -12,7 +12,7 @@ import publications
 from notifications.models import Notification
 from photologue.models import Photo
 from django_neomodel import DjangoNode
-from neomodel import StructuredNode, StringProperty, DateTimeProperty, UniqueIdProperty, Relationship, RelationshipTo, One, IntegerProperty
+from neomodel import UniqueIdProperty, Relationship, IntegerProperty, StringProperty
 
 
 RELATIONSHIP_FOLLOWING = 1
@@ -121,17 +121,11 @@ class UserProfileManager(models.Manager):
 class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     title = StringProperty(unique_index=True)
-    status = StringProperty(choices=(
-        ('Available', 'A'),
-        ('On loan', 'L'),
-        ('Damaged', 'D'),
-    ), default='Available')
-    created = DateTimeProperty(default=datetime.utcnow)
-    friends = Relationship('NodeProfile', 'FRIEND')
+    follow = Relationship('NodeProfile', 'FOLLOW')
     profile = IntegerProperty(unique_index=True)
 
     class Meta:
-        app_label = 'library'
+        app_label = 'node_profile'
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9

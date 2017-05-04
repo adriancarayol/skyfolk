@@ -26,8 +26,10 @@ ALLOWED_ATTRIBUTES = {
 
 config.DATABASE_URL = 'bolt://neo4j:1518@localhost:7687'  # default
 NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
+NEOMODEL_ENCRYPTED_CONNECTION = True
 from neomodel import db
 db.set_connection('bolt://neo4j:1518@localhost:7687')
+
 # Application definition
 DEFAULT_APPS = (
     'django.contrib.admin',
