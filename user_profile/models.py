@@ -12,7 +12,7 @@ import publications
 from notifications.models import Notification
 from photologue.models import Photo
 from django_neomodel import DjangoNode
-from neomodel import UniqueIdProperty, Relationship, IntegerProperty, StringProperty
+from neomodel import UniqueIdProperty, Relationship, IntegerProperty, StringProperty, RelationshipTo
 
 
 RELATIONSHIP_FOLLOWING = 1
@@ -121,7 +121,7 @@ class UserProfileManager(models.Manager):
 class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     title = StringProperty(unique_index=True)
-    follow = Relationship('NodeProfile', 'FOLLOW')
+    follow = RelationshipTo('NodeProfile', 'FOLLOW')
     profile = IntegerProperty(unique_index=True)
 
     class Meta:

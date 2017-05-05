@@ -49,16 +49,6 @@ def handle_new_relationship(sender, instance, created, **kwargs):
             e.created = datetime.now()
             e.save(update_fields=["created"])
 
-        try:
-            from_person = NodeProfile.nodes.get(profile=instance.from_person.user.id)
-            to_person = NodeProfile.nodes.get(profile=instance.to_person.user.id)
-            from_person.follow.connect(to_person)
-            logger.info("Nodo creado entre: %s y %s en la graph database" % (
-                instance.from_person.user.username, instance.to_person.user.username))
-
-        except Exception:
-            logger.info("No se pudo crear la union entre: %s y %s en la graph database" % (
-                instance.from_person.user.username, instance.to_person.user.username))
 
     if instance.status == 1:
         e2, created2 = Publication.objects.get_or_create(author=instance.from_person.user,
@@ -73,6 +63,18 @@ def handle_new_relationship(sender, instance, created, **kwargs):
             e2.created = datetime.now()
             e2.save(update_fields=["created"])
 
+        # Solo conectamos dos usuarios con la relacion "seguidor de"
+        try:
+            from_person = NodeProfile.nodes.get(profile=instance.from_person.user.id)
+            to_person = NodeProfile.nodes.get(profile=instance.to_person.user.id)
+            from_person.follow.connect(to_person)
+            logger.info("Nodo creado entre: %s y %s en la graph database" % (
+                instance.from_person.user.username, instance.to_person.user.username))
+
+        except Exception:
+            logger.info("No se pudo crear la union entre: %s y %s en la graph database" % (
+                instance.from_person.user.username, instance.to_person.user.username))
+
     logger.info(
         "POST_SAVE : New relationship, user1: {} - user2: {}".format(instance.from_person.user.username,
                                                                      instance.to_person.user.username))
@@ -85,10 +87,15 @@ def handle_deleted_relationship(sender, instance, **kwargs):
     """
     logger.info("POST_DELETE: Deleted relationshet: user1: {} - user2: {}".format(instance.from_person.user.username,
                                                                                   instance.to_person.user.username))
-    if instance.status == 2:
-        from_person = NodeProfile.nodes.get(profile=instance.from_person.user.id)
-        to_person = NodeProfile.nodes.get(profile=instance.to_person.user.id)
-        from_person.follow.disconnect(to_person)
+    if instance.status == 1:
+        try:
+            from_person = NodeProfile.nodes.get(profile=instance.from_person.user.id)
+            to_person = NodeProfile.nodes.get(profile=instance.to_person.user.id)
+            from_person.follow.disconnect(to_person)
+        except Exception:
+            logger.info("No se pudo eliminar la relacion entre: %s y %s en la graph database" % (
+                instance.from_person.user.username, instance.to_person.user.username
+            ))
 
 
 
