@@ -240,9 +240,9 @@
                                     {% endwith %}
                                 {% endif %}
                                 <div>
-                                    <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
-                                         title="Loading..."
-                                         alt="Loading..." style="display: none;">
+                                    <div class="progress" id="load_publications_descendants" style="display: none">
+                                        <div class="indeterminate blue darken-1"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -262,9 +262,9 @@
                    data-id="{{ last_pub.0.id }}"><i class=" material-icons left">expand_more</i>Cargar
                     comentarios</a>
                 <div>
-                    <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
-                         title="Loading..."
-                         alt="Loading..." style="display: none;">
+                     <div class="progress" id="load_publications_skyline" style="display: none">
+                        <div class="indeterminate blue darken-1"></div>
+                     </div>
                 </div>
             </div>
         </div>

@@ -294,7 +294,7 @@ $(document).ready(function () {
 
     /* LOAD MORE ON CLICK */
     $(tab_comentarios).on('click', '#load_more_publications', function () {
-        var loader = $(this).next().find('#load_publications_image');
+        var loader = $(this).next().find('#load_publications_descendants');
         $(loader).fadeIn();
         var last_pub = $(loader).closest('.row').prev('.children').find('.wrapper').last().attr('id');
         var last_pub_id = "";
@@ -308,7 +308,7 @@ $(document).ready(function () {
     /* LOAD MORE SKYLINE ON CLICK */
     $(tab_comentarios).on('click', '#load_more_skyline', function () {
         var input_skyline = $(this);
-        var loader = $(input_skyline).next().find('#load_publications_image');
+        var loader = $(input_skyline).next().find('#load_publications_skyline');
         $(loader).fadeIn();
         AJAX_load_skyline(loader, input_skyline);
         return false;
@@ -328,7 +328,7 @@ setInterval(function () {
     if (didScroll) {
         didScroll = false;
         var input_skyline = $('#load_more_skyline');
-        var loader = $(input_skyline).next().find('#load_publications_image');
+        var loader = $(input_skyline).next().find('#load_publications_skyline');
         $(loader).fadeIn();
         AJAX_load_skyline(loader, input_skyline);
     }
@@ -525,11 +525,12 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<div class="col s12">';
                 content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#" id="load_more_publications" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
                 content += '<div>';
-                content += '<img id="load_publications_image" src="/static/img/ripple.gif" title="Loading..." alt="Loading..." style="display: none;">';
+                content += '<div class="progress" id="load_publications_descendants" style="display: none;">';
+                content += '<div class="indeterminate blue darken-1"></div></div>';
                 content += '</div></div></div>';
             }
             content += "    </div></div></div>";
-            $(children_list).append(content);
+            $(content).appendTo(children_list).hide().fadeIn(250);
         }
         var child_count = $(btn).find('#child_count');
         var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
@@ -695,7 +696,8 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<div class="col s12">';
                 content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#" id="load_more_publications" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
                 content += '<div>';
-                content += '<img id="load_publications_image" src="/static/img/ripple.gif" title="Loading..." alt="Loading..." style="display: none;">';
+                content += '<div class="progress" id="load_publications_descendants" style="display: none;">';
+                content += '<div class="indeterminate blue darken-1"></div></div>';
                 content += '</div></div></div>';
             }
             content += "    </div></div></div>";
