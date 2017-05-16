@@ -7,7 +7,7 @@ from django.core.validators import MaxLengthValidator
 
 # from django.core.exceptions import ImproperlyConfigured
 from neomodel import config
-
+from neomodel import db
 
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -27,7 +27,7 @@ ALLOWED_ATTRIBUTES = {
 config.DATABASE_URL = 'bolt://neo4j:1518@localhost:7687'  # default
 NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
 NEOMODEL_ENCRYPTED_CONNECTION = True
-from neomodel import db
+
 db.set_connection('bolt://neo4j:1518@localhost:7687')
 
 # Application definition
@@ -49,7 +49,7 @@ THIRD_PARTY_APPS = (
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',  # REST framework
-    
+
     # 'achievements',   # achivements       Portando a Python3
     'emoji',
     'avatar',  # Avatares para usuarios.
@@ -79,8 +79,6 @@ THIRD_PARTY_APPS = (
     'postman',
     'django_neomodel',
 )
-
-
 
 FIRST_PARTY_APPS = (
     'landing',  # página de inicio

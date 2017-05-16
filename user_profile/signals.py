@@ -5,7 +5,10 @@ from django.contrib.auth.models import User
 from .models import UserProfile, Relationship, NodeProfile
 from publications.models import Publication
 from datetime import datetime
+from django.db import transaction
+from django.db import IntegrityError
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from neomodel import db
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,20 +16,22 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created: # Primera vez que se crea el usuario, creamos Perfil y Nodo
-        UserProfile.objects.create(user=instance)
+    if created:  # Primera vez que se crea el usuario, creamos Perfil y Nodo
         try:
-            NodeProfile(profile=instance.id, title=instance.username).save()
-        except Exception:
-            logger.info("POST_SAVE : No se pudo crear un nodo para: User : %s" % instance)
-            pass
-        logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
+            with transaction.atomic(using='default'):
+                with transaction.atomic(using='bolt://neo4j:neo4j@localhost:7687'):
+                    UserProfile.objects.create(user=instance)
+                    NodeProfile(profile=instance.id, title=instance.username).save()
+            logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
+        except IntegrityError:
+            logger.info(
+                "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
 
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save() # Guardamos perfil del usuario
-    try: # Comprobamos que existe el Nodo
+    instance.profile.save()  # Guardamos perfil del usuario
+    try:  # Comprobamos que existe el Nodo
         NodeProfile.nodes.get(profile=instance.id)
     except Exception as e:
         print(e)
@@ -48,7 +53,6 @@ def handle_new_relationship(sender, instance, created, **kwargs):
         if not created:
             e.created = datetime.now()
             e.save(update_fields=["created"])
-
 
     if instance.status == 1:
         e2, created2 = Publication.objects.get_or_create(author=instance.from_person.user,
@@ -96,7 +100,6 @@ def handle_deleted_relationship(sender, instance, **kwargs):
             logger.info("No se pudo eliminar la relacion entre: %s y %s en la graph database" % (
                 instance.from_person.user.username, instance.to_person.user.username
             ))
-
 
 
 def handle_login(sender, user, request, **kwargs):
