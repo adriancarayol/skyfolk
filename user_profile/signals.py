@@ -19,7 +19,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:  # Primera vez que se crea el usuario, creamos Perfil y Nodo
         try:
             with transaction.atomic(using='default'):
-                with transaction.atomic(using='bolt://neo4j:neo4j@localhost:7687'):
+                with db.transaction:
                     UserProfile.objects.create(user=instance)
                     NodeProfile(profile=instance.id, title=instance.username).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
