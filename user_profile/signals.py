@@ -8,6 +8,7 @@ from datetime import datetime
 from django.db import transaction
 from django.db import IntegrityError
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.core.exceptions import ObjectDoesNotExist
 from neomodel import db
 
 logging.basicConfig(level=logging.INFO)
@@ -20,6 +21,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         try:
             with transaction.atomic(using='default'):
                 with db.transaction:
+                    raise IntegrityError
                     UserProfile.objects.create(user=instance)
                     NodeProfile(profile=instance.id, title=instance.username).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
@@ -30,12 +32,20 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()  # Guardamos perfil del usuario
     try:  # Comprobamos que existe el Nodo
         NodeProfile.nodes.get(profile=instance.id)
-    except Exception as e:
-        print(e)
-        NodeProfile(profile=instance.id, title=instance.username).save()
+        UserProfile.objects.get(user=instance.id)
+        logger.info("POST_SAVE : User profile and node exist for user: %s " % instance)
+    except (ObjectDoesNotExist, NodeProfile.DoesNotExist):
+      try:
+        with transaction.atomic(using='default'):
+          with db.transaction:
+            instance.profile.save()  # Guardamos perfil del usuario
+            NodeProfile(profile=instance.id, title=instance.username).save()
+        logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
+      except IntegrityError:
+        logger.info(
+                "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
     logger.info("POST_SAVE : Saving UserProfile, User : %s" % instance)
 
 
@@ -103,23 +113,11 @@ def handle_deleted_relationship(sender, instance, **kwargs):
 
 
 def handle_login(sender, user, request, **kwargs):
-    try:
-        profile = UserProfile.objects.get(user=user)
-        profile.is_online = True
-        profile.save(update_fields=['is_online'])
-    except Exception:
-        pass
-    logger.info('login, is_online: {}'.format(user.profile.is_online))
+    logger.info('User {} is_online'.format(user.username))
 
 
 def handle_logout(sender, user, request, **kwargs):
-    try:
-        profile = UserProfile.objects.get(user=user)
-        profile.is_online = False
-        profile.save(update_fields=['is_online'])
-    except Exception:
-        pass
-    logger.info('logout, is_online: {}'.format(user.profile.is_online))
+    logger.info('User {} is_offlne'.format(user.username))
 
 
 user_logged_in.connect(handle_login)

@@ -153,6 +153,17 @@ TAGGIT_CASE_INSENSITIVE = True
 # NOTIFICATION
 NOTIFICATIONS_USE_JSONFIELD = True
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',              
+    }
+}
+
+USER_ONLINE_TIMEOUT = 300
+
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -162,6 +173,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'user_profile.middleware.ActiveUserMiddleware',
     'skyfolk.middleware.AutoLogout',
 )
 

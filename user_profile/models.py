@@ -1,6 +1,7 @@
 import hashlib
 import uuid
-from datetime import datetime
+import datetime
+from skyfolk import settings
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -13,6 +14,7 @@ from notifications.models import Notification
 from photologue.models import Photo
 from django_neomodel import DjangoNode
 from neomodel import UniqueIdProperty, Relationship, IntegerProperty, StringProperty, RelationshipTo
+from django.core.cache import cache
 
 
 RELATIONSHIP_FOLLOWING = 1
@@ -155,7 +157,6 @@ class UserProfile(models.Model):
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     is_first_login = models.BooleanField(default=True)
-    is_online = models.BooleanField(default=False)
     tags = TaggableManager(blank=True)
     personal_pin = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     objects = UserProfileManager()
@@ -197,6 +198,20 @@ class UserProfile(models.Model):
         except:
             pass  # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
+
+
+    def last_seen(self):
+        return cache.get('seen_%s' % self.user.username)
+
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
+                return False
+            else:
+                return True
+        else:
+            return False
 
     # Methods of relationships between users
     def add_relationship(self, person, status, symm=False):
@@ -863,7 +878,7 @@ class AffinityUser(models.Model):
         """
         if increment:
             self.affinity += 1
-        self.created = datetime.now()
+        self.created = datetime.datetime.now()
         super(AffinityUser, self).save()
 
 
