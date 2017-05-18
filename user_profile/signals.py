@@ -21,9 +21,8 @@ def create_user_profile(sender, instance, created, **kwargs):
         try:
             with transaction.atomic(using='default'):
                 with db.transaction:
-                    raise IntegrityError
                     UserProfile.objects.create(user=instance)
-                    NodeProfile(profile=instance.id, title=instance.username).save()
+                    NodeProfile(title=instance.username).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
         except IntegrityError:
             logger.info(
@@ -31,22 +30,23 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    try:  # Comprobamos que existe el Nodo
-        NodeProfile.nodes.get(profile=instance.id)
-        UserProfile.objects.get(user=instance.id)
-        logger.info("POST_SAVE : User profile and node exist for user: %s " % instance)
-    except (ObjectDoesNotExist, NodeProfile.DoesNotExist):
-      try:
-        with transaction.atomic(using='default'):
-          with db.transaction:
-            instance.profile.save()  # Guardamos perfil del usuario
-            NodeProfile(profile=instance.id, title=instance.username).save()
-        logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
-      except IntegrityError:
-        logger.info(
-                "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
-    logger.info("POST_SAVE : Saving UserProfile, User : %s" % instance)
+def save_user_profile(sender, instance, created, **kwargs):
+    """
+    Comprobamos en cada login del usuario
+    si el perfil/nodo se ha creado correctamente
+    """
+    if not created:
+        try:
+            with transaction.atomic(using='default'):
+                with db.transaction:
+                    UserProfile.objects.get_or_create(user=instance)
+                    NodeProfile.get_or_create({
+                        'title': instance.username
+                    })[0]
+        except IntegrityError:
+            logger.info(
+                    "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
+            logger.info("POST_SAVE : Saving UserProfile, User : %s" % instance)
 
 
 @receiver(post_save, sender=Relationship)

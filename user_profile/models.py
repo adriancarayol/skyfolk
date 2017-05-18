@@ -124,10 +124,16 @@ class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     title = StringProperty(unique_index=True)
     follow = RelationshipTo('NodeProfile', 'FOLLOW')
-    profile = IntegerProperty(unique_index=True)
 
     class Meta:
         app_label = 'node_profile'
+
+class TagProfile(DjangoNode):
+    title = StringProperty(unique_index=True)
+    common = Relationship('TagProfile', 'COMMON')
+
+    class Meta:
+        app_label = 'tag_profile'
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9

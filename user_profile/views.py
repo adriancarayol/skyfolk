@@ -28,7 +28,7 @@ from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import UserProfile, AffinityUser, NodeProfile
+from user_profile.models import UserProfile, AffinityUser, NodeProfile, TagProfile
 from publications.utils import get_author_avatar
 
 
@@ -1188,7 +1188,7 @@ def welcome_step_1(request):
     user = request.user
 
     context = {'user_profile': user}
-
+    #TODO: Eliminar tags del perfil del usuario
     if request.method == 'POST':
         response = "success"
         # Procesar temas escritos por el usuario
@@ -1197,6 +1197,7 @@ def welcome_step_1(request):
             if tag.isspace():
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
+            TagProfile.get_or_create({"title": tag})[0]
             user.profile.tags.add(tag)
         # Procesar temas por defecto
         choices = request.POST.getlist('choices[]')
@@ -1205,6 +1206,7 @@ def welcome_step_1(request):
             return HttpResponse(json.dumps(response), content_type='application/json')
         for choice in choices:
             value = dict(ThemesForm.CHOICES).get(choice)
+            TagProfile.get_or_create({"title": value})[0]
             user.profile.tags.add(value)
         user.profile.save()
         return HttpResponse(json.dumps(response), content_type='application/json')

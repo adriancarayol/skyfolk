@@ -38,4 +38,4 @@ def send_to_stream(user_id, pub_id):
         [Group(follower_channel.news_channel).send({
             "text": json.dumps(data, cls=DjangoJSONEncoder)
         }) for follower_channel in
-            profile.get_all_follower_values().filter(user__is_active=True, is_online=True)]
+            profile.get_all_follower_values().filter(user__is_active=True)]
