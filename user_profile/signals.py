@@ -40,9 +40,12 @@ def save_user_profile(sender, instance, created, **kwargs):
             with transaction.atomic(using='default'):
                 with db.transaction:
                     UserProfile.objects.get_or_create(user=instance)
+                    # TODO: Ver porque no funciona esto...
+                    """
                     NodeProfile.get_or_create({
                         'title': instance.username
                     })[0]
+                    """
         except IntegrityError:
             logger.info(
                     "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
@@ -79,8 +82,8 @@ def handle_new_relationship(sender, instance, created, **kwargs):
 
         # Solo conectamos dos usuarios con la relacion "seguidor de"
         try:
-            from_person = NodeProfile.nodes.get(profile=instance.from_person.user.id)
-            to_person = NodeProfile.nodes.get(profile=instance.to_person.user.id)
+            from_person = NodeProfile.nodes.get(title=instance.from_person.user.username)
+            to_person = NodeProfile.nodes.get(title=instance.to_person.user.username)
             from_person.follow.connect(to_person)
             logger.info("Nodo creado entre: %s y %s en la graph database" % (
                 instance.from_person.user.username, instance.to_person.user.username))
@@ -103,8 +106,8 @@ def handle_deleted_relationship(sender, instance, **kwargs):
                                                                                   instance.to_person.user.username))
     if instance.status == 1:
         try:
-            from_person = NodeProfile.nodes.get(profile=instance.from_person.user.id)
-            to_person = NodeProfile.nodes.get(profile=instance.to_person.user.id)
+            from_person = NodeProfile.nodes.get(title=instance.from_person.user.username)
+            to_person = NodeProfile.nodes.get(title=instance.to_person.user.username)
             from_person.follow.disconnect(to_person)
         except Exception:
             logger.info("No se pudo eliminar la relacion entre: %s y %s en la graph database" % (

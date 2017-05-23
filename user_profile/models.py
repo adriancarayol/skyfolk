@@ -129,6 +129,7 @@ class NodeProfile(DjangoNode):
         app_label = 'node_profile'
 
 class TagProfile(DjangoNode):
+    uid = UniqueIdProperty()
     title = StringProperty(unique_index=True)
     common = Relationship('TagProfile', 'COMMON')
 
