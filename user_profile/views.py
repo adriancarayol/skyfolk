@@ -30,6 +30,7 @@ from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import UserProfile, AffinityUser, NodeProfile, TagProfile
 from publications.utils import get_author_avatar
+from neomodel import db
 
 
 @login_required(login_url='/')
@@ -192,7 +193,6 @@ def profile_view(request, username,
     # Contenido de las tres tabs
     context['publications'] = publications
     context['friends_top12'] = num_follows
-    
 
     if extra_context is not None:
         context.update(extra_context)
@@ -1032,6 +1032,7 @@ class CustomEmailView(EmailView):
         # (end NOTE)
         return ret
 
+
 custom_email = login_required(CustomEmailView.as_view())
 
 
@@ -1186,9 +1187,10 @@ def welcome_step_1(request):
     del usuario registrado.
     """
     user = request.user
+    user_node = NodeProfile.nodes.get(title=user.username)
 
     context = {'user_profile': user}
-    #TODO: Eliminar tags del perfil del usuario
+
     if request.method == 'POST':
         response = "success"
         # Procesar temas escritos por el usuario
@@ -1197,8 +1199,10 @@ def welcome_step_1(request):
             if tag.isspace():
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
-            TagProfile.get_or_create({"title": tag})[0]
-            user.profile.tags.add(tag)
+            interest = TagProfile.nodes.get_or_none(title=tag)
+            if not interest:
+                interest = TagProfile(title=tag).save()
+            interest.user.connect(user_node)
         # Procesar temas por defecto
         choices = request.POST.getlist('choices[]')
         if not tags and not choices:
@@ -1206,13 +1210,16 @@ def welcome_step_1(request):
             return HttpResponse(json.dumps(response), content_type='application/json')
         for choice in choices:
             value = dict(ThemesForm.CHOICES).get(choice)
-            TagProfile.get_or_create({"title": value})[0]
-            user.profile.tags.add(value)
-        user.profile.save()
+            interest = TagProfile.nodes.get_or_none(title=value)
+            if not interest:
+                interest = TagProfile(title=value).save()
+            interest.user.connect(user_node)
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
-        most_common = UserProfile.tags.most_common()[:10]
-        context['top_tags'] = most_common
+        results, meta = db.cypher_query(
+            "MATCH (permission:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
+        print(results)
+        context['top_tags'] = results
         context['form'] = ThemesForm
 
     return render(request, 'account/welcomestep1.html', context)
@@ -1233,7 +1240,6 @@ def set_first_Login(request):
         return redirect('user_profile:profile', username=user.username)
 
 
-# TODO: que el usuario tenga tags establecidos antes de mostrar las recomendaciones
 class RecommendationUsers(ListView):
     """
         Lista de usuarios recomendados segun
@@ -1242,18 +1248,12 @@ class RecommendationUsers(ListView):
     model = User
     template_name = "account/reccomendation_after_login.html"
 
+    #TODO: Mostrar usuarios con perfil NO PRIVADO y con temas de interes parecidos
     def get_queryset(self):
         user = self.request.user
-        if not user.profile.tags:
-            return UserProfile.objects.filter(privacity=UserProfile.ALL).order_by('?')[:20]
-        related_items = TaggedItem.objects.none().order_by('count')
-        current_item = UserProfile.objects.get(user=user)
-        for tag in current_item.tags.all():
-            related_items |= tag.taggit_taggeditem_items.all()
-        ids = related_items.values_list('object_id', flat=True)
-        users = UserProfile.objects.filter(id__in=ids).exclude(user=user)
+        users = None
         if not users:
-            users = UserProfile.objects.filter(privacity=UserProfile.ALL).order_by('?').exclude(user=user)[:20]
+            users = UserProfile.objects.exclude(privacity   =UserProfile.NOTHING).order_by('?').exclude(user=user)[:20]
         return users
 
     def get_context_data(self, **kwargs):
@@ -1310,6 +1310,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
         return users
 
+
 def search_users(request):
     """
     Busqueda de usuarios por AJAX
@@ -1319,7 +1320,8 @@ def search_users(request):
     if user.is_authenticated() and request.is_ajax():
         value = request.GET.get('value', None)
 
-        query = User.objects.filter(~Q(profile__privacity='N') & (Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value)))[:20]
+        query = User.objects.filter(~Q(profile__privacity='N') & (
+        Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value)))[:20]
         result = []
         for user in query:
             user_json = {}

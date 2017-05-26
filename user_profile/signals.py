@@ -39,16 +39,16 @@ def save_user_profile(sender, instance, created, **kwargs):
         try:
             with transaction.atomic(using='default'):
                 with db.transaction:
+                    node = NodeProfile.nodes.get_or_none(title=instance.username)
+                    if not node:
+                        NodeProfile(title=instance.username).save()
                     UserProfile.objects.get_or_create(user=instance)
-                    # TODO: Ver porque no funciona esto...
-                    """
-                    NodeProfile.get_or_create({
-                        'title': instance.username
-                    })[0]
-                    """
+                    logger.info(
+                        "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
+                    )
         except IntegrityError:
             logger.info(
-                    "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
+                "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
             logger.info("POST_SAVE : Saving UserProfile, User : %s" % instance)
 
 

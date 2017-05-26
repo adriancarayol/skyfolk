@@ -1,6 +1,6 @@
 {% extends 'account/nuevosusuarios.html' %}
 <!-- Extendemos la base de "nuevosusuarios.html" -->
-
+{% load humanize %}
 {% block title %}
     <title>¡Bienvenido a Skyfolk! - Paso 1 ({{ user }})</title>
 {% endblock %}
@@ -20,7 +20,7 @@
             <div class="col s12">
                 <p class="flow-text">Los usuarios han mostrado interés por... </p>
                 {% for theme in top_tags %}
-                    <div class="chip top-theme"> {{ theme.name }}</div>
+                    <div class="chip top-theme" title="{{ theme.1 }} personas interesadas">{{ theme.0 }}</div>
                 {% endfor %}
             </div>
         </div>

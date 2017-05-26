@@ -13,9 +13,9 @@ import publications
 from notifications.models import Notification
 from photologue.models import Photo
 from django_neomodel import DjangoNode
-from neomodel import UniqueIdProperty, Relationship, IntegerProperty, StringProperty, RelationshipTo
+from neomodel import UniqueIdProperty, Relationship, IntegerProperty, StringProperty, RelationshipTo, RelationshipFrom, \
+    StructuredNode
 from django.core.cache import cache
-
 
 RELATIONSHIP_FOLLOWING = 1
 RELATIONSHIP_FOLLOWER = 2
@@ -120,6 +120,16 @@ class UserProfileManager(models.Manager):
         return self.get_queryset().get_last_login_user()
 
 
+class TagProfile(DjangoNode):
+    uid = UniqueIdProperty()
+    title = StringProperty(unique_index=True)
+    common = Relationship('TagProfile', 'COMMON')
+    user = RelationshipFrom('NodeProfile', 'INTEREST')
+
+    class Meta:
+        app_label = 'tag_profile'
+
+
 class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     title = StringProperty(unique_index=True)
@@ -128,13 +138,6 @@ class NodeProfile(DjangoNode):
     class Meta:
         app_label = 'node_profile'
 
-class TagProfile(DjangoNode):
-    uid = UniqueIdProperty()
-    title = StringProperty(unique_index=True)
-    common = Relationship('TagProfile', 'COMMON')
-
-    class Meta:
-        app_label = 'tag_profile'
 
 class UserProfile(models.Model):
     PIN_LENGTH = 9
@@ -160,11 +163,9 @@ class UserProfile(models.Model):
     likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
-    # ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
     privacity = models.CharField(max_length=4,
                                  choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
     is_first_login = models.BooleanField(default=True)
-    tags = TaggableManager(blank=True)
     personal_pin = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
     objects = UserProfileManager()
 
@@ -205,7 +206,6 @@ class UserProfile(models.Model):
         except:
             pass  # when new photo then we do nothing, normal case
         super(UserProfile, self).save(*args, **kwargs)
-
 
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)
