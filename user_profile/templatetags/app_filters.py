@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
 from django.shortcuts import get_object_or_404
+from neomodel import db
+from user_profile.models import TagProfile
 
 from user_profile.models import UserProfile
 
@@ -93,8 +95,6 @@ def check_blocked(request, author):
 
     if blocked:
         return True
-    else:
-        return False
 
     return False
 
@@ -141,3 +141,17 @@ def is_blocked(request, profile):
         pass
 
     return False
+
+
+@register.filter(name='get_tags')
+def get_tags(request):
+    """
+    Muestra los intereses dado el uid del NodeProfile de un usuario.
+    :param request uid del NodeProfile de un usuario:
+    :return Lista de intereses del usuario:
+    """
+    r, m = db.cypher_query(
+        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.uid='%s' RETURN tag" % request
+    )
+    results = [TagProfile.inflate(row[0]) for row in r]
+    return results

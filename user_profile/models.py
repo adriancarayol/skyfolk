@@ -13,8 +13,7 @@ import publications
 from notifications.models import Notification
 from photologue.models import Photo
 from django_neomodel import DjangoNode
-from neomodel import UniqueIdProperty, Relationship, IntegerProperty, StringProperty, RelationshipTo, RelationshipFrom, \
-    StructuredNode
+from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom
 from django.core.cache import cache
 
 RELATIONSHIP_FOLLOWING = 1
@@ -134,6 +133,17 @@ class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     title = StringProperty(unique_index=True)
     follow = RelationshipTo('NodeProfile', 'FOLLOW')
+    ONLYFOLLOWERS = 'OF'
+    ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
+    ALL = 'A'
+    NOTHING = 'N'
+    OPTIONS_PRIVACITY = (
+        (ONLYFOLLOWERS, 'OnlyFo'),
+        (ONLYFOLLOWERSANDFOLLOWS, 'OnlyFAF'),
+        (ALL, 'All'),
+        (NOTHING, 'Nothing'),
+    )
+    privacity = StringProperty(choices=OPTIONS_PRIVACITY, default='A')
 
     class Meta:
         app_label = 'node_profile'

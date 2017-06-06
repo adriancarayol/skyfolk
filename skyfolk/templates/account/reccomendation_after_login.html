@@ -16,22 +16,22 @@
                 <div class="col s12 m12 l4">
                     <div class="card white">
                         <div class="card-content">
-                            {% avatar user.user 90 %}
+                            {% avatar user.title 90 %}
                             <span class="card-title grey-text darken-1">
-                                <a href="{% url "user_profile:profile" username=user.user.username %}">{{ user.user.username }}</a>
+                                <a>{{ user.title }}</a>
                             </span>
                             <div class="divider"></div>
-                            <br> {% for tag in user.tags.all %}
-                            <div class="chip">{{ tag.name }}</div>
+                            <br> {% for tag in user.uid|get_tags %}
+                            <div class="chip">{{ tag.title }}</div>
                         {% endfor %}
                         </div>
                         <div class="card-action">
-                            {% if request.user|is_blocked:user.id %}
+                            {% if request.user|is_blocked:request.user.id %}
                                 <button data-user-id="{{ user.id }}"
                                         class="btn waves-effect waves-light blue darken-1 unblock-user" type="submit">
                                     Desbloquear
                                 </button>
-                            {% elif request.user|exist_request:user.id %}
+                            {% elif request.user|exist_request:request.user.id %}
                                 <button data-user-id="{{ user.id }}"
                                         class="btn waves-effect waves-light blue darken-1 follow_request" type="submit">
                                     Solicitud enviada
@@ -39,7 +39,7 @@
                             {% else %}
                                 <button data-user-id="{{ user.id }}"
                                         class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">
-                                    {% if request.user|is_follow:user.id %}Dejar de seguir {% else %}
+                                    {% if request.user|is_follow:request.user.id %}Dejar de seguir {% else %}
                                         Seguir{% endif %}</button>
                             {% endif %}
                         </div>

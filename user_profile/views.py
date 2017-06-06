@@ -17,7 +17,6 @@ from django.views.generic.list import ListView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 from django.http import JsonResponse
-from taggit.models import TaggedItem
 
 from notifications.models import Notification
 from notifications.signals import notify
@@ -1217,8 +1216,7 @@ def welcome_step_1(request):
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
         results, meta = db.cypher_query(
-            "MATCH (permission:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
-        print(results)
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
         context['top_tags'] = results
         context['form'] = ThemesForm
 
@@ -1248,12 +1246,21 @@ class RecommendationUsers(ListView):
     model = User
     template_name = "account/reccomendation_after_login.html"
 
-    #TODO: Mostrar usuarios con perfil NO PRIVADO y con temas de interes parecidos
     def get_queryset(self):
         user = self.request.user
-        users = None
+        results, meta = db.cypher_query(
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.title='%s' AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.username)
+        users = [NodeProfile.inflate(row[0]) for row in results]
         if not users:
-            users = UserProfile.objects.exclude(privacity   =UserProfile.NOTHING).order_by('?').exclude(user=user)[:20]
+            users = NodeProfile.nodes.filter(privacity__ne='N', title__ne=user.username).order_by('?')[:50]
+
+        tags = {}
+        for user in users:
+           r, m = db.cypher_query(
+               "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.title='%s' RETURN tag" % user.title
+           )
+           tags[user.title] = [TagProfile.inflate(row[0]) for row in r]
+
         return users
 
     def get_context_data(self, **kwargs):
@@ -1321,7 +1328,7 @@ def search_users(request):
         value = request.GET.get('value', None)
 
         query = User.objects.filter(~Q(profile__privacity='N') & (
-        Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value)))[:20]
+            Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value)))[:20]
         result = []
         for user in query:
             user_json = {}
