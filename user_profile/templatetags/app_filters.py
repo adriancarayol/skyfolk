@@ -102,10 +102,9 @@ def check_blocked(request, author):
 @register.filter(name='is_follow')
 def is_follow(request, profile):
     user_profile = get_object_or_404(
-        UserProfile, id=profile)
+        UserProfile, user__id=profile)
 
-    if request.pk != user_profile.user.pk:
-        isFriend = False
+    if request.pk != user_profile.user.id:
         try:
             if request.profile.is_follow(user_profile):
                 return True
@@ -117,10 +116,9 @@ def is_follow(request, profile):
 @register.filter(name='exist_request')
 def exist_request(request, profile):
     user_profile = get_object_or_404(
-        UserProfile, id=profile)
+        UserProfile, user__id=profile)
 
-    if request.pk != user_profile.user.pk:
-        isFriend = False
+    if request.pk != user_profile.user.id:
         try:
             if request.profile.get_follow_request(user_profile):
                 return True
@@ -132,13 +130,14 @@ def exist_request(request, profile):
 @register.filter(name='is_blocked')
 def is_blocked(request, profile):
     user_profile = get_object_or_404(
-        UserProfile, id=profile)
+        UserProfile, user__id=profile)
 
-    try:
-        if request.profile.is_blocked(user_profile):
-            return True
-    except ObjectDoesNotExist:
-        pass
+    if request.id != user_profile.user.id:
+        try:
+            if request.profile.is_blocked(user_profile):
+                return True
+        except ObjectDoesNotExist:
+            pass
 
     return False
 

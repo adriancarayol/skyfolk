@@ -8,7 +8,6 @@ from datetime import datetime
 from django.db import transaction
 from django.db import IntegrityError
 from django.contrib.auth.signals import user_logged_in, user_logged_out
-from django.core.exceptions import ObjectDoesNotExist
 from neomodel import db
 
 logging.basicConfig(level=logging.INFO)
@@ -22,9 +21,9 @@ def create_user_profile(sender, instance, created, **kwargs):
             with transaction.atomic(using='default'):
                 with db.transaction:
                     UserProfile.objects.create(user=instance)
-                    NodeProfile(title=instance.username).save()
+                    NodeProfile(user_id=instance.id, title=instance.username).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
-        except IntegrityError:
+        except Exception:
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
 
@@ -39,14 +38,14 @@ def save_user_profile(sender, instance, created, **kwargs):
         try:
             with transaction.atomic(using='default'):
                 with db.transaction:
-                    node = NodeProfile.nodes.get_or_none(title=instance.username)
+                    node = NodeProfile.nodes.get_or_none(user_id=instance.id)
                     if not node:
-                        NodeProfile(title=instance.username).save()
+                        NodeProfile(user_id=instance.id, title=instance.username).save()
                     UserProfile.objects.get_or_create(user=instance)
                     logger.info(
                         "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
                     )
-        except IntegrityError:
+        except Exception:
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
             logger.info("POST_SAVE : Saving UserProfile, User : %s" % instance)
@@ -55,7 +54,7 @@ def save_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Relationship)
 def handle_new_relationship(sender, instance, created, **kwargs):
     if instance.status == 2:
-        e, created = Publication.objects.get_or_create(author=instance.from_person.user,
+        Publication.objects.get_or_create(author=instance.from_person.user,
                                                        board_owner=instance.from_person.user,
                                                        content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
                                                            instance.from_person.user.username,
@@ -63,12 +62,9 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                            instance.to_person.user.username,
                                                            instance.to_person.user.username),
                                                        event_type=2)
-        if not created:
-            e.created = datetime.now()
-            e.save(update_fields=["created"])
 
     if instance.status == 1:
-        e2, created2 = Publication.objects.get_or_create(author=instance.from_person.user,
+        Publication.objects.get_or_create(author=instance.from_person.user,
                                                          board_owner=instance.from_person.user,
                                                          content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
                                                              instance.from_person.user.username,
@@ -76,14 +72,11 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                              instance.to_person.user.username,
                                                              instance.to_person.user.username),
                                                          event_type=2)
-        if not created2:
-            e2.created = datetime.now()
-            e2.save(update_fields=["created"])
 
         # Solo conectamos dos usuarios con la relacion "seguidor de"
         try:
-            from_person = NodeProfile.nodes.get(title=instance.from_person.user.username)
-            to_person = NodeProfile.nodes.get(title=instance.to_person.user.username)
+            from_person = NodeProfile.nodes.get(user_id=instance.from_person.user.id)
+            to_person = NodeProfile.nodes.get(user_id=instance.to_person.user.id)
             from_person.follow.connect(to_person)
             logger.info("Nodo creado entre: %s y %s en la graph database" % (
                 instance.from_person.user.username, instance.to_person.user.username))
@@ -106,11 +99,29 @@ def handle_deleted_relationship(sender, instance, **kwargs):
                                                                                   instance.to_person.user.username))
     if instance.status == 1:
         try:
-            from_person = NodeProfile.nodes.get(title=instance.from_person.user.username)
-            to_person = NodeProfile.nodes.get(title=instance.to_person.user.username)
-            from_person.follow.disconnect(to_person)
+            with transaction.atomic(using='default'):
+                with db.transaction:
+                    from_person = NodeProfile.nodes.get(user_id=instance.from_person.user.id)
+                    to_person = NodeProfile.nodes.get(user_id=instance.to_person.user.id)
+                    from_person.follow.disconnect(to_person)
+                    Publication.objects.filter(author=instance.to_person.user,
+                                                      board_owner=instance.to_person.user,
+                                                      content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                          instance.to_person.user.username,
+                                                          instance.to_person.user.username,
+                                                          instance.from_person.user.username,
+                                                          instance.from_person.user.username),
+                                                      event_type=2).delete()
+                    Publication.objects.filter(author=instance.from_person.user,
+                                                      board_owner=instance.from_person.user,
+                                                      content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                          instance.from_person.user.username,
+                                                          instance.from_person.user.username,
+                                                          instance.to_person.user.username,
+                                                          instance.to_person.user.username),
+                                                      event_type=2).delete()
         except Exception:
-            logger.info("No se pudo eliminar la relacion entre: %s y %s en la graph database" % (
+            logger.info("No se pudo eliminar la relacion entre: %s y %s" % (
                 instance.from_person.user.username, instance.to_person.user.username
             ))
 

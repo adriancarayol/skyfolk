@@ -1,19 +1,18 @@
 import hashlib
 import uuid
 import datetime
-from skyfolk import settings
+import publications
 
+from django.conf import settings
+from skyfolk import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.http import urlencode
-from taggit.managers import TaggableManager
-
-import publications
 from notifications.models import Notification
 from photologue.models import Photo
 from django_neomodel import DjangoNode
-from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom
+from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty
 from django.core.cache import cache
 
 RELATIONSHIP_FOLLOWING = 1
@@ -131,7 +130,8 @@ class TagProfile(DjangoNode):
 
 class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
-    title = StringProperty(unique_index=True)
+    user_id = IntegerProperty(unique_index=True) # user_id
+    title = StringProperty(unique_index=True) # username
     follow = RelationshipTo('NodeProfile', 'FOLLOW')
     ONLYFOLLOWERS = 'OF'
     ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
@@ -223,7 +223,7 @@ class UserProfile(models.Model):
     def online(self):
         if self.last_seen():
             now = datetime.datetime.now()
-            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
+            if now > self.last_seen() + datetime.timedelta(seconds=settings.base.USER_ONLINE_TIMEOUT):
                 return False
             else:
                 return True

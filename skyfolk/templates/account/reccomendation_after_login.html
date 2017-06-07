@@ -26,20 +26,20 @@
                         {% endfor %}
                         </div>
                         <div class="card-action">
-                            {% if request.user|is_blocked:request.user.id %}
-                                <button data-user-id="{{ user.id }}"
+                            {% if request.user|is_blocked:user.user_id %}
+                                <button data-user-id="{{ user.user_id }}"
                                         class="btn waves-effect waves-light blue darken-1 unblock-user" type="submit">
                                     Desbloquear
                                 </button>
-                            {% elif request.user|exist_request:request.user.id %}
-                                <button data-user-id="{{ user.id }}"
+                            {% elif request.user|exist_request:user.user_id %}
+                                <button data-user-id="{{ user.user_id }}"
                                         class="btn waves-effect waves-light blue darken-1 follow_request" type="submit">
                                     Solicitud enviada
                                 </button>
                             {% else %}
-                                <button data-user-id="{{ user.id }}"
+                                <button data-user-id="{{ user.user_id }}"
                                         class="btn waves-effect waves-light blue darken-1 follow-user" type="submit">
-                                    {% if request.user|is_follow:request.user.id %}Dejar de seguir {% else %}
+                                    {% if request.user|is_follow:user.user_id %}Dejar de seguir {% else %}
                                         Seguir{% endif %}</button>
                             {% endif %}
                         </div>

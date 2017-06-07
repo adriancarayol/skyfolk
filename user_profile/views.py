@@ -1,5 +1,5 @@
 import json
-
+import logging
 from allauth.account.views import PasswordChangeView, EmailView
 from dal import autocomplete
 from django.contrib.auth import get_user_model
@@ -30,6 +30,7 @@ from user_profile.forms import ProfileForm, UserForm, \
 from user_profile.models import UserProfile, AffinityUser, NodeProfile, TagProfile
 from publications.utils import get_author_avatar
 from neomodel import db
+from django.db import transaction
 
 
 @login_required(login_url='/')
@@ -369,12 +370,21 @@ def config_privacity(request):
     initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
-    print('>>>>> PETICION CONFIG')
+    logging.info('>>>>> PETICION CONFIG - User: {}'.format(user_profile.username))
     if request.POST:
         privacity_form = PrivacityForm(data=request.POST, instance=user_profile.profile)
         if privacity_form.is_valid():
-            privacity_form.save()
-            return HttpResponseRedirect('/config/privacity')
+            try:
+                with transaction.atomic(using='default'):
+                    with db.transaction:
+                        privacity_form.save()
+                        node_privacity = NodeProfile.nodes.get(user_id=user_profile.id)
+                        node_privacity.privacity = privacity_form.cleaned_data['privacity']
+                        node_privacity.save()
+            except Exception:
+                logging.info('>>>> PETICION CONFIG - User: {} - ERROR'.format(user_profile.username))
+            logging.info('>>>> PETICION CONFIG - User: {} - CAMBIOS GUARDADOS CORRECTAMENTE'.format(user_profile.username))
+        return HttpResponseRedirect('/config/privacity')
     else:
         privacity_form = PrivacityForm(instance=user_profile.profile)
 
@@ -1186,7 +1196,7 @@ def welcome_step_1(request):
     del usuario registrado.
     """
     user = request.user
-    user_node = NodeProfile.nodes.get(title=user.username)
+    user_node = NodeProfile.nodes.get(user_id=user.id)
 
     context = {'user_profile': user}
 
@@ -1249,17 +1259,10 @@ class RecommendationUsers(ListView):
     def get_queryset(self):
         user = self.request.user
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.title='%s' AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.username)
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id='%d' AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.id)
         users = [NodeProfile.inflate(row[0]) for row in results]
         if not users:
-            users = NodeProfile.nodes.filter(privacity__ne='N', title__ne=user.username).order_by('?')[:50]
-
-        tags = {}
-        for user in users:
-           r, m = db.cypher_query(
-               "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.title='%s' RETURN tag" % user.title
-           )
-           tags[user.title] = [TagProfile.inflate(row[0]) for row in r]
+            users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[:50]
 
         return users
 
