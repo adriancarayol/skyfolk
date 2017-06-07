@@ -111,12 +111,6 @@ class PublicationManager(models.Manager):
 
         return pubs
 
-    def get_friend_publications(self, user_pk):
-        # Obtiene las publicaciones de todos los seguidos por un usuario
-        relation = Relationship.objects.filter(Q(from_person=user_pk) & Q(status=1))
-        pubs = self.filter(author__profile__to_people__in=relation, deleted=False).order_by('created').reverse()
-        return pubs
-
     def tag_list(self, obj):
         """
         Devuelve los tags de una publicación
@@ -130,7 +124,7 @@ def upload_image_publication(instance, filename):
     donde se almacenaran las imagenes
     de una publicacion
     """
-    return "%s/%s" % (instance.author, filename)
+    return "%s/publications/%s" % (instance.author, filename)
 
 class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)

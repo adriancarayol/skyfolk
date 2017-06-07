@@ -3,6 +3,7 @@ import uuid
 import datetime
 import publications
 
+
 from django.conf import settings
 from skyfolk import settings
 from django.contrib.auth.models import User
@@ -130,6 +131,7 @@ class NodeProfile(DjangoNode):
     title = StringProperty(unique_index=True) # username
     follow = RelationshipTo('NodeProfile', 'FOLLOW') # follow user
     like = RelationshipTo('NodeProfile', 'LIKE') # like user
+    bloq = RelationshipTo('NodeProfile', 'BLOQ') # bloq user
 
     ONLYFOLLOWERS = 'OF'
     ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
@@ -163,7 +165,7 @@ class NodeProfile(DjangoNode):
         return results[0][0]
 
     def has_like(self, to_like):
-        results, columns = self.cypher("MATCH (a)-[:LIKE]->(b) WHERE id(a)={self} AND b.user_id=%d RETURN b" % to_like)
+        results, columns = self.cypher("MATCH (a)-[like:LIKE]->(b) WHERE id(a)={self} AND b.user_id=%d RETURN like" % to_like)
         return True if len(results) > 0 else False
 
     def count_likes(self):

@@ -71,7 +71,7 @@ def profile_view(request, username,
     if privacity == "nothing":
         template = "account/privacity/private_profile.html"
         return render(request, template, context)
-    elif privacity == "block":
+    elif n.bloq.is_connected(m):
         template = "account/privacity/block_profile.html"
         return render(request, template, context)
 
@@ -109,26 +109,23 @@ def profile_view(request, username,
     isBlocked = False
     if user.username != username:
         try:
-            if user.profile.is_blocked(user_profile.profile):
-                isBlocked = True
-        except ObjectDoesNotExist:
+            isBlocked = m.bloq.is_connected(n)
+        except Exception:
             pass
 
     # Comprobamos si el perfil es seguidor
     isFollower = False
     if user.username != username:
         try:
-            if user.profile.is_follower(user_profile.profile):
-                isFollower = True
-        except ObjectDoesNotExist:
+            isFollower = n.follow.is_connected(m)
+        except Exception:
             pass
     # Comprobamos si el perfil es seguido
     isFollow = False
     if user.username != username:
         try:
-            if user.profile.is_follow(user_profile.profile):
-                isFollow = True
-        except ObjectDoesNotExist:
+            isFollow = m.follow.is_connected(n)
+        except Exception:
             pass
     # Recuperamos el numero de contenido multimedia que tiene el perfil
     try:
@@ -455,8 +452,9 @@ def config_pincode(request):
 @login_required(login_url='/')
 def config_blocked(request):
     user = request.user
+    n = NodeProfile.nodes.get(user_id=user.id)
     initial = {'author': user.pk, 'board_owner': user.pk}
-    list_blocked = request.user.profile.get_blockeds()
+    list_blocked = n.bloq.match()
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
 
@@ -645,21 +643,22 @@ def like_profile(request):
     response = "null"
     if request.method == 'POST':
         user = request.user
-        slug = request.POST.get('slug', None)
+        slug = int(request.POST.get('slug', None))
+
         actual_profile = get_object_or_404(UserProfile,
                                            id=slug)
-
         n = NodeProfile.nodes.get(user_id=user.id)
+        m = NodeProfile.nodes.get(user_id=slug)
 
-        if n.has_like(to_like=actual_profile.user_id):
-            n.like.disconnect(NodeProfile.nodes.get(user_id=actual_profile.user.id))
+        if n.like.is_connected(m):
+            n.like.disconnect(NodeProfile.nodes.get(user_id=slug))
             affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
             if not created:  # Quiere decir que ya ha interactuado con el perfil
                 affinity.affinity -= 20
                 affinity.save(increment=False)
             response = "nolike"
         else:
-            n.like.connect(NodeProfile.nodes.get(user_id=actual_profile.user.id))
+            n.like.connect(NodeProfile.nodes.get(user_id=slug))
             affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
             if not created:  # Quiere decir que ya ha interactuado con el perfil
                 affinity.affinity += 20
@@ -683,19 +682,21 @@ def request_friend(request):
     response = "null"
     if request.method == 'POST':
         user = request.user
-        slug = request.POST.get('slug', None)
+        slug = int(request.POST.get('slug', None))
         profile = UserProfile.objects.get(pk=slug)
 
-        # El perfil me ha bloqueado
-        is_blocked = profile.is_blocked(user.profile)
+        n = NodeProfile.nodes.get(user_id=user.id)
+        m = NodeProfile.nodes.get(user_id=slug)
 
-        if is_blocked:
+        # El perfil me ha bloqueado
+
+        if m.bloq.is_connected(n):
             response = "user_blocked"
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         try:
-            user_friend = user.profile.is_follow(profile)  # Comprobamos si YO ya sigo al perfil deseado.
-        except ObjectDoesNotExist:
+            user_friend = n.follow.is_connected(m)  # Comprobamos si YO ya sigo al perfil deseado.
+        except Exception:
             user_friend = None
 
         if user_friend:
@@ -834,20 +835,20 @@ def remove_blocked(request):
     """
     response = None
     user = request.user
-    slug = request.POST.get('slug', None)
-    profile_user = UserProfile.objects.get(pk=slug)
-    print('%s ya no bloquea a %s' % (user.username, profile_user.user.username))
-    print('>>>>> %s' % slug)
+    slug = int(request.POST.get('slug', None))
+    try:
+        m = NodeProfile.nodes.get(user_id=user.id)
+        n = NodeProfile.nodes.get(user_id=slug)
+    except Exception:
+        return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+    logging.info('%s ya no bloquea a %s' % (m.title, n.title))
+
     if request.method == 'POST':
         try:
-            blocked = user.profile.is_blocked(profile_user)
-        except ObjectDoesNotExist:
-            blocked = None
-
-        if blocked:
-            user.profile.remove_relationship(profile_user, 3)
+            m.bloq.disconnect(n)
             response = True
-        else:
+        except Exception:
             response = False
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
@@ -1109,25 +1110,32 @@ def bloq_user(request):
     user = request.user
     haslike = "noliked"
     status = "none"
+
     if request.method == 'POST':
-        profileUserId = request.POST.get('id_user', None)
+        id_user = request.POST.get('id_user', None)
+
+        if id_user == user.id:
+            data = {'response': False, 'haslike': haslike}
+            return HttpResponse(json.dumps(data), content_type='application/json')
 
         try:
-            emitter_profile = UserProfile.objects.get(pk=profileUserId)
+            n = NodeProfile.nodes.get(user_id=id_user)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            data = {'response': False, 'haslike': haslike}
+            return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+        try:
+            emitter_profile = UserProfile.objects.get(user_id=id_user)
         except ObjectDoesNotExist:
-            response = False
-            data = {'response': response, 'haslike': haslike}
+            data = {'response': False, 'haslike': haslike}
             return HttpResponse(json.dumps(data), content_type='application/json')
 
         # Eliminar me gusta al perfil que se va a bloquear
 
-        try:
-            user_liked = user.profile.has_like(emitter_profile)
-        except ObjectDoesNotExist:
-            user_liked = None
-
-        if user_liked:
-            user_liked.delete()
+        if m.like.is_connected(n):
+            m.like.disconnect(n)
             haslike = "liked"
 
         # Ver si hay una peticion de "seguir" pendiente
@@ -1141,11 +1149,10 @@ def bloq_user(request):
             status = "inprogress"
 
         # Ver si seguimos al perfil que vamos a bloquear
-        is_follow = user.profile.is_follow(emitter_profile)
 
-        if is_follow:
-            user.profile.remove_relationship(emitter_profile, 1)  # Eliminar relacion follow
-            emitter_profile.remove_relationship(user.profile, 2)  # Eliminar relacion follower
+        if m.follow.is_connected(n):
+            m.follow.disconnect(n)
+            n.follow.disconnect(m)
             status = "isfollow"
 
         # Ver si hay una peticion de "seguir" pendiente (al perfil contrario)
@@ -1158,17 +1165,13 @@ def bloq_user(request):
             emitter_profile.remove_received_follow_request(user.profile)  # Eliminar peticion follow (profile -> user)
 
         # Ver si seguimos al perfil que vamos a bloquear
-        try:
-            is_follower = user.profile.is_follower(emitter_profile)
-        except ObjectDoesNotExist:
-            is_follower = None
 
-        if is_follower:
-            emitter_profile.remove_relationship(user.profile, 1)  # Eliminar relacion follow
-            user.profile.remove_relationship(emitter_profile, 2)  # Eliminar relacion follower
+        if n.follow.is_connected(m):
+            m.follow.disconnect(n)
+            n.follow.disconnect(m)
 
-        created = user.profile.add_block(emitter_profile)  # Añadir profile a lista de bloqueados
-        created.save()
+        m.bloq.connect(n) # Creamos relacion de bloqueo
+
         response = True
 
         print('response: %s, haslike: %s, status: %s' % (response, haslike, status))

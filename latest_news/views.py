@@ -9,7 +9,7 @@ from django.db.models import Q
 from publications.forms import PublicationForm
 from publications.models import Publication
 from user_profile.forms import SearchForm
-from user_profile.models import AffinityUser, Relationship
+from user_profile.models import AffinityUser, Relationship, NodeProfile
 
 
 class News(TemplateView):
@@ -52,7 +52,7 @@ class News(TemplateView):
         return result.values()
 
     def get(self, request, *args, **kwargs):
-        user_profile = self.get_current_user()
+        user_profile = request.user
         initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
         publicationForm = PublicationForm(initial=initial)
         searchForm = SearchForm()
@@ -60,15 +60,17 @@ class News(TemplateView):
                                                                'receiver__user__first_name',
                                                                'receiver__user__last_name')
 
+        n = NodeProfile.nodes.get(user_id=user_profile.id)
         # fav_users = self.get_like_users()
         # mix = self.__mix_queryset(affinity=affinity_users, favs=fav_users)
 
         # print('LISTA MEZCLADA: {}'.format(self.__mix_queryset(affinity=affinity_users, favs=fav_users)))
 
+        follows = [x.user_id for x in n.follow.match()[:50]]
+
         try:
             publications = Publication.objects.filter(
-                author__profile__to_people__in=Relationship.objects.filter(
-                    Q(from_person=user_profile.profile) & Q(status=1)), deleted=False, parent=None)
+                author__in=follows, deleted=False, parent=None)
         except ObjectDoesNotExist:
             publications = None
 

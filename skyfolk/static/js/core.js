@@ -708,6 +708,8 @@ function AJAX_requestfriend(status) {
                         showConfirmButton: false
                     });
                 } else if (response == "added_friend") {
+                    var currentValue = document.getElementById('followers-stats');
+                    $(currentValue).html(parseInt($(currentValue).html()) + 1);
                     $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
                 }
                 else {
