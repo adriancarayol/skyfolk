@@ -51,6 +51,9 @@ def profile_view(request, username,
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
 
+    n = NodeProfile.nodes.get(user_id=user_profile.id)
+    m = NodeProfile.nodes.get(user_id=user.id)
+
     context = {}
     # Privacidad del usuario
     privacity = user_profile.profile.is_visible(user.profile)
@@ -62,7 +65,7 @@ def profile_view(request, username,
     context['privacity'] = privacity
     context['publicationSelfForm'] = PublicationForm()
     context['groupForm'] = FormUserGroup(initial=group_initial)
-    context['notifications'] = user.notifications.unread()
+    context['notifications'] = user.notifications.unread_limit()
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":
@@ -75,10 +78,9 @@ def profile_view(request, username,
     # Recuperamos requests para el perfil y si el perfil es gustado.
     json_requestsToMe = None
     if user.username != username:
-        liked = True
         try:
-            user.profile.has_like(user_profile.profile)
-        except ObjectDoesNotExist:
+            liked = m.has_like(to_like=user_profile.id)
+        except Exception:
             liked = False
     else:
         liked = False
@@ -93,15 +95,15 @@ def profile_view(request, username,
 
     # Recuperamos el numero de seguidores
     try:
-        num_followers = user_profile.profile.get_followers().count()
-    except ObjectDoesNotExist:
-        num_followers = None
+        num_followers = n.count_followers()
+    except Exception:
+        num_followers = 0
 
     # Recuperamos el numero de seguidos y la lista de seguidos
     try:
-        num_follows = user_profile.profile.get_following()
-    except ObjectDoesNotExist:
-        num_follows = None
+        num_follows = n.count_follows()
+    except Exception:
+        num_follows = 0
 
     # Comprobamos si el perfil esta bloqueado
     isBlocked = False
@@ -142,11 +144,12 @@ def profile_view(request, username,
     except ObjectDoesNotExist:
         friend_request = None
 
+
     context['json_requestsToMe'] = json_requestsToMe
     context['liked'] = liked
-    context['n_likes'] = len(user_profile.profile.likesToMe.all())
+    context['n_likes'] = n.count_likes()
     context['followers'] = num_followers
-    context['following'] = len(num_follows)
+    context['following'] = num_follows
     context['isBlocked'] = isBlocked
     context['isFollower'] = isFollower
     context['isFriend'] = isFollow
@@ -192,7 +195,7 @@ def profile_view(request, username,
 
     # Contenido de las tres tabs
     context['publications'] = publications
-    context['friends_top12'] = num_follows
+    context['friends_top12'] = n.get_follows()
 
     if extra_context is not None:
         context.update(extra_context)
@@ -645,22 +648,18 @@ def like_profile(request):
         slug = request.POST.get('slug', None)
         actual_profile = get_object_or_404(UserProfile,
                                            id=slug)
-        try:
-            user_liked = user.profile.has_like(actual_profile)
-        except ObjectDoesNotExist:
-            user_liked = None
 
-        if user_liked:
-            user_liked.delete()
+        n = NodeProfile.nodes.get(user_id=user.id)
+
+        if n.has_like(to_like=actual_profile.user_id):
+            n.like.disconnect(NodeProfile.nodes.get(user_id=actual_profile.user.id))
             affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
             if not created:  # Quiere decir que ya ha interactuado con el perfil
                 affinity.affinity -= 20
                 affinity.save(increment=False)
             response = "nolike"
         else:
-            print(str(slug))
-            created = user.profile.add_like(actual_profile)
-            created.save()
+            n.like.connect(NodeProfile.nodes.get(user_id=actual_profile.user.id))
             affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
             if not created:  # Quiere decir que ya ha interactuado con el perfil
                 affinity.affinity += 20
@@ -912,10 +911,13 @@ class FollowersListView(AjaxListView):
     page_template = "account/relations_page.html"
 
     def get_queryset(self):
-        user_profile = get_object_or_404(
-            get_user_model(),
-            username__iexact=self.kwargs['username'])
-        return user_profile.profile.get_followers()
+
+        try:
+            n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
+        except Exception:
+            raise Http404
+
+        return n.get_followers()
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
@@ -940,10 +942,12 @@ class FollowingListView(AjaxListView):
     page_template = "account/relations_page.html"
 
     def get_queryset(self):
-        user_profile = get_object_or_404(
-            get_user_model(),
-            username__iexact=self.kwargs['username'])
-        return user_profile.profile.get_following()
+        try:
+            n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
+        except Exception:
+            raise Http404
+
+        return n.get_follows()
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
@@ -1286,9 +1290,9 @@ class LikeListUsers(AjaxListView):
 
     def get_queryset(self):
         username = self.kwargs['username']
-        user_profile = get_object_or_404(UserProfile, user__username__iexact=username)
-        return user_profile.get_likes_to_me().values('from_like__user__username', 'from_like__user__first_name',
-                                                     'from_like__user__last_name', 'from_like__backImage')
+
+        n = NodeProfile.nodes.get(title=username)
+        return n.get_like_to_me()
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)

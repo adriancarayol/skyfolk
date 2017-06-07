@@ -9,7 +9,7 @@ from django.db.models import Q
 from publications.forms import PublicationForm
 from publications.models import Publication
 from user_profile.forms import SearchForm
-from user_profile.models import AffinityUser, LikeProfile, Relationship
+from user_profile.models import AffinityUser, Relationship
 
 
 class News(TemplateView):
@@ -28,13 +28,6 @@ class News(TemplateView):
         """
         emitterid = self.get_current_user()
         return AffinityUser.objects.get_favourite_relation(emitterid=emitterid.profile)
-
-    def get_like_users(self):
-        """
-        Devuelve los 6 perfiles con mas me gusta
-        """
-        from_like = self.get_current_user()
-        return LikeProfile.objects.get_all_likes(from_like=from_like.profile)
 
     def __mix_queryset(self, affinity, favs):
         """
@@ -66,7 +59,7 @@ class News(TemplateView):
         affinity_users = self.get_affinity_users().values_list('receiver__id', 'receiver__user__username',
                                                                'receiver__user__first_name',
                                                                'receiver__user__last_name')
-        print(affinity_users)
+
         # fav_users = self.get_like_users()
         # mix = self.__mix_queryset(affinity=affinity_users, favs=fav_users)
 
@@ -79,7 +72,7 @@ class News(TemplateView):
         except ObjectDoesNotExist:
             publications = None
 
-        print(publications)
+
         context = {'publications': publications,
                    'publicationSelfForm': publicationForm,
                    'searchForm': searchForm,

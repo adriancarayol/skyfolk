@@ -34,10 +34,6 @@ REQUEST_STATUSES = (
 )
 
 
-def uploadAvatarPath(instance, filename):
-    return '%s/avatar/%s' % (instance.user.username, filename)
-
-
 def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
 
@@ -132,7 +128,9 @@ class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     user_id = IntegerProperty(unique_index=True) # user_id
     title = StringProperty(unique_index=True) # username
-    follow = RelationshipTo('NodeProfile', 'FOLLOW')
+    follow = RelationshipTo('NodeProfile', 'FOLLOW') # follow user
+    like = RelationshipTo('NodeProfile', 'LIKE') # like user
+
     ONLYFOLLOWERS = 'OF'
     ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
     ALL = 'A'
@@ -148,10 +146,36 @@ class NodeProfile(DjangoNode):
     class Meta:
         app_label = 'node_profile'
 
+    def get_followers(self):
+        results, columns = self.cypher("MATCH (a) WHERE id(a)={self} MATCH (a)<-[:FOLLOW]-(b) RETURN b")
+        return [self.inflate(row[0]) for row in results]
+
+    def count_followers(self):
+        results, columns = self.cypher("MATCH (a) WHERE id(a)={self} MATCH (a)<-[:FOLLOW]-(b) RETURN COUNT(b)")
+        return results[0][0]
+
+    def get_follows(self):
+        results, columns = self.cypher("MATCH (a) WHERE id(a)={self} MATCH (a)-[:FOLLOW]->(b) RETURN b")
+        return [self.inflate(row[0]) for row in results]
+
+    def count_follows(self):
+        results, columns = self.cypher("MATCH (a) WHERE id(a)={self} MATCH (a)-[:FOLLOW]->(b) RETURN COUNT(b)")
+        return results[0][0]
+
+    def has_like(self, to_like):
+        results, columns = self.cypher("MATCH (a)-[:LIKE]->(b) WHERE id(a)={self} AND b.user_id=%d RETURN b" % to_like)
+        return True if len(results) > 0 else False
+
+    def count_likes(self):
+        results, columns = self.cypher("MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN COUNT(like)")
+        return results[0][0]
+
+    def get_like_to_me(self):
+        results, columns = self.cypher(
+            "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
+        return [self.inflate(row[0]) for row in results]
 
 class UserProfile(models.Model):
-    PIN_LENGTH = 9
-
     """
     Diferentes opciones de privacidad para el usuario
     """
@@ -170,7 +194,6 @@ class UserProfile(models.Model):
     backImage = models.ImageField(upload_to=uploadBackImagePath, verbose_name='BackImage',
                                   blank=True, null=True)
     relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
-    likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
     requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
     status = models.CharField(max_length=20, null=True, verbose_name='estado')
     privacity = models.CharField(max_length=4,
@@ -447,44 +470,6 @@ class UserProfile(models.Model):
         except ObjectDoesNotExist:
             return False
 
-    # methods likes
-    def add_like(self, profile):
-        """
-        Añade un "me gusta" a un perfil
-        :param profile => Perfil que doy "me gusta":
-        :return Devuelve la relación "Me gusta":
-        """
-        like, created = LikeProfile.objects.get_or_create(from_like=self, to_like=profile)
-        return like
-
-    def remove_like(self, profile):
-        """
-        Elimina la relación "me gusta"
-        :param profile => Perfil al que quiero quitar mi "me gusta":
-        """
-        LikeProfile.objects.filter(from_like=self, to_like=profile).delete()
-
-    def get_likes(self):
-        """
-        Obtengo los likes que ha dado del perfil instanciado
-        :return Devuelve los likes del perfil instanciado:
-        """
-        return self.likeprofiles.filter(to_likeprofile__from_like=self)
-
-    def get_likes_to_me(self):
-        """
-        Obtengo los likes que me han dado.
-        :return: Devuelve los likes recibidos
-        """
-        return LikeProfile.objects.get_all_likes_to_me(self)
-
-    def has_like(self, profile):
-        """
-        Comprueba si un perfil tiene un "me gusta" del perfil instanciado
-        :param profile => Perfil que se comprueba si tiene un me gusta del perfil instanciado:
-        """
-        return LikeProfile.objects.get(from_like=self, to_like=profile)
-
     # methods following
 
     def is_follow(self, profile):
@@ -662,112 +647,6 @@ class Relationship(models.Model):
 
     class Meta:
         unique_together = ('from_person', 'to_person', 'status')
-
-
-class LikeProfileQuerySet(models.QuerySet):
-    """
-        Query Manager para usuarios favoritos
-    """
-
-    def get_all_likes(self, from_like):
-        """
-        Devuelve todos los me gusta dados por un perfil en concreto.
-        :param from_like => Del perfil que da me gusta:
-        :return Todos los me gusta dados por un perfil en concreto:
-        """
-        return self.filter(from_like=from_like)
-
-    def get_last_like(self, from_like):
-        """
-        Devuelve el ultimo me gusta dado por un perfil
-        :param from_like => Perfil que da me gusta:
-        :return El ultimo me gusta dado por un perfil:
-        """
-        return self.filter(from_like=from_like).latest()
-
-    def get_likes_by_created(self, from_like, reverse=True):
-        """
-        Devuelve los me gusta dados por un perfil
-        ordenados por la creacion
-        :param from_like => Perfil emisor:
-        :param reverse => Perfil receptor:
-        :return  me gusta dados por un perfil ordenados por la creacion:
-        """
-        if reverse:
-            return self.filter(from_like=from_like).order_by('-created')
-        return self.filter(from_like=from_like).order_by('created')
-
-    def get_all_likes_to_me(self, to_like):
-        """
-        Devuelve la lista de usuarios
-        que me han dado me gusta.
-        """
-        return self.filter(to_like=to_like)
-
-
-class LikeProfileManager(models.Manager):
-    """
-        Manager para usuarios que me gustan
-    """
-
-    def get_queryset(self):
-        return LikeProfileQuerySet(self.model, using=self._db)
-
-    def get_all_likes(self, from_like):
-        """
-        Devuelve todos los me gusta dados por un perfil en concreto.
-        :param from_like => Del perfil que da me gusta:
-        :return Todos los me gusta dados por un perfil en concreto:
-        """
-        return self.get_queryset().get_all_likes(from_like=from_like)
-
-    def get_last_like(self, from_like):
-        """
-        Devuelve el ultimo me gusta dado por un perfil
-        :param from_like => Perfil que da me gusta:
-        :return El ultimo me gusta dado por un perfil:
-        """
-        return self.get_queryset().get_last_like(from_like=from_like)
-
-    def get_likes_by_created(self, from_like, reverse=False):
-        """
-        Devuelve los me gusta dados por un perfil
-        ordenados por la creacion
-        :param from_like => Perfil emisor:
-        :param reverse => Perfil receptor:
-        :return  me gusta dados por un perfil ordenados por la creacion:
-        """
-        return self.get_queryset().get_likes_by_created(from_like=from_like, reverse=reverse)
-
-    def get_all_likes_to_me(self, to_like):
-        """
-        Devuelve la lista de usuarios
-        que me han dado me gusta.
-        """
-        return self.get_queryset().get_all_likes_to_me(to_like=to_like)
-
-
-class LikeProfile(models.Model):
-    """
-    Modelo que relaciona a dos usuarios al dar "me gusta" al otro perfil.
-        <<from_like>>: Persona que da like
-        <<to_like>>: Persona que recibe el like
-        <<created>>: Fecha de creación del like
-    """
-
-    class Meta:
-        get_latest_by = 'created'
-        unique_together = ('from_like', 'to_like')
-
-    from_like = models.ForeignKey(UserProfile, related_name='from_likeprofile')
-    to_like = models.ForeignKey(UserProfile, related_name='to_likeprofile')
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username,
-                                                                self.to_like.user.username, self.created)
-
-    objects = LikeProfileManager()
 
 
 class Request(models.Model):

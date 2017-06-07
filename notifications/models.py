@@ -56,6 +56,17 @@ class NotificationQuerySet(models.query.QuerySet):
             """
             return self.filter(unread=True)
 
+    def unread_limit(self, include_deleted=False, limit=20):
+        """
+        Devuelve n limitaciones delimitadas por el parametro
+        limit, por defecto devolvera 20 notificaciones
+        :return Devuelve solo las notificaciones no leidas:
+        """
+        if is_soft_delete() and not include_deleted:
+            return self.filter(unread=True, deleted=False)[:limit]
+        else:
+            return self.filter(unread=True)[:limit]
+        
     def read(self, include_deleted=False):
         """Return only read items in the current queryset"""
         if is_soft_delete() and not include_deleted:

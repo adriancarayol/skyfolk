@@ -12,7 +12,7 @@ from taggit.managers import TaggableManager
 from photologue.models import Photo
 from user_groups.models import UserGroups
 from user_profile.models import Relationship
-from .utils import get_author_avatar, remove_duplicates_in_list
+from .utils import get_author_avatar
 from user_profile.tasks import send_to_stream
 from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
