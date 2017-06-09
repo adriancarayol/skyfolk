@@ -1,5 +1,5 @@
 import json
-import os
+
 import warnings
 
 from PIL import Image
@@ -15,17 +15,19 @@ from django.views.generic.base import RedirectView
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
 from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
+from django.contrib.auth import get_user_model
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
 from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import PublicationPhoto
 from user_profile.forms import SearchForm
-from user_profile.models import UserProfile
+from user_profile.models import UserProfile, NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo
 from django.db.models import Q
+from django.http import Http404
+
 
 # Collection views
 @login_required(login_url='accounts/login')
@@ -41,10 +43,16 @@ def collection_list(request, username,
     user = request.user
 
     # Para comprobar si tengo permisos para ver el contenido de la coleccion
-    user_profile = get_object_or_404(UserProfile, user__username=username)
-    visibility = user_profile.is_visible(user.profile)
+    try:
+        user_profile = NodeProfile.nodes.get(title=username)
+        m = NodeProfile.nodes.get(user_id=user.id)
+    except NodeProfile.DoesNotExist:
+        raise Http404
+
+    visibility = user_profile.is_visible(m)
+
     if visibility == ("nothing" or "both" or "followers" or "block"):
-        return redirect('user_profile:profile', username=user_profile.user.username)
+        return redirect('user_profile:profile', username=user_profile.title)
 
     initial = {'author': user.pk, 'board_owner': user.pk}
     publicationForm = PublicationForm(initial=initial)
@@ -54,7 +62,7 @@ def collection_list(request, username,
 
     print('>>>>>>> TAGNAME {}'.format(tagname))
     if user.username == username:
-        object_list = Photo.objects.filter(Q(is_public=True) | Q(is_public=False), owner__username=username, 
+        object_list = Photo.objects.filter(owner__username=username,
                                         tags__name__exact=tagname)
     else:
         object_list = Photo.objects.filter(owner__username=username, 
@@ -89,7 +97,7 @@ class PhotoListView(AjaxListView):
 
     def get_queryset(self):
         if self.request.user.username == self.username:
-            return Photo.objects.filter(Q(is_public=True) | Q(is_public=False), owner__username=self.username)
+            return Photo.objects.filter(owner__username=self.username)
         return Photo.objects.filter(owner__username=self.username, is_public=True)
 
     def get_context_data(self, **kwargs):
@@ -110,8 +118,10 @@ class PhotoListView(AjaxListView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        user_profile = UserProfile.objects.get(user__username=self.username)
-        visibility = user_profile.is_visible(user.profile)
+        user_profile = NodeProfile.nodes.get(title=self.username)
+        m = NodeProfile.nodes.get(user_id=user.id)
+
+        visibility = user_profile.is_visible(m)
 
         if visibility == ("nothing" or "both" or "followers" or "block"):
             return False
@@ -138,6 +148,7 @@ def upload_photo(request):
             obj.owner = user
             if 'image' in request.FILES:
                 crop_image(obj, request)
+            obj.is_public = not form.cleaned_data['is_public']
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
             data = {
@@ -352,8 +363,13 @@ class PhotoDetailView(DetailView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        user_profile = get_object_or_404(UserProfile, user__username=self.username)
-        visibility = user_profile.is_visible(user.profile)
+        try:
+            user_profile = NodeProfile.nodes.get(title=self.username)
+            n = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            raise Http404
+
+        visibility = user_profile.is_visible(n)
 
         if visibility == ("nothing" or ("both" or "followers") or "block"):
             return False

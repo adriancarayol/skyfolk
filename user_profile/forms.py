@@ -22,8 +22,8 @@ class CustomLoginForm(LoginForm):
 
     def login(self, request, redirect_url=None):
         try:
-            user_profile = UserProfile.objects.get(user=self.user)
-        except UserProfile.DoesNotExist:
+            user_profile = NodeProfile.nodes.get(user_id=self.user.id)
+        except NodeProfile.DoesNotExist:
             user_profile = None
             logger.warning("LOGIN: No existe instancia UserProfile para el usuario : %s " % self.user.username)
 
@@ -31,7 +31,7 @@ class CustomLoginForm(LoginForm):
         if auth_token_device and user_profile:
             try:
                 components = auth_token_device.split()
-                device, created = AuthDevices.objects.get_or_create(user_profile=user_profile,
+                device, created = AuthDevices.objects.get_or_create(user_profile=self.user,
                                                                     browser_token=components.pop(0))
                 if created:
                     device.save()
@@ -149,11 +149,18 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ('backImage', 'status',)  # Añadir 'image' si decidimos quitar django-avatar.
+        fields = ('backImage', 'status')  # Añadir 'image' si decidimos quitar django-avatar.
         # fields = ('image', 'backImage', 'status')
 
+    def clean_status(self):
+        status = self.cleaned_data['status']
 
-class PrivacityForm(forms.ModelForm):
+        if len(status) > 20:
+            raise forms.ValidationError("El estado no puede exceder de 20 caracteres.")
+        return status
+
+
+class PrivacityForm(forms.Form):
     """
     Formulario para escoger la privacidad deseada del usuario.
     Se encuentra en configuración, y las opciones son las que
@@ -168,9 +175,13 @@ class PrivacityForm(forms.ModelForm):
 
     privacity = forms.ChoiceField(choices=CHOICES, required=True, label='Escoge una opción de privacidad.')
 
-    class Meta:
-        model = UserProfile
-        fields = ('privacity',)
+    def clean_privacity(self):
+        privacity = self.cleaned_data.get('privacity', None)
+        if privacity and privacity in dict(PrivacityForm.CHOICES).keys():
+            return privacity
+        else:
+            return 'A'
+
 
 
 class DeactivateUserForm(forms.ModelForm):

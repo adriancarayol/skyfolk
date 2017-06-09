@@ -1,5 +1,5 @@
 from avatar.models import Avatar
-from user_profile.models import UserProfile
+from user_profile.models import NodeProfile
 import re
 import bleach
 from django.conf import settings
@@ -22,7 +22,7 @@ def get_author_avatar(authorpk):
     if avatars:
         return avatars.get_absolute_url()
     else:
-        return UserProfile.objects.get(user=authorpk).gravatar
+        return NodeProfile.nodes.get(user_id=authorpk).gravatar
 
 
 def parse_string(content):

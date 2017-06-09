@@ -264,7 +264,7 @@ def notify_handler(verb, **kwargs):
         recipients = [recipient]
 
     for recipient in recipients:
-        actor_avatar = get_author_avatar(authorpk=actor)
+        actor_avatar = get_author_avatar(authorpk=actor.id)
         newnotify, created = Notification.objects.get_or_create(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),
@@ -288,7 +288,7 @@ def notify_handler(verb, **kwargs):
             newnotify.data = kwargs
 
         newnotify.save()
-        recipient_profile = user_profile.UserProfile.objects.get(user__username__exact=recipient.username)
+        recipient_profile = user_profile.NodeProfile.nodes.get(title__iexact=recipient.username)
         data = model_to_dict(newnotify)
         if newnotify.actor:
             data['actor'] = str(newnotify.actor)

@@ -3,9 +3,8 @@ import logging
 
 from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
-from django.core.exceptions import ObjectDoesNotExist
 
-from .models import UserProfile
+from .models import NodeProfile
 
 
 # The "slug" keyword argument here comes from the regex capture group in
@@ -22,13 +21,14 @@ def connect_blog(message, username):
     user = message.user
 
     try:
-        profile_blog = UserProfile.objects.get(user__username=username)
-        visibility = profile_blog.is_visible(user.profile)
+        profile_blog = NodeProfile.nodes.get(title=username)
+        n = NodeProfile.nodes.get(user_id=user.id)
+        visibility = profile_blog.is_visible(n)
         if visibility and visibility != 'all':
             logging.warning('User: {} no puede conectarse al socket de: profile: {}'.format(user.username, username))
             message.reply_channel.send({"accept": False})
             return
-    except ObjectDoesNotExist:
+    except NodeProfile.DoesNotExist:
         # You can see what messages back to a WebSocket look like in the spec:
         # http://channels.readthedocs.org/en/latest/asgi.html#send-close
         # Here, we send "close" to make Daphne close off the socket, and some
@@ -57,8 +57,8 @@ def disconnect_blog(message, username):
     entries cluttering up your group will reduce performance.
     """
     try:
-        profile_blog = UserProfile.objects.get(user__username=username)
-    except ObjectDoesNotExist:
+        profile_blog = NodeProfile.nodes.get(title=username)
+    except NodeProfile.DoesNotExist:
         # This is the disconnect message, so the socket is already gone; we can't
         # send an error back. Instead, we just return from the consumer.
         return
@@ -71,8 +71,8 @@ def disconnect_blog(message, username):
 def ws_connect(message):
     username = message.user.username
     try:
-        profile = UserProfile.objects.get(user__username__iexact=username)
-    except ObjectDoesNotExist:
+        profile = NodeProfile.nodes.get(title=username)
+    except NodeProfile.DoesNotExist:
         message.reply_channel.send({
             "text": json.dumps({"error": "bad_slug"}),
             "close": True,

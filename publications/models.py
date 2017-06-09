@@ -11,7 +11,7 @@ from django.db.models import Q
 from taggit.managers import TaggableManager
 from photologue.models import Photo
 from user_groups.models import UserGroups
-from user_profile.models import Relationship
+from user_profile.models import NodeProfile
 from .utils import get_author_avatar
 from user_profile.tasks import send_to_stream
 from django.core.exceptions import ObjectDoesNotExist
@@ -243,19 +243,26 @@ class Publication(PublicationBase):
             except ObjectDoesNotExist:
                 continue
 
-            privacity = recipientprofile.profile.is_visible(self.author.profile)
-            if privacity and privacity != 'all':
-                continue
+            self.content = self.content.replace(mencion,
+                                                '<a href="/profile/%s">%s</a>' %
+                                                (mencion[1:], mencion))
 
             if self.author.pk != recipientprofile.pk:
+                try:
+                    n = NodeProfile.nodes.get(user_id=self.author_id)
+                    m = NodeProfile.nodes.get(user_id=recipientprofile.id)
+                except Exception:
+                    continue
+
+                privacity = m.is_visible(n)
+
+                if privacity and privacity != 'all':
+                    continue
+
                 notify.send(self.author, actor=self.author.username,
                             recipient=recipientprofile,
                             verb=u'¡te ha mencionado en su tablón!',
                             description='<a href="%s">Ver</a>' % ('/publication/' + str(self.id)))
-
-            self.content = self.content.replace(mencion,
-                                                '<a href="/profile/%s">%s</a>' %
-                                                (mencion[1:], mencion))
 
     def parse_content(self):
         """

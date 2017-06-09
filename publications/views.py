@@ -1,11 +1,11 @@
 import json
 import logging
-import datetime
 import io
 import os
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
@@ -25,6 +25,7 @@ from django.db import transaction
 from .utils import parse_string
 from django.middleware import csrf
 from PIL import Image
+from user_profile.models import NodeProfile
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,30 +66,25 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        emitter = get_object_or_404(get_user_model(),
-                                    pk=request.POST['author'])
 
-        if emitter.pk != self.request.user.pk:
-            raise IntegrityError("No have permissions.")
+        emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
+        board_owner = NodeProfile.nodes.get(user_id=int(request.POST['board_owner']))
 
-        board_owner = get_object_or_404(get_user_model(),
-                                        pk=request.POST['board_owner'])
-
-        privacity = board_owner.profile.is_visible(self.request.user.profile)
+        privacity = board_owner.is_visible(emitter)
 
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
 
         is_correct_content = False
         logger.info('POST DATA: {}'.format(request.POST))
-        logger.info('tipo emitter: {}'.format(type(emitter)))
-        logger.info('tipo board_owner: {}'.format(type(board_owner)))
+        logger.info('tipo emitter: {}'.format(type(emitter.title)))
+        logger.info('tipo board_owner: {}'.format(type(board_owner.title)))
 
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-                publication.author = emitter
-                publication.board_owner = board_owner
+                publication.author = User.objects.get(id=emitter.user_id)
+                publication.board_owner = User.objects.get(id=board_owner.user_id)
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):
@@ -162,7 +158,13 @@ def publication_detail(request, publication_id):
     except ObjectDoesNotExist:
         return Http404
 
-    privacity = request_pub.author.profile.is_visible(user.profile)
+    try:
+        author = NodeProfile.nodes.get(user_id=request_pub.author_id)
+        m = NodeProfile.nodes.get(user_id=user.id)
+    except NodeProfile.DoesNotExist:
+        return redirect('user_profile:profile', username=request_pub.board_owner.username)
+
+    privacity = author.is_visible(m)
 
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
@@ -276,7 +278,14 @@ def add_like(request):
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
-        privacity = publication.author.profile.is_visible(user.profile)
+        try:
+            author = NodeProfile.nodes.get(user_id=publication.author_id)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
+
+        privacity = author.is_visible(m)
 
         if privacity and privacity != 'all':
             data = json.dumps({'response': response, 'statuslike': statuslike})
@@ -376,7 +385,14 @@ def add_hate(request):
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
-        privacity = publication.author.profile.is_visible(user.profile)
+        try:
+            author = NodeProfile.nodes.get(user_id=publication.author_id)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
+
+        privacity = author.is_visible(m)
 
         if privacity and privacity != 'all':
             data = json.dumps({'response': response, 'statuslike': statuslike})
@@ -518,7 +534,14 @@ def load_more_comments(request):
             publication = Publication.objects.get(id=pub_id)
         except ObjectDoesNotExist:
             return JsonResponse(data)
-        privacity = publication.board_owner.profile.is_visible(user.profile)
+
+        try:
+            board_owner = NodeProfile.nodes.get(user_id=publication.board_owner_id)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return JsonResponse(data)
+
+        privacity = board_owner.is_visible(m)
 
         if privacity and privacity != 'all':
             return JsonResponse(data)
@@ -635,7 +658,13 @@ def load_more_skyline(request):
         except ObjectDoesNotExist:
             return JsonResponse(data)
 
-        privacity = publication.board_owner.profile.is_visible(user.profile)
+        try:
+            board_owner = NodeProfile.nodes.get(user_id=publication.board_owner_id)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return JsonResponse(data)
+
+        privacity = board_owner.is_visible(m)
 
         if privacity and privacity != 'all':
             return JsonResponse(data)
@@ -712,7 +741,13 @@ def share_publication(request):
             try:
                 pub_to_add = Publication.objects.get(pk=obj_pub)
 
-                privacity = pub_to_add.author.profile.is_visible(user.profile)
+                try:
+                    author = NodeProfile.nodes.get(user_id=pub_to_add.author_id)
+                    m = NodeProfile.nodes.get(user_id=user.id)
+                except NodeProfile.DoesNotExist:
+                    return HttpResponse(json.dumps(response), content_type='application/json')
+
+                privacity = author.is_visible(m)
 
                 if privacity and privacity != 'all':
                     return HttpResponse(json.dumps(response), content_type='application/json')

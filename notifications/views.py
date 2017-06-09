@@ -135,6 +135,7 @@ def mark_as_unread(request, slug=None):
 def delete(request, slug=None):
     _id = slug2id(slug)
 
+    print(_id)
     notification = get_object_or_404(
         Notification, recipient=request.user, id=_id)
 

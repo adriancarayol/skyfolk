@@ -3,11 +3,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
-from django.core.validators import MaxLengthValidator
 
-# from django.core.exceptions import ImproperlyConfigured
 from neomodel import config
 from neomodel import db
+from depot.manager import DepotManager
 
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -23,12 +22,6 @@ ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'width', 'height'],
     'table': ['border', 'cellpadding', 'cellspacing'],
 }
-
-config.DATABASE_URL = 'bolt://neo4j:1518@localhost:7687'  # default
-NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
-NEOMODEL_ENCRYPTED_CONNECTION = True
-
-db.set_connection('bolt://neo4j:1518@localhost:7687')
 
 # Application definition
 DEFAULT_APPS = (
@@ -153,6 +146,15 @@ TAGGIT_CASE_INSENSITIVE = True
 # NOTIFICATION
 NOTIFICATIONS_USE_JSONFIELD = True
 
+# neo4j database
+
+config.DATABASE_URL = 'bolt://neo4j:1518@localhost:7687'  # default
+NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
+NEOMODEL_ENCRYPTED_CONNECTION = True
+
+db.set_connection('bolt://neo4j:1518@localhost:7687')
+
+# cache
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -256,6 +258,8 @@ STATICFILES_DIRS = (
 # Media (uploads, ...)
 MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
 MEDIA_URL = '/media/'
+# filedepot
+DepotManager.configure('default', {'depot.storage_path': './skyfolk/media/back_images'})
 
 # NOTIFICACIONES
 ''' Marca las notificaciones como borradas
@@ -269,5 +273,6 @@ ADMINS = (
     ('Gabriel Fernandez', 'gabofer82@gmail.com'),
     ('lostcitizen', 'lostcitizen@gmail.com'),
 )
+
 MANAGERS = ADMINS
 POSTMAN_AUTO_MODERATE_AS = True

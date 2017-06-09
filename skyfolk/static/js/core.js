@@ -94,7 +94,7 @@ $(document).ready(function () {
     $(page_wrapper).find('#message-form2').on('submit', function (event) {
         event.preventDefault();
         var form = $(page_wrapper).find('#message-form2');
-        AJAX_submit_publication(data, 'publication');
+        AJAX_submit_publication(form, 'publication');
     });
 
     /* Submit publication (propio) */
@@ -546,7 +546,8 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
         dataType: "json",
         success: function (response) {
             if (response == "added_friend") {
-                addItemToFriendList('Nuevo', 'nuevo');
+                //TODO: Add to "seguidos" list
+                // addItemToFriendList('Nuevo', 'nuevo');
                 sweetAlert("You have added a friend!");
                 $('li[data-id=' + obj_data + ']').fadeOut("fast");
             } else {

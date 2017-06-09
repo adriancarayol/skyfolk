@@ -90,3 +90,4 @@ zope.interface==4.3.3
 django-mptt>=0.8.7
 django_neomodel
 python-memcached
+filedepot

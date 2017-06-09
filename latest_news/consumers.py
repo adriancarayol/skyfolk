@@ -2,9 +2,8 @@ import json
 
 from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
-from django.core.exceptions import ObjectDoesNotExist
 
-from user_profile.models import UserProfile
+from user_profile.models import NodeProfile
 
 
 @channel_session_user_from_http
@@ -15,8 +14,8 @@ def ws_connect_news(message):
     """
     username = message.user.username
     try:
-        profile = UserProfile.objects.get(user__username__iexact=username)
-    except ObjectDoesNotExist:
+        profile = NodeProfile.nodes.get(title=username)
+    except NodeProfile.DoesNotExist:
         message.reply_channel.send({
             "text": json.dumps({"error": "bad_slug"}),
             "close": True,
@@ -35,8 +34,8 @@ def disconnect_news(message):
     """
     username = message.user.username
     try:
-        profile_blog = UserProfile.objects.get(user__username=username)
-    except ObjectDoesNotExist:
+        profile_blog =  NodeProfile.nodes.get(title=username)
+    except NodeProfile.DoesNotExist:
         # This is the disconnect message, so the socket is already gone; we can't
         # send an error back. Instead, we just return from the consumer.
         return
