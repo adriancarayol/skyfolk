@@ -27,7 +27,7 @@ class News(TemplateView):
         Devuelve los 6 perfiles favoritos del usuario
         """
         emitterid = self.get_current_user()
-        return AffinityUser.objects.get_favourite_relation(emitterid=emitterid.profile)
+        return AffinityUser.objects.get_favourite_relation(emitterid=emitterid)
 
     def __mix_queryset(self, affinity, favs):
         """
@@ -56,9 +56,9 @@ class News(TemplateView):
         initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
         publicationForm = PublicationForm(initial=initial)
         searchForm = SearchForm()
-        affinity_users = self.get_affinity_users().values_list('receiver__id', 'receiver__user__username',
-                                                               'receiver__user__first_name',
-                                                               'receiver__user__last_name')
+        affinity_users = self.get_affinity_users().values_list('receiver__id', 'receiver__username',
+                                                               'receiver__first_name',
+                                                               'receiver__last_name')
 
         n = NodeProfile.nodes.get(user_id=user_profile.id)
         # fav_users = self.get_like_users()

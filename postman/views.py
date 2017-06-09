@@ -28,7 +28,7 @@ from .fields import autocompleter_app
 from .forms import WriteForm, AnonymousWriteForm, QuickReplyForm, FullReplyForm
 from .models import OPTION_MESSAGES, Message, get_order_by
 from .utils import format_subject, format_body
-
+from user_profile.models import AffinityUser
 login_required_m = method_decorator(login_required)
 csrf_protect_m = method_decorator(csrf_protect)
 
@@ -85,6 +85,7 @@ class FolderMixin(NamespaceMixin, object):
             'by_message_url': reverse(viewname, args=[OPTION_MESSAGES], current_app=current_instance),
             'current_url': self.request.get_full_path(),
             'gets': self.request.GET,  # useful to postman_order_by template tag
+            'friends_top12': AffinityUser.objects.filter(emitter=self.request.user).values("receiver__username", "receiver__id")
         })
         return context
 
@@ -106,7 +107,6 @@ class InboxView(FolderMixin, TemplateView):
     view_name = 'inbox'
     # for TemplateView:
     template_name = 'postman/inbox.html'
-
 
 class SentView(FolderMixin, TemplateView):
     """
@@ -200,6 +200,7 @@ class ComposeMixin(NamespaceMixin, object):
         context.update({
             'autocompleter_app': autocompleter_app,
             'next_url': self.request.GET.get('next') or _get_referer(self.request),
+            'friends_top12': AffinityUser.objects.filter(emitter=self.request.user).values("receiver__username", "receiver__id")
         })
         return context
 
