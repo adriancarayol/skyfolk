@@ -9,6 +9,7 @@ from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
 from user_profile.models import UserProfile, AuthDevices, NodeProfile
 from .validators import validate_file_extension
+from ipware.ip import get_real_ip, get_ip
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -29,6 +30,11 @@ class CustomLoginForm(LoginForm):
             logger.warning("LOGIN: No existe instancia UserProfile para el usuario : %s " % self.user.username)
 
         auth_token_device = self.cleaned_data['auth_browser']
+        ip = get_real_ip(request)
+        if ip is not None:
+            logger.info("IP: {} del usuario: {}".format(ip, user.username))
+        else:
+            ip = get_ip(request)
         if auth_token_device and user_profile:
             try:
                 components = auth_token_device.split()
@@ -38,7 +44,7 @@ class CustomLoginForm(LoginForm):
                     device.save()
                     send_mail(
                         '[Skyfolk] - Nuevo inicio de sesión.',
-                        'Hemos detectado un nuevo inicio de sesión. \n' + ",".join(components).replace(",", " "),
+                        'Hemos detectado un nuevo inicio de sesión desde la IP: %s. \n' % ip + ",".join(components).replace(",", " "),
                         'noreply@skyfolk.net',
                         [self.user.email],
                         fail_silently=False,

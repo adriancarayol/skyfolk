@@ -21,7 +21,7 @@
             <li onclick="window.location.href='{% url 'postman:archives' %}'">{% trans "Archives" %} <i class="material-icons right">folder_special</i></li>
             <li class="blue lighten-5">Contactos ({{ friends_top12|length }})</li>
             {% for item in friends_top12 %}
-                <li class="blue lighten-5" onclick="window.location.href='/messages/compose/{{ item.title }}'"><i
+                <li class="blue lighten-5" onclick="window.location.href='/messages/write/{{ item.title }}'"><i
                         class="material-icons right">account_circle</i>({{ item.title }})
                 </li>
             {% endfor %}
@@ -108,6 +108,7 @@
                                       method="post">{% csrf_token %}
                                     <div id="pm_reply">
                                         <div class="row">
+                                            {{ form.body.errors }}
                                             <div class="input-field col s12">
                                 <textarea id="id_body" name="body" rows="12" cols="55"
                                           class="materialize-textarea"></textarea>

@@ -91,3 +91,6 @@ django-mptt>=0.8.7
 django_neomodel
 python-memcached
 filedepot
+django-debug-toolbar
+django-dash
+django-ipware

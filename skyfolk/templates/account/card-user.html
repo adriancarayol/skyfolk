@@ -71,17 +71,17 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     </div>
                 </div>
                 <div class="header">
-                    <p class="user-profile-name">@{{ user_profile.username }}</p>
-                    <p id="profileId" hidden>{{ user_profile.profile.id }}</p>
-                    {% if node_profile.status != None and node_profile.status|length != 0%}
+                    <p class="user-profile-name">@{{ node_profile.title }}</p>
+                    <p id="profileId" hidden>{{ node_profile.user_id }}</p>
+                    {% if node_profile.status != None and node_profile.status|length != 0 %}
                     <p class="status"> - {{ node_profile.status }}</p>
                     {% endif %}
                     {% if not isFollower %}
                     <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ user_profile.username }}"></span>
+                                                                                    data-tooltip="Acerca de {{ node_profile.title }}"></span>
                     {% else %}
                     <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ user_profile.username }} - ¡Te sigue!"
+                                                                                    data-tooltip="Acerca de {{ node_profile.title }} - ¡Te sigue!"
                                                                                     style="color: #1e88e5"></span>
                     {% endif %}
                     <ul id="user-stats" class="stats">

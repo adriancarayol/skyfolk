@@ -3,6 +3,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
+import debug_toolbar
 
 # from rest_framework import routers
 
@@ -59,6 +60,7 @@ urlpatterns = [
     url(r'^dashboard/', include('dash.urls')),
     url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
     url(r'^', include('dash.contrib.apps.public_dashboard.urls')),
+    url(r'^__debug__/', include(debug_toolbar.urls)),
 
 ]
 

@@ -65,12 +65,12 @@ def profile_view(request, username,
     # Para escribir mensajes en mi propio perfil.
     group_initial = {'owner': user.pk}
     context['user_profile'] = user_profile
+    context['node_profile'] = n
     context['searchForm'] = SearchForm(request.POST)
     context['privacity'] = privacity
     context['publicationSelfForm'] = PublicationForm()
     context['groupForm'] = FormUserGroup(initial=group_initial)
     context['notifications'] = user.notifications.unread_limit()
-    dov = DepotManager.get()
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":

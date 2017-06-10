@@ -56,7 +56,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
 
     try:
         with transaction.atomic(using="default"):
-            Publication.objects.get_or_create(author_id=instance.end_node().user_id,
+            Publication.objects.create(author_id=instance.end_node().user_id,
                                               board_owner_id=instance.end_node().user_id,
                                               content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
                                                   instance.end_node().title,
@@ -65,7 +65,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                   instance.start_node().title),
                                               event_type=2)
 
-            Publication.objects.get_or_create(author_id=instance.start_node().user_id,
+            Publication.objects.create(author_id=instance.start_node().user_id,
                                               board_owner_id=instance.start_node().user_id,
                                               content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
                                                   instance.start_node().title,

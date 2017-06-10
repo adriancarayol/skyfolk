@@ -18,14 +18,11 @@ Menu de notificaciones verticales
                 <li class="collection-item avatar" data-id="{{ notification.id }}">
                     <a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification"
                        data-notification="{{ notification.slug }}"></a>
-                    {% comment %}
-			<img class="circle" src="{{ notification.actor_avatar }}">
-			{% endcomment %}
                     <div class="circle">
-                        {% avatar notification.actor 64 %}
+                        {% avatar notification.actor %}
                     </div>
                     {% if notification.level != "new_follow" %}
-                        <a class="title" href="/profile/{{ notification.actor }}">{{ notification.actor }}</a>
+                        De: <a class="title" href="/profile/{{ notification.actor }}">{{ notification.actor }}</a>
                     {% endif %}
                     <span class="title">{{ notification.verb|safe }} {% if notification.description %}
                         {{ notification.description|safe }} {% endif %}</span>
@@ -44,9 +41,15 @@ Menu de notificaciones verticales
                             </button>
                         </div>
                     {% endif %}
-                    <a href="#" class="secondary-content">
+                    {% if notification.level == "message" %}
+                    <a href="#!" class="secondary-content">
+                        <i class="material-icons">email</i>
+                    </a>
+                    {% else %}
+                    <a href="#!" class="secondary-content">
                         <i class="material-icons">people</i>
                     </a>
+                    {% endif %}
                 </li>
             {% endfor %}
         {% endif %}

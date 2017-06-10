@@ -29,6 +29,9 @@ from .forms import WriteForm, AnonymousWriteForm, QuickReplyForm, FullReplyForm
 from .models import OPTION_MESSAGES, Message, get_order_by
 from .utils import format_subject, format_body
 from user_profile.models import NodeProfile
+from publications.forms import PublicationForm
+from user_profile.forms import SearchForm
+
 login_required_m = method_decorator(login_required)
 csrf_protect_m = method_decorator(csrf_protect)
 
@@ -67,6 +70,7 @@ class FolderMixin(NamespaceMixin, object):
 
     def get_context_data(self, **kwargs):
         context = super(FolderMixin, self).get_context_data(**kwargs)
+        user = self.request.user
         params = {}
         option = kwargs.get('option')
         if option:
@@ -77,6 +81,9 @@ class FolderMixin(NamespaceMixin, object):
         msgs = getattr(Message.objects, self.folder_name)(self.request.user, **params)
         viewname = 'postman:' + self.view_name
         current_instance = self.request.resolver_match.namespace
+
+        initial = {'author': user.pk, 'board_owner': user.pk}
+
         context.update({
             'pm_messages': msgs,  # avoid 'messages', already used by contrib.messages
             'by_conversation': option is None,
@@ -85,7 +92,10 @@ class FolderMixin(NamespaceMixin, object):
             'by_message_url': reverse(viewname, args=[OPTION_MESSAGES], current_app=current_instance),
             'current_url': self.request.get_full_path(),
             'gets': self.request.GET,  # useful to postman_order_by template tag
-            'friends_top12': NodeProfile.nodes.get(user_id=self.request.user.id).get_favs_users()
+            'friends_top12': NodeProfile.nodes.get(user_id=self.request.user.id).get_favs_users(),
+            'publicationSelfForm': PublicationForm(initial=initial),
+            'searchForm': SearchForm(),
+            'notifications': user.notifications.unread()
         })
         return context
 
@@ -197,10 +207,15 @@ class ComposeMixin(NamespaceMixin, object):
 
     def get_context_data(self, **kwargs):
         context = super(ComposeMixin, self).get_context_data(**kwargs)
+        user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
         context.update({
             'autocompleter_app': autocompleter_app,
             'next_url': self.request.GET.get('next') or _get_referer(self.request),
-            'friends_top12': NodeProfile.nodes.get(user_id=self.request.user.id).get_favs_users()
+            'friends_top12': NodeProfile.nodes.get(user_id=self.request.user.id).get_favs_users(),
+            'publicationSelfForm': PublicationForm(initial=initial),
+            'searchForm': SearchForm(),
+            'notifications': user.notifications.unread()
         })
         return context
 
@@ -339,6 +354,7 @@ class DisplayMixin(NamespaceMixin, object):
     def get_context_data(self, **kwargs):
         context = super(DisplayMixin, self).get_context_data(**kwargs)
         user = self.request.user
+        initial = {'author': user.pk, 'board_owner': user.pk}
         # are all messages archived ?
         for m in self.msgs:
             if not getattr(m, ('sender' if m.sender == user else 'recipient') + '_archived'):
@@ -359,6 +375,10 @@ class DisplayMixin(NamespaceMixin, object):
             'reply_to_pk': received.pk if received else None,
             'form': self.form_class(initial=received.quote(*self.formatters)) if received else None,
             'next_url': self.request.GET.get('next') or reverse('postman:inbox', current_app=self.request.resolver_match.namespace),
+            'friends_top12': NodeProfile.nodes.get(user_id=self.request.user.id).get_favs_users(),
+            'publicationSelfForm': PublicationForm(initial=initial),
+            'searchForm': SearchForm(),
+            'notifications': user.notifications.unread()
         })
         return context
 
