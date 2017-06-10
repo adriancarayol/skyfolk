@@ -73,8 +73,8 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <div class="header">
                     <p class="user-profile-name">@{{ user_profile.username }}</p>
                     <p id="profileId" hidden>{{ user_profile.profile.id }}</p>
-                    {% if user_profile.profile.status != None and user_profile.profile.status|length != 0%}
-                    <p class="status"> - {{ user_profile.profile.status }}</p>
+                    {% if node_profile.status != None and node_profile.status|length != 0%}
+                    <p class="status"> - {{ node_profile.status }}</p>
                     {% endif %}
                     {% if not isFollower %}
                     <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
@@ -117,7 +117,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
                     <h4 class="info-user-stats">Seguidores: {{ followers }}</h4>
                     <h4 class="info-user-stats">Seguidos: {{ following }} </h4>
-                    <h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>
+                    {% comment %}<h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>{% endcomment %}
                 </div>
                 <ul class="personal-card-controls">
                     {% if user.is_authenticated and user.username != user_profile.username %}

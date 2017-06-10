@@ -8,6 +8,7 @@ from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
 from user_profile.models import UserProfile, AuthDevices, NodeProfile
+from .validators import validate_file_extension
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -158,6 +159,14 @@ class ProfileForm(forms.ModelForm):
         if len(status) > 20:
             raise forms.ValidationError("El estado no puede exceder de 20 caracteres.")
         return status
+
+    def clean_backImage(self):
+        back_image = self.cleaned_data.get('backImage', None)
+        if back_image:
+            validate_file_extension(back_image)
+        return back_image
+
+
 
 
 class PrivacityForm(forms.Form):

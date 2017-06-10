@@ -334,7 +334,7 @@ class Publication(PublicationBase):
         if self.parent:
             id_parent = self.parent.id
             author_parent = self.parent.author.username
-            avatar_parent = get_author_avatar(self.parent.author)
+            avatar_parent = get_author_avatar(self.parent.author.id)
 
         extra_c = self.extra_content
 
@@ -371,7 +371,7 @@ class Publication(PublicationBase):
             notification['extra_content_url'] = extra_c.url
 
         # Enviamos a todos los usuarios que visitan el perfil
-        Group(self.board_owner.profile.group_name).send({
+        Group(NodeProfile.nodes.get(user_id=self.board_owner_id).group_name).send({
             "text": json.dumps(notification)
         })
 
@@ -384,7 +384,7 @@ class Publication(PublicationBase):
 
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:
-            send_to_stream.delay(self.author.id, self.id)
+            send_to_stream.delay(self.author_id, self.id)
 
 
 class PublicationGroup(PublicationBase):

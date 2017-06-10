@@ -1,28 +1,40 @@
 import logging
 
 from autoslug import AutoSlugField
+
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
+from nine import versions
+
 from six import python_2_unicode_compatible
 
 from .base import (
+    # get_registered_layouts,
+    get_registered_plugins,
     plugin_registry,
-    get_registered_plugins
 )
 from .helpers import slugify_workspace
+from .fields import OrderField
+
+if versions.DJANGO_GTE_1_10:
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 __title__ = 'dash.models'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = 'Copyright (c) 2013-2017 Artur Barseghyan'
+__copyright__ = '2013-2017 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = (
+    'DashboardEntry',
+    'DashboardEntryManager',
+    'DashboardPlugin',
+    'DashboardPluginManager',
     'DashboardSettings',
     'DashboardWorkspace',
-    'DashboardEntry',
-    'DashboardPlugin',
 )
 
 AUTH_USER_MODEL = settings.AUTH_USER_MODEL
@@ -91,7 +103,7 @@ class DashboardWorkspace(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     slug = AutoSlugField(populate_from='name', verbose_name=_("Slug"),
                          unique=True, slugify=slugify_workspace)
-    position = models.PositiveIntegerField(_("Position"), null=True, blank=True)
+    position = OrderField(_("Position"), null=True, blank=True)
     is_public = models.BooleanField(
         _("Is public?"),
         default=False,
@@ -256,8 +268,7 @@ class DashboardPlugin(models.Model):
                                   unique=True, editable=False)
     users = models.ManyToManyField(AUTH_USER_MODEL, verbose_name=_("User"),
                                    blank=True)
-    groups = models.ManyToManyField(Group, verbose_name=_("Group"),
-                                    blank=True)
+    groups = models.ManyToManyField(Group, verbose_name=_("Group"), blank=True)
 
     objects = DashboardPluginManager()
 
@@ -281,7 +292,7 @@ class DashboardPlugin(models.Model):
 
     def plugin_uid_admin(self):
         """Mainly used in admin."""
-        return self.__unicode__()
+        return self.__str__()
     plugin_uid_admin.allow_tags = True
     plugin_uid_admin.short_description = _('Plugin')
 

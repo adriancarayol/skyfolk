@@ -6,7 +6,7 @@
 {% for item in friends_top12 %}
     <li id="friend-{{ item.user_id }}">
         <div class="usr-img img-responsive">{% avatar item.title %}</div>
-        <a class="name" href="/profile/{{ item.title }}">{{ item.user__first_name }} {{ item.user__last_name }}
+        <a class="name" href="/profile/{{ item.title }}">{{ item.first_name }} {{ item.last_name }}
             ({{ item.title }})</a>
     </li>
 {% endfor %}

@@ -116,6 +116,8 @@ class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     user_id = IntegerProperty(unique_index=True)  # user_id
     title = StringProperty(unique_index=True)  # username
+    first_name = StringProperty(unique_index=True) # first_name
+    last_name = StringProperty(unique_index=True) # last_name
     follow = RelationshipTo('NodeProfile', 'FOLLOW')  # follow user
     like = RelationshipTo('NodeProfile', 'LIKE')  # like user
     bloq = RelationshipTo('NodeProfile', 'BLOQ')  # bloq user

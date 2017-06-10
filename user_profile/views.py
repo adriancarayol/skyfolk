@@ -69,6 +69,7 @@ def profile_view(request, username,
     context['publicationSelfForm'] = PublicationForm()
     context['groupForm'] = FormUserGroup(initial=group_initial)
     context['notifications'] = user.notifications.unread_limit()
+    dov = DepotManager.get()
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":
@@ -407,14 +408,16 @@ def config_profile(request):
         if user_form.is_valid() and perfil_form.is_valid():
             # formulario validado correctamente
             print('>>>>>>  save')
-            user_form.save()
-
             node = NodeProfile.nodes.get(user_id=user_profile.id)
             node.status = perfil_form.clean_status()
-            data = request.FILES['backImage'].read()
-            node.back_image = FileIntent(data, 'file-%s.jpg' % node.title, 'image/jpeg')
+            data = perfil_form.clean_backImage()
+            if data:
+                node.back_image = FileIntent(data.read(), 'file-%s.jpg' % node.title, 'image/jpeg')
+            node.first_name = user_form.cleaned_data['first_name']
+            node.last_name = user_form.cleaned_data['last_name']
             node.save()
             perfil_form.save()
+            user_form.save()
             # poner mas tarde, que muestre un mensaje de formulario aceptado
             return HttpResponseRedirect('/config/profile')
 

@@ -19,7 +19,8 @@ def create_user_profile(sender, instance, created, **kwargs):
             with transaction.atomic(using='default'):
                 with db.transaction:
                     UserProfile.objects.create(user=instance)
-                    NodeProfile(user_id=instance.id, title=instance.username).save()
+                    NodeProfile(user_id=instance.id, title=instance.username,
+                                first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
         except Exception:
             logger.info(
@@ -38,7 +39,8 @@ def save_user_profile(sender, instance, created, **kwargs):
                 with db.transaction:
                     node = NodeProfile.nodes.get_or_none(user_id=instance.id)
                     if not node:
-                        NodeProfile(user_id=instance.id, title=instance.username).save()
+                        NodeProfile(user_id=instance.id, title=instance.username,
+                                    first_name=instance.first_name, last_name=instance.last_name).save()
                     UserProfile.objects.get_or_create(user=instance)
                     logger.info(
                         "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
