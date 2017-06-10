@@ -2,7 +2,7 @@ import logging
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from .models import UserProfile, NodeProfile
+from .models import UserProfile, NodeProfile, FollowRel
 from publications.models import Publication
 from django.db import transaction
 from django.contrib.auth.signals import user_logged_in, user_logged_out
@@ -22,7 +22,7 @@ def create_user_profile(sender, instance, created, **kwargs):
                     NodeProfile(user_id=instance.id, title=instance.username,
                                 first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
-        except Exception:
+        except Exception as e:
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
 
@@ -45,48 +45,36 @@ def save_user_profile(sender, instance, created, **kwargs):
                     logger.info(
                         "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
                     )
-        except Exception:
+        except Exception as e:
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
             logger.info("POST_SAVE : Saving UserProfile, User : %s" % instance)
 
+@receiver(post_save, sender=FollowRel)
+def handle_new_relationship(sender, instance, created, **kwargs):
+    logging.info("Relationship with weight: {} between: {} - {}".format(instance.weight, instance.start_node().title, instance.end_node().title))
 
-# @receiver(post_save, sender=NodeProfile)
-# def handle_new_relationship(sender, instance, created, **kwargs):
-#
-#     Publication.objects.get_or_create(author=instance.from_person.user,
-#                                                        board_owner=instance.from_person.user,
-#                                                        content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-#                                                            instance.from_person.user.username,
-#                                                            instance.from_person.user.username,
-#                                                            instance.to_person.user.username,
-#                                                            instance.to_person.user.username),
-#                                                        event_type=2)
-#
-#     Publication.objects.get_or_create(author=instance.from_person.user,
-#                                                          board_owner=instance.from_person.user,
-#                                                          content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-#                                                              instance.from_person.user.username,
-#                                                              instance.from_person.user.username,
-#                                                              instance.to_person.user.username,
-#                                                              instance.to_person.user.username),
-#                                                          event_type=2)
-#
-#     # Solo conectamos dos usuarios con la relacion "seguidor de"
-#     try:
-#         from_person = NodeProfile.nodes.get(user_id=instance.from_person.user.id)
-#         to_person = NodeProfile.nodes.get(user_id=instance.to_person.user.id)
-#         from_person.follow.connect(to_person)
-#         logger.info("Nodo creado entre: %s y %s en la graph database" % (
-#             instance.from_person.user.username, instance.to_person.user.username))
-#
-#     except Exception:
-#         logger.info("No se pudo crear la union entre: %s y %s en la graph database" % (
-#             instance.from_person.user.username, instance.to_person.user.username))
-#
-#     logger.info(
-#     "POST_SAVE : New relationship, user1: {} - user2: {}".format(instance.from_person.user.username,
-#                                                                      instance.to_person.user.username))
+    try:
+        with transaction.atomic(using="default"):
+            Publication.objects.get_or_create(author_id=instance.end_node().user_id,
+                                              board_owner_id=instance.end_node().user_id,
+                                              content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                  instance.end_node().title,
+                                                  instance.end_node().title,
+                                                  instance.start_node().title,
+                                                  instance.start_node().title),
+                                              event_type=2)
+
+            Publication.objects.get_or_create(author_id=instance.start_node().user_id,
+                                              board_owner_id=instance.start_node().user_id,
+                                              content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                  instance.start_node().title,
+                                                  instance.start_node().title,
+                                                  instance.end_node().title,
+                                                  instance.end_node().title),
+                                              event_type=2)
+    except Exception as e:
+        logging.info("Publication new relationship can't created")
 
 # @receiver(post_delete, sender=NodeProfile)
 # def handle_deleted_relationship(sender, instance, **kwargs):
@@ -137,3 +125,9 @@ def handle_logout(sender, user, request, **kwargs):
 
 user_logged_in.connect(handle_login)
 user_logged_out.connect(handle_logout)
+
+
+def handle_del(sender, instance, **kwargs):
+    print("RELAAAAAAAAAAAAAAAAAATED DELEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEETED")
+
+post_delete.connect(handle_del, sender=FollowRel)

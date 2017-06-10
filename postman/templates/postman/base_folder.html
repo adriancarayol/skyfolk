@@ -26,8 +26,8 @@ in the INSTALLED_APPS setting.
             <li onclick="window.location.href='{% url 'postman:archives' %}'">{% trans "Archives" %} <i class="material-icons right">folder_special</i></li>
             <li class="blue lighten-5">Contactos ({{ friends_top12|length }})</li>
             {% for item in friends_top12 %}
-                <li class="blue lighten-5" onclick="window.location.href='/messages/write/{{ item.receiver__username }}'"><i
-                        class="material-icons right">account_circle</i>({{ item.receiver__username }})
+                <li class="blue lighten-5" onclick="window.location.href='/messages/write/{{ item.username }}'"><i
+                        class="material-icons right">account_circle</i>({{ item.title }})
                 </li>
             {% endfor %}
             <li class="blue lighten-5"><i class="material-icons right">group</i>Equipo desarrolladores</li>
@@ -87,13 +87,13 @@ in the INSTALLED_APPS setting.
                                             <div class="row" style="vertical-align:middle; display: table-cell;">
                                                 {% block pm_sender_cell %}
                                                     <div class="chip">
-                                                        {% avatar message.obfuscated_sender|or_me:user %}
-                                                        <b>De: {{ message.obfuscated_sender|or_me:user }}</b> {% if message.count %} ({{ message.count }}){% endif %}
+                                                        {% avatar message.obfuscated_sender|or_me:user.id %}
+                                                        <b>De: {{ message.obfuscated_sender|or_me:user.id }}</b> {% if message.count %} ({{ message.count }}){% endif %}
                                                     </div>
                                                 {% endblock %}
                                                 {% block pm_recipient_cell %}
                                                     <div class="chip">
-                                                        {% avatar message.obfuscated_recipient|or_me:user %}
+                                                        {% avatar message.obfuscated_recipient|or_me:user.id %}
                                                         <b>Para: {{ message.obfuscated_recipient|or_me:user.id }}</b>
                                                         {% if message.count %} ({{ message.count }}){% endif %}
                                                     </div>

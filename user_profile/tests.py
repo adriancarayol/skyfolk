@@ -1,14 +1,26 @@
 from neomodel import db, clear_neo4j_database
 from django.test import TestCase
-from user_profile.models import TagProfile, NodeProfile
+from django.contrib.auth.models import User
+from user_profile.models import NodeProfile
+from django.db import transaction
 
-class YourTestClass(TestCase):
+class UserTestClass(TestCase):
     def setUp(self):
         clear_neo4j_database(db)
 
-    def test_connect_user_to_tag(self):
-        adrian = NodeProfile.get_or_create({"title": "adrian"})[0]
-        tag = TagProfile.get_or_create({"title": "YOKSETIO"})[0]
-        tag.user.connect(adrian)
-        print(adrian)
-        assert adrian != None
+    def test_create_object(self):
+        try:
+            with transaction.atomic(using="default"):
+                with db.transaction:
+                    sql_row = User.objects.create(username="example", password="foo")
+                    neo4j_node = NodeProfile(title="example", user_id=sql_row.id).save()
+                    raise Exception
+        except Exception as e:
+            pass
+
+        neo4j_q = NodeProfile.nodes.get_or_none(title="example")
+        sql_q = User.objects.filter(username="example").first()
+
+        self.assertIsNone(neo4j_q)
+        self.assertIsNone(sql_q)
+

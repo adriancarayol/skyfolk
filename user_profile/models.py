@@ -10,12 +10,16 @@ from django.db import models
 from django.utils.http import urlencode
 from notifications.models import Notification
 from photologue.models import Photo
-from django_neomodel import DjangoNode
-from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, BooleanProperty, Property
+from django_neomodel import DjangoNode, DjangoField, classproperty
+from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, \
+    BooleanProperty, Property, StructuredRel
 from django.core.cache import cache
 from neomodel.properties import validator
 from depot.manager import DepotManager
 from depot.io.utils import FileIntent
+from django.utils.translation import ugettext_lazy as _
+from django.db.models import signals
+from django.db.models.options import Options
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
@@ -25,6 +29,7 @@ REQUEST_STATUSES = (
     (REQUEST_FOLLOWER, 'Follower'),
     (REQUEST_BLOCKED, 'Blocked'),
 )
+
 
 def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
@@ -93,6 +98,7 @@ class TagProfile(DjangoNode):
     class Meta:
         app_label = 'tag_profile'
 
+
 class UploadedFileProperty(Property):
     def __init__(self, **kwargs):
         for item in ['required', 'unique_index', 'index', 'default']:
@@ -112,18 +118,55 @@ class UploadedFileProperty(Property):
         uuid.UUID(value)
         return value
 
+
+class DjangoRel(StructuredRel):
+    def __init__(self, *args, **kwargs):
+        super(DjangoRel, self).__init__(*args, **kwargs)
+
+    __required_properties__ = ()
+    __all_properties__ = ()
+
+    @classproperty
+    def _meta(self):
+        if hasattr(self.Meta, 'unique_together'):
+            raise NotImplementedError('unique_together property not supported by neomodel')
+
+        opts = Options(self.Meta, app_label=self.Meta.app_label)
+        opts.contribute_to_class(self.__class__, self.__class__.__name__)
+
+        for key, prop in self.__all_properties__:
+            opts.add_field(DjangoField(prop, key), getattr(prop, 'private', False))
+
+        return opts
+
+    def post_save(self):
+        if getattr(settings, 'NEOMODEL_SIGNALS', True):
+            created = datetime.datetime.now()
+            signals.post_save.send(sender=self.__class__, instance=self, created=created)
+
+
+class FollowRel(DjangoRel):
+    weight = IntegerProperty(default=0)
+
+    class Meta:
+        app_label = 'django_rel'
+
+
 class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     user_id = IntegerProperty(unique_index=True)  # user_id
     title = StringProperty(unique_index=True)  # username
-    first_name = StringProperty(unique_index=True) # first_name
-    last_name = StringProperty(unique_index=True) # last_name
-    follow = RelationshipTo('NodeProfile', 'FOLLOW')  # follow user
+    first_name = StringProperty()  # first_name
+    last_name = StringProperty()  # last_name
+    follow = RelationshipTo('NodeProfile', 'FOLLOW', model=FollowRel)  # follow user
     like = RelationshipTo('NodeProfile', 'LIKE')  # like user
     bloq = RelationshipTo('NodeProfile', 'BLOQ')  # bloq user
     is_first_login = BooleanProperty(default=True)
     status = StringProperty(required=False)
     back_image_ = UploadedFileProperty(db_property='back_image')
+    is_active = BooleanProperty(default=True, help_text=_(
+        'Designates whether this user should be treated as active. '
+        'Unselect this instead of deleting accounts.'))
 
     ONLYFOLLOWERS = 'OF'
     ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
@@ -188,19 +231,19 @@ class NodeProfile(DjangoNode):
         app_label = 'node_profile'
 
     def get_followers(self):
-        results, columns = self.cypher("MATCH (a) WHERE id(a)={self} MATCH (a)<-[:FOLLOW]-(b) RETURN b")
+        results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
         return [self.inflate(row[0]) for row in results]
 
     def count_followers(self):
-        results, columns = self.cypher("MATCH (a) WHERE id(a)={self} MATCH (a)<-[:FOLLOW]-(b) RETURN COUNT(b)")
+        results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
         return results[0][0]
 
     def get_follows(self):
-        results, columns = self.cypher("MATCH (a) WHERE id(a)={self} MATCH (a)-[:FOLLOW]->(b) RETURN b")
+        results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
         return [self.inflate(row[0]) for row in results]
 
     def count_follows(self):
-        results, columns = self.cypher("MATCH (a) WHERE id(a)={self} MATCH (a)-[:FOLLOW]->(b) RETURN COUNT(b)")
+        results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
         return results[0][0]
 
     def has_like(self, to_like):
@@ -216,6 +259,11 @@ class NodeProfile(DjangoNode):
     def get_like_to_me(self):
         results, columns = self.cypher(
             "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
+        return [self.inflate(row[0]) for row in results]
+
+    def get_favs_users(self):
+        results, columns = self.cypher(
+            "MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT 6")
         return [self.inflate(row[0]) for row in results]
 
     def is_visible(self, user_profile):
@@ -376,7 +424,7 @@ class RequestManager(models.Manager):
         :return Devuelve la petición de seguimiento de un perfil:
         """
         return self.get(emitter_id=from_profile,
-                                   receiver_id=to_profile, status=REQUEST_FOLLOWING)
+                        receiver_id=to_profile, status=REQUEST_FOLLOWING)
 
     def add_follow_request(self, from_profile, to_profile, notify):
         """
@@ -385,8 +433,8 @@ class RequestManager(models.Manager):
         :param notify => Notificacion generada:
         """
         obj, created = self.get_or_create(emitter_id=from_profile,
-                                                     receiver_id=to_profile,
-                                                     status=REQUEST_FOLLOWING)
+                                          receiver_id=to_profile,
+                                          status=REQUEST_FOLLOWING)
         # Si existe la peticion de amistad, actualizamos la notificacion
         obj.notification = notify
         obj.save()
@@ -404,6 +452,7 @@ class RequestManager(models.Manager):
             return True
         except ObjectDoesNotExist:
             return False
+
 
 class Request(models.Model):
     """
@@ -423,118 +472,6 @@ class Request(models.Model):
 
     class Meta:
         unique_together = ('emitter', 'receiver', 'status')
-
-
-
-
-class AffinityUserManager(models.Manager):
-    """
-        Manager para ultimos usuarios visitados por afinidad/tiempo
-    """
-
-    def get_all_relations(self, emitterid):
-        """
-        Devuelve todas las relaciones <<ultimos usuarios visitados>>
-        :param emitterid => Emisor de la relacion:
-        :return relaciones del emisor:
-        """
-        return self.filter(emitter=emitterid)
-
-    def get_relation(self, emitterid, receiver):
-        """
-        Devuelve la relacion creada entre dos perfiles
-        :param emitterid => Perfil emisor:
-        :param receiver => Perfil receptor:
-        :return relacion entre emisor/receptor:
-        """
-        return self.filter(emitter=emitterid, receiver=receiver)
-
-    def get_affinity(self, emitterid, receiver):
-        """
-        Devuelve la afinidad entre dos perfiles
-        :param emitterid => Perfil emisor:
-        :param receiver => Perfil receptor:
-        :return afinidad entre dos usuarios:
-        """
-        return self.get(emitter=emitterid, receiver=receiver)
-
-    def get_relations_by_created(self, emitterid, reverse=True):
-        """
-        Devuelve relaciones ordenadas por la creacion
-        :param emitterid => Perfil emisor:
-        :param reverse => Perfil receptor:
-        :return relaciones ordenadas segun la creacion:
-        """
-        if reverse:
-            return self.filter(emitter=emitterid).order_by('-created')
-
-        return self.filter(emitter=emitterid).order_by('created')
-
-    def get_last_relation(self, emitterid):
-        """
-        Devuelve la ultima relacion creada
-        :param emitterid => Perfil emisor:
-        :return ultima relacion creada:
-        """
-        return self.filter(emitter=emitterid).latest()
-
-    def get_favourite_relation(self, emitterid):
-        """
-        Devuelve la relacion favorita (por afinidad)
-        :param emitterid => Perfil emisor:
-        :return devuelve relaciones de mayor a menor afinidad:
-        """
-        return self.filter(emitter=emitterid).order_by('-affinity')
-
-    def check_limit(self, emitterid):
-        """
-        Comprueba el limite de usuarios en la lista de favoritos
-        Si alcanza el limite, elimina el que menos afinidad/fecha de creacion
-        tenga.
-        """
-        LIMIT_USERS = 6
-        if self.filter(emitter=emitterid).count() > LIMIT_USERS:
-            print('>> HAVE: {} relations.'.format(self.count()))
-            try:
-                candidate = self.filter(emitter=emitterid).order_by('created', 'affinity')[0]
-            except ObjectDoesNotExist:
-                candidate = None
-            if candidate:
-                print('Borrando candidato: {}'.format(candidate.receiver.user.username))
-                candidate.delete()
-
-
-class AffinityUser(models.Model):
-    """
-        Modelo para gestionar los últimos usuarios visitados
-        cada usuario visitado tendra una afinidad,
-        esta se incrementara tantas veces como se visite un perfil
-        o actuemos con objetos de ese perfil(dar me gusta a comentarios,
-        añadir a mi timeline algun comentario suyo...
-    """
-
-    class Meta:
-        get_latest_by = 'created'
-        unique_together = ('emitter', 'receiver')
-
-    emitter = models.ForeignKey(User, related_name='from_profile_affinity')
-    receiver = models.ForeignKey(User, related_name='to_profile_affinity')
-    affinity = models.IntegerField(verbose_name='affinity', default=0)
-    created = models.DateTimeField(auto_now_add=True)
-    objects = AffinityUserManager()
-
-    def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username,
-                                                                self.created)
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, increment=True):
-        """
-            Autoincrementar afinidad
-        """
-        if increment:
-            self.affinity += 1
-        self.created = datetime.datetime.now()
-        super(AffinityUser, self).save()
 
 
 class AuthDevicesQuerySet(models.QuerySet):

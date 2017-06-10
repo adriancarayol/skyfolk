@@ -9,58 +9,24 @@ from django.db.models import Q
 from publications.forms import PublicationForm
 from publications.models import Publication
 from user_profile.forms import SearchForm
-from user_profile.models import AffinityUser, Relationship, NodeProfile
+from user_profile.models import Relationship, NodeProfile
 
 
 class News(TemplateView):
     template_name = "account/base_news.html"
 
-    def get_current_user(self):
-        """
-        Devuelve el usuario instaciado (logueado)
-        """
-        return get_object_or_404(get_user_model(),
-                                 username__iexact=self.request.user.username)
 
     def get_affinity_users(self):
         """
         Devuelve los 6 perfiles favoritos del usuario
         """
-        emitterid = self.get_current_user()
-        return AffinityUser.objects.get_favourite_relation(emitterid=emitterid)
-
-    def __mix_queryset(self, affinity, favs):
-        """
-        Devuelve la lista de usuarios favoritos y
-        por afinidad mezclada, sin repetidos
-        :param profile => Perfil del que se desea obtener la lista mezclada:
-        :return Lista mezlada de usuarios sin repeticiones:
-        """
-        mixing_list = chain(affinity, favs)
-        # sorted(
-        # key=lambda user: user.created, reverse=True)
-
-        result = {}
-        for user in mixing_list:
-            if isinstance(user, AffinityUser):
-                if user.receiver_id not in result.keys():
-                    result[user.receiver_id] = user.receiver
-            else:
-                if user.to_like_id not in result.keys():
-                    result[user.to_like_id] = user.to_like
-
-        return result.values()
+        n = NodeProfile.nodes.get(user_id=self.request.user.id)
+        return n.get_favs_users()
 
     def get(self, request, *args, **kwargs):
-        user_profile = request.user
-        initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
-        publicationForm = PublicationForm(initial=initial)
-        searchForm = SearchForm()
-        affinity_users = self.get_affinity_users().values_list('receiver__id', 'receiver__username',
-                                                               'receiver__first_name',
-                                                               'receiver__last_name')
+        initial = {'author': request.user.id, 'board_owner': request.user.id}
 
-        n = NodeProfile.nodes.get(user_id=user_profile.id)
+        n = NodeProfile.nodes.get(user_id=request.user.id)
         # fav_users = self.get_like_users()
         # mix = self.__mix_queryset(affinity=affinity_users, favs=fav_users)
 
@@ -76,10 +42,10 @@ class News(TemplateView):
 
 
         context = {'publications': publications,
-                   'publicationSelfForm': publicationForm,
-                   'searchForm': searchForm,
-                   'mix': affinity_users,
-                   'notifications': user_profile.notifications.unread()}
+                   'publicationSelfForm': PublicationForm(initial=initial),
+                   'searchForm': SearchForm(),
+                   'mix': self.get_affinity_users(),
+                   'notifications': request.user.notifications.unread()}
 
         return render(request, self.template_name, context=context)
 

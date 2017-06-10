@@ -20,7 +20,6 @@ from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 from django.http import JsonResponse
 
-
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
@@ -30,11 +29,13 @@ from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import AffinityUser, NodeProfile, TagProfile, Request
+from user_profile.models import NodeProfile, TagProfile, Request
 from publications.utils import get_author_avatar
 from neomodel import db
 from depot.io.utils import FileIntent
 from depot.manager import DepotManager
+from django.db import transaction
+
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -167,21 +168,6 @@ def profile_view(request, username,
                             parent=None)[:20]]
     except ObjectDoesNotExist:
         publications = None
-
-    # Establece la afinidad al perfil visitado.
-    if user.pk != user_profile.pk:
-        AffinityUser.objects.check_limit(emitterid=user_profile)
-    try:
-        if user.pk != user_profile.pk:
-            profile_visit, created = AffinityUser.objects.get_or_create(emitter=user,
-                                                                        receiver=user_profile)
-        else:
-            profile_visit, created = None, False
-    except ObjectDoesNotExist:
-        profile_visit, created = None, False
-
-    if not created and profile_visit:
-        profile_visit.save()
 
     # Contenido de las tres tabs
     context['publications'] = publications
@@ -396,38 +382,42 @@ def config_profile(request):
     initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
-    print('>>>>>>>  PETICION CONFIG')
+    logging.info('>>>>>>>  PETICION CONFIG')
     if request.POST:
         # formulario enviado
-        print('>>>>>>>  paso 1' + str(request.FILES))
+        logging.info('>>>>>>>  paso 1' + str(request.FILES))
         user_form = UserForm(data=request.POST, instance=request.user)
         perfil_form = ProfileForm(
             request.POST, request.FILES, instance=request.user.profile)
 
-        print('>>>>>>>  paso 1.1')
+        logging.info('>>>>>>>  paso 1.1')
         if user_form.is_valid() and perfil_form.is_valid():
             # formulario validado correctamente
-            print('>>>>>>  save')
-            node = NodeProfile.nodes.get(user_id=user_profile.id)
-            node.status = perfil_form.clean_status()
-            data = perfil_form.clean_backImage()
-            if data:
-                node.back_image = FileIntent(data.read(), 'file-%s.jpg' % node.title, 'image/jpeg')
-            node.first_name = user_form.cleaned_data['first_name']
-            node.last_name = user_form.cleaned_data['last_name']
-            node.save()
-            perfil_form.save()
-            user_form.save()
-            # poner mas tarde, que muestre un mensaje de formulario aceptado
+            logging.info('>>>>>>  save')
+            try:
+                with transaction.atomic(using='default'):
+                    with db.transaction:
+                        node = NodeProfile.nodes.get(user_id=user_profile.id)
+                        node.first_name = user_form.cleaned_data['first_name']
+                        node.last_name = user_form.cleaned_data['last_name']
+                        node.status = perfil_form.clean_status()
+                        data = perfil_form.clean_backImage()
+                        if data:
+                            node.back_image = FileIntent(data.read(), 'file-%s.jpg' % node.title, 'image/jpeg')
+                        node.save()
+                        perfil_form.save()
+                        user_form.save()
+            except Exception as e:
+                logging.info(
+                    "No se pudo guardar la configuracion del perfil de la cuenta: {}".format(user_profile.username))
             return HttpResponseRedirect('/config/profile')
-
     else:
         # formulario inicial
         user_form = UserForm(instance=request.user)
         node = NodeProfile.nodes.get(user_id=user_profile.id)
         perfil_form = ProfileForm(instance=request.user.profile, initial={'status': node.status})
 
-    print('>>>>>>>  paso x')
+    logging.Manager('>>>>>>>  paso x')
     context = {'showPerfilButtons': True, 'searchForm': searchForm,
                'user_profile': user_profile,
                'user_form': user_form, 'perfil_form': perfil_form,
@@ -476,7 +466,7 @@ def add_friend_by_username_or_pin(request):
     """
     Funcion para añadir usuario por nombre de usuario y perfil
     """
-    print('ADD FRIEND BY USERNAME OR PIN')
+    logging.info('ADD FRIEND BY USERNAME OR PIN')
     response = 'no_added_friend'
     friend = None
     data = {
@@ -486,7 +476,6 @@ def add_friend_by_username_or_pin(request):
     if request.method == 'POST':
         pin = str(request.POST.get('valor'))
         if len(pin) > 15:
-            print('STEP 1')
             user_request = request.user
 
             try:
@@ -495,13 +484,12 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(
                     json.dumps(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript'))
 
-            print('STEP 2')
-            print('Pin: {}'.format(pin))
+            logging.info('Pin: {}'.format(pin))
 
             if str(user.uid).strip() == pin.strip():
                 return HttpResponse(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript')
             else:
-                print('personal_pin: {} pin: {}'.format(user.uid, pin))
+                logging.info('personal_pin: {} pin: {}'.format(user.uid, pin))
 
             try:
                 friend = NodeProfile.nodes.get(uid=pin)
@@ -657,23 +645,23 @@ def like_profile(request):
 
         if n.like.is_connected(m):
             n.like.disconnect(NodeProfile.nodes.get(user_id=slug))
-            affinity, created = AffinityUser.objects.get_or_create(emitter=user, receiver=actual_profile)
-            if not created:  # Quiere decir que ya ha interactuado con el perfil
-                affinity.affinity -= 20
-                affinity.save(increment=False)
+            rel = n.follow.relationship(m)
+            if rel:
+                rel.weight = rel.weight - 10
+                rel.save()
             response = "nolike"
         else:
             n.like.connect(NodeProfile.nodes.get(user_id=slug))
-            affinity, created = AffinityUser.objects.get_or_create(emitter=user, receiver=actual_profile)
-            if not created:  # Quiere decir que ya ha interactuado con el perfil
-                affinity.affinity += 20
-                affinity.save(increment=False)
+            rel = n.follow.relationship(m)
+            if rel:
+                rel.weight = rel.weight + 10
+                rel.save()
             response = "like"
 
-    print('%s da like a %s' % (user.username, actual_profile.username))
-    print('Nueva afinidad emitter: {} receiver: {} afinidad: {}'.format(user.username, actual_profile.username,
-                                                                        affinity.affinity))
-    print("Response: " + response)
+        logging.info('%s da like a %s' % (user.username, actual_profile.username))
+        logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
+        logging.info("Response: " + response)
+
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
@@ -683,7 +671,7 @@ def request_friend(request):
     """
     Funcion para solicitudes de amistad
     """
-    print('>>>>>>> peticion amistad ')
+    logging.info('>>>>>>> peticion amistad ')
     response = "null"
     if request.method == 'POST':
         user = request.user
@@ -745,7 +733,7 @@ def request_friend(request):
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-        print(response)
+        logging.info(response)
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -870,7 +858,7 @@ def load_followers(request):
     Funcion para cargar seguidores
     :return lista de seguidores:
     """
-    print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
+    logging.info('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
 
     try:
         m = NodeProfile.nodes.get(user_id=request.user.id)
@@ -886,12 +874,12 @@ def load_followers(request):
         # friendslist = json.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
-            print('>>>>>>> SLUG: ' + slug)
+            logging.info('>>>>>>> SLUG: ' + slug)
             n = int(slug) * 2
             # devolvera None si esta fuera de rango?
             friends_next = friendslist[n - 2:n]
-            print('>>>>>>> LISTA: ')
-            print(friends_next)
+            logging.info('>>>>>>> LISTA: ')
+            logging.info(friends_next)
         else:
             friends_next = None
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
@@ -965,7 +953,7 @@ def load_follows(request):
     Funcion para cargar mas seguidos
     :return lista de seguidos:
     """
-    print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
+    logging.info('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
     try:
         m = NodeProfile.nodes.get(user_id=request.user.id)
     except NodeProfile.DoesNotExist:
@@ -980,12 +968,12 @@ def load_follows(request):
         # friendslist = json.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
-            print('>>>>>>> SLUG: ' + slug)
+            logging.info('>>>>>>> SLUG: ' + slug)
             n = int(slug) * 4
             # devolvera None si esta fuera de rango?
             friends_next = friendslist[n - 4:n]
-            print('>>>>>>> LISTA: ')
-            print(friends_next)
+            logging.info('>>>>>>> LISTA: ')
+            logging.info(friends_next)
         else:
             friends_next = None
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
@@ -1074,11 +1062,24 @@ class DeactivateAccount(FormView):
     def post(self, request, *args, **kwargs):
         form = self.get_form(self.form_class)
         user = request.user
-
         if user.is_authenticated():
             if form.is_valid():
-                user.is_active = not (form.clean_is_active())
-                user.save()
+                try:
+                    node_profile = NodeProfile.nodes.get(user_id=user.id)
+                except NodeProfile.DoesNotExist:
+                    raise ObjectDoesNotExist
+
+                try:
+                    with transaction.atomic(using='default'):
+                        with db.transaction:
+                            is_active = not (form.clean_is_active())
+                            user.is_active = is_active
+                            node_profile.is_active = is_active
+                            node_profile.save()
+                            user.save()
+                except Exception as e:
+                    logging.info("La cuenta de: {} no se pudo desactivar".format(user.username))
+
                 if user.is_active:
                     return self.form_valid(form=form, **kwargs)
                 else:
