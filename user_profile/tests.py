@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from user_profile.models import NodeProfile
 from django.db import transaction
 
-
 class UserTestClass(TestCase):
     def setUp(self):
         clear_neo4j_database(db)
@@ -38,5 +37,3 @@ class UserTestClass(TestCase):
         self.assertIsNotNone(sql_row)
         self.assertIsNotNone(neo4j_node)
         self.assertEqual(sql_row.id, neo4j_node.user_id)
-
-

@@ -35,7 +35,7 @@ from neomodel import db
 from depot.io.utils import FileIntent
 from depot.manager import DepotManager
 from django.db import transaction
-
+from django.core.files.storage import default_storage
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")

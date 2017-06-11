@@ -21,8 +21,8 @@ Base para la interfaz en comun de todos los usuarios.
     {% endcompress %}
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
     {% compress js %}
-    <script src="{{ STATIC_URL }}js/jquery-3.1.0.min.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery-migrate-1.4.1.min.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/jquery-3.1.0.min.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/jquery-migrate-1.4.1.min.js" type="text/javascript"></script>
     {% endcompress %}
     {% block title %} <title>Skyfolk - Bienvenido.</title> {% endblock %}
     {% block extra-js %}{% endblock %}
@@ -295,9 +295,9 @@ Base para la interfaz en comun de todos los usuarios.
 {% include "account/mobile-menu.html" %}
 {% block footer %}
     {% compress js %}
-    <script src="{{ STATIC_URL }}emoji/js/textarea_find_emoji.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.caret.min.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.atwho.min.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}emoji/js/textarea_find_emoji.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/jquery.caret.min.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/jquery.atwho.min.js" type="text/javascript"></script>
     {% endcompress %}
 {% endblock %}
 </body>

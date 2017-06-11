@@ -74,6 +74,8 @@ THIRD_PARTY_APPS = (
     'postman',
     'django_neomodel',
     'compressor',
+    'storages',
+    'corsheaders',
 )
 
 FIRST_PARTY_APPS = (
@@ -181,6 +183,14 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
     'user_profile.middleware.ActiveUserMiddleware',
     'skyfolk.middleware.AutoLogout',
+    'corsheaders.middleware.CorsMiddleware',
+)
+
+CORS_ORIGIN_WHITELIST = (
+    'pre.skyfolk.net',
+    'skyfolk.net',
+    'localhost:8000',
+    '127.0.0.1:8000'
 )
 
 # Auto logout delay in minutes - 1 mes
@@ -254,11 +264,11 @@ SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "skyfolk/static"),
 )
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
 COMPRESS_ENABLED = True
 # COMPRESS_OFFLINE = True
 STATICFILES_FINDERS = (
@@ -269,8 +279,8 @@ STATICFILES_FINDERS = (
 )
 
 # Media (uploads, ...)
-MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
-MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
+# MEDIA_URL = '/media/'
 # filedepot
 DepotManager.configure('default', {'depot.storage_path': './skyfolk/media/back_images'})
 

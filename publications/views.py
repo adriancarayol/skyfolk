@@ -249,7 +249,6 @@ def delete_publication(request):
             publication.get_descendants().update(deleted=True)
             shared = publication.shared_publication  # Comprobamos si es un comentario de compartir
             if shared:
-                shared.publication.shared -= 1
                 shared.publication.save()
                 shared.delete()
             extra_content = publication.extra_content
@@ -320,8 +319,6 @@ def add_like(request):
                 try:
                     publication.user_give_me_hate.remove(user)  # remove from hates
                     publication.user_give_me_like.add(user)  # add to like
-                    publication.hated -= 1
-                    publication.liked += 1
                     publication.save()
                     response = True
                     statuslike = 3
@@ -337,7 +334,6 @@ def add_like(request):
                 logger.info("Decrementando like")
                 try:
                     publication.user_give_me_like.remove(request.user)
-                    publication.liked -= 1
                     publication.save()
                     response = True
                     statuslike = 2
@@ -351,7 +347,6 @@ def add_like(request):
             else:  # Si no ha dado like ni unlike
                 try:
                     publication.user_give_me_like.add(user)
-                    publication.liked += 1
                     publication.save()
                     response = True
                     statuslike = 1
@@ -428,8 +423,6 @@ def add_hate(request):
                 try:
                     publication.user_give_me_like.remove(user)  # remove from like
                     publication.user_give_me_hate.add(user)  # add to hate
-                    publication.liked -= 1
-                    publication.hated += 1
                     publication.save()
                     response = True
                     statuslike = 3
@@ -445,7 +438,6 @@ def add_hate(request):
                 logger.info("Decrementando hate")
                 try:
                     publication.user_give_me_hate.remove(request.user)
-                    publication.hated -= 1
                     publication.save()
                     response = True
                     statuslike = 2
@@ -459,7 +451,6 @@ def add_hate(request):
             else:  # Si no ha dado like ni unlike
                 try:
                     publication.user_give_me_hate.add(user)
-                    publication.hated += 1
                     publication.save()
                     response = True
                     statuslike = 1
@@ -563,9 +554,11 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.author),
+                                           'parent_avatar': get_author_avatar(row.parent.author_id),
                                            'image': row.image.url if row.image else None,
-                                           'author_avatar': get_author_avatar(row.author)})
+                                           'author_avatar': get_author_avatar(row.author_id),
+                                           'likes': row.total_likes, 'hates': row.total_hates,
+                                           'shares': row.total_shares})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
                         list_responses[-1]['extra_content_description'] = extra_c.description
@@ -585,9 +578,12 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.author),
+                                           'parent_avatar': get_author_avatar(row.parent.autho_id),
                                            'image': row.image.url if row.image else None,
-                                           'author_avatar': get_author_avatar(row.author)})
+                                           'author_avatar': get_author_avatar(row.author_id),
+                                           'likes': row.total_likes, 'hates': row.total_hates,
+                                           'shares': row.total_shares
+                                           })
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
                         list_responses[-1]['extra_content_description'] = extra_c.description
@@ -608,9 +604,12 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.author),
+                                           'parent_avatar': get_author_avatar(row.parent.author_id),
                                            'image': row.image.url if row.image else None,
-                                           'author_avatar': get_author_avatar(row.author), 'level': row.level})
+                                           'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
+                                           'likes': row.total_likes, 'hates': row.total_hates,
+                                           'shares': row.total_shares
+                                           })
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
                         list_responses[-1]['extra_content_description'] = extra_c.description
@@ -629,9 +628,10 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.author),
+                                           'parent_avatar': get_author_avatar(row.parent.author_id),
                                            'image': row.image.url if row.image else None,
-                                           'author_avatar': get_author_avatar(row.author), 'level': row.level})
+                                           'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
+                                           'likes': row.total_likes, 'hates': row.total_hates, 'shares': row.total_shares})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
                         list_responses[-1]['extra_content_description'] = extra_c.description
@@ -687,11 +687,12 @@ def load_more_skyline(request):
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                    'author_username': row.author.username, 'user_id': user.id,
                                    'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
-                                   'author_avatar': get_author_avatar(row.author), 'level': row.level,
+                                   'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                    'event_type': row.event_type, 'extra_content': have_extra_content,
                                    'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
                                    'image': row.image.url if row.image else None,
-                                   'token': get_or_create_csrf_token(request)})
+                                   'token': get_or_create_csrf_token(request),
+                                   'likes': row.total_likes, 'hates': row.total_hates, 'shares': row.total_shares})
             if have_extra_content:
                 list_responses[-1]['extra_content_title'] = extra_c.title
                 list_responses[-1]['extra_content_description'] = extra_c.description
@@ -702,7 +703,7 @@ def load_more_skyline(request):
                 list_responses[-1]['shared_pub_id'] = shared_pub.publication.pk
                 list_responses[-1]['shared_pub_content'] = shared_pub.publication.content
                 list_responses[-1]['shared_pub_author'] = shared_pub.publication.author.username
-                list_responses[-1]['shared_pub_avatar'] = get_author_avatar(shared_pub.publication.author)
+                list_responses[-1]['shared_pub_avatar'] = get_author_avatar(shared_pub.publication.author_id)
                 list_responses[-1]['shared_created'] = naturaltime(shared_pub.publication.created)
                 list_responses[-1][
                     'shared_image'] = shared_pub.publication.image.url if shared_pub.publication.image else None
@@ -787,22 +788,20 @@ def share_publication(request):
                             author=user,
                             board_owner=user, event_type=6)
 
-                    pub_to_add.shared += 1
                     pub_to_add.save()
                     response = True
                     status = 1  # Representa la comparticion de la publicacion
-                    logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
+                    logger.info('Compartido el comentario %d' % (pub_to_add.id))
                     return HttpResponse(json.dumps({'response': response, 'status': status}),
                                         content_type='application/json')
 
                 if not created and shared:
                     Publication.objects.get(shared_publication=shared).delete()
-                    pub_to_add.shared -= 1
                     shared.delete()
                     pub_to_add.save()
                     response = True
                     status = 2  # Representa la eliminacion de la comparticion
-                    logger.info('Compartido el comentario %d -> %d veces' % (pub_to_add.id, pub_to_add.shared))
+                    logger.info('Compartido el comentario %d' % (pub_to_add.id))
                     return HttpResponse(json.dumps({'response': response, 'status': status}),
                                         content_type='application/json')
 

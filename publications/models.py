@@ -199,9 +199,6 @@ class Publication(PublicationBase):
                                                related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_me')
-    liked = models.PositiveIntegerField(default=0)
-    hated = models.PositiveIntegerField(default=0)
-    shared = models.PositiveIntegerField(default=0)
     shared_publication = models.ForeignKey(SharedPublication, blank=True, null=True,
                                            related_name='share_me')
     parent = TreeForeignKey('self', blank=True, null=True,
@@ -216,6 +213,18 @@ class Publication(PublicationBase):
 
     def __str__(self):
         return self.content
+
+    @property
+    def total_likes(self):
+        return self.user_give_me_like.count()
+
+    @property
+    def total_hates(self):
+        return self.user_give_me_hate.count()
+
+    @property
+    def total_shares(self):
+        return SharedPublication.objects.filter(publication=self).count()
 
     def add_hashtag(self):
         """

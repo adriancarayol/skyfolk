@@ -94,3 +94,5 @@ filedepot
 django-dash
 django-ipware
 django_compressor
+boto3
+django-cors-headers

@@ -158,18 +158,18 @@
                                         <li title="No me gusta" class="hate-comment" id="fa-hate"
                                             {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                            <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
+                                            <i class="fa hate-value">{% with node.total_hates as hates %}{% if hates > 0 %}{{ hates|intword }}{% endif %}{% endwith %}</i>
                                         </li>
                                         <li id="like-heart" title="¡Me gusta!" class="like-comment"
                                             {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                            <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
+                                            <i id="like-value" class="fa">{% with node.total_likes as likes %}{% if likes > 0 %}{{ likes|intword }}{% endif %}{% endwith %}</i>
                                         </li>
                                     {% endif %}
                                     <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
                                         {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
                                         style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                            class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
+                                            class="fa fa-quote-right" aria-hidden="true"> {% with node.total_shared as shares %}{% if shares > 0 %}{{ shares|intword }}{% endif %}{% endwith %}</i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>

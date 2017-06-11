@@ -17,6 +17,7 @@ DATABASES = {
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 DEVELOP_APPS = (
     'django_extensions',

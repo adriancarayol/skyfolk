@@ -18,6 +18,7 @@ Template para el perfil de cada usuario
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/timeline.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css">
+    {% endcompress %}
     {% if liked == True %}
         <style type="text/css">
             #ilike_profile {
@@ -25,7 +26,6 @@ Template para el perfil de cada usuario
             }
         </style>
     {% endif %}
-    {% endcompress %}
 {% endblock %}
 
 {% block content %}
@@ -144,7 +144,7 @@ Template para el perfil de cada usuario
                 </div>
             </div>
             </div>
-            {% compress js %}
+            {% compress js inline %}
             <script type="text/javascript">
                 $('#tab-container').easytabs({
                     defaultTab: "#li-tab-comentarios",
