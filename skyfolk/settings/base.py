@@ -73,7 +73,7 @@ THIRD_PARTY_APPS = (
     'tasks_server',
     'postman',
     'django_neomodel',
-    'debug_toolbar',
+    'compressor',
 )
 
 FIRST_PARTY_APPS = (
@@ -181,7 +181,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
     'user_profile.middleware.ActiveUserMiddleware',
     'skyfolk.middleware.AutoLogout',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 # Auto logout delay in minutes - 1 mes
@@ -258,6 +257,15 @@ SITE_ID = 1
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "skyfolk/static"),
+)
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+COMPRESS_ENABLED = True
+# COMPRESS_OFFLINE = True
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
 )
 
 # Media (uploads, ...)

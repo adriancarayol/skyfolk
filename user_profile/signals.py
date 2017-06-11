@@ -125,9 +125,3 @@ def handle_logout(sender, user, request, **kwargs):
 
 user_logged_in.connect(handle_login)
 user_logged_out.connect(handle_logout)
-
-
-def handle_del(sender, instance, **kwargs):
-    print("RELAAAAAAAAAAAAAAAAAATED DELEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEETED")
-
-post_delete.connect(handle_del, sender=FollowRel)

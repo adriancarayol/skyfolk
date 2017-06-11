@@ -126,6 +126,7 @@ def upload_image_publication(instance, filename):
     """
     return "%s/publications/%s" % (instance.author, filename)
 
+
 class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)
     image = models.ImageField(upload_to=upload_image_publication,
@@ -290,7 +291,6 @@ class Publication(PublicationBase):
                 'property': 'og:title'}) or soup.find('meta', attrs={'name': 'title'})
             image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
                 'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
-
 
             self.event_type = 3
             extra_c, created = ExtraContent.objects.get_or_create(url=url, publication=self)
