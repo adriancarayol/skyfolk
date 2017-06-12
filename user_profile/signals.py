@@ -2,7 +2,7 @@ import logging
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from .models import UserProfile, NodeProfile, FollowRel
+from .models import NodeProfile, FollowRel
 from publications.models import Publication
 from django.db import transaction
 from django.contrib.auth.signals import user_logged_in, user_logged_out
@@ -16,11 +16,9 @@ logger = logging.getLogger(__name__)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:  # Primera vez que se crea el usuario, creamos Perfil y Nodo
         try:
-            with transaction.atomic(using='default'):
-                with db.transaction:
-                    UserProfile.objects.create(user=instance)
-                    NodeProfile(user_id=instance.id, title=instance.username,
-                                first_name=instance.first_name, last_name=instance.last_name).save()
+            with db.transaction:
+                NodeProfile(user_id=instance.id, title=instance.username,
+                            first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
         except Exception as e:
             logger.info(
@@ -35,16 +33,14 @@ def save_user_profile(sender, instance, created, **kwargs):
     """
     if not created:
         try:
-            with transaction.atomic(using='default'):
-                with db.transaction:
-                    node = NodeProfile.nodes.get_or_none(user_id=instance.id)
-                    if not node:
-                        NodeProfile(user_id=instance.id, title=instance.username,
-                                    first_name=instance.first_name, last_name=instance.last_name).save()
-                    UserProfile.objects.get_or_create(user=instance)
-                    logger.info(
-                        "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
-                    )
+            with db.transaction:
+                node = NodeProfile.nodes.get_or_none(user_id=instance.id)
+                if not node:
+                    NodeProfile(user_id=instance.id, title=instance.username,
+                                first_name=instance.first_name, last_name=instance.last_name).save()
+                logger.info(
+                    "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
+                )
         except Exception as e:
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)

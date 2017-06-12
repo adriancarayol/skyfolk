@@ -22,7 +22,7 @@ from el_pagination.views import AjaxListView
 from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import PublicationPhoto
 from user_profile.forms import SearchForm
-from user_profile.models import UserProfile, NodeProfile
+from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo
 from django.db.models import Q

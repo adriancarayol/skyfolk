@@ -1,9 +1,9 @@
 import hashlib
 import uuid
 import datetime
-import io
+import os, glob
 
-from skyfolk import settings
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -20,6 +20,7 @@ from depot.io.utils import FileIntent
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import signals
 from django.db.models.options import Options
+from os.path import basename
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
@@ -110,13 +111,11 @@ class UploadedFileProperty(Property):
 
     @validator
     def inflate(self, value):
-        uuid.UUID(value)
-        return value
+        return str(value)
 
     @validator
     def deflate(self, value):
-        uuid.UUID(value)
-        return value
+        return str(value)
 
 
 class DjangoRel(StructuredRel):
@@ -182,28 +181,32 @@ class NodeProfile(DjangoNode):
 
     @property
     def back_image(self):
-        depot = DepotManager.get()
-        return depot.get(self.back_image_)
+        try:
+            file = glob.glob("%s.*" % (settings.MEDIA_ROOT + '/back_images/' + self.back_image_))[0]
+            if file:
+                return "%s" % (settings.MEDIA_URL + 'back_images/' + os.path.basename(file))
+            return None
+        except Exception:
+            return None
 
     @back_image.setter
     def back_image(self, value):
-        depot = DepotManager.get()
-
         if self.back_image_:
-            depot.delete(self.back_image_)
+            try:
+                for filename in glob.glob("%s*" % (settings.MEDIA_ROOT + '/back_images/' + self.back_image_)):
+                    os.remove(filename)
+            except Exception:
+                pass
             self.back_image_ = None
 
         # set the value
         if isinstance(value, str):
             try:
-                uuid.UUID(value)
-                self.back_image_ = uuid.UUID(value)
+                self.back_image_ = value
             except ValueError:
-                raise TypeError('Value "{}" is not a uuid'.format(value))
-        elif isinstance(value, (FileIntent, io.IOBase)):
-            self.back_image_ = depot.create(value)
+                raise TypeError('Value "{}" is not a path'.format(value))
         else:
-            TypeError('Value "{}" should be of type file or FileIntent'.format(value))
+            TypeError('Value "{}" should be of type str'.format(value))
 
     @property
     def group_name(self):
@@ -352,69 +355,19 @@ class NodeProfile(DjangoNode):
             hashlib.md5(str(User.objects.get(id=self.user_id).email).encode('utf-8')).hexdigest(),
             urlencode({'d': default, 's': str(size).encode('utf-8')}))
 
-
-class UserProfile(models.Model):
-    """
-    Diferentes opciones de privacidad para el usuario
-    """
-    user = models.OneToOneField(User, related_name='profile')
-    backImage = models.ImageField(upload_to=uploadBackImagePath, verbose_name='BackImage',
-                                  blank=True, null=True)
-    objects = UserProfileManager()
-
-    def __unicode__(self):
-        return "{}'s profile".format(self.user.username)
-
-    class Meta:
-        db_table = 'user_profile'
-
-    @property
-    def group_name(self):
-        """
-        Devuelve el nombre del canal para enviar las notificaciones
-        """
-        return "users-%s" % self.pk
-
-    @property
-    def notification_channel(self):
-        """
-        Devuelve el nombre del canal notification para cada usuario
-        """
-        return "notification-%s" % self.pk
-
-    @property
-    def news_channel(self):
-        """
-        Devuelve el nombre del canal para enviar actualizaciones
-        al tablon de inicio
-        """
-        return "news-%s" % self.pk
-
-    def save(self, *args, **kwargs):
-        # delete old image when replacing by updating the file
-        try:
-            this = UserProfile.objects.get(id=self.id)
-            if this.backImage != self.backImage:
-                this.backImage.delete(save=False)
-        except:
-            pass  # when new photo then we do nothing, normal case
-        super(UserProfile, self).save(*args, **kwargs)
-
     def last_seen(self):
-        return cache.get('seen_%s' % self.user.username)
+        return cache.get('seen_%s' % self.title)
 
     def online(self):
         if self.last_seen():
             now = datetime.datetime.now()
-            if now > self.last_seen() + datetime.timedelta(seconds=settings.base.USER_ONLINE_TIMEOUT):
+            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
                 return False
             else:
                 return True
         else:
             return False
 
-
-# User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 
 class RequestManager(models.Manager):
     def get_follow_request(self, from_profile, to_profile):

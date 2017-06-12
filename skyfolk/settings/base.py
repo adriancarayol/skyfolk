@@ -6,7 +6,6 @@ import os
 
 from neomodel import config
 from neomodel import db
-from depot.manager import DepotManager
 
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -281,8 +280,6 @@ STATICFILES_FINDERS = (
 # Media (uploads, ...)
 # MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
 # MEDIA_URL = '/media/'
-# filedepot
-DepotManager.configure('default', {'depot.storage_path': './skyfolk/media/back_images'})
 
 # NOTIFICACIONES
 ''' Marca las notificaciones como borradas

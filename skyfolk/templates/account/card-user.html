@@ -13,8 +13,8 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <a><i class="fa fa-thumb-tack"></i></a>
             </div>
             <div class="row">
-                <div class="user-avatar" style="background: {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
-                    url({{ user_profile.profile.backImage.url }})
+                <div class="user-avatar" style="background: {% if node_profile.back_image %}
+                    url({{ node_profile.back_image }})
                     {% else %}
                     url({{ STATIC_URL }}dist/img/nuevo_back.png)
                     {% endif %} no-repeat center center; background-size: cover;">
@@ -43,7 +43,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <div class="caja">
                     <div class="item">
                         <div class="user-pic"
-                             style="{% if user_profile.profile.online %}-webkit-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
+                             style="{% if node_profile.online %}-webkit-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
                                  -moz-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
                                  box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);{% else %}
                                  -webkit-box-shadow: 0 0 10px 0 rgba(255, 99, 71, 0.75);
@@ -117,7 +117,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
                     <h4 class="info-user-stats">Seguidores: {{ followers }}</h4>
                     <h4 class="info-user-stats">Seguidos: {{ following }} </h4>
-                    {% comment %}<h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>{% endcomment %}
+                    <h4 class="info-user-stats">Activo hace: {{ node_profile.last_seen|timesince }}</h4>
                 </div>
                 <ul class="personal-card-controls">
                     {% if user.is_authenticated and user.username != user_profile.username %}

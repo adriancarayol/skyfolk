@@ -7,9 +7,10 @@ from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
-from user_profile.models import UserProfile, AuthDevices, NodeProfile
+from user_profile.models import AuthDevices, NodeProfile
 from .validators import validate_file_extension
 from ipware.ip import get_real_ip, get_ip
+from PIL import Image
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -27,12 +28,12 @@ class CustomLoginForm(LoginForm):
             user_profile = NodeProfile.nodes.get(user_id=self.user.id)
         except NodeProfile.DoesNotExist:
             user_profile = None
-            logger.warning("LOGIN: No existe instancia UserProfile para el usuario : %s " % self.user.username)
+            logger.warning("LOGIN: No existe instancia NodeProfile para el usuario : %s " % self.user.username)
 
         auth_token_device = self.cleaned_data['auth_browser']
         ip = get_real_ip(request)
         if ip is not None:
-            logger.info("IP: {} del usuario: {}".format(ip, user.username))
+            logger.info("IP: {} del usuario: {}".format(ip, self.user.username))
         else:
             ip = get_ip(request)
         if auth_token_device and user_profile:
@@ -142,7 +143,7 @@ class UserForm(forms.ModelForm):
         fields = ('first_name', 'last_name')
 
 
-class ProfileForm(forms.ModelForm):
+class ProfileForm(forms.Form):
     """
     Formulario, que junto con <<UserForm>>, sirven para
     cambiar datos del usuario en configuración.
@@ -154,10 +155,8 @@ class ProfileForm(forms.ModelForm):
                                                            'placeholder': 'Estado',
                                                            'maxlength': '20'}), required=False)
 
-    class Meta:
-        model = UserProfile
-        fields = ('backImage', 'status')  # Añadir 'image' si decidimos quitar django-avatar.
-        # fields = ('image', 'backImage', 'status')
+    backImage = forms.ImageField(label='Escoge una imagen.',
+                                          help_text='Elige una imagen de fondo.', required=False)
 
     def clean_status(self):
         status = self.cleaned_data['status']
@@ -170,6 +169,8 @@ class ProfileForm(forms.ModelForm):
         back_image = self.cleaned_data.get('backImage', None)
         if back_image:
             validate_file_extension(back_image)
+            trial_image = Image.open(back_image)
+            trial_image.verify()
         return back_image
 
 

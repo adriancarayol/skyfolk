@@ -1,6 +1,7 @@
 import json
 import logging
 from django.core.files.base import ContentFile
+import uuid
 
 from allauth.account.views import PasswordChangeView, EmailView
 from dal import autocomplete
@@ -32,10 +33,8 @@ from user_profile.forms import ProfileForm, UserForm, \
 from user_profile.models import NodeProfile, TagProfile, Request
 from publications.utils import get_author_avatar
 from neomodel import db
-from depot.io.utils import FileIntent
-from depot.manager import DepotManager
 from django.db import transaction
-from django.core.files.storage import default_storage
+from .utils import handle_uploaded_file
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -387,8 +386,7 @@ def config_profile(request):
         # formulario enviado
         logging.info('>>>>>>>  paso 1' + str(request.FILES))
         user_form = UserForm(data=request.POST, instance=request.user)
-        perfil_form = ProfileForm(
-            request.POST, request.FILES, instance=request.user.profile)
+        perfil_form = ProfileForm(request.POST, request.FILES)
 
         logging.info('>>>>>>>  paso 1.1')
         if user_form.is_valid() and perfil_form.is_valid():
@@ -403,9 +401,10 @@ def config_profile(request):
                         node.status = perfil_form.clean_status()
                         data = perfil_form.clean_backImage()
                         if data:
-                            node.back_image = FileIntent(data.read(), 'file-%s.jpg' % node.title, 'image/jpeg')
+                            file_id = str(uuid.uuid4())
+                            handle_uploaded_file(data, file_id)
+                            node.back_image = file_id
                         node.save()
-                        perfil_form.save()
                         user_form.save()
             except Exception as e:
                 logging.info(
@@ -415,7 +414,7 @@ def config_profile(request):
         # formulario inicial
         user_form = UserForm(instance=request.user)
         node = NodeProfile.nodes.get(user_id=user_profile.id)
-        perfil_form = ProfileForm(instance=request.user.profile, initial={'status': node.status})
+        perfil_form = ProfileForm(initial={'status': node.status})
 
     logging.Manager('>>>>>>>  paso x')
     context = {'showPerfilButtons': True, 'searchForm': searchForm,

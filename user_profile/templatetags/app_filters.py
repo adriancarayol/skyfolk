@@ -15,7 +15,6 @@ register = template.Library()
 def file_exists(value):
     return default_storage.exists(value)
 
-
 @register.filter(name='url_exists')
 def url_exists(value):
     # NO LO HE PROBADO TODAVIA, PUEDE QUE NO FUNCIONE
