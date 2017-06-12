@@ -18,6 +18,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import signals
 from django.db.models.options import Options
 from django.core.files.storage import FileSystemStorage
+from .utils import invalidate_cache
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2

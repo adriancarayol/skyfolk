@@ -1,4 +1,5 @@
 import tempfile
+from PIL import Image
 from os.path import splitext
 from urllib.parse import urlparse
 
@@ -106,11 +107,19 @@ def add(request, extra_context=None, next_override=None,
                 raise ValueError('Cant get image')
 
             tmp = tempfile.NamedTemporaryFile()
-
+            read = 0
             for block in request_img.iter_content(1024 * 8):
                 if not block:
                     break
+                read += len(block)
+                if read > settings.BACK_IMAGE_DEFAULT_SIZE:
+                    raise ValueError("La imagen no puede exceder de 1MB")
                 tmp.write(block)
+            try:
+                im = Image.open(tmp)
+                im.verify()
+            except IOError:
+                raise ValueError('Cant get image')
 
             avatar.avatar.save(name + ext, File(tmp))
             avatar.url_image = url_image

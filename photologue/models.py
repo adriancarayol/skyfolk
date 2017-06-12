@@ -183,6 +183,7 @@ class TagField(models.CharField):
     def get_internal_type(self):
         return 'CharField'
 
+
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
@@ -521,20 +522,25 @@ class Photo(ImageModel):
             validate_extension(ext)
 
             response = requests.head(self.url_image)
+            length = response.headers.get('content-length', None)
 
-            if int(response.headers.get('content-length', None)) < 1000000:
-                # raise ValueError('Image so big')
+            if length and int(length) > settings.BACK_IMAGE_DEFAULT_SIZE:
+                raise ValueError("La imagen no puede exceder de 1MB")
 
+            else:
                 request = requests.get(self.url_image, stream=True)
 
                 if request.status_code != requests.codes.ok:
                     raise ValueError('Cant get image')
 
                 tmp = tempfile.NamedTemporaryFile()
-
+                read = 0
                 for block in request.iter_content(1024 * 8):
                     if not block:
                         break
+                    read += len(block)
+                    if read > settings.BACK_IMAGE_DEFAULT_SIZE:
+                        raise ValueError("La imagen no puede exceder de 1MB")
                     tmp.write(block)
                 # Comprobamos que se trata de una imagen
                 try:

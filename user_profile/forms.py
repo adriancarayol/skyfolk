@@ -1,5 +1,6 @@
 # encoding:utf-8
 import logging
+import requests
 from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.models import User
@@ -11,6 +12,7 @@ from user_profile.models import AuthDevices, NodeProfile
 from .validators import validate_file_extension
 from ipware.ip import get_real_ip, get_ip
 from PIL import Image
+from django.conf import settings
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -167,6 +169,8 @@ class ProfileForm(forms.Form):
 
     def clean_backImage(self):
         back_image = self.cleaned_data.get('backImage', None)
+        if back_image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+            raise forms.ValidationError("La imágen no puede ser mayor a 1MB.")
         if back_image:
             validate_file_extension(back_image)
             trial_image = Image.open(back_image)

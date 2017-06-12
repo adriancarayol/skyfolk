@@ -149,7 +149,11 @@ def upload_photo(request):
             if 'image' in request.FILES:
                 crop_image(obj, request)
             obj.is_public = not form.cleaned_data['is_public']
-            obj.save()
+            try:
+                obj.save()
+            except ValueError:
+                obj.image = None
+                obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
             data = {
                 'result': True,
