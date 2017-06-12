@@ -1,7 +1,7 @@
 import json
 
 import warnings
-
+import io
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile

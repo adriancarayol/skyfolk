@@ -1,5 +1,4 @@
 import hashlib
-import uuid
 import datetime
 import os, glob
 
@@ -15,12 +14,10 @@ from neomodel import UniqueIdProperty, Relationship, StringProperty, Relationshi
     BooleanProperty, Property, StructuredRel
 from django.core.cache import cache
 from neomodel.properties import validator
-from depot.manager import DepotManager
-from depot.io.utils import FileIntent
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import signals
 from django.db.models.options import Options
-from os.path import basename
+from django.core.files.storage import FileSystemStorage
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
@@ -34,61 +31,6 @@ REQUEST_STATUSES = (
 
 def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
-
-
-class UserProfileQuerySet(models.QuerySet):
-    def get_all_users(self):
-        return self.all()
-
-    def get_user_by_username(self, username):
-        """
-        Devuelve un perfil dado un nombre de usuario
-        :param: => Nombre de usuario del que se desea obtener el perfil.
-        :return: Perfil asociado al nombre de usuario
-        """
-        return self.get(user__username=username)
-
-    def get_last_users(self):
-        """
-            Devuelve la lista de perfiles ordenada
-            segun su fecha de registro.
-            :return: Lista ordenada por fecha de registro
-        """
-        return self.all().order_by('-user__date_joined')
-
-    def get_last_login_user(self):
-        """
-        Devuelve el ultimo usuario que ha hecho login.
-        """
-        return self.all().order_by('-user__last_login')
-
-
-class UserProfileManager(models.Manager):
-    def get_queryset(self):
-        return UserProfileQuerySet(self.model, using=self._db)
-
-    def get_user_by_username(self, username):
-        """
-        Devuelve un perfil dado un nombre de usuario
-        :param: => Nombre de usuario del que se desea obtener el perfil.
-        :return: Perfil asociado al nombre de usuario
-        """
-        return self.get_queryset().get_user_by_username(username=username)
-
-    def get_last_users(self):
-        """
-            Devuelve la lista de perfiles ordenada
-            segun su fecha de registro.
-            :return: Lista ordenada por fecha de registro
-        """
-        return self.all().order_by('-user__date_joined')
-
-    def get_last_login_user(self):
-        """
-        Devuelve el ultimo usuario que ha hecho login.
-        """
-        return self.get_queryset().get_last_login_user()
-
 
 class TagProfile(DjangoNode):
     uid = UniqueIdProperty()
@@ -182,9 +124,10 @@ class NodeProfile(DjangoNode):
     @property
     def back_image(self):
         try:
-            file = glob.glob("%s.*" % (settings.MEDIA_ROOT + '/back_images/' + self.back_image_))[0]
-            if file:
-                return "%s" % (settings.MEDIA_URL + 'back_images/' + os.path.basename(file))
+            file = glob.glob("%s.*" % (settings.MEDIA_ROOT + '/' + self.back_image_))
+            if file and len(file) > 0:
+                fs = FileSystemStorage()
+                return fs.url(os.path.basename(file[0]))
             return None
         except Exception:
             return None
@@ -193,8 +136,9 @@ class NodeProfile(DjangoNode):
     def back_image(self, value):
         if self.back_image_:
             try:
-                for filename in glob.glob("%s*" % (settings.MEDIA_ROOT + '/back_images/' + self.back_image_)):
-                    os.remove(filename)
+                for filename in glob.glob("%s*" % (settings.MEDIA_ROOT + '/' + self.back_image_)):
+                    fs = FileSystemStorage()
+                    fs.delete(filename)
             except Exception:
                 pass
             self.back_image_ = None

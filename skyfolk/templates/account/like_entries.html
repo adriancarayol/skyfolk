@@ -8,8 +8,8 @@
             <div class="row">
                 <div class="col s12">
                     <div class="header">
-                        {% if item.from_like__backImage and item.from_like__backImage|file_exists %}
-                            <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.from_like__backImage }}">
+                        {% if item.back_image %}
+                            <img class="back-profile-user" src="{{ item.back_image }}">
                         {% else %}
                             <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                         {% endif %}

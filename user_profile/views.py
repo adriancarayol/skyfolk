@@ -1,7 +1,9 @@
 import json
 import logging
-from django.core.files.base import ContentFile
+import os
 import uuid
+import PIL.Image as pil
+from django.utils.six import BytesIO
 
 from allauth.account.views import PasswordChangeView, EmailView
 from dal import autocomplete
@@ -34,7 +36,8 @@ from user_profile.models import NodeProfile, TagProfile, Request
 from publications.utils import get_author_avatar
 from neomodel import db
 from django.db import transaction
-from .utils import handle_uploaded_file
+from django.core.files.storage import FileSystemStorage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -378,6 +381,7 @@ def config_privacity(request):
 @login_required(login_url='/')
 def config_profile(request):
     user_profile = request.user
+    node = NodeProfile.nodes.get(user_id=user_profile.id)
     initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
     publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm()
@@ -395,15 +399,28 @@ def config_profile(request):
             try:
                 with transaction.atomic(using='default'):
                     with db.transaction:
-                        node = NodeProfile.nodes.get(user_id=user_profile.id)
                         node.first_name = user_form.cleaned_data['first_name']
                         node.last_name = user_form.cleaned_data['last_name']
                         node.status = perfil_form.clean_status()
                         data = perfil_form.clean_backImage()
                         if data:
-                            file_id = str(uuid.uuid4())
-                            handle_uploaded_file(data, file_id)
-                            node.back_image = file_id
+                            file_id = str(uuid.uuid4()) # random filename
+                            filename, file_extension = os.path.splitext(data.name) # get extension
+                            fs = FileSystemStorage() # get filestorage
+                            img = pil.open(data)
+                            img.thumbnail((800, 350), pil.ANTIALIAS)
+                            thumb_io = BytesIO()
+                            img.save(thumb_io, format=data.content_type.split('/')[-1].upper(), quality=95, optimize=True)
+                            thumb_io.seek(0)
+                            file = InMemoryUploadedFile(thumb_io,
+                                                        None,
+                                                        filename,
+                                                        data.content_type,
+                                                        thumb_io.tell(),
+                                                        None)
+                            filename = fs.save(file_id + file_extension, file) # get filename
+                            filename, file_extension = os.path.splitext(filename) # only if save change "file_id"
+                            node.back_image = filename # assign filename to back_image node
                         node.save()
                         user_form.save()
             except Exception as e:
@@ -413,12 +430,12 @@ def config_profile(request):
     else:
         # formulario inicial
         user_form = UserForm(instance=request.user)
-        node = NodeProfile.nodes.get(user_id=user_profile.id)
         perfil_form = ProfileForm(initial={'status': node.status})
 
     logging.Manager('>>>>>>>  paso x')
     context = {'showPerfilButtons': True, 'searchForm': searchForm,
                'user_profile': user_profile,
+               'node_profile': node,
                'user_form': user_form, 'perfil_form': perfil_form,
                'publicationSelfForm': publicationForm,
                'notifications': user_profile.notifications.unread()}

@@ -15,10 +15,10 @@
             {% for item in object_list %}
                 <div class="col s12 m12 l4">
                     <div class="card white">
-                        <div class="card-content">
+                        <div class="card-content" {% if item.back_image %}style="background: url({{ item.back_image }}) top center repeat-y; background-size: 100%" {% endif %}>
                             {% avatar item.title %}
                             <span class="card-title grey-text darken-1">
-                                <a>{{ item.title }}</a>
+                                <a href="/profile/{{ item.title }}">{{ item.title }}</a>
                             </span>
                             <div class="divider"></div>
                             <br> {% for tag in item.uid|get_tags %}

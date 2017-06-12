@@ -23,8 +23,8 @@
                 <li class="bloq-user col l3 m12 s12" data-id="{{ item.user_id }}">
                     <div class="col s12">
                         <div class="header">
-                            {% if item.user__profile__backImage and item.user__profile__backImage|file_exists %}
-                                <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.user__profile__backImage }}">
+                            {% if item.back_image %}
+                                <img class="back-profile-user" src="{{ item.back_image }}">
                             {% else %}
                                 <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                             {% endif %}
