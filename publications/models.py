@@ -386,6 +386,7 @@ class Publication(PublicationBase):
             'event_type': self.event_type,
             'extra_content': have_extra_content,
             'parent_author': author_parent,
+            'images': list(self.images.all().values('image')),
             'parent_avatar': avatar_parent,
         }
 

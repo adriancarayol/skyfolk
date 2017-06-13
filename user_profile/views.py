@@ -39,9 +39,8 @@ from django.db import transaction
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
+
 @login_required(login_url='/')
-@page_template("account/profile_comments.html")
-@page_template("account/timeline_entries.html", key='timeline_entries')
 @page_template("account/follow_entries.html", key='follow_entries')
 def profile_view(request, username,
                  template="account/profile.html",
@@ -150,8 +149,6 @@ def profile_view(request, username,
         template = "account/privacity/need_confirmation_profile.html"
         return render(request, template, context)
 
-    # Para escribir mensajes en perfiles ajenos
-    initial = {'author': user.pk, 'board_owner': user_profile.pk}
     context['reply_publication_form'] = ReplyPublicationForm()
     context['publicationForm'] = PublicationForm()
     context['publication_edit'] = PublicationEdit()

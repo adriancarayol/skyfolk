@@ -45,7 +45,7 @@
                     class="material-icons">menu</i></a>
             {% include "account/menu-horizontal.html" %}
             <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span
-                    id="live_notify_badge">{{ notifications|length }}</span></a>
+                    id="live_notify_badge">{{ user_notifications|length }}</span></a>
             <div class="right field hide-on-med-and-down" id="searchform">
                 <form method='post' action='/search/'>{% csrf_token %}
                     {{ searchForm }}

@@ -55,8 +55,10 @@ def _optimize_publication_image(instance, image_upload):
     if image_upload:
         for img in image_upload:
             check_image_property(img)
-            image = Image.open(img)
-            image.verify()
+            try:
+                image = Image.open(img)
+            except IOError:
+                raise ValueError('Cant read image')
             if image.mode != 'RGBA':
                 image = image.convert('RGBA')
             image.thumbnail((800, 600), Image.ANTIALIAS)
@@ -120,10 +122,10 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
                 form.save_m2m()  # Saving tags
+                _optimize_publication_image(publication, request.FILES.getlist('image'))
                 publication.save(update_fields=['content'],
                                  new_comment=True, csrf_token=get_or_create_csrf_token(
                         self.request))  # Guardamos la publicacion si no hay errores
-                _optimize_publication_image(publication, request.FILES.getlist('image'))
 
                 return self.form_valid(form=form)
             except Exception as e:
@@ -544,7 +546,7 @@ def load_more_comments(request):
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
-
+                                           'images': list(row.images.all().values('image')),
                                            'author_avatar': get_author_avatar(row.author_id),
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares})
@@ -568,7 +570,7 @@ def load_more_comments(request):
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.autho_id),
-
+                                           'images': list(row.images.all().values('image')),
                                            'author_avatar': get_author_avatar(row.author_id),
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares
@@ -594,7 +596,7 @@ def load_more_comments(request):
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
-
+                                           'images': list(row.images.all().values('image')),
                                            'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares
@@ -618,7 +620,7 @@ def load_more_comments(request):
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
-
+                                           'images': list(row.images.all().values('image')),
                                            'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares})
@@ -680,7 +682,7 @@ def load_more_skyline(request):
                                    'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                    'event_type': row.event_type, 'extra_content': have_extra_content,
                                    'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
-
+                                   'images': list(row.images.all().values('image')),
                                    'token': get_or_create_csrf_token(request),
                                    'likes': row.total_likes, 'hates': row.total_hates, 'shares': row.total_shares})
             if have_extra_content:

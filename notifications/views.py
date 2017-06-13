@@ -1,14 +1,15 @@
-from distutils.version import StrictVersion
-
 from django import get_version
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.forms import model_to_dict
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-from .models import Notification
-from .utils import slug2id
 
+from .utils import slug2id
+from .models import Notification
+
+from distutils.version import StrictVersion
 if StrictVersion(get_version()) >= StrictVersion('1.7.0'):
     from django.http import JsonResponse
 else:
@@ -16,10 +17,8 @@ else:
     import json
     from django.http import HttpResponse
 
-
     def date_handler(obj):
         return obj.isoformat() if hasattr(obj, 'isoformat') else obj
-
 
     def JsonResponse(data):
         return HttpResponse(
@@ -36,13 +35,6 @@ class NotificationViewList(ListView):
         return super(NotificationViewList, self).dispatch(
             request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        ctx = super(NotificationViewList, self).get_context_data(**kwargs)
-        user = self.request.user
-        ctx['showPerfilButtons'] = True
-
-        return ctx
-
 
 class AllNotificationsList(NotificationViewList):
     """
@@ -58,6 +50,7 @@ class AllNotificationsList(NotificationViewList):
 
 
 class UnreadNotificationsList(NotificationViewList):
+
     def get_queryset(self):
         return self.request.user.notifications.unread()
 
@@ -65,17 +58,7 @@ class UnreadNotificationsList(NotificationViewList):
 @login_required
 def mark_all_as_read(request):
     request.user.notifications.mark_all_as_read()
-    # print('Usuario: ' + str(request.user) + ' va a borrar todas las notificaciones')
-    _next = request.GET.get('next')
 
-    if _next:
-        return redirect(_next)
-    return redirect('notifications:all')
-
-
-@login_required
-def mark_all_as_deleted(request):
-    request.user.notifications.mark_all_as_deleted()
     _next = request.GET.get('next')
 
     if _next:
@@ -86,6 +69,7 @@ def mark_all_as_deleted(request):
 @login_required
 def mark_as_read(request, slug=None):
     id = slug2id(slug)
+
     notification = get_object_or_404(
         Notification, recipient=request.user, id=id)
     notification.mark_as_read()
@@ -95,6 +79,16 @@ def mark_as_read(request, slug=None):
     if _next:
         return redirect(_next)
 
+    return redirect('notifications:all')
+
+
+@login_required
+def mark_all_as_deleted(request):
+    request.user.notifications.mark_all_as_deleted()
+    _next = request.GET.get('next')
+
+    if _next:
+        return redirect(_next)
     return redirect('notifications:all')
 
 
@@ -128,7 +122,6 @@ def mark_as_unread(request, slug=None):
 def delete(request, slug=None):
     _id = slug2id(slug)
 
-    print(_id)
     notification = get_object_or_404(
         Notification, recipient=request.user, id=_id)
 
