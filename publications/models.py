@@ -3,14 +3,13 @@ import re
 import bleach
 import requests
 
-from channels import Group
-from django.contrib.auth.models import User
+from channels import Group as channel_group
+from django.contrib.auth.models import User, Group
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models, transaction
 from django.db.models import Q
 from taggit.managers import TaggableManager
 from photologue.models import Photo
-from user_groups.models import UserGroups
 from user_profile.models import NodeProfile
 from .utils import get_author_avatar
 from user_profile.tasks import send_to_stream
@@ -380,7 +379,7 @@ class Publication(PublicationBase):
             notification['extra_content_url'] = extra_c.url
 
         # Enviamos a todos los usuarios que visitan el perfil
-        Group(NodeProfile.nodes.get(user_id=self.board_owner_id).group_name).send({
+        channel_group(NodeProfile.nodes.get(user_id=self.board_owner_id).group_name).send({
             "text": json.dumps(notification)
         })
 
@@ -398,7 +397,7 @@ class Publication(PublicationBase):
 
 class PublicationGroup(PublicationBase):
     g_author = models.ForeignKey(User, null=True)
-    board_group = models.ForeignKey(UserGroups, related_name='board_group')
+    board_group = models.ForeignKey(Group, related_name='board_group')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_group_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,

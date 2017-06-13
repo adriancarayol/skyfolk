@@ -121,32 +121,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
 publication_new_view = transaction.atomic(publication_new_view)
 
-# TODO: Esto no es necesario, creo que con pagination queda solucionado
-"""
-class PublicationsListView(AjaxableResponseMixin, ListView):
-    model = Publication
-    template_name = 'account/tab-comentarios.html'
-    http_method_names = ['get']
-    ordering = ['-created']
-    allow_empty = True
-    context_object_name = 'publication_list'
-    paginate_by = 1
-    queryset = Publication.objects.all()
-
-    def get_queryset(self):
-        print(self.request.GET.get('type'))
-        if self.request.GET.get('type') == 'reply':
-            # TODO: pasar el resto de parametros por get
-            self.template_name = 'account/tab-comentarios.html'
-            return Publication.objects.get_publication_replies(
-                self.request.GET.get('user_pk'),
-                self.request.GET.get('booar_owner'),
-                self.request.GET.get('parent'))
-        else:
-            return self.queryset
-"""
-
-
 def publication_detail(request, publication_id):
     """
     Muestra el thread de una conversacion

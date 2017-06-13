@@ -38,6 +38,8 @@ from neomodel import db
 from django.db import transaction
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from user_groups.models import NodeGroup, UserGroups
+from guardian.shortcuts import assign_perm
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
