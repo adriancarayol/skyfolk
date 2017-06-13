@@ -4,6 +4,7 @@
 {% load humanize %}
 {% load mptt_tags %}
 {% load el_pagination_tags %}
+{% load embed_video_tags %}
 
 {% for node in publications %}
     {% recursetree node %}
@@ -91,10 +92,14 @@
                                                     {% endif %}
                                                     {% if node.shared_publication.publication.extra_content %}
                                                         {% comment %} Para publicaciones con URL {% endcomment %}
+                                                        {% if  node.shared_publication.publication.extra_content.video %}
+                                                        {% video node.shared_publication.publication.extra_content.video as my_video %}
+                                                           {% video my_video "medium" %}
+                                                        {% endvideo %}
+                                                        {% else %}
                                                         <div class="card small">
                                                             <div class="card-image">
-                                                                <img src="
-                                                                        {% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                <img src="{% if node.shared_publication.publication.extra_content.image %}{{ node.shared_publication.publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
                                                                 <span class="card-title white-text">{{ node.shared_publication.publication.extra_content.title }}</span>
                                                             </div>
                                                             <div class="card-content">
@@ -104,6 +109,7 @@
                                                                 <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
                                                             </div>
                                                         </div>
+                                                            {% endif %}
                                                     {% endif %}
                                                 </div>
                                                 <div class="card-action">
@@ -114,17 +120,21 @@
                                         {% endif %}
                                         {% if node.image %}
                                         <div class="row">
-                                            <div class="col s5">
+                                            <div class="col s7">
                                                 <img class="responsive-img" src="{{node.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                             </div>
                                         </div>
                                         {% endif %}
                                         {% if node.extra_content %}
+                                            {% if node.extra_content.video %}
+                                            {% video node.extra_content.video as my_video %}
+                                               {% video my_video "medium" %}
+                                            {% endvideo %}
+                                            {% else %}
                                             {% comment %} Para publicaciones con URL {% endcomment %}
                                             <div class="card small">
                                                 <div class="card-image">
-                                                    <img src="
-                                                            {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                    <img src="{% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
                                                     <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">
@@ -134,6 +144,7 @@
                                                     <a href="{{ node.extra_content.url }}">Ver</a>
                                                 </div>
                                             </div>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                 </div>

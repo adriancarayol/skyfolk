@@ -20,6 +20,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext as _
 from bs4 import BeautifulSoup
+from embed_video.fields import EmbedVideoField
+from embed_video.backends import detect_backend, EmbedVideoException
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -165,6 +167,7 @@ class ExtraContent(models.Model):
     description = models.CharField(max_length=256, default="")
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
+    video = EmbedVideoField(null=True, blank=True)
     publication = models.ForeignKey('Publication', related_name='publication_extra_content')
 
 
@@ -285,7 +288,21 @@ class Publication(PublicationBase):
         link_url = re.findall(
             r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
             self.content)
-        if link_url and len(link_url) > 0:
+
+        try:
+            backend = detect_backend(link_url[-1]) # youtube o soundcloud
+        except (EmbedVideoException, IndexError) as e:
+            backend = None
+
+        if link_url and len(link_url) > 0 and backend:
+            print('000000000000000')
+            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
+                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
+            self.event_type = 3
+            extra_c, created = ExtraContent.objects.get_or_create(publication=self, video=link_url[-1])
+            self.extra_content = extra_c
+        elif link_url and len(link_url) > 0:
+            print('11111111111111')
             for u in list(set(link_url)):  # Convertimos URL a hipervinculo
                 self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
 
@@ -302,7 +319,6 @@ class Publication(PublicationBase):
 
             self.event_type = 3
             extra_c, created = ExtraContent.objects.get_or_create(url=url, publication=self)
-
             if description:
                 extra_c.description = description.get('content', None)[:265]
             if title:
@@ -314,6 +330,7 @@ class Publication(PublicationBase):
         else:
             self.extra_content = None
 
+        """
         bold = re.findall('\*[^\*]+\*', self.content)
         bold = list(set(bold))
 
@@ -329,6 +346,7 @@ class Publication(PublicationBase):
         tachado = list(set(tachado))
         for i in tachado:
             self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
+        """
 
     def send_notification(self, csrf_token=None, type="pub", is_edited=False):
         """

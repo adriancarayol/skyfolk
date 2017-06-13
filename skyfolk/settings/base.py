@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = (
     'storages',
     'corsheaders',
     'guardian',
+    'embed_video',
 )
 
 FIRST_PARTY_APPS = (

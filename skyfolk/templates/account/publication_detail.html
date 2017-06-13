@@ -4,7 +4,7 @@
 {% load app_filters %}
 {% load humanize %}
 {% load mptt_tags %}
-
+{% load embed_video_tags %}
 {% block title %} <title> Skyfolk - Publicacion #{{ publication.0.id }}</title> {% endblock %}
 {% block extra-css %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
@@ -120,6 +120,12 @@
                                                 {% endif %}
                                                 {% if node.shared_publication.publication.extra_content %}
                                                     {% comment %} Para publicaciones con URL {% endcomment %}
+                                                     {% if node.shared_publication.publication.extra_content.video %}
+                                                         {% video node.shared_publication.publication.extra_content.video as my_video %}
+                                                           {% video my_video "medium" %}
+
+                                                           {% endvideo %}
+                                                     {% else %}
                                                     <div class="card small">
                                                         <div class="card-image">
                                                             <img src="
@@ -133,6 +139,7 @@
                                                             <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
                                                         </div>
                                                     </div>
+                                                     {% endif %}
                                                 {% endif %}
                                             </div>
                                             <div class="card-action">
@@ -152,6 +159,11 @@
                                     {% endif %}
                                     {% if node.extra_content %}
                                         {% comment %} Para publicaciones con URL {% endcomment %}
+                                        {% if node.extra_content.video %}
+                                            {% video node.extra_content.video as my_video %}
+                                               {% video my_video "medium" %}
+                                            {% endvideo %}
+                                        {% else %}
                                         <div class="card small">
                                             <div class="card-image">
                                                 <img src="
@@ -165,6 +177,7 @@
                                                 <a href="{{ node.extra_content.url }}">Ver</a>
                                             </div>
                                         </div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>
