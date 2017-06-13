@@ -27,7 +27,7 @@ from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
-from publications.models import Publication
+from publications.models import Publication, PublicationImage
 from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
@@ -38,8 +38,6 @@ from neomodel import db
 from django.db import transaction
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from user_groups.models import NodeGroup, UserGroups
-from guardian.shortcuts import assign_perm
 
 @login_required(login_url='/')
 @page_template("account/profile_comments.html")
@@ -70,11 +68,8 @@ def profile_view(request, username,
     group_initial = {'owner': user.pk}
     context['user_profile'] = user_profile
     context['node_profile'] = n
-    context['searchForm'] = SearchForm(request.POST)
     context['privacity'] = privacity
-    context['publicationSelfForm'] = PublicationForm()
     context['groupForm'] = FormUserGroup(initial=group_initial)
-    context['notifications'] = user.notifications.unread_limit()
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":
@@ -197,10 +192,7 @@ def search(request, option=None):
     """
     # para mostarar tambien el cuadro de busqueda en la pagina
     user = request.user
-    initial = {'author': user.pk, 'board_owner': user.pk}
     searchForm = SearchForm(request.POST)
-    # mostrar formulario para enviar comentarios/publicaciones
-    publicationForm = PublicationForm(initial=initial)
     info = request.method
 
     if request.method == 'GET' and option is None:
@@ -217,7 +209,6 @@ def search(request, option=None):
                       {'showPerfilButtons': True,
                        'searchForm': searchForm,
                        'resultSearch': (),
-                       'publicationSelfForm': publicationForm,
                        'message': info})
 
     # if request.method == 'POST':
@@ -276,14 +267,13 @@ def search(request, option=None):
                     elif len(words) > 1:
                         for w in words:
                             pass
-                return render(request, 'account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
+                return render(request, 'account/search.html', {'showPerfilButtons': True,
                                                                'resultSearch': result_search,
-                                                               'publicationSelfForm': publicationForm,
+                                                               'searchForm': searchForm,
                                                                'resultMessages': result_messages,
                                                                'result_media': result_media,
                                                                'words': words,
-                                                               'message': info,
-                                                               'notifications': user.notifications.unread()})
+                                                               'message': info,})
 
 
 @login_required(login_url='/')
@@ -293,8 +283,6 @@ def advanced_view(request):
     """
     user = request.user
     template_name = "account/search-avanzed.html"
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm(request.POST)
 
     http_method = request.method
@@ -343,8 +331,7 @@ def advanced_view(request):
             result_regex = Publication.objects.filter(content__iregex=clean_regex)
             print(result_regex)
 
-    return render(request, template_name, {'publicationSelfForm': publicationForm, 'searchForm': searchForm,
-                                           'form': form, 'notifications': user.notifications.unread()})
+    return render(request, template_name, {'form': form,})
 
 
 @login_required(login_url='/')
@@ -354,10 +341,6 @@ def config_privacity(request):
         user_profile = NodeProfile.nodes.get(user_id=user.id)
     except NodeProfile.DoesNotExist:
         raise Http404
-
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
 
     logging.info('>>>>> PETICION CONFIG - User: {}'.format(user.username))
     if request.POST:
@@ -375,18 +358,15 @@ def config_privacity(request):
         privacity_form = PrivacityForm(initial={'privacity': user_profile.privacity})
 
     return render(request, 'account/cf-privacity.html',
-                  {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationSelfForm': publicationForm,
+                  {'showPerfilButtons': True,
                    'privacity_form': privacity_form,
-                   'notifications': user.notifications.unread()})
+                   })
 
 
 @login_required(login_url='/')
 def config_profile(request):
     user_profile = request.user
     node = NodeProfile.nodes.get(user_id=user_profile.id)
-    initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
     logging.info('>>>>>>>  PETICION CONFIG')
     if request.POST:
         # formulario enviado
@@ -435,12 +415,11 @@ def config_profile(request):
         perfil_form = ProfileForm(initial={'status': node.status})
 
     logging.Manager('>>>>>>>  paso x')
-    context = {'showPerfilButtons': True, 'searchForm': searchForm,
+    context = {'showPerfilButtons': True,
                'user_profile': user_profile,
                'node_profile': node,
                'user_form': user_form, 'perfil_form': perfil_form,
-               'publicationSelfForm': publicationForm,
-               'notifications': user_profile.notifications.unread()}
+              }
     return render(request, 'account/cf-profile.html', context)
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -453,12 +432,10 @@ def config_pincode(request):
     user_profile = NodeProfile.nodes.get(user_id=user.id)
     initial = {'author': user.pk, 'board_owner': user.pk}
     pin = user_profile.uid
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
 
-    context = {'showPerfilButtons': True, 'searchForm': searchForm,
-               'publicationSelfForm': publicationForm, 'pin': pin,
-               'notifications': user.notifications.unread()}
+    context = {'showPerfilButtons': True,
+               'pin': pin,
+               }
 
     return render(request, 'account/cf-pincode.html', context)
 
@@ -467,16 +444,11 @@ def config_pincode(request):
 def config_blocked(request):
     user = request.user
     n = NodeProfile.nodes.get(user_id=user.id)
-    initial = {'author': user.pk, 'board_owner': user.pk}
     list_blocked = n.bloq.match()
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
 
     return render(request, 'account/cf-blocked.html', {'showPerfilButtons': True,
-                                                       'searchForm': searchForm,
-                                                       'publicationSelfForm': publicationForm,
                                                        'blocked': list_blocked,
-                                                       'notifications': user.notifications.unread()})
+                                                      })
 
 
 @login_required(login_url='accounts/login')
@@ -923,11 +895,7 @@ class FollowersListView(AjaxListView):
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
         context['url_name'] = "followers"
-        context['notifications'] = user.notifications.unread()
         return context
 
 
@@ -953,11 +921,7 @@ class FollowingListView(AjaxListView):
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
         context['url_name'] = "following"
-        context['notifications'] = user.notifications.unread()
         return context
 
 
@@ -1003,11 +967,7 @@ class PassWordChangeDone(TemplateView):
     def get(self, request, *args, **kwargs):
         context = locals()
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
         context['showPerfilButtons'] = True
-        context['notifications'] = user.notifications.unread()
         return render(request, self.template_name, context)
 
 
@@ -1023,11 +983,7 @@ class CustomPasswordChangeView(PasswordChangeView):
         # NOTE: For backwards compatibility
         ret['password_change_form'] = ret.get('form')
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        ret['publicationSelfForm'] = PublicationForm(initial=initial)
-        ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
-        ret['notifications'] = user.notifications.unread()
         # (end NOTE)
         return ret
 
@@ -1043,12 +999,8 @@ class CustomEmailView(EmailView):
         ret = super(EmailView, self).get_context_data(**kwargs)
         # NOTE: For backwards compatibility
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
         ret['add_email_form'] = ret.get('form')
-        ret['publicationSelfForm'] = PublicationForm(initial=initial)
-        ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
-        ret['notifications'] = user.notifications.unread()
         # (end NOTE)
         return ret
 
@@ -1072,9 +1024,7 @@ class DeactivateAccount(FormView):
         context['form'] = self.form_class
         user = self.request.user
         self_initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
-        context['searchForm'] = SearchForm()
-        context['notifications'] = user.notifications.unread()
+
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
@@ -1313,9 +1263,6 @@ class LikeListUsers(AjaxListView):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
         context['user_profile'] = self.kwargs['username']
         user = self.request.user
-        self_initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
-        context['searchForm'] = SearchForm()
 
         return context
 

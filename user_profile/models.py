@@ -11,7 +11,7 @@ from notifications.models import Notification
 from photologue.models import Photo
 from django_neomodel import DjangoNode, DjangoField, classproperty
 from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, \
-    BooleanProperty, Property, StructuredRel
+    BooleanProperty, Property, StructuredRel, DateTimeProperty
 from django.core.cache import cache
 from neomodel.properties import validator
 from django.utils.translation import ugettext_lazy as _
@@ -59,35 +59,9 @@ class UploadedFileProperty(Property):
     def deflate(self, value):
         return str(value)
 
-
-class DjangoRel(StructuredRel):
-    def __init__(self, *args, **kwargs):
-        super(DjangoRel, self).__init__(*args, **kwargs)
-
-    __required_properties__ = ()
-    __all_properties__ = ()
-
-    @classproperty
-    def _meta(self):
-        if hasattr(self.Meta, 'unique_together'):
-            raise NotImplementedError('unique_together property not supported by neomodel')
-
-        opts = Options(self.Meta, app_label=self.Meta.app_label)
-        opts.contribute_to_class(self.__class__, self.__class__.__name__)
-
-        for key, prop in self.__all_properties__:
-            opts.add_field(DjangoField(prop, key), getattr(prop, 'private', False))
-
-        return opts
-
-    def post_save(self):
-        if getattr(settings, 'NEOMODEL_SIGNALS', True):
-            created = datetime.datetime.now()
-            signals.post_save.send(sender=self.__class__, instance=self, created=created)
-
-
-class FollowRel(DjangoRel):
+class FollowRel(StructuredRel):
     weight = IntegerProperty(default=0)
+    created = DateTimeProperty(default=lambda: datetime.datetime.now())
 
     class Meta:
         app_label = 'django_rel'

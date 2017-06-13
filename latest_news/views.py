@@ -42,10 +42,8 @@ class News(TemplateView):
 
 
         context = {'publications': publications,
-                   'publicationSelfForm': PublicationForm(initial=initial),
                    'searchForm': SearchForm(),
-                   'mix': self.get_affinity_users(),
-                   'notifications': request.user.notifications.unread()}
+                   'mix': self.get_affinity_users(),}
 
         return render(request, self.template_name, context=context)
 

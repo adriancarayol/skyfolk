@@ -21,7 +21,6 @@ from el_pagination.views import AjaxListView
 
 from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import PublicationPhoto
-from user_profile.forms import SearchForm
 from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo
@@ -54,9 +53,6 @@ def collection_list(request, username,
     if visibility == ("nothing" or "both" or "followers" or "block"):
         return redirect('user_profile:profile', username=user_profile.title)
 
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
@@ -67,11 +63,8 @@ def collection_list(request, username,
     else:
         object_list = Photo.objects.filter(owner__username=username, 
                                         tags__name__exact=tagname, is_public=True)
-    context = {'publicationSelfForm': publicationForm,
-               'searchForm': searchForm,
-               'object_list': object_list, 'form': form,
-               'form_zip': form_zip,
-               'notifications': user.notifications.unread()}
+    context = {'object_list': object_list, 'form': form,
+               'form_zip': form_zip,}
 
     if extra_context is not None:
         context.update(extra_context)
@@ -107,9 +100,6 @@ class PhotoListView(AjaxListView):
         context['form'] = UploadFormPhoto()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
         context['user_gallery'] = self.kwargs['username']
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
-        context['notifications'] = user.notifications.unread()
         return context
 
     def user_pass_test(self):
@@ -323,14 +313,10 @@ class PhotoDetailView(DetailView):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         photo = self.get_object()
-        initial = {'author': user.pk, 'board_owner': user.pk}
         initial_photo = {'p_author': user.pk, 'board_photo': self.get_object()}
         context['form'] = EditFormPhoto(instance=self.object)
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
         context['publications'] = PublicationPhoto.objects.filter(board_photo=photo)
-        context['notifications'] = user.notifications.unread()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
 
 

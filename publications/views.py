@@ -14,8 +14,8 @@ from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
 from django.http import JsonResponse
 from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm
-from publications.models import Publication, PublicationPhoto, SharedPublication
+from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm, PublicationImageForm
+from publications.models import Publication, PublicationPhoto, SharedPublication, PublicationImage
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from emoji import Emoji
@@ -26,7 +26,6 @@ from .utils import parse_string
 from django.middleware import csrf
 from PIL import Image
 from user_profile.models import NodeProfile
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -40,17 +39,33 @@ def get_or_create_csrf_token(request):
     return token
 
 
-def _optimize_publication_image(instance, image_upload):
-    if image_upload:
-        image = Image.open(image_upload)
-        if image.mode != 'RGBA':
-            image = image.convert('RGBA')
-        output = io.BytesIO()
-        image.save(output, format='JPEG', quality=70)
-        output.seek(0)
-        instance.image = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(image_upload.name)[0],
-                                              'image/jpeg', output.tell(), None)
+def check_image_property(image):
+    if not image:
+        raise ValueError('Cant read image')
+    if image._size > 1024 * 1024:
+        raise ValueError("Image file too large ( > 1mb )")
 
+def check_num_images(image_collection):
+    if len(image_collection) > 5:
+        raise ValueError('Size of image list is too large! ( > 5) ')
+
+
+def _optimize_publication_image(instance, image_upload):
+    check_num_images(image_upload)
+    if image_upload:
+        for img in image_upload:
+            check_image_property(img)
+            image = Image.open(img)
+            image.verify()
+            if image.mode != 'RGBA':
+                image = image.convert('RGBA')
+            image.thumbnail((800, 600), Image.ANTIALIAS)
+            output = io.BytesIO()
+            image.save(output, format='JPEG', optimize=True, quality=70)
+            output.seek(0)
+            photo = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(img.name)[0],
+                                        'image/jpeg', output.tell(), None)
+            PublicationImage.objects.create(publication=instance, image=photo)
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
     """
@@ -76,7 +91,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
             raise IntegrityError("No have permissions")
 
         is_correct_content = False
-        logger.info('POST DATA: {}'.format(request.POST))
+        logger.info('POST DATA: {} \n FILES: {}'.format(request.POST, request.FILES))
         logger.info('tipo emitter: {}'.format(type(emitter.title)))
         logger.info('tipo board_owner: {}'.format(type(board_owner.title)))
 
@@ -99,8 +114,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise IntegrityError('El comentario esta vacio')
 
-                _optimize_publication_image(publication, request.FILES.get('image', None))
-
                 publication.save()  # Creamos publicacion
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()  # add mentions
@@ -110,16 +123,18 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.save(update_fields=['content'],
                                  new_comment=True, csrf_token=get_or_create_csrf_token(
                         self.request))  # Guardamos la publicacion si no hay errores
+                _optimize_publication_image(publication, request.FILES.getlist('image'))
 
                 return self.form_valid(form=form)
             except Exception as e:
-                logger.debug("views.py line 48 -> {}".format(e))
+                logger.info("Publication not created -> {}".format(e))
 
+        logger.info("Invalid form")
         return self.form_invalid(form=form)
-
 
 publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
 publication_new_view = transaction.atomic(publication_new_view)
+
 
 def publication_detail(request, publication_id):
     """
@@ -529,7 +544,7 @@ def load_more_comments(request):
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
-                                           'image': row.image.url if row.image else None,
+
                                            'author_avatar': get_author_avatar(row.author_id),
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares})
@@ -553,7 +568,7 @@ def load_more_comments(request):
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.autho_id),
-                                           'image': row.image.url if row.image else None,
+
                                            'author_avatar': get_author_avatar(row.author_id),
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares
@@ -579,7 +594,7 @@ def load_more_comments(request):
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
-                                           'image': row.image.url if row.image else None,
+
                                            'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares
@@ -603,9 +618,10 @@ def load_more_comments(request):
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
-                                           'image': row.image.url if row.image else None,
+
                                            'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
-                                           'likes': row.total_likes, 'hates': row.total_hates, 'shares': row.total_shares})
+                                           'likes': row.total_likes, 'hates': row.total_hates,
+                                           'shares': row.total_shares})
                     if have_extra_content:
                         list_responses[-1]['extra_content_title'] = extra_c.title
                         list_responses[-1]['extra_content_description'] = extra_c.description
@@ -664,7 +680,7 @@ def load_more_skyline(request):
                                    'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                    'event_type': row.event_type, 'extra_content': have_extra_content,
                                    'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
-                                   'image': row.image.url if row.image else None,
+
                                    'token': get_or_create_csrf_token(request),
                                    'likes': row.total_likes, 'hates': row.total_hates, 'shares': row.total_shares})
             if have_extra_content:

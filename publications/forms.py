@@ -1,17 +1,18 @@
 from django import forms
-from publications.models import Publication, PublicationPhoto
+from publications.models import Publication, PublicationPhoto, PublicationImage
 
 
 class PublicationForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(PublicationForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = Publication
         # Excluir atributos en el formulario.
         exclude = ['created', 'likes', 'user_give_me_like', 'hates',
-                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 
+                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted',
                    'event_type', 'liked', 'hated', 'shared', 'extra_content']
-
-    def __init__(self, *args, **kwargs):
-        super(PublicationForm, self).__init__(*args, **kwargs)
 
         """
         if self.initial:
@@ -100,3 +101,9 @@ class SharedPublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
         fields = ['content', ]
+
+
+class PublicationImageForm(forms.ModelForm):
+    class Meta:
+        model = PublicationImage
+        fields = ['image']

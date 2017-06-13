@@ -229,7 +229,9 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request'
+                'django.template.context_processors.request',
+                'user_profile.custom_context.notifications_processor',
+                'user_profile.custom_context.search_processor',
             ],
         },
     },

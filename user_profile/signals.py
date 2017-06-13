@@ -48,29 +48,30 @@ def save_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=FollowRel)
 def handle_new_relationship(sender, instance, created, **kwargs):
-    logging.info("Relationship with weight: {} between: {} - {}".format(instance.weight, instance.start_node().title, instance.end_node().title))
+    if created:
+        logging.info("Relationship with weight: {} between: {} - {}".format(instance.weight, instance.start_node().title, instance.end_node().title))
 
-    try:
-        with transaction.atomic(using="default"):
-            Publication.objects.create(author_id=instance.end_node().user_id,
-                                              board_owner_id=instance.end_node().user_id,
-                                              content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                  instance.end_node().title,
-                                                  instance.end_node().title,
-                                                  instance.start_node().title,
-                                                  instance.start_node().title),
-                                              event_type=2)
+        try:
+            with transaction.atomic(using="default"):
+                Publication.objects.create(author_id=instance.end_node().user_id,
+                                                  board_owner_id=instance.end_node().user_id,
+                                                  content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                      instance.end_node().title,
+                                                      instance.end_node().title,
+                                                      instance.start_node().title,
+                                                      instance.start_node().title),
+                                                  event_type=2)
 
-            Publication.objects.create(author_id=instance.start_node().user_id,
-                                              board_owner_id=instance.start_node().user_id,
-                                              content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                  instance.start_node().title,
-                                                  instance.start_node().title,
-                                                  instance.end_node().title,
-                                                  instance.end_node().title),
-                                              event_type=2)
-    except Exception as e:
-        logging.info("Publication new relationship can't created")
+                Publication.objects.create(author_id=instance.start_node().user_id,
+                                                  board_owner_id=instance.start_node().user_id,
+                                                  content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                      instance.start_node().title,
+                                                      instance.start_node().title,
+                                                      instance.end_node().title,
+                                                      instance.end_node().title),
+                                                  event_type=2)
+        except Exception as e:
+            logging.info("Publication new relationship can't created")
 
 # @receiver(post_delete, sender=NodeProfile)
 # def handle_deleted_relationship(sender, instance, **kwargs):

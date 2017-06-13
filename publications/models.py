@@ -2,6 +2,8 @@ import json
 import re
 import bleach
 import requests
+import uuid
+import os
 
 from channels import Group as channel_group
 from django.contrib.auth.models import User, Group
@@ -125,13 +127,13 @@ def upload_image_publication(instance, filename):
     donde se almacenaran las imagenes
     de una publicacion
     """
-    return "%s/publications/%s" % (instance.author, filename)
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('publications/images', filename)
 
 
 class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)
-    image = models.ImageField(upload_to=upload_image_publication,
-                              verbose_name='Image', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     tags = TaggableManager(blank=True)
     deleted = models.BooleanField(default=False, blank=True)
@@ -295,14 +297,12 @@ class Publication(PublicationBase):
             backend = None
 
         if link_url and len(link_url) > 0 and backend:
-            print('000000000000000')
             for u in list(set(link_url)):  # Convertimos URL a hipervinculo
                 self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
             self.event_type = 3
             extra_c, created = ExtraContent.objects.get_or_create(publication=self, video=link_url[-1])
             self.extra_content = extra_c
         elif link_url and len(link_url) > 0:
-            print('11111111111111')
             for u in list(set(link_url)):  # Convertimos URL a hipervinculo
                 self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
 
@@ -387,7 +387,6 @@ class Publication(PublicationBase):
             'extra_content': have_extra_content,
             'parent_author': author_parent,
             'parent_avatar': avatar_parent,
-            'image': self.image.url if self.image else None
         }
 
         if have_extra_content:
@@ -411,6 +410,11 @@ class Publication(PublicationBase):
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:
             send_to_stream.delay(self.author_id, self.id)
+
+
+class PublicationImage(models.Model):
+    publication = models.ForeignKey(Publication, related_name='images')
+    image = models.ImageField(upload_to=upload_image_publication)
 
 
 class PublicationGroup(PublicationBase):

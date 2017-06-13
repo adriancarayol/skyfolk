@@ -118,13 +118,17 @@
                                                 </div>
                                             </div>
                                         {% endif %}
-                                        {% if node.image %}
-                                        <div class="row">
-                                            <div class="col s7">
-                                                <img class="responsive-img" src="{{node.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                        {% with node.images.all as images %}
+                                            {% if images %}
+                                            <div class="row">
+                                            {% for image in images %}
+                                                <div class="col s4 z-depth-2">
+                                                    <img class="responsive-img" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                </div>
+                                            {% endfor %}
                                             </div>
-                                        </div>
-                                        {% endif %}
+                                            {% endif %}
+                                        {% endwith %}
                                         {% if node.extra_content %}
                                             {% if node.extra_content.video %}
                                             {% video node.extra_content.video as my_video %}

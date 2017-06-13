@@ -6,9 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-
-from publications.forms import PublicationForm
-from user_profile.forms import SearchForm
 from .models import Notification
 from .utils import slug2id
 
@@ -33,7 +30,6 @@ else:
 class NotificationViewList(ListView):
     template_name = 'notifications/list.html'
     context_object_name = 'notifications'
-    searchForm = SearchForm()
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -43,9 +39,6 @@ class NotificationViewList(ListView):
     def get_context_data(self, **kwargs):
         ctx = super(NotificationViewList, self).get_context_data(**kwargs)
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        ctx['publicationSelfForm'] = PublicationForm(initial=initial)
-        ctx['searchForm'] = self.searchForm
         ctx['showPerfilButtons'] = True
 
         return ctx

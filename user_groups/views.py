@@ -10,9 +10,6 @@ from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
-
-from publications.forms import PublicationForm
-from user_profile.forms import SearchForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup, NodeGroup
@@ -82,21 +79,17 @@ def group_profile(request, groupname, template='groups/group_profile.html',
         raise Http404
 
     follow_group = None
-    self_initial = {'author': user.pk, 'board_owner': user.pk}
     group_initial = {'owner': user.pk}
     likes = None # LikeGroup.objects.filter(to_like=group_profile).count()
     user_like_group = None # LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
     users_in_group = None # group_profile.users.count()
 
-    context = {'searchForm': SearchForm(request.POST),
-               'publicationSelfForm': PublicationForm(initial=self_initial),
-               'groupForm': FormUserGroup(initial=group_initial),
+    context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
                'follow_group': follow_group,
                'likes': likes,
                'user_like_group': user_like_group,
                'users_in_group': users_in_group,
-               'notifications': user.notifications.unread(),
                'user_list': [1,2]}
                #'user_list': group_profile.users.all().values('user__username', 'user__first_name',
                #                                              'user__last_name')}
