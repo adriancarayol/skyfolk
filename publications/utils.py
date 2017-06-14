@@ -1,7 +1,9 @@
+import re
+import uuid
+import bleach
+import os
 from avatar.models import Avatar
 from user_profile.models import NodeProfile
-import re
-import bleach
 from django.conf import settings
 
 # Los tags HTML que permitimos en los comentarios
@@ -64,3 +66,13 @@ def remove_duplicates_in_list(seq):
     seen = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
+
+
+def generate_path_video(ext='mp4'):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return [os.path.join('skyfolk/media/publications/videos', filename), os.path.join('publications/videos', filename)]

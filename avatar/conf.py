@@ -15,7 +15,7 @@ class AvatarConf(AppConf):
     AVATAR_GRAVATAR_FORCEDEFAULT = False
     DEFAULT_URL = '/img/nuevo.png'
     MAX_AVATARS_PER_USER = 2
-    MAX_SIZE = 1024 * 1024
+    MAX_SIZE = 1024 * 1024 * 5
     THUMB_FORMAT = 'GIF'  # Cambiar a jpeg si no se desean movimientos.
     THUMB_QUALITY = 85
     HASH_FILENAMES = True

@@ -122,13 +122,26 @@
                                             {% if images %}
                                             <div class="row">
                                             {% for image in images %}
-                                                <div class="col s4 z-depth-2">
+                                                <div class="col s4 z-depth-2 center">
                                                     <img class="responsive-img" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                                 </div>
                                             {% endfor %}
                                             </div>
                                             {% endif %}
                                         {% endwith %}
+                                    {% with node.videos.all as videos %}
+                                        {% if videos %}
+                                            <div class="row">
+                                         {% for video in videos %}
+                                            <div class="col s4 z-depth-2 center">
+                                                    <video class="responsive-video" controls loop>
+                                                        <source src="{{ video.video.url }}" type="video/mp4">
+                                                    </video>
+                                            </div>
+                                        {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
                                         {% if node.extra_content %}
                                             {% if node.extra_content.video %}
                                             {% video node.extra_content.video as my_video %}

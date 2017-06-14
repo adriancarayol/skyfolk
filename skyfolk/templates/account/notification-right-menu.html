@@ -56,12 +56,12 @@ Menu de notificaciones verticales
             {% endfor %}
         {% endif %}
     </ul>
-    {% if notifications|length < 5 %}
+    {% if user_notifications|length < 5 %}
         <div class="nav-vertical-controls" style="position: absolute !important;">
             <div class="divider"></div>
             <div class="controls-notifications" style="margin-top: 5% !important;">
     {% endif %}
-                {% if notifications %}
+                {% if user_notifications %}
                 <a id="clear-notify"
                    class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
 

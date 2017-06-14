@@ -66,7 +66,6 @@ class FollowRel(StructuredRel):
     class Meta:
         app_label = 'django_rel'
 
-
 class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
     user_id = IntegerProperty(unique_index=True)  # user_id

@@ -14,7 +14,7 @@ logger = get_task_logger(__name__)
 
 @app.task()
 def send_to_stream(author_id, pub_id):
-    print("AUTHOR: {}".format(author_id))
+    logger.info("AUTHOR: {}".format(author_id))
     author_id = int(author_id)
     try:
         profile = NodeProfile.nodes.get(user_id=author_id)
@@ -37,7 +37,7 @@ def send_to_stream(author_id, pub_id):
         'author_avatar': str(get_author_avatar(authorpk=publication.author.id)),
         'content': publication.content,
     }
-    print("DATA: {}".format(data))
+    logger.info("DATA: {}".format(data))
     [Group(follower_channel.news_channel).send({
         "text": json.dumps(data, cls=DjangoJSONEncoder)
     }) for follower_channel in

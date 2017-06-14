@@ -24,6 +24,9 @@ from django.utils.translation import gettext as _
 from bs4 import BeautifulSoup
 from embed_video.fields import EmbedVideoField
 from embed_video.backends import detect_backend, EmbedVideoException
+from user_profile.utils import group_name
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.conf import settings
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -131,6 +134,16 @@ def upload_image_publication(instance, filename):
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return os.path.join('publications/images', filename)
 
+
+def upload_video_publication(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('skyfolk/media/publications/videos', filename)
 
 class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)
@@ -397,7 +410,7 @@ class Publication(PublicationBase):
             notification['extra_content_url'] = extra_c.url
 
         # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(NodeProfile.nodes.get(user_id=self.board_owner_id).group_name).send({
+        channel_group(group_name(self.board_owner_id)).send({
             "text": json.dumps(notification)
         })
 
@@ -411,6 +424,20 @@ class Publication(PublicationBase):
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:
             send_to_stream.delay(self.author_id, self.id)
+
+
+
+
+def validate_video(value):
+    ''' if value.file is an instance of InMemoryUploadedFile, it means that the
+    file was just uploaded with this request (i.e., it's a creation process,
+    not an editing process. '''
+    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/')[1] not in settings.VIDEO_EXTENTIONS:
+        raise ValueError('Please upload a valid video file')
+
+class PublicationVideo(models.Model):
+    publication = models.ForeignKey(Publication, related_name='videos')
+    video = models.FileField(upload_to=upload_video_publication, validators=[validate_video])
 
 
 class PublicationImage(models.Model):
@@ -460,8 +487,6 @@ class PublicationPhoto(PublicationBase):
         lista de tags => atributo "tags"
         """
         hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
-        print('>>> HASHTAGS')
-        print(hashtags)
         for tag in hashtags:
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
@@ -480,16 +505,16 @@ class PublicationPhoto(PublicationBase):
         notification = {
             "id": self.pk,
             "content": self.content,
-            "avatar_path": get_author_avatar(authorpk=self.author),
-            "author_username": self.author.username,
-            "author_first_name": self.author.first_name,
-            "author_last_name": self.author.last_name,
+            "avatar_path": get_author_avatar(authorpk=self.p_author_id),
+            "author_username": self.p_author.username,
+            "author_first_name": self.p_author.first_name,
+            "author_last_name": self.p_author.last_name,
             "created": naturaltime(self.created),
             "type": type,
             "parent": id_parent,
         }
         # Enviamos a todos los usuarios que visitan el perfil
-        Group(self.board_photo.group_name).send({
+        channel_group(self.board_photo.group_name).send({
             "text": json.dumps(notification)
         })
 
@@ -512,5 +537,4 @@ class PublicationDeleted(models.Model):
     """
     author = models.ForeignKey(User, null=True)
     content = models.TextField(blank=False, null=True, max_length=500)
-    image = models.ImageField(verbose_name='publication_deleted_image', blank=True, null=True)
     created = models.DateTimeField(null=True)

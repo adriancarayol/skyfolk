@@ -2,6 +2,8 @@ import json
 import logging
 import io
 import os
+import magic
+import tempfile
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -14,8 +16,8 @@ from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
 from django.http import JsonResponse
 from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm, PublicationImageForm
-from publications.models import Publication, PublicationPhoto, SharedPublication, PublicationImage
+from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm
+from publications.models import Publication, PublicationPhoto, SharedPublication, PublicationImage, PublicationVideo
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from emoji import Emoji
@@ -26,6 +28,10 @@ from .utils import parse_string
 from django.middleware import csrf
 from PIL import Image
 from user_profile.models import NodeProfile
+from django.conf import settings
+import moviepy.editor as mp
+from .utils import generate_path_video
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -42,7 +48,7 @@ def get_or_create_csrf_token(request):
 def check_image_property(image):
     if not image:
         raise ValueError('Cant read image')
-    if image._size > 1024 * 1024:
+    if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
         raise ValueError("Image file too large ( > 1mb )")
 
 def check_num_images(image_collection):
@@ -50,24 +56,42 @@ def check_num_images(image_collection):
         raise ValueError('Size of image list is too large! ( > 5) ')
 
 
-def _optimize_publication_image(instance, image_upload):
+def _optimize_publication_media(instance, image_upload):
     check_num_images(image_upload)
     if image_upload:
-        for img in image_upload:
-            check_image_property(img)
+        for media in image_upload:
+            check_image_property(media)
+            f = magic.Magic(mime=True, uncompress=True)
+            file_type = f.from_buffer(media.read(1024)).split('/')
             try:
-                image = Image.open(img)
-            except IOError:
-                raise ValueError('Cant read image')
-            if image.mode != 'RGBA':
-                image = image.convert('RGBA')
-            image.thumbnail((800, 600), Image.ANTIALIAS)
-            output = io.BytesIO()
-            image.save(output, format='JPEG', optimize=True, quality=70)
-            output.seek(0)
-            photo = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(img.name)[0],
-                                        'image/jpeg', output.tell(), None)
-            PublicationImage.objects.create(publication=instance, image=photo)
+                if file_type[0] == "video" and file_type[1] in settings.VIDEO_EXTENTIONS: # es un video
+                    PublicationVideo.objects.create(publication=instance, video=media)
+                elif file_type[0] == "image" and file_type[1] == "gif": # es un gif
+                    tmp = tempfile.NamedTemporaryFile(suffix='.gif')
+                    for block in media.chunks():
+                        tmp.write(block)
+                    clip = mp.VideoFileClip(tmp.name)
+                    video_file, media_path = generate_path_video()
+                    clip.write_videofile(video_file, threads=2)
+                    from django.core.files.base import File
+                    PublicationVideo.objects.create(publication=instance, video=media_path)
+                    tmp.close()
+                else: # es una imagen normal
+                    try:
+                        image = Image.open(media)
+                    except IOError:
+                        raise ValueError('Cant read image')
+                    if image.mode != 'RGBA':
+                        image = image.convert('RGBA')
+                    image.thumbnail((800, 600), Image.ANTIALIAS)
+                    output = io.BytesIO()
+                    image.save(output, format='JPEG', optimize=True, quality=70)
+                    output.seek(0)
+                    photo = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(media.name)[0],
+                                                 'image/jpeg', output.tell(), None)
+                    PublicationImage.objects.create(publication=instance, image=photo)
+            except IndexError:
+                raise ValueError('Cant get type of file')
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
     """
@@ -122,7 +146,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
                 form.save_m2m()  # Saving tags
-                _optimize_publication_image(publication, request.FILES.getlist('image'))
+                _optimize_publication_media(publication, request.FILES.getlist('image'))
                 publication.save(update_fields=['content'],
                                  new_comment=True, csrf_token=get_or_create_csrf_token(
                         self.request))  # Guardamos la publicacion si no hay errores

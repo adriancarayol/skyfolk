@@ -170,7 +170,7 @@ class ProfileForm(forms.Form):
     def clean_backImage(self):
         back_image = self.cleaned_data.get('backImage', None)
         if back_image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
-            raise forms.ValidationError("La imágen no puede ser mayor a 1MB.")
+            raise forms.ValidationError("La imágen no puede ser mayor a 5MB.")
         if back_image:
             validate_file_extension(back_image)
             trial_image = Image.open(back_image)

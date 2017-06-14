@@ -460,7 +460,7 @@ class Photo(ImageModel):
                             max_length=250,
                             help_text=_('A "slug" is a unique URL-friendly title for an object.'))
     caption = models.TextField(_('caption'),
-                               blank=True)
+                               blank=True, max_length=1000)
     date_added = models.DateTimeField(_('date added'),
                                       default=now)
     is_public = models.BooleanField(_('is public'),
@@ -525,7 +525,7 @@ class Photo(ImageModel):
             length = response.headers.get('content-length', None)
 
             if length and int(length) > settings.BACK_IMAGE_DEFAULT_SIZE:
-                raise ValueError("La imagen no puede exceder de 1MB")
+                raise ValueError("La imagen no puede exceder de 5MB")
 
             else:
                 request = requests.get(self.url_image, stream=True)
@@ -540,12 +540,15 @@ class Photo(ImageModel):
                         break
                     read += len(block)
                     if read > settings.BACK_IMAGE_DEFAULT_SIZE:
-                        raise ValueError("La imagen no puede exceder de 1MB")
+                        raise ValueError("La imagen no puede exceder de 5MB")
                     tmp.write(block)
                 # Comprobamos que se trata de una imagen
                 try:
                     im = Image.open(tmp)
-                    im.verify()
+                    im.thumbnail((800, 600), Image.ANTIALIAS)
+                    im.save(tmp, format='JPEG', optimize=True, quality=90)
+                    tmp.seek(0)
+                    tmp.close()
                 except IOError:
                     raise ValueError('Cant get image')
 

@@ -37,18 +37,3 @@ def publication_handler(sender, instance, created, **kwargs):
         ExtraContent.objects.filter(publication=instance.id).exclude(url=instance.extra_content.url).delete()
     else:
         ExtraContent.objects.filter(publication=instance.id).delete()
-
-
-
-def _delete_image(path):
-    """
-    Delete image (publication) from filesystem
-    """
-    if os.path.isfile(path):
-        os.remove(path)
-
-
-@receiver(pre_delete, sender=Publication)
-def publication_deleted(sender, instance, *args, **kwargs):
-    if instance.image:
-        _delete_image(instance.image.path)

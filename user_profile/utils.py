@@ -63,3 +63,23 @@ def invalidate_cache(user, size=None):
     for prefix in cached_funcs:
         for size in sizes:
             cache.delete(get_cache_key(user, size, prefix))
+
+
+def group_name(id):
+    """
+    Devuelve el nombre del canal para enviar las notificaciones
+    """
+    return "users-%s" % id
+
+def notification_channel(id):
+    """
+    Devuelve el nombre del canal notification para cada usuario
+    """
+    return "notification-%s" % id
+
+def news_channel(id):
+    """
+    Devuelve el nombre del canal para enviar actualizaciones
+    al tablon de inicio
+    """
+    return "news-%s" % id

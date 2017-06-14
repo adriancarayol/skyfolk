@@ -387,7 +387,7 @@ def config_profile(request):
                             filename, file_extension = os.path.splitext(data.name) # get extension
                             fs = FileSystemStorage() # get filestorage
                             img = pil.open(data)
-                            img.thumbnail((800, 350), pil.ANTIALIAS)
+                            img.thumbnail((1500, 500), pil.ANTIALIAS)
                             thumb_io = BytesIO()
                             img.save(thumb_io, format=data.content_type.split('/')[-1].upper(), quality=95, optimize=True)
                             thumb_io.seek(0)
