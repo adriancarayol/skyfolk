@@ -45,7 +45,7 @@
                                             {% endif %}
                                         </h2>
                                        <p id="pub-created" class="blue-text text-darken-2">{{ node.created|naturaltime }}</p>
-                                        <div class="row">
+                                        <div class="row publication-content">
                                             <div class="parrafo comment">
                                                 <div class="wrp-comment">{{ node.content|safe }}</div>
                                             </div>
@@ -136,7 +136,7 @@
                                         {% endif %}
                                         {% with node.images.all as images %}
                                             {% if images %}
-                                            <div class="row">
+                                            <div class="row images">
                                             {% for image in images %}
                                                 <div class="col s4 z-depth-2 center">
                                                     <img class="responsive-img" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
@@ -147,7 +147,7 @@
                                         {% endwith %}
                                     {% with node.videos.all as videos %}
                                         {% if videos %}
-                                            <div class="row">
+                                            <div class="row videos">
                                          {% for video in videos %}
                                             <div class="col s4 z-depth-2 center">
                                                     <video class="responsive-video" controls loop>

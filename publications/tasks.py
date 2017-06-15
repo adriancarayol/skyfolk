@@ -10,7 +10,7 @@ from django.forms import model_to_dict
 
 from notifications.models import Notification
 from skyfolk.celery import app
-from user_profile.utils import notification_channel
+from user_profile.utils import notification_channel, group_name
 from .models import Publication, PublicationDeleted
 from .models import PublicationVideo
 from .utils import generate_path_video, convert_avi_to_mp4
@@ -46,7 +46,7 @@ def clean_deleted_publications():
 
 
 @app.task(name='tasks.process_video')
-def process_video_publication(file, publication_id, user_id=None):
+def process_video_publication(file, publication_id, filename, user_id=None):
     video_file, media_path = generate_path_video()
     convert_avi_to_mp4(file, video_file)
     PublicationVideo.objects.create(publication_id=publication_id, video=media_path)
@@ -54,7 +54,8 @@ def process_video_publication(file, publication_id, user_id=None):
     logger.info('VIDEO CONVERTED')
     if user_id:
         user = User.objects.get(id=user_id)
-        newnotify = Notification.objects.create(actor=user, recipient=user, verb=u'¡tu publicación está lista!',
+        newnotify = Notification.objects.create(actor=user, recipient=user,
+                                                verb=u'¡Ya esta tu video %s!' % filename,
                                                 description='<a href="%s">Ver</a>' % (
                                                     '/publication/' + str(publication_id)))
         data = model_to_dict(newnotify)
@@ -73,9 +74,19 @@ def process_video_publication(file, publication_id, user_id=None):
             "text": json.dumps(data)
         }, immediately=True)
 
+        data.clear()
+        data = {
+            'type': "video",
+            'video': media_path,
+            'id': publication_id
+        }
+        Channel_group(group_name(user.id)).send({
+            "text": json.dumps(data)
+        }, immediately=True)
+
 
 @app.task(name='tasks.process_gif')
-def process_gif_publication(file, publication_id, user_id=None):
+def process_gif_publication(file, publication_id, filename, user_id=None):
     clip = mp.VideoFileClip(file)
     video_file, media_path = generate_path_video()
     clip.write_videofile(video_file, threads=2)
@@ -84,7 +95,8 @@ def process_gif_publication(file, publication_id, user_id=None):
     logger.info('GIF CONVERTED')
     if user_id:
         user = User.objects.get(id=user_id)
-        newnotify = Notification.objects.create(actor=user, recipient=user, verb=u'¡tu publicación está lista!',
+        newnotify = Notification.objects.create(actor=user, recipient=user,
+                                                verb=u'¡Ya esta tu video %s!' % filename,
                                                 description='<a href="%s">Ver</a>' % (
                                                     '/publication/' + str(publication_id)))
         data = model_to_dict(newnotify)
@@ -100,6 +112,17 @@ def process_gif_publication(file, publication_id, user_id=None):
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
         if newnotify.timestamp:
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
+
         Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps(data)
+        }, immediately=True)
+
+        data.clear()
+        data = {
+            'type': "video",
+            'video': media_path,
+            'id': publication_id
+        }
+        Channel_group(group_name(user.id)).send({
             "text": json.dumps(data)
         }, immediately=True)

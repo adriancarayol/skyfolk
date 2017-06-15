@@ -52,7 +52,7 @@ var UTILS = UTILS || (function () {
                             }
                             content += '</h2>';
                             content += '                    <p id="pub-created" class="blue-text text-darken-2">' + data.created + '<\/p><br>';
-                            content += '<div class="row">';
+                            content += '<div class="row publication-content">';
                             content += "                  <div class=\"parrafo comment\">";
                             content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
                             content += "                  </div>";
@@ -78,7 +78,7 @@ var UTILS = UTILS || (function () {
                                 content += '</div></div>';
                             }
                             if (data.images !== undefined && data.images.length > 0) {
-                                content += '<div class="row">';
+                                content += '<div class="row images">';
                                 for(var image = 0; image < data.images.length; image++) {
                                     content += '<div class="col s4 z-depth-2">';
                                     content += '<img class="responsive-img" src="/media/'+data.images[image].image+'" alt="Imagen de: '+data.author_username+'" title="Imagen de: '+data.author_username+'">';
@@ -170,7 +170,6 @@ var UTILS = UTILS || (function () {
                                     }
                                     $(children_list).prepend(content);
                                 } else {
-
                                     $(parent).closest('.row').after(content);
                                 }
                             } else $("#tab-comentarios").prepend(content);
@@ -186,6 +185,21 @@ var UTILS = UTILS || (function () {
                             $(wrapper_content).css('height', '2.6em');
                         } else {
                             $(show).css('display', 'none');
+                        }
+                    } else if (data.type === "video") {
+                        var existing_pub = $('#pub-' + data.id);
+                        if (existing_pub.length) {
+                            var card_content = $(existing_pub).find('.publication-content');
+                            var videos = $(existing_pub).find('.videos');
+                            if (videos.length) {
+                                $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div>');
+                            } else {
+                                var images = $(existing_pub).find('.images');
+                                if (images.length) {
+                                    $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                                }
+                                $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                            }
                         }
                     }
                 };

@@ -393,9 +393,9 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
     var existing = $('#pub-' + pub);
     var pub_to_add;
 
-    if (undefined !== existing && existing.length && !is_skyline) {
+    if (existing.length && !is_skyline) {
         var children_list = $(existing).find('.children').first();
-        if (undefined === children_list || !children_list.length) {
+        if (!children_list.length) {
             children_list = $(existing).find('.wrapper-reply').after('<ul class="children"></ul>');
         }
         var content = "";
@@ -435,7 +435,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             }
             content += '</h2>';
             content += '                    <p id="pub-created" class="blue-text text-darken-2">' + publications[i].created + '<\/p><br>';
-            content += '<div class="row">';
+            content += '<div class="row publication-content">';
             content += "                  <div class=\"parrafo comment\">";
             content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
             content += "                  </div>";
@@ -461,7 +461,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '</div></div>';
             }
             if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
-                content += '<div class="row">';
+                content += '<div class="row images">';
                 for (var image = 0; image < publications[i].images.length; image++) {
                     content += '<div class="col s4 z-depth-2">';
                     content += '<img class="responsive-img" src="/media/' + publications[i].images[image].image + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
@@ -470,7 +470,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += "                    </div>";
             }
             if (typeof(publications[i].videos) !== 'undefined' && publications[i].videos.length > 0) {
-                content += '<div class="row">';
+                content += '<div class="row videos">';
                 for (var video = 0; video < publications[i].videos.length; video++) {
                     content += '<div class="col s4 z-depth-2 center">';
                     content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video].video + '" type="video/mp4"></video>';
@@ -562,7 +562,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
     } else if (is_skyline) {
         for (i = 0; i < publications.length; i++) {
             pub_to_add = $('pub-' + publications[i].id);
-            if (undefined !== pub_to_add && pub_to_add.length) continue;
+            if (pub_to_add.length) continue;
 
             content = '<div class="row">';
             content += '<div class="col s12">';
@@ -596,7 +596,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             }
             content += '</h2>';
             content += '                    <p id="pub-created" class="blue-text text-darken-2">' + publications[i].created + '<\/p><br>';
-            content += '<div class="row">';
+            content += '<div class="row publication-content">';
             content += "                  <div class=\"parrafo comment\">";
             content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
             content += "                  </div>";
@@ -622,7 +622,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '</div></div>';
             }
             if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
-                content += '<div class="row">';
+                content += '<div class="row images">';
                 for (var image = 0; image < publications[i].images.length; image++) {
                     content += '<div class="col s4 z-depth-2">';
                     content += '<img class="responsive-img" src="/media/' + publications[i].images[image].image + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
@@ -631,7 +631,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += "                    </div>";
             }
             if (typeof(publications[i].videos) !== 'undefined' && publications[i].videos.length > 0) {
-                content += '<div class="row">';
+                content += '<div class="row videos">';
                 for (var video = 0; video < publications[i].videos.length; video++) {
                     content += '<div class="col s4 z-depth-2 center">';
                     content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video].video + '" type="video/mp4"></video>';
