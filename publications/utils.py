@@ -2,6 +2,7 @@ import re
 import uuid
 import bleach
 import os
+import subprocess
 from avatar.models import Avatar
 from user_profile.models import NodeProfile
 from django.conf import settings
@@ -76,3 +77,7 @@ def generate_path_video(ext='mp4'):
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return [os.path.join('skyfolk/media/publications/videos', filename), os.path.join('publications/videos', filename)]
+
+
+def convert_avi_to_mp4(avi_file_path, output_name):
+    process = subprocess.call("ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(input = avi_file_path, output = output_name), shell=True)

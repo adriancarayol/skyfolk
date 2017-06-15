@@ -288,7 +288,7 @@ class Publication(PublicationBase):
 
                 notify.send(self.author, actor=self.author.username,
                             recipient=recipientprofile,
-                            verb=u'¡te ha mencionado en su tablón!',
+                            verb=u'¡te ha mencionado!',
                             description='<a href="%s">Ver</a>' % ('/publication/' + str(self.id)))
 
     def parse_content(self):

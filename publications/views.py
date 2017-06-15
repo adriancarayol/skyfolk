@@ -29,8 +29,8 @@ from django.middleware import csrf
 from PIL import Image
 from user_profile.models import NodeProfile
 from django.conf import settings
-import moviepy.editor as mp
 from .utils import generate_path_video
+from .tasks import process_video_publication, process_gif_publication
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -51,6 +51,7 @@ def check_image_property(image):
     if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
         raise ValueError("Image file too large ( > 1mb )")
 
+
 def check_num_images(image_collection):
     if len(image_collection) > 5:
         raise ValueError('Size of image list is too large! ( > 5) ')
@@ -59,24 +60,25 @@ def check_num_images(image_collection):
 def _optimize_publication_media(instance, image_upload):
     check_num_images(image_upload)
     if image_upload:
-        for media in image_upload:
+        for index, media in enumerate(image_upload):
             check_image_property(media)
             f = magic.Magic(mime=True, uncompress=True)
             file_type = f.from_buffer(media.read(1024)).split('/')
             try:
-                if file_type[0] == "video" and file_type[1] in settings.VIDEO_EXTENTIONS: # es un video
-                    PublicationVideo.objects.create(publication=instance, video=media)
-                elif file_type[0] == "image" and file_type[1] == "gif": # es un gif
-                    tmp = tempfile.NamedTemporaryFile(suffix='.gif')
+                if file_type[0] == "video":  # es un video
+                    if file_type[1] == 'mp4':
+                        PublicationVideo.objects.create(publication=instance, video=media)
+                    else:
+                        tmp = tempfile.NamedTemporaryFile(delete=False)
+                        for block in media.chunks():
+                            tmp.write(block)
+                        process_video_publication.delay(tmp.name, instance.id, instance.author.id)
+                elif file_type[0] == "image" and file_type[1] == "gif":  # es un gif
+                    tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
-                    clip = mp.VideoFileClip(tmp.name)
-                    video_file, media_path = generate_path_video()
-                    clip.write_videofile(video_file, threads=2)
-                    from django.core.files.base import File
-                    PublicationVideo.objects.create(publication=instance, video=media_path)
-                    tmp.close()
-                else: # es una imagen normal
+                    process_gif_publication.delay(tmp.name, instance.id, instance.author.id)
+                else:  # es una imagen normal
                     try:
                         image = Image.open(media)
                     except IOError:
@@ -92,6 +94,7 @@ def _optimize_publication_media(instance, image_upload):
                     PublicationImage.objects.create(publication=instance, image=photo)
             except IndexError:
                 raise ValueError('Cant get type of file')
+
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
     """
@@ -157,6 +160,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
         logger.info("Invalid form")
         return self.form_invalid(form=form)
+
 
 publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
 publication_new_view = transaction.atomic(publication_new_view)

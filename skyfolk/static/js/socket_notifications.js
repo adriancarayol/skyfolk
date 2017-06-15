@@ -15,8 +15,8 @@ var UTILS_N = UTILS_N || (function () {
 			// Handle incoming messages
 			socket.onmessage = function (message) {
 				// Decode the JSON
-				console.log("Got message " + message.data);
 				var data = JSON.parse(message.data);
+				console.log(data);
 				// Create the inner content of the post div
 				var content = '<li class=\"collection-item avatar\" data-id="' + data.id + '">';
 				content += '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + data.slug + '"/></a>';
@@ -46,6 +46,10 @@ var UTILS_N = UTILS_N || (function () {
 						'button data-notification="' + data.slug + '"onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "rejected" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
 						'/div>';
 				}
+
+				if (typeof data.actor !== 'undefined' && typeof data.verb !== 'undefined') {
+				    Materialize.toast('@' + data.actor + ' - ' + data.verb, 4000);
+                }
 				content += "<a href=\"#!\" class=\"secondary-content\"><i class=\"material-icons\">people<\/i><\/a></li>";
 				// See if there's a div to replace it in, or if we should add a new one
 				var list_notifications = $('#list-notify');

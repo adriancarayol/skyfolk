@@ -10,6 +10,7 @@ from channels import Group as group_channel
 from user_profile import models as user_profile
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from distutils.version import StrictVersion
+from user_profile.utils import notification_channel
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -278,7 +279,7 @@ def notify_handler(verb, **kwargs):
     description = kwargs.pop('description', None)
     timestamp = kwargs.pop('timestamp', timezone.now())
     level = kwargs.pop('level', Notification.LEVELS.info)
-
+    send_channel = kwargs.pop('send_to_channel', True)
     # Check if User or Group
     if isinstance(recipient, Group):
         recipients = recipient.user_set.all()
@@ -310,7 +311,6 @@ def notify_handler(verb, **kwargs):
             newnotify.data = kwargs
 
         newnotify.save()
-        recipient_profile = user_profile.NodeProfile.nodes.get(title__iexact=recipient.username)
         data = model_to_dict(newnotify)
         if newnotify.actor:
             data['actor'] = str(newnotify.actor)
@@ -323,9 +323,10 @@ def notify_handler(verb, **kwargs):
         if newnotify.timestamp:
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
         # Enviamos notificacion al canal del receptor
-        group_channel(recipient_profile.notification_channel).send({
-            "text": json.dumps(data)
-        })
+        if send_channel:
+            group_channel(notification_channel(recipient.id)).send({
+                "text": json.dumps(data)
+            })
         return newnotify  # add by adrian
 
 

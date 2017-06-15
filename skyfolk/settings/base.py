@@ -257,8 +257,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-WSGI_APPLICATION = 'skyfolk.wsgi.application'
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 LANGUAGE_CODE = 'es-ES'
