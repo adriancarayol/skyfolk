@@ -90,10 +90,10 @@
                                     {% if node.shared_publication %}
                                         <style>
                                             .card-content img {
-                                                width: 70px;
-                                                height: 70px;
-                                                box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
-                                            }
+                                                    max-width: 100%;
+                                                    max-height: 100%;
+                                                    box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
+                                                }
 
                                             .comment .fa-share {
                                                 color: #1e88e5;
@@ -107,17 +107,30 @@
                                                         href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
                                                 <p>{{ node.shared_publication.publication.content|safe }}</p>
-                                                {% if node.shared_publication.publication.image %}
-                                                    <br>
-                                                    <div class="row">
-                                                        <div class="col s12">
-                                                            <img class="responsive-img"
-                                                                 src="{{ node.shared_publication.publication.image.url }}"
-                                                                 alt="Imagen de: {{ node.shared_publication.publication.author }}"
-                                                                 title="Imagen de: {{ node.shared_publication.publication.author }}">
+                                                {% with node.shared_publication.publication.images.all as images %}
+                                                        {% if images %}<br>
+                                                        <div class="row">
+                                                        {% for image in images %}
+                                                            <div class="col s4">
+                                                                <img class="responsive-img z-depth-2" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                            </div>
+                                                        {% endfor %}
                                                         </div>
-                                                    </div>
-                                                {% endif %}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                        {% with node.shared_publication.publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                             {% for video in videos %}
+                                                                 <div class="col s4">
+                                                                     <video class="responsive-video" controls loop>
+                                                                         <source src="{{ video.video.url }}" type="video/mp4">
+                                                                     </video>
+                                                                 </div>
+                                                            {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
                                                 {% if node.shared_publication.publication.extra_content %}
                                                     {% comment %} Para publicaciones con URL {% endcomment %}
                                                      {% if node.shared_publication.publication.extra_content.video %}
@@ -159,6 +172,19 @@
                                             </div>
                                             {% endif %}
                                         {% endwith %}
+                                {% with node.videos.all as videos %}
+                                        {% if videos %}
+                                            <div class="row">
+                                         {% for video in videos %}
+                                            <div class="col s4 z-depth-2 center">
+                                                    <video class="responsive-video" controls loop>
+                                                        <source src="{{ video.video.url }}" type="video/mp4">
+                                                    </video>
+                                            </div>
+                                        {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
                                     {% if node.extra_content %}
                                         {% comment %} Para publicaciones con URL {% endcomment %}
                                         {% if node.extra_content.video %}

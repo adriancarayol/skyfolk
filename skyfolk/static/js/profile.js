@@ -460,11 +460,20 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
                 content += '</div></div>';
             }
-            if (publications[i].images !== undefined && publications[i].images.length > 0) {
+            if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
                 content += '<div class="row">';
                 for (var image = 0; image < publications[i].images.length; image++) {
                     content += '<div class="col s4 z-depth-2">';
                     content += '<img class="responsive-img" src="/media/' + publications[i].images[image].image + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
+                    content += "                    </div>";
+                }
+                content += "                    </div>";
+            }
+            if (typeof(publications[i].videos) !== 'undefined' && publications[i].videos.length > 0) {
+                content += '<div class="row">';
+                for (var video = 0; video < publications[i].videos.length; video++) {
+                    content += '<div class="col s4 z-depth-2 center">';
+                    content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video].video + '" type="video/mp4"></video>';
                     content += "                    </div>";
                 }
                 content += "                    </div>";
@@ -612,11 +621,20 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
                 content += '</div></div>';
             }
-            if (publications[i].images !== undefined && publications[i].images.length > 0) {
+            if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
                 content += '<div class="row">';
                 for (var image = 0; image < publications[i].images.length; image++) {
                     content += '<div class="col s4 z-depth-2">';
                     content += '<img class="responsive-img" src="/media/' + publications[i].images[image].image + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
+                    content += "                    </div>";
+                }
+                content += "                    </div>";
+            }
+            if (typeof(publications[i].videos) !== 'undefined' && publications[i].videos.length > 0) {
+                content += '<div class="row">';
+                for (var video = 0; video < publications[i].videos.length; video++) {
+                    content += '<div class="col s4 z-depth-2 center">';
+                    content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video].video + '" type="video/mp4"></video>';
                     content += "                    </div>";
                 }
                 content += "                    </div>";

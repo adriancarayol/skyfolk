@@ -101,9 +101,3 @@ class SharedPublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
         fields = ['content', ]
-
-
-class PublicationImageForm(forms.ModelForm):
-    class Meta:
-        model = PublicationImage
-        fields = ['image']

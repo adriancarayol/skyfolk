@@ -1,17 +1,19 @@
-import os, json
+import json
+import os
+
 import moviepy.editor as mp
-from .models import Publication, PublicationDeleted
 from celery.utils.log import get_task_logger
+from channels import Group as Channel_group
+from django.contrib.auth.models import User
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.forms import model_to_dict
+
+from notifications.models import Notification
 from skyfolk.celery import app
+from user_profile.utils import notification_channel
+from .models import Publication, PublicationDeleted
 from .models import PublicationVideo
 from .utils import generate_path_video, convert_avi_to_mp4
-from user_profile.utils import notification_channel
-from notifications.models import Notification
-from django.forms import model_to_dict
-from django.contrib.auth.models import User
-from channels import Group as channel_group
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from .utils import get_author_avatar
 
 logger = get_task_logger(__name__)
 
@@ -53,7 +55,8 @@ def process_video_publication(file, publication_id, user_id=None):
     if user_id:
         user = User.objects.get(id=user_id)
         newnotify = Notification.objects.create(actor=user, recipient=user, verb=u'¡tu publicación está lista!',
-                                        description='<a href="%s">Ver</a>' % ('/publication/' + str(publication_id)))
+                                                description='<a href="%s">Ver</a>' % (
+                                                    '/publication/' + str(publication_id)))
         data = model_to_dict(newnotify)
         if newnotify.actor:
             data['actor'] = str(newnotify.actor)
@@ -66,7 +69,7 @@ def process_video_publication(file, publication_id, user_id=None):
         if newnotify.timestamp:
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
 
-        channel_group(notification_channel(user.id)).send({
+        Channel_group(notification_channel(user.id)).send({
             "text": json.dumps(data)
         }, immediately=True)
 
@@ -82,7 +85,8 @@ def process_gif_publication(file, publication_id, user_id=None):
     if user_id:
         user = User.objects.get(id=user_id)
         newnotify = Notification.objects.create(actor=user, recipient=user, verb=u'¡tu publicación está lista!',
-                                        description='<a href="%s">Ver</a>' % ('/publication/' + str(publication_id)))
+                                                description='<a href="%s">Ver</a>' % (
+                                                    '/publication/' + str(publication_id)))
         data = model_to_dict(newnotify)
         if newnotify.actor:
             data['actor'] = str(newnotify.actor)
@@ -96,6 +100,6 @@ def process_gif_publication(file, publication_id, user_id=None):
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
         if newnotify.timestamp:
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
-        channel_group(notification_channel(user.id)).send({
+        Channel_group(notification_channel(user.id)).send({
             "text": json.dumps(data)
         }, immediately=True)

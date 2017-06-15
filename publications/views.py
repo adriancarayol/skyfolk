@@ -29,7 +29,7 @@ from django.middleware import csrf
 from PIL import Image
 from user_profile.models import NodeProfile
 from django.conf import settings
-from .utils import generate_path_video
+from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
 from .tasks import process_video_publication, process_gif_publication
 
 logging.basicConfig(level=logging.INFO)
@@ -47,18 +47,21 @@ def get_or_create_csrf_token(request):
 
 def check_image_property(image):
     if not image:
-        raise ValueError('Cant read image')
+        raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=image.name))
     if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
-        raise ValueError("Image file too large ( > 1mb )")
+        raise SizeIncorrect(
+            u"Sólo se permiten archivos de hasta 5MB. ({image} tiene {size}B)".format(image=image.name,
+                                                                                      size=image._size))
 
 
 def check_num_images(image_collection):
     if len(image_collection) > 5:
-        raise ValueError('Size of image list is too large! ( > 5) ')
+        raise MaxFilesReached(u'Sólo se permiten 5 archivos por publicación.')
 
 
 def _optimize_publication_media(instance, image_upload):
     check_num_images(image_upload)
+    content_video = False
     if image_upload:
         for index, media in enumerate(image_upload):
             check_image_property(media)
@@ -73,16 +76,18 @@ def _optimize_publication_media(instance, image_upload):
                         for block in media.chunks():
                             tmp.write(block)
                         process_video_publication.delay(tmp.name, instance.id, instance.author.id)
+                    content_video = True
                 elif file_type[0] == "image" and file_type[1] == "gif":  # es un gif
                     tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
                     process_gif_publication.delay(tmp.name, instance.id, instance.author.id)
+                    content_video = True
                 else:  # es una imagen normal
                     try:
                         image = Image.open(media)
                     except IOError:
-                        raise ValueError('Cant read image')
+                        raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=media.name))
                     if image.mode != 'RGBA':
                         image = image.convert('RGBA')
                     image.thumbnail((800, 600), Image.ANTIALIAS)
@@ -93,7 +98,8 @@ def _optimize_publication_media(instance, image_upload):
                                                  'image/jpeg', output.tell(), None)
                     PublicationImage.objects.create(publication=instance, image=photo)
             except IndexError:
-                raise ValueError('Cant get type of file')
+                raise MediaNotSupported(u'No podemos procesar este tipo de archivo {file}.'.format(file=media.name))
+    return content_video
 
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
@@ -105,8 +111,11 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
     http_method_names = [u'post']
     success_url = '/thanks/'
 
-    def post(self, request, *args, **kwargs):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.object = None
+
+    def post(self, request, *args, **kwargs):
 
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -129,7 +138,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication = form.save(commit=False)
                 publication.author = User.objects.get(id=emitter.user_id)
                 publication.board_owner = User.objects.get(id=board_owner.user_id)
-
+                print('SAVED!')
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):
                     if tag.text and not tag.text.isspace():
@@ -137,11 +146,12 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                         break
 
                 if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+
                     logger.info('Publicacion contiene espacios o no tiene texto')
-                    raise IntegrityError('El comentario esta vacio')
+                    raise EmptyContent('¡Comprueba el texto del comentario!')
 
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
-                    raise IntegrityError('El comentario esta vacio')
+                    raise EmptyContent('¡Comprueba el texto del comentario!')
 
                 publication.save()  # Creamos publicacion
                 publication.add_hashtag()  # add hashtags
@@ -149,16 +159,19 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
                 form.save_m2m()  # Saving tags
-                _optimize_publication_media(publication, request.FILES.getlist('image'))
+                content_video = _optimize_publication_media(publication, request.FILES.getlist('image'))
                 publication.save(update_fields=['content'],
                                  new_comment=True, csrf_token=get_or_create_csrf_token(
                         self.request))  # Guardamos la publicacion si no hay errores
-
-                return self.form_valid(form=form)
+                if not content_video:
+                    return self.form_valid(form=form)
+                else:
+                    return self.form_valid(form=form,
+                                           msg=u"Estamos procesando tus videos, te avisamos "
+                                               u"cuando la publicación esté lista,")
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
-
-        logger.info("Invalid form")
+                return self.form_invalid(form=form, errors=e)
         return self.form_invalid(form=form)
 
 
@@ -575,6 +588,7 @@ def load_more_comments(request):
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
                                            'images': list(row.images.all().values('image')),
+                                           'videos': list(row.videos.all().values('video')),
                                            'author_avatar': get_author_avatar(row.author_id),
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares})
@@ -599,6 +613,7 @@ def load_more_comments(request):
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.autho_id),
                                            'images': list(row.images.all().values('image')),
+                                           'videos': list(row.videos.all().values('video')),
                                            'author_avatar': get_author_avatar(row.author_id),
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares
@@ -625,6 +640,7 @@ def load_more_comments(request):
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
                                            'images': list(row.images.all().values('image')),
+                                           'videos': list(row.videos.all().values('video')),
                                            'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares
@@ -649,6 +665,7 @@ def load_more_comments(request):
                                            'parent_author': row.parent.author.username,
                                            'parent_avatar': get_author_avatar(row.parent.author_id),
                                            'images': list(row.images.all().values('image')),
+                                           'videos': list(row.videos.all().values('video')),
                                            'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                            'likes': row.total_likes, 'hates': row.total_hates,
                                            'shares': row.total_shares})
@@ -711,6 +728,7 @@ def load_more_skyline(request):
                                    'event_type': row.event_type, 'extra_content': have_extra_content,
                                    'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
                                    'images': list(row.images.all().values('image')),
+                                   'videos': list(row.videos.all().values('video')),
                                    'token': get_or_create_csrf_token(request),
                                    'likes': row.total_likes, 'hates': row.total_hates, 'shares': row.total_shares})
             if have_extra_content:
