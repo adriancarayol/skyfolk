@@ -101,7 +101,7 @@ else:
 PHOTOLOGUE_CACHEDIRTAG = os.path.join(PHOTOLOGUE_DIR, "photos", "cache", "CACHEDIR.TAG")
 if not default_storage.exists(PHOTOLOGUE_CACHEDIRTAG):
     default_storage.save(PHOTOLOGUE_CACHEDIRTAG, ContentFile(
-        "Signature: 8a477f597d28d172789f06886806bc55"))
+        "Signature: 8a477f597d28d172789f06886806bc55".encode('utf-8')))
 
 # Exif Orientation values
 # Value 0thRow	0thColumn
@@ -182,6 +182,7 @@ class TagField(models.CharField):
 
     def get_internal_type(self):
         return 'CharField'
+
 
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
@@ -459,7 +460,7 @@ class Photo(ImageModel):
                             max_length=250,
                             help_text=_('A "slug" is a unique URL-friendly title for an object.'))
     caption = models.TextField(_('caption'),
-                               blank=True)
+                               blank=True, max_length=1000)
     date_added = models.DateTimeField(_('date added'),
                                       default=now)
     is_public = models.BooleanField(_('is public'),
@@ -521,25 +522,33 @@ class Photo(ImageModel):
             validate_extension(ext)
 
             response = requests.head(self.url_image)
+            length = response.headers.get('content-length', None)
 
-            if int(response.headers.get('content-length', None)) < 1000000:
-                # raise ValueError('Image so big')
+            if length and int(length) > settings.BACK_IMAGE_DEFAULT_SIZE:
+                raise ValueError("La imagen no puede exceder de 5MB")
 
+            else:
                 request = requests.get(self.url_image, stream=True)
 
                 if request.status_code != requests.codes.ok:
                     raise ValueError('Cant get image')
 
                 tmp = tempfile.NamedTemporaryFile()
-
+                read = 0
                 for block in request.iter_content(1024 * 8):
                     if not block:
                         break
+                    read += len(block)
+                    if read > settings.BACK_IMAGE_DEFAULT_SIZE:
+                        raise ValueError("La imagen no puede exceder de 5MB")
                     tmp.write(block)
                 # Comprobamos que se trata de una imagen
                 try:
                     im = Image.open(tmp)
-                    im.verify()
+                    im.thumbnail((800, 600), Image.ANTIALIAS)
+                    im.save(tmp, format='JPEG', optimize=True, quality=90)
+                    tmp.seek(0)
+                    tmp.close()
                 except IOError:
                     raise ValueError('Cant get image')
 

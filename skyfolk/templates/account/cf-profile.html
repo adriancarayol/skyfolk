@@ -14,9 +14,9 @@
 {% block cf-form %}
     <form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
         <div class="col l12 m12 s12 wrapper-profilex">
-            {% if user_profile.profile.backImage %}
+            {% if node_profile.back_image %}
                 <div class="col l12 m12 s12 profilex"
-                     style="background: url('{{ user_profile.profile.backImage.url }}') no-repeat center center; background-size: cover;">
+                     style="background: url('{{ node_profile.back_image }}') no-repeat center center; background-size: cover;">
             {% else %}
                 <div class="col l12 m12 s12 profilex"
                      style="background: url('{{ STATIC_URL }}dist/img/nuevo_back.png') no-repeat center center; background-size: cover;">
@@ -42,7 +42,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="row">
                         <div class="red-text">{{ user_form.last_name.errors }}</div>

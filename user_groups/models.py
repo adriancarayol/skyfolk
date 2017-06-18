@@ -1,9 +1,9 @@
 # encoding:utf-8
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.text import slugify
-from taggit.managers import TaggableManager
 from django.contrib.auth.models import Group
+from django_neomodel import DjangoNode
+from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, One
 
 def upload_small_group_image(instance, filename):
     return '%s/small_group_image/%s' % (instance.name, filename)
@@ -11,6 +11,19 @@ def upload_small_group_image(instance, filename):
 
 def upload_large_group_image(instance, filename):
     return '%s/large_group_image/%s' % (instance.name, filename)
+
+
+class NodeGroup(DjangoNode):
+    slug = StringProperty(unique_index=True)
+    title = StringProperty(unique_index=True)
+    group_id = IntegerProperty(unique_index=True)
+    description = StringProperty()
+    members = RelationshipFrom('NodeProfile', 'MEMBER')
+    interest = RelationshipTo('TagProfile', 'INTEREST_GROUP')
+    owner = RelationshipTo('NodeProfile', 'OWNER', cardinality=One)
+
+    class Meta:
+        app_label = 'group_node'
 
 
 class RolUserGroup(models.Model):
@@ -88,33 +101,19 @@ class UserGroupsManager(models.Manager):
 
 class UserGroups(Group):
     """
-        Modelo para la creacion de grupos de usuarios.
+        Proxy para grupos.
     """
-    # name = models.CharField(max_length=128, unique=True)
-    slug = models.SlugField(max_length=256, unique=True, null=True)
-    description = models.TextField(max_length=1024, null=True, blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-    type = models.CharField(max_length=32, blank=True, null=True)
-    owner = models.ForeignKey(User, related_name='group_owner')
-    users = models.ManyToManyField(RolUserGroup,
-                                   related_name='users_in_group', blank=True)
-    small_image = models.ImageField(upload_to=upload_small_group_image,
-                                    verbose_name='small_image',
-                                    blank=True, null=True)
-    large_image = models.ImageField(upload_to=upload_large_group_image,
-                                    verbose_name='large_image',
-                                    blank=True, null=True)
-    privacity = models.BooleanField(default=True,
-                                    help_text='Desactiva esta casilla '
-                                              'si quieres que el grupo sea privado.')
-    tags = TaggableManager()
-
-    objects = UserGroupsManager()
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        self.slug = slugify(self.name)
-        super(UserGroups, self).save()
+    owner = models.ForeignKey(User, related_name='owner_group')
+    class Meta:
+        permissions = (
+            ('view_notification', 'View notification'),
+            ('change_description', 'Change description'),
+            ('delete_publication', 'Delete publication'),
+            ('delete_image', 'Delete image'),
+            ('kick_member', 'Kick member'),
+            ('ban_member', 'Ban member'),
+            ('modify_notification', 'Modify notification'),
+        )
 
 
 class LikeGroupQuerySet(models.QuerySet):
@@ -150,7 +149,7 @@ class LikeGroup(models.Model):
         unique_together = ('from_like', 'to_like')
 
     from_like = models.ForeignKey(User, related_name='from_likegroup')
-    to_like = models.ForeignKey(UserGroups, related_name='to_likegroup')
+    to_like = models.ForeignKey(Group, related_name='to_likegroup')
     created = models.DateTimeField(auto_now_add=True)
 
     objects = LikeGroupManager()

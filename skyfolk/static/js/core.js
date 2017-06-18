@@ -94,7 +94,7 @@ $(document).ready(function () {
     $(page_wrapper).find('#message-form2').on('submit', function (event) {
         event.preventDefault();
         var form = $(page_wrapper).find('#message-form2');
-        AJAX_submit_publication(data, 'publication');
+        AJAX_submit_publication(form, 'publication');
     });
 
     /* Submit publication (propio) */
@@ -546,7 +546,8 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
         dataType: "json",
         success: function (response) {
             if (response == "added_friend") {
-                addItemToFriendList('Nuevo', 'nuevo');
+                //TODO: Add to "seguidos" list
+                // addItemToFriendList('Nuevo', 'nuevo');
                 sweetAlert("You have added a friend!");
                 $('li[data-id=' + obj_data + ']').fadeOut("fast");
             } else {
@@ -589,14 +590,23 @@ function AJAX_submit_publication(obj_form, type, pks) {
         type: 'POST',
         data: form,
         async: true,
+        dataType: "json",
         contentType: false,
         enctype: 'multipart/form-data',
         processData: false,
         success: function (data) {
             var response = data.response;
-            console.log('RESPONSE AQUI: ' + response + " type: " + type);
-            if (response == true) {
-                /* nothing */
+            var msg = data.msg;
+
+            if (response === true && (typeof(msg) !== 'undefined' && msg !== null)) {
+                swal({
+                    title: "",
+                    text: msg,
+                    customClass: 'default-div',
+                    type: "success"
+                });
+            } else if (response === true) {
+
             } else {
                 swal({
                     title: "",
@@ -605,26 +615,37 @@ function AJAX_submit_publication(obj_form, type, pks) {
                     type: "error"
                 });
             }
-            if (type == "reply") {
+            if (type === "reply") {
                 var caja_comentarios = $('#caja-comentario-' + pks[2]);
                 $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
-            } else if (type == "publication") {
+            } else if (type === "publication") {
                 $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
             }
         },
-        error: function (rs, e) {
-            swal({
-                title: '¡Ups!',
-                text: 'Revisa el contenido de tu mensaje', // rs.responseText,
-                customClass: 'default-div',
-                type: "error"
-            });
+        error: function (data, textStatus) {
+            var response = $.parseJSON(data.responseText);
+            var error_msg = response.error[0];
+            var type_error = response.type_error;
+
+            if (type_error === 'incorrent_data') {
+                swal({
+                    title: '¡Ups!',
+                    text: error_msg, // rs.responseText,
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            } else {
+                swal({
+                    title: '¡Ups!',
+                    text: 'Revisa el contenido de tu mensaje', // rs.responseText,
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            }
         }
     }).done(function () {
-        // No necesario, ya que usamos sockets para añadir
-        // En "vivo" publicaciones y respuestas
-        //addNewPublication(type, pks[0], pks[1], pks[2]);
+
     })
 }
 
@@ -708,6 +729,8 @@ function AJAX_requestfriend(status) {
                         showConfirmButton: false
                     });
                 } else if (response == "added_friend") {
+                    var currentValue = document.getElementById('followers-stats');
+                    $(currentValue).html(parseInt($(currentValue).html()) + 1);
                     $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
                 }
                 else {

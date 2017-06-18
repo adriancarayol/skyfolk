@@ -132,7 +132,7 @@
             <h2 class="messages-search">Publicaciones</h2>
             <div class="row">
                 {% for pub in resultMessages %}
-                    {% if user.username|check_follow:pub.author.username and not user.username|check_blocked:pub.author.username %}
+                    {% if user.id|check_follow:pub.author.id and not user.id|check_blocked:pub.author.id %}
                         {% comment 'Check privacity' %} Comprobamos la privacidad del autor del mensaje {% endcomment %}
                         <div class="col l3 m6 s12">
                             <div class="notice-item">
@@ -160,7 +160,7 @@
         {% if result_media|length != 0 %}
             <h2 class="messages-search">Media</h2>
             {% for photo in result_media %}
-                {% if user.username|check_follow:photo.owner.username and not user.username|check_blocked:photo.owner.username %}
+                {% if user.id|check_follow:photo.owner.id and not user.id|check_blocked:photo.owner.id %}
                     {% comment 'Check privacity' %} Comprobamos la privacidad del autor del mensaje {% endcomment %}
                     <div class="col l2 m12 s12 image-div">
                         <div class="container-image">

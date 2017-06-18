@@ -4,6 +4,7 @@
 {% load humanize %}
 {% load mptt_tags %}
 {% load el_pagination_tags %}
+{% load embed_video_tags %}
 
 {% for node in publications %}
     {% recursetree node %}
@@ -44,7 +45,7 @@
                                             {% endif %}
                                         </h2>
                                        <p id="pub-created" class="blue-text text-darken-2">{{ node.created|naturaltime }}</p>
-                                        <div class="row">
+                                        <div class="row publication-content">
                                             <div class="parrafo comment">
                                                 <div class="wrp-comment">{{ node.content|safe }}</div>
                                             </div>
@@ -64,8 +65,8 @@
                                             {% comment %} Para publicaciones que contienen citas {% endcomment %}
                                             <style>
                                                 .card-content img {
-                                                    width: 70px;
-                                                    height: 70px;
+                                                    max-width: 100%;
+                                                    max-height: 100%;
                                                     box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
                                                 }
 
@@ -76,25 +77,45 @@
                                             </style>
                                             <div class="card grey lighten-5">
                                                 <div class="card-content black-text">
-                                                    {% avatar node.shared_publication.publication.author %}<br>
+                                                    {% avatar node.shared_publication.publication.author class="POLE" %}<br>
                                                     <span class="card-title"><a
                                                             href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
                                                     <p>{{ node.shared_publication.publication.content|safe }}</p>
-                                                    {% if node.shared_publication.publication.image %}
-                                                    <br>
-                                                    <div class="row">
-                                                        <div class="col s7">
-                                                            <img class="responsive-img" src="{{node.shared_publication.publication.image.url}}" alt="Imagen de: {{ node.shared_publication.publication.author }}" title="Imagen de: {{ node.shared_publication.publication.author }}">
+                                                    {% with node.shared_publication.publication.images.all as images %}
+                                                        {% if images %}<br>
+                                                        <div class="row">
+                                                        {% for image in images %}
+                                                            <div class="col s4">
+                                                                <img class="responsive-img z-depth-2" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                            </div>
+                                                        {% endfor %}
                                                         </div>
-                                                    </div>
-                                                    {% endif %}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                        {% with node.shared_publication.publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                             {% for video in videos %}
+                                                                 <div class="col s4">
+                                                                     <video class="responsive-video" controls loop>
+                                                                         <source src="{{ video.video.url }}" type="video/mp4">
+                                                                     </video>
+                                                                 </div>
+                                                            {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
                                                     {% if node.shared_publication.publication.extra_content %}
                                                         {% comment %} Para publicaciones con URL {% endcomment %}
+                                                        {% if  node.shared_publication.publication.extra_content.video %}
+                                                        {% video node.shared_publication.publication.extra_content.video as my_video %}
+                                                           {% video my_video "medium" %}
+                                                        {% endvideo %}
+                                                        {% else %}
                                                         <div class="card small">
                                                             <div class="card-image">
-                                                                <img src="
-                                                                        {% if node.shared_publication.publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                <img src="{% if node.shared_publication.publication.extra_content.image %}{{ node.shared_publication.publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
                                                                 <span class="card-title white-text">{{ node.shared_publication.publication.extra_content.title }}</span>
                                                             </div>
                                                             <div class="card-content">
@@ -104,6 +125,7 @@
                                                                 <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
                                                             </div>
                                                         </div>
+                                                            {% endif %}
                                                     {% endif %}
                                                 </div>
                                                 <div class="card-action">
@@ -112,19 +134,40 @@
                                                 </div>
                                             </div>
                                         {% endif %}
-                                        {% if node.image %}
-                                        <div class="row">
-                                            <div class="col s5">
-                                                <img class="responsive-img" src="{{node.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                        {% with node.images.all as images %}
+                                            {% if images %}
+                                            <div class="row images">
+                                            {% for image in images %}
+                                                <div class="col s4 z-depth-2 center">
+                                                    <img class="responsive-img" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                </div>
+                                            {% endfor %}
                                             </div>
-                                        </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% with node.videos.all as videos %}
+                                        {% if videos %}
+                                            <div class="row videos">
+                                         {% for video in videos %}
+                                            <div class="col s4 z-depth-2 center">
+                                                    <video class="responsive-video" controls loop>
+                                                        <source src="{{ video.video.url }}" type="video/mp4">
+                                                    </video>
+                                            </div>
+                                        {% endfor %}
+                                            </div>
                                         {% endif %}
+                                    {% endwith %}
                                         {% if node.extra_content %}
+                                            {% if node.extra_content.video %}
+                                            {% video node.extra_content.video as my_video %}
+                                               {% video my_video "medium" %}
+                                            {% endvideo %}
+                                            {% else %}
                                             {% comment %} Para publicaciones con URL {% endcomment %}
                                             <div class="card small">
                                                 <div class="card-image">
-                                                    <img src="
-                                                            {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                    <img src="{% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
                                                     <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">
@@ -134,6 +177,7 @@
                                                     <a href="{{ node.extra_content.url }}">Ver</a>
                                                 </div>
                                             </div>
+                                            {% endif %}
                                         {% endif %}
                                     </div>
                                 </div>
@@ -158,18 +202,18 @@
                                         <li title="No me gusta" class="hate-comment" id="fa-hate"
                                             {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                            <i class="fa hate-value">{% if node.hated > 0 %}{{ node.hated|intword }}{% endif %}</i>
+                                            <i class="fa hate-value">{% with node.total_hates as hates %}{% if hates > 0 %}{{ hates|intword }}{% endif %}{% endwith %}</i>
                                         </li>
                                         <li id="like-heart" title="¡Me gusta!" class="like-comment"
                                             {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                            <i id="like-value" class="fa">{% if node.liked > 0 %}{{ node.liked|intword }}{% endif %}</i>
+                                            <i id="like-value" class="fa">{% with node.total_likes as likes %}{% if likes > 0 %}{{ likes|intword }}{% endif %}{% endwith %}</i>
                                         </li>
                                     {% endif %}
                                     <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
                                         {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
                                         style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                            class="fa fa-quote-right" aria-hidden="true"> {% if node.shared > 0 %}{{ node.shared|intword }}{% endif %}</i></li>
+                                            class="fa fa-quote-right" aria-hidden="true"> {% with node.total_shared as shares %}{% if shares > 0 %}{{ shares|intword }}{% endif %}{% endwith %}</i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
@@ -240,9 +284,9 @@
                                     {% endwith %}
                                 {% endif %}
                                 <div>
-                                    <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
-                                         title="Loading..."
-                                         alt="Loading..." style="display: none;">
+                                    <div class="progress" id="load_publications_descendants" style="display: none">
+                                        <div class="indeterminate blue darken-1"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -262,9 +306,9 @@
                    data-id="{{ last_pub.0.id }}"><i class=" material-icons left">expand_more</i>Cargar
                     comentarios</a>
                 <div>
-                    <img id="load_publications_image" src="{{ STATIC_URL }}img/ripple.gif"
-                         title="Loading..."
-                         alt="Loading..." style="display: none;">
+                     <div class="progress" id="load_publications_skyline" style="display: none">
+                        <div class="indeterminate blue darken-1"></div>
+                     </div>
                 </div>
             </div>
         </div>

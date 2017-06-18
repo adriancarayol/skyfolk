@@ -6,6 +6,7 @@ from channels.auth import channel_session_user, channel_session_user_from_http
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Photo
+from user_profile.models import NodeProfile
 
 
 # The "slug" keyword argument here comes from the regex capture group in
@@ -36,16 +37,17 @@ def connect_photo(message, slug):
         })
         return
     try:
-        user_profile = photo.owner.profile
-    except ObjectDoesNotExist:
+        user_profile = NodeProfile.nodes.get(user_id=photo.owner_id)
+        m = NodeProfile.nodes.get(user_id=user.id)
+    except NodeProfile.DoesNotExist:
         message.reply_channel.send({
             "text": json.dumps({"error": "bad_slug"}),
             "close": True,
         })
         return
-    visibility = user_profile.is_visible(user.profile)
+    visibility = user_profile.is_visible(m)
     if visibility and visibility != 'all':
-        logging.warning('User: {} no puede conectarse al socket de: photo: {}'.format(user.username, username))
+        logging.warning('User: {} no puede conectarse al socket de: photo: {}'.format(user.title, user_profile.title))
         message.reply_channel.send({
             # WebSockets send either a text or binary payload each frame.
             # We do JSON over the text portion.

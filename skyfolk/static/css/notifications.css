@@ -1,3 +1,59 @@
-.container .all-notifications-options{margin-top:3.5%;text-align:center}.notifications{width:100%;position:relative;display:block;margin-top:5%}.notifications li{margin-top:.5%;margin-left:0.775%;box-shadow:0 1px 5px rgba(0,0,0,0.15);padding:10px;min-height:120px;clear:right;font-size:1.2em}.notifications li a,.notifications li a:visited{text-decoration:none;color:#1e88e5}.notifications li b{font-weight:600}.notifications li .fa-bell{margin-right:1%;color:#1e88e5;font-size:1.3em}.notifications li .notice-timesince,.notifications li .notice-description{padding-top:10px;margin-top:2%}.notifications li .fa-eye,.notifications li .fa-eye-slash,.notifications li .fa-trash{margin:auto 3px 0 3px}.notifications li .notification-buttons{width:100%;position:relative;margin-top:5%;text-align:center}.notifications li .notification-buttons button{border:medium none;border-radius:2px;height:36px;line-height:36px;padding:0 2rem;display:inline-block;text-transform:uppercase;vertical-align:middle;text-decoration:none;background-color:transparent;text-align:center;letter-spacing:0.5px;transition:all 0.2s ease-out 0s;cursor:pointer;outline:none}.notifications li .notification-buttons button:nth-child(2){color:#4caf50}.notifications li .notification-buttons button:nth-child(1){color:#f44336}.notifications li .notification-buttons button:hover{background-color:#eee;opacity:0.8}.mark-all-as-read-template,.mark-all-as-deleted-template,.mark-all-as-unread-template{margin:0 auto 0 2%;display:inline-block;overflow:hidden;border:medium none;border-radius:2px;height:36px;text-transform:uppercase;text-decoration:none;color:#1e88e5;text-align:center;letter-spacing:0.5px;transition:all 0.2s ease-out 0s;cursor:pointer;outline:none;padding:1em}.mark-all-as-read-template:hover,.mark-all-as-deleted-template:hover,.mark-all-as-unread-template:hover{opacity:0.8;background-color:#eee;color:grey}
+.container .all-notifications-options {
+  margin-top: 3.5%;
+  text-align: center; }
 
-/*# sourceMappingURL=notifications.css.map */
+.notifications {
+  width: 100%;
+  position: relative;
+  display: block;
+  margin-top: 5%; }
+  .notifications li {
+    margin-top: 0.5%;
+    margin-left: 0.775%;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    min-height: 120px;
+    clear: right;
+    font-size: 1.2em; }
+    .notifications li a, .notifications li a:visited {
+      text-decoration: none;
+      color: #1e88e5; }
+    .notifications li b {
+      font-weight: 600; }
+    .notifications li .fa-bell {
+      margin-right: 1%;
+      color: #1e88e5;
+      font-size: 1.3em; }
+    .notifications li .notice-timesince, .notifications li .notice-description {
+      padding-top: 10px;
+      margin-top: 2%; }
+    .notifications li .fa-eye, .notifications li .fa-eye-slash, .notifications li .fa-trash {
+      margin: auto 3px 0 3px; }
+    .notifications li .notification-buttons {
+      width: 100%;
+      position: relative;
+      margin-top: 5%;
+      text-align: center; }
+      .notifications li .notification-buttons button {
+        border: medium none;
+        border-radius: 2px;
+        height: 36px;
+        line-height: 36px;
+        padding: 0 2rem;
+        display: inline-block;
+        text-transform: uppercase;
+        vertical-align: middle;
+        text-decoration: none;
+        background-color: transparent;
+        text-align: center;
+        letter-spacing: 0.5px;
+        transition: all 0.2s ease-out 0s;
+        cursor: pointer;
+        outline: none; }
+        .notifications li .notification-buttons button:nth-child(2) {
+          color: #4caf50; }
+        .notifications li .notification-buttons button:nth-child(1) {
+          color: #f44336; }
+        .notifications li .notification-buttons button:hover {
+          background-color: #eee;
+          opacity: 0.8; }

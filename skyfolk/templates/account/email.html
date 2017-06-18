@@ -16,6 +16,7 @@
 {% endblock %}
 
 {% block cf-form %}
+    {% comment %}
     {% if messages %}
         <div class="div-messages">
             <strong>{% trans "Messages" %}:</strong>
@@ -26,11 +27,12 @@
             </ul>
         </div>
     {% endif %}
+    {% endcomment %}
     <h1 class="title-email">{% trans "E-mail Addresses" %}</h1>
     {% if user.emailaddress_set.all %}
         <p>{% trans 'The following e-mail addresses are associated with your account:' %}</p>
 
-        <form action="{% url 'account_email' %}" class="email_list" method="post">
+        <form class="email_list" method="post">
             {% csrf_token %}
             <fieldset class="blockLabels">
                 <div class="collection">

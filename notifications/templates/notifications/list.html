@@ -10,11 +10,11 @@
         {% if notifications %}
             <div class="row">
                 <div class="col s12 all-notifications-options">
-                    <a class="mark-all-as-read-template" href="{% url 'notifications:mark_all_as_read' %}">Todas
+                    <a class="waves-effect waves-light btn white blue-text text-darken-1" href="{% url 'notifications:mark_all_as_read' %}">Todas
                         leídas</a>
-                    <a class="mark-all-as-unread-template" href="{% url 'notifications:mark_all_as_unread' %}">Todas sin
+                    <a class="waves-effect waves-light btn white blue-text text-darken-1" href="{% url 'notifications:mark_all_as_unread' %}">Todas sin
                         leer</a>
-                    <a class="mark-all-as-deleted-template" href="{% url 'notifications:mark_all_as_deleted' %}">Eliminar
+                    <a class="waves-effect waves-light btn red" href="{% url 'notifications:mark_all_as_deleted' %}">Eliminar
                         todas</a>
                 </div>
             </div>

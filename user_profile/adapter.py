@@ -1,12 +1,10 @@
 import re
 
 from allauth.account.adapter import DefaultAccountAdapter
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from user_profile.models import UserProfile
-from allauth.account.adapter import get_adapter
+from user_profile.models import NodeProfile
+from django.http import Http404
 
 
 class MyAccountAdapter(DefaultAccountAdapter):
@@ -29,8 +27,13 @@ class MyAccountAdapter(DefaultAccountAdapter):
         Devuelve la url a la que se redirige el usuario
         despues de hacer login.
         """
-        user = get_object_or_404(get_user_model(), pk=request.user.pk)
-        is_first_time_login = UserProfile.objects.check_if_first_time_login(user)
+
+        try:
+            user = NodeProfile.nodes.get(user_id=request.user.id)
+        except NodeProfile.DoesNotExist:
+            raise Http404
+
+        is_first_time_login = user.check_if_first_time_login()
 
         path = "/profile/{username}/"
 

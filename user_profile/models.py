@@ -1,25 +1,21 @@
 import hashlib
-import uuid
-from datetime import datetime
+import datetime
+import os, glob
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.http import urlencode
-from taggit.managers import TaggableManager
-
-import publications
 from notifications.models import Notification
 from photologue.models import Photo
-
-RELATIONSHIP_FOLLOWING = 1
-RELATIONSHIP_FOLLOWER = 2
-RELATIONSHIP_BLOCKED = 3
-RELATIONSHIP_STATUSES = (
-    (RELATIONSHIP_FOLLOWING, 'Following'),
-    (RELATIONSHIP_FOLLOWER, 'Follower'),
-    (RELATIONSHIP_BLOCKED, 'Blocked'),
-)
+from django_neomodel import DjangoNode
+from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, \
+    BooleanProperty, Property, StructuredRel, DateTimeProperty
+from django.core.cache import cache
+from neomodel.properties import validator
+from django.utils.translation import ugettext_lazy as _
+from django.core.files.storage import FileSystemStorage
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
@@ -31,96 +27,62 @@ REQUEST_STATUSES = (
 )
 
 
-def uploadAvatarPath(instance, filename):
-    return '%s/avatar/%s' % (instance.user.username, filename)
-
-
 def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
 
 
-class UserProfileQuerySet(models.QuerySet):
-    def get_all_users(self):
-        return self.all()
+class TagProfile(DjangoNode):
+    uid = UniqueIdProperty()
+    title = StringProperty(unique_index=True)
+    common = Relationship('TagProfile', 'COMMON')
+    user = RelationshipFrom('NodeProfile', 'INTEREST')
 
-    def get_user_by_username(self, username):
-        """
-        Devuelve un perfil dado un nombre de usuario
-        :param: => Nombre de usuario del que se desea obtener el perfil.
-        :return: Perfil asociado al nombre de usuario
-        """
-        return self.get(user__username=username)
-
-    def get_last_users(self):
-        """
-            Devuelve la lista de perfiles ordenada
-            segun su fecha de registro.
-            :return: Lista ordenada por fecha de registro
-        """
-        return self.all().order_by('-user__date_joined')
-
-    def get_last_login_user(self):
-        """
-        Devuelve el ultimo usuario que ha hecho login.
-        """
-        return self.all().order_by('-user__last_login')
+    class Meta:
+        app_label = 'tag_profile'
 
 
-class UserProfileManager(models.Manager):
-    def get_queryset(self):
-        return UserProfileQuerySet(self.model, using=self._db)
+class UploadedFileProperty(Property):
+    def __init__(self, **kwargs):
+        for item in ['required', 'unique_index', 'index', 'default']:
+            if item in kwargs:
+                raise ValueError('{} argument ignored by {}'.format(item, self.__class__.__name__))
 
-    def get_user_by_username(self, username):
-        """
-        Devuelve un perfil dado un nombre de usuario
-        :param: => Nombre de usuario del que se desea obtener el perfil.
-        :return: Perfil asociado al nombre de usuario
-        """
-        return self.get_queryset().get_user_by_username(username=username)
+        # kwargs['unique_index'] = True
+        super(UploadedFileProperty, self).__init__(**kwargs)
 
-    def get_last_users(self):
-        """
-            Devuelve la lista de perfiles ordenada
-            segun su fecha de registro.
-            :return: Lista ordenada por fecha de registro
-        """
-        return self.all().order_by('-user__date_joined')
+    @validator
+    def inflate(self, value):
+        return str(value)
 
-    def check_if_first_time_login(self, user):
-        """
-        Funcion para comprobar si un usuario se ha logueado
-        por primera vez.
-        """
-        is_first_time_login = None
-        user_profile = None
-
-        try:
-            user_profile = self.get(user__id=user.pk)
-        except ObjectDoesNotExist:
-            pass
-
-        if user_profile:
-            is_first_time_login = user_profile.is_first_login
-
-        if is_first_time_login:
-            user_profile.is_first_login = False
-            user_profile.save(update_fields=['is_first_login'])
-
-        return is_first_time_login
-
-    def get_last_login_user(self):
-        """
-        Devuelve el ultimo usuario que ha hecho login.
-        """
-        return self.get_queryset().get_last_login_user()
+    @validator
+    def deflate(self, value):
+        return str(value)
 
 
-class UserProfile(models.Model):
-    PIN_LENGTH = 9
+class FollowRel(StructuredRel):
+    weight = IntegerProperty(default=0)
+    created = DateTimeProperty(default=lambda: datetime.datetime.now())
 
-    """
-    Diferentes opciones de privacidad para el usuario
-    """
+    class Meta:
+        app_label = 'django_rel'
+
+
+class NodeProfile(DjangoNode):
+    uid = UniqueIdProperty()
+    user_id = IntegerProperty(unique_index=True)  # user_id
+    title = StringProperty(unique_index=True)  # username
+    first_name = StringProperty()  # first_name
+    last_name = StringProperty()  # last_name
+    follow = RelationshipTo('NodeProfile', 'FOLLOW', model=FollowRel)  # follow user
+    like = RelationshipTo('NodeProfile', 'LIKE')  # like user
+    bloq = RelationshipTo('NodeProfile', 'BLOQ')  # bloq user
+    is_first_login = BooleanProperty(default=True)
+    status = StringProperty(required=False)
+    back_image_ = UploadedFileProperty(db_property='back_image')
+    is_active = BooleanProperty(default=True, help_text=_(
+        'Designates whether this user should be treated as active. '
+        'Unselect this instead of deleting accounts.'))
+
     ONLYFOLLOWERS = 'OF'
     ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
     ALL = 'A'
@@ -131,42 +93,52 @@ class UserProfile(models.Model):
         (ALL, 'All'),
         (NOTHING, 'Nothing'),
     )
+    privacity = StringProperty(choices=OPTIONS_PRIVACITY, default='A')
 
-    user = models.OneToOneField(User, related_name='profile')
-    backImage = models.ImageField(upload_to=uploadBackImagePath, verbose_name='BackImage',
-                                  blank=True, null=True)
-    relationships = models.ManyToManyField('self', through='Relationship', symmetrical=False, related_name='related_to')
-    likeprofiles = models.ManyToManyField('self', through='LikeProfile', symmetrical=False, related_name='likesToMe')
-    requests = models.ManyToManyField('self', through='Request', symmetrical=False, related_name='requestsToMe')
-    status = models.CharField(max_length=20, null=True, verbose_name='estado')
-    # ultimosUsuariosVisitados = models.ManyToManyField('self')  # Lista de ultimos usuarios visitados.
-    privacity = models.CharField(max_length=4,
-                                 choices=OPTIONS_PRIVACITY, default=ALL)  # Privacidad del usuario (por defecto ALL)
-    is_first_login = models.BooleanField(default=True)
-    is_online = models.BooleanField(default=False)
-    tags = TaggableManager(blank=True)
-    personal_pin = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
-    objects = UserProfileManager()
+    @property
+    def back_image(self):
+        try:
+            file = glob.glob("%s.*" % (settings.MEDIA_ROOT + '/' + self.back_image_))
+            if file and len(file) > 0:
+                fs = FileSystemStorage()
+                return fs.url(os.path.basename(file[0]))
+            return None
+        except Exception:
+            return None
 
-    def __unicode__(self):
-        return "{}'s profile".format(self.user.username)
+    @back_image.setter
+    def back_image(self, value):
+        if self.back_image_:
+            try:
+                for filename in glob.glob("%s*" % (settings.MEDIA_ROOT + '/' + self.back_image_)):
+                    fs = FileSystemStorage()
+                    fs.delete(filename)
+            except Exception:
+                pass
+            self.back_image_ = None
 
-    class Meta:
-        db_table = 'user_profile'
+        # set the value
+        if isinstance(value, str):
+            try:
+                self.back_image_ = value
+            except ValueError:
+                raise TypeError('Value "{}" is not a path'.format(value))
+        else:
+            TypeError('Value "{}" should be of type str'.format(value))
 
     @property
     def group_name(self):
         """
         Devuelve el nombre del canal para enviar las notificaciones
         """
-        return "users-%s" % self.pk
+        return "users-%s" % self.user_id
 
     @property
     def notification_channel(self):
         """
         Devuelve el nombre del canal notification para cada usuario
         """
-        return "notification-%s" % self.pk
+        return "notification-%s" % self.user_id
 
     @property
     def news_channel(self):
@@ -174,418 +146,121 @@ class UserProfile(models.Model):
         Devuelve el nombre del canal para enviar actualizaciones
         al tablon de inicio
         """
-        return "news-%s" % self.pk
+        return "news-%s" % self.user_id
 
-    def save(self, *args, **kwargs):
-        # delete old image when replacing by updating the file
-        try:
-            this = UserProfile.objects.get(id=self.id)
-            if this.backImage != self.backImage:
-                this.backImage.delete(save=False)
-        except:
-            pass  # when new photo then we do nothing, normal case
-        super(UserProfile, self).save(*args, **kwargs)
+    class Meta:
+        app_label = 'node_profile'
 
-    # Methods of relationships between users
-    def add_relationship(self, person, status, symm=False):
-        """
-        Añade una relación entre dos usuarios
-        :param person => Persona con la que la instancia actual tiene una relacion:
-        :param status => Estado de la relación:
-        :param symm => Si la relación es simetrica:
-        :return devuelve la relación creada:
-        """
-        print('>>>>>>> add_relationship')
-        relationship, created = Relationship.objects.get_or_create(from_person=self, to_person=person, status=status)
-        print('>>>>>>> created')
-        print(created)
-        if symm:
-            # avoid recursion by passing 'symm=False'
-            person.add_relationship(self, status, False)
-        return relationship
+    def get_followers(self):
+        results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
+        return [self.inflate(row[0]) for row in results]
 
-    def remove_relationship(self, person, status, symm=False):
-        """
-        Elimina una relación entre dos personas
-        :param person => Persona con la que la instancia actual tiene una relacion:
-        :param status => Estado de la relación:
-        :param symm symm => Si la relación es simetrica:
-        """
-        Relationship.objects.filter(from_person=self, to_person=person, status=status).delete()
-        if symm:
-            # avoid recursion by passing 'symm=False'
-            person.remove_relationship(self, status, False)
+    def count_followers(self):
+        results, columns = self.cypher(
+            "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
+        return results[0][0]
 
-    def get_relationships(self, status):
-        """
-        Devuelve las relaciones de una instancia.
-        :param status => Estado de una relación:
-        :return devuelve las relaciones de un perfil:
-        """
-        return self.relationships.filter(
-            to_people__status=status,
-            to_people__from_person=self)
+    def get_follows(self):
+        results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
+        return [self.inflate(row[0]) for row in results]
 
-    def get_related_to(self, status):
-        """
-        Conseguir relación de una persona
-        :param status => Estado de la relación que se quiere conseguir:
-        :return:
-        """
-        return self.related_to.filter(
-            from_people__status=status,
-            from_people__to_person=self)
+    def count_follows(self):
+        results, columns = self.cypher(
+            "MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
+        return results[0][0]
+
+    def has_like(self, to_like):
+        results, columns = self.cypher(
+            "MATCH (a)-[like:LIKE]->(b) WHERE id(a)={self} AND b.user_id=%d RETURN like" % to_like)
+        return True if len(results) > 0 else False
+
+    def count_likes(self):
+        results, columns = self.cypher(
+            "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN COUNT(like)")
+        return results[0][0]
+
+    def get_like_to_me(self):
+        results, columns = self.cypher(
+            "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
+        return [self.inflate(row[0]) for row in results]
+
+    def get_favs_users(self):
+        results, columns = self.cypher(
+            "MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT 6")
+        return [self.inflate(row[0]) for row in results]
 
     def is_visible(self, user_profile):
         """
-        Devuelve si el perfil que estamos visitando
+        Devuelve si el perfil con id user_id
         es visible por nosotros.
-        :param user_pk, user_profile:
+        :param user_id:
         :return template que determina si el perfil es visible:
         """
-        user_pk = user_profile.user.pk
+
         # Si estoy visitando mi propio perfil
-        if self.user.pk == user_pk:
+        if self.user_id == user_profile.user_id:
             return "all"
 
         # Si el perfil es privado
-        if self.user.pk != user_pk and \
-                        self.privacity == UserProfile.NOTHING:
+        if self.privacity == NodeProfile.NOTHING:
             return "nothing"
 
         # Si el perfil esta bloqueado
-        if self.user.pk != user_pk and \
-                self.is_blocked(user_profile):
+        if self.bloq.is_connected(user_profile):
             return "block"
 
         # Recuperamos la relacion de "seguidor"
         try:
-            relation_follower = Relationship.objects.filter(from_person=self,
-                                                            to_person=user_profile,
-                                                            status=RELATIONSHIP_FOLLOWER)
+            relation_follower = user_profile.follow.is_connected(self)
         except ObjectDoesNotExist:
             relation_follower = None
 
         # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
-        if self.user.pk != user_pk and \
-                        self.privacity == UserProfile.ONLYFOLLOWERS and not relation_follower:
+        if self.privacity == NodeProfile.ONLYFOLLOWERS and not relation_follower:
             return "followers"
 
         # Recuperamos la relacion de "seguir"
         try:
-            relation_follow = Relationship.objects.filter(from_person=self,
-                                                          to_person=user_profile,
-                                                          status=RELATIONSHIP_FOLLOWING)
+            relation_follow = self.follow.is_connected(user_profile)
         except ObjectDoesNotExist:
             relation_follow = None
 
         # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
-        if self.user.pk != user_pk and \
-                        self.privacity == UserProfile.ONLYFOLLOWERSANDFOLLOWS and not \
+        if self.privacity == NodeProfile.ONLYFOLLOWERSANDFOLLOWS and not \
                 (relation_follower or relation_follow):
             return "both"
 
         # Si el nivel de privacidad es TODOS
-        if self.privacity == UserProfile.ALL:
+        if self.privacity == NodeProfile.ALL:
             return "all"
-        # else...
+
         return None
-
-    # Methods of publications (Old => Usar PublicationManager)
-
-    def get_publication(self, publicationid):
-        """
-        Devuelve una publicacion a partir del identificador
-        :param publicationid => Identificador de la publicación:
-        :return Devuelve la publicacion solicitada:
-        """
-        return publications.models.Publication.objects.get(pk=publicationid)
-
-    def remove_publication(self, publicationid):
-        """
-        Elimina una publicacion a partir del identificador
-        :param publicationid => Identificador de la publicación:
-        :return:
-        """
-        publications.models.Publication.objects.get(pk=publicationid, author=self.user)
-
-    def get_publicationsToMe(self):
-        """
-        Devuelve las publicaciones hacia mi perfil
-        :return Devuelve las publicaciones hacia mi perfil:
-        """
-        return self.publications_to.filter(
-            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
-                                                   'from_publication__id',
-                                                   'from_publication__content', 'from_publication__created',
-                                                   'from_publication__replies')
-
-    def get_publicationsToMeTop15(self):
-        """
-        Devuelve 15 publicaciones hacia mi perfil
-        :return Devuelve 15 publicaciones hacia mi perfil:
-        """
-        return self.publications_to.filter(
-            from_publication__profile=self).values('user__username', 'user__first_name', 'user__last_name',
-                                                   'from_publication__id',
-                                                   'from_publication__content', 'from_publication__created')[0:15]
-
-    def get_myPublications(self):
-        """
-        Devuelve las publicaciones que he realizado
-        :return Devuelve las publicaciones que he realizado:
-        """
-        return self.publications.filter(
-            to_publication__author=self).values('user__username', 'to_publication__profile', 'user__first_name',
-                                                'user__last_name',
-                                                'from_publication__id', 'to_publication__content',
-                                                'to_publication__created', 'to_publication__user_give_me_like')
-
-    # Obtener seguidos
-    def get_following(self):
-        """
-        Devuelve las personas que sigo
-        :return Devuelve las personas que sigo:
-        """
-        return self.get_relationships(RELATIONSHIP_FOLLOWING).values('user__id', 'user__username', 'user__first_name',
-                                                                     'user__last_name',
-                                                                     'user__profile__backImage').order_by('id')
-
-    # Obtener seguidores
-    def get_followers(self):
-        """
-        Devuelve las personas que son seguidores
-        :return Devuelve las personas que son seguidores:
-        """
-        return self.get_relationships(RELATIONSHIP_FOLLOWER).values('user__id', 'user__username', 'user__first_name',
-                                                                    'user__last_name',
-                                                                    'user__profile__backImage').order_by('id')
-
-    # Obtener canal de noticias de mis seguidores
-    def get_all_follower_values(self):
-        """
-        Devuelve el canal de noticias de mis seguidores
-        """
-        return self.get_relationships(RELATIONSHIP_FOLLOWER)
-
-    # methods blocks
-    def add_block(self, profile):
-        """
-        Añade un perfil a la lista de bloqueados
-        :param profile => Perfil que se desea bloquear:
-        :return Devuelve la relación de bloqueado con el perfil pasado como paramatro:
-        """
-        return self.add_relationship(profile, RELATIONSHIP_BLOCKED,
-                                     False)
-
-    def get_blockeds(self):
-        """
-        Devuelve la lista de bloqueados del perfil instanciado
-        :return Devuelve la lista de bloqueados del perfil instanciado:
-        """
-        return self.get_relationships(RELATIONSHIP_BLOCKED).values('user__id', 'user__username', 'user__first_name',
-                                                                   'user__last_name',
-                                                                   'user__profile__backImage',
-                                                                   'user__profile__pk').order_by('id')
-
-    def is_blocked(self, profile):
-        """
-        Método para comprobar si un perfil está bloqueado
-        :param profile => Perfil que quizás este bloqueado:
-        :return Devuelve un booleano dependiendo de si está o no
-        bloqueado el perfil pasado como paramatro:
-        """
-        try:
-            if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_BLOCKED):
-                return True
-            else:
-                return False
-        except ObjectDoesNotExist:
-            return False
-
-    # methods likes
-    def add_like(self, profile):
-        """
-        Añade un "me gusta" a un perfil
-        :param profile => Perfil que doy "me gusta":
-        :return Devuelve la relación "Me gusta":
-        """
-        like, created = LikeProfile.objects.get_or_create(from_like=self, to_like=profile)
-        return like
-
-    def remove_like(self, profile):
-        """
-        Elimina la relación "me gusta"
-        :param profile => Perfil al que quiero quitar mi "me gusta":
-        """
-        LikeProfile.objects.filter(from_like=self, to_like=profile).delete()
-
-    def get_likes(self):
-        """
-        Obtengo los likes que ha dado del perfil instanciado
-        :return Devuelve los likes del perfil instanciado:
-        """
-        return self.likeprofiles.filter(to_likeprofile__from_like=self)
-
-    def get_likes_to_me(self):
-        """
-        Obtengo los likes que me han dado.
-        :return: Devuelve los likes recibidos
-        """
-        return LikeProfile.objects.get_all_likes_to_me(self)
-
-    def has_like(self, profile):
-        """
-        Comprueba si un perfil tiene un "me gusta" del perfil instanciado
-        :param profile => Perfil que se comprueba si tiene un me gusta del perfil instanciado:
-        """
-        return LikeProfile.objects.get(from_like=self, to_like=profile)
-
-    # methods following
-
-    def is_follow(self, profile):
-        """
-        Comprueba si sigo al perfil pasado como parametro
-        :param profile => Perfil que se comprueba si lo sigo:
-        :return Booleano dependiendo de si sigo al perfil o no:
-        """
-        try:
-            if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FOLLOWING):
-                return True
-            else:
-                return False
-        except ObjectDoesNotExist:
-            return False
-
-    # Add following
-    def add_follow(self, profile):
-        """
-        Añade una relacion de "seguido"
-        :param profile perfil del usuario que se quiere seguir:
-        :return a follow relation:
-        """
-        print('>>>>>> add_follow')
-        return self.add_relationship(profile, RELATIONSHIP_FOLLOWING,
-                                     False)
-
-    def get_follow_top12(self):
-        """
-        Devuelve 12 seguidos ordenados por ID
-        :return Devuelve 12 seguidos ordenados por ID:
-        """
-        return self.relationships.filter(to_people__status=RELATIONSHIP_FOLLOWING, to_people__from_person=self).values(
-            'user__username', 'user__first_name', 'user__last_name').order_by('id')[0:12]
-
-    def get_follow_objectlist(self):
-        """
-        Devuelve la lista de seguidos por un perfil
-        :return Devuelve la lista de seguidos por un perfil:
-        """
-        return self.relationships.filter(to_people__status=RELATIONSHIP_FOLLOWING, to_people__from_person=self).values(
-            'user__username', 'user__first_name', 'user__last_name').order_by('id')
-
-    def add_follow_request(self, profile, notify):
-        """
-        Añade una solicitud de seguimiento
-        :param profile => Perfil que quiero seguir:
-        :param notify => Notificacion generada:
-        """
-        obj, created = Request.objects.get_or_create(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
-        # Si existe la peticion de amistad, actualizamos la notificacion
-        obj.notification = notify
-        obj.save()
-        return obj
-
-    def get_follow_request(self, profile):
-        """
-        Devuelve la petición de seguimiento de un perfil
-        :param profile => Perfil del que se quiere recuperar la solicitud de seguimiento:
-        :return Devuelve la petición de seguimiento de un perfil:
-        """
-        return Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
-
-    def get_received_follow_requests(self):
-        """
-        Devuelve las peticiones de segumiento para mi perfil (perfil instanciado)
-        :return Devuelve las peticiones de segumiento para mi perfil:
-        """
-        return self.requestsToMe.filter(from_request__status=2, from_request__receiver=self)
-
-    def remove_received_follow_request(self, profile):
-        """
-        Elimina la petición de seguimiento hacia un perfil
-        :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
-        """
-        try:
-            request = Request.objects.get(emitter=self, receiver=profile, status=REQUEST_FOLLOWING)
-            request.notification.delete()  # Eliminamos la notificacion
-            request.delete()
-        except ObjectDoesNotExist:
-            return False
-
-    # methods followers
-    def is_follower(self, profile):
-        """
-        Comprueba si el perfil pasado como parametro es un seguidor mio
-        :param profile => Perfil del que quiero comprobar si es un seguidor:
-        :return Booleano que indica si es seguidor o no:
-        """
-        try:
-            if Relationship.objects.get(from_person=self, to_person=profile, status=RELATIONSHIP_FOLLOWER):
-                return True
-            else:
-                return False
-        except ObjectDoesNotExist:
-            return False
-
-    # add follower
-    def add_follower(self, profile):
-        """
-        El perfil pasado como parametro se añade como seguidor del perfil instancia
-        :param profile => Perfil que se quiere añadie a la lista de seguidores:
-        :return => Relación de seguidor:
-        """
-        print('>>>>> add_follower')
-        return self.add_relationship(profile, RELATIONSHIP_FOLLOWER,
-                                     False)
-
-    def add_direct_relationship(self, profile):
-        """
-        Añade una relacion directamente, sin necesidad de enviar
-        peticion de seguimiento.
-        :param profile:
-        :return True -> relacion creada con exito, False -> creacion de relación fallida:
-        """
-        try:
-            created_follower = profile.add_follower(self)
-        except ObjectDoesNotExist:
-            return False
-        try:
-            created_follow = self.add_follow(profile)
-        except ObjectDoesNotExist:
-            return False
-
-        created_follower.save()
-        created_follow.save()
-
-        return True
-
-    # Funcion despreciable
-    def get_received_friends_requests(self):
-        return self.requestsToMe.filter(from_request__status=1, from_request__receiver=self)
 
     # Methods of multimedia
     def get_num_multimedia(self):
         """
         Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
         """
-        return Photo.objects.filter(owner=self.user, is_public=True).count()
+        return Photo.objects.filter(owner=self.user_id, is_public=True).count()
 
     def get_total_num_multimedia(self):
         """
         Devuelve el numero de contenido multimedia de un perfil.
         """
-        return Photo.objects.filter(owner=self.user).count()
+        return Photo.objects.filter(owner=self.user_id).count()
+
+    def check_if_first_time_login(self):
+        """
+        Funcion para comprobar si un usuario se ha logueado
+        por primera vez.
+        """
+        is_first_time_login = self.is_first_login
+
+        if is_first_time_login:
+            self.is_first_login = False
+            self.save()
+
+        return is_first_time_login
 
     @property
     def gravatar(self, size=120):
@@ -597,133 +272,58 @@ class UserProfile(models.Model):
         """
         default = 'http://pre.skyfolk.net/static/img/nuevo.png'
         return "https://www.gravatar.com/avatar/%s?%s" % (
-            hashlib.md5(str(self.user.email.lower()).encode('utf-8')).hexdigest(),
+            hashlib.md5(str(User.objects.get(id=self.user_id).email).encode('utf-8')).hexdigest(),
             urlencode({'d': default, 's': str(size).encode('utf-8')}))
 
+    def last_seen(self):
+        return cache.get('seen_%s' % self.title)
 
-User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
+                return False
+            else:
+                return True
+        else:
+            return False
 
-
-class Relationship(models.Model):
-    """
-    Relaciones entre usuarios:
-        <<from_person>> y <<to_person>>: Las dos personas que componen la relación.
-        <<status>>: Estado de la relación, a escoger entre RELATIONSHIP_STATUSES
-        <<created>>: Fecha de creación de la relación.
-    """
-    from_person = models.ForeignKey(UserProfile, related_name='from_people')
-    to_person = models.ForeignKey(UserProfile, related_name='to_people')
-    status = models.IntegerField(choices=RELATIONSHIP_STATUSES)
-    created = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('from_person', 'to_person', 'status')
-
-
-class LikeProfileQuerySet(models.QuerySet):
-    """
-        Query Manager para usuarios favoritos
-    """
-
-    def get_all_likes(self, from_like):
+class RequestManager(models.Manager):
+    def get_follow_request(self, from_profile, to_profile):
         """
-        Devuelve todos los me gusta dados por un perfil en concreto.
-        :param from_like => Del perfil que da me gusta:
-        :return Todos los me gusta dados por un perfil en concreto:
+        Devuelve la petición de seguimiento de un perfil
+        :param profile => Perfil del que se quiere recuperar la solicitud de seguimiento:
+        :return Devuelve la petición de seguimiento de un perfil:
         """
-        return self.filter(from_like=from_like)
+        return self.get(emitter_id=from_profile,
+                        receiver_id=to_profile, status=REQUEST_FOLLOWING)
 
-    def get_last_like(self, from_like):
+    def add_follow_request(self, from_profile, to_profile, notify):
         """
-        Devuelve el ultimo me gusta dado por un perfil
-        :param from_like => Perfil que da me gusta:
-        :return El ultimo me gusta dado por un perfil:
+        Añade una solicitud de seguimiento
+        :param profile => Perfil que quiero seguir:
+        :param notify => Notificacion generada:
         """
-        return self.filter(from_like=from_like).latest()
+        obj, created = self.get_or_create(emitter_id=from_profile,
+                                          receiver_id=to_profile,
+                                          status=REQUEST_FOLLOWING)
+        # Si existe la peticion de amistad, actualizamos la notificacion
+        obj.notification = notify
+        obj.save()
+        return obj
 
-    def get_likes_by_created(self, from_like, reverse=True):
+    def remove_received_follow_request(self, from_profile, to_profile):
         """
-        Devuelve los me gusta dados por un perfil
-        ordenados por la creacion
-        :param from_like => Perfil emisor:
-        :param reverse => Perfil receptor:
-        :return  me gusta dados por un perfil ordenados por la creacion:
+        Elimina la petición de seguimiento hacia un perfil
+        :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
         """
-        if reverse:
-            return self.filter(from_like=from_like).order_by('-created')
-        return self.filter(from_like=from_like).order_by('created')
-
-    def get_all_likes_to_me(self, to_like):
-        """
-        Devuelve la lista de usuarios
-        que me han dado me gusta.
-        """
-        return self.filter(to_like=to_like)
-
-
-class LikeProfileManager(models.Manager):
-    """
-        Manager para usuarios que me gustan
-    """
-
-    def get_queryset(self):
-        return LikeProfileQuerySet(self.model, using=self._db)
-
-    def get_all_likes(self, from_like):
-        """
-        Devuelve todos los me gusta dados por un perfil en concreto.
-        :param from_like => Del perfil que da me gusta:
-        :return Todos los me gusta dados por un perfil en concreto:
-        """
-        return self.get_queryset().get_all_likes(from_like=from_like)
-
-    def get_last_like(self, from_like):
-        """
-        Devuelve el ultimo me gusta dado por un perfil
-        :param from_like => Perfil que da me gusta:
-        :return El ultimo me gusta dado por un perfil:
-        """
-        return self.get_queryset().get_last_like(from_like=from_like)
-
-    def get_likes_by_created(self, from_like, reverse=False):
-        """
-        Devuelve los me gusta dados por un perfil
-        ordenados por la creacion
-        :param from_like => Perfil emisor:
-        :param reverse => Perfil receptor:
-        :return  me gusta dados por un perfil ordenados por la creacion:
-        """
-        return self.get_queryset().get_likes_by_created(from_like=from_like, reverse=reverse)
-
-    def get_all_likes_to_me(self, to_like):
-        """
-        Devuelve la lista de usuarios
-        que me han dado me gusta.
-        """
-        return self.get_queryset().get_all_likes_to_me(to_like=to_like)
-
-
-class LikeProfile(models.Model):
-    """
-    Modelo que relaciona a dos usuarios al dar "me gusta" al otro perfil.
-        <<from_like>>: Persona que da like
-        <<to_like>>: Persona que recibe el like
-        <<created>>: Fecha de creación del like
-    """
-
-    class Meta:
-        get_latest_by = 'created'
-        unique_together = ('from_like', 'to_like')
-
-    from_like = models.ForeignKey(UserProfile, related_name='from_likeprofile')
-    to_like = models.ForeignKey(UserProfile, related_name='to_likeprofile')
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.user.username,
-                                                                self.to_like.user.username, self.created)
-
-    objects = LikeProfileManager()
+        try:
+            request = Request.objects.get(emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING)
+            request.notification.delete()  # Eliminamos la notificacion
+            request.delete()
+            return True
+        except ObjectDoesNotExist:
+            return False
 
 
 class Request(models.Model):
@@ -735,124 +335,15 @@ class Request(models.Model):
             <<created>>: Fecha en la que se creó la petición
             <<notification>>: Notificación asociada a la petición
     """
-    emitter = models.ForeignKey(UserProfile, related_name='from_request')
-    receiver = models.ForeignKey(UserProfile, related_name='to_request')
+    emitter = models.ForeignKey(User, related_name='from_request')
+    receiver = models.ForeignKey(User, related_name='to_request')
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
     notification = models.ForeignKey(Notification, related_name='request_notification', null=True)
+    objects = RequestManager()
 
     class Meta:
         unique_together = ('emitter', 'receiver', 'status')
-
-
-class AffinityUserManager(models.Manager):
-    """
-        Manager para ultimos usuarios visitados por afinidad/tiempo
-    """
-
-    def get_all_relations(self, emitterid):
-        """
-        Devuelve todas las relaciones <<ultimos usuarios visitados>>
-        :param emitterid => Emisor de la relacion:
-        :return relaciones del emisor:
-        """
-        return self.filter(emitter=emitterid)
-
-    def get_relation(self, emitterid, receiver):
-        """
-        Devuelve la relacion creada entre dos perfiles
-        :param emitterid => Perfil emisor:
-        :param receiver => Perfil receptor:
-        :return relacion entre emisor/receptor:
-        """
-        return self.filter(emitter=emitterid, receiver=receiver)
-
-    def get_affinity(self, emitterid, receiver):
-        """
-        Devuelve la afinidad entre dos perfiles
-        :param emitterid => Perfil emisor:
-        :param receiver => Perfil receptor:
-        :return afinidad entre dos usuarios:
-        """
-        return self.get(emitter=emitterid, receiver=receiver)
-
-    def get_relations_by_created(self, emitterid, reverse=True):
-        """
-        Devuelve relaciones ordenadas por la creacion
-        :param emitterid => Perfil emisor:
-        :param reverse => Perfil receptor:
-        :return relaciones ordenadas segun la creacion:
-        """
-        if reverse:
-            return self.filter(emitter=emitterid).order_by('-created')
-
-        return self.filter(emitter=emitterid).order_by('created')
-
-    def get_last_relation(self, emitterid):
-        """
-        Devuelve la ultima relacion creada
-        :param emitterid => Perfil emisor:
-        :return ultima relacion creada:
-        """
-        return self.filter(emitter=emitterid).latest()
-
-    def get_favourite_relation(self, emitterid):
-        """
-        Devuelve la relacion favorita (por afinidad)
-        :param emitterid => Perfil emisor:
-        :return devuelve relaciones de mayor a menor afinidad:
-        """
-        return self.filter(emitter=emitterid).order_by('-affinity')
-
-    def check_limit(self, emitterid):
-        """
-        Comprueba el limite de usuarios en la lista de favoritos
-        Si alcanza el limite, elimina el que menos afinidad/fecha de creacion
-        tenga.
-        """
-        LIMIT_USERS = 6
-        if self.filter(emitter=emitterid).count() > LIMIT_USERS:
-            print('>> HAVE: {} relations.'.format(self.count()))
-            try:
-                candidate = self.filter(emitter=emitterid).order_by('created', 'affinity')[0]
-            except ObjectDoesNotExist:
-                candidate = None
-            if candidate:
-                print('Borrando candidato: {}'.format(candidate.receiver.user.username))
-                candidate.delete()
-
-
-class AffinityUser(models.Model):
-    """
-        Modelo para gestionar los últimos usuarios visitados
-        cada usuario visitado tendra una afinidad,
-        esta se incrementara tantas veces como se visite un perfil
-        o actuemos con objetos de ese perfil(dar me gusta a comentarios,
-        añadir a mi timeline algun comentario suyo...
-    """
-
-    class Meta:
-        get_latest_by = 'created'
-        unique_together = ('emitter', 'receiver')
-
-    emitter = models.ForeignKey(UserProfile, related_name='from_profile_affinity')
-    receiver = models.ForeignKey(UserProfile, related_name='to_profile_affinity')
-    affinity = models.IntegerField(verbose_name='affinity', default=0)
-    created = models.DateTimeField(auto_now_add=True)
-    objects = AffinityUserManager()
-
-    def __str__(self):
-        return "Emitter: {0} Receiver: {1} Created: {2}".format(self.emitter.user.username, self.receiver.user.username,
-                                                                self.created)
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, increment=True):
-        """
-            Autoincrementar afinidad
-        """
-        if increment:
-            self.affinity += 1
-        self.created = datetime.now()
-        super(AffinityUser, self).save()
 
 
 class AuthDevicesQuerySet(models.QuerySet):
@@ -906,6 +397,6 @@ class AuthDevices(models.Model):
     """
         Establece una relacion entre el usuario y los navegadores/dispositivos que usa.
     """
-    user_profile = models.ForeignKey(UserProfile, related_name='device_to_profile')
+    user_profile = models.ForeignKey(User, related_name='device_to_profile')
     browser_token = models.CharField(max_length=1024)
     objects = AuthDevicesManager()

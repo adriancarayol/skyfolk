@@ -13,8 +13,8 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <a><i class="fa fa-thumb-tack"></i></a>
             </div>
             <div class="row">
-                <div class="user-avatar" style="background: {% if user_profile.profile.backImage and user_profile.profile.backImage|file_exists %}
-                    url({{ user_profile.profile.backImage.url }})
+                <div class="user-avatar" style="background: {% if node_profile.back_image %}
+                    url({{ node_profile.back_image }})
                     {% else %}
                     url({{ STATIC_URL }}dist/img/nuevo_back.png)
                     {% endif %} no-repeat center center; background-size: cover;">
@@ -23,17 +23,17 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     <!-- si es usuario esta visitando un perfil que no es el suyo -->
                     <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
                     <script type="text/javascript">
-$(window).load(function () {
-    var addFriend = document.getElementById('addfriend');
-    {% if isFriend == True %}
-    $(addFriend).replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
-    {% elif isBlocked == True %}
-    $(addFriend).replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
-    $('#bloq-user').css('color', '#FF6347');
-    {% elif existFollowRequest == True %}
-    $(addFriend).replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>' + ' ' + '</div>');
-    {% endif %}
-});
+                        $(window).load(function () {
+                            var addFriend = document.getElementById('addfriend');
+                            {% if isFriend == True %}
+                            $(addFriend).replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                            {% elif isBlocked == True %}
+                            $(addFriend).replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
+                            $('#bloq-user').css('color', '#FF6347');
+                            {% elif existFollowRequest == True %}
+                            $(addFriend).replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>' + ' ' + '</div>');
+                            {% endif %}
+                        });
                     </script>
                     {% endif %}
             </div>
@@ -42,7 +42,13 @@ $(window).load(function () {
             <div class="col l8 m12 s12 user-stats z-depth-1-half">
                 <div class="caja">
                     <div class="item">
-                        <div class="user-pic">{% avatar user_profile class="user-pic" %}</div>
+                        <div class="user-pic"
+                             style="{% if node_profile.online %}-webkit-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
+                                 -moz-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
+                                 box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);{% else %}
+                                 -webkit-box-shadow: 0 0 10px 0 rgba(255, 99, 71, 0.75);
+                                 -moz-box-shadow: 0 0 10px 0 rgba(255, 99, 71, 0.75);
+                                 box-shadow: 0 0 10px 0 rgba(255, 99, 71, 0.75);{% endif %}">{% avatar user_profile class="user-pic" %}</div>
                         <div class="informacion">
                             {% if user.is_authenticated and user.username == user_profile.username %}
                             <!-- Si el usuario esta visitando su propio perfil -->
@@ -65,17 +71,17 @@ $(window).load(function () {
                     </div>
                 </div>
                 <div class="header">
-                    <p class="user-profile-name">@{{ user_profile.username }}</p>
-                    <p id="profileId" hidden>{{ user_profile.profile.id }}</p>
-                    {% if user_profile.profile.status != None and user_profile.profile.status|length != 0%}
-                    <p class="status"> - {{ user_profile.profile.status }}</p>
+                    <p class="user-profile-name">@{{ node_profile.title }}</p>
+                    <p id="profileId" hidden>{{ node_profile.user_id }}</p>
+                    {% if node_profile.status != None and node_profile.status|length != 0 %}
+                    <p class="status"> - {{ node_profile.status }}</p>
                     {% endif %}
                     {% if not isFollower %}
                     <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ user_profile.username }}"></span>
+                                                                                    data-tooltip="Acerca de {{ node_profile.title }}"></span>
                     {% else %}
                     <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ user_profile.username }} - ¡Te sigue!"
+                                                                                    data-tooltip="Acerca de {{ node_profile.title }} - ¡Te sigue!"
                                                                                     style="color: #1e88e5"></span>
                     {% endif %}
                     <ul id="user-stats" class="stats">
@@ -111,6 +117,7 @@ $(window).load(function () {
                     <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
                     <h4 class="info-user-stats">Seguidores: {{ followers }}</h4>
                     <h4 class="info-user-stats">Seguidos: {{ following }} </h4>
+                    <h4 class="info-user-stats">Activo hace: {{ node_profile.last_seen|timesince }}</h4>
                 </div>
                 <ul class="personal-card-controls">
                     {% if user.is_authenticated and user.username != user_profile.username %}

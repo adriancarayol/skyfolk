@@ -1,4 +1,9 @@
 import json
+import logging
+import os
+import uuid
+import PIL.Image as pil
+from django.utils.six import BytesIO
 
 from allauth.account.views import PasswordChangeView, EmailView
 from dal import autocomplete
@@ -17,24 +22,25 @@ from django.views.generic.list import ListView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 from django.http import JsonResponse
-from taggit.models import TaggedItem
 
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
-from publications.models import Publication
+from publications.models import Publication, PublicationImage
 from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import UserProfile, AffinityUser
+from user_profile.models import NodeProfile, TagProfile, Request
 from publications.utils import get_author_avatar
+from neomodel import db
+from django.db import transaction
+from django.core.files.storage import FileSystemStorage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 @login_required(login_url='/')
-@page_template("account/profile_comments.html")
-@page_template("account/timeline_entries.html", key='timeline_entries')
 @page_template("account/follow_entries.html", key='follow_entries')
 def profile_view(request, username,
                  template="account/profile.html",
@@ -50,102 +56,89 @@ def profile_view(request, username,
     user_profile = get_object_or_404(get_user_model(),
                                      username__iexact=username)
 
+    n = NodeProfile.nodes.get(user_id=user_profile.id)
+    m = NodeProfile.nodes.get(user_id=user.id)
+
     context = {}
     # Privacidad del usuario
-    privacity = user_profile.profile.is_visible(user.profile)
+    privacity = n.is_visible(m)
 
     # Para escribir mensajes en mi propio perfil.
     group_initial = {'owner': user.pk}
     context['user_profile'] = user_profile
-    context['searchForm'] = SearchForm(request.POST)
+    context['node_profile'] = n
     context['privacity'] = privacity
-    context['publicationSelfForm'] = PublicationForm()
     context['groupForm'] = FormUserGroup(initial=group_initial)
-    context['notifications'] = user.notifications.unread()
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":
         template = "account/privacity/private_profile.html"
         return render(request, template, context)
-    elif privacity == "block":
+    elif n.bloq.is_connected(m):
         template = "account/privacity/block_profile.html"
         return render(request, template, context)
 
     # Recuperamos requests para el perfil y si el perfil es gustado.
-    json_requestsToMe = None
     if user.username != username:
-        liked = True
         try:
-            user.profile.has_like(user_profile.profile)
-        except ObjectDoesNotExist:
+            liked = m.has_like(to_like=user_profile.id)
+        except Exception:
             liked = False
     else:
         liked = False
-        requestsToMe = user.profile.get_received_friends_requests()
-
-        if requestsToMe:
-            requestsToMe_result = list()
-            for item in requestsToMe:
-                requestsToMe_result.append(
-                    {'id_profile': item.pk, 'username': item.user.username, })
-            json_requestsToMe = json.dumps(requestsToMe_result)
 
     # Recuperamos el numero de seguidores
     try:
-        num_followers = user_profile.profile.get_followers().count()
-    except ObjectDoesNotExist:
-        num_followers = None
+        num_followers = n.count_followers()
+    except Exception:
+        num_followers = 0
 
     # Recuperamos el numero de seguidos y la lista de seguidos
     try:
-        num_follows = user_profile.profile.get_following()
-    except ObjectDoesNotExist:
-        num_follows = None
+        num_follows = n.count_follows()
+    except Exception:
+        num_follows = 0
 
     # Comprobamos si el perfil esta bloqueado
     isBlocked = False
     if user.username != username:
         try:
-            if user.profile.is_blocked(user_profile.profile):
-                isBlocked = True
-        except ObjectDoesNotExist:
+            isBlocked = m.bloq.is_connected(n)
+        except Exception:
             pass
 
     # Comprobamos si el perfil es seguidor
     isFollower = False
     if user.username != username:
         try:
-            if user.profile.is_follower(user_profile.profile):
-                isFollower = True
-        except ObjectDoesNotExist:
+            isFollower = n.follow.is_connected(m)
+        except Exception:
             pass
     # Comprobamos si el perfil es seguido
     isFollow = False
     if user.username != username:
         try:
-            if user.profile.is_follow(user_profile.profile):
-                isFollow = True
-        except ObjectDoesNotExist:
+            isFollow = m.follow.is_connected(n)
+        except Exception:
             pass
     # Recuperamos el numero de contenido multimedia que tiene el perfil
     try:
         if user.username == username:
-            multimedia_count = user_profile.profile.get_total_num_multimedia()
+            multimedia_count = n.get_total_num_multimedia()
         else:
-            multimedia_count = user_profile.profile.get_num_multimedia()
+            multimedia_count = n.get_num_multimedia()
     except ObjectDoesNotExist:
         multimedia_count = 0
     # Comprobamos si existe una peticion de seguimiento
     try:
-        friend_request = user.profile.get_follow_request(user_profile.profile)
+        friend_request = Request.objects.get_follow_request(from_profile=user.id, to_profile=user_profile.id)
     except ObjectDoesNotExist:
         friend_request = None
 
-    context['json_requestsToMe'] = json_requestsToMe
     context['liked'] = liked
-    context['n_likes'] = len(user_profile.profile.likesToMe.all())
+    context['n_likes'] = n.count_likes()
     context['followers'] = num_followers
-    context['following'] = len(num_follows)
+    context['following'] = num_follows
     context['isBlocked'] = isBlocked
     context['isFollower'] = isFollower
     context['isFriend'] = isFollow
@@ -156,8 +149,6 @@ def profile_view(request, username,
         template = "account/privacity/need_confirmation_profile.html"
         return render(request, template, context)
 
-    # Para escribir mensajes en perfiles ajenos
-    initial = {'author': user.pk, 'board_owner': user_profile.pk}
     context['reply_publication_form'] = ReplyPublicationForm()
     context['publicationForm'] = PublicationForm()
     context['publication_edit'] = PublicationEdit()
@@ -174,24 +165,9 @@ def profile_view(request, username,
     except ObjectDoesNotExist:
         publications = None
 
-    # Establece la afinidad al perfil visitado.
-    if user.pk != user_profile.pk:
-        AffinityUser.objects.check_limit(emitterid=user_profile.profile)
-    try:
-        if user.pk != user_profile.pk:
-            profile_visit, created = AffinityUser.objects.get_or_create(emitter=user.profile,
-                                                                        receiver=user_profile.profile)
-        else:
-            profile_visit, created = None, False
-    except ObjectDoesNotExist:
-        profile_visit, created = None, False
-
-    if not created and profile_visit:
-        profile_visit.save()
-
     # Contenido de las tres tabs
     context['publications'] = publications
-    context['friends_top12'] = num_follows
+    context['friends_top12'] = n.get_follows()
 
     if extra_context is not None:
         context.update(extra_context)
@@ -213,10 +189,7 @@ def search(request, option=None):
     """
     # para mostarar tambien el cuadro de busqueda en la pagina
     user = request.user
-    initial = {'author': user.pk, 'board_owner': user.pk}
     searchForm = SearchForm(request.POST)
-    # mostrar formulario para enviar comentarios/publicaciones
-    publicationForm = PublicationForm(initial=initial)
     info = request.method
 
     if request.method == 'GET' and option is None:
@@ -233,7 +206,6 @@ def search(request, option=None):
                       {'showPerfilButtons': True,
                        'searchForm': searchForm,
                        'resultSearch': (),
-                       'publicationSelfForm': publicationForm,
                        'message': info})
 
     # if request.method == 'POST':
@@ -292,14 +264,13 @@ def search(request, option=None):
                     elif len(words) > 1:
                         for w in words:
                             pass
-                return render(request, 'account/search.html', {'showPerfilButtons': True, 'searchForm': searchForm,
+                return render(request, 'account/search.html', {'showPerfilButtons': True,
                                                                'resultSearch': result_search,
-                                                               'publicationSelfForm': publicationForm,
+                                                               'searchForm': searchForm,
                                                                'resultMessages': result_messages,
                                                                'result_media': result_media,
                                                                'words': words,
-                                                               'message': info,
-                                                               'notifications': user.notifications.unread()})
+                                                               'message': info, })
 
 
 @login_required(login_url='/')
@@ -309,8 +280,6 @@ def advanced_view(request):
     """
     user = request.user
     template_name = "account/search-avanzed.html"
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial)
     searchForm = SearchForm(request.POST)
 
     http_method = request.method
@@ -359,65 +328,96 @@ def advanced_view(request):
             result_regex = Publication.objects.filter(content__iregex=clean_regex)
             print(result_regex)
 
-    return render(request, template_name, {'publicationSelfForm': publicationForm, 'searchForm': searchForm,
-                                           'form': form, 'notifications': user.notifications.unread()})
+    return render(request, template_name, {'form': form, })
 
 
 @login_required(login_url='/')
 def config_privacity(request):
-    user_profile = request.user
-    initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
-    print('>>>>> PETICION CONFIG')
+    user = request.user
+    try:
+        user_profile = NodeProfile.nodes.get(user_id=user.id)
+    except NodeProfile.DoesNotExist:
+        raise Http404
+
+    logging.info('>>>>> PETICION CONFIG - User: {}'.format(user.username))
     if request.POST:
-        privacity_form = PrivacityForm(data=request.POST, instance=user_profile.profile)
+        privacity_form = PrivacityForm(data=request.POST)
         if privacity_form.is_valid():
-            privacity_form.save()
-            return HttpResponseRedirect('/config/privacity')
+            try:
+                user_profile.privacity = privacity_form.clean_privacity()
+                user_profile.save()
+                print(user_profile.privacity)
+            except Exception:
+                logging.info('>>>> PETICION CONFIG - User: {} - ERROR'.format(user.username))
+            logging.info('>>>> PETICION CONFIG - User: {} - CAMBIOS GUARDADOS CORRECTAMENTE'.format(user.username))
+        return HttpResponseRedirect('/config/privacity')
     else:
-        privacity_form = PrivacityForm(instance=user_profile.profile)
+        privacity_form = PrivacityForm(initial={'privacity': user_profile.privacity})
 
     return render(request, 'account/cf-privacity.html',
-                  {'showPerfilButtons': True, 'searchForm': searchForm, 'publicationSelfForm': publicationForm,
+                  {'showPerfilButtons': True,
                    'privacity_form': privacity_form,
-                   'notifications': user_profile.notifications.unread()})
+                   })
 
 
 @login_required(login_url='/')
 def config_profile(request):
     user_profile = request.user
-    initial = {'author': user_profile.pk, 'board_owner': user_profile.pk}
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
-    print('>>>>>>>  PETICION CONFIG')
+    node = NodeProfile.nodes.get(user_id=user_profile.id)
+    logging.info('>>>>>>>  PETICION CONFIG')
     if request.POST:
         # formulario enviado
-        print('>>>>>>>  paso 1' + str(request.FILES))
+        logging.info('>>>>>>>  paso 1' + str(request.FILES))
         user_form = UserForm(data=request.POST, instance=request.user)
-        perfil_form = ProfileForm(
-            request.POST, request.FILES, instance=request.user.profile)
+        perfil_form = ProfileForm(request.POST, request.FILES)
 
-        print('>>>>>>>  paso 1.1')
+        logging.info('>>>>>>>  paso 1.1')
         if user_form.is_valid() and perfil_form.is_valid():
             # formulario validado correctamente
-            print('>>>>>>  save')
-            user_form.save()
-            perfil_form.save()
-            # poner mas tarde, que muestre un mensaje de formulario aceptado
+            logging.info('>>>>>>  save')
+            try:
+                with transaction.atomic(using='default'):
+                    with db.transaction:
+                        node.first_name = user_form.cleaned_data['first_name']
+                        node.last_name = user_form.cleaned_data['last_name']
+                        node.status = perfil_form.clean_status()
+                        data = perfil_form.clean_backImage()
+                        if data:
+                            file_id = str(uuid.uuid4())  # random filename
+                            filename, file_extension = os.path.splitext(data.name)  # get extension
+                            fs = FileSystemStorage()  # get filestorage
+                            img = pil.open(data)
+                            img.thumbnail((1500, 500), pil.ANTIALIAS)
+                            thumb_io = BytesIO()
+                            img.save(thumb_io, format=data.content_type.split('/')[-1].upper(), quality=95,
+                                     optimize=True)
+                            thumb_io.seek(0)
+                            file = InMemoryUploadedFile(thumb_io,
+                                                        None,
+                                                        filename,
+                                                        data.content_type,
+                                                        thumb_io.tell(),
+                                                        None)
+                            filename = fs.save(file_id + file_extension, file)  # get filename
+                            filename, file_extension = os.path.splitext(filename)  # only if save change "file_id"
+                            node.back_image = filename  # assign filename to back_image node
+                        node.save()
+                        user_form.save()
+            except Exception as e:
+                logging.info(
+                    "No se pudo guardar la configuracion del perfil de la cuenta: {}".format(user_profile.username))
             return HttpResponseRedirect('/config/profile')
-
     else:
         # formulario inicial
         user_form = UserForm(instance=request.user)
-        perfil_form = ProfileForm(instance=request.user.profile)
+        perfil_form = ProfileForm(initial={'status': node.status})
 
-    print('>>>>>>>  paso x')
-    context = {'showPerfilButtons': True, 'searchForm': searchForm,
+    logging.Manager('>>>>>>>  paso x')
+    context = {'showPerfilButtons': True,
                'user_profile': user_profile,
+               'node_profile': node,
                'user_form': user_form, 'perfil_form': perfil_form,
-               'publicationSelfForm': publicationForm,
-               'notifications': user_profile.notifications.unread()}
+               }
     return render(request, 'account/cf-profile.html', context)
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -427,14 +427,13 @@ def config_profile(request):
 @login_required(login_url='/')
 def config_pincode(request):
     user = request.user
+    user_profile = NodeProfile.nodes.get(user_id=user.id)
     initial = {'author': user.pk, 'board_owner': user.pk}
-    pin = user.profile.personal_pin
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
+    pin = user_profile.uid
 
-    context = {'showPerfilButtons': True, 'searchForm': searchForm,
-               'publicationSelfForm': publicationForm, 'pin': pin,
-               'notifications': user.notifications.unread()}
+    context = {'showPerfilButtons': True,
+               'pin': pin,
+               }
 
     return render(request, 'account/cf-pincode.html', context)
 
@@ -442,16 +441,12 @@ def config_pincode(request):
 @login_required(login_url='/')
 def config_blocked(request):
     user = request.user
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    list_blocked = request.user.profile.get_blockeds()
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
+    n = NodeProfile.nodes.get(user_id=user.id)
+    list_blocked = n.bloq.match()
 
     return render(request, 'account/cf-blocked.html', {'showPerfilButtons': True,
-                                                       'searchForm': searchForm,
-                                                       'publicationSelfForm': publicationForm,
                                                        'blocked': list_blocked,
-                                                       'notifications': user.notifications.unread()})
+                                                       })
 
 
 @login_required(login_url='accounts/login')
@@ -459,7 +454,7 @@ def add_friend_by_username_or_pin(request):
     """
     Funcion para añadir usuario por nombre de usuario y perfil
     """
-    print('ADD FRIEND BY USERNAME OR PIN')
+    logging.info('ADD FRIEND BY USERNAME OR PIN')
     response = 'no_added_friend'
     friend = None
     data = {
@@ -469,58 +464,59 @@ def add_friend_by_username_or_pin(request):
     if request.method == 'POST':
         pin = str(request.POST.get('valor'))
         if len(pin) > 15:
-            print('STEP 1')
             user_request = request.user
-            user = user_request.profile
-            print('STEP 2')
-            print('Pin: {}'.format(pin))
-            if str(user.personal_pin).strip() == pin.strip():
-                return HttpResponse(json.dumps('your_own_pin'), content_type='application/javascript')
-            else:
-                print('personal_pin: {} pin: {}'.format(user.personal_pin, pin))
 
             try:
-                friend = UserProfile.objects.get(personal_pin=pin)
+                user = NodeProfile.nodes.get(user_id=user_request.id)
+            except NodeProfile.DoesNotExist:
+                return HttpResponse(
+                    json.dumps(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript'))
+
+            logging.info('Pin: {}'.format(pin))
+
+            if str(user.uid).strip() == pin.strip():
+                return HttpResponse(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript')
+            else:
+                logging.info('personal_pin: {} pin: {}'.format(user.uid, pin))
+
+            try:
+                friend = NodeProfile.nodes.get(uid=pin)
             except ObjectDoesNotExist:
                 data['response'] = 'no_match'
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
-            if user.is_follow(friend):
+            if user.follow.is_connected(friend):
                 data['response'] = 'its_your_friend'
-                data['friend'] = friend.user.username
+                data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
-            is_blocked = friend.is_blocked(user)
-
-            if is_blocked:
+            if friend.bloq.is_connected(user):
                 data['response'] = 'user_blocked'
-                data['friend'] = friend.user.username
+                data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
-            blocked_profile = user.is_blocked(friend)
-
-            if blocked_profile:
+            if user.bloq.is_connected(friend):
                 data['response'] = 'blocked_profile'
-                data['friend'] = friend.user.username
+                data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
-            no_need_petition = friend.privacity == UserProfile.ALL
+            no_need_petition = friend.privacity == NodeProfile.ALL
             if no_need_petition:
-                created = user.add_direct_relationship(profile=friend)
-                if created:
-                    data['response'] = 'added_friend'
-                    data['friend_username'] = friend.user.username
-                    data['friend_avatar'] = get_author_avatar(friend.user)
-                    data['friend_first_name'] = friend.user.first_name
-                    data['friend_last_name'] = friend.user.last_name
-                    return HttpResponse(json.dumps(data), content_type='application/javascript')
+                user.follow.connect(friend)
+                data['response'] = 'added_friend'
+                data['friend_username'] = friend.title
+                data['friend_avatar'] = get_author_avatar(friend.user_id)
+                data['friend_first_name'] = User.objects.get(id=friend.user_id).first_name
+                data['friend_last_name'] = User.objects.get(id=friend.user_id).last_name
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # enviamos peticion de amistad
             try:
-                friend_request = user.get_follow_request(friend)
+                friend_request = Request.objects.get_follow_request(from_profile=user.user_id,
+                                                                    to_profile=friend.user_id)
             except ObjectDoesNotExist:
                 friend_request = None
 
@@ -535,9 +531,7 @@ def add_friend_by_username_or_pin(request):
                                            verb=u'quiere seguirte.', level='friendrequest')
                 # Enlazamos notificacion con peticion de amistad
                 try:
-                    created = user.add_follow_request(
-                        friend, notification[0][1])
-                    created.save()
+                    created = Request.objects.add_follow_request(user.user_id, friend.user_id, notification[0][1])
                     response = 'new_petition'
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
@@ -545,55 +539,55 @@ def add_friend_by_username_or_pin(request):
         else:  # tipo == username
             user_request = request.user
             username = pin
-            user = user_request.profile
 
-            if user.user.username == username:
+            try:
+                user = NodeProfile.nodes.get(user_id=user_request.id)
+            except NodeProfile.DoesNotExist:
+                return HttpResponse(
+                    json.dumps(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript'))
+
+            if user.title == username:
                 data['response'] = 'your_own_username'
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             try:
-                friend = UserProfile.objects.get(user__username=username)
+                friend = NodeProfile.nodes.get(title=username)
             except ObjectDoesNotExist:
                 data['response'] = 'no_match'
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
-            if user.is_follow(friend):  # if user.is_friend(friend):
+            if user.follow.is_connected(friend):  # if user.is_friend(friend):
                 data['response'] = 'its_your_friend'
-                data['friend'] = friend.user.username
+                data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
-            is_blocked = friend.is_blocked(user)
-
-            if is_blocked:
+            if friend.bloq.is_connected(user):
                 data['response'] = 'user_blocked'
-                data['friend'] = friend.user.username
+                data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
-            blocked_profile = user.is_blocked(friend)
-
-            if blocked_profile:
+            if user.bloq.is_connected(friend):
                 data['response'] = 'blocked_profile'
-                data['friend'] = friend.user.username
+                data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
-            no_need_petition = friend.privacity == UserProfile.ALL
+            no_need_petition = friend.privacity == NodeProfile.ALL
             if no_need_petition:
-                created = user.add_direct_relationship(profile=friend)
-                if created:
-                    data['response'] = 'added_friend'
-                    data['friend_username'] = friend.user.username
-                    data['friend_avatar'] = get_author_avatar(friend.user)
-                    data['friend_first_name'] = friend.user.first_name
-                    data['friend_last_name'] = friend.user.last_name
-                    return HttpResponse(json.dumps(data), content_type='application/javascript')
+                user.follow.connect(friend)
+                data['response'] = 'added_friend'
+                data['friend_username'] = friend.title
+                data['friend_avatar'] = get_author_avatar(friend.user_id)
+                data['friend_first_name'] = User.objects.get(id=friend.user_id).first_name
+                data['friend_last_name'] = User.objects.get(id=friend.user_id).last_name
+                return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # enviamos peticion de amistad
             try:
-                friend_request = user.get_follow_request(
-                    UserProfile.objects.get(user__username=username))
+                friend_request = Request.objects.get_follow_request(from_profile=user.user_id,
+                                                                    to_profile=friend.user_id)
                 response = 'in_progress'
             except ObjectDoesNotExist:
                 friend_request = None
@@ -609,18 +603,16 @@ def add_friend_by_username_or_pin(request):
                                            verb=u'quiere seguirte.', level='friendrequest')
                 # Enlazamos notificacion y peticion de amistad
                 try:
-                    created = user.add_follow_request(
-                        friend, notification[0][1])
-                    created.save()
+                    created = Request.objects.add_follow_request(user.user_id, friend.user_id, notification[0][1])
                     response = 'new_petition'
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
     data['response'] = response
     data['friend_username'] = friend.user.username
-    data['friend_avatar'] = get_author_avatar(friend.user)
-    data['friend_first_name'] = friend.user.first_name
-    data['friend_last_name'] = friend.user.last_name
+    data['friend_avatar'] = get_author_avatar(friend.user_id)
+    data['friend_first_name'] = User.objects.get(id=friend.user_id).first_name
+    data['friend_last_name'] = User.objects.get(id=friend.user_id).last_name
     return HttpResponse(json.dumps(data), content_type='application/javascript')
 
 
@@ -632,35 +624,32 @@ def like_profile(request):
     response = "null"
     if request.method == 'POST':
         user = request.user
-        slug = request.POST.get('slug', None)
-        actual_profile = get_object_or_404(UserProfile,
-                                           id=slug)
-        try:
-            user_liked = user.profile.has_like(actual_profile)
-        except ObjectDoesNotExist:
-            user_liked = None
+        slug = int(request.POST.get('slug', None))
 
-        if user_liked:
-            user_liked.delete()
-            affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
-            if not created:  # Quiere decir que ya ha interactuado con el perfil
-                affinity.affinity -= 20
-                affinity.save(increment=False)
+        actual_profile = get_object_or_404(User,
+                                           id=slug)
+        n = NodeProfile.nodes.get(user_id=user.id)
+        m = NodeProfile.nodes.get(user_id=slug)
+
+        if n.like.is_connected(m):
+            n.like.disconnect(NodeProfile.nodes.get(user_id=slug))
+            rel = n.follow.relationship(m)
+            if rel:
+                rel.weight = rel.weight - 10
+                rel.save()
             response = "nolike"
         else:
-            print(str(slug))
-            created = user.profile.add_like(actual_profile)
-            created.save()
-            affinity, created = AffinityUser.objects.get_or_create(emitter=user.profile, receiver=actual_profile)
-            if not created:  # Quiere decir que ya ha interactuado con el perfil
-                affinity.affinity += 20
-                affinity.save(increment=False)
+            n.like.connect(NodeProfile.nodes.get(user_id=slug))
+            rel = n.follow.relationship(m)
+            if rel:
+                rel.weight = rel.weight + 10
+                rel.save()
             response = "like"
 
-    print('%s da like a %s' % (user.username, actual_profile.user.username))
-    print('Nueva afinidad emitter: {} receiver: {} afinidad: {}'.format(user.username, actual_profile.user.username,
-                                                                        affinity.affinity))
-    print("Response: " + response)
+        logging.info('%s da like a %s' % (user.username, actual_profile.username))
+        logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
+        logging.info("Response: " + response)
+
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
@@ -670,67 +659,69 @@ def request_friend(request):
     """
     Funcion para solicitudes de amistad
     """
-    print('>>>>>>> peticion amistad ')
+    logging.info('>>>>>>> peticion amistad ')
     response = "null"
     if request.method == 'POST':
         user = request.user
-        slug = request.POST.get('slug', None)
-        profile = UserProfile.objects.get(pk=slug)
+        slug = int(request.POST.get('slug', None))
+
+        n = NodeProfile.nodes.get(user_id=user.id)
+        m = NodeProfile.nodes.get(user_id=slug)
 
         # El perfil me ha bloqueado
-        is_blocked = profile.is_blocked(user.profile)
 
-        if is_blocked:
+        if m.bloq.is_connected(n):
             response = "user_blocked"
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         try:
-            user_friend = user.profile.is_follow(profile)  # Comprobamos si YO ya sigo al perfil deseado.
-        except ObjectDoesNotExist:
+            user_friend = n.follow.is_connected(m)  # Comprobamos si YO ya sigo al perfil deseado.
+        except Exception:
             user_friend = None
 
         if user_friend:
             response = "isfriend"
         else:
             # Comprobamos si el perfil necesita peticion de amistad
-            no_need_petition = profile.privacity == UserProfile.ALL
+            no_need_petition = m.privacity == NodeProfile.ALL
             if no_need_petition:
-                created = user.profile.add_direct_relationship(profile=profile)
-                if created:
-                    response = "added_friend"
-                    # enviamos notificacion informando del evento
-                    notify.send(user, actor=user.username,
-                                recipient=profile.user,
-                                verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (user.username, user.username),
-                                level='new_follow')
-                    return HttpResponse(json.dumps(response), content_type='application/javascript')
+                n.follow.connect(m)
+                response = "added_friend"
+                # enviamos notificacion informando del evento
+
+                notify.send(user, actor=n.title,
+                            recipient=User.objects.get(id=m.user_id),
+                            verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (n.title, n.title),
+                            level='new_follow')
+
+                return HttpResponse(json.dumps(response), content_type='application/javascript')
             response = "inprogress"
+
             try:
-                friend_request = user.profile.get_follow_request(profile)
+                friend_request = Request.objects.get_follow_request(from_profile=n.user_id, to_profile=m.user_id)
             except ObjectDoesNotExist:
                 friend_request = None
 
             if not friend_request:
                 # Eliminamos posibles notificaciones residuales
-                Notification.objects.filter(actor_object_id=user.pk,
-                                            recipient=profile.user,
+                Notification.objects.filter(actor_object_id=n.user_id,
+                                            recipient=m.user_id,
                                             level='friendrequest').delete()
+
                 # Creamos y enviamos la nueva notificacion
-                notification = notify.send(user, actor=User.objects.get(pk=user.pk).username,
-                                           recipient=profile.user,
+                notification = notify.send(user, actor=n.title,
+                                           recipient=User.objects.get(id=m.user_id),
                                            verb=u'quiere seguirte.', level='friendrequest')
 
-                import pprint
-                pprint.pprint(notification)
                 # Enlazamos notificacion con peticion de amistad
                 try:
-                    created = user.profile.add_follow_request(
-                        profile, notification[0][1])
-                    created.save()
+                    created = Request.objects.add_follow_request(n.user_id,
+                                                                 m.user_id,
+                                                                 notification[0][1])
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-        print(response)
+        logging.info(response)
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -744,50 +735,33 @@ def respond_friend_request(request):
     response = "null"
     if request.method == 'POST':
         user = request.user
-        profileUserId = request.POST.get('slug', None)
+        profile_user_id = int(request.POST.get('slug', None))
         request_status = request.POST.get('status', None)
-        print('Respond friend request: ' + profileUserId + ' estado: ' + request_status)
+
         try:
-            emitter_profile = User.objects.get(pk=profileUserId).profile
-        except ObjectDoesNotExist:
-            emitter_profile = None
+            n = NodeProfile.nodes.get(user_id=profile_user_id)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-        if emitter_profile:
-            user.profile.remove_received_follow_request(emitter_profile)
+        if request_status == 'accept':
+            n.follow.connect(m)
+            logging.info('user.profile: {} emitter_profile: {}'.format(m.title, n.title))
 
-            if request_status == 'accept':
-                response = "not_added_friend"
-                try:
-                    user_friend = user.profile.is_follower(profileUserId)
-                except ObjectDoesNotExist:
-                    user_friend = None
+            # enviamos notificacion informando del evento
+            notify.send(user, actor=m.title,
+                        recipient=User.objects.get(id=profile_user_id),
+                        verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (m.title, m.title),
+                        evel='new_follow')
 
-                if not user_friend:
-                    created = user.profile.add_follower(
-                        emitter_profile)  # Me añado como seguidor del perfil que quiero seguir
-                    created_2 = emitter_profile.add_follow(
-                        user.profile)  # Añado a mi lista de "seguidos" al peril que quiero seguir
-                    created.save()
-                    created_2.save()
+            response = "added_friend"
 
-                    print('user.profile: {} emitter_profile: {}'.format(user.username, emitter_profile.user.username))
+        elif request_status == 'rejected':
+            response = "rejected"
+        else:
+            response = "rejected"
 
-                    # enviamos notificacion informando del evento
-                    notify.send(user, actor=user.username,
-                                recipient=emitter_profile.user,
-                                verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (user.username, user.username),
-                                level='new_follow')
-
-                    emitter_profile.remove_received_follow_request(
-                        user.profile)  # ya podemos borrar la peticion de amistad
-
-                    response = "added_friend"
-
-            elif request_status == 'rejected':
-                emitter_profile.remove_received_follow_request(user.profile)
-                response = "rejected"
-            else:
-                response = "rejected"
+        Request.objects.remove_received_follow_request(from_profile=n.user_id, to_profile=m.user_id)
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -800,21 +774,21 @@ def remove_relationship(request):
     """
     response = None
     user = request.user
-    slug = request.POST.get('slug', None)
-    profile_user = UserProfile.objects.get(pk=slug)
+    slug = int(request.POST.get('slug', None))
 
     if request.method == 'POST':
         try:
-            user_friend = user.profile.is_follow(profile_user)  # Comprobamos si YO ya sigo al perfil deseado.
-        except ObjectDoesNotExist:
-            user_friend = None
+            profile_user = NodeProfile.nodes.get(user_id=slug)
+            me = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-        if user_friend:
-            user.profile.remove_relationship(profile_user, 1)
-            profile_user.remove_relationship(user.profile, 2)
+        try:
+            me.follow.disconnect(profile_user)  # Comprobamos si YO ya sigo al perfil deseado.
             response = True
-        else:
-            response = False
+        except Exception:
+            response = None
+
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
@@ -825,20 +799,20 @@ def remove_blocked(request):
     """
     response = None
     user = request.user
-    slug = request.POST.get('slug', None)
-    profile_user = UserProfile.objects.get(pk=slug)
-    print('%s ya no bloquea a %s' % (user.username, profile_user.user.username))
-    print('>>>>> %s' % slug)
+    slug = int(request.POST.get('slug', None))
+    try:
+        m = NodeProfile.nodes.get(user_id=user.id)
+        n = NodeProfile.nodes.get(user_id=slug)
+    except Exception:
+        return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+    logging.info('%s ya no bloquea a %s' % (m.title, n.title))
+
     if request.method == 'POST':
         try:
-            blocked = user.profile.is_blocked(profile_user)
-        except ObjectDoesNotExist:
-            blocked = None
-
-        if blocked:
-            user.profile.remove_relationship(profile_user, 3)
+            m.bloq.disconnect(n)
             response = True
-        else:
+        except Exception:
             response = False
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
@@ -852,17 +826,16 @@ def remove_request_follow(request):
     """
     response = False
     user = request.user
-    slug = request.POST.get('slug', None)
+    slug = int(request.POST.get('slug', None))
     status = request.POST.get('status', None)
-    profile_user = UserProfile.objects.get(pk=slug)
-    print('REMOVE REQUEST FOLLOW')
+
+    logging.info('REMOVE REQUEST FOLLOW: u1: {} - u2: {}'.format(user.id, slug))
     if request.method == 'POST':
         if status == 'cancel':
-            user.profile.remove_received_follow_request(profile_user)
-            response = True
+            response = Request.objects.remove_received_follow_request(from_profile=user.id, to_profile=slug)
         else:
             response = False
-    print('Response -> ' + str(response))
+        logging.info('Response -> ' + str(response))
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
@@ -873,8 +846,15 @@ def load_followers(request):
     Funcion para cargar seguidores
     :return lista de seguidores:
     """
-    print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
-    friendslist = request.user.profile.get_followers()
+    logging.info('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
+
+    try:
+        m = NodeProfile.nodes.get(user_id=request.user.id)
+    except NodeProfile.DoesNotExist:
+        friends_next = None
+        return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
+
+    friendslist = m.get_followers()
 
     if friendslist is None:
         friends_next = None
@@ -882,12 +862,12 @@ def load_followers(request):
         # friendslist = json.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
-            print('>>>>>>> SLUG: ' + slug)
+            logging.info('>>>>>>> SLUG: ' + slug)
             n = int(slug) * 2
             # devolvera None si esta fuera de rango?
             friends_next = friendslist[n - 2:n]
-            print('>>>>>>> LISTA: ')
-            print(friends_next)
+            logging.info('>>>>>>> LISTA: ')
+            logging.info(friends_next)
         else:
             friends_next = None
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
@@ -902,19 +882,18 @@ class FollowersListView(AjaxListView):
     page_template = "account/relations_page.html"
 
     def get_queryset(self):
-        user_profile = get_object_or_404(
-            get_user_model(),
-            username__iexact=self.kwargs['username'])
-        return user_profile.profile.get_followers()
+
+        try:
+            n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
+        except Exception:
+            raise Http404
+
+        return n.get_followers()
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
         context['url_name'] = "followers"
-        context['notifications'] = user.notifications.unread()
         return context
 
 
@@ -930,19 +909,17 @@ class FollowingListView(AjaxListView):
     page_template = "account/relations_page.html"
 
     def get_queryset(self):
-        user_profile = get_object_or_404(
-            get_user_model(),
-            username__iexact=self.kwargs['username'])
-        return user_profile.profile.get_following()
+        try:
+            n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
+        except Exception:
+            raise Http404
+
+        return n.get_follows()
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
         context['url_name'] = "following"
-        context['notifications'] = user.notifications.unread()
         return context
 
 
@@ -956,8 +933,14 @@ def load_follows(request):
     Funcion para cargar mas seguidos
     :return lista de seguidos:
     """
-    print('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
-    friendslist = request.user.profile.get_following()
+    logging.info('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
+    try:
+        m = NodeProfile.nodes.get(user_id=request.user.id)
+    except NodeProfile.DoesNotExist:
+        friends_next = None
+        return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
+
+    friendslist = m.get_follows()
 
     if friendslist is None:
         friends_next = None
@@ -965,12 +948,12 @@ def load_follows(request):
         # friendslist = json.loads(friendslist)
         if request.method == 'POST':
             slug = request.POST.get('slug', None)
-            print('>>>>>>> SLUG: ' + slug)
+            logging.info('>>>>>>> SLUG: ' + slug)
             n = int(slug) * 4
             # devolvera None si esta fuera de rango?
             friends_next = friendslist[n - 4:n]
-            print('>>>>>>> LISTA: ')
-            print(friends_next)
+            logging.info('>>>>>>> LISTA: ')
+            logging.info(friends_next)
         else:
             friends_next = None
     return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
@@ -982,11 +965,7 @@ class PassWordChangeDone(TemplateView):
     def get(self, request, *args, **kwargs):
         context = locals()
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
         context['showPerfilButtons'] = True
-        context['notifications'] = user.notifications.unread()
         return render(request, self.template_name, context)
 
 
@@ -995,18 +974,14 @@ password_done = login_required(PassWordChangeDone.as_view())
 
 # Modificacion del formulario para cambiar contraseña
 class CustomPasswordChangeView(PasswordChangeView):
-    success_url = reverse_lazy("account_done_password")
+    success_url = reverse_lazy("user_profile:account_done_password")
 
     def get_context_data(self, **kwargs):
         ret = super(PasswordChangeView, self).get_context_data(**kwargs)
         # NOTE: For backwards compatibility
         ret['password_change_form'] = ret.get('form')
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
-        ret['publicationSelfForm'] = PublicationForm(initial=initial)
-        ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
-        ret['notifications'] = user.notifications.unread()
         # (end NOTE)
         return ret
 
@@ -1016,16 +991,14 @@ custom_password_change = login_required(CustomPasswordChangeView.as_view())
 
 # Modificacion del formulario para manejar los emails
 class CustomEmailView(EmailView):
+    success_url = reverse_lazy('user_profile:account_email')
+
     def get_context_data(self, **kwargs):
         ret = super(EmailView, self).get_context_data(**kwargs)
         # NOTE: For backwards compatibility
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
         ret['add_email_form'] = ret.get('form')
-        ret['publicationSelfForm'] = PublicationForm(initial=initial)
-        ret['searchForm'] = SearchForm()
         ret['showPerfilButtons'] = True
-        ret['notifications'] = user.notifications.unread()
         # (end NOTE)
         return ret
 
@@ -1049,19 +1022,30 @@ class DeactivateAccount(FormView):
         context['form'] = self.form_class
         user = self.request.user
         self_initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
-        context['searchForm'] = SearchForm()
-        context['notifications'] = user.notifications.unread()
+
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         form = self.get_form(self.form_class)
         user = request.user
-
         if user.is_authenticated():
             if form.is_valid():
-                user.is_active = not (form.clean_is_active())
-                user.save()
+                try:
+                    node_profile = NodeProfile.nodes.get(user_id=user.id)
+                except NodeProfile.DoesNotExist:
+                    raise ObjectDoesNotExist
+
+                try:
+                    with transaction.atomic(using='default'):
+                        with db.transaction:
+                            is_active = not (form.clean_is_active())
+                            user.is_active = is_active
+                            node_profile.is_active = is_active
+                            node_profile.save()
+                            user.save()
+                except Exception as e:
+                    logging.info("La cuenta de: {} no se pudo desactivar".format(user.username))
+
                 if user.is_active:
                     return self.form_valid(form=form, **kwargs)
                 else:
@@ -1093,66 +1077,61 @@ def bloq_user(request):
     user = request.user
     haslike = "noliked"
     status = "none"
+
     if request.method == 'POST':
-        profileUserId = request.POST.get('id_user', None)
+        id_user = request.POST.get('id_user', None)
+
+        if id_user == user.id:
+            data = {'response': False, 'haslike': haslike}
+            return HttpResponse(json.dumps(data), content_type='application/json')
 
         try:
-            emitter_profile = UserProfile.objects.get(pk=profileUserId)
-        except ObjectDoesNotExist:
-            response = False
-            data = {'response': response, 'haslike': haslike}
+            n = NodeProfile.nodes.get(user_id=id_user)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            data = {'response': False, 'haslike': haslike}
             return HttpResponse(json.dumps(data), content_type='application/json')
 
         # Eliminar me gusta al perfil que se va a bloquear
 
-        try:
-            user_liked = user.profile.has_like(emitter_profile)
-        except ObjectDoesNotExist:
-            user_liked = None
-
-        if user_liked:
-            user_liked.delete()
+        if m.like.is_connected(n):
+            m.like.disconnect(n)
             haslike = "liked"
 
         # Ver si hay una peticion de "seguir" pendiente
         try:
-            follow_request = user.profile.get_follow_request(emitter_profile)
+            follow_request = Request.objects.get_follow_request(from_profile=m.user_id, to_profile=n.user_id)
         except ObjectDoesNotExist:
             follow_request = None
 
         if follow_request:
-            user.profile.remove_received_follow_request(emitter_profile)  # Eliminar peticion follow (user -> profile)
+            Request.objects.remove_received_follow_request(from_profile=m.user_id, to_profile=n.user_id)
             status = "inprogress"
 
         # Ver si seguimos al perfil que vamos a bloquear
-        is_follow = user.profile.is_follow(emitter_profile)
 
-        if is_follow:
-            user.profile.remove_relationship(emitter_profile, 1)  # Eliminar relacion follow
-            emitter_profile.remove_relationship(user.profile, 2)  # Eliminar relacion follower
+        if m.follow.is_connected(n):
+            m.follow.disconnect(n)
+            n.follow.disconnect(m)
             status = "isfollow"
 
         # Ver si hay una peticion de "seguir" pendiente (al perfil contrario)
         try:
-            follow_request_reverse = emitter_profile.get_follow_request(user.profile)
+            follow_request_reverse = Request.objects.get_follow_request(from_profile=n.user_id, to_profile=m.user_id)
         except ObjectDoesNotExist:
             follow_request_reverse = None
 
         if follow_request_reverse:
-            emitter_profile.remove_received_follow_request(user.profile)  # Eliminar peticion follow (profile -> user)
+            Request.objects.remove_received_follow_request(from_profile=n.user_id, to_profile=m.user_id)
 
         # Ver si seguimos al perfil que vamos a bloquear
-        try:
-            is_follower = user.profile.is_follower(emitter_profile)
-        except ObjectDoesNotExist:
-            is_follower = None
 
-        if is_follower:
-            emitter_profile.remove_relationship(user.profile, 1)  # Eliminar relacion follow
-            user.profile.remove_relationship(emitter_profile, 2)  # Eliminar relacion follower
+        if n.follow.is_connected(m):
+            m.follow.disconnect(n)
+            n.follow.disconnect(m)
 
-        created = user.profile.add_block(emitter_profile)  # Añadir profile a lista de bloqueados
-        created.save()
+        m.bloq.connect(n)  # Creamos relacion de bloqueo
+
         response = True
 
         print('response: %s, haslike: %s, status: %s' % (response, haslike, status))
@@ -1184,6 +1163,7 @@ def welcome_step_1(request):
     del usuario registrado.
     """
     user = request.user
+    user_node = NodeProfile.nodes.get(user_id=user.id)
 
     context = {'user_profile': user}
 
@@ -1195,7 +1175,10 @@ def welcome_step_1(request):
             if tag.isspace():
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
-            user.profile.tags.add(tag)
+            interest = TagProfile.nodes.get_or_none(title=tag)
+            if not interest:
+                interest = TagProfile(title=tag).save()
+            interest.user.connect(user_node)
         # Procesar temas por defecto
         choices = request.POST.getlist('choices[]')
         if not tags and not choices:
@@ -1203,12 +1186,15 @@ def welcome_step_1(request):
             return HttpResponse(json.dumps(response), content_type='application/json')
         for choice in choices:
             value = dict(ThemesForm.CHOICES).get(choice)
-            user.profile.tags.add(value)
-        user.profile.save()
+            interest = TagProfile.nodes.get_or_none(title=value)
+            if not interest:
+                interest = TagProfile(title=value).save()
+            interest.user.connect(user_node)
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
-        most_common = UserProfile.tags.most_common()[:10]
-        context['top_tags'] = most_common
+        results, meta = db.cypher_query(
+            "MATCH (n:NodeProfile)-[:INTEREST]-(interest:TagProfile) RETURN interest.title, COUNT(interest) AS score ORDER BY score DESC LIMIT 10")
+        context['top_tags'] = results
         context['form'] = ThemesForm
 
     return render(request, 'account/welcomestep1.html', context)
@@ -1229,7 +1215,6 @@ def set_first_Login(request):
         return redirect('user_profile:profile', username=user.username)
 
 
-# TODO: que el usuario tenga tags establecidos antes de mostrar las recomendaciones
 class RecommendationUsers(ListView):
     """
         Lista de usuarios recomendados segun
@@ -1240,16 +1225,12 @@ class RecommendationUsers(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if not user.profile.tags:
-            return UserProfile.objects.filter(privacity=UserProfile.ALL).order_by('?')[:20]
-        related_items = TaggedItem.objects.none().order_by('count')
-        current_item = UserProfile.objects.get(user=user)
-        for tag in current_item.tags.all():
-            related_items |= tag.taggit_taggeditem_items.all()
-        ids = related_items.values_list('object_id', flat=True)
-        users = UserProfile.objects.filter(id__in=ids).exclude(user=user)
+        results, meta = db.cypher_query(
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id='%d' AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.id)
+        users = [NodeProfile.inflate(row[0]) for row in results]
         if not users:
-            users = UserProfile.objects.filter(privacity=UserProfile.ALL).order_by('?').exclude(user=user)[:20]
+            users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[:50]
+
         return users
 
     def get_context_data(self, **kwargs):
@@ -1265,24 +1246,21 @@ class LikeListUsers(AjaxListView):
     """
     Lista de usuarios que han dado like a un perfil
     """
-    model = UserProfile
+    model = User
     template_name = "account/like_list.html"
     context_object_name = "object_list"
     page_template = "account/like_entries.html"
 
     def get_queryset(self):
         username = self.kwargs['username']
-        user_profile = get_object_or_404(UserProfile, user__username__iexact=username)
-        return user_profile.get_likes_to_me().values('from_like__user__username', 'from_like__user__first_name',
-                                                     'from_like__user__last_name', 'from_like__backImage')
+
+        n = NodeProfile.nodes.get(title=username)
+        return n.get_like_to_me()
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
         context['user_profile'] = self.kwargs['username']
         user = self.request.user
-        self_initial = {'author': user.pk, 'board_owner': user.pk}
-        context['publicationSelfForm'] = PublicationForm(initial=self_initial)
-        context['searchForm'] = SearchForm()
 
         return context
 
@@ -1306,6 +1284,7 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
         return users
 
+
 def search_users(request):
     """
     Busqueda de usuarios por AJAX
@@ -1315,14 +1294,15 @@ def search_users(request):
     if user.is_authenticated() and request.is_ajax():
         value = request.GET.get('value', None)
 
-        query = User.objects.filter(~Q(profile__privacity='N') & (Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value)))[:20]
+        query = User.objects.filter(
+            Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value))[:20]
         result = []
         for user in query:
             user_json = {}
             user_json['username'] = user.username
             user_json['first_name'] = user.first_name
             user_json['last_name'] = user.last_name
-            user_json['avatar'] = get_author_avatar(user)
+            user_json['avatar'] = get_author_avatar(user.id)
             result.append(user_json)
 
         return JsonResponse({'result': result})

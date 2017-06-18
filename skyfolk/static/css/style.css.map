@@ -1,9 +1,7 @@
 {
-	"version": 3,
-	"file": "style.css",
-	"sources": [
-		"../sass/style.sass"
-	],
-	"names": [],
-	"mappings": "AAAA,AAAA,UAAU,AAAC,CACT,UAAU,CAAE,SAAS,CAAC,+BAA+B,CAAC,SAAS,CAAC,MAAM,CAAC,IAAI,CAAG,AAEhF,AAAA,WAAW,AAAC,CACV,UAAU,CAAE,SAAS,CAAC,+BAA+B,CAAC,SAAS,CAAC,MAAM,CAAC,IAAI,CAC3E,eAAe,CAAE,GAAG,CAAI,AAE1B,AAAA,WAAW,AAAC,CACV,KAAK,CAAE,KAAK,CAAI"
+"version": 3,
+"mappings": "AAAA,UAAU;EACR,UAAU,EAAE,+DAA+D;;AAE7E,WAAW;EACT,UAAU,EAAE,+DAA+D;EAC3E,eAAe,EAAE,GAAG;;AAEtB,WAAW;EACT,KAAK,EAAE,KAAK",
+"sources": ["../sass/style.sass"],
+"names": [],
+"file": "style.css"
 }

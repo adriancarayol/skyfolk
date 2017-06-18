@@ -1,12 +1,12 @@
 from django import template
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
-from django.shortcuts import get_object_or_404
-
-from user_profile.models import UserProfile
+from neomodel import db
+from user_profile.models import TagProfile
+from depot.manager import DepotManager
+from user_profile.models import NodeProfile, Request
 
 register = template.Library()
 
@@ -14,7 +14,6 @@ register = template.Library()
 @register.filter(name='file_exists')
 def file_exists(value):
     return default_storage.exists(value)
-
 
 @register.filter(name='url_exists')
 def url_exists(value):
@@ -30,48 +29,48 @@ def url_exists(value):
 # Comprobar si sigo al autor de la publicacion
 @register.filter(name='check_follow')
 def check_follow(request, author):
-    print('Request username: ' + request + ' author username: ' + author)
     # obtenemos el model del autor del comentario
-    user_profile = get_object_or_404(
-        get_user_model(), username__iexact=author)
+    try:
+        user_profile = NodeProfile.nodes.get(user_id=author)
+    except NodeProfile.DoesNotExist:
+        return False
 
     # Si el perfil es privado, directamente no se puede ver...
-    if user_profile.profile.privacity == 'N':
+    if user_profile.privacity == 'N':
         return False
     # Si el perfil es público, directamente se puede ver...
-    elif user_profile.profile.privacity == 'A':
+    elif user_profile.privacity == 'A':
         return True
 
-    request = get_object_or_404(
-        get_user_model(), username__iexact=request)
+    try:
+        me = NodeProfile.nodes.get(user_id=request)
+    except NodeProfile.DoesNotExist:
+        return False
 
     # saber si sigo al perfil que visito
-    if request.username != user_profile.username:
-        isFriend = False
+    if me.user_id != user_profile.user_id:
         try:
-            if request.profile.is_follow(user_profile.profile):
-                isFriend = True
-        except ObjectDoesNotExist:
+            isFriend = me.follow.is_connected(user_profile)
+        except Exception:
             isFriend = False
     else:
         isFriend = False
 
-        # saber si sigo al perfil que visito
-    if request.username != user_profile.username:
-        isFollower = False
+    # Si sigo al autor de la publicacion y tiene la privacidad "OF"...
+    if isFriend and user_profile.privacity == 'OF':
+        return True
+
+    # saber si el perfil me sigue
+    if me.user_id != me.user_id:
         try:
-            if request.profile.is_follow(user_profile.profile):
-                isFollower = True
+            isFollower = user_profile.follow.is_connected(me)
         except ObjectDoesNotExist:
             isFollower = False
     else:
         isFollower = False
 
-    # Si sigo al autor de la publicacion y tiene la privacidad "OF"...
-    if isFriend and user_profile.profile.privacity == 'OF':
-        return True
     # Si sigo al autor de la publicacion o él me sigue a mi, y tiene la privacidad OFAF...
-    elif (isFriend and user_profile.profile.privacity == 'OFAF') or (
+    if (isFriend and user_profile.profile.privacity == 'OFAF') or (
                 isFollower and user_profile.profile.privacity == 'OFAF'):
         return True
     # Si no cumple ningun caso...
@@ -81,49 +80,49 @@ def check_follow(request, author):
 
 @register.filter(name='check_blocked')
 def check_blocked(request, author):
-    user_profile = get_object_or_404(
-        get_user_model(), username__iexact=author)
-    request = get_object_or_404(
-        get_user_model(), username__iexact=request)
 
     try:
-        blocked = request.profile.is_blocked(user_profile.profile)
-    except ObjectDoesNotExist:
+        user_profile = NodeProfile.nodes.get(user_id=author)
+        me = NodeProfile.nodes.get(user_id=request)
+    except NodeProfile.DoesNotExist:
         return False
 
-    if blocked:
-        return True
-    else:
-        return False
+    try:
+        return me.bloq.is_connected(user_profile)
+    except Exception:
+        pass
 
     return False
 
 
 @register.filter(name='is_follow')
 def is_follow(request, profile):
-    user_profile = get_object_or_404(
-        UserProfile, id=profile)
+    try:
+        user_profile = NodeProfile.nodes.get(user_id=profile)
+        me = NodeProfile.nodes.get(user_id=request)
+    except NodeProfile.DoesNotExist:
+        return False
 
-    if request.pk != user_profile.user.pk:
-        isFriend = False
+    if me.user_id != user_profile.user_id:
         try:
-            if request.profile.is_follow(user_profile):
-                return True
-        except ObjectDoesNotExist:
+            return me.follow.is_connected(user_profile)
+        except Exception:
             pass
     return False
 
 
 @register.filter(name='exist_request')
 def exist_request(request, profile):
-    user_profile = get_object_or_404(
-        UserProfile, id=profile)
 
-    if request.pk != user_profile.user.pk:
-        isFriend = False
+    try:
+        m = NodeProfile.nodes.get(user_id=profile)
+        n = NodeProfile.nodes.get(user_id=request)
+    except NodeProfile.DoesNotExist:
+        return False
+
+    if n.user_id != m.user_id:
         try:
-            if request.profile.get_follow_request(user_profile):
-                return True
+            return Request.objects.get_follow_request(from_profile=n.user_id, to_profile=m.user_id)
         except ObjectDoesNotExist:
             pass
     return False
@@ -131,13 +130,31 @@ def exist_request(request, profile):
 
 @register.filter(name='is_blocked')
 def is_blocked(request, profile):
-    user_profile = get_object_or_404(
-        UserProfile, id=profile)
-
     try:
-        if request.profile.is_blocked(user_profile):
-            return True
-    except ObjectDoesNotExist:
-        pass
+        user_profile = NodeProfile.nodes.get(user_id=profile)
+        me = NodeProfile.nodes.get(user_id=request)
+    except NodeProfile.DoesNotExist:
+        return False
+
+    if me.user_id != user_profile.user_id:
+        try:
+            return me.bloq.is_connected(user_profile)
+        except Exception:
+            pass
 
     return False
+
+
+@register.filter(name='get_tags')
+def get_tags(request):
+    """
+    Muestra los intereses dado el uid del NodeProfile de un usuario.
+    :param request uid del NodeProfile de un usuario:
+    :return Lista de intereses del usuario:
+    """
+    r, m = db.cypher_query(
+        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.uid='%s' RETURN tag" % request
+    )
+    results = [TagProfile.inflate(row[0]) for row in r]
+    return results
+

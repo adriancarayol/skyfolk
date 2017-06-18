@@ -49,7 +49,6 @@ $(document).ready(function () {
         var user_pk = $(form).find('input[name=author]').val();
         var owner_pk = $(form).find('input[name=board_owner]').val();
         var pks = [user_pk, owner_pk, parent_pk];
-        alert(pks);
         AJAX_submit_publication(form, 'reply', pks);
     });
 

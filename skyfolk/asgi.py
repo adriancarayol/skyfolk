@@ -20,11 +20,11 @@ def get_env_variable(var_name):
 
 DAPHNE_RUNLEVEL = get_env_variable('DAPHNE_RUNLEVEL')
 if DAPHNE_RUNLEVEL == 'master':
-	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.master")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.master")
 elif DAPHNE_RUNLEVEL == 'pre':
-	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.pre")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.pre")
 else:
-	os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
 
 
 

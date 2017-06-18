@@ -29,4 +29,4 @@ def get_author_avatar(authorpk):
     if avatars:
         return avatars.get_absolute_url()
     else:
-        return user_profile.models.UserProfile.objects.get(user=authorpk).gravatar
+        return user_profile.models.NodeProfile.nodes.get(user_id=authorpk).gravatar

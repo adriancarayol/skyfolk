@@ -4,7 +4,7 @@
 {% load app_filters %}
 {% load humanize %}
 {% load mptt_tags %}
-
+{% load embed_video_tags %}
 {% block title %} <title> Skyfolk - Publicacion #{{ publication.0.id }}</title> {% endblock %}
 {% block extra-css %}
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
@@ -90,10 +90,10 @@
                                     {% if node.shared_publication %}
                                         <style>
                                             .card-content img {
-                                                width: 70px;
-                                                height: 70px;
-                                                box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
-                                            }
+                                                    max-width: 100%;
+                                                    max-height: 100%;
+                                                    box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
+                                                }
 
                                             .comment .fa-share {
                                                 color: #1e88e5;
@@ -107,19 +107,38 @@
                                                         href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
                                                 <p>{{ node.shared_publication.publication.content|safe }}</p>
-                                                {% if node.shared_publication.publication.image %}
-                                                    <br>
-                                                    <div class="row">
-                                                        <div class="col s12">
-                                                            <img class="responsive-img"
-                                                                 src="{{ node.shared_publication.publication.image.url }}"
-                                                                 alt="Imagen de: {{ node.shared_publication.publication.author }}"
-                                                                 title="Imagen de: {{ node.shared_publication.publication.author }}">
+                                                {% with node.shared_publication.publication.images.all as images %}
+                                                        {% if images %}<br>
+                                                        <div class="row">
+                                                        {% for image in images %}
+                                                            <div class="col s4">
+                                                                <img class="responsive-img z-depth-2" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                            </div>
+                                                        {% endfor %}
                                                         </div>
-                                                    </div>
-                                                {% endif %}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                        {% with node.shared_publication.publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                             {% for video in videos %}
+                                                                 <div class="col s4">
+                                                                     <video class="responsive-video" controls loop>
+                                                                         <source src="{{ video.video.url }}" type="video/mp4">
+                                                                     </video>
+                                                                 </div>
+                                                            {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
                                                 {% if node.shared_publication.publication.extra_content %}
                                                     {% comment %} Para publicaciones con URL {% endcomment %}
+                                                     {% if node.shared_publication.publication.extra_content.video %}
+                                                         {% video node.shared_publication.publication.extra_content.video as my_video %}
+                                                           {% video my_video "medium" %}
+
+                                                           {% endvideo %}
+                                                     {% else %}
                                                     <div class="card small">
                                                         <div class="card-image">
                                                             <img src="
@@ -133,6 +152,7 @@
                                                             <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
                                                         </div>
                                                     </div>
+                                                     {% endif %}
                                                 {% endif %}
                                             </div>
                                             <div class="card-action">
@@ -141,17 +161,37 @@
                                             </div>
                                         </div>
                                     {% endif %}
-                                    {% if node.image %}
-                                        <div class="row">
-                                            <div class="col s5">
-                                                <img class="responsive-img" src="{{ node.image.url }}"
-                                                     alt="Imagen de: {{ node.author }}"
-                                                     title="Imagen de: {{ node.author }}">
+                                    {% with node.images.all as images %}
+                                            {% if images %}
+                                            <div class="row">
+                                            {% for image in images %}
+                                                <div class="col s4 z-depth-2">
+                                                    <img class="responsive-img" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                </div>
+                                            {% endfor %}
                                             </div>
-                                        </div>
-                                    {% endif %}
+                                            {% endif %}
+                                        {% endwith %}
+                                {% with node.videos.all as videos %}
+                                        {% if videos %}
+                                            <div class="row">
+                                         {% for video in videos %}
+                                            <div class="col s4 z-depth-2 center">
+                                                    <video class="responsive-video" controls loop>
+                                                        <source src="{{ video.video.url }}" type="video/mp4">
+                                                    </video>
+                                            </div>
+                                        {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endwith %}
                                     {% if node.extra_content %}
                                         {% comment %} Para publicaciones con URL {% endcomment %}
+                                        {% if node.extra_content.video %}
+                                            {% video node.extra_content.video as my_video %}
+                                               {% video my_video "medium" %}
+                                            {% endvideo %}
+                                        {% else %}
                                         <div class="card small">
                                             <div class="card-image">
                                                 <img src="
@@ -165,6 +205,7 @@
                                                 <a href="{{ node.extra_content.url }}">Ver</a>
                                             </div>
                                         </div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>

@@ -1,0 +1,72 @@
+{% extends "postman/base.html" %}
+{% load i18n static %}{% load i18n postman_tags %}
+{% block extrahead %}{{ block.super }}
+    {% if autocompleter_app.is_active %}{# using the available admin jQuery is enough #}
+        {# should not be necessary since AS v1.3 with AJAX_SELECT_BOOTSTRAP set #}
+        {#<script type="text/javascript" src="{% static 'admin/js/jquery.min.js' %}"></script>#}
+    {% endif %}
+    {{ form.media }}{# for ajax_selects (v1.3.6 at least) #}
+{% endblock %}
+{% block extra-css %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/mensajes_privados.css"/>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% block postman_menu %}
+                <div id="postman_menu" class="col l2 m12 s12 wrapper-config-menu">{% postman_unread as unread_count %}
+        <ul class="menu-config">
+            <li onclick="window.location.href='{% url 'postman:inbox' %}'">{% trans "Inbox" %}{% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}<i
+                    class="material-icons right">inbox</i></li>
+            <li onclick="window.location.href='{% url 'postman:write' %}'">{% trans "Write" %}<i
+                    class="material-icons right">create</i></li>
+            <li onclick="window.location.href='{% url 'postman:sent' %}'">{% trans "Sent Messages" %}<i class="material-icons right">forward</i>
+            </li>
+            <li onclick="window.location.href='{% url 'postman:trash' %}'">{% trans "Trash" %}<i class="material-icons right">delete</i></li>
+            <li onclick="window.location.href='{% url 'postman:archives' %}'">{% trans "Archives" %} <i class="material-icons right">folder_special</i></li>
+            <li class="blue lighten-5">Contactos ({{ friends_top12|length }})</li>
+            {% for item in friends_top12 %}
+                <li class="blue lighten-5" onclick="window.location.href='/messages/write/{{ item.title }}'"><i
+                        class="material-icons right">account_circle</i>({{ item.title }})
+                </li>
+            {% endfor %}
+            <li class="blue lighten-5"><i class="material-icons right">group</i>Equipo desarrolladores</li>
+        </ul>
+    </div>
+            {% endblock %}
+            <div id="postman" class="col offset-l1 l8 m12 s12 body-wrapper">
+                <div class="row">
+                    {% block pm_write_title %}{% endblock %}
+                    <form class="col s12 z-depth-2" action="{% if next_url %}?next={{ next_url|urlencode }}{% endif %}"
+                          method="post">{% csrf_token %}
+                        {% block pm_write_recipient %}{% endblock %}
+                        <div class="row">
+                            {{ form.recipients.errors }}
+                            <div class="input-field col s12">
+                                {{ form.recipients }}
+                                <label for="id_recipients">{{ form.recipients.label }}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{ form.subject.errors }}
+                            <div class="input-field col s12">
+                                {{ form.subject }}
+                                <label for="id_subject">{{ form.subject.label }}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{ form.body.errors }}
+                            <div class="input-field col s12">
+                                <textarea id="id_body" name="body" rows="12" cols="55"
+                                          class="materialize-textarea"></textarea>
+                                <label for="id_body">{{ form.body.label }}</label>
+                            </div>
+                        </div>
+                        <button type="submit"
+                                class="waves-effect waves-light btn blue darken-1 right">{% trans "Send" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
