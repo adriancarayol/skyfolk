@@ -18,6 +18,7 @@ Base para la interfaz en comun de todos los usuarios.
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}fonts/iconfont/material-icons.css">
         <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.atwho.min.css">
+        <link href="{{ STATIC_URL }}tellme/feedback.min.css" rel="stylesheet">
     {% endcompress %}
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
     {% compress js %}
@@ -31,9 +32,13 @@ Base para la interfaz en comun de todos los usuarios.
     {% block include_files %}{% endblock %}
 </head>
 <body>
-<!-- Header de la pagina -->
+
 {% block barra_navegacion %}
     {% include "account/base-header.html" %}
+    {% comment %} Para el feedback {% endcomment %}
+    <button type="button" id="feedback-btn" class="btn right red lighten-3 black-text">
+        Feedback <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
+    </button>
 {% endblock %}
 {% block content %}
     <!-- Contenido de cada pagina por separado -->
@@ -287,6 +292,9 @@ Base para la interfaz en comun de todos los usuarios.
                 </form>
             </div>
         </div>
+    {% endblock %}
+    {% block feedback %}
+        {%  include 'tellme/js_inc.html' %}
     {% endblock %}
 {% endif %}
 {% comment "menu movil" %}

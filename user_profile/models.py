@@ -9,14 +9,12 @@ from django.db import models
 from django.utils.http import urlencode
 from notifications.models import Notification
 from photologue.models import Photo
-from django_neomodel import DjangoNode, DjangoField, classproperty
+from django_neomodel import DjangoNode
 from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, \
     BooleanProperty, Property, StructuredRel, DateTimeProperty
 from django.core.cache import cache
 from neomodel.properties import validator
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import signals
-from django.db.models.options import Options
 from django.core.files.storage import FileSystemStorage
 
 REQUEST_FOLLOWING = 1
@@ -31,6 +29,7 @@ REQUEST_STATUSES = (
 
 def uploadBackImagePath(instance, filename):
     return '%s/backImage/%s' % (instance.user.username, filename)
+
 
 class TagProfile(DjangoNode):
     uid = UniqueIdProperty()
@@ -59,12 +58,14 @@ class UploadedFileProperty(Property):
     def deflate(self, value):
         return str(value)
 
+
 class FollowRel(StructuredRel):
     weight = IntegerProperty(default=0)
     created = DateTimeProperty(default=lambda: datetime.datetime.now())
 
     class Meta:
         app_label = 'django_rel'
+
 
 class NodeProfile(DjangoNode):
     uid = UniqueIdProperty()
@@ -155,7 +156,8 @@ class NodeProfile(DjangoNode):
         return [self.inflate(row[0]) for row in results]
 
     def count_followers(self):
-        results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
+        results, columns = self.cypher(
+            "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
         return results[0][0]
 
     def get_follows(self):
@@ -163,7 +165,8 @@ class NodeProfile(DjangoNode):
         return [self.inflate(row[0]) for row in results]
 
     def count_follows(self):
-        results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
+        results, columns = self.cypher(
+            "MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
         return results[0][0]
 
     def has_like(self, to_like):
@@ -284,7 +287,6 @@ class NodeProfile(DjangoNode):
                 return True
         else:
             return False
-
 
 class RequestManager(models.Manager):
     def get_follow_request(self, from_profile, to_profile):

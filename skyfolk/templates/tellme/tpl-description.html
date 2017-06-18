@@ -1,0 +1,10 @@
+{% load i18n %}
+<div id="feedback-welcome">
+    <div class="row"><h5><i class="material-icons left">feedback</i>{% trans 'Feedback' %}</h5></div>
+    <div class="row"><p class="flow-text">{% trans 'Feedback lets you send us suggestions about this site. We welcome problem reports, feature ideas and general comments.' %}</p></div>
+    <div class="row"><p class="flow-text">{% trans 'Start by writing a brief description:' %}</p></div><div class="row"><form class="col s12"><div class="row"><div class="input-field col s12"><textarea id="feedback-note-tmp" class="materialize-textarea"></textarea><label for="feedback-note-tmp">Descripción</label></div></div></form></div>
+    <div class="row"><p class="flow-text">{% trans "Next we'll let you identify areas of the page related to your description." %}</p></div>
+    <button id="feedback-welcome-next" class="waves-effect waves-light btn white black-text right">{% trans 'Next' %}</button>
+    <div id="feedback-welcome-error">{% trans 'Please enter a description.' %}</div>
+    <div class="feedback-wizard-close"></div>
+</div>

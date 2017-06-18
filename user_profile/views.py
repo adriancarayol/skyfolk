@@ -270,7 +270,7 @@ def search(request, option=None):
                                                                'resultMessages': result_messages,
                                                                'result_media': result_media,
                                                                'words': words,
-                                                               'message': info,})
+                                                               'message': info, })
 
 
 @login_required(login_url='/')
@@ -328,7 +328,7 @@ def advanced_view(request):
             result_regex = Publication.objects.filter(content__iregex=clean_regex)
             print(result_regex)
 
-    return render(request, template_name, {'form': form,})
+    return render(request, template_name, {'form': form, })
 
 
 @login_required(login_url='/')
@@ -383,13 +383,14 @@ def config_profile(request):
                         node.status = perfil_form.clean_status()
                         data = perfil_form.clean_backImage()
                         if data:
-                            file_id = str(uuid.uuid4()) # random filename
-                            filename, file_extension = os.path.splitext(data.name) # get extension
-                            fs = FileSystemStorage() # get filestorage
+                            file_id = str(uuid.uuid4())  # random filename
+                            filename, file_extension = os.path.splitext(data.name)  # get extension
+                            fs = FileSystemStorage()  # get filestorage
                             img = pil.open(data)
                             img.thumbnail((1500, 500), pil.ANTIALIAS)
                             thumb_io = BytesIO()
-                            img.save(thumb_io, format=data.content_type.split('/')[-1].upper(), quality=95, optimize=True)
+                            img.save(thumb_io, format=data.content_type.split('/')[-1].upper(), quality=95,
+                                     optimize=True)
                             thumb_io.seek(0)
                             file = InMemoryUploadedFile(thumb_io,
                                                         None,
@@ -397,9 +398,9 @@ def config_profile(request):
                                                         data.content_type,
                                                         thumb_io.tell(),
                                                         None)
-                            filename = fs.save(file_id + file_extension, file) # get filename
-                            filename, file_extension = os.path.splitext(filename) # only if save change "file_id"
-                            node.back_image = filename # assign filename to back_image node
+                            filename = fs.save(file_id + file_extension, file)  # get filename
+                            filename, file_extension = os.path.splitext(filename)  # only if save change "file_id"
+                            node.back_image = filename  # assign filename to back_image node
                         node.save()
                         user_form.save()
             except Exception as e:
@@ -416,7 +417,7 @@ def config_profile(request):
                'user_profile': user_profile,
                'node_profile': node,
                'user_form': user_form, 'perfil_form': perfil_form,
-              }
+               }
     return render(request, 'account/cf-profile.html', context)
     # return render_to_response('account/cf-profile.html',
     # {'showPerfilButtons':True,'searchForm':searchForm,
@@ -445,7 +446,7 @@ def config_blocked(request):
 
     return render(request, 'account/cf-blocked.html', {'showPerfilButtons': True,
                                                        'blocked': list_blocked,
-                                                      })
+                                                       })
 
 
 @login_required(login_url='accounts/login')

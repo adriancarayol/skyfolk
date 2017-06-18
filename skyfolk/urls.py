@@ -56,10 +56,11 @@ urlpatterns = [
     url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
     url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
     # django-dash URLs:
-    url(r'^dashboard/', include('dash.urls')),
-    url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
-    url(r'^', include('dash.contrib.apps.public_dashboard.urls')),
-
+    # url(r'^dashboard/', include('dash.urls')),
+    # url(r'^dash/contrib/plugins/rss-feed/', include('dash.contrib.plugins.rss_feed.urls')),
+    # url(r'^contrib/', include('dash.contrib.apps.public_dashboard.urls')),
+    # feedback
+    url(r'^tellme/', include("tellme.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

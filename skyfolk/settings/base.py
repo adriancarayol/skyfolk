@@ -7,6 +7,7 @@ import os
 from neomodel import config
 from neomodel import db
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
@@ -77,6 +78,7 @@ THIRD_PARTY_APPS = (
     'corsheaders',
     'guardian',
     'embed_video',
+    'tellme',
 )
 
 FIRST_PARTY_APPS = (
@@ -264,6 +266,7 @@ TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
 # FILE_CHARSET="utf-8"
 
 SITE_ID = 1
