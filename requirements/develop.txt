@@ -98,3 +98,6 @@ boto3
 django-cors-headers
 django-embed-video
 django-storages
+django-guardian
+python-magic
+moviepy
