@@ -1,4 +1,5 @@
 import tempfile
+from PIL import Image
 from os.path import splitext
 from urllib.parse import urlparse
 
@@ -17,7 +18,6 @@ from avatar.signals import avatar_updated
 from avatar.utils import (get_primary_avatar, get_default_avatar_url,
                           invalidate_cache)
 from publications.forms import PublicationForm
-from user_profile.forms import SearchForm
 
 
 def _get_next(request):
@@ -66,9 +66,6 @@ def _get_avatars(user):
 def add(request, extra_context=None, next_override=None,
         upload_form=UploadAvatarForm, *args, **kwargs):
     user = request.user
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
-    searchForm = SearchForm()
 
     if extra_context is None:
         extra_context = {}
@@ -106,11 +103,19 @@ def add(request, extra_context=None, next_override=None,
                 raise ValueError('Cant get image')
 
             tmp = tempfile.NamedTemporaryFile()
-
+            read = 0
             for block in request_img.iter_content(1024 * 8):
                 if not block:
                     break
+                read += len(block)
+                if read > settings.BACK_IMAGE_DEFAULT_SIZE:
+                    raise ValueError("La imagen no puede exceder de 1MB")
                 tmp.write(block)
+            try:
+                im = Image.open(tmp)
+                im.verify()
+            except IOError:
+                raise ValueError('Cant get image')
 
             avatar.avatar.save(name + ext, File(tmp))
             avatar.url_image = url_image
@@ -124,10 +129,7 @@ def add(request, extra_context=None, next_override=None,
         'avatars': avatars,
         'upload_avatar_form': upload_avatar_form,
         'next': next_override or _get_next(request),
-        'publicationSelfForm': publicationForm,
-        'searchForm': searchForm,
         'showPerfilButtons': True,
-        'notifications': user.notifications.unread(),
     }
     context.update(extra_context)
     # return render(request, 'avatar/add.html',{'publicationForm': publicationForm, 'searchForm': searchForm},context)
@@ -139,9 +141,6 @@ def change(request, extra_context=None, next_override=None,
            upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
            *args, **kwargs):
     user = request.user
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
-    searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
@@ -173,10 +172,7 @@ def change(request, extra_context=None, next_override=None,
         'upload_avatar_form': upload_avatar_form,
         'primary_avatar_form': primary_avatar_form,
         'next': next_override or _get_next(request),
-        'publicationSelfForm': publicationForm,
-        'searchForm': searchForm,
         'showPerfilButtons': True,
-        'notifications': user.notifications.unread(),
     }
     context.update(extra_context)
     return render(request, 'avatar/change.html', context)
@@ -185,9 +181,6 @@ def change(request, extra_context=None, next_override=None,
 @login_required(login_url='/')
 def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     user = request.user
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial)  # Mostrar formulario para enviar mensajes.
-    searchForm = SearchForm()
     if extra_context is None:
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
@@ -216,10 +209,7 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         'avatars': avatars,
         'delete_avatar_form': delete_avatar_form,
         'next': next_override or _get_next(request),
-        'publicationSelfForm': publicationForm,
-        'searchForm': searchForm,
         'showPerfilButtons': True,
-        'notifications': user.notifications.unread(),
     }
     context.update(extra_context)
 

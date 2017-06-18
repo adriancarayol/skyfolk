@@ -111,7 +111,6 @@ function AJAX_submit_photo_publication(data, type, pks) {
                 $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type === "publication") {
-                // $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
             }
         },
         error: function (rs, e) {
@@ -123,8 +122,5 @@ function AJAX_submit_photo_publication(data, type, pks) {
             });
         }
     }).done(function () {
-        // No necesario, ya que usamos sockets para añadir
-        // En "vivo" publicaciones y respuestas
-        //addNewPublication(type, pks[0], pks[1], pks[2]);
     })
 }

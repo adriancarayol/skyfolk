@@ -52,7 +52,7 @@ var UTILS = UTILS || (function () {
                             }
                             content += '</h2>';
                             content += '                    <p id="pub-created" class="blue-text text-darken-2">' + data.created + '<\/p><br>';
-                            content += '<div class="row">';
+                            content += '<div class="row publication-content">';
                             content += "                  <div class=\"parrafo comment\">";
                             content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
                             content += "                  </div>";
@@ -77,10 +77,14 @@ var UTILS = UTILS || (function () {
                                 content += '<a href="' + data.extra_content_url + '">Ver</a>';
                                 content += '</div></div>';
                             }
-                            if (data.image) {
-                                content += '<div class="row">';
-                                content += '<div class="col s5">';
-                                content += '<img class="responsive-img" src="'+data.image+'" alt="Imagen de: '+data.author_username+'" title="Imagen de: '+data.author_username+'">';
+                            if (data.images !== undefined && data.images.length > 0) {
+                                content += '<div class="row images">';
+                                for(var image = 0; image < data.images.length; image++) {
+                                    content += '<div class="col s4 z-depth-2">';
+                                    content += '<img class="responsive-img" src="/media/'+data.images[image].image+'" alt="Imagen de: '+data.author_username+'" title="Imagen de: '+data.author_username+'">';
+                                    content += "                    </div>";
+                                }  
+                                content += "                    </div>";
                             }
                             content += "                    </div>";
                             content += "                    </div>";
@@ -134,7 +138,16 @@ var UTILS = UTILS || (function () {
                             content += '<div class="input-field col s12">';
                             content += '<textarea class="materialize-textarea message-reply" id="message-reply-' + data.id + '" cols="40" maxlength="500" name="content" placeholder="Responder a @' + data.author_username + '" rows="10" required=""></textarea>';
                             content += '<label for="message-reply-' + data.id + '">Escribe tu mensaje aqui...</label>';
-                            content += '</div></div></div></div>';
+
+                            content += '</div>';
+                            content += '<div class="file-field input-field col s12">';
+                            content += '<div class="btn">';
+                            content += '<span>Imágenes</span>';
+                            content += '<input id="id_image_reply" name="image" type="file" multiple>';
+                            content += '</div>';
+                            content += '<div class="file-path-wrapper">';
+                            content += '<input class="file-path validate" type="text" placeholder="Upload one or more files">';
+                            content += '</div></div></div></div></div>';
                             content += '<button type="button" id="reply-' + data.id + '" class="waves-effect waves-light btn right blue enviar">Enviar<i class="material-icons right">send</i></button>';
                             content += '</form></div></div>';
                             content += "    </div></div></div>";
@@ -143,7 +156,7 @@ var UTILS = UTILS || (function () {
                         var existing = $('#pub-' + data.id);
                         var no_comments = $('#without-comments');
 
-                        /* Comprobamos si el elemento existe, si es asi lo modifcamos */
+                        /* Comprobamos si el elemento existe, si es asi lo modificamos */
                         if (existing.length) {
                             existing.find('#pub-created').first().text(data.created);
                             existing.find('.wrp-comment').first().text(data.content);
@@ -157,7 +170,6 @@ var UTILS = UTILS || (function () {
                                     }
                                     $(children_list).prepend(content);
                                 } else {
-
                                     $(parent).closest('.row').after(content);
                                 }
                             } else $("#tab-comentarios").prepend(content);
@@ -173,6 +185,21 @@ var UTILS = UTILS || (function () {
                             $(wrapper_content).css('height', '2.6em');
                         } else {
                             $(show).css('display', 'none');
+                        }
+                    } else if (data.type === "video") {
+                        var existing_pub = $('#pub-' + data.id);
+                        if (existing_pub.length) {
+                            var card_content = $(existing_pub).find('.publication-content');
+                            var videos = $(existing_pub).find('.videos');
+                            if (videos.length) {
+                                $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div>');
+                            } else {
+                                var images = $(existing_pub).find('.images');
+                                if (images.length) {
+                                    $(images).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                                }
+                                $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
+                            }
                         }
                     }
                 };

@@ -1,7 +1,6 @@
 import os
 from os.path import splitext
 from urllib.parse import urlparse
-
 import requests
 from django import forms
 from django.forms import widgets
@@ -91,8 +90,9 @@ class UploadAvatarForm(forms.Form):
                                              'valid_exts_list': valid_exts})
 
         response = requests.head(url_image)
+        length = response.headers.get('content-length', None)
 
-        if int(response.headers.get('content-length', None)) > settings.AVATAR_MAX_SIZE:
+        if length and int(length) > settings.AVATAR_MAX_SIZE:
             error = _("Your file is too big (%(size)s), "
                       "the maximum allowed size is %(max_valid_size)s")
             raise forms.ValidationError(error % {

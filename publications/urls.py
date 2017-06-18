@@ -26,4 +26,5 @@ urlpatterns = [
         name='publication_load_skyline'),
     url(r'^publication/share/publication/', publications_views.share_publication,
         name='publication_share_pub'),
+
 ]

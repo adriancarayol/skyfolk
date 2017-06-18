@@ -4,6 +4,7 @@ Template para el perfil de cada usuario
 {% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load compress %}
 {% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
 {% endblock %}
@@ -13,10 +14,11 @@ Template para el perfil de cada usuario
 {% endblock %}
 
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css"
-          onload="if(media!='all')media='all'">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/timeline.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/profile.css" onload="if(media!='all')media='all'">
+    {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/timeline.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css">
+    {% endcompress %}
     {% if liked == True %}
         <style type="text/css">
             #ilike_profile {
@@ -27,10 +29,11 @@ Template para el perfil de cada usuario
 {% endblock %}
 
 {% block content %}
+    {% compress js %}
     <script src="{{ STATIC_URL }}js/profile.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/jquery.easytabs.js" type="text/javascript"></script>
-    <script async src="{{ STATIC_URL }}js/jquery.hashchange.min.js" type="text/javascript"></script>
-
+    <script src="{{ STATIC_URL }}js/jquery.hashchange.min.js" type="text/javascript"></script>
+    {% endcompress %}
     <div class="container">
         {% if user_profile.is_active %}
             {% comment %}
@@ -141,61 +144,7 @@ Template para el perfil de cada usuario
                 </div>
             </div>
             </div>
-            {% comment %}
-<script type="text/javascript">
-
-//first set the value you will be using.
-var STATIC_URL = "{{STATIC_URL}}"; // and anything else you need to set
-var MEDIA_URL = "{{MEDIA_URL}}";
-
-var requests = jQuery.parseJSON( '{{json_requestsToMe|safe}}' );
-var stopRequests = false;
-var idRequestsTimer = null;
-if(requests){
-	idRequestsTimer = setInterval(function(){ if(requests.length > 0){ item = requests.pop();showRequest(item.id_profile, item.username); }else if(idRequestsTimer != null){ clearInterval(idRequestsTimer); } }, 1500);
-
-}
-</script>
-{% endcomment %}
-            <!-- Esto es para las menciones a usuarios -->
-            <!--
-                <script type="text/javascript">
-            $(document).ready(function() {
-                $.ajax({
-                    url: '/get_mentions/',
-                    type: 'POST',
-                    data: {
-                        'slug': $("#profileId").html(),
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        $("#message2").mention({
-                            queryBy: ['name', 'username'],
-                            users: [{
-                                username: "sarah",
-                                name: "Sarah Jones",
-                                image: "http://placekitten.com/25/25"
-                            }, {
-                                username: "bigCat",
-                                name: "Scott Pfaff",
-                                image: "http://placekitten.com/25/25"
-                            }, {
-                                username: "coderDude",
-                                name: "Roger Penn",
-                                image: "http://placekitten.com/25/25"
-                            }]
-                        });
-                    },
-                    error: function(rs, e) {
-                        alert("No se puede.");
-                    }
-                });
-            });
-
-                </script> -->
-            {% comment %}
-	Para el manejo de las pestañas del usuario
-	{% endcomment %}
+            {% compress js inline %}
             <script type="text/javascript">
                 $('#tab-container').easytabs({
                     defaultTab: "#li-tab-comentarios",
@@ -234,6 +183,7 @@ if(requests){
                     }
                 </script>
             {% endif %}
+            {% endcompress %}
         {% else %}
             <h1 class="account-disabled">Cuenta desactivada.</h1>
         {% endif %}

@@ -3,19 +3,16 @@ import json
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
-
-from publications.forms import PublicationForm
-from user_profile.forms import SearchForm
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
-from .models import UserGroups, LikeGroup
+from .models import UserGroups, LikeGroup, NodeGroup
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -34,24 +31,15 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
 
-        owner = get_object_or_404(get_user_model(),
-                                  pk=request.POST['owner'])
-
-        # Comprobamos si somos el mismo usuario
-        if self.request.user.pk != owner.pk:
-            raise IntegrityError()
-
         print('POST DATA: {}'.format(request.POST))
-        print('tipo emitter: {}'.format(type(owner)))
         if form.is_valid():
             print('IS VALID')
             try:
                 group = form.save(commit=False)
-                group.owner = owner
+                group.owner = self.request.user
                 group.save()
                 # Without this next line the tags won't be saved.
-                form.save_m2m()
-                print('GROUP CREATED!')
+                #form.save_m2m()
             except IntegrityError as e:
                 print("views.py line 30 -> {}".format(e))
             return self.form_valid(form=form)
@@ -85,27 +73,26 @@ def group_profile(request, groupname, template='groups/group_profile.html',
     :param groupname: Nombre del grupo
     """
     user = request.user
-    group_profile = get_object_or_404(UserGroups,
-                                      slug__exact=groupname)
-    follow_group = UserGroups.objects.is_follow(group_id=group_profile.id,
-                                                user_id=user)
-    self_initial = {'author': user.pk, 'board_owner': user.pk}
-    group_initial = {'owner': user.pk}
-    likes = LikeGroup.objects.filter(to_like=group_profile).count()
-    user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
-    users_in_group = group_profile.users.count()
+    try:
+        group_profile = NodeGroup.nodes.get(slug=groupname)
+    except NodeGroup.DoesNotExist:
+        raise Http404
 
-    context = {'searchForm': SearchForm(request.POST),
-               'publicationSelfForm': PublicationForm(initial=self_initial),
-               'groupForm': FormUserGroup(initial=group_initial),
+    follow_group = None
+    group_initial = {'owner': user.pk}
+    likes = None # LikeGroup.objects.filter(to_like=group_profile).count()
+    user_like_group = None # LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
+    users_in_group = None # group_profile.users.count()
+
+    context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
                'follow_group': follow_group,
                'likes': likes,
                'user_like_group': user_like_group,
                'users_in_group': users_in_group,
-               'notifications': user.notifications.unread(),
-               'user_list': group_profile.users.all().values('user__username', 'user__first_name',
-                                                             'user__last_name')}
+               'user_list': [1,2]}
+               #'user_list': group_profile.users.all().values('user__username', 'user__first_name',
+               #                                              'user__last_name')}
 
     if extra_context is not None:
         context.update(extra_context)

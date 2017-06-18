@@ -44,7 +44,7 @@ class UploadZipForm(forms.Form):
                               required=False,
                               help_text=_('Añade una descripcion a las imágenes'))
     is_public_collection = forms.BooleanField(
-                                   initial=True,
+                                   initial=False,
                                    required=False,
                                    help_text=_('Activa esta casilla para marcar todas las imágenes como privadas'))
 
@@ -131,7 +131,7 @@ class UploadZipForm(forms.Form):
             photo = Photo.objects.create(title=photo_title,
                                          slug=slug,
                                          caption=self.cleaned_data['caption_collection'],
-                                         is_public=self.cleaned_data['is_public_collection'],
+                                         is_public=not self.cleaned_data['is_public_collection'],
                                          owner=self.request.user)
             # first add title tag.
             photo.tags.add(self.cleaned_data['title_collection'])
@@ -180,6 +180,7 @@ class UploadFormPhoto(forms.ModelForm):
         self.fields['image'].required = False
         self.fields['image'].widget.attrs.update({'class': 'avatar-input', 'name': 'avatar_file'})
         self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
+        self.fields['is_public'].initial = False
 
     class Meta:
         model = Photo

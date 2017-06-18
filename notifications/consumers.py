@@ -4,7 +4,7 @@ from channels import Group
 from channels.auth import channel_session_user_from_http
 from django.core.exceptions import ObjectDoesNotExist
 
-from user_profile.models import UserProfile
+from user_profile.models import NodeProfile
 
 
 # The "slug" keyword argument here comes from the regex capture group in
@@ -13,8 +13,8 @@ from user_profile.models import UserProfile
 def ws_connect(message):
     username = message.user.username
     try:
-        profile = UserProfile.objects.get(user__username__iexact=username)
-    except ObjectDoesNotExist:
+        profile = NodeProfile.nodes.get(title=username)
+    except NodeProfile.DoesNotExist:
         message.reply_channel.send({
             "text": json.dumps({"error": "bad_slug"}),
             "close": True,

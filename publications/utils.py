@@ -1,7 +1,10 @@
-from avatar.models import Avatar
-from user_profile.models import UserProfile
 import re
+import uuid
 import bleach
+import os
+import subprocess
+from avatar.models import Avatar
+from user_profile.models import NodeProfile
 from django.conf import settings
 
 # Los tags HTML que permitimos en los comentarios
@@ -22,7 +25,7 @@ def get_author_avatar(authorpk):
     if avatars:
         return avatars.get_absolute_url()
     else:
-        return UserProfile.objects.get(user=authorpk).gravatar
+        return NodeProfile.nodes.get(user_id=authorpk).gravatar
 
 
 def parse_string(content):
@@ -64,3 +67,17 @@ def remove_duplicates_in_list(seq):
     seen = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
+
+
+def generate_path_video(ext='mp4'):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return [os.path.join('skyfolk/media/publications/videos', filename), os.path.join('publications/videos', filename)]
+
+
+def convert_avi_to_mp4(avi_file_path, output_name):
+    process = subprocess.call("ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(input = avi_file_path, output = output_name), shell=True)

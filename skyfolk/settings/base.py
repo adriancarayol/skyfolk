@@ -3,9 +3,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
-from django.core.validators import MaxLengthValidator
 
-# from django.core.exceptions import ImproperlyConfigured
+from neomodel import config
+from neomodel import db
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(
@@ -13,6 +13,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 
 DEBUG = False
 ALLOWED_HOSTS = ['.skyfolk.net']
+INTERNAL_IPS = ['127.0.0.1']
+
 # Allowed html content.
 ALLOWED_TAGS = "p div br code pre h1 h2 h3 h4 hr span s sub sup b i img strong strike em underline super table thead tr th td tbody".split()
 ALLOWED_STYLES = 'color font-weight background-color width height'.split()
@@ -22,6 +24,7 @@ ALLOWED_ATTRIBUTES = {
     'img': ['src', 'alt', 'width', 'height'],
     'table': ['border', 'cellpadding', 'cellspacing'],
 }
+
 # Application definition
 DEFAULT_APPS = (
     'django.contrib.admin',
@@ -41,7 +44,7 @@ THIRD_PARTY_APPS = (
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',  # REST framework
-    
+
     # 'achievements',   # achivements       Portando a Python3
     'emoji',
     'avatar',  # Avatares para usuarios.
@@ -69,9 +72,14 @@ THIRD_PARTY_APPS = (
     'mptt',
     'tasks_server',
     'postman',
+    'django_neomodel',
+    'compressor',
+    'storages',
+    'corsheaders',
+    'guardian',
+    'embed_video',
+    'tellme',
 )
-
-
 
 FIRST_PARTY_APPS = (
     'landing',  # página de inicio
@@ -91,6 +99,7 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend",
+    'guardian.backends.ObjectPermissionBackend',
 )
 
 # auth and allauth settings
@@ -146,6 +155,31 @@ TAGGIT_CASE_INSENSITIVE = True
 # NOTIFICATION
 NOTIFICATIONS_USE_JSONFIELD = True
 
+# neo4j database
+
+config.DATABASE_URL = 'bolt://neo4j:1518@localhost:7687'  # default
+NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
+NEOMODEL_ENCRYPTED_CONNECTION = True
+NEOMODEL_SIGNALS = True
+
+db.set_connection('bolt://neo4j:1518@localhost:7687')
+
+# cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',              
+    }
+}
+
+USER_ONLINE_TIMEOUT = 300
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+
+# CACHE BACK_IMAGE
+BACK_IMAGE_CACHE_TIMEOUT = 300
+BACK_IMAGE_DEFAULT_SIZE = 1024 * 1024 * 5
+VIDEO_EXTENTIONS = ["avi", "mp4"]
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -155,7 +189,16 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'user_profile.middleware.ActiveUserMiddleware',
     'skyfolk.middleware.AutoLogout',
+    'corsheaders.middleware.CorsMiddleware',
+)
+
+CORS_ORIGIN_WHITELIST = (
+    'pre.skyfolk.net',
+    'skyfolk.net',
+    'localhost:8000',
+    '127.0.0.1:8000'
 )
 
 # Auto logout delay in minutes - 1 mes
@@ -189,7 +232,9 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request'
+                'django.template.context_processors.request',
+                'user_profile.custom_context.notifications_processor',
+                'user_profile.custom_context.search_processor',
             ],
         },
     },
@@ -214,8 +259,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-WSGI_APPLICATION = 'skyfolk.wsgi.application'
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 LANGUAGE_CODE = 'es-ES'
@@ -223,20 +266,30 @@ TIME_ZONE = 'Europe/Madrid'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
 # FILE_CHARSET="utf-8"
 
 SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "skyfolk/static"),
 )
 
+COMPRESS_ENABLED = True
+# COMPRESS_OFFLINE = True
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
+
 # Media (uploads, ...)
-MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
-MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'skyfolk'), 'media')
+# MEDIA_URL = '/media/'
 
 # NOTIFICACIONES
 ''' Marca las notificaciones como borradas
@@ -250,5 +303,6 @@ ADMINS = (
     ('Gabriel Fernandez', 'gabofer82@gmail.com'),
     ('lostcitizen', 'lostcitizen@gmail.com'),
 )
+
 MANAGERS = ADMINS
 POSTMAN_AUTO_MODERATE_AS = True

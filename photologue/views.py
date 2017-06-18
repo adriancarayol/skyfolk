@@ -1,7 +1,7 @@
 import json
-import os
-import warnings
 
+import warnings
+import io
 from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -15,17 +15,18 @@ from django.views.generic.base import RedirectView
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
 from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
+from django.contrib.auth import get_user_model
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
 from publications.forms import PublicationForm, PublicationPhotoForm
 from publications.models import PublicationPhoto
-from user_profile.forms import SearchForm
-from user_profile.models import UserProfile
+from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo
 from django.db.models import Q
+from django.http import Http404
+from django.conf import settings
 
 # Collection views
 @login_required(login_url='accounts/login')
@@ -41,29 +42,29 @@ def collection_list(request, username,
     user = request.user
 
     # Para comprobar si tengo permisos para ver el contenido de la coleccion
-    user_profile = get_object_or_404(UserProfile, user__username=username)
-    visibility = user_profile.is_visible(user.profile)
-    if visibility == ("nothing" or "both" or "followers" or "block"):
-        return redirect('user_profile:profile', username=user_profile.user.username)
+    try:
+        user_profile = NodeProfile.nodes.get(title=username)
+        m = NodeProfile.nodes.get(user_id=user.id)
+    except NodeProfile.DoesNotExist:
+        raise Http404
 
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    publicationForm = PublicationForm(initial=initial)
-    searchForm = SearchForm()
+    visibility = user_profile.is_visible(m)
+
+    if visibility == ("nothing" or "both" or "followers" or "block"):
+        return redirect('user_profile:profile', username=user_profile.title)
+
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
     print('>>>>>>> TAGNAME {}'.format(tagname))
     if user.username == username:
-        object_list = Photo.objects.filter(Q(is_public=True) | Q(is_public=False), owner__username=username, 
+        object_list = Photo.objects.filter(owner__username=username,
                                         tags__name__exact=tagname)
     else:
         object_list = Photo.objects.filter(owner__username=username, 
                                         tags__name__exact=tagname, is_public=True)
-    context = {'publicationSelfForm': publicationForm,
-               'searchForm': searchForm,
-               'object_list': object_list, 'form': form,
-               'form_zip': form_zip,
-               'notifications': user.notifications.unread()}
+    context = {'object_list': object_list, 'form': form,
+               'form_zip': form_zip,}
 
     if extra_context is not None:
         context.update(extra_context)
@@ -89,7 +90,7 @@ class PhotoListView(AjaxListView):
 
     def get_queryset(self):
         if self.request.user.username == self.username:
-            return Photo.objects.filter(Q(is_public=True) | Q(is_public=False), owner__username=self.username)
+            return Photo.objects.filter(owner__username=self.username)
         return Photo.objects.filter(owner__username=self.username, is_public=True)
 
     def get_context_data(self, **kwargs):
@@ -99,9 +100,6 @@ class PhotoListView(AjaxListView):
         context['form'] = UploadFormPhoto()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
         context['user_gallery'] = self.kwargs['username']
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
-        context['notifications'] = user.notifications.unread()
         return context
 
     def user_pass_test(self):
@@ -110,8 +108,10 @@ class PhotoListView(AjaxListView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        user_profile = UserProfile.objects.get(user__username=self.username)
-        visibility = user_profile.is_visible(user.profile)
+        user_profile = NodeProfile.nodes.get(title=self.username)
+        m = NodeProfile.nodes.get(user_id=user.id)
+
+        visibility = user_profile.is_visible(m)
 
         if visibility == ("nothing" or "both" or "followers" or "block"):
             return False
@@ -138,7 +138,12 @@ def upload_photo(request):
             obj.owner = user
             if 'image' in request.FILES:
                 crop_image(obj, request)
-            obj.save()
+            obj.is_public = not form.cleaned_data['is_public']
+            try:
+                obj.save()
+            except ValueError:
+                obj.image = None
+                obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
             data = {
                 'result': True,
@@ -167,6 +172,7 @@ def crop_image(obj, request):
     """
     Recortar imagen
     """
+    image = request.FILES['image']
     img_data = dict(request.POST.items())
     x = None  # Coordinate x
     y = None  # Coordinate y
@@ -180,18 +186,29 @@ def crop_image(obj, request):
             break
         if key == "avatar_data":
             str_value = json.loads(value)
-            print(str_value)
             x = str_value.get('x')
             y = str_value.get('y')
             w = str_value.get('width')
             h = str_value.get('height')
             rotate = str_value.get('rotate')
-    if is_cutted:
-        im = Image.open(request.FILES['image']).convert('RGBA')
+    if is_cutted: # el usuario ha recortado la foto
+        if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+            raise ValueError("Backimage > 5MB!")
+        im = Image.open(image).convert('RGBA')
         tempfile = im.rotate(-rotate, expand=True)
         tempfile = tempfile.crop((int(x), int(y), int(w + x), int(h + y)))
         tempfile_io = BytesIO()
-        tempfile.save(tempfile_io, format='JPEG')
+        tempfile.save(tempfile_io, format='JPEG', optimize=True, quality=90)
+        tempfile_io.seek(0)
+        image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
+        obj.image = image_file
+    else: # no la recorta, optimizamos la imagen
+        if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+            raise ValueError("Backimage > 5MB!")
+        im = Image.open(request.FILES['image']).convert('RGBA')
+        im.thumbnail((1200, 630), Image.ANTIALIAS)
+        tempfile_io = BytesIO()
+        im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
         image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
         obj.image = image_file
@@ -308,14 +325,10 @@ class PhotoDetailView(DetailView):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         photo = self.get_object()
-        initial = {'author': user.pk, 'board_owner': user.pk}
         initial_photo = {'p_author': user.pk, 'board_photo': self.get_object()}
         context['form'] = EditFormPhoto(instance=self.object)
-        context['publicationSelfForm'] = PublicationForm(initial=initial)
-        context['searchForm'] = SearchForm()
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
         context['publications'] = PublicationPhoto.objects.filter(board_photo=photo)
-        context['notifications'] = user.notifications.unread()
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
 
 
@@ -352,8 +365,13 @@ class PhotoDetailView(DetailView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        user_profile = get_object_or_404(UserProfile, user__username=self.username)
-        visibility = user_profile.is_visible(user.profile)
+        try:
+            user_profile = NodeProfile.nodes.get(title=self.username)
+            n = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            raise Http404
+
+        visibility = user_profile.is_visible(n)
 
         if visibility == ("nothing" or ("both" or "followers") or "block"):
             return False

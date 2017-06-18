@@ -1,14 +1,16 @@
 import json
-from distutils.version import StrictVersion
-
-from django import get_version
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.forms import model_to_dict
+from django import get_version
 from django.utils import timezone
-
 from avatar.models import Avatar
 from .utils import get_author_avatar
+from django.forms import model_to_dict
+from channels import Group as group_channel
+from user_profile import models as user_profile
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from distutils.version import StrictVersion
+from user_profile.utils import notification_channel
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -16,6 +18,7 @@ else:
     from django.contrib.contenttypes.generic import GenericForeignKey
 
 from django.db import models
+from django.db.models.query import QuerySet
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.six import text_type
 from .utils import id2slug
@@ -24,10 +27,8 @@ from .signals import notify
 
 from model_utils import Choices
 from jsonfield.fields import JSONField
-from channels import Group as group_channel
+
 from django.contrib.auth.models import Group
-from user_profile import models as user_profile
-from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 # SOFT_DELETE = getattr(settings, 'NOTIFICATIONS_SOFT_DELETE', False)
@@ -46,6 +47,13 @@ def assert_soft_delete():
 
 
 class NotificationQuerySet(models.query.QuerySet):
+
+    def unsent(self):
+        return self.filter(emailed=False)
+
+    def sent(self):
+        return self.filter(emailed=True)
+
     def unread(self, include_deleted=False):
         """Return only unread items in the current queryset"""
         if is_soft_delete() and not include_deleted:
@@ -55,6 +63,17 @@ class NotificationQuerySet(models.query.QuerySet):
             In this case, to improve query performance, don't filter by 'deleted' field
             """
             return self.filter(unread=True)
+
+    def unread_limit(self, include_deleted=False, limit=20):
+        """
+        Devuelve n limitaciones delimitadas por el parametro
+        limit, por defecto devolvera 20 notificaciones
+        :return Devuelve solo las notificaciones no leidas:
+        """
+        if is_soft_delete() and not include_deleted:
+            return self.filter(unread=True, deleted=False)[:limit]
+        else:
+            return self.filter(unread=True)[:limit]
 
     def read(self, include_deleted=False):
         """Return only read items in the current queryset"""
@@ -68,6 +87,7 @@ class NotificationQuerySet(models.query.QuerySet):
 
     def mark_all_as_read(self, recipient=None):
         """Mark as read any unread messages in the current queryset.
+
         Optionally, filter these by recipient first.
         """
         # We want to filter out read ones, as later we will store
@@ -80,6 +100,7 @@ class NotificationQuerySet(models.query.QuerySet):
 
     def mark_all_as_unread(self, recipient=None):
         """Mark as unread any read messages in the current queryset.
+
         Optionally, filter these by recipient first.
         """
         qs = self.read(True)
@@ -121,28 +142,43 @@ class NotificationQuerySet(models.query.QuerySet):
 
         return qs.update(deleted=False)
 
+    def mark_as_unsent(self):
+        return self.update(emailed=False)
+
+    def mark_as_sent(self):
+        return self.update(emailed=True)
+
 
 class Notification(models.Model):
     """
     Action model describing the actor acting out a verb (on an optional
     target).
     Nomenclature based on http://activitystrea.ms/specs/atom/1.0/
+
     Generalized Format::
+
         <actor> <verb> <time>
         <actor> <verb> <target> <time>
         <actor> <verb> <action_object> <target> <time>
+
     Examples::
+
         <justquick> <reached level 60> <1 minute ago>
         <brosner> <commented on> <pinax/pinax> <2 hours ago>
         <washingtontimes> <started follow> <justquick> <8 minutes ago>
         <mitsuhiko> <closed> <issue 70> on <mitsuhiko/flask> <about 2 hours ago>
+
     Unicode Representation::
+
         justquick reached level 60 1 minute ago
         mitsuhiko closed issue 70 on mitsuhiko/flask 3 hours ago
+
     HTML Representation::
+
         <a href="http://oebfare.com/">brosner</a> commented on <a href="http://github.com/pinax/pinax">pinax/pinax</a> 2 hours ago
+
     """
-    LEVELS = Choices('success', 'info', 'warning', 'error', 'friendrequest')
+    LEVELS = Choices('success', 'info', 'warning', 'error')
     level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=20)
 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, related_name='notifications')
@@ -152,7 +188,6 @@ class Notification(models.Model):
     actor_object_id = models.CharField(max_length=255)
     actor = GenericForeignKey('actor_content_type', 'actor_object_id')
     actor_avatar = models.CharField(max_length=255, blank=True, null=True)
-
     verb = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
 
@@ -175,7 +210,7 @@ class Notification(models.Model):
     objects = NotificationQuerySet.as_manager()
 
     class Meta:
-        ordering = ('-timestamp',)
+        ordering = ('-timestamp', )
         app_label = 'notifications'
 
     def __unicode__(self):
@@ -220,7 +255,6 @@ class Notification(models.Model):
             self.unread = True
             self.save()
 
-
 # 'NOTIFY_USE_JSONFIELD' is for backward compatibility
 # As app name is 'notifications', let's use 'NOTIFICATIONS' consistently from now
 EXTRA_DATA = getattr(settings, 'NOTIFY_USE_JSONFIELD', None)
@@ -245,7 +279,7 @@ def notify_handler(verb, **kwargs):
     description = kwargs.pop('description', None)
     timestamp = kwargs.pop('timestamp', timezone.now())
     level = kwargs.pop('level', Notification.LEVELS.info)
-
+    send_channel = kwargs.pop('send_to_channel', True)
     # Check if User or Group
     if isinstance(recipient, Group):
         recipients = recipient.user_set.all()
@@ -253,7 +287,7 @@ def notify_handler(verb, **kwargs):
         recipients = [recipient]
 
     for recipient in recipients:
-        actor_avatar = get_author_avatar(authorpk=actor)
+        actor_avatar = get_author_avatar(authorpk=actor.id)
         newnotify, created = Notification.objects.get_or_create(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),
@@ -277,7 +311,6 @@ def notify_handler(verb, **kwargs):
             newnotify.data = kwargs
 
         newnotify.save()
-        recipient_profile = user_profile.UserProfile.objects.get(user__username__exact=recipient.username)
         data = model_to_dict(newnotify)
         if newnotify.actor:
             data['actor'] = str(newnotify.actor)
@@ -290,9 +323,10 @@ def notify_handler(verb, **kwargs):
         if newnotify.timestamp:
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
         # Enviamos notificacion al canal del receptor
-        group_channel(recipient_profile.notification_channel).send({
-            "text": json.dumps(data)
-        })
+        if send_channel:
+            group_channel(notification_channel(recipient.id)).send({
+                "text": json.dumps(data)
+            })
         return newnotify  # add by adrian
 
 

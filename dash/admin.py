@@ -4,32 +4,40 @@ from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import helpers
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 
+from nine.versions import DJANGO_LTE_1_5, DJANGO_GTE_1_10
+
 from .base import get_registered_plugins, get_registered_layouts
 from .constants import ACTION_CHOICE_REPLACE
-from .forms import BulkChangeDashboardPluginsForm
 from .models import (
-    DashboardWorkspace,
     DashboardEntry,
     DashboardPlugin,
-    DashboardSettings
+    DashboardSettings,
+    DashboardWorkspace,
 )
+from .forms import BulkChangeDashboardPluginsForm
+
+if DJANGO_GTE_1_10:
+    from django.shortcuts import render
+else:
+    from django.shortcuts import render_to_response
 
 staff_member_required_m = method_decorator(staff_member_required)
 
+__title__ = 'dash.admin'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = 'Copyright (c) 2013-2017 Artur Barseghyan'
+__copyright__ = '2013-2017 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = (
     'bulk_change_dashboard_plugins',
-    'DashboardWorkspaceAdmin',
     'DashboardEntryAdmin',
     'DashboardPluginAdmin',
     'DashboardSettingsAdmin',
+    'DashboardWorkspaceAdmin',
 )
 
 # *********************************************************
@@ -52,10 +60,10 @@ def bulk_change_dashboard_plugins(modeladmin, request, queryset):
         post['selected_dashboard_plugins'] = ','.join(selected)
     if 'POST' == request.method:
         form = BulkChangeDashboardPluginsForm(
-            data = post,
-            files = request.FILES,
+            data=post,
+            files=request.FILES,
             initial={'selected_dashboard_plugins': ','.join(selected)}
-            )
+        )
     else:
         form = BulkChangeDashboardPluginsForm(
             initial={'selected_dashboard_plugins': ','.join(selected)}
@@ -67,11 +75,15 @@ def bulk_change_dashboard_plugins(modeladmin, request, queryset):
         'opts': opts,
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
     }
-    return render_to_response(
-        'dash/admin/bulk_change_dashboard_plugins.html',
-        context,
-        context_instance=RequestContext(request)
-    )
+
+    template_name = 'dash/admin/bulk_change_dashboard_plugins.html'
+
+    if DJANGO_GTE_1_10:
+        return render(request, template_name, context)
+    else:
+        return render_to_response(
+            template_name, context, context_instance=RequestContext(request)
+        )
 
 
 class CompatModelAdmin(admin.ModelAdmin):
@@ -160,19 +172,23 @@ class DashboardEntryAdmin(CompatModelAdmin):
         app_label = _('Dashboard entry')
 
     def __queryset(self, request):
-
-        queryset = super(DashboardEntryAdmin, self).get_queryset(request)
+        if DJANGO_LTE_1_5:
+            queryset = super(DashboardEntryAdmin, self).queryset(request)
+        else:
+            queryset = super(DashboardEntryAdmin, self).get_queryset(request)
         queryset = queryset.select_related('workspace', 'user')
         return queryset
 
     get_queryset = __queryset
+    if DJANGO_LTE_1_5:
+        queryset = __queryset
 
 
 admin.site.register(DashboardEntry, DashboardEntryAdmin)
 
 
 class DashboardPluginAdminForm(forms.ModelForm):
-    """Dashbard plugin admin form."""
+    """Dashboard plugin admin form."""
 
     class Meta(object):
         """Meta."""
@@ -203,12 +219,17 @@ class DashboardPluginAdmin(CompatModelAdmin):
         app_label = _('Dashboard plugin')
 
     def __queryset(self, request):
+        if DJANGO_LTE_1_5:
+            queryset = super(DashboardPluginAdmin, self).queryset(request)
+        else:
+            queryset = super(DashboardPluginAdmin, self).get_queryset(request)
 
-        queryset = super(DashboardPluginAdmin, self).get_queryset(request)
         queryset = queryset.prefetch_related('users', 'groups')
         return queryset
 
     get_queryset = __queryset
+    if DJANGO_LTE_1_5:
+        queryset = __queryset
 
     @staff_member_required_m
     def bulk_change_dashboard_plugins(self, request):
@@ -216,9 +237,9 @@ class DashboardPluginAdmin(CompatModelAdmin):
         if 'POST' == request.method:
             form_cls = BulkChangeDashboardPluginsForm
             form = form_cls(
-                data = request.POST,
-                files = request.FILES
-                )
+                data=request.POST,
+                files=request.FILES
+            )
             if form.is_valid():
                 ids = form.cleaned_data.pop(
                     'selected_dashboard_plugins'
@@ -251,13 +272,14 @@ class DashboardPluginAdmin(CompatModelAdmin):
                     if users_action == ACTION_CHOICE_REPLACE:
                         dashboard_plugin.users.clear()
 
-                    dashboard_plugin.groups.add(*groups) # Adding groups
-                    dashboard_plugin.users.add(*users) # Adding users
+                    dashboard_plugin.groups.add(*groups)  # Adding groups
+                    dashboard_plugin.users.add(*users)  # Adding users
 
                 messages.info(
                     request,
                     _('{0} Dashboard plugins were '
-                      'changed successfully.').format(len(ids)))
+                      'changed successfully.').format(len(ids))
+                )
 
                 return redirect('admin:dash_dashboardplugin_changelist')
         else:
@@ -276,6 +298,7 @@ class DashboardPluginAdmin(CompatModelAdmin):
                 name='bulk_change_dashboard_plugins'),
         ]
         return my_urls + super(DashboardPluginAdmin, self).get_urls()
+
 
 admin.site.register(DashboardPlugin, DashboardPluginAdmin)
 
@@ -309,14 +332,18 @@ class DashboardSettingsAdmin(CompatModelAdmin):
         app_label = _('Dashboard settings')
 
     def __queryset(self, request):
-
-        queryset = \
+        if DJANGO_LTE_1_5:
+            queryset = super(DashboardSettingsAdmin, self).queryset(request)
+        else:
+            queryset = \
                 super(DashboardSettingsAdmin, self).get_queryset(request)
 
         queryset = queryset.select_related('user')
         return queryset
 
     get_queryset = __queryset
+    if DJANGO_LTE_1_5:
+        queryset = __queryset
 
 
 admin.site.register(DashboardSettings, DashboardSettingsAdmin)
