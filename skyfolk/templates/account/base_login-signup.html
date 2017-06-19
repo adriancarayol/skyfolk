@@ -38,17 +38,16 @@
 <body>
 <img class="active-img" src="{{ STATIC_URL }}dist/img/backgrounds/back.jpg" alt="background">
 <header>
+{% comment "loader" %} Desaparece cuando la pagina este lista... {% endcomment %}
+<div class="progress">
+    <div class="indeterminate"></div>
+</div>
 </header>
 <nav class="hide-on-large-only">
     <div class="white nav-wrapper">
         <a href="/" class="brand-logo center skyfolk-logo"><span>S</span>kyfolk</a>
     </div>
 </nav>
-{% comment "loader" %} Desaparece cuando la pagina este lista... {% endcomment %}
-<div class="progress">
-    <div class="indeterminate"></div>
-</div>
-
 <div class="row">
     <div class="hide-on-med-and-down namesn">
         <div onclick="javascript:location.href='/'" class="logo">

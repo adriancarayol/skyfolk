@@ -328,10 +328,13 @@ class PhotoDetailView(DetailView):
         initial_photo = {'p_author': user.pk, 'board_photo': self.get_object()}
         context['form'] = EditFormPhoto(instance=self.object)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
-        context['publications'] = PublicationPhoto.objects.filter(board_photo=photo)
+        context['publications'] = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1)[:10]
+                                    for node in
+                                        PublicationPhoto.objects.filter(
+                                            board_photo_id=photo.id, deleted=False,
+                                            parent=None)[:20]]
+                                        
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
-
-
         if photo.is_public:
             try:
                 next = self.object.get_next_in_gallery()

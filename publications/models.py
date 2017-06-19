@@ -478,6 +478,9 @@ class PublicationPhoto(PublicationBase):
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply_photo')
 
+    class MPTTMeta:
+        order_insertion_by = ['-created']
+
     def __str__(self):
         return self.content
 

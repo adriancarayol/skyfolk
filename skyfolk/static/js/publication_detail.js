@@ -2,8 +2,8 @@ var max_height_comment = 60;
 
 $(document).ready(function () {
 
-    var thread = $('#publication-thread');
-    var wrapper_shared_pub = $('#share-publication-wrapper');
+    var thread = $(this);
+    var wrapper_shared_pub = $('#tab-messages');
 
     /* Show more - Show less */
     $(thread).find('.wrapper').each(function () {
@@ -36,7 +36,9 @@ $(document).ready(function () {
 
     /* Abrir respuesta a comentario */
     $(thread).on('click', '#options-comments .fa-reply', function () {
+        console.log('Reply open');
         var id_ = $(this).attr("id").slice(6);
+        alert(id_);
         $("#" + id_).slideToggle("fast");
     });
 
@@ -46,14 +48,14 @@ $(document).ready(function () {
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
         $(form).find('input[name=parent]').val(parent_pk);
-        var user_pk = $(form).find('input[name=author]').val();
-        var owner_pk = $(form).find('input[name=board_owner]').val();
+        var user_pk = $(form).find('input[name=p_author]').val();
+        var owner_pk = $(form).find('input[name=board_photo]').val();
         var pks = [user_pk, owner_pk, parent_pk];
         AJAX_submit_publication(form, 'reply', pks);
     });
 
     /* Agregar skyline */
-    $(document).on('click', '#options-comments #add_to_skyline', function () {
+    $(this).on('click', '#options-comments #add_to_skyline', function () {
         var tag = this;
         $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
         $(wrapper_shared_pub).show();
@@ -74,7 +76,7 @@ $(document).ready(function () {
     });
 
     /* Eliminar skyline */
-    $(document).on('click', '#options-comments #remove_from_skyline', function () {
+    $(this).on('click', '#options-comments #remove_from_skyline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);

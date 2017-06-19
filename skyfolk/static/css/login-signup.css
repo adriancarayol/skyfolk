@@ -217,7 +217,8 @@ label.active {
 
 /* LOADER COLOR */
 .progress {
-  background-color: white !important; }
+  background-color: white !important;
+  margin-top: 0 !important; }
   .progress .indeterminate {
     background-color: #64B5F6 !important; }
 

@@ -20,85 +20,148 @@ var UTILS = UTILS || (function () {
                     // Create the inner content of the post div
                     if (data.type === "pub") {
                         var content = "";
-                        content += '  <div class=\"wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
-                        content += "            <div class=\"box\">";
-                        content += '            <span id="check-' + data.id + '" class=\"zoom-pub\"><i class=\"fa fa-expand fa-lg\"><\/i><\/span>';
-                        content += "            <!-- Check para ampliar el mensaje... -->";
-                        content += '                  <div class=\"ampliado\" id="expand-' + data.id + '">';
-                        content += "                      <div class=\"cerrar_ampliado\"><i class=\"fa fa-close\"><\/i><\/div>";
-                        content += "                      <div class=\"nombre_image\">";
-                        content += "                    <ul>";
-                        content += '                      <li><i class="first">' + data.author_first_name + " " + data.author_last_name + '<\/i><\/li>';
-                        content += '                      <li><a class=\"name\" href="/profile/' + data.author_username + '">' + data.author_username + '<\/a><\/li>';
-                        content += "                    </ul>";
-                        content += '                    <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
-                        content += "                      </div>";
-                        content += "                    <div class=\"parrafo comment-tab\">";
-                        content += "                     <a href=\"\/profile\/{{ pub.author.username }}\">{{pub.author.username}}<\/a>";
-                        content += '                        <a target="_blank">' + data.created + '</a><br><br>';
-                        content += data.content;
-                        content += "                    </div>";
-                        content += "                      <div class=\"wrapper-reply\">";
-                        content += "                        <!-- RESPUESTAS A COMENTARIOS -->";
-                        content += "                        <div class=\"comment-reply\">";
-                        content += '                        <div class="avatar-reply"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
-                        content += '                            <div class="author-reply"><span class="triangle"> <\/span><a href="/profile/' + data.author_username + '">' + data.author_username + '</a></div>';
-                        content += '                              <div class="content-reply">' + data.content + '<\/div>';
-                        content += "                        </div>";
-                        content += "                    </div>";
-                        content += "                  </div>";
-                        content += "      <div class=\"image\">";
-                        content += '        <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
-                        content += "      </div>";
-                        content += "</div>";
-                        content += "";
-                        content += "                <div class=\"articulo\">";
-                        content += '                  <h2 class="h22"><a href="/profile/' + data.author_username + '" >' + data.author_username + '</a> ha comentado:  </h2>';
-                        content += "                  <div class=\"parrafo comment\">";
-                        content += '                    <a target="_blank">' + data.created + '<\/a><br>';
-                        content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
-                        content += "                  </div>";
-                        content += '                    <div class="show-more" id="show-comment-' + data.id + '">';
-                        content += "                        <a href=\"#\">+ Mostrar más<\/a>";
-                        content += "                    </div>";
-                        content += "              <!-- OPCIONES DE COMENTARIOS -->";
-                        content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
-                        content += "                    <ul class=\"opciones\">";
-                        content += "        ";
-                        content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
-                        content += "                            <li title=\"No me gusta\" class=\"fa-stack hate-with-values\" id=\"fa-hate\">";
-                        content += "                                <span class=\"hate-comment\">";
-                        content += "                                    <i class=\"fa fa-heart fa-stack-1x\"><\/i>";
-                        content += "                                    <i class=\"fa fa-bolt fa-stack-1x fa-inverse\"><\/i>";
-                        content += "                                    <i class=\"fa hate-value\"> <\/i>";
-                        content += "                                </span>";
-                        content += "                            </li>";
-                        content += "                        <li title=\"¡Me gusta!\" class=\"like-comment\"><i id=\"like-heart\" class=\"fa fa-heart\"> <\/i><\/li>";
-                        content += "                       <li title=\"Citar\" class=\"quote-comment\"><i class=\"fa fa-quote-left\">";
-                        content += "                       <\/i><\/li>";
-                        content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + data.id + '"><\/i><\/li>';
-                        content += "                       <li title=\"Añadir a mi timeline\" class=\"add-timeline\"><i class=\"fa fa-tag\"> <\/i><\/li>";
-                        content += "                    </ul>";
-                        content += "                </div>";
-                        content += "                </div>";
-                        content += "    </div>";
-                        // See if there's a div to replace it in, or if we should add a new one
+                            content += '<div class="row">';
+                            content += '<div class="col s12">';
+                            if (data.level > 0) {
+                                content += ' <div class="col s12 wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="min-width: 98% !important; border-right: 3px solid #1e88e5;">';
+                            } else
+                            content += ' <div class=\"col s12 wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
+                            content += "            <div class=\"box\">";
+                            content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
+                            if (_args == data.author_id && (data.event_type == 1 || data.event_type == 3)) {
+                                content += '            <span data-id="' + data.id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
+                            }
+                            content += '<div class="row">';
+                            content += "                <div class=\"articulo col s12\">";
+                            content += '<div class="row">';
+                            if (_args == data.author_id) {
+                                content += "      <div class=\"image col l1 m2 s2\" style=\"box-shadow: 0 1px 5px rgba(129, 199, 132, 1);\">";
+                            } else {
+                                content += "      <div class=\"image col l1 m2 s2\">";
+                            }
+                            content += '        <div class="usr-img img-responsive"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"></div>';
+                            content += "      </div>";
+                            content += '<div class="col l10 m12 s9">';
+                            content += '                  <h2 class="h22"><a href="/profile/' + data.author_username + '" >@' + data.author_username + '</a>';
+                            if (data.parent) {
+                                content += '<span class="chip">';
+                                content += '<img src="' + data.parent_avatar + '" alt="'+data.author_parent+'">';
+                                content += '<i class="fa fa-reply"></i> <a href="/profile/'+ data.parent_author +'">@'+ data.parent_author +'</a>';
+                                content += '</span>';
+                            }
+                            content += '</h2>';
+                            content += '                    <p id="pub-created" class="blue-text text-darken-2">' + data.created + '<\/p><br>';
+                            content += '<div class="row publication-content">';
+                            content += "                  <div class=\"parrafo comment\">";
+                            content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
+                            content += "                  </div>";
+                            content += '                    <div class="show-more" id="show-comment-' + data.id + '">';
+                            content += "                        <a href=\"#\">+ Mostrar más<\/a>";
+                            content += "                    </div>";
+                            content += "                    </div>";
+                            if (data.extra_content) {
+                                content += '<div class="card small">';
+                                content += '<div class="card-image">';
+                                if (data.extra_content_image) {
+                                    content += '<img src="'+data.extra_content_image+'">';
+                                } else {
+                                    content += '<img src="/static/dist/img/nuevo_back.png">';
+                                }
+                                content += '<span class="card-title white-text">' + data.extra_content_title + '</span>';
+                                content += '</div>';
+                                content += '<div class="card-content">';
+                                content += '<p>' + data.extra_content_description + '</p>';
+                                content += '</div>';
+                                content += '<div class="card-action">';
+                                content += '<a href="' + data.extra_content_url + '">Ver</a>';
+                                content += '</div></div>';
+                            }
+                            if (data.images !== undefined && data.images.length > 0) {
+                                content += '<div class="row images">';
+                                for(var image = 0; image < data.images.length; image++) {
+                                    content += '<div class="col s4 z-depth-2">';
+                                    content += '<img class="responsive-img" src="/media/'+data.images[image].image+'" alt="Imagen de: '+data.author_username+'" title="Imagen de: '+data.author_username+'">';
+                                    content += "                    </div>";
+                                }  
+                                content += "                    </div>";
+                            }
+                            content += "                    </div>";
+                            content += "                    </div>";
+                            content += "                    </div>";
+                            content += "                    </div>";
+                            content += '<div class="row">';
+                            content += '<div class="divider"></div>';
+                            content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
+                            content += "                    <ul class=\"opciones\">";
+                            if (_args == data.board_owner_id || data.author_id == _args) {
+                                content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
+                            }
+                            if (_args != data.author_id) {
+                                content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
+                                content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
+                                content += '                                <i class="fa hate-value"></i>';
+                                content += "                            </li>";
+                                content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa"></i></li>';
+                            }
+                            content += '                       <li title=\"Añadir a mi skyline\" data-id="' + data.id + '" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>';
+                            content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + data.id + '"><\/i><\/li>';
+                            content += "                    </ul>";
+                            content += "                </div>";
+                            content += "                </div>";
+                            content += "    </div>";
+                            if (_args == data.author_id) {
+                                content += '<div data-user-id="' + data.author_id + '" id="author-controls-' + data.id + '" class="author-controls">';
+                                content += '<div class="row">';
+                                content += '<div class="col s12">';
+                                content += '<form method="post" accept-charset="utf-8">';
+                                content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + data.token + '">';
+                                content += '<div class="row">';
+                                content += '<div class="input-field col s12">';
+                                content += '<i class="material-icons prefix">create</i>';
+                                content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + data.id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
+                                content += '<label for="id_caption-' + data.id + '">Editar comentario</label></div>';
+                                content += '<div class="row">';
+                                content += '<button data-id="' + data.id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button" id="submit_edit_publication">Editar<i class="material-icons right">mode_edit</i></button>';
+                                content += '</div></div></form></div></div></div>';
+                            }
+                            content += '<div class="wrapper-reply">';
+                            content += '<div class="hidden" id="caja-comentario-' + data.id + '">';
+                            content += '<form class="reply-form" action="" method="post">';
+                            content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + data.token + '">';
+                            content += '<input id="id_author" name="author" type="hidden" value="' + _args + '">';
+                            content += '<input id="id_board_owner" name="board_owner" type="hidden" value="' + data.board_owner_id + '">';
+                            content += '<input id="id_parent" name="parent" type="hidden">';
+                            content += '<div class="row">';
+                            content += '<div class="col s12">';
+                            content += '<div class="row">';
+                            content += '<div class="input-field col s12">';
+                            content += '<textarea class="materialize-textarea message-reply" id="message-reply-' + data.id + '" cols="40" maxlength="500" name="content" placeholder="Responder a @' + data.author_username + '" rows="10" required=""></textarea>';
+                            content += '<label for="message-reply-' + data.id + '">Escribe tu mensaje aqui...</label>';
+
+                            content += '</div>';
+                            content += '<div class="file-field input-field col s12">';
+                            content += '<div class="btn">';
+                            content += '<span>Imágenes</span>';
+                            content += '<input id="id_image_reply" name="image" type="file" multiple>';
+                            content += '</div>';
+                            content += '<div class="file-path-wrapper">';
+                            content += '<input class="file-path validate" type="text" placeholder="Upload one or more files">';
+                            content += '</div></div></div></div></div>';
+                            content += '<button type="button" id="reply-' + data.id + '" class="waves-effect waves-light btn right blue enviar">Enviar<i class="material-icons right">send</i></button>';
+                            content += '</form></div></div>';
+                            content += "    </div></div></div>";
                         var existing = $('#pub-' + data.id);
                         var no_comments = $('#without-comments');
                         var comment_length = data.content.replace(/\s\s+/g, ' ');
-                        /* Comprobamos si el elemento existe, si es asi lo modifcamos */
                         if (existing.length) {
                             existing.html(content);
                         } else {
                             $("#messages-wrapper").prepend(content);
                         }
                         var show = $('div#pub-' + data.id + '').find('#show-comment-' + data.id + '');
-                        /* Eliminamos el div de "Este perfil no tiene comentarios" */
                         if ($(no_comments).is(':visible')) {
                             $(no_comments).fadeOut();
                         }
-
-                        /* Comprobamos la longitud del nuevo comentario */
                         if (comment_length.length < _showLimitChar) {
                             $(show).css('display', 'none');
                         }
@@ -107,7 +170,6 @@ var UTILS = UTILS || (function () {
                         var content = "";
                         content += "                <div class=\"wrapper-reply\">";
                         content += "";
-                        content += "                <!-- RESPUESTAS A COMENTARIOS -->";
                         content += "";
                         content += "                <div class=\"comment-reply\">";
                         content += '                <div class=\"avatar-reply\"><img src="' + data.avatar_path + '" alt="' + data.author_username + '" width="120" height="120"><\/div>';

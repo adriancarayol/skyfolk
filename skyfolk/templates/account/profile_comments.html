@@ -3,7 +3,6 @@
 {% load app_filters %}
 {% load humanize %}
 {% load mptt_tags %}
-{% load el_pagination_tags %}
 {% load embed_video_tags %}
 
 {% for node in publications %}
@@ -77,7 +76,7 @@
                                             </style>
                                             <div class="card grey lighten-5">
                                                 <div class="card-content black-text">
-                                                    {% avatar node.shared_publication.publication.author class="POLE" %}<br>
+                                                    {% avatar node.shared_publication.publication.author %}<br>
                                                     <span class="card-title"><a
                                                             href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
                                                         <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>

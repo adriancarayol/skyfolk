@@ -3,15 +3,16 @@
 {% load photologue_tags i18n %}
 {% load i18n %}
 {% load humanize %}
+
 {% load compress %}
 {% block title %} <title>{{ object.title }} por: {{ object.owner }}</title> {% endblock %}
 
 {% block include_files %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css" onload="if(media!='all')media='all'">
-    <!-- Estilos para la galeria de fotos -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/photo_detail.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/comentarios.css" onload="if(media!='all')media='all'">
-    <!-- Estilos para el contenedor de la imagen -->
+    {% compress css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/photo_detail.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/comentarios.css">
+    {% endcompress %}
 {% endblock %}
 
 {% block content %}
@@ -110,22 +111,6 @@
                             {% endif %}
                         </div>
                     </div>
-                    {% comment %}
-                <div class="gallery-details">
-                    {% if object.public_galleries %}
-                    <p>{% trans "This photo is found in the following galleries" %}:</p>
-                    <table>
-                        {% for gallery in object.public_galleries %}
-                        <tr>
-                            <td>{% previous_in_gallery object gallery %}</td>
-                            <td class="text-center"><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></td>
-                            <td>{% next_in_gallery object gallery %}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                    {% endif %}
-                </div>
-                {% endcomment %}
                     <div id="tab-messages" class="col l4 m12 s12 photo-messages sidebar card">
                         <ul class="unstyled table fullwidth links">
                             <li class="tab active">
@@ -133,13 +118,12 @@
                             </li>
                         </ul>
                         <div id="messages-wrapper">
-                            {% if publications|length == 0 %}
-                                <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                            {% if publications|length > 0 %}
+                                {% include "photologue/publications_entries.html" %}
+                            {% else %}
                                 <div class="no-comments" id="without-comments">
                                     <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
                                 </div>
-                            {% else %}
-                                {% include "photologue/publications_entries.html" %}
                             {% endif %}
                             <div class="row form-wrapper">
                                 <form id="message-photo-form" action="" method="post">{% csrf_token %}
