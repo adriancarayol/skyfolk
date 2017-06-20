@@ -28,6 +28,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.conf import settings
 
+
 # Collection views
 @login_required(login_url='accounts/login')
 @page_template("photologue/photo_gallery_page.html")
@@ -59,12 +60,12 @@ def collection_list(request, username,
     print('>>>>>>> TAGNAME {}'.format(tagname))
     if user.username == username:
         object_list = Photo.objects.filter(owner__username=username,
-                                        tags__name__exact=tagname)
+                                           tags__name__exact=tagname)
     else:
-        object_list = Photo.objects.filter(owner__username=username, 
-                                        tags__name__exact=tagname, is_public=True)
+        object_list = Photo.objects.filter(owner__username=username,
+                                           tags__name__exact=tagname, is_public=True)
     context = {'object_list': object_list, 'form': form,
-               'form_zip': form_zip,}
+               'form_zip': form_zip, }
 
     if extra_context is not None:
         context.update(extra_context)
@@ -191,7 +192,7 @@ def crop_image(obj, request):
             w = str_value.get('width')
             h = str_value.get('height')
             rotate = str_value.get('rotate')
-    if is_cutted: # el usuario ha recortado la foto
+    if is_cutted:  # el usuario ha recortado la foto
         if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise ValueError("Backimage > 5MB!")
         im = Image.open(image).convert('RGBA')
@@ -202,7 +203,7 @@ def crop_image(obj, request):
         tempfile_io.seek(0)
         image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
         obj.image = image_file
-    else: # no la recorta, optimizamos la imagen
+    else:  # no la recorta, optimizamos la imagen
         if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise ValueError("Backimage > 5MB!")
         im = Image.open(request.FILES['image']).convert('RGBA')
@@ -329,11 +330,11 @@ class PhotoDetailView(DetailView):
         context['form'] = EditFormPhoto(instance=self.object)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
         context['publications'] = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1)[:10]
-                                    for node in
-                                        PublicationPhoto.objects.filter(
-                                            board_photo_id=photo.id, deleted=False,
-                                            parent=None)[:20]]
-                                        
+                                   for node in
+                                   PublicationPhoto.objects.filter(
+                                       board_photo_id=photo.id, deleted=False,
+                                       parent=None)[:20]]
+
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         if photo.is_public:
             try:

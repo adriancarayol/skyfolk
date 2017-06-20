@@ -5,40 +5,9 @@ $(document).ready(function () {
     var thread = $(this);
     var wrapper_shared_pub = $('#tab-messages');
 
-    /* Show more - Show less */
-    $(thread).find('.wrapper').each(function () {
-        var comment = $(this).find('.wrp-comment');
-        var show = $(this).find('.show-more a');
-
-        if ($(comment).height() > max_height_comment) {
-            $(show).show();
-            $(comment).css('height', '2.6em');
-        } else {
-            //$(show).css('display', 'none');
-        }
-    });
-
-    $('.wrapper').on('click', '.show-more a', function () {
-        var $this = $(this);
-        var $content = $this.parent().prev("div.comment").find(".wrp-comment");
-        var linkText = $this.text().toUpperCase();
-
-        if (linkText === "+ MOSTRAR MÁS") {
-            linkText = "- Mostrar menos";
-            $content.css('height', 'auto');
-        } else {
-            linkText = "+ Mostrar más";
-            $content.css('height', '2.6em');
-        }
-        $this.text(linkText);
-        return false;
-    });
-
     /* Abrir respuesta a comentario */
     $(thread).on('click', '#options-comments .fa-reply', function () {
-        console.log('Reply open');
         var id_ = $(this).attr("id").slice(6);
-        alert(id_);
         $("#" + id_).slideToggle("fast");
     });
 
@@ -48,10 +17,10 @@ $(document).ready(function () {
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
         $(form).find('input[name=parent]').val(parent_pk);
-        var user_pk = $(form).find('input[name=p_author]').val();
-        var owner_pk = $(form).find('input[name=board_photo]').val();
-        var pks = [user_pk, owner_pk, parent_pk];
-        AJAX_submit_publication(form, 'reply', pks);
+        var p_author = $(form).find('input[name=p_author]').val();
+        var board_photo = $(form).find('input[name=board_photo]').val();
+        var pks = [p_author, board_photo, parent_pk];
+        AJAX_submit_photo_publication(form, 'reply', pks);
     });
 
     /* Agregar skyline */

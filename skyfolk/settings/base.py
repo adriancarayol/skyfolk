@@ -296,13 +296,16 @@ STATICFILES_FINDERS = (
     en vez de eliminarlas de la base de datos.'''
 NOTIFICATIONS_SOFT_DELETE = True
 ''' Permite enviar datos arbitrarios en las notificaciones '''
-NOTIFICATIONS_USE_JSONFIELD = True
+NOTIFICATIONS_USE_JSONFIELD=True
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),
     ('Gabriel Fernandez', 'gabofer82@gmail.com'),
     ('lostcitizen', 'lostcitizen@gmail.com'),
 )
+# Para emails al recibir nuevo feedback
+
+TELLME_FEEDBACK_EMAIL = 'adriancarayol@gmail.com'
 
 MANAGERS = ADMINS
 POSTMAN_AUTO_MODERATE_AS = True

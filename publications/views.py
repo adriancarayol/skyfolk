@@ -222,6 +222,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         self.object = None
         super(PublicationPhotoView, self).__init__()
 
+    # TODO: Comprobar si el que publica puede hacerlo (privacidad del autor de la imagen)
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         emitter = get_object_or_404(get_user_model(),

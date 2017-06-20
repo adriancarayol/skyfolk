@@ -4,9 +4,7 @@ var max_height_comment = 60;
 
 $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
-    var tab_timeline = $('#tab-timeline');
     var tab_amigos = $('#tab-amigos');
-    // var wrapper_timeline = $(tab_timeline).find('#wrapperx-timeline');
     var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Show more - Show less */
@@ -25,33 +23,6 @@ $(document).ready(function () {
     $(tab_comentarios).on('click', '.show-more a', function () {
         var $this = $(this);
         var $content = $this.parent().prev("div.comment").find(".wrp-comment");
-        var linkText = $this.text().toUpperCase();
-
-        if (linkText === "+ MOSTRAR MÁS") {
-            linkText = "- Mostrar menos";
-            $content.css('height', 'auto');
-        } else {
-            linkText = "+ Mostrar más";
-            $content.css('height', '2.6em');
-        }
-        $this.text(linkText);
-        return false;
-    });
-
-    $(tab_timeline).find('.timeline-pub').each(function () {
-        var comment = $(this).find('#timeline-id-content');
-        var text = comment.text();
-        var show = $(this).find('.show-more a');
-        text = text.replace(/\s\s+/g, ' ');
-
-        if (text.length < 90) {
-            $(show).css('display', 'none');
-        }
-    });
-
-    $(tab_timeline).on('click', '.show-more a', function () {
-        var $this = $(this);
-        var $content = $this.parent().prev("#timeline-id-content");
         var linkText = $this.text().toUpperCase();
 
         if (linkText === "+ MOSTRAR MÁS") {

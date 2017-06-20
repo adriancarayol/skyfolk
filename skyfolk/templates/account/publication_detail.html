@@ -6,10 +6,6 @@
 {% load mptt_tags %}
 {% load embed_video_tags %}
 {% block title %} <title> Skyfolk - Publicacion #{{ publication.0.id }}</title> {% endblock %}
-{% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
-    <script src="{{ STATIC_URL }}js/publication_detail.js" type="text/javascript"></script>
-{% endblock %}
 {% block content %}
     <div class="container" id="publication-thread">
         {% comment %}
@@ -248,7 +244,7 @@
                                 </div>
                             </div>
                             {% with publication as pub %}
-                                {% include "account/new_reply_extend_publication.html" %}
+                                {% include "photologue/new_reply.html" %}
                             {% endwith %}
                         </div>
                     </div>

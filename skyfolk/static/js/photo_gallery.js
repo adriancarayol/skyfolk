@@ -56,8 +56,8 @@ $(document).ready(function () {
 
     $('#tab-messages').find('#message-photo-form').on('submit', function (event) {
         event.preventDefault();
-        var data = $('.form-wrapper').find('#message-photo-form').serialize();
-        AJAX_submit_photo_publication(data, 'publication');
+        var form = $('#messages-wrapper').find('#message-photo-form');
+        AJAX_submit_photo_publication(form, 'publication');
     });
 }); // FIN DOCUMENT READY
 
@@ -87,13 +87,18 @@ function AJAX_delete_photo() {
     });
 }
 
-function AJAX_submit_photo_publication(data, type, pks) {
+function AJAX_submit_photo_publication(obj_form, type, pks) {
     type = typeof type !== 'undefined' ? type : "reply"; //default para type
+    var form = new FormData($(obj_form).get(0));
     $.ajax({
         url: '/publication_photo/',
         type: 'POST',
-        dataType: 'json',
-        data: data,
+        data: form,
+        async: true,
+        dataType: "json",
+        contentType: false,
+        enctype: 'multipart/form-data',
+        processData: false,
         success: function (data) {
             var response = data.response;
             if (response == true) {
