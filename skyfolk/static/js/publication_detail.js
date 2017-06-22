@@ -98,7 +98,7 @@ function AJAX_delete_publication(caja_publicacion) {
     };
 
     $.ajax({
-        url: '/publication/delete/',
+        url: '/publication_p/delete/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -140,7 +140,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
     };
 
     $.ajax({
-        url: '/publication/add_like/',
+        url: '/publication_p/add_like/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -204,7 +204,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
 /*****************************************************/
 
 function AJAX_add_hate(caja_publicacion, heart, type) {
-    var id_pub;
+   var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
@@ -218,7 +218,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
     };
     //event.preventDefault(); //stop submit
     $.ajax({
-        url: '/publication/add_hate/',
+        url: '/publication_p/add_hate/',
         type: 'POST',
         dataType: 'json',
         data: data,

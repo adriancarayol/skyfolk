@@ -24,8 +24,8 @@ class SitesTest(TestCase):
 
         with self.settings(PHOTOLOGUE_MULTISITE=True):
             # Be explicit about linking Galleries/Photos to Sites."""
-            self.gallery1 = GalleryFactory(slug='test-gallery', sites=[self.site1])
-            self.gallery2 = GalleryFactory(slug='not-on-site-gallery')
+            self.gallery1 = GalleryFactory(slug='test-publications_gallery', sites=[self.site1])
+            self.gallery2 = GalleryFactory(slug='not-on-site-publications_gallery')
             self.photo1 = PhotoFactory(slug='test-photo', sites=[self.site1])
             self.photo2 = PhotoFactory(slug='not-on-site-photo')
             self.gallery1.photos.add(self.photo1, self.photo2)
@@ -74,10 +74,10 @@ class SitesTest(TestCase):
         self.assertEqual(list(response.context['object_list']), [self.gallery1])
 
     def test_gallery_detail(self):
-        response = self.client.get('/ptests/gallery/test-gallery/')
+        response = self.client.get('/ptests/publications_gallery/test-publications_gallery/')
         self.assertEqual(response.context['object'], self.gallery1)
 
-        response = self.client.get('/ptests/gallery/not-on-site-gallery/')
+        response = self.client.get('/ptests/publications_gallery/not-on-site-publications_gallery/')
         self.assertEqual(response.status_code, 404)
 
     def test_photo_list(self):
@@ -97,10 +97,10 @@ class SitesTest(TestCase):
 
     def test_photos_in_gallery(self):
         """
-        Only those photos are supposed to be shown in a gallery that are
+        Only those photos are supposed to be shown in a publications_gallery that are
         also associated with the current site.
         """
-        response = self.client.get('/ptests/gallery/test-gallery/')
+        response = self.client.get('/ptests/publications_gallery/test-publications_gallery/')
         self.assertEqual(list(response.context['object'].public()), [self.photo1])
 
     @unittest.skipUnless('django.contrib.sitemaps' in settings.INSTALLED_APPS,
@@ -119,10 +119,10 @@ class SitesTest(TestCase):
 
         # Check galleries.
         self.assertContains(response,
-                            '<url><loc>http://example.com/ptests/gallery/test-gallery/</loc>'
+                            '<url><loc>http://example.com/ptests/publications_gallery/test-publications_gallery/</loc>'
                             '<lastmod>2011-12-23</lastmod></url>')
         self.assertNotContains(response,
-                               '<url><loc>http://example.com/ptests/gallery/not-on-site-gallery/</loc>'
+                               '<url><loc>http://example.com/ptests/publications_gallery/not-on-site-publications_gallery/</loc>'
                                '<lastmod>2011-12-23</lastmod></url>')
 
     def test_orphaned_photos(self):

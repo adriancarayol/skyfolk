@@ -282,7 +282,7 @@
 
                     this.$avatarInput.val('');
                 } else if (_response.message) {
-                    window.location.replace(_response.gallery); // Redirect to user gallery.
+                    window.location.replace(_response.gallery); // Redirect to user publications_gallery.
                 }
             } else {
                 swal('Failed to response');

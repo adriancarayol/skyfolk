@@ -165,7 +165,7 @@ class UploadZipForm(forms.Form):
 
         if request:
             messages.success(request,
-                             _('The photos have been added to gallery "{0}".').format(
+                             _('The photos have been added to publications_gallery "{0}".').format(
                                  self.request.user),
                              fail_silently=True)
 

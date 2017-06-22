@@ -60,7 +60,7 @@ class GalleryUploadTest(TestCase):
 
     def test_good_data(self):
         """Upload a zip with a single file it it: 'sample.jpg'.
-        It gets assigned to a newly created gallery 'Test'."""
+        It gets assigned to a newly created publications_gallery 'Test'."""
 
         test_data = copy.copy(self.sample_form_data)
         response = self.client.post('/admin/photologue/photo/upload_zip/', test_data)
@@ -78,7 +78,7 @@ class GalleryUploadTest(TestCase):
         self.assertQuerysetEqual(Photo.objects.all(),
                                  ['<Photo: This is a test title 1>'])
 
-        # The photo is attached to the gallery.
+        # The photo is attached to the publications_gallery.
         gallery = Gallery.objects.get(title='This is a test title')
         self.assertQuerysetEqual(gallery.photos.all(),
                                  ['<Photo: This is a test title 1>'])
@@ -94,13 +94,13 @@ class GalleryUploadTest(TestCase):
         self.assertTrue(response.context['form']['title'].errors)
 
     def test_title_or_gallery(self):
-        """We should supply either a title field or a gallery."""
+        """We should supply either a title field or a publications_gallery."""
 
         test_data = copy.copy(self.sample_form_data)
         del test_data['title']
         response = self.client.post('/admin/photologue/photo/upload_zip/', test_data)
         self.assertEqual(list(response.context['form'].non_field_errors()),
-                         ['Select an existing gallery, or enter a title for a new gallery.'])
+                         ['Select an existing publications_gallery, or enter a title for a new publications_gallery.'])
 
     def test_not_image(self):
         """A zip with a file of the wrong format (.txt).
@@ -135,12 +135,12 @@ class GalleryUploadTest(TestCase):
                                  ['<Photo: This is a test title 1>'])
 
     def test_existing_gallery(self):
-        """Add the photos in the zip to an existing gallery."""
+        """Add the photos in the zip to an existing publications_gallery."""
 
         existing_gallery = GalleryFactory(title='Existing')
 
         test_data = copy.copy(self.sample_form_data)
-        test_data['gallery'] = existing_gallery.id
+        test_data['publications_gallery'] = existing_gallery.id
         del test_data['title']
         response = self.client.post('/admin/photologue/photo/upload_zip/', test_data)
         self.assertEqual(response.status_code, 302)
@@ -150,18 +150,18 @@ class GalleryUploadTest(TestCase):
         self.assertQuerysetEqual(Photo.objects.all(),
                                  ['<Photo: Existing 1>'])
 
-        # The photo is attached to the existing gallery.
+        # The photo is attached to the existing publications_gallery.
         self.assertQuerysetEqual(existing_gallery.photos.all(),
                                  ['<Photo: Existing 1>'])
 
     def test_existing_gallery_custom_title(self):
-        """Add the photos in the zip to an existing gallery, but specify a
+        """Add the photos in the zip to an existing publications_gallery, but specify a
         custom title for the photos."""
 
         existing_gallery = GalleryFactory(title='Existing')
 
         test_data = copy.copy(self.sample_form_data)
-        test_data['gallery'] = existing_gallery.id
+        test_data['publications_gallery'] = existing_gallery.id
         test_data['title'] = 'Custom title'
         response = self.client.post('/admin/photologue/photo/upload_zip/', test_data)
         self.assertEqual(response.status_code, 302)

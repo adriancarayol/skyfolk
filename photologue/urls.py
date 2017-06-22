@@ -25,7 +25,7 @@ The new style will coexist with the existing 'pl-' prefix for a couple of releas
 urlpatterns = [
     url(r'^$',
         RedirectView.as_view(
-            url=reverse_lazy('photologue:pl-gallery-archive'), permanent=True),
+            url=reverse_lazy('photologue:pl-publications_gallery-archive'), permanent=True),
         name='pl-photologue-root'),
     url(r'^photo/(?P<year>\d{4})/(?P<month>[0-9]{2})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
         PhotoDateDetailView.as_view(month_format='%m'),
@@ -62,15 +62,15 @@ urlpatterns = [
         name='photo-list'),
 
     # Deprecated URLs.
-    url(r'^gallery/(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
+    url(r'^publications_gallery/(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
         GalleryDateDetailOldView.as_view(),
-        name='pl-gallery-detail'),
-    url(r'^gallery/(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/$',
+        name='pl-publications_gallery-detail'),
+    url(r'^publications_gallery/(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/$',
         GalleryDayArchiveOldView.as_view(),
-        name='pl-gallery-archive-day'),
-    url(r'^gallery/(?P<year>\d{4})/(?P<month>[a-z]{3})/$',
+        name='pl-publications_gallery-archive-day'),
+    url(r'^publications_gallery/(?P<year>\d{4})/(?P<month>[a-z]{3})/$',
         GalleryMonthArchiveOldView.as_view(),
-        name='pl-gallery-archive-month'),
+        name='pl-publications_gallery-archive-month'),
     url(r'^photo/(?P<year>\d{4})/(?P<month>[a-z]{3})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
         PhotoDateDetailOldView.as_view(),
         name='pl-photo-detail'),

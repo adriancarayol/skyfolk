@@ -1,5 +1,7 @@
 from django import forms
-from publications.models import Publication, PublicationPhoto, PublicationImage
+
+from publications_gallery.models import PublicationPhoto
+from publications.models import Publication
 
 
 class PublicationForm(forms.ModelForm):
@@ -12,7 +14,7 @@ class PublicationForm(forms.ModelForm):
         # Excluir atributos en el formulario.
         exclude = ['created', 'likes', 'user_give_me_like', 'hates',
                    'user_give_me_hate', 'shared_publication', 'tags', 'deleted',
-                   'event_type', 'liked', 'hated', 'shared', 'extra_content']
+                   'event_type', 'liked', 'hated', 'shared', 'extra_content', 'shared_photo_publication']
 
         """
         if self.initial:
@@ -46,7 +48,7 @@ class ReplyPublicationForm(forms.ModelForm):
         # Excluir atributos en el formulario.
         exclude = ['image', 'created', 'likes', 'user_give_me_like', 'hates',
                    'user_give_me_hate', 'shared_publication', 'tags', 'deleted', 
-                   'event_type', 'liked', 'hated', 'shared', 'extra_content']
+                   'event_type', 'liked', 'hated', 'shared', 'extra_content', 'shared_photo_publication']
 
     def __init__(self, *args, **kwargs):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)

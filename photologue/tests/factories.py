@@ -32,7 +32,7 @@ class GalleryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Gallery
 
-    title = factory.Sequence(lambda n: 'gallery{0:0>3}'.format(n))
+    title = factory.Sequence(lambda n: 'publications_gallery{0:0>3}'.format(n))
     slug = factory.LazyAttribute(lambda a: slugify(six.text_type(a.title)))
 
     @factory.sequence

@@ -1,11 +1,12 @@
 import json
-
 import warnings
-import io
+
 from PIL import Image
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
 from django.shortcuts import redirect
@@ -15,18 +16,14 @@ from django.views.generic.base import RedirectView
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
 from django.views.generic.detail import DetailView
-from django.contrib.auth import get_user_model
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
-from publications.forms import PublicationForm, PublicationPhotoForm
-from publications.models import PublicationPhoto
+from publications_gallery.models import PublicationPhoto
+from publications.forms import PublicationPhotoForm
 from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo
-from django.db.models import Q
-from django.http import Http404
-from django.conf import settings
 
 
 # Collection views
@@ -150,7 +147,7 @@ def upload_photo(request):
                 'result': True,
                 'state': 200,
                 'message': 'Success',
-                'gallery': '/multimedia/' + user.username
+                'publications_gallery': '/multimedia/' + user.username
             }
             return JsonResponse({'data': data})
         else:
@@ -442,7 +439,7 @@ class GalleryDateDetailOldView(DeprecatedMonthMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         super(GalleryDateDetailOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:gallery-detail', kwargs={'year': kwargs['year'],
+        return reverse('photologue:publications_gallery-detail', kwargs={'year': kwargs['year'],
                                                             'month': self.month_names[kwargs['month']],
                                                             'day': kwargs['day'],
                                                             'slug': kwargs['slug']})
@@ -453,7 +450,7 @@ class GalleryDayArchiveOldView(DeprecatedMonthMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         super(GalleryDayArchiveOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:gallery-archive-day', kwargs={'year': kwargs['year'],
+        return reverse('photologue:publications_gallery-archive-day', kwargs={'year': kwargs['year'],
                                                                  'month': self.month_names[kwargs['month']],
                                                                  'day': kwargs['day']})
 
@@ -463,7 +460,7 @@ class GalleryMonthArchiveOldView(DeprecatedMonthMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         super(GalleryMonthArchiveOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:gallery-archive-month', kwargs={'year': kwargs['year'],
+        return reverse('photologue:publications_gallery-archive-month', kwargs={'year': kwargs['year'],
                                                                    'month': self.month_names[kwargs['month']]})
 
 

@@ -1,5 +1,3 @@
-import re
-
 from django import template
 
 from publications.models import Publication, SharedPublication

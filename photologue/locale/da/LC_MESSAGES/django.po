@@ -26,17 +26,17 @@ msgstr ""
 #| msgid "The following photo does not belong to the same site(s)"
 #| msgid_plural "The following photos do not belong to the same site(s)"
 msgid ""
-"The following photo does not belong to the same site(s) as the gallery, so "
+"The following photo does not belong to the same site(s) as the publications_gallery, so "
 "will never be displayed: %(photo_list)s."
 msgid_plural ""
-"The following photos do not belong to the same site(s) as the gallery, so "
+"The following photos do not belong to the same site(s) as the publications_gallery, so "
 "will never be displayed: %(photo_list)s."
 msgstr[0] "Følgende billede hører ikke til samme webside(r)"
 msgstr[1] "Følgende billeder hører ikke til samme webside(r)"
 
 #: admin.py:74
 #, python-format
-msgid "The gallery has been successfully added to %(site)s"
+msgid "The publications_gallery has been successfully added to %(site)s"
 msgid_plural "The galleries have been successfully added to %(site)s"
 msgstr[0] "Galleriet er blevet tilføjet til %(site)s"
 msgstr[1] "Gallerierne er blevet tilføjet til %(site)s"
@@ -47,7 +47,7 @@ msgstr "Tilføj valgte gallerier til den nuværende webside"
 
 #: admin.py:87
 #, python-format
-msgid "The gallery has been successfully removed from %(site)s"
+msgid "The publications_gallery has been successfully removed from %(site)s"
 msgid_plural ""
 "The selected galleries have been successfully removed from %(site)s"
 msgstr[0] "Det valgte galleri er blevet fjernet fra %(site)s"
@@ -60,7 +60,7 @@ msgstr "Fjern valgte gallerier fra den nuværende webside"
 #: admin.py:101
 #, python-format
 msgid ""
-"All photos in gallery %(galleries)s have been successfully added to %(site)s"
+"All photos in publications_gallery %(galleries)s have been successfully added to %(site)s"
 msgid_plural ""
 "All photos in galleries %(galleries)s have been successfully added to "
 "%(site)s"
@@ -76,7 +76,7 @@ msgstr "Tilføj alle billeder fra de valgte gallerier til den nuværende webside
 #: admin.py:119
 #, python-format
 msgid ""
-"All photos in gallery %(galleries)s have been successfully removed from "
+"All photos in publications_gallery %(galleries)s have been successfully removed from "
 "%(site)s"
 msgid_plural ""
 "All photos in galleries %(galleries)s have been successfully removed from "
@@ -123,9 +123,9 @@ msgstr "Titel"
 #: forms.py:37
 msgid ""
 "All uploaded photos will be given a title made up of this title + a "
-"sequential number.<br>This field is required if creating a new gallery, but "
-"is optional when adding to an existing gallery - if not supplied, the photo "
-"titles will be creating from the existing gallery name."
+"sequential number.<br>This field is required if creating a new publications_gallery, but "
+"is optional when adding to an existing publications_gallery - if not supplied, the photo "
+"titles will be creating from the existing publications_gallery name."
 msgstr ""
 
 #: forms.py:43
@@ -134,8 +134,8 @@ msgstr "Galleri"
 
 #: forms.py:45
 msgid ""
-"Select a gallery to add these images to. Leave this empty to create a new "
-"gallery from the supplied title."
+"Select a publications_gallery to add these images to. Leave this empty to create a new "
+"publications_gallery from the supplied title."
 msgstr ""
 "Vælg et galleri at tilføje disse billeder til. Lad feltet være tomt for at "
 "oprette et nyt galleri med den valgte title"
@@ -164,17 +164,17 @@ msgstr "Er offentlig"
 
 #: forms.py:56
 msgid ""
-"Uncheck this to make the uploaded gallery and included photographs private."
+"Uncheck this to make the uploaded publications_gallery and included photographs private."
 msgstr ""
 "Fjern afkrydsningen her for at gøre det uploadede galleri og alle "
 "inkluderede billeder private."
 
 #: forms.py:79
-msgid "A gallery with that title already exists."
+msgid "A publications_gallery with that title already exists."
 msgstr "Et galleri med den titel eksisterer allerede"
 
 #: forms.py:89
-msgid "Select an existing gallery, or enter a title for a new gallery."
+msgid "Select an existing publications_gallery, or enter a title for a new publications_gallery."
 msgstr "Vælg et eksisterende galleri, eller skriv en titel til et nyt galleri"
 
 #: forms.py:122
@@ -193,7 +193,7 @@ msgstr "Kunne ikke behandle fil \"{0}\" i zip-arkivet."
 
 #: forms.py:179
 #, python-brace-format
-msgid "The photos have been added to gallery \"{0}\"."
+msgid "The photos have been added to publications_gallery \"{0}\"."
 msgstr "Billederne er blevet tilføjet til galleri \"{0}\""
 
 #: models.py:114
@@ -320,7 +320,7 @@ msgid "sites"
 msgstr "websider"
 
 #: models.py:202
-msgid "gallery"
+msgid "publications_gallery"
 msgstr "galleri"
 
 #: models.py:203
@@ -619,8 +619,8 @@ msgid ""
 "\t\t<p>On this page you can upload many photos at once, as long as you have\n"
 "\t\tput them all in a zip archive. The photos can be either:</p>\n"
 "\t\t<ul>\n"
-"\t\t\t<li>Added to an existing gallery.</li>\n"
-"\t\t\t<li>Otherwise, a new gallery is created with the supplied title.</li>\n"
+"\t\t\t<li>Added to an existing publications_gallery.</li>\n"
+"\t\t\t<li>Otherwise, a new publications_gallery is created with the supplied title.</li>\n"
 "\t\t</ul>\n"
 "\t"
 msgstr ""
@@ -815,8 +815,8 @@ msgstr "Alle billeder"
 #~ msgid "images file (.zip)"
 #~ msgstr "images file (.zip)"
 
-#~ msgid "gallery upload"
-#~ msgstr "gallery upload"
+#~ msgid "publications_gallery upload"
+#~ msgstr "publications_gallery upload"
 
-#~ msgid "gallery uploads"
-#~ msgstr "gallery uploads"
+#~ msgid "publications_gallery uploads"
+#~ msgstr "publications_gallery uploads"

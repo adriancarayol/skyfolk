@@ -62,10 +62,10 @@ from .managers import GalleryQuerySet, PhotoQuerySet
 
 logger = logging.getLogger('photologue.models')
 
-# Default limit for gallery.latest
+# Default limit for publications_gallery.latest
 LATEST_LIMIT = getattr(settings, 'PHOTOLOGUE_GALLERY_LATEST_LIMIT', None)
 
-# Number of random images from the gallery to display.
+# Number of random images from the publications_gallery to display.
 SAMPLE_SIZE = getattr(settings, 'PHOTOLOGUE_GALLERY_SAMPLE_SIZE', 5)
 
 # max_length setting for the ImageModel ImageField
@@ -562,15 +562,15 @@ class Photo(ImageModel):
         return self.galleries.filter(is_public=True)
 
     def get_previous_in_gallery(self):
-        """Find the neighbour of this photo in the supplied gallery.
-        We assume that the gallery and all its photos are on the same site.
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
         """
         if not self.is_public:
             # raise ValueError('Cannot determine neighbours of a non-public photo.')
             return None
         photos = Photo.objects.filter(owner=self.owner, is_public=True)
         if self not in photos:
-            raise ValueError('Photo does not belong to gallery.')
+            raise ValueError('Photo does not belong to publications_gallery.')
         previous = None
         for photo in photos:
             if photo == self:
@@ -579,15 +579,15 @@ class Photo(ImageModel):
         return None
 
     def get_next_in_gallery(self):
-        """Find the neighbour of this photo in the supplied gallery.
-        We assume that the gallery and all its photos are on the same site.
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
         """
         if not self.is_public:
             return None
             # raise ValueError('Cannot determine neighbours of a non-public photo.')
         photos = Photo.objects.filter(owner=self.owner, is_public=True)
         if self not in photos:
-            raise ValueError('Photo does not belong to gallery.')
+            raise ValueError('Photo does not belong to publications_gallery.')
         matched = False
         for photo in photos:
             if matched:
@@ -597,12 +597,12 @@ class Photo(ImageModel):
         return None
 
     def get_previous_in_own_gallery(self):
-        """Find the neighbour of this photo in the supplied gallery.
-        We assume that the gallery and all its photos are on the same site.
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
         """
         photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
-            raise ValueError('Photo does not belong to gallery.')
+            raise ValueError('Photo does not belong to publications_gallery.')
         previous = None
         for photo in photos:
             if photo == self:
@@ -611,12 +611,12 @@ class Photo(ImageModel):
         return None
 
     def get_next_in_own_gallery(self):
-        """Find the neighbour of this photo in the supplied gallery.
-        We assume that the gallery and all its photos are on the same site.
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
         """
         photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
-            raise ValueError('Photo does not belong to gallery.')
+            raise ValueError('Photo does not belong to publications_gallery.')
         matched = False
         for photo in photos:
             if matched:

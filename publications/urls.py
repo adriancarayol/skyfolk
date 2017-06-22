@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from publications import views as publications_views
 
@@ -13,9 +13,6 @@ urlpatterns = [
         name='add_like'),
     url(r'^publication/add_hate/$', publications_views.add_hate,
         name='add_hate'),
-    # Publication for photo
-    url(r'^publication_photo/$', publications_views.publication_photo_view,
-        name='new_photo_publication'),
     url(r'^publication/(?P<publication_id>\d+)/$', publications_views.publication_detail,
         name='publication_detail'),
     url(r'^publication/edit/$', publications_views.edit_publication,
@@ -27,4 +24,6 @@ urlpatterns = [
     url(r'^publication/share/publication/', publications_views.share_publication,
         name='publication_share_pub'),
 
+    # Publicaciones en imagenes de la galeria
+    url(r'^', include('publications_gallery.urls')),
 ]

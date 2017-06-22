@@ -91,7 +91,7 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
     type = typeof type !== 'undefined' ? type : "reply"; //default para type
     var form = new FormData($(obj_form).get(0));
     $.ajax({
-        url: '/publication_photo/',
+        url: '/publication_p/',
         type: 'POST',
         data: form,
         async: true,
@@ -101,8 +101,17 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
         processData: false,
         success: function (data) {
             var response = data.response;
-            if (response == true) {
-                /* nothing */
+            var msg = data.msg;
+
+            if (response === true && (typeof(msg) !== 'undefined' && msg !== null)) {
+                swal({
+                    title: "",
+                    text: msg,
+                    customClass: 'default-div',
+                    type: "success"
+                });
+            } else if (response === true) {
+
             } else {
                 swal({
                     title: "",
@@ -113,18 +122,32 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
             }
             if (type === "reply") {
                 var caja_comentarios = $('#caja-comentario-' + pks[2]);
-                $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
+                $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type === "publication") {
+                $('#message-photo').val('');
             }
         },
-        error: function (rs, e) {
-            swal({
-                title: '¡Ups!',
-                text: 'Revisa el contenido de tu mensaje', // rs.responseText,
-                customClass: 'default-div',
-                type: "error"
-            });
+        error: function (data, textStatus) {
+            var response = $.parseJSON(data.responseText);
+            var error_msg = response.error[0];
+            var type_error = response.type_error;
+
+            if (type_error === 'incorrent_data') {
+                swal({
+                    title: '¡Ups!',
+                    text: error_msg, // rs.responseText,
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            } else {
+                swal({
+                    title: '¡Ups!',
+                    text: 'Revisa el contenido de tu mensaje', // rs.responseText,
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            }
         }
     }).done(function () {
     })

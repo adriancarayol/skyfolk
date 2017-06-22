@@ -126,10 +126,10 @@ class PhotoManagerTest(PhotologueBaseTest):
 
 
 class PreviousNextTest(PhotologueBaseTest):
-    """Tests for the methods that provide the previous/next photos in a gallery."""
+    """Tests for the methods that provide the previous/next photos in a publications_gallery."""
 
     def setUp(self):
-        """Create a test gallery with 2 photos."""
+        """Create a test publications_gallery with 2 photos."""
         super(PreviousNextTest, self).setUp()
         self.test_gallery = GalleryFactory()
         self.pl1 = PhotoFactory()
@@ -146,7 +146,7 @@ class PreviousNextTest(PhotologueBaseTest):
         self.pl3.delete()
 
     def test_previous_simple(self):
-        # Previous in gallery.
+        # Previous in publications_gallery.
         self.assertEqual(self.pl1.get_previous_in_gallery(self.test_gallery),
                          None)
         self.assertEqual(self.pl2.get_previous_in_gallery(self.test_gallery),
@@ -169,18 +169,18 @@ class PreviousNextTest(PhotologueBaseTest):
                          self.pl1)
 
     def test_previous_gallery_mismatch(self):
-        """Photo does not belong to the gallery."""
+        """Photo does not belong to the publications_gallery."""
         self.pl4 = PhotoFactory()
 
         self.assertRaisesMessage(ValueError,
-                                 'Photo does not belong to gallery.',
+                                 'Photo does not belong to publications_gallery.',
                                  self.pl4.get_previous_in_gallery,
                                  self.test_gallery)
 
         self.pl4.delete()
 
     def test_next_simple(self):
-        # Next in gallery.
+        # Next in publications_gallery.
         self.assertEqual(self.pl1.get_next_in_gallery(self.test_gallery),
                          self.pl2)
         self.assertEqual(self.pl2.get_next_in_gallery(self.test_gallery),
@@ -203,11 +203,11 @@ class PreviousNextTest(PhotologueBaseTest):
                          None)
 
     def test_next_gallery_mismatch(self):
-        """Photo does not belong to the gallery."""
+        """Photo does not belong to the publications_gallery."""
         self.pl4 = PhotoFactory()
 
         self.assertRaisesMessage(ValueError,
-                                 'Photo does not belong to gallery.',
+                                 'Photo does not belong to publications_gallery.',
                                  self.pl4.get_next_in_gallery,
                                  self.test_gallery)
 

@@ -1,32 +1,33 @@
 import json
+import os
 import re
+import uuid
+
 import bleach
 import requests
-import uuid
-import os
-
+from bs4 import BeautifulSoup
 from channels import Group as channel_group
+from django.conf import settings
 from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.db import models, transaction
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext as _
+from embed_video.backends import detect_backend, EmbedVideoException
+from embed_video.fields import EmbedVideoField
+from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
+
+from notifications.signals import notify
 from photologue.models import Photo
 from user_profile.models import NodeProfile
-from .utils import get_author_avatar
 from user_profile.tasks import send_to_stream
-from django.core.exceptions import ObjectDoesNotExist
-from notifications.signals import notify
-from django.conf import settings
-from mptt.models import MPTTModel, TreeForeignKey
-from django.contrib.contenttypes.models import ContentType
-from django.utils.translation import gettext as _
-from bs4 import BeautifulSoup
-from embed_video.fields import EmbedVideoField
-from embed_video.backends import detect_backend, EmbedVideoException
 from user_profile.utils import group_name
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.conf import settings
+from .utils import get_author_avatar
+
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -145,6 +146,7 @@ def upload_video_publication(instance, filename):
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return os.path.join('skyfolk/media/publications/videos', filename)
 
+
 class PublicationBase(MPTTModel):
     content = models.TextField(blank=False, null=True, max_length=500)
     created = models.DateTimeField(auto_now_add=True, null=True)
@@ -218,12 +220,16 @@ class Publication(PublicationBase):
                                                related_name='hates_me')
     shared_publication = models.ForeignKey(SharedPublication, blank=True, null=True,
                                            related_name='share_me')
+    shared_photo_publication = models.ForeignKey('publications_gallery.PublicationPhoto', blank=True, null=True)
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
     event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
     extra_content = models.ForeignKey(ExtraContent, null=True, related_name='extra_content')
 
     # objects = PublicationManager()
+
+    class Meta:
+        unique_together = ('shared_photo_publication', 'id')
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -305,7 +311,7 @@ class Publication(PublicationBase):
             self.content)
 
         try:
-            backend = detect_backend(link_url[-1]) # youtube o soundcloud
+            backend = detect_backend(link_url[-1])  # youtube o soundcloud
         except (EmbedVideoException, IndexError) as e:
             backend = None
 
@@ -426,14 +432,14 @@ class Publication(PublicationBase):
             send_to_stream.delay(self.author_id, self.id)
 
 
-
-
 def validate_video(value):
     ''' if value.file is an instance of InMemoryUploadedFile, it means that the
     file was just uploaded with this request (i.e., it's a creation process,
     not an editing process. '''
-    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/')[1] not in settings.VIDEO_EXTENTIONS:
+    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/')[
+        1] not in settings.VIDEO_EXTENTIONS:
         raise ValueError('Please upload a valid video file')
+
 
 class PublicationVideo(models.Model):
     publication = models.ForeignKey(Publication, related_name='videos')
@@ -461,77 +467,6 @@ class PublicationGroup(PublicationBase):
 
     def __str__(self):
         return self.content
-
-
-class PublicationPhoto(PublicationBase):
-    """
-    Modelo para las publicaciones en las fotos
-    """
-    p_author = models.ForeignKey(User, null=True)
-    board_photo = models.ForeignKey(Photo, related_name='board_photo')
-    user_give_me_like = models.ManyToManyField(User, blank=True,
-                                               related_name='likes_photo_me')
-    user_give_me_hate = models.ManyToManyField(User, blank=True,
-                                               related_name='hate_photo_me')
-    user_share_me = models.ManyToManyField(User, blank=True,
-                                           related_name='share_photo_me')
-    parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_photo')
-
-    class MPTTMeta:
-        order_insertion_by = ['-created']
-
-    def __str__(self):
-        return self.content
-
-    def add_hashtag(self):
-        """
-        Añadimos los hashtags encontrados a la
-        lista de tags => atributo "tags"
-        """
-        hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
-        for tag in hashtags:
-            if tag.endswith((',', '.')):
-                tag = tag[:-1]
-            self.tags.add(tag)
-
-    def send_notification(self, type="pub"):
-        """
-         Enviamos a través del socket a todos aquellos usuarios
-         que esten visitando el perfil donde se publica el comentario.
-        """
-        if type == "pub":
-            id_parent = ''
-        else:
-            id_parent = self.parent.id
-
-        notification = {
-            "id": self.pk,
-            "content": self.content,
-            "avatar_path": get_author_avatar(authorpk=self.p_author_id),
-            "author_username": self.p_author.username,
-            "author_first_name": self.p_author.first_name,
-            "author_last_name": self.p_author.last_name,
-            "created": naturaltime(self.created),
-            "type": type,
-            "parent": id_parent,
-        }
-        # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(self.board_photo.group_name).send({
-            "text": json.dumps(notification)
-        })
-
-    def save(self, new_comment=False, *args, **kwargs):
-        if new_comment:
-            result = super(PublicationPhoto, self).save(*args, **kwargs)
-            self.add_hashtag()
-            if not self.parent:
-                self.send_notification()
-            else:
-                self.send_notification(type="reply")
-            return result
-        else:
-            super(PublicationPhoto, self).save(*args, **kwargs)
 
 
 class PublicationDeleted(models.Model):

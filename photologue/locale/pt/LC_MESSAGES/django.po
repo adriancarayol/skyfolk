@@ -23,17 +23,17 @@ msgstr ""
 #: admin.py:62
 #, python-format
 msgid ""
-"The following photo does not belong to the same site(s) as the gallery, so "
+"The following photo does not belong to the same site(s) as the publications_gallery, so "
 "will never be displayed: %(photo_list)s."
 msgid_plural ""
-"The following photos do not belong to the same site(s) as the gallery, so "
+"The following photos do not belong to the same site(s) as the publications_gallery, so "
 "will never be displayed: %(photo_list)s."
 msgstr[0] ""
 msgstr[1] ""
 
 #: admin.py:74
 #, python-format
-msgid "The gallery has been successfully added to %(site)s"
+msgid "The publications_gallery has been successfully added to %(site)s"
 msgid_plural "The galleries have been successfully added to %(site)s"
 msgstr[0] ""
 msgstr[1] ""
@@ -44,7 +44,7 @@ msgstr ""
 
 #: admin.py:87
 #, python-format
-msgid "The gallery has been successfully removed from %(site)s"
+msgid "The publications_gallery has been successfully removed from %(site)s"
 msgid_plural ""
 "The selected galleries have been successfully removed from %(site)s"
 msgstr[0] ""
@@ -57,7 +57,7 @@ msgstr ""
 #: admin.py:101
 #, python-format
 msgid ""
-"All photos in gallery %(galleries)s have been successfully added to %(site)s"
+"All photos in publications_gallery %(galleries)s have been successfully added to %(site)s"
 msgid_plural ""
 "All photos in galleries %(galleries)s have been successfully added to "
 "%(site)s"
@@ -71,7 +71,7 @@ msgstr ""
 #: admin.py:119
 #, python-format
 msgid ""
-"All photos in gallery %(galleries)s have been successfully removed from "
+"All photos in publications_gallery %(galleries)s have been successfully removed from "
 "%(site)s"
 msgid_plural ""
 "All photos in galleries %(galleries)s have been successfully removed from "
@@ -116,9 +116,9 @@ msgstr ""
 #: forms.py:37
 msgid ""
 "All uploaded photos will be given a title made up of this title + a "
-"sequential number.<br>This field is required if creating a new gallery, but "
-"is optional when adding to an existing gallery - if not supplied, the photo "
-"titles will be creating from the existing gallery name."
+"sequential number.<br>This field is required if creating a new publications_gallery, but "
+"is optional when adding to an existing publications_gallery - if not supplied, the photo "
+"titles will be creating from the existing publications_gallery name."
 msgstr ""
 
 #: forms.py:43
@@ -127,8 +127,8 @@ msgstr ""
 
 #: forms.py:45
 msgid ""
-"Select a gallery to add these images to. Leave this empty to create a new "
-"gallery from the supplied title."
+"Select a publications_gallery to add these images to. Leave this empty to create a new "
+"publications_gallery from the supplied title."
 msgstr ""
 
 #: forms.py:47
@@ -155,17 +155,17 @@ msgstr ""
 
 #: forms.py:56
 msgid ""
-"Uncheck this to make the uploaded gallery and included photographs private."
+"Uncheck this to make the uploaded publications_gallery and included photographs private."
 msgstr ""
 "Desmarque esta opção para tornar a galeria, incluindo suas fotos, não "
 "pública."
 
 #: forms.py:79
-msgid "A gallery with that title already exists."
+msgid "A publications_gallery with that title already exists."
 msgstr ""
 
 #: forms.py:89
-msgid "Select an existing gallery, or enter a title for a new gallery."
+msgid "Select an existing publications_gallery, or enter a title for a new publications_gallery."
 msgstr ""
 
 #: forms.py:122
@@ -182,7 +182,7 @@ msgstr ""
 
 #: forms.py:179
 #, python-brace-format
-msgid "The photos have been added to gallery \"{0}\"."
+msgid "The photos have been added to publications_gallery \"{0}\"."
 msgstr ""
 
 #: models.py:114
@@ -309,7 +309,7 @@ msgid "sites"
 msgstr ""
 
 #: models.py:202
-msgid "gallery"
+msgid "publications_gallery"
 msgstr "Galeria"
 
 #: models.py:203
@@ -608,8 +608,8 @@ msgid ""
 "\t\t<p>On this page you can upload many photos at once, as long as you have\n"
 "\t\tput them all in a zip archive. The photos can be either:</p>\n"
 "\t\t<ul>\n"
-"\t\t\t<li>Added to an existing gallery.</li>\n"
-"\t\t\t<li>Otherwise, a new gallery is created with the supplied title.</li>\n"
+"\t\t\t<li>Added to an existing publications_gallery.</li>\n"
+"\t\t\t<li>Otherwise, a new publications_gallery is created with the supplied title.</li>\n"
 "\t\t</ul>\n"
 "\t"
 msgstr ""
@@ -778,8 +778,8 @@ msgstr ""
 #~ msgid "images file (.zip)"
 #~ msgstr "images file (.zip)"
 
-#~ msgid "gallery upload"
-#~ msgstr "gallery upload"
+#~ msgid "publications_gallery upload"
+#~ msgstr "publications_gallery upload"
 
-#~ msgid "gallery uploads"
-#~ msgstr "gallery uploads"
+#~ msgid "publications_gallery uploads"
+#~ msgstr "publications_gallery uploads"

@@ -5,7 +5,7 @@ from .. import models
 
 class GalleryTest(PhotologueBaseTest):
     def setUp(self):
-        """Create a test gallery with 2 photos."""
+        """Create a test publications_gallery with 2 photos."""
         super(GalleryTest, self).setUp()
         self.test_gallery = GalleryFactory()
         self.pl2 = PhotoFactory()
@@ -25,7 +25,7 @@ class GalleryTest(PhotologueBaseTest):
 
     def test_photo_count(self):
         """Method 'photo_count' should return the count of the photos in this
-        gallery."""
+        publications_gallery."""
         self.assertEqual(self.test_gallery.photo_count(), 2)
         self.pl.is_public = False
         self.pl.save()
@@ -36,9 +36,9 @@ class GalleryTest(PhotologueBaseTest):
 
     def test_sample(self):
         """Method 'sample' should return a random queryset of photos from the
-        gallery."""
+        publications_gallery."""
 
-        # By default we return all photos from the gallery (but ordered at random).
+        # By default we return all photos from the publications_gallery (but ordered at random).
         _current_sample_size = models.SAMPLE_SIZE
         models.SAMPLE_SIZE = 5
         self.assertEqual(len(self.test_gallery.sample()), 2)

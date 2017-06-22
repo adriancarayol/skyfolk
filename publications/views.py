@@ -1,36 +1,34 @@
+import io
 import json
 import logging
-import io
 import os
-import magic
 import tempfile
 
+import magic
+from PIL import Image
 from bs4 import BeautifulSoup
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import IntegrityError
+from django.db import transaction
 from django.http import HttpResponse
+from django.http import JsonResponse
+from django.middleware import csrf
 from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
-from django.http import JsonResponse
-from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm
-from publications.models import Publication, PublicationPhoto, SharedPublication, PublicationImage, PublicationVideo
-from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from django.core.files.uploadedfile import InMemoryUploadedFile
+
 from emoji import Emoji
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from .utils import get_author_avatar
-from django.db import transaction
-from .utils import parse_string
-from django.middleware import csrf
-from PIL import Image
+from publications.forms import PublicationForm, SharedPublicationForm
+from publications.models import Publication, SharedPublication, PublicationImage, PublicationVideo
 from user_profile.models import NodeProfile
-from django.conf import settings
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
 from .tasks import process_video_publication, process_gif_publication
+from .utils import get_author_avatar
+from .utils import parse_string
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -112,7 +110,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
     success_url = '/thanks/'
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(PublicationNewView, self).__init__(**kwargs)
         self.object = None
 
     def post(self, request, *args, **kwargs):
@@ -136,9 +134,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-                publication.author = User.objects.get(id=emitter.user_id)
-                publication.board_owner = User.objects.get(id=board_owner.user_id)
-                print('SAVED!')
+                publication.author_id = emitter.user_id
+                publication.board_owner_id = board_owner.user_id
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):
                     if tag.text and not tag.text.isspace():
@@ -178,7 +175,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
 publication_new_view = transaction.atomic(publication_new_view)
 
-
+@login_required(login_url='/')
 def publication_detail(request, publication_id):
     """
     Muestra el thread de una conversacion
@@ -188,7 +185,7 @@ def publication_detail(request, publication_id):
         request_pub = Publication.objects.get(id=publication_id, deleted=False)
         publication = request_pub.get_descendants(include_self=True).filter(deleted=False)
     except ObjectDoesNotExist:
-        return Http404
+        raise Http404
 
     try:
         author = NodeProfile.nodes.get(user_id=request_pub.author_id)
@@ -207,49 +204,6 @@ def publication_detail(request, publication_id):
     }
 
     return render(request, "account/publication_detail.html", context)
-
-
-class PublicationPhotoView(AjaxableResponseMixin, CreateView):
-    """
-    Crear una publicación para mi perfil.
-    """
-    form_class = PublicationPhotoForm
-    model = PublicationPhoto
-    http_method_names = [u'post']
-    success_url = '/thanks/'
-
-    def __init__(self):
-        self.object = None
-        super(PublicationPhotoView, self).__init__()
-
-    # TODO: Comprobar si el que publica puede hacerlo (privacidad del autor de la imagen)
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        emitter = get_object_or_404(get_user_model(),
-                                    pk=request.POST.get('p_author', None))
-
-        photo = get_object_or_404(Photo, pk=request.POST.get('board_photo', None))
-        publication = None
-        logger.debug('POST DATA: {}'.format(request.POST))
-        logger.debug('tipo emitter: {}'.format(type(emitter)))
-        if form.is_valid():
-            try:
-                publication = form.save(commit=False)
-                publication.author = emitter
-                publication.board_photo = photo
-                if publication.content.isspace():
-                    raise IntegrityError('El comentario esta vacio')
-                publication.save(new_comment=True)
-                logger.debug('>>>> PUBLICATION: '.format(publication))
-
-                return self.form_valid(form=form)
-            except IntegrityError as e:
-                logger.debug("views.py line 48 -> {}".format(e))
-
-        return self.form_invalid(form=form)
-
-
-publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
 
 
 @login_required(login_url='/')
@@ -500,6 +454,7 @@ def add_hate(request):
     return HttpResponse(data, content_type='application/json')
 
 
+@transaction.atomic
 def edit_publication(request):
     """
     Permite al creador de la publicacion
