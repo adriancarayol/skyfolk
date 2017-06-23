@@ -3,7 +3,7 @@ var max_height_comment = 60;
 $(document).ready(function () {
 
     var thread = $(this);
-    var wrapper_shared_pub = $('#tab-messages');
+    var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Abrir respuesta a comentario */
     $(thread).on('click', '#options-comments .fa-reply', function () {
@@ -17,10 +17,10 @@ $(document).ready(function () {
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
         $(form).find('input[name=parent]').val(parent_pk);
-        var p_author = $(form).find('input[name=p_author]').val();
-        var board_photo = $(form).find('input[name=board_photo]').val();
-        var pks = [p_author, board_photo, parent_pk];
-        AJAX_submit_photo_publication(form, 'reply', pks);
+        var user_pk = $(form).find('input[name=author]').val();
+        var owner_pk = $(form).find('input[name=board_owner]').val();
+        var pks = [user_pk, owner_pk, parent_pk];
+        AJAX_submit_publication(form, 'reply', pks);
     });
 
     /* Agregar skyline */
@@ -98,7 +98,7 @@ function AJAX_delete_publication(caja_publicacion) {
     };
 
     $.ajax({
-        url: '/publication_p/delete/',
+        url: '/publication/delete/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -140,7 +140,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
     };
 
     $.ajax({
-        url: '/publication_p/add_like/',
+        url: '/publication/add_like/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -218,7 +218,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
     };
     //event.preventDefault(); //stop submit
     $.ajax({
-        url: '/publication_p/add_hate/',
+        url: '/publication/add_hate/',
         type: 'POST',
         dataType: 'json',
         data: data,

@@ -20,7 +20,7 @@ from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
 from publications_gallery.models import PublicationPhoto
-from publications.forms import PublicationPhotoForm
+from publications.forms import PublicationPhotoForm, SharedPublicationForm
 from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo
@@ -147,7 +147,7 @@ def upload_photo(request):
                 'result': True,
                 'state': 200,
                 'message': 'Success',
-                'publications_gallery': '/multimedia/' + user.username
+                'gallery': '/multimedia/' + user.username
             }
             return JsonResponse({'data': data})
         else:
@@ -331,6 +331,7 @@ class PhotoDetailView(DetailView):
                                    PublicationPhoto.objects.filter(
                                        board_photo_id=photo.id, deleted=False,
                                        parent=None)[:20]]
+        context['publication_shared'] = SharedPublicationForm()
 
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         if photo.is_public:

@@ -210,9 +210,9 @@
                                         </li>
                                     {% endif %}
                                     <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
-                                        {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
+                                        {% if node.pk|user_in_shared_photo_list:user.pk %}id="remove_from_skyline"
                                         style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                            class="fa fa-quote-right" aria-hidden="true"> {% with node.total_shared as shares %}{% if shares > 0 %}{{ shares|intword }}{% endif %}{% endwith %}</i></li>
+                                            class="fa fa-quote-right" aria-hidden="true"> {% with node.total_shares as shares %}{% if shares > 0 %}{{ shares|intword }}{% endif %}{% endwith %}</i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>

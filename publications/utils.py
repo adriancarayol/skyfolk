@@ -47,6 +47,7 @@ def parse_string(content):
     content = content.replace('\n', '').replace('\r', '')
     content = bleach.clean(content, tags=ALLOWED_TAGS,
                                 attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+    """
     bold = re.findall('\*[^\*]+\*', content)
     ''' Bold para comentario '''
     for b in bold:
@@ -59,7 +60,7 @@ def parse_string(content):
     tachado = re.findall('\^[^\^]+\^', content)
     for i in tachado:
         content = content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
-
+    """
     return content
 
 

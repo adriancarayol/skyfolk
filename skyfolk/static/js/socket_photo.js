@@ -1,3 +1,5 @@
+var max_height_comment = 60;
+
 var UTILS = UTILS || (function () {
         var _args = {};
         var _showLimitChar = 90;
@@ -181,7 +183,7 @@ var UTILS = UTILS || (function () {
                         }
                         var wrapper_content = $('#pub-' + data.id + '').find('.wrp-comment');
                         /* Comprobamos la longitud del nuevo comentario */
-                        if ($(wrapper_content).height() > _max_height_comment) {
+                        if ($(wrapper_content).height() > max_height_comment) {
                             $(wrapper_content).css('height', '2.6em');
                         } else {
                             $(show).css('display', 'none');

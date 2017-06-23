@@ -4,7 +4,7 @@ from channels import Group as channel_group
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
-
+from publications.models import Publication
 from photologue.models import Photo
 from publications.models import PublicationBase
 from publications.utils import get_author_avatar
@@ -39,11 +39,11 @@ class PublicationPhoto(PublicationBase):
     def total_hates(self):
         return self.user_give_me_hate.count()
 
-    """
+
     @property
     def total_shares(self):
-        return SharedPublication.objects.filter(publication=self).count()
-    """
+        return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.p_author_id, deleted=False).count()
+
 
     def add_hashtag(self):
         """

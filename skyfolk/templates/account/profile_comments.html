@@ -133,6 +133,79 @@
                                                 </div>
                                             </div>
                                         {% endif %}
+                                    {% if node.shared_photo_publication %}
+                                            {% comment %} Para publicaciones que contienen citas {% endcomment %}
+                                            <style>
+                                                .card-content img {
+                                                    max-width: 100%;
+                                                    max-height: 100%;
+                                                    box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
+                                                }
+
+                                                .comment .fa-share {
+                                                    color: #1e88e5;
+                                                    font-style: normal;
+                                                }
+                                            </style>
+                                            <div class="card grey lighten-5">
+                                                <div class="card-content black-text">
+                                                    {% avatar node.shared_photo_publication.p_author %}<br>
+                                                    <span class="card-title"><a
+                                                            href="{% url 'user_profile:profile' node.shared_photo_publication.p_author %}">@{{ node.shared_photo_publication.p_author }}</a>
+                                                        <i class="blue-text text-darken-2"> {{ node.shared_photo_publication.created|naturaltime }}</i></span>
+                                                    <p>{{ node.shared_photo_publication.content|safe }}</p>
+                                                    {% with node.shared_photo_publication.images.all as images %}
+                                                        {% if images %}<br>
+                                                        <div class="row">
+                                                        {% for image in images %}
+                                                            <div class="col s4">
+                                                                <img class="responsive-img z-depth-2" src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                                            </div>
+                                                        {% endfor %}
+                                                        </div>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                        {% with node.shared_photo_publication.videos.all as videos %}
+                                                            {% if videos %}<br>
+                                                                <div class="row">
+                                                             {% for video in videos %}
+                                                                 <div class="col s4">
+                                                                     <video class="responsive-video" controls loop>
+                                                                         <source src="{{ video.video.url }}" type="video/mp4">
+                                                                     </video>
+                                                                 </div>
+                                                            {% endfor %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    {% if node.shared_photo_publication.extra_content %}
+                                                        {% comment %} Para publicaciones con URL {% endcomment %}
+                                                        {% if node.shared_photo_publication.extra_content.video %}
+                                                        {% video node.shared_photo_publication.extra_content.video as my_video %}
+                                                           {% video my_video "medium" %}
+                                                        {% endvideo %}
+                                                        {% else %}
+                                                        <div class="card small">
+                                                            <div class="card-image">
+                                                                <img src="{% if node.shared_photo_publication.extra_content.image %}{{ node.shared_photo_publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                <span class="card-title white-text">{{ node.shared_photo_publication.extra_content.title }}</span>
+                                                            </div>
+                                                            <div class="card-content">
+                                                                <p>{{ node.shared_photo_publication.extra_content.description }}.</p>
+                                                            </div>
+                                                            <div class="card-action">
+                                                                <a href="{{ node.shared_photo_publication.extra_content.url }}">Ver</a>
+                                                            </div>
+                                                        </div>
+                                                            {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="card-action">
+                                                    <a class="blue-text text-darken-2"
+                                                       href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
                                         {% with node.images.all as images %}
                                             {% if images %}
                                             <div class="row images">
@@ -212,7 +285,7 @@
                                     <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
                                         {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
                                         style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                            class="fa fa-quote-right" aria-hidden="true"> {% with node.total_shared as shares %}{% if shares > 0 %}{{ shares|intword }}{% endif %}{% endwith %}</i></li>
+                                            class="fa fa-quote-right" aria-hidden="true"> {% with node.total_shares as shares %}{% if shares > 0 %}{{ shares|intword }}{% endif %}{% endwith %}</i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>

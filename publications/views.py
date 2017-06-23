@@ -119,6 +119,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         form = self.get_form(form_class)
 
         emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
+        print(request.POST)
         board_owner = NodeProfile.nodes.get(user_id=int(request.POST['board_owner']))
 
         privacity = board_owner.is_visible(emitter)

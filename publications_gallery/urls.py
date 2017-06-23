@@ -15,4 +15,6 @@ urlpatterns = [
         name='add_like_photo_publication'),
     url(r'^publication_p/add_hate/$', views.add_hate,
         name='add_hate_photo_publication'),
+    url(r'^publication_p/share/publication/', views.share_publication,
+        name='publication_share_photo_pub'),
 ]

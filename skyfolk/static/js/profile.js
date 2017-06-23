@@ -140,7 +140,7 @@ $(document).ready(function () {
     });
 
     /* Agregar skyline */
-    $(document).on('click', '#options-comments #add_to_skyline', function () {
+    $(this).on('click', '#options-comments #add_to_skyline', function () {
         var tag = this;
         $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
         $(wrapper_shared_pub).show();
@@ -161,14 +161,14 @@ $(document).ready(function () {
     });
 
     /* Eliminar skyline */
-    $(document).on('click', '#options-comments #remove_from_skyline', function () {
+    $(this).on('click', '#options-comments #remove_from_skyline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
-    $(document).on('click', '#options-comments #like-heart', function () {
+    $(this).on('click', '#options-comments #like-heart', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart, "publication");
