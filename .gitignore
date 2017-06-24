@@ -3,6 +3,7 @@ venv
 .project
 .pydevproject
 skyfolk/media/
+avatars/
 skyfolk.sublime-project
 skyfolk.sublime-workspace
 build/
