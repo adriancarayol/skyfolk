@@ -77,7 +77,7 @@ var UTILS = UTILS || (function () {
                                 content += '<a href="' + data.extra_content_url + '">Ver</a>';
                                 content += '</div></div>';
                             }
-                            if (data.images !== undefined && data.images.length > 0) {
+                            if (typeof(data.images) !== 'undefined' && data.images !== null && data.images.length > 0) {
                                 content += '<div class="row images">';
                                 for(var image = 0; image < data.images.length; image++) {
                                     content += '<div class="col s4 z-depth-2">';

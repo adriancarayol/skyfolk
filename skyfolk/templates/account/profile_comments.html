@@ -76,12 +76,12 @@
                                             </style>
                                             <div class="card grey lighten-5">
                                                 <div class="card-content black-text">
-                                                    {% avatar node.shared_publication.publication.author %}<br>
+                                                    {% avatar node.shared_publication.author %}<br>
                                                     <span class="card-title"><a
-                                                            href="{% url 'user_profile:profile' node.shared_publication.publication.author %}">@{{ node.shared_publication.publication.author }}</a>
-                                                        <i class="blue-text text-darken-2"> {{ node.shared_publication.publication.created|naturaltime }}</i></span>
-                                                    <p>{{ node.shared_publication.publication.content|safe }}</p>
-                                                    {% with node.shared_publication.publication.images.all as images %}
+                                                            href="{% url 'user_profile:profile' node.shared_publication.author %}">@{{ node.shared_publication.author }}</a>
+                                                        <i class="blue-textº text-darken-2"> {{ node.shared_publication.created|naturaltime }}</i></span>
+                                                    <p>{{ node.shared_publication.content|safe }}</p>
+                                                    {% with node.shared_publication.images.all as images %}
                                                         {% if images %}<br>
                                                         <div class="row">
                                                         {% for image in images %}
@@ -92,7 +92,7 @@
                                                         </div>
                                                         {% endif %}
                                                     {% endwith %}
-                                                        {% with node.shared_publication.publication.videos.all as videos %}
+                                                        {% with node.shared_publication.videos.all as videos %}
                                                             {% if videos %}<br>
                                                                 <div class="row">
                                                              {% for video in videos %}
@@ -105,23 +105,23 @@
                                                                 </div>
                                                             {% endif %}
                                                         {% endwith %}
-                                                    {% if node.shared_publication.publication.extra_content %}
+                                                    {% if node.shared_publication.extra_content %}
                                                         {% comment %} Para publicaciones con URL {% endcomment %}
-                                                        {% if  node.shared_publication.publication.extra_content.video %}
-                                                        {% video node.shared_publication.publication.extra_content.video as my_video %}
+                                                        {% if  node.shared_publication.extra_content.video %}
+                                                        {% video node.shared_publication.extra_content.video as my_video %}
                                                            {% video my_video "medium" %}
                                                         {% endvideo %}
                                                         {% else %}
                                                         <div class="card small">
                                                             <div class="card-image">
-                                                                <img src="{% if node.shared_publication.publication.extra_content.image %}{{ node.shared_publication.publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
-                                                                <span class="card-title white-text">{{ node.shared_publication.publication.extra_content.title }}</span>
+                                                                <img src="{% if node.shared_publication.extra_content.image %}{{ node.shared_publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                <span class="card-title white-text">{{ node.shared_publication.extra_content.title }}</span>
                                                             </div>
                                                             <div class="card-content">
-                                                                <p>{{ node.shared_publication.publication.extra_content.description }}.</p>
+                                                                <p>{{ node.shared_publication.extra_content.description }}.</p>
                                                             </div>
                                                             <div class="card-action">
-                                                                <a href="{{ node.shared_publication.publication.extra_content.url }}">Ver</a>
+                                                                <a href="{{ node.shared_publication.extra_content.url }}">Ver</a>
                                                             </div>
                                                         </div>
                                                             {% endif %}
@@ -129,7 +129,7 @@
                                                 </div>
                                                 <div class="card-action">
                                                     <a class="blue-text text-darken-2"
-                                                       href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
+                                                       href="/publication/{{ node.shared_publication.pk }}">Ver</a>
                                                 </div>
                                             </div>
                                         {% endif %}

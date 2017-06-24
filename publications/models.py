@@ -28,7 +28,6 @@ from user_profile.tasks import send_to_stream
 from user_profile.utils import group_name
 from .utils import get_author_avatar
 
-
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
@@ -188,18 +187,6 @@ class ExtraContent(models.Model):
     publication = models.ForeignKey('Publication', related_name='publication_extra_content')
 
 
-class SharedPublication(models.Model):
-    """
-    Modelo para comparticiones compartidas (copiadas de un skyline a otro)
-    """
-    by_user = models.ForeignKey(User, related_name='shared_by_user')
-    created = models.DateTimeField(auto_now_add=True)
-    publication = models.ForeignKey('Publication', null=True)
-
-    class Meta:
-        unique_together = ('by_user', 'publication')
-
-
 class Publication(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
@@ -210,7 +197,8 @@ class Publication(PublicationBase):
         (3, _("link")),
         (4, _("relevant")),
         (5, _("image")),
-        (6, _("shared"))
+        (6, _("shared")),
+        (7, _("shared_photo_pub"))
     )
     author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner')
@@ -218,8 +206,7 @@ class Publication(PublicationBase):
                                                related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_me')
-    shared_publication = models.ForeignKey(SharedPublication, blank=True, null=True,
-                                           related_name='share_me')
+    shared_publication = models.ForeignKey('self', blank=True, null=True)
     shared_photo_publication = models.ForeignKey('publications_gallery.PublicationPhoto', blank=True, null=True)
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
@@ -247,7 +234,8 @@ class Publication(PublicationBase):
 
     @property
     def total_shares(self):
-        return SharedPublication.objects.filter(publication=self).count()
+        return Publication.objects.filter(shared_publication_id=self.id,
+                                          deleted=False).count()
 
     def add_hashtag(self):
         """

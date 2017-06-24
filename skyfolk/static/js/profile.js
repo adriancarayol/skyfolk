@@ -618,11 +618,14 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<span class="card-title"><a href="/profile/' + publications[i].shared_pub_author + '">@' + publications[i].author_username + '</a>';
                 content += '<i class="blue-text text-darken-2"> ' + publications[i].shared_created + '</i></span>';
                 content += '<p>' + publications[i].shared_pub_content + '</p>';
-                if (publications[i].shared_image) {
-                    content += '<br><div class="row">';
-                    content += '<div class="col s7">';
-                    content += '<img class="responsive-img" src="' + publications[i].shared_image + '" alt="Imagen de: ' + publications[i].shared_pub_author + '" title="Imagen de: ' + publications[i].shared_pub_author + '">';
-                    content += '</div></div>';
+                if (typeof(publications[i].shared_images) !== 'undefined' && publications[i].shared_images !== null && publications[i].shared_images.length > 0) {
+                    content += '<br><div class="row images">';
+                    for(var image = 0; image < publications[i].shared_images.length; image++) {
+                        content += '<div class="col s4 z-depth-2">';
+                        content += '<img class="responsive-img" src="/media/'+publications[i].shared_images[image].image+'" alt="Imagen de: '+publications[i].shared_pub_author+'" title="Imagen de: '+publications[i].shared_pub_author+'">';
+                        content += "                    </div>";
+                    }
+                    content += "                    </div>";
                 }
                 if (publications[i].shared_pub_extra_url !== undefined && publications[i].shared_pub_extra_url) {
                     content += '<div class="card small">';
@@ -639,7 +642,17 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
 
                 }
                 content += '<div class="card-action">';
-                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].shared_pub_id + '">Ver</a></div></div>';
+                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].shared_photo_pub_id + '">Ver</a></div></div>';
+            } else if (publications[i].event_type === 7) {
+                content += '<style>.comment .fa-share {color: #1e88e5;font-style: normal;}</style>';
+                content += '<div class="card grey lighten-5">';
+                content += '<div class="card-content black-text">';
+                content += '<img src="' + publications[i].shared_photo_pub_avatar + '" alt="' + publications[i].shared_photo_pub_author + '" width="70" height="70" style="box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);"><br>';
+                content += '<span class="card-title"><a href="/profile/' + publications[i].shared_photo_pub_author + '">@' + publications[i].shared_photo_pub_author + '</a>';
+                content += '<i class="blue-text text-darken-2"> ' + publications[i].shared_photo_pub_created + '</i></span>';
+                content += '<p>' + publications[i].shared_photo_pub_content + '</p>';
+                content += '<div class="card-action">';
+                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].shared_photo_pub_id + '">Ver</a></div></div>';
             }
             content += "                    </div>";
             content += "                    </div>";

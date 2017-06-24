@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Publication, ExtraContent, SharedPublication
+from .models import Publication, ExtraContent
 from neomodel import clear_neo4j_database
 from neomodel import db
 
@@ -20,12 +20,6 @@ class PublicationTestCase(TestCase):
         pub = Publication.objects.filter(author__username="example").first()
         e = ExtraContent.objects.create(pub=pub, title="Extra content example")
         self.assertIsNotNone(e)
-
-    def test_shared_publication(self):
-        pub = Publication.objects.filter(author__username="example").first()
-        u = User.objects.get(username="example")
-        s = SharedPublication.objects.create(by_user=u, publication=pub)
-        self.assertIsNotNone(s)
 
     def test_like_publication(self):
         pub = Publication.objects.filter(author__username="example").first()
