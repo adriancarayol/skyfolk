@@ -12,7 +12,6 @@ from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext as _
@@ -23,6 +22,7 @@ from taggit.managers import TaggableManager
 
 from notifications.signals import notify
 from photologue.models import Photo
+from publications.utils import validate_video
 from user_profile.models import NodeProfile
 from user_profile.tasks import send_to_stream
 from user_profile.utils import group_name
@@ -184,7 +184,7 @@ class ExtraContent(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.ForeignKey('Publication', related_name='publication_extra_content')
+    publication = models.OneToOneField('Publication', related_name='extra_content')
 
 
 class Publication(PublicationBase):
@@ -211,12 +211,12 @@ class Publication(PublicationBase):
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
     event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
-    extra_content = models.ForeignKey(ExtraContent, null=True, related_name='extra_content')
 
     # objects = PublicationManager()
 
     class Meta:
-        unique_together = ('shared_photo_publication', 'id')
+        unique_together = (('shared_photo_publication', 'id'),
+                           ('shared_publication', 'id'))
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -236,6 +236,9 @@ class Publication(PublicationBase):
     def total_shares(self):
         return Publication.objects.filter(shared_publication_id=self.id,
                                           deleted=False).count()
+
+    def has_extra_content(self):
+        return hasattr(self, 'extra_content')
 
     def add_hashtag(self):
         """
@@ -293,49 +296,7 @@ class Publication(PublicationBase):
         self.content = self.content.replace('\n', '').replace('\r', '')
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
-        # Buscamos el el contenido del mensaje una URL y mostramos un breve resumen de ella
-        link_url = re.findall(
-            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
-            self.content)
-
-        try:
-            backend = detect_backend(link_url[-1])  # youtube o soundcloud
-        except (EmbedVideoException, IndexError) as e:
-            backend = None
-
-        if link_url and len(link_url) > 0 and backend:
-            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
-                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
-            self.event_type = 3
-            extra_c, created = ExtraContent.objects.get_or_create(publication=self, video=link_url[-1])
-            self.extra_content = extra_c
-        elif link_url and len(link_url) > 0:
-            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
-                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
-
-            url = link_url[-1]  # Get last url
-            response = requests.get(url)
-            soup = BeautifulSoup(response.text)
-            # First get the meta description tag
-            description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
-                'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
-            title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
-                'property': 'og:title'}) or soup.find('meta', attrs={'name': 'title'})
-            image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
-                'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
-
-            self.event_type = 3
-            extra_c, created = ExtraContent.objects.get_or_create(url=url, publication=self)
-            if description:
-                extra_c.description = description.get('content', None)[:265]
-            if title:
-                extra_c.title = title.get('content', None)[:63]
-            if image:
-                extra_c.image = image.get('content', None)
-            extra_c.save()
-            self.extra_content = extra_c
-        else:
-            self.extra_content = None
+        self.parse_extra_content()
 
         """
         bold = re.findall('\*[^\*]+\*', self.content)
@@ -355,6 +316,60 @@ class Publication(PublicationBase):
             self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
         """
 
+    def parse_extra_content(self):
+        # Buscamos en el contenido del mensaje una URL y mostramos un breve resumen de ella
+        link_url = re.findall(
+            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
+            self.content)
+
+        # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
+        if not link_url and len(link_url) <= 0 and self.has_extra_content():
+            self.extra_content.delete()  # Borramos el extra content de esta
+            return
+        elif link_url and len(link_url) > 0: # Eliminamos contenido extra para añadir el nuevo
+            if self.has_extra_content():
+                extra_content = self.extra_content
+                if extra_content.url != link_url[-1]:
+                    extra_content.delete()
+
+        try:
+            backend = detect_backend(link_url[-1])  # youtube o soundcloud
+        except (EmbedVideoException, IndexError) as e:
+            backend = None
+
+        if link_url and len(link_url) > 0 and backend:
+            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
+                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
+            self.event_type = 3
+            ExtraContent.objects.get_or_create(publication=self, video=link_url[-1])
+
+        elif link_url and len(link_url) > 0:
+            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
+                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
+
+            url = link_url[-1]  # Get last url
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text)
+
+            description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
+                'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
+            title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
+                'property': 'og:title'}) or soup.find('meta', attrs={'name': 'title'})
+            image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
+                'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
+
+            extra_c, created = ExtraContent.objects.get_or_create(url=url, publication=self)
+
+            if description:
+                extra_c.description = description.get('content', None)[:265]
+            if title:
+                extra_c.title = title.get('content', None)[:63]
+            if image:
+                extra_c.image = image.get('content', None)
+            extra_c.save()
+
+            self.event_type = 3
+
     def send_notification(self, csrf_token=None, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
@@ -369,11 +384,11 @@ class Publication(PublicationBase):
             author_parent = self.parent.author.username
             avatar_parent = get_author_avatar(self.parent.author.id)
 
-        extra_c = self.extra_content
+        extra_c = None
 
-        have_extra_content = False
-        if extra_c:
-            have_extra_content = True
+        have_extra_content = self.has_extra_content()
+        if have_extra_content:
+            extra_c = self.extra_content
 
         notification = {
             "id": self.id,
@@ -418,15 +433,6 @@ class Publication(PublicationBase):
         # Enviamos al tablon de noticias (inicio)
         if new_comment and self.author == self.board_owner:
             send_to_stream.delay(self.author_id, self.id)
-
-
-def validate_video(value):
-    ''' if value.file is an instance of InMemoryUploadedFile, it means that the
-    file was just uploaded with this request (i.e., it's a creation process,
-    not an editing process. '''
-    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/')[
-        1] not in settings.VIDEO_EXTENTIONS:
-        raise ValueError('Please upload a valid video file')
 
 
 class PublicationVideo(models.Model):

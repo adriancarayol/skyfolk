@@ -10,6 +10,8 @@ import mptt.fields
 import publications.models
 import taggit.managers
 
+import publications.utils
+
 
 class Migration(migrations.Migration):
 
@@ -98,7 +100,8 @@ class Migration(migrations.Migration):
             name='PublicationVideo',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('video', models.FileField(upload_to=publications.models.upload_video_publication, validators=[publications.models.validate_video])),
+                ('video', models.FileField(upload_to=publications.models.upload_video_publication, validators=[
+                    publications.utils.validate_video])),
                 ('publication', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='videos', to='publications.Publication')),
             ],
         ),

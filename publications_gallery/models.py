@@ -1,4 +1,6 @@
 import json
+import uuid
+import os
 
 from channels import Group as channel_group
 from django.contrib.auth.models import User
@@ -8,6 +10,53 @@ from publications.models import Publication
 from photologue.models import Photo
 from publications.models import PublicationBase
 from publications.utils import get_author_avatar
+from embed_video.fields import EmbedVideoField
+from publications.utils import validate_video
+
+
+class ExtraContentPubPhoto(models.Model):
+    """
+    Modelo para contenido extra/adicional de una publicacion,
+    por ejemplo, informacion resumida de una URL
+    """
+    title = models.CharField(max_length=64, default="")
+    description = models.CharField(max_length=256, default="")
+    image = models.URLField(null=True, blank=True)
+    url = models.URLField()
+    video = EmbedVideoField(null=True, blank=True)
+    publication = models.OneToOneField('PublicationPhoto', related_name='publication_photo_extra_content')
+
+
+def upload_image_photo_publication(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('photo_publications/images', filename)
+
+
+def upload_video_photo_publication(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('skyfolk/media/photo_publications/videos', filename)
+
+
+class PublicationVideo(models.Model):
+    publication = models.ForeignKey('PublicationPhoto', related_name='videos')
+    video = models.FileField(upload_to=upload_video_photo_publication, validators=[validate_video])
+
+
+class PublicationImage(models.Model):
+    publication = models.ForeignKey('PublicationPhoto', related_name='images')
+    image = models.ImageField(upload_to=upload_image_photo_publication)
 
 
 class PublicationPhoto(PublicationBase):
@@ -39,11 +88,10 @@ class PublicationPhoto(PublicationBase):
     def total_hates(self):
         return self.user_give_me_hate.count()
 
-
     @property
     def total_shares(self):
-        return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.p_author_id, deleted=False).count()
-
+        return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.p_author_id,
+                                          deleted=False).count()
 
     def add_hashtag(self):
         """

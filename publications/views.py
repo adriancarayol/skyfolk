@@ -236,9 +236,8 @@ def delete_publication(request):
             publication.save(update_fields=['deleted'])
             # Publication.objects.filter(parent=publication).update(deleted=True)
             publication.get_descendants().update(deleted=True)
-            extra_content = publication.extra_content
-            if extra_content:
-                extra_content.delete()
+            if publication.has_extra_content():
+                publication.extra_content.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
 
         response = True
@@ -487,7 +486,7 @@ def edit_publication(request):
             raise IntegrityError('El comentario esta vacio')
 
         publication.parse_mentions()  # add mentions
-        publication.save(update_fields=['content', 'created', 'extra_content'],
+        publication.save(update_fields=['content', 'created'],
                          new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
 
         return JsonResponse({'data': True})
@@ -528,10 +527,12 @@ def load_more_comments(request):
         if not publication.parent:  # Si es publicacion padre, devolvemos solo sus hijos (nivel 1)
             if not last_pub:
                 for row in publication.get_descendants().filter(level__lte=1, deleted=False)[:20]:
-                    extra_c = row.extra_content
-                    have_extra_content = False
-                    if extra_c:
-                        have_extra_content = True
+
+                    extra_c = None
+                    have_extra_content = row.has_extra_content()
+                    if have_extra_content:
+                        extra_c = row.extra_content
+
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
@@ -553,10 +554,10 @@ def load_more_comments(request):
                         list_responses[-1]['extra_content_url'] = extra_c.url
             else:
                 for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False)[:20]:
-                    extra_c = row.extra_content
-                    have_extra_content = False
-                    if extra_c:
-                        have_extra_content = True
+                    extra_c = None
+                    have_extra_content = row.has_extra_content()
+                    if have_extra_content:
+                        extra_c = row.extra_content
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
@@ -581,10 +582,10 @@ def load_more_comments(request):
         else:  # Si es publicacion respuesta, devolvemos todos los niveles
             if not last_pub:
                 for row in publication.get_descendants().filter(deleted=False)[:20]:
-                    extra_c = row.extra_content
-                    have_extra_content = False
-                    if extra_c:
-                        have_extra_content = True
+                    extra_c = None
+                    have_extra_content = row.has_extra_content()
+                    if have_extra_content:
+                        extra_c = row.extra_content
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
@@ -606,10 +607,10 @@ def load_more_comments(request):
                         list_responses[-1]['extra_content_url'] = extra_c.url
             else:
                 for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub)[:20]:
-                    extra_c = row.extra_content
-                    have_extra_content = False
-                    if extra_c:
-                        have_extra_content = True
+                    extra_c = None
+                    have_extra_content = row.has_extra_content()
+                    if have_extra_content:
+                        extra_c = row.extra_content
                     list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                            'author_username': row.author.username, 'user_id': user.id,
                                            'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
@@ -666,10 +667,10 @@ def load_more_skyline(request):
         list_responses = []
 
         for row in publications:
-            extra_c = row.extra_content
-            have_extra_content = False
-            if extra_c:
-                have_extra_content = True
+            extra_c = None
+            have_extra_content = row.has_extra_content()
+            if have_extra_content:
+                extra_c = row.extra_content
 
             shared_pub = row.shared_publication
             have_shared_publication = False
