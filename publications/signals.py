@@ -33,7 +33,7 @@ def publication_handler(sender, instance, created, **kwargs):
                 rel.weight = rel.weight - 1
                 rel.save()
 
-    if instance.extra_content:  # Para publicaciones editadas
-        ExtraContent.objects.filter(publication=instance.id).exclude(url=instance.extra_content.url).delete()
-    else:
-        ExtraContent.objects.filter(publication=instance.id).delete()
+        if instance.has_extra_content():  # Para publicaciones editadas
+            ExtraContent.objects.filter(publication=instance.id).exclude(url=instance.extra_content.url).delete()
+        else:
+            ExtraContent.objects.filter(publication=instance.id).delete()

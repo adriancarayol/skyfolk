@@ -3,6 +3,9 @@ import uuid
 import bleach
 import os
 import subprocess
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
 from avatar.models import Avatar
 from user_profile.models import NodeProfile
 from django.conf import settings
@@ -82,3 +85,12 @@ def generate_path_video(ext='mp4'):
 
 def convert_avi_to_mp4(avi_file_path, output_name):
     process = subprocess.call("ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(input = avi_file_path, output = output_name), shell=True)
+
+
+def validate_video(value):
+    ''' if value.file is an instance of InMemoryUploadedFile, it means that the
+    file was just uploaded with this request (i.e., it's a creation process,
+    not an editing process. '''
+    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/')[
+        1] not in settings.VIDEO_EXTENTIONS:
+        raise ValueError('Please upload a valid video file')
