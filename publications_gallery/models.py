@@ -1,6 +1,7 @@
 import json
 import uuid
 import os
+import re
 
 from channels import Group as channel_group
 from django.contrib.auth.models import User
@@ -12,7 +13,9 @@ from publications.models import PublicationBase
 from publications.utils import get_author_avatar
 from embed_video.fields import EmbedVideoField
 from publications.utils import validate_video
-
+from django.core.exceptions import ObjectDoesNotExist
+from user_profile.models import NodeProfile
+from notifications.signals import notify
 
 class ExtraContentPubPhoto(models.Model):
     """
@@ -49,12 +52,12 @@ def upload_video_photo_publication(instance, filename):
     return os.path.join('skyfolk/media/photo_publications/videos', filename)
 
 
-class PublicationVideo(models.Model):
+class PublicationPhotoVideo(models.Model):
     publication = models.ForeignKey('PublicationPhoto', related_name='videos')
     video = models.FileField(upload_to=upload_video_photo_publication, validators=[validate_video])
 
 
-class PublicationImage(models.Model):
+class PublicationPhotoImage(models.Model):
     publication = models.ForeignKey('PublicationPhoto', related_name='images')
     image = models.ImageField(upload_to=upload_image_photo_publication)
 
@@ -103,6 +106,41 @@ class PublicationPhoto(PublicationBase):
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
             self.tags.add(tag)
+
+
+    def parse_mentions(self):
+        """
+        Buscamos menciones en el contenido del mensaje
+        y enviamos un mensaje al usuario
+        """
+        menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
+        menciones = set(menciones)
+        for mencion in menciones:
+            try:
+                recipientprofile = User.objects.get(username=mencion[1:])
+            except ObjectDoesNotExist:
+                continue
+
+            self.content = self.content.replace(mencion,
+                                                '<a href="/profile/%s">%s</a>' %
+                                                (mencion[1:], mencion))
+
+            if self.p_author.pk != recipientprofile.pk:
+                try:
+                    n = NodeProfile.nodes.get(user_id=self.p_author)
+                    m = NodeProfile.nodes.get(user_id=recipientprofile.id)
+                except Exception:
+                    continue
+
+                privacity = m.is_visible(n)
+
+                if privacity and privacity != 'all':
+                    continue
+
+                notify.send(self.p_author, actor=self.p_author.username,
+                            recipient=recipientprofile,
+                            verb=u'¡te ha mencionado!',
+                            description='<a href="%s">Ver</a>' % ('/publication/' + str(self.id)))
 
     def send_notification(self, csrf_token=None, type="pub", is_edited=False):
         """

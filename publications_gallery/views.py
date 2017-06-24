@@ -17,6 +17,9 @@ from publications.views import logger, get_or_create_csrf_token
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications.models import Publication
+from emoji.models import Emoji
+from publications.views import _optimize_publication_media
+
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     """
@@ -69,21 +72,22 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                     raise EmptyContent('¡Comprueba el texto del comentario!')
 
                 publication.save()  # Creamos publicacion
-                # publication.add_hashtag()  # add hashtags
-                # publication.parse_mentions()  # add mentions
+                publication.add_hashtag()  # add hashtags
+                publication.parse_mentions()  # add mentions
                 # publication.parse_content()  # parse publication content
-                # publication.content = Emoji.replace(publication.content)  # Add emoji img
+                publication.content = Emoji.replace(publication.content)  # Add emoji img
                 form.save_m2m()  # Saving tags
                 # content_video = _optimize_publication_media(publication, request.FILES.getlist('image'))
+                content_video = None
                 publication.save(update_fields=['content'],
                                  new_comment=True, csrf_token=get_or_create_csrf_token(
                         self.request))  # Guardamos la publicacion si no hay errores
-                # if not content_video:
-                return self.form_valid(form=form)
-                # else:
-                # return self.form_valid(form=form,
-                #                   msg=u"Estamos procesando tus videos, te avisamos "
-                #                       u"cuando la publicación esté lista,")
+                if not content_video:
+                    return self.form_valid(form=form)
+                else:
+                    return self.form_valid(form=form,
+                                           msg=u"Estamos procesando tus videos, te avisamos "
+                                               u"cuando la publicación esté lista,")
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
                 return self.form_invalid(form=form, errors=e)
@@ -402,7 +406,8 @@ def share_publication(request):
             if privacity and privacity != 'all':
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
-            shared = Publication.objects.filter(shared_photo_publication_id=obj_pub, author_id=user.id, deleted=False).exists()
+            shared = Publication.objects.filter(shared_photo_publication_id=obj_pub, author_id=user.id,
+                                                deleted=False).exists()
 
             if not shared:
                 content = request.POST.get('content', None)

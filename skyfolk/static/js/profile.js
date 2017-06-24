@@ -531,11 +531,11 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
         else
             $(btn).remove();
     } else if (is_skyline) {
-        for (i = 0; i < publications.length; i++) {
+        for (var i = 0; i < publications.length; i++) {
             pub_to_add = $('pub-' + publications[i].id);
             if (pub_to_add.length) continue;
 
-            content = '<div class="row">';
+            var content = '<div class="row">';
             content += '<div class="col s12">';
             if (publications[i].level > 0 && publications[i].level < 3) {
                 content += ' <div class="col s12 wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 98% !important;">';
@@ -620,9 +620,9 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<p>' + publications[i].shared_pub_content + '</p>';
                 if (typeof(publications[i].shared_images) !== 'undefined' && publications[i].shared_images !== null && publications[i].shared_images.length > 0) {
                     content += '<br><div class="row images">';
-                    for(var image = 0; image < publications[i].shared_images.length; image++) {
+                    for (var image = 0; image < publications[i].shared_images.length; image++) {
                         content += '<div class="col s4 z-depth-2">';
-                        content += '<img class="responsive-img" src="/media/'+publications[i].shared_images[image].image+'" alt="Imagen de: '+publications[i].shared_pub_author+'" title="Imagen de: '+publications[i].shared_pub_author+'">';
+                        content += '<img class="responsive-img" src="/media/' + publications[i].shared_images[image].image + '" alt="Imagen de: ' + publications[i].shared_pub_author + '" title="Imagen de: ' + publications[i].shared_pub_author + '">';
                         content += "                    </div>";
                     }
                     content += "                    </div>";
@@ -1166,4 +1166,3 @@ function AJAX_remove_bloq() {
         }
     });
 }
-
