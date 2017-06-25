@@ -18,7 +18,7 @@ from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications.models import Publication
 from emoji.models import Emoji
-from publications.views import _optimize_publication_media
+from .utils import optimize_publication_media
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -77,8 +77,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 # publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
                 form.save_m2m()  # Saving tags
-                # content_video = _optimize_publication_media(publication, request.FILES.getlist('image'))
-                content_video = None
+                content_video = optimize_publication_media(publication, request.FILES.getlist('image'))
                 publication.save(update_fields=['content'],
                                  new_comment=True, csrf_token=get_or_create_csrf_token(
                         self.request))  # Guardamos la publicacion si no hay errores
@@ -434,14 +433,14 @@ def share_publication(request):
                             pub_to_add.p_author.username, pub_to_add.p_author.username, pub_content),
                         shared_photo_publication_id=pub_to_add.id,
                         author=user,
-                        board_owner=user, event_type=6)
+                        board_owner=user, event_type=7)
                 else:
                     Publication.objects.create(
                         content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
                             pub_to_add.p_author.username, pub_to_add.p_author.username),
                         shared_photo_publication_id=pub_to_add.id,
                         author=user,
-                        board_owner=user, event_type=6)
+                        board_owner=user, event_type=7)
 
                 response = True
                 status = 1  # Representa la comparticion de la publicacion

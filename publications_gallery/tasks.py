@@ -1,5 +1,6 @@
 import json
 import os
+import publications_gallery
 
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
@@ -11,47 +12,19 @@ from django.forms import model_to_dict
 from notifications.models import Notification
 from skyfolk.celery import app
 from user_profile.utils import notification_channel, group_name
-from .models import Publication, PublicationDeleted
-from .models import PublicationVideo
-from .utils import generate_path_video, convert_avi_to_mp4
+from .models import PublicationPhotoVideo
+from publications.utils import convert_avi_to_mp4
+
 
 logger = get_task_logger(__name__)
 
-
-@app.task(name='tasks.clean_deleted_publications')
-def clean_deleted_publications():
-    logger.info('Finding deleted publications...')
-    publications = Publication.objects.filter(deleted=True)
-    for publication in publications:
-        pub, created = PublicationDeleted.objects.get_or_create(author=publication.author, content=publication.content,
-                                                                created=publication.created)
-        extra_content = publication.has_extra_content()
-        shared = publication.shared_publication
-        if extra_content:
-            publication.extra_content.delete()
-        if shared:
-            shared.publication.shared -= 1
-            shared.publication.save()
-            shared.delete()
-
-        logger.info('Deleting images...')
-        for img in publication.images.all():
-            if img.image:
-                if os.path.isfile(img.image.path):
-                    os.remove(img.image.path)
-            img.delete()
-            logger.info('Image deleted')
-        publication.delete()
-        logger.info("Publication safe deleted {}".format(pub.id))
-
-
 @app.task(name='tasks.process_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
-    video_file, media_path = generate_path_video()
+    video_file, media_path = publications_gallery.utils.generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
     convert_avi_to_mp4(file, video_file)
-    PublicationVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('VIDEO CONVERTED')
     if user_id:
@@ -90,11 +63,11 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 @app.task(name='tasks.process_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None):
     clip = mp.VideoFileClip(file)
-    video_file, media_path = generate_path_video()
+    video_file, media_path = publications_gallery.utils.generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
     clip.write_videofile(video_file, threads=2)
-    PublicationVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('GIF CONVERTED')
     if user_id:

@@ -165,6 +165,15 @@
                                 <form id="message-photo-form" action="" method="post">{% csrf_token %}
                                     {{ publication_photo.csrftoken }}
                                     {{ publication_photo }}
+                                    <div class="file-field input-field">
+                                      <div class="btn">
+                                        <span>Imágenes</span>
+                                        <input id="id_image" name="image" type="file" multiple>
+                                      </div>
+                                      <div class="file-path-wrapper">
+                                        <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                                      </div>
+                                    </div>
                                     <button type="submit" id="send_form_photo_publi"
                                             class="waves-effect waves-light btn right blue">
                                         Enviar<i class="material-icons right">send</i></button>

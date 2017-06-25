@@ -706,12 +706,9 @@ def load_more_skyline(request):
                 list_responses[-1]['shared_pub_avatar'] = get_author_avatar(shared_pub.author_id)
                 list_responses[-1]['shared_created'] = naturaltime(shared_pub.created)
                 list_responses[-1]['shared_images'] = list(shared_pub.images.all().values('image'))
+                list_responses[-1]['shared_videos'] = list(shared_pub.videos.all().values('video'))
 
-                #TODO: Añadir videos de la publicacion compartida
-
-                shared_pub_extra_c = shared_pub.extra_content
-
-                if shared_pub_extra_c:
+                if shared_pub.has_extra_content():
                     list_responses[-1]['shared_pub_extra_title'] = shared_pub.extra_content.title
                     list_responses[-1][
                         'shared_pub_extra_description'] = shared_pub.extra_content.description

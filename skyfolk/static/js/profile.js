@@ -627,6 +627,17 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     }
                     content += "                    </div>";
                 }
+                if (typeof(publications[i].shared_videos) !== 'undefined' && publications[i].shared_videos !== null && publications[i].shared_videos.length > 0) {
+                    content += '<br><div class="row videos">';
+                    for (var video = 0; video < publications[i].shared_videos.length; video++) {
+                        content += '<div class="col s4 z-depth-2 center">';
+                        content += '<video class="responsive-video" controls loop>';
+                        content += '<source src="/media/'+publications[i].shared_videos[video].video+'" type="video/mp4">';
+                        content += '</video>';
+                        content += '</div>';
+                    }
+                    content += '</div>';
+                }
                 if (publications[i].shared_pub_extra_url !== undefined && publications[i].shared_pub_extra_url) {
                     content += '<div class="card small">';
                     content += '<div class="card-image">';

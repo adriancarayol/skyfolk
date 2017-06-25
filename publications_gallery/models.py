@@ -49,7 +49,7 @@ def upload_video_photo_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('skyfolk/media/photo_publications/videos', filename)
+    return os.path.join('photo_publications/videos', filename)
 
 
 class PublicationPhotoVideo(models.Model):
