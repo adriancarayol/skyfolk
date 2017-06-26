@@ -1,8 +1,7 @@
 var max_height_comment = 60;
 
 $(document).ready(function () {
-    var tab_messages = $('#tab-messages');
-    var thread = tab_messages;
+    var tab_messages = $(this);
     var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Show more - Show less */
@@ -125,6 +124,19 @@ $(document).ready(function () {
             }
         });
     });
+
+    /* Editar comentario */
+    $(tab_messages).on('click', '#edit-comment-content', function () {
+        var id = $(this).attr('data-id');
+        $("#author-controls-" + id).slideToggle("fast");
+    });
+
+    $(tab_messages).on('click', '#submit_edit_publication', function (event) {
+        event.preventDefault();
+        var id = $(this).attr('data-id');
+        var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
+        AJAX_edit_publication(id, content);
+    });
 });
 
 
@@ -167,7 +179,7 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
                 $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type === "publication") {
-                $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+                $('#message-photo').val(''); // Ocultamos el DIV al publicar un mensaje.
             }
         },
         error: function (data, textStatus) {
@@ -445,6 +457,40 @@ function AJAX_add_timeline(pub_id, tag, data_pub) {
         },
         error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + e);
+        }
+    });
+}
+
+
+/* EDIT PUBLICATION */
+function AJAX_edit_publication(pub, content) {
+    var data = {
+        'id': pub,
+        'content': content,
+        'csrfmiddlewaretoken': csrftoken
+    };
+    $.ajax({
+        url: '/publication_p/edit/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+
+        success: function (data) {
+            var response = data.data;
+            console.log(data.data);
+            // borrar caja publicacion
+            if (response == true) {
+                $('#author-controls-' + pub).fadeToggle("fast");
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to edit publish.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
         }
     });
 }

@@ -17,4 +17,7 @@ urlpatterns = [
         name='add_hate_photo_publication'),
     url(r'^publication_p/share/publication/', views.share_publication,
         name='publication_share_photo_pub'),
+url(r'^publication_p/edit/', views.edit_publication,
+        name='publication_edit_photo_pub'),
+
 ]

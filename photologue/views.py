@@ -20,7 +20,8 @@ from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
 from publications_gallery.models import PublicationPhoto
-from publications.forms import PublicationPhotoForm, SharedPublicationForm
+from publications.forms import SharedPublicationForm
+from publications_gallery.forms import PublicationPhotoForm
 from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo

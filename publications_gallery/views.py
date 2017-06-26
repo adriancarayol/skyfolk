@@ -4,15 +4,15 @@ from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db import transaction
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 from publications.utils import parse_string
 from publications_gallery.models import PublicationPhoto
 from photologue.models import Photo
 from publications.exceptions import EmptyContent
-from publications.forms import PublicationPhotoForm
-from publications.forms import SharedPublicationForm
+from publications_gallery.forms import PublicationPhotoForm
+from publications_gallery.forms import SharedPhotoPublicationForm
 from publications.views import logger, get_or_create_csrf_token
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -37,13 +37,12 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        PublicationPhoto.objects.rebuild()
         photo = get_object_or_404(Photo, id=request.POST.get('board_photo', None))
 
         emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
+        board_photo_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
 
-        privacity = board_owner.is_visible(emitter)
+        privacity = board_photo_owner.is_visible(emitter)
 
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
@@ -56,7 +55,8 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
             try:
                 publication = form.save(commit=False)
                 publication.author_id = emitter.user_id
-                publication.board_owner_id = board_owner.user_id
+                publication.board_photo_id = photo.id
+
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):
                     if tag.text and not tag.text.isspace():
@@ -102,7 +102,6 @@ def publication_detail(request, publication_id):
     """
     user = request.user
     try:
-        print(publication_id)
         request_pub = PublicationPhoto.objects.get(id=publication_id, deleted=False)
         publication = request_pub.get_descendants(include_self=True).filter(deleted=False)
     except PublicationPhoto.DoesNotExist:
@@ -121,10 +120,11 @@ def publication_detail(request, publication_id):
 
     context = {
         'publication': publication,
-        'publication_shared': SharedPublicationForm()
+        'photo': request_pub.board_photo.id,
+        'publication_shared': SharedPhotoPublicationForm()
     }
 
-    return render(request, "account/publication_detail.html", context)
+    return render(request, "photologue/publication_detail.html", context)
 
 
 @login_required(login_url='/')
@@ -384,7 +384,7 @@ def share_publication(request):
     if request.POST:
         obj_pub = request.POST.get('publication_id', None)
         user = request.user
-        form = SharedPublicationForm(request.POST or None)
+        form = SharedPhotoPublicationForm(request.POST or None)
 
         if form.is_valid():
             try:
@@ -452,8 +452,50 @@ def share_publication(request):
                 Publication.objects.filter(shared_photo_publication_id=pub_to_add.id, author_id=user.id).delete()
                 response = True
                 status = 2  # Representa la eliminacion de la comparticion
-                logger.info('Elimiando el comentario %d' % (pub_to_add.id))
+                logger.info('Eliminando el comentario %d' % (pub_to_add.id))
                 return HttpResponse(json.dumps({'response': response, 'status': status}),
                                     content_type='application/json')
 
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+@transaction.atomic
+def edit_publication(request):
+    """
+    Permite al creador de la publicacion
+    editar el contenido de la publicacion
+    """
+    if request.method == 'POST':
+        user = request.user
+        publication = get_object_or_404(PublicationPhoto, id=request.POST['id'])
+
+        if publication.p_author_id != user.id:
+            return JsonResponse({'data': "No tienes permisos para editar este comentario"})
+
+        if publication.event_type != 1 and publication.event_type != 3:
+            return JsonResponse({'data': "No puedes editar este tipo de comentario"})
+
+        publication.content = request.POST.get('content', None)
+
+        publication.add_hashtag()  # add hashtags
+        # publication.parse_content()  # parse publication content
+        is_correct_content = False
+        soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
+        for tag in soup.find_all(recursive=True):
+            if tag.text and not tag.text.isspace():
+                is_correct_content = True
+                break
+
+        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+            logger.info('Publicacion contiene espacios o no tiene texto')
+            raise IntegrityError('El comentario esta vacio')
+
+        if publication.content.isspace():  # Comprobamos si el comentario esta vacio
+            raise IntegrityError('El comentario esta vacio')
+
+        publication.parse_mentions()  # add mentions
+        publication.save(update_fields=['content', 'created'],
+                         new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
+
+        return JsonResponse({'data': True})
+    return JsonResponse({'data': "No puedes acceder a esta URL."})

@@ -1,6 +1,5 @@
 from django import forms
 
-from publications_gallery.models import PublicationPhoto
 from publications.models import Publication
 
 
@@ -52,26 +51,6 @@ class ReplyPublicationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ReplyPublicationForm, self).__init__(*args, **kwargs)
-
-
-class PublicationPhotoForm(forms.ModelForm):
-    class Meta:
-        model = PublicationPhoto
-        exclude = ['image', 'created', 'user_give_me_like',
-                   'user_give_me_hate', 'user_share_me', 'tags', 'deleted']
-
-    def __init__(self, *args, **kwargs):
-        super(PublicationPhotoForm, self).__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs.update({
-            'placeholder': 'Escribe tu mensaje aqui...',
-            'id': 'message-photo',
-            'class': 'materialize-textarea',
-            'required': 'required',
-        })
-        self.fields['content'].label = ''
-        self.fields['p_author'].widget = forms.HiddenInput()
-        self.fields['board_photo'].widget = forms.HiddenInput()
-        self.fields['parent'].widget = forms.HiddenInput()
 
 
 class PublicationEdit(forms.ModelForm):

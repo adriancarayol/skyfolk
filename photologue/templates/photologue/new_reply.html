@@ -2,7 +2,7 @@
     <!-- REPLY FORM -->
     <form class="reply-form" action="" method="post">{% csrf_token %}
         <input id="id_author" name="p_author" type="hidden" value="{{ request.user.id }}">
-        <input id="id_board_photo" name="board_photo" type="hidden" value="{{ photo.id }}">
+        <input id="id_board_photo" name="board_photo" type="hidden" value="{% if photo.id %}{{ photo.id }}{% else %}{{ photo }}{% endif %}">
         <input id="id_parent" name="parent" type="hidden">
         <div class="row">
             <div class="col s12">

@@ -147,7 +147,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if user.is_authenticated and user.username == node.p_author.username %}
+                    {% if user.is_authenticated and user.id == node.p_author.id %}
                         {% if node.event_type == 1  or node.event_type == 3 %}
                             <div data-user-id="{{ node.p_author.pk }}" id="author-controls-{{ node.pk }}"
                                  class="author-controls">

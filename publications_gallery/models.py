@@ -16,6 +16,8 @@ from publications.utils import validate_video
 from django.core.exceptions import ObjectDoesNotExist
 from user_profile.models import NodeProfile
 from notifications.signals import notify
+from django.utils.translation import gettext as _
+
 
 class ExtraContentPubPhoto(models.Model):
     """
@@ -66,6 +68,12 @@ class PublicationPhoto(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
+    EVENT_CHOICES = (
+        (1, _("publication")),
+        (3, _("link")),
+        (4, _("relevant")),
+    )
+
     p_author = models.ForeignKey(User, null=True)
     board_photo = models.ForeignKey(Photo, related_name='board_photo')
     user_give_me_like = models.ManyToManyField(User, blank=True,
@@ -76,6 +84,7 @@ class PublicationPhoto(PublicationBase):
                                            related_name='share_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply_photo')
+    event_type = models.PositiveIntegerField(choices=EVENT_CHOICES, default=1, blank=True)
 
     class MPTTMeta:
         order_insertion_by = ['-created']
