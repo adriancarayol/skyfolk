@@ -74,7 +74,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 publication.save()  # Creamos publicacion
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()  # add mentions
-                # publication.parse_content()  # parse publication content
+                publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
                 form.save_m2m()  # Saving tags
                 content_video = optimize_publication_media(publication, request.FILES.getlist('image'))

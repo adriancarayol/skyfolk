@@ -2,6 +2,9 @@ import json
 import uuid
 import os
 import re
+import bleach
+import requests
+from bs4 import BeautifulSoup
 
 from channels import Group as channel_group
 from django.contrib.auth.models import User
@@ -17,7 +20,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from user_profile.models import NodeProfile
 from notifications.signals import notify
 from django.utils.translation import gettext as _
+from django.conf import settings
+from embed_video.fields import EmbedVideoField
+from embed_video.backends import detect_backend, EmbedVideoException
 
+# Los tags HTML que permitimos en los comentarios
+ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
+ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
+ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
+ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
 
 class ExtraContentPubPhoto(models.Model):
     """
@@ -105,6 +116,92 @@ class PublicationPhoto(PublicationBase):
         return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.p_author_id,
                                           deleted=False).count()
 
+    def has_extra_content(self):
+        return hasattr(self, 'publication_photo_extra_content')
+
+
+    def parse_content(self):
+        """
+        Parseamos el contenido en busca de
+        tags html no permitidos y los eliminamos
+        """
+        self.content = self.content.replace('\n', '').replace('\r', '')
+        self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
+                                    attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+        self.parse_extra_content()
+
+        """
+        bold = re.findall('\*[^\*]+\*', self.content)
+        bold = list(set(bold))
+
+        for b in bold:
+            self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
+
+        italic = re.findall('~[^~]+~', self.content)
+        italic = list(set(italic))
+        for i in italic:
+            self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
+
+        tachado = re.findall('\^[^\^]+\^', self.content)
+        tachado = list(set(tachado))
+        for i in tachado:
+            self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
+        """
+
+    def parse_extra_content(self):
+        # Buscamos en el contenido del mensaje una URL y mostramos un breve resumen de ella
+        link_url = re.findall(
+            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
+            self.content)
+
+        # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
+        if not link_url and len(link_url) <= 0 and self.has_extra_content():
+            self.extra_content.delete()  # Borramos el extra content de esta
+            return
+        elif link_url and len(link_url) > 0: # Eliminamos contenido extra para añadir el nuevo
+            if self.has_extra_content():
+                extra_content = self.extra_content
+                if extra_content.url != link_url[-1]:
+                    extra_content.delete()
+
+        try:
+            backend = detect_backend(link_url[-1])  # youtube o soundcloud
+        except (EmbedVideoException, IndexError) as e:
+            backend = None
+
+        if link_url and len(link_url) > 0 and backend:
+            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
+                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
+            self.event_type = 3
+            ExtraContentPubPhoto.objects.get_or_create(publication=self, video=link_url[-1])
+
+        elif link_url and len(link_url) > 0:
+            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
+                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
+
+            url = link_url[-1]  # Get last url
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text)
+
+            description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
+                'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
+            title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
+                'property': 'og:title'}) or soup.find('meta', attrs={'name': 'title'})
+            image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
+                'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
+
+            extra_c, created = ExtraContentPubPhoto.objects.get_or_create(url=url, publication=self)
+
+            if description:
+                extra_c.description = description.get('content', None)[:265]
+            if title:
+                extra_c.title = title.get('content', None)[:63]
+            if image:
+                extra_c.image = image.get('content', None)
+            extra_c.save()
+
+            self.event_type = 3
+
     def add_hashtag(self):
         """
         Añadimos los hashtags encontrados a la
@@ -165,11 +262,12 @@ class PublicationPhoto(PublicationBase):
             author_parent = self.parent.p_author.username
             avatar_parent = get_author_avatar(self.parent.p_author.id)
 
-            # extra_c = self.extra_content
+        extra_c = None
 
-            # have_extra_content = False
-            # if extra_c:
-            #   have_extra_content = True
+        has_extra_content = self.has_extra_content()
+        if has_extra_content:
+            extra_c = self.publication_photo_extra_content
+
 
         notification = {
             "id": self.id,
@@ -187,18 +285,18 @@ class PublicationPhoto(PublicationBase):
             "level": self.get_level(),
             'is_edited': is_edited,
             'token': csrf_token,
-            # 'event_type': self.event_type,
-            # 'extra_content': have_extra_content,
+            'event_type': self.event_type,
+            'extra_content': has_extra_content,
             'parent_author': author_parent,
-            # 'images': list(self.images.all().values('image')),
+            'images': list(self.images.all().values('image')),
             'parent_avatar': avatar_parent,
         }
 
-        # if have_extra_content:
-        #   notification['extra_content_title'] = extra_c.title
-        #    notification['extra_content_description'] = extra_c.description
-        #   notification['extra_content_image'] = extra_c.image
-        #    notification['extra_content_url'] = extra_c.url
+        if has_extra_content:
+            notification['extra_content_title'] = extra_c.title
+            notification['extra_content_description'] = extra_c.description
+            notification['extra_content_image'] = extra_c.image
+            notification['extra_content_url'] = extra_c.url
 
         # Enviamos a todos los usuarios que visitan el perfil
         channel_group(self.board_photo.group_name).send({

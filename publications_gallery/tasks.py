@@ -8,18 +8,25 @@ from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.forms import model_to_dict
-
 from notifications.models import Notification
 from skyfolk.celery import app
 from user_profile.utils import notification_channel, group_name
-from .models import PublicationPhotoVideo
+from .models import PublicationPhotoVideo, PublicationPhoto
 from publications.utils import convert_avi_to_mp4
+from django.core.exceptions import ObjectDoesNotExist
 
 
 logger = get_task_logger(__name__)
 
-@app.task(name='tasks.process_video')
+@app.task(name='tasks.process_photo_pub_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
+
+    try:
+        publication = PublicationPhoto.objects.get(id=publication_id)
+        photo = publication.board_photo
+    except ObjectDoesNotExist:
+        return
+
     video_file, media_path = publications_gallery.utils.generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
@@ -55,13 +62,18 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             'video': media_path,
             'id': publication_id
         }
-        Channel_group(group_name(user.id)).send({
+        Channel_group(photo.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)
 
 
-@app.task(name='tasks.process_gif')
+@app.task(name='tasks.process_photo_pub_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None):
+    try:
+        publication = PublicationPhoto.objects.get(id=publication_id)
+        photo = publication.board_photo
+    except ObjectDoesNotExist:
+        return
     clip = mp.VideoFileClip(file)
     video_file, media_path = publications_gallery.utils.generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
@@ -100,6 +112,6 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
             'video': media_path,
             'id': publication_id
         }
-        Channel_group(group_name(user.id)).send({
+        Channel_group(photo.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)

@@ -77,3 +77,10 @@ def generate_path_video(ext='mp4'):
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return [os.path.join('skyfolk/media/photo_publications/videos', filename), os.path.join('photo_publications/videos', filename)]
+
+
+def get_photo_channel(photo_id):
+    """
+    Devuelve el nombre del canal para enviar notificaciones
+    """
+    return "photos-%s" % photo_id
