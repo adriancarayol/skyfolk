@@ -722,6 +722,16 @@ def load_more_skyline(request):
                 list_responses[-1]['shared_photo_pub_author'] = shared_photo_pub.p_author.username
                 list_responses[-1]['shared_photo_pub_avatar'] = get_author_avatar(shared_photo_pub.p_author_id)
                 list_responses[-1]['shared_photo_pub_created'] = naturaltime(shared_photo_pub.created)
+                list_responses[-1]['shared_photo_pub_images'] = list(shared_photo_pub.images.all().values('image'))
+                list_responses[-1]['shared_photo_pub_videos'] = list(shared_photo_pub.videos.all().values('video'))
+
+                if shared_photo_pub.has_extra_content():
+                    list_responses[-1]['shared_photo_pub_extra_title'] = shared_pub.publication_photo_extra_content.title
+                    list_responses[-1][
+                        'shared_photo_pub_extra_description'] = shared_pub.publication_photo_extra_content.description
+                    list_responses[-1][
+                        'shared_photo_pub_extra_image'] = shared_pub.publication_photo_extra_content.image if shared_pub.publication_photo_extra_content.image else None
+                    list_responses[-1]['shared_photo_pub_extra_url'] = shared_pub.publication_photo_extra_content.url
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True

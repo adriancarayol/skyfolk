@@ -65,7 +65,7 @@
                                             <div class="row images">
                                             {% for image in images %}
                                                 <div class="col s4 z-depth-2 center">
-                                                    <img class="responsive-img" src="{{image.image.url}}" alt="Imagen de: {{ node.p_author }}" title="Imagen de: {{ node.p_author }}">
+                                                    <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.p_author }}" title="Imagen de: {{ node.p_author }}">
                                                 </div>
                                             {% endfor %}
                                             </div>
@@ -93,7 +93,7 @@
                                             {% comment %} Para publicaciones con URL {% endcomment %}
                                             <div class="card small">
                                                 <div class="card-image">
-                                                    <img src="{% if node.publication_photo_extra_content.image %}{{ node.publication_photo_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                    <img class="lazyload" data-src="{% if node.publication_photo_extra_content.image %}{{ node.publication_photo_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
                                                     <span class="card-title white-text">{{ node.publication_photo_extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">

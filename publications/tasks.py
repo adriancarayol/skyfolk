@@ -30,8 +30,6 @@ def clean_deleted_publications():
         if extra_content:
             publication.extra_content.delete()
         if shared:
-            shared.publication.shared -= 1
-            shared.publication.save()
             shared.delete()
 
         logger.info('Deleting images...')
@@ -40,6 +38,12 @@ def clean_deleted_publications():
                 if os.path.isfile(img.image.path):
                     os.remove(img.image.path)
             img.delete()
+            logger.info('Image deleted')
+        for vid in publication.videos.all():
+            if vid.image:
+                if os.path.isfile(vid.video.path):
+                    os.remove(vid.video.path)
+                vid.delete()
             logger.info('Image deleted')
         publication.delete()
         logger.info("Publication safe deleted {}".format(pub.id))

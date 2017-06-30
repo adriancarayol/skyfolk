@@ -638,7 +638,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     }
                     content += '</div>';
                 }
-                if (publications[i].shared_pub_extra_url !== undefined && publications[i].shared_pub_extra_url) {
+                if (typeof(publications[i].shared_pub_extra_url) !== 'undefined' && publications[i].shared_pub_extra_url) {
                     content += '<div class="card small">';
                     content += '<div class="card-image">';
                     if (publications[i].shared_pub_extra_image)
@@ -662,8 +662,42 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<span class="card-title"><a href="/profile/' + publications[i].shared_photo_pub_author + '">@' + publications[i].shared_photo_pub_author + '</a>';
                 content += '<i class="blue-text text-darken-2"> ' + publications[i].shared_photo_pub_created + '</i></span>';
                 content += '<p>' + publications[i].shared_photo_pub_content + '</p>';
+                if (typeof(publications[i].shared_photo_pub_images) !== 'undefined' && publications[i].shared_photo_pub_images !== null && publications[i].shared_photo_pub_images.length > 0) {
+                    content += '<br><div class="row images">';
+                    for (let image = 0; image < publications[i].shared_photo_pub_images.length; image++) {
+                        content += '<div class="col s4 z-depth-2">';
+                        content += '<img class="responsive-img" src="/media/' + publications[i].shared_photo_pub_images[image].image + '" alt="Imagen de: ' + publications[i].shared_photo_pub_author + '" title="Imagen de: ' + publications[i].shared_photo_pub_author + '">';
+                        content += "                    </div>";
+                    }
+                    content += "                    </div>";
+                }
+                if (typeof(publications[i].shared_photo_pub_videos) !== 'undefined' && publications[i].shared_photo_pub_videos !== null && publications[i].shared_photo_pub_videos.length > 0) {
+                    content += '<br><div class="row videos">';
+                    for (let video = 0; video < publications[i].shared_photo_pub_videos.length; video++) {
+                        content += '<div class="col s4 z-depth-2 center">';
+                        content += '<video class="responsive-video" controls loop>';
+                        content += '<source src="/media/'+publications[i].shared_photo_pub_videos[video].video+'" type="video/mp4">';
+                        content += '</video>';
+                        content += '</div>';
+                    }
+                    content += '</div>';
+                }
+                if (typeof(publications[i].shared_photo_pub_extra_url) !== 'undefined' && publications[i].shared_photo_pub_extra_url) {
+                    content += '<div class="card small">';
+                    content += '<div class="card-image">';
+                    if (publications[i].shared_photo_pub_extra_image)
+                        content += '<img src="' + publications[i].shared_photo_pub_extra_image + '">';
+                    else
+                        content += '<img src="/static/dist/img/nuevo_back.png">';
+                    content += '<span class="card-title white-text">' + publications[i].shared_photo_pub_extra_title + '</span></div>';
+                    content += '<div class="card-content">';
+                    content += '<p>' + publications[i].shared_photo_pub_extra_description + '</p></div>';
+                    content += '<div class="card-action">';
+                    content += '<a href="' + publications[i].shared_photo_pub_extra_url + '">Ver</a></div></div></div>';
+
+                }
                 content += '<div class="card-action">';
-                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].shared_photo_pub_id + '">Ver</a></div></div>';
+                content += '<a class="blue-text text-darken-2" href="/publication_pdetail/' + publications[i].shared_photo_pub_id + '">Ver</a></div></div>';
             }
             content += "                    </div>";
             content += "                    </div>";

@@ -59,11 +59,11 @@
                     <div class="col l8 m12 s12 photo-body" data-id="{{ object.pk }}">
                         {% if object.image %}
                             <a href="{{ object.image.url }}">
-                                <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
+                                <img data-src="{{ object.image.url }}" class="thumbnail lazyload" alt="{{ object.title }}">
                             </a>
                         {% else %}
                             <a href="{{ object.url_image }}">
-                                <img src="{{ object.url_image }}" class="thumbnail" alt="{{ object.title }}">
+                                <img data-src="{{ object.url_image }}" class="thumbnail lazyload" alt="{{ object.title }}">
                             </a>
                         {% endif %}
                         <div class="col s12 photo-details">
@@ -137,12 +137,12 @@
                         <div class="row">
                             {% if previous %}
                                 <a href="{{ previous.get_absolute_url }}">
-                                    <img title="{{ previous }}" class="responsive-img" src="{% if previous.thumbnail %}{{ previous.thumbnail.url }}{% elif previous.image %}{{ previous.image.url }}{% else %}{{ previous.url_image }}{% endif %}">
+                                    <img title="{{ previous }}" class="responsive-img lazyload" data-src="{% if previous.thumbnail %}{{ previous.thumbnail.url }}{% elif previous.image %}{{ previous.image.url }}{% else %}{{ previous.url_image }}{% endif %}">
                                 </a>
                             {% endif %}
                             {% if next %}
                                 <a href="{{ next.get_absolute_url }}">
-                                    <img title="{{ next }}" class="responsive-img" src="{% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
+                                    <img title="{{ next }}" class="responsive-img lazyload" data-src="{% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
                                 </a>
                             {% endif %}
                         </div>

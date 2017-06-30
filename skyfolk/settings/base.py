@@ -169,7 +169,7 @@ db.set_connection('bolt://neo4j:1518@localhost:7687')
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',              
+        'LOCATION': '127.0.0.1:11211',
     }
 }
 

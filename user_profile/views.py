@@ -22,7 +22,7 @@ from django.views.generic.list import ListView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 from django.http import JsonResponse
-
+from django.core import serializers
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
@@ -354,9 +354,20 @@ def config_privacity(request):
     else:
         privacity_form = PrivacityForm(initial={'privacity': user_profile.privacity})
 
+    props = {
+        'users': [
+            {
+                'username': user.username,
+                'id': user.id
+            }
+        ]
+    }
+
     return render(request, 'account/cf-privacity.html',
                   {'showPerfilButtons': True,
                    'privacity_form': privacity_form,
+                   'props': props,
+                   'component': 'leaderboard.js'
                    })
 
 
