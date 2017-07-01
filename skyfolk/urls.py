@@ -34,7 +34,7 @@ urlpatterns = [
     # url novedades e inicio
     url(r'^', include('latest_news.urls', namespace="latest_news"), name="news"),
     # url mensajes privados
-    
+
     # About skyfolk
     url(r'^', include('about.urls')),
     # Recomendacion password para usuarios
@@ -65,3 +65,10 @@ urlpatterns = [
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

@@ -12,10 +12,8 @@ class Skyline extends React.Component {
 
     handleFormSubmit(e) {
         e.preventDefault();
-        //TODO...
-        var payload = {
-                a: 1,
-                b: 2
+        var data = {
+                board_owner: window.board_owner
         };
         fetch('/publications/filter/time/', {
             method: 'POST',
@@ -25,12 +23,18 @@ class Skyline extends React.Component {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(data)
         })
             .then(function(response) {
                 return response.json()
             }).then(function(body) {
-                console.log(body);
+                const pubs = body.map((elem) =>
+                    <p>{elem.content}</p>
+                );
+                ReactDOM.render(
+                    <ul>{pubs}</ul>,
+                    document.getElementById('react')
+                );
             });
     }
 

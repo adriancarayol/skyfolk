@@ -21017,10 +21017,8 @@ var Skyline = function (_React$Component) {
         key: 'handleFormSubmit',
         value: function handleFormSubmit(e) {
             e.preventDefault();
-            //TODO...
-            var payload = {
-                a: 1,
-                b: 2
+            var data = {
+                board_owner: window.board_owner
             };
             fetch('/publications/filter/time/', {
                 method: 'POST',
@@ -21030,11 +21028,22 @@ var Skyline = function (_React$Component) {
                     "Accept": "application/json",
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(data)
             }).then(function (response) {
                 return response.json();
             }).then(function (body) {
-                console.log(body);
+                var pubs = body.map(function (elem) {
+                    return _react2.default.createElement(
+                        'p',
+                        null,
+                        elem.content
+                    );
+                });
+                _reactDom2.default.render(_react2.default.createElement(
+                    'ul',
+                    null,
+                    pubs
+                ), document.getElementById('react'));
             });
         }
     }, {

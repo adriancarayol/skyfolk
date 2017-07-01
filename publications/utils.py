@@ -94,3 +94,17 @@ def validate_video(value):
     if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/')[
         1] not in settings.VIDEO_EXTENTIONS:
         raise ValueError('Please upload a valid video file')
+
+def recursive_node_to_dict(node):
+    """
+        Obtiene los descendientes de nivel 1
+        de una publicacion
+    """
+    result = {
+        'id': node.pk,
+        'content': node.content,
+    }
+    children = [recursive_node_to_dict(c) for c in node.get_descendants().filter(deleted=False, level__lte=1)[:10]]
+    if children:
+        result['children'] = children
+    return result

@@ -19,7 +19,7 @@ from django.http import JsonResponse
 from django.middleware import csrf
 from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
-
+from django.core import serializers
 from emoji import Emoji
 from publications.forms import PublicationForm, SharedPublicationForm
 from publications.models import Publication, PublicationImage, PublicationVideo
@@ -29,6 +29,8 @@ from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotS
 from .tasks import process_video_publication, process_gif_publication
 from .utils import get_author_avatar
 from .utils import parse_string
+from .utils import recursive_node_to_dict
+from mptt.templatetags.mptt_tags import cache_tree_children
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -827,10 +829,35 @@ def share_publication(request):
 
 
 def publication_filter_by_time(request):
-    #TODO: Filtrar comentarios por tiempo...
+    #TODO: Comprobar si tengo visibilidad al board_owner
+    response = False
+    publications = None
+    user = request.user
     if request.method == "POST":
-        print('Usuario: %s hace peticion' % request.user.username)
-        print('POST: {}'.format(request.body))
-        response = True
-        return HttpResponse(json.dumps(response), content_type='application/json')
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
+            try:
+                board_owner_id = int(json_data['board_owner'])
+            except ValueError:
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+        except KeyError:
+            return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+
+        try:
+            owner = NodeProfile.nodes.get(user_id=board_owner_id)
+            emitter = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        privacity = owner.is_visible(emitter)
+
+        if privacity and privacity != 'all':
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        root_nodes = cache_tree_children(Publication.objects.filter(board_owner_id=board_owner_id, deleted=False, parent=None)[:20])
+        dicts = []
+        for n in root_nodes:
+            dicts.append(recursive_node_to_dict(n))
+
+        return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
     return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
