@@ -57,19 +57,6 @@
         </div>
         </div>
     </div>
-    {% comment UTIL PARA REACT %}
-    {% block inner %}
-        <div id="react">
-            <i class="fa fa-lg fa-spinner fa-spin"></i><br><br>
-            <i class="pending">Cargando componentes...</i><br><br>
-        </div>
-         <script>
-            window.props = {{ props|safe }};
-            window.react_mount = document.getElementById('react');
-        </script>
-        <script src="{{ STATIC_URL }}js/{{component}}"></script>
-    {% endblock %}
-    {% endcomment %}
 {% endblock %}
 
 

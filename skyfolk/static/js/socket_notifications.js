@@ -50,7 +50,6 @@ var UTILS_N = UTILS_N || (function () {
 				if (typeof data.actor !== 'undefined' && typeof data.verb !== 'undefined') {
 				    Materialize.toast('@' + data.actor + ' - ' + data.verb, 4000);
                 }
-				content += "<a href=\"#!\" class=\"secondary-content\"><i class=\"material-icons\">people<\/i><\/a></li>";
 				// See if there's a div to replace it in, or if we should add a new one
 				var list_notifications = $('#list-notify');
 				var existing = $(list_notifications).find("[data-id='" + data.id + "']");

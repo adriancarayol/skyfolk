@@ -5,6 +5,24 @@ a, a:visited {
 .container {
     margin-top: 2.6em !important;
 }
+
+.container .board-photo {
+    text-align: center;
+    line-height: 100px;
+    height: 100px;
+    position: relative;
+}
+.container .board-photo .board-photo-container {
+    height: 100%;
+}
+.container .board-photo .board-photo-link {
+    font-size: 2em;
+}
+.container .board-photo img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
 .wrapper {
     min-height: 155px;
     background: #fff;

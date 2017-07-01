@@ -39,7 +39,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
         newnotify = Notification.objects.create(actor=user, recipient=user,
                                                 verb=u'¡Ya esta tu video %s!' % filename,
                                                 description='<a href="%s">Ver</a>' % (
-                                                    '/publication/' + str(publication_id)))
+                                                    '/publication_pdetail/' + str(publication_id)))
         data = model_to_dict(newnotify)
         if newnotify.actor:
             data['actor'] = str(newnotify.actor)
@@ -87,7 +87,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         newnotify = Notification.objects.create(actor=user, recipient=user,
                                                 verb=u'¡Ya esta tu video %s!' % filename,
                                                 description='<a href="%s">Ver</a>' % (
-                                                    '/publication/' + str(publication_id)))
+                                                    '/publication_pdetail/' + str(publication_id)))
         data = model_to_dict(newnotify)
         if newnotify.actor:
             data['actor'] = str(newnotify.actor)

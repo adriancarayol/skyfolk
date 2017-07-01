@@ -51,6 +51,16 @@
                 </form>
             </div>
         </div>
+        <div class="row">
+            <div class="col l3 offset-l5 offset-s3 s6 z-depth-2 board-photo">
+                <div class="col l3 s6 board-photo-container">
+                    <img src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% else %}{{photo.image.url}}{% endif %}">
+                </div>
+                <div class="col l9 s6 board-photo-link">
+                    <a href="/photo/{{ photo.slug }}">Ver imágen</a>
+                </div>
+            </div>
+        </div>
         {% recursetree publication %}
             <div class="row">
                 <div class="col s12">

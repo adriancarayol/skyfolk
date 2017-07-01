@@ -43,15 +43,17 @@ Menu de notificaciones verticales
                             </button>
                         </div>
                     {% endif %}
+                    {% comment %}
                     {% if notification.level == "message" %}
                     <a href="#!" class="secondary-content">
                         <i class="material-icons">email</i>
                     </a>
-                    {% else %}
+                    {% elif notification.level == "pub" %}
                     <a href="#!" class="secondary-content">
                         <i class="material-icons">people</i>
                     </a>
                     {% endif %}
+                    {% endcomment %}
                 </li>
             {% endfor %}
         {% endif %}

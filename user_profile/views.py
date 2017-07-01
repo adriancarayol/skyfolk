@@ -167,6 +167,7 @@ def profile_view(request, username,
 
     # Contenido de las tres tabs
     context['publications'] = publications
+    context['component'] = 'react/publications.js'
     context['friends_top12'] = n.get_follows()
 
     if extra_context is not None:

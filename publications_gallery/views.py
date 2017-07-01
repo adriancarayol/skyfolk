@@ -120,7 +120,7 @@ def publication_detail(request, publication_id):
 
     context = {
         'publication': publication,
-        'photo': request_pub.board_photo.id,
+        'photo': request_pub.board_photo,
         'publication_shared': SharedPhotoPublicationForm()
     }
 

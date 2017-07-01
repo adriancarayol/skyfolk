@@ -823,3 +823,14 @@ def share_publication(request):
                                     content_type='application/json')
 
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+
+def publication_filter_by_time(request):
+    #TODO: Filtrar comentarios por tiempo...
+    if request.method == "POST":
+        print('Usuario: %s hace peticion' % request.user.username)
+        print('POST: {}'.format(request.body))
+        response = True
+        return HttpResponse(json.dumps(response), content_type='application/json')
+    return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')

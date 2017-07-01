@@ -26,4 +26,8 @@ urlpatterns = [
 
     # Publicaciones en imagenes de la galeria
     url(r'^', include('publications_gallery.urls')),
+
+    # Filtros para skyline
+    url(r'^publications/filter/time/$', publications_views.publication_filter_by_time,
+        name="publications_filter_time"),
 ]
