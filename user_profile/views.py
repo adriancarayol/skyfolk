@@ -1188,9 +1188,10 @@ def welcome_step_1(request):
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
             interest = TagProfile.nodes.get_or_none(title=tag)
-            if not interest:
+            if not interest and value:
                 interest = TagProfile(title=tag).save()
-            interest.user.connect(user_node)
+            if interest:
+                interest.user.connect(user_node)
         # Procesar temas por defecto
         choices = request.POST.getlist('choices[]')
         if not tags and not choices:
@@ -1199,9 +1200,10 @@ def welcome_step_1(request):
         for choice in choices:
             value = dict(ThemesForm.CHOICES).get(choice)
             interest = TagProfile.nodes.get_or_none(title=value)
-            if not interest:
+            if not interest and value:
                 interest = TagProfile(title=value).save()
-            interest.user.connect(user_node)
+            if interest:
+                interest.user.connect(user_node)
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:
         results, meta = db.cypher_query(
