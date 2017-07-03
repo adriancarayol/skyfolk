@@ -1188,7 +1188,7 @@ def welcome_step_1(request):
                 response = "with_spaces"
                 return HttpResponse(json.dumps(response), content_type='application/json')
             interest = TagProfile.nodes.get_or_none(title=tag)
-            if not interest and value:
+            if not interest and tag:
                 interest = TagProfile(title=tag).save()
             if interest:
                 interest.user.connect(user_node)

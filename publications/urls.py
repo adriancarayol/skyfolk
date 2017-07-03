@@ -30,4 +30,10 @@ urlpatterns = [
     # Filtros para skyline
     url(r'^publications/filter/time/$', publications_views.publication_filter_by_time,
         name="publications_filter_time"),
+    url(r'^publications/filter/like/$', publications_views.publication_filter_by_like,
+        name="publications_filter_like"),
+    url(r'^publications/filter/relevance/$', publications_views.publication_filter_by_relevance,
+        name="publications_filter_relevance"),
+
+
 ]

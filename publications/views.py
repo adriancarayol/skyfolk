@@ -31,6 +31,7 @@ from .utils import get_author_avatar
 from .utils import parse_string
 from .utils import recursive_node_to_dict
 from mptt.templatetags.mptt_tags import cache_tree_children
+from django.db.models import Count
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -829,7 +830,6 @@ def share_publication(request):
 
 
 def publication_filter_by_time(request):
-    #TODO: Comprobar si tengo visibilidad al board_owner
     response = False
     publications = None
     user = request.user
@@ -861,3 +861,75 @@ def publication_filter_by_time(request):
 
         return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
     return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
+
+def publication_filter_by_like(request):
+    response = False
+    publications = None
+    user = request.user
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
+            try:
+                board_owner_id = int(json_data['board_owner'])
+            except ValueError:
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+        except KeyError:
+            return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+
+        try:
+            owner = NodeProfile.nodes.get(user_id=board_owner_id)
+            emitter = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        privacity = owner.is_visible(emitter)
+
+        if privacity and privacity != 'all':
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
+            .filter(board_owner_id=board_owner_id, deleted=False, parent=None).order_by('-likes')[:20])
+
+        dicts = []
+        for n in root_nodes:
+            dicts.append(recursive_node_to_dict(n))
+
+        return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
+    return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
+
+
+def publication_filter_by_relevance(request):
+    response = False
+    publications = None
+    user = request.user
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
+            try:
+                board_owner_id = int(json_data['board_owner'])
+            except ValueError:
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+        except KeyError:
+            return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+
+        try:
+            owner = NodeProfile.nodes.get(user_id=board_owner_id)
+            emitter = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        privacity = owner.is_visible(emitter)
+
+        if privacity and privacity != 'all':
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
+            .filter(board_owner_id=board_owner_id, deleted=False, parent=None).order_by('-likes', '-created')[:20])
+
+        dicts = []
+        for n in root_nodes:
+            dicts.append(recursive_node_to_dict(n))
+
+        return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
+    return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
+
