@@ -76,13 +76,15 @@ def _optimize_publication_media(instance, image_upload):
                         tmp = tempfile.NamedTemporaryFile(delete=False)
                         for block in media.chunks():
                             tmp.write(block)
-                        process_video_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
+                        process_video_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
+                                board_owner_id=instance.board_owner_id)
                     content_video = True
                 elif file_type[0] == "image" and file_type[1] == "gif":  # es un gif
                     tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
-                    process_gif_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
+                    process_gif_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
+                            board_owner_id=instance.board_owner_id)
                     content_video = True
                 else:  # es una imagen normal
                     try:

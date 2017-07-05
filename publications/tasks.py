@@ -50,7 +50,8 @@ def clean_deleted_publications():
 
 
 @app.task(name='tasks.process_video')
-def process_video_publication(file, publication_id, filename, user_id=None):
+def process_video_publication(file, publication_id, filename, user_id=None,
+        board_owner_id=None):
     video_file, media_path = generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
@@ -86,13 +87,15 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             'video': media_path,
             'id': publication_id
         }
-        Channel_group(group_name(user.id)).send({
-            "text": json.dumps(data)
-        }, immediately=True)
+        if board_owner_id:
+            Channel_group(group_name(user.id)).send({
+                "text": json.dumps(data)
+            }, immediately=True)
 
 
 @app.task(name='tasks.process_gif')
-def process_gif_publication(file, publication_id, filename, user_id=None):
+def process_gif_publication(file, publication_id, filename, user_id=None,
+        board_owner_id=None):
     clip = mp.VideoFileClip(file)
     video_file, media_path = generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
@@ -131,6 +134,8 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
             'video': media_path,
             'id': publication_id
         }
-        Channel_group(group_name(user.id)).send({
-            "text": json.dumps(data)
-        }, immediately=True)
+
+        if board_owner_id:
+            Channel_group(group_name(board_owner_id)).send({
+                "text": json.dumps(data)
+            }, immediately=True)

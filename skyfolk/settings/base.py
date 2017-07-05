@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = (
     'guardian',
     'embed_video',
     'tellme',
+    'djcelery_email',
 )
 
 FIRST_PARTY_APPS = (
@@ -130,13 +131,13 @@ EXTERNAL_LOGOUT_URL = None
 # / DJANGO ALL AUTH CONFIG
 
 # CONFIG E-MAIL
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'skyfolk <no-reply@skyfolk.net>'
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 # SESSION EXPIRATION
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 SESSION_UPDATE_SECONDS = 10 * 60

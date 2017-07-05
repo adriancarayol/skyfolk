@@ -38,6 +38,8 @@ from neomodel import db
 from django.db import transaction
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.conf import settings
+from mailer.mailer import Mailer
 
 
 @login_required(login_url='/')
@@ -665,6 +667,16 @@ def like_profile(request):
                 response = "like"
             except Exception as e:
                 pass
+
+            # Enviar email...
+            mail = Mailer()
+            mail.send_messages(subject='Skyfolk - %s te ha dado un like.' % user.username,
+                    template='emails/like_profile.html',
+                    context={
+                        'to_user': actual_profile.username,
+                        'from_user': user.username
+                        },
+                    to_emails=[actual_profile.email])
 
         logging.info('%s da like a %s' % (user.username, actual_profile.username))
         logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
