@@ -184,29 +184,29 @@ $(document).ready(function () {
     /* FUNCIONES AJAX PARA TABS DE PERFIL */
 
     /*$(tab_amigos).bind('scroll', function () {
-     if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-     countFriendList++;
-     $.ajax({
-     type: "POST",
-     url: "/load_friends/",
-     data: {
-     'slug': countFriendList,
-     'csrfmiddlewaretoken': csrftoken
-     },
-     dataType: "json",
-     success: function (response) {
+      if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+      countFriendList++;
+      $.ajax({
+      type: "POST",
+      url: "/load_friends/",
+      data: {
+      'slug': countFriendList,
+      'csrfmiddlewaretoken': csrftoken
+      },
+      dataType: "json",
+      success: function (response) {
 
-     //load friends
-     for (var i = 0; i < response.length; i++) {
-     addFriendToHtmlList(response[i]);
-     }
-     },
-     error: function (rs, e) {
+    //load friends
+    for (var i = 0; i < response.length; i++) {
+    addFriendToHtmlList(response[i]);
+    }
+    },
+    error: function (rs, e) {
 
-     }
-     });
-     }
-     });*/
+    }
+    });
+    }
+    });*/
 
 
     /**/
@@ -231,8 +231,8 @@ $(document).ready(function () {
 
     $('#personal-card-info').find('#bloq-user').on('click', function () {
         var obj = document.getElementById('info-user-name-profile'),
-            username = obj.getAttribute('data-id'),
-            buttonBan = $(this);
+        username = obj.getAttribute('data-id'),
+        buttonBan = $(this);
         swal({
             title: "Bloquear a " + username,
             text: username + " no podrá seguirte, enviarte mensajes ni ver tu contenido.",
@@ -460,13 +460,11 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications[i].author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
             }
-            if (publications[i].user_id != publications[i].author_id) {
-                content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
-                content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
-                content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
-                content += "                            </li>";
-                content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
-            }
+            content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
+            content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
+            content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
+            content += "                            </li>";
+            content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
             content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline" id="add_to_skyline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
             content += "                    </ul>";
@@ -710,13 +708,11 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications[i].author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
             }
-            if (publications[i].user_id != publications[i].author_id) {
-                content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
-                content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
-                content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
-                content += "                            </li>";
-                content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
-            }
+            content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
+            content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
+            content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
+            content += "                            </li>";
+            content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
             content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline" id="add_to_skyline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
             content += "                    </ul>";

@@ -254,7 +254,7 @@ def delete_publication(request):
 def add_like(request):
     response = False
     statuslike = 0
-    if request.POST:
+    if request.method == 'POST':
         user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
 
@@ -282,68 +282,64 @@ def add_like(request):
         logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
         logger.info("(PERFIL DE USUARIO): " + publication.author.username + " PK_ID -> " + str(publication.author.pk))
 
-        if user.pk != publication.author.pk:
-            # Si el escritor del comentario
-            # es el que pulsa el boton de like
-            # no dejamos que incremente el contador
-            in_like = False
-            in_hate = False
+        in_like = False
+        in_hate = False
 
-            if user in publication.user_give_me_like.all():  # Usuario en lista de likes
-                in_like = True
+        if user in publication.user_give_me_like.all():  # Usuario en lista de likes
+            in_like = True
 
-            if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
-                in_hate = True
+        if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
+            in_hate = True
 
-            if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
-                publication.user_give_me_like.remove(user)
-                publication.user_give_me_hate.remove(user)
-                logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+        if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
+            publication.user_give_me_like.remove(user)
+            publication.user_give_me_hate.remove(user)
+            logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
 
-            if in_hate:  # Si ha dado antes unlike
-                logger.info("Incrementando like")
-                logger.info("Decrementando hate")
-                try:
-                    publication.user_give_me_hate.remove(user)  # remove from hates
-                    publication.user_give_me_like.add(user)  # add to like
-                    publication.save()
-                    response = True
-                    statuslike = 3
+        if in_hate:  # Si ha dado antes unlike
+            logger.info("Incrementando like")
+            logger.info("Decrementando hate")
+            try:
+                publication.user_give_me_hate.remove(user)  # remove from hates
+                publication.user_give_me_like.add(user)  # add to like
+                publication.save()
+                response = True
+                statuslike = 3
 
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-                data = json.dumps({'response': response, 'statuslike': statuslike})
-                return HttpResponse(data, content_type='application/json')
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
-            elif in_like:  # Si ha dado antes like
-                logger.info("Decrementando like")
-                try:
-                    publication.user_give_me_like.remove(request.user)
-                    publication.save()
-                    response = True
-                    statuslike = 2
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+        elif in_like:  # Si ha dado antes like
+            logger.info("Decrementando like")
+            try:
+                publication.user_give_me_like.remove(request.user)
+                publication.save()
+                response = True
+                statuslike = 2
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-                data = json.dumps({'response': response, 'statuslike': statuslike})
-                return HttpResponse(data, content_type='application/json')
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
-            else:  # Si no ha dado like ni unlike
-                try:
-                    publication.user_give_me_like.add(user)
-                    publication.save()
-                    response = True
-                    statuslike = 1
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+        else:  # Si no ha dado like ni unlike
+            try:
+                publication.user_give_me_like.add(user)
+                publication.save()
+                response = True
+                statuslike = 1
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-        else:
-            response = False
-            statuslike = 0
+    else:
+        response = False
+        statuslike = 0
 
     logger.info("Fin like comentario ---> Response" + str(response)
                 + " Estado" + str(statuslike))
@@ -385,68 +381,63 @@ def add_hate(request):
         logger.info("(USUARIO PETICIÓN): " + user.username)
         logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
-        if user.pk != publication.author.pk:
-            # Si el escritor del comentario
-            # es el que pulsa el boton de like
-            # no dejamos que incremente el contador
-            # tampoco si el usuario ya ha dado like antes.
-            in_like = False
-            in_hate = False
+        in_like = False
+        in_hate = False
 
-            if user in publication.user_give_me_like.all():  # Usuario en lista de likes
-                in_like = True
+        if user in publication.user_give_me_like.all():  # Usuario en lista de likes
+            in_like = True
 
-            if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
-                in_hate = True
+        if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
+            in_hate = True
 
-            if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
-                publication.user_give_me_like.remove(user)
-                publication.user_give_me_hate.remove(user)
-                logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+        if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
+            publication.user_give_me_like.remove(user)
+            publication.user_give_me_hate.remove(user)
+            logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
 
-            if in_like:  # Si ha dado antes like
-                logger.info("Incrementando hate")
-                logger.info("Decrementando like")
-                try:
-                    publication.user_give_me_like.remove(user)  # remove from like
-                    publication.user_give_me_hate.add(user)  # add to hate
-                    publication.save()
-                    response = True
-                    statuslike = 3
+        if in_like:  # Si ha dado antes like
+            logger.info("Incrementando hate")
+            logger.info("Decrementando like")
+            try:
+                publication.user_give_me_like.remove(user)  # remove from like
+                publication.user_give_me_hate.add(user)  # add to hate
+                publication.save()
+                response = True
+                statuslike = 3
 
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-                data = json.dumps({'response': response, 'statuslike': statuslike})
-                return HttpResponse(data, content_type='application/json')
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
-            elif in_hate:  # Si ha dado antes hate
-                logger.info("Decrementando hate")
-                try:
-                    publication.user_give_me_hate.remove(request.user)
-                    publication.save()
-                    response = True
-                    statuslike = 2
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+        elif in_hate:  # Si ha dado antes hate
+            logger.info("Decrementando hate")
+            try:
+                publication.user_give_me_hate.remove(request.user)
+                publication.save()
+                response = True
+                statuslike = 2
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-                data = json.dumps({'response': response, 'statuslike': statuslike})
-                return HttpResponse(data, content_type='application/json')
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
-            else:  # Si no ha dado like ni unlike
-                try:
-                    publication.user_give_me_hate.add(user)
-                    publication.save()
-                    response = True
-                    statuslike = 1
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
-        else:
-            response = False
-            statuslike = 0
+        else:  # Si no ha dado like ni unlike
+            try:
+                publication.user_give_me_hate.add(user)
+                publication.save()
+                response = True
+                statuslike = 1
+            except IntegrityError:
+                response = False
+                statuslike = 0
+    else:
+        response = False
+        statuslike = 0
 
     logger.info("Fin hate comentario ---> Response" + str(response)
                 + " Estado" + str(statuslike))
@@ -637,7 +628,6 @@ def load_more_comments(request):
     return JsonResponse(data)
 
 
-# TODO: Cargar publicaciones con shared_photo_publication
 @login_required(login_url='/')
 def load_more_skyline(request):
     """
