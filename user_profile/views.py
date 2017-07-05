@@ -651,12 +651,20 @@ def like_profile(request):
                 rel.save()
             response = "nolike"
         else:
-            n.like.connect(NodeProfile.nodes.get(user_id=slug))
-            rel = n.follow.relationship(m)
-            if rel:
-                rel.weight = rel.weight + 10
-                rel.save()
-            response = "like"
+            try:
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        n.like.connect(NodeProfile.nodes.get(user_id=slug))
+                        rel = n.follow.relationship(m)
+                        if rel:
+                            rel.weight = rel.weight + 10
+                            rel.save()
+                        notify.send(user, actor=User.objects.get(pk=user.pk).username,
+                                           recipient=actual_profile,
+                                           verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (user.username, user.username), level='like_profile')
+                response = "like"
+            except Exception as e:
+                pass
 
         logging.info('%s da like a %s' % (user.username, actual_profile.username))
         logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))

@@ -418,6 +418,12 @@ class Publication(PublicationBase):
             notification['extra_content_image'] = extra_c.image
             notification['extra_content_url'] = extra_c.url
 
+        # Notificamos al board_owner de la publicacion
+        if self.author_id != self.board_owner_id:
+            notify.send(self.author, actor=self.author.username,
+                            recipient=self.board_owner,
+                            verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' % (self.author.username, self.author.username), level='notification_board_owner')
+
         # Enviamos a todos los usuarios que visitan el perfil
         channel_group(group_name(self.board_owner_id)).send({
             "text": json.dumps(notification)
