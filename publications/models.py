@@ -27,7 +27,8 @@ from user_profile.models import NodeProfile
 from user_profile.tasks import send_to_stream
 from user_profile.utils import group_name
 from .utils import get_author_avatar
-from django.core.mail import send_mail
+from user_profile.tasks import send_email
+
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -430,11 +431,10 @@ class Publication(PublicationBase):
                             verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' % (self.author.username, self.author.username), level='notification_board_owner')
 
             # Enviamos email al board_owner
-            send_mail("Skyfolk - %s ha comentado en tu skyline." % self.author.username,
-                    "¡Hola %s! - Te avisamos de que %s ha comentado en tu skyline." % (self.board_owner.username, self.author.username),
-                    settings.DEFAULT_FROM_EMAIL,
-                    [self.board_owner.email], fail_silently=True)
-
+            send_email.delay("Skyfolk - %s ha comentado en tu skyline." % self.author.username,
+                    [self.board_owner.email],
+                    {'to_user': self.board_owner.username, 'from_user': self.author.username},
+                   'emails/new_publication.html')
 
     def save(self, csrf_token=None, new_comment=False, is_edited=False, *args, **kwargs):
         super(Publication, self).save(*args, **kwargs)

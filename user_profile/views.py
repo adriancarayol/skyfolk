@@ -40,7 +40,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
 from mailer.mailer import Mailer
-
+from .tasks import send_email
 
 @login_required(login_url='/')
 @page_template("account/follow_entries.html", key='follow_entries')
@@ -669,14 +669,9 @@ def like_profile(request):
                 pass
 
             # Enviar email...
-            mail = Mailer()
-            mail.send_messages(subject='Skyfolk - %s te ha dado un like.' % user.username,
-                    template='emails/like_profile.html',
-                    context={
-                        'to_user': actual_profile.username,
-                        'from_user': user.username
-                        },
-                    to_emails=[actual_profile.email])
+            send_email.delay('Skyfolk - %s te ha dado un like.' % user.username, [actual_profile.email],
+                    {'to_user': actual_profile.username,'from_user': user.username}
+                    , 'emails/like_profile.html')
 
         logging.info('%s da like a %s' % (user.username, actual_profile.username))
         logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
@@ -721,10 +716,17 @@ def request_friend(request):
                 response = "added_friend"
                 # enviamos notificacion informando del evento
 
+                recipient = User.objects.get(id=m.user_id)
+
                 notify.send(user, actor=n.title,
-                            recipient=User.objects.get(id=m.user_id),
+                            recipient=recipient,
                             verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (n.title, n.title),
                             level='new_follow')
+
+                # enviamos mail
+                send_email.delay('Skyfolk - %s ahora te sigue.' % user.username, [recipient.email],
+                    {'to_user': recipient.username,'from_user': user.username}
+                    , 'emails/new_follow.html')
 
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
             response = "inprogress"
@@ -740,9 +742,10 @@ def request_friend(request):
                                             recipient=m.user_id,
                                             level='friendrequest').delete()
 
+                recipient = User.objects.get(id=m.user_id)
                 # Creamos y enviamos la nueva notificacion
                 notification = notify.send(user, actor=n.title,
-                                           recipient=User.objects.get(id=m.user_id),
+                                           recipient=recipient,
                                            verb=u'quiere seguirte.', level='friendrequest')
 
                 # Enlazamos notificacion con peticion de amistad
@@ -750,6 +753,10 @@ def request_friend(request):
                     created = Request.objects.add_follow_request(n.user_id,
                                                                  m.user_id,
                                                                  notification[0][1])
+                    send_email.delay('Skyfolk - %s quiere seguirte.' % user.username, [recipient.email],
+                        {'to_user': recipient.username,'from_user': user.username} ,
+                        'emails/follow_request.html')
+
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
@@ -781,10 +788,15 @@ def respond_friend_request(request):
             logging.info('user.profile: {} emitter_profile: {}'.format(m.title, n.title))
 
             # enviamos notificacion informando del evento
+            recipient = User.objects.get(id=profile_user_id)
             notify.send(user, actor=m.title,
-                        recipient=User.objects.get(id=profile_user_id),
+                        recipient=recipient,
                         verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (m.title, m.title),
                         evel='new_follow')
+
+            send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [recipient.email],
+                        {'to_user': recipient.username,'from_user': user.username} ,
+                        'emails/new_follow_added.html')
 
             response = "added_friend"
 

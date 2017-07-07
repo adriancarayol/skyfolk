@@ -8,6 +8,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from publications.utils import get_author_avatar
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from channels import Group
+from mailer.mailer import Mailer
+
 
 logger = get_task_logger(__name__)
 
@@ -42,3 +44,14 @@ def send_to_stream(author_id, pub_id):
         "text": json.dumps(data, cls=DjangoJSONEncoder)
     }) for follower_channel in
         profile.get_followers()]
+
+
+@app.task()
+def send_email(subject, recipient_list, context, html):
+    #TODO: Crear una queue para emails
+    """
+    Enviar email asincrono al usuario
+    """
+
+    mail = Mailer()
+    mail.send_messages(subject, template=html, context=context, to_emails=recipient_list)
