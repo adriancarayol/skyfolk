@@ -29,7 +29,9 @@ class Skyline extends React.Component {
                 return response.json()
             }).then(function(body) {
                 const pubs = body.map((elem) =>
-                    <p>{elem.content}</p>
+                    <li key={elem.id}>
+                        <p>{elem.content}</p>
+                    </li>
                 );
                 ReactDOM.render(
                     <ul>{pubs}</ul>,
@@ -40,8 +42,7 @@ class Skyline extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit} ref="filterForm">
-                <input type='hidden' name='csrfmiddlewaretoken' value={window.csrf_token} />
+            <form onSubmit={this.handleSubmit}>
                 <FilterButton buttonName={'Tiempo'} buttonText={'Tiempo'} />
             </form>
             );
