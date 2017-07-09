@@ -21007,20 +21007,54 @@ var Skyline = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Skyline.__proto__ || Object.getPrototypeOf(Skyline)).call(this, props));
 
         _this.handleSubmit = _this.handleFormSubmit.bind(_this);
+        _this.onSubmit1 = _this.onSubmit1.bind(_this);
+        _this.onSubmit2 = _this.onSubmit2.bind(_this);
+        _this.onSubmit3 = _this.onSubmit3.bind(_this);
+
         _this.state = {
-            board_owner: _this.props.board_owner
+            board_owner: _this.props.board_owner,
+            typeOfSubmit: ''
         };
         return _this;
     }
 
     _createClass(Skyline, [{
+        key: 'onSubmit1',
+        value: function onSubmit1() {
+            this.setState({
+                typeOfSubmit: 'time'
+            }, this.refs.form.handleFormSubmit);
+        }
+    }, {
+        key: 'onSubmit2',
+        value: function onSubmit2() {
+            this.setState({
+                typeOfSubmit: 'like'
+            }, this.refs.form.handleFormSubmit);
+        }
+    }, {
+        key: 'onSubmit3',
+        value: function onSubmit3() {
+            this.setState({
+                typeOfSubmit: 'relevance'
+            }, this.refs.form.handleFormSubmit);
+        }
+    }, {
         key: 'handleFormSubmit',
         value: function handleFormSubmit(e) {
             e.preventDefault();
             var data = {
-                board_owner: window.board_owner
+                board_owner: this.state.board_owner
             };
-            fetch('/publications/filter/time/', {
+            var url = '';
+            if (this.state.typeOfSubmit === 'time') {
+                url = '/publications/filter/time/';
+            } else if (this.state.typeOfSubmit === 'like') {
+                url = '/publications/filter/like/';
+            } else if (this.state.typeOfSubmit === 'relevance') {
+                url = '/publications/filter/relevance/';
+            }
+            fetch(url, {
                 method: 'POST',
                 credentials: "same-origin",
                 headers: {
@@ -21034,9 +21068,13 @@ var Skyline = function (_React$Component) {
             }).then(function (body) {
                 var pubs = body.map(function (elem) {
                     return _react2.default.createElement(
-                        'p',
-                        null,
-                        elem.content
+                        'li',
+                        { key: elem.id },
+                        _react2.default.createElement(
+                            'p',
+                            null,
+                            elem.content
+                        )
                     );
                 });
                 _reactDom2.default.render(_react2.default.createElement(
@@ -21051,9 +21089,10 @@ var Skyline = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'form',
-                { onSubmit: this.handleSubmit, ref: 'filterForm' },
-                _react2.default.createElement('input', { type: 'hidden', name: 'csrfmiddlewaretoken', value: window.csrf_token }),
-                _react2.default.createElement(FilterButton, { buttonName: 'Tiempo', buttonText: 'Tiempo' })
+                { onSubmit: this.handleSubmit, ref: 'form' },
+                _react2.default.createElement(FilterButton, { buttonName: 'Tiempo', buttonText: 'Tiempo', onClick: this.onSubmit1 }),
+                _react2.default.createElement(FilterButton, { buttonName: 'Me gusta', buttonText: 'Me gusta', onClick: this.onSubmit2 }),
+                _react2.default.createElement(FilterButton, { buttonName: 'Relevancia', buttonText: 'Relevancia', onClick: this.onSubmit3 })
             );
         }
     }]);
@@ -21063,10 +21102,11 @@ var Skyline = function (_React$Component) {
 
 var FilterButton = function FilterButton(_ref) {
     var buttonName = _ref.buttonName,
-        buttonText = _ref.buttonText;
+        buttonText = _ref.buttonText,
+        onClick = _ref.onClick;
     return _react2.default.createElement(
         'button',
-        { className: 'waffes-effect waves-light btn white black-text', type: 'submit', name: buttonName },
+        { className: 'waffes-effect waves-light btn white black-text', type: 'submit', name: buttonName, onClick: onClick },
         buttonText
     );
 };
