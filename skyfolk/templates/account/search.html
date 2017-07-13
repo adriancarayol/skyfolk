@@ -61,10 +61,10 @@
     <div class="row">
         <div class="col l12 m12 s12">
             <ul class="query-options">
-                <li class="list-vertical"><a href="/search/">Destacados</a></li>
-                <li class="list-vertical"><a href="/search/accounts">Cuentas</a></li>
-                <li class="list-vertical"><a href="/search/publications">Publicaciones</a></li>
-                <li class="list-vertical"><a href="/search/images">Imágenes</a></li>
+                <li class="list-vertical"><a href="{% url 'category-search' 'importants' %}">Destacados</a></li>
+                <li class="list-vertical"><a href="{% url 'category-search' 'accounts' %}">Cuentas</a></li>
+                <li class="list-vertical"><a href="{% url 'category-search' 'publications' %}">Publicaciones</a></li>
+                <li class="list-vertical"><a href="{% url 'category-search' 'images' %}">Imágenes</a></li>
                 <li class="list-vertical">Videos</li>
                 <li class="list-vertical">Más opciones <i class="fa fa-caret-down" aria-hidden="true"></i>
                     <div id="dropdown-search" class="dropdown-options">

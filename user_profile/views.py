@@ -23,11 +23,13 @@ from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 from django.http import JsonResponse
 from django.core import serializers
+from haystack.generic_views import SearchView
+from haystack.query import SearchQuerySet
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
-from publications.models import Publication, PublicationImage
+from publications.models import Publication, PublicationImage, PublicationVideo
 from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
@@ -1333,7 +1335,9 @@ class UserAutocomplete(autocomplete.Select2QuerySetView):
 
 def search_users(request):
     """
-    Busqueda de usuarios por AJAX
+    Busqueda de usuarios por AJAX,
+    para el autocompletado sin tener que entrar
+    en el template de busqueda
     """
     user = request.user
 
@@ -1352,3 +1356,52 @@ def search_users(request):
             result.append(user_json)
 
         return JsonResponse({'result': result})
+
+class SearchUsuarioView(SearchView):
+    # formview
+    template_name = 'search/search.html'
+    queryset = SearchQuerySet().all()
+    form_class = SearchForm
+
+    def get_queryset(self):
+        queryset = super(SearchUsuarioView, self).get_queryset()
+        models = []
+        try:
+            criteria = self.kwargs['option']
+        except KeyError:
+            criteria = 'all'
+
+        if criteria == 'all':
+            models.append(User)
+            models.append(Publication)
+            models.append(Photo)
+            models.append(PublicationVideo)
+        if criteria == 'accounts':
+            models.append(User)
+        if criteria == 'publications':
+            models.append(Publication)
+        if criteria == 'images':
+            models.append(Photo)
+        if criteria == 'videos':
+            models.append(PublicationVideo)
+
+        q = self.request.GET['q']
+        self.initial = {'q': q, 's': criteria}
+
+        if models:
+            return queryset.filter(content=q).models(*models)
+        else:
+            # aqui levantar una excepcion
+            return None
+
+    def get_context_data(self, **kwargs):
+        ctx = super(SearchUsuarioView, self).get_context_data(**kwargs)
+        try:
+            ctx['tab'] = self.kwargs['option']
+        except KeyError:
+            ctx['tab'] = 'all'
+        ctx['object_list'] = self.queryset
+        ctx['searchForm'] = self.form_class(self.initial)
+        ctx['q'] = self.initial['q']
+        ctx['s'] = self.initial['s']
+        return ctx

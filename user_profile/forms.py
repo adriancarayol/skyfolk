@@ -2,6 +2,7 @@
 import logging
 import requests
 from allauth.account.forms import LoginForm
+from haystack.forms import SearchForm
 from django import forms
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -68,7 +69,7 @@ class CustomLoginForm(LoginForm):
         return super(CustomLoginForm, self).login(request=request, redirect_url=redirect_url)
 
 
-class SearchForm(forms.Form):
+class SearchForm(SearchForm):
     """
     Formulario de búsqueda (input)
     que se muestra en el navegador principal de la página web,
@@ -76,11 +77,12 @@ class SearchForm(forms.Form):
     Como mínimo se debe introducir un caracter para realizar una búsqueda.
     """
 
-    searchText = forms.CharField(label="", help_text="", required=False,
+    q = forms.CharField(label="", help_text="", required=False,
                                  widget=forms.TextInput(attrs={'placeholder': '¿Que es lo que quieres buscar?',
                                                                'pattern': '.{1,}',
-                                                               'required title': '1 character minimum',
-                                                               'autocomplete': 'off'}))
+                                                               'required title': '1 character minimum', 'autocomplete': 'off'}))
+    s = forms.CharField(label="", help_text="", required=False,
+                        widget=forms.HiddenInput())
 
 
 class AdvancedSearchForm(forms.Form):

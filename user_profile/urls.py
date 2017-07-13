@@ -1,13 +1,21 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 
 from user_profile import views as user_profile_views
+
 
 urlpatterns = [
     url(r'^profile/(?P<username>[\w-]+)/$', user_profile_views.profile_view,
         name='profile'),
-    url(r'^search/$', user_profile_views.search),
-    url(r'^search/(?P<option>[\w]*)/$', user_profile_views.search),
-    url(r'^search-advanced/$', user_profile_views.advanced_view,
+    # url(r'^user-search/$', user_profile_views.search),
+    url(r'^user-search/$', login_required(
+            user_profile_views.SearchUsuarioView.as_view()),
+            name='general-search'),
+    # url(r'^user-search/(?P<option>[\w]*)/$', user_profile_views.search),
+    url(r'^user-search/(?P<option>[\w]*)/$', login_required(
+            user_profile_views.SearchUsuarioView.as_view()),
+            name='category-search'),
+    url(r'^user-search-advanced/$', user_profile_views.advanced_view,
         name='advanced_view'),
     # URL CONFIG PROFILE USER
     url(r'^config/profile/$', user_profile_views.config_profile,
@@ -67,4 +75,7 @@ urlpatterns = [
         name='like_list'),
     url(r'^pre_search/users/', user_profile_views.search_users,
         name='pre_search_users'),
+    # url(r'^prueba-search/$', login_required(
+    #     user_profile_views.SearchUsuarioView.as_view()),
+    #     name='busqueda-prueba'),
 ]

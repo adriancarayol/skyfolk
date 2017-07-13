@@ -10,7 +10,7 @@
         {% include "account/menu-vertical.html" %}
       </li>
       <li><div class="field" id="searchform">
-        <form method='post' action='/search/'>{% csrf_token %}
+        <form method='post' action='/user-search/'>{% csrf_token %}
           {{searchForm}}
         </form>
         <!-- Logotipo que re-direcciona a la pagina principal -->
@@ -47,7 +47,7 @@
             <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span
                     id="live_notify_badge">{{ user_notifications|length }}</span></a>
             <div class="right field hide-on-med-and-down" id="searchform">
-                <form method='post' action='/search/'>{% csrf_token %}
+                <form method='get' action="{% url 'user_profile:general-search' %}">
                     {{ searchForm }}
                 </form>
             </div>

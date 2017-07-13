@@ -16,7 +16,9 @@ ALLOWED_HOSTS = ['.skyfolk.net']
 INTERNAL_IPS = ['127.0.0.1']
 
 # Allowed html content.
-ALLOWED_TAGS = "p div br code pre h1 h2 h3 h4 hr span s sub sup b i img strong strike em underline super table thead tr th td tbody".split()
+ALLOWED_TAGS = "p div br code pre h1 h2 h3 h4 hr span s sub " \
+               "sup b i img strong strike em underline super " \
+               "table thead tr th td tbody".split()
 ALLOWED_STYLES = 'color font-weight background-color width height'.split()
 ALLOWED_ATTRIBUTES = {
     '*': ['style'],
@@ -79,6 +81,7 @@ THIRD_PARTY_APPS = (
     'guardian',
     'embed_video',
     'tellme',
+    'haystack',
 )
 
 FIRST_PARTY_APPS = (
@@ -310,3 +313,18 @@ TELLME_FEEDBACK_EMAIL = 'adriancarayol@gmail.com'
 
 MANAGERS = ADMINS
 POSTMAN_AUTO_MODERATE_AS = True
+
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+#         'URL': 'http://127.0.0.1:8080/solr/',
+#     },
+# }
+
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+      'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+      'PATH': os.path.join(BASE_DIR, 'whoosh_index')
+    },
+  }
