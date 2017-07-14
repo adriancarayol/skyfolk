@@ -345,11 +345,11 @@
                                     {% endwith %}
                                 {% else %}
                                     {% with node.get_children_count as descendants %}
-                                        {% if descendants > 8 %}
+                                        {% if descendants > 9 %}
                                             <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
                                                href="#"
                                                id="load_more_publications"
-                                               data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
+                                               data-id="{{ node.id }}" data-created="{{ node.created|date:"U"}}"><i class=" material-icons left">expand_more</i>Cargar
                                                 comentarios (<span
                                                         id="child_count">{{ descendants|add:"-9" }}</span>)</a>
                                         {% endif %}

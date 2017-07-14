@@ -549,7 +549,12 @@ def load_more_comments(request):
                         list_responses[-1]['extra_content_image'] = extra_c.image
                         list_responses[-1]['extra_content_url'] = extra_c.url
             else:
-                for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False)[:20]:
+                try:
+                    after_date = Publication.objects.filter(id=last_pub).values("created")
+                except Publication.DoesNotExist:
+                    after_date = 0
+
+                for row in publication.get_descendants().filter(level__lte=1, created__lte=after_date, deleted=False).exclude(id=last_pub)[:20]:
                     extra_c = None
                     have_extra_content = row.has_extra_content()
                     if have_extra_content:
@@ -562,7 +567,7 @@ def load_more_comments(request):
                                            'token': get_or_create_csrf_token(request),
                                            'parent': True if row.parent else False,
                                            'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.autho_id),
+                                           'parent_avatar': get_author_avatar(row.parent.author_id),
                                            'images': list(row.images.all().values('image')),
                                            'videos': list(row.videos.all().values('video')),
                                            'author_avatar': get_author_avatar(row.author_id),
@@ -602,7 +607,12 @@ def load_more_comments(request):
                         list_responses[-1]['extra_content_image'] = extra_c.image
                         list_responses[-1]['extra_content_url'] = extra_c.url
             else:
-                for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub)[:20]:
+                try:
+                    after_date = Publication.objects.filter(id=last_pub).values("created")
+                except Publication.DoesNotExist:
+                    after_date = 0
+
+                for row in publication.get_descendants().filter(deleted=False, created__lte=after_date).exclude(id=last_pub)[:20]:
                     extra_c = None
                     have_extra_content = row.has_extra_content()
                     if have_extra_content:
@@ -658,7 +668,7 @@ def load_more_skyline(request):
             return JsonResponse(data)
 
         publications = Publication.objects.filter(board_owner=publication.board_owner, deleted=False, parent=None,
-                                                  id__lt=pub_id)[:20]
+                                                  created__lte=publication.created).exclude(id=pub_id)[:20]
         list_responses = []
 
         for row in publications:

@@ -269,7 +269,7 @@ $(document).ready(function () {
         $(loader).fadeIn();
         var last_pub = $(loader).closest('.row').prev('.children').find('.wrapper').last().attr('id');
         var last_pub_id = "";
-        if (undefined !== last_pub && last_pub.length) {
+        if (last_pub) {
             last_pub_id = last_pub.toString().split('-')[1];
         }
         AJAX_load_publications($(this).attr("data-id"), loader, last_pub_id, this);
