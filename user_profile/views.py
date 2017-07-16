@@ -43,6 +43,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
 from mailer.mailer import Mailer
 from .tasks import send_email
+from django.db.models import Prefetch
+
 
 @login_required(login_url='/')
 @page_template("account/follow_entries.html", key='follow_entries')
@@ -161,11 +163,25 @@ def profile_view(request, username,
     # cargar lista comentarios
     try:
         # if user_profile.username == username:
-        publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1)[:10]
-                        for node in
-                        Publication.objects.filter(
-                            board_owner=user_profile, deleted=False,
-                            parent=None)[:20]]
+        publications = list(Publication.objects.filter(board_owner_id=user_profile.id,
+                            level__lte=0, deleted=False) \
+                            .prefetch_related('extra_content', 'images',
+                                'videos', 'shared_publication__images',
+                                'shared_publication__videos', 'shared_publication__extra_content') \
+                            .select_related('author',
+                            'board_owner', 'shared_publication', 'parent', 'shared_photo_publication')
+                            [:20])
+
+        """
+        publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1) \
+                .prefetch_related('images', 'videos', 'user_give_me_hate', 'user_give_me_like', 'extra_content') \
+                .select_related('author', 'board_owner',
+                            'shared_publication', 'parent', 'shared_photo_publication')[:10]
+                            for node in
+                            Publication.objects.filter(
+                                board_owner_id=user_profile.id, deleted=False,
+                                parent=None).only('id', 'level', 'tree_id', 'lft', 'rght')[:20]]
+        """
     except ObjectDoesNotExist:
         publications = None
 

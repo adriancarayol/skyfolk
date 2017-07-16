@@ -142,7 +142,7 @@ $(document).ready(function () {
     /* Agregar skyline */
     $(this).on('click', '#options-comments #add_to_skyline', function () {
         var tag = this;
-        $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
+        $(wrapper_shared_pub).attr('data-id', $(tag).parent().data('id'));
         $(wrapper_shared_pub).show();
     });
 

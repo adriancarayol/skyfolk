@@ -5,8 +5,7 @@
 {% load mptt_tags %}
 {% load embed_video_tags %}
 
-{% for node in publications %}
-    {% recursetree node %}
+    {% for node in publications %}
         <div class="row">
             <div class="col s12">
                 <div class="col s12 wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}"
@@ -15,7 +14,7 @@
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
-                        {% if user.is_authenticated and request.user.id == node.author.id %}
+                        {% if request.user.id == node.author.id %}
                             {% if node.event_type == 1 or node.event_type == 3 %}
                                 <span data-id="{{ node.pk }}" id="edit-comment-content"
                                       class="top-options edit-comment tooltipped"
@@ -29,7 +28,7 @@
                             <div class="articulo col s12">
                                 <div class="row">
                                     <div class="image col l1 m2 s2"
-                                         {% if user.is_authenticated and user.id == node.author.id %}title="¡Eres el autor!"
+                                         {% if user.id == node.author.id %}title="¡Eres el autor!"
                                          style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
                                         <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                     </div>
@@ -260,32 +259,29 @@
                             <!-- OPCIONES DE COMENTARIOS -->
                             <div class="options_comentarios" id="options-comments">
                                 <ul class="opciones">
-                                    {% if user.is_authenticated and user.username == node.author.username %}
+                                    {% if user.username == node.author.username %}
                                         {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
-                                    {% elif user.is_authenticated and user.username == user_profile.username %}
+                                    {% elif user.username == user_profile.username %}
                                         {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
                                     {% endif %}
-                                    {% if user.is_authenticated %}
                                         {% comment %} Si el usuario esta logueado {% endcomment %}
-                                        <li title="No me gusta" class="hate-comment" id="fa-hate"
-                                            {% if node.pk|user_in_hated_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
+                                        <li title="No me gusta" class="hate-comment" id="fa-hate">
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                            <i class="fa hate-value">{% with node.total_hates as hates %}{% if hates > 0 %}{{ hates|intword }}{% endif %}{% endwith %}</i>
+                                            <i class="fa hate-value"></i>
                                         </li>
                                         <li id="like-heart" title="¡Me gusta!" class="like-comment"
-                                            {% if node.pk|user_in_liked_list:user.pk %}style="color: #f06292;"{% endif %}>
+                                            >
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                            <i id="like-value" class="fa">{% with node.total_likes as likes %}{% if likes > 0 %}{{ likes|intword }}{% endif %}{% endwith %}</i>
+                                            <i id="like-value" class="fa"></i>
                                         </li>
-                                    {% endif %}
                                     <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
-                                        {% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
-                                        style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                            class="fa fa-quote-right" aria-hidden="true"> {% with node.total_shares as shares %}{% if shares > 0 %}{{ shares|intword }}{% endif %}{% endwith %}</i></li>
+                                        ><i
+                                            class="fa fa-quote-right" aria-hidden="true"{% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
+                                        style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}> </i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
@@ -293,7 +289,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if user.is_authenticated and user.username == node.author.username %}
+                    {% if user.username == node.author.username %}
                         {% if node.event_type == 1  or node.event_type == 3 %}
                             <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
                                  class="author-controls">
@@ -332,29 +328,17 @@
                             {{ children }}
                         </ul>
                         <div class="row">
-                            <div class="col s12">
-                                {% if not node.is_root_node %}
-                                    {% with node.get_descendants_not_deleted as descendants %}
-                                        {% if descendants > 0 %}
-                                            <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
-                                               href="#"
-                                               id="load_more_publications"
-                                               data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
-                                                comentarios ({{ descendants }})</a>
-                                        {% endif %}
-                                    {% endwith %}
-                                {% else %}
+                            <div class="col s12">    
                                     {% with node.get_children_count as descendants %}
-                                        {% if descendants > 9 %}
+                                        {% if descendants > 0 %}
                                             <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
                                                href="#"
                                                id="load_more_publications"
                                                data-id="{{ node.id }}" data-created="{{ node.created|date:"U"}}"><i class=" material-icons left">expand_more</i>Cargar
                                                 comentarios (<span
-                                                        id="child_count">{{ descendants|add:"-9" }}</span>)</a>
+                                                        id="child_count">{{ descendants }}</span>)</a>
                                         {% endif %}
                                     {% endwith %}
-                                {% endif %}
                                 <div>
                                     <div class="progress" id="load_publications_descendants" style="display: none">
                                         <div class="indeterminate blue darken-1"></div>
@@ -366,8 +350,7 @@
                 </div>
             </div>
         </div>
-    {% endrecursetree %}
-{% endfor %}
+    {% endfor %}
 {% if publications|length > 19 %}
     {% with publications|last as last_pub %}
         <div class="row" id="loader_skyline">
@@ -375,7 +358,7 @@
                 <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
                    href="#"
                    id="load_more_skyline"
-                   data-id="{{ last_pub.0.id }}"><i class=" material-icons left">expand_more</i>Cargar
+                   data-id="{{ last_pub.id }}"><i class=" material-icons left">expand_more</i>Cargar
                     comentarios</a>
                 <div>
                      <div class="progress" id="load_publications_skyline" style="display: none">

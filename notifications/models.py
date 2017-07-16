@@ -57,12 +57,12 @@ class NotificationQuerySet(models.query.QuerySet):
     def unread(self, include_deleted=False):
         """Return only unread items in the current queryset"""
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=True, deleted=False)
+            return self.filter(unread=True, deleted=False).prefetch_related('actor')
         else:
             """ when SOFT_DELETE=False, developers are supposed NOT to touch 'deleted' field.
             In this case, to improve query performance, don't filter by 'deleted' field
             """
-            return self.filter(unread=True)
+            return self.filter(unread=True).prefetch_related('actor')
 
     def unread_limit(self, include_deleted=False, limit=20):
         """
@@ -71,19 +71,19 @@ class NotificationQuerySet(models.query.QuerySet):
         :return Devuelve solo las notificaciones no leidas:
         """
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=True, deleted=False)[:limit]
+            return self.filter(unread=True, deleted=False).prefetch_related('actor')[:limit]
         else:
-            return self.filter(unread=True)[:limit]
+            return self.filter(unread=True).prefetch_related('actor')[:limit]
 
     def read(self, include_deleted=False):
         """Return only read items in the current queryset"""
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=False, deleted=False)
+            return self.filter(unread=False, deleted=False).prefetch_related('actor')
         else:
             """ when SOFT_DELETE=False, developers are supposed NOT to touch 'deleted' field.
             In this case, to improve query performance, don't filter by 'deleted' field
             """
-            return self.filter(unread=False)
+            return self.filter(unread=False).prefetch_related('actor')
 
     def mark_all_as_read(self, recipient=None):
         """Mark as read any unread messages in the current queryset.
@@ -113,12 +113,12 @@ class NotificationQuerySet(models.query.QuerySet):
     def deleted(self):
         """Return only deleted items in the current queryset"""
         assert_soft_delete()
-        return self.filter(deleted=True)
+        return self.filter(deleted=True).prefetch_related('actor')
 
     def active(self):
         """Return only active(un-deleted) items in the current queryset"""
         assert_soft_delete()
-        return self.filter(deleted=False)
+        return self.filter(deleted=False).prefetch_related('actor')
 
     def mark_all_as_deleted(self, recipient=None):
         """Mark current queryset as deleted.
