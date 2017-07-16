@@ -163,14 +163,16 @@ def profile_view(request, username,
     # cargar lista comentarios
     try:
         # if user_profile.username == username:
-        publications = list(Publication.objects.filter(board_owner_id=user_profile.id,
+        publications = Publication.objects.filter(board_owner_id=user_profile.id,
                             level__lte=0, deleted=False) \
                             .prefetch_related('extra_content', 'images',
                                 'videos', 'shared_publication__images',
-                                'shared_publication__videos', 'shared_publication__extra_content') \
+                                'shared_publication__videos', 'shared_publication__extra_content', 'user_give_me_like', 'user_give_me_hate') \
                             .select_related('author',
-                            'board_owner', 'shared_publication', 'parent', 'shared_photo_publication')
-                            [:20])
+                            'board_owner', 'shared_publication', 'parent', 'shared_photo_publication')[:20]
+
+        pubs_ids = publications.values_list('id', flat=True)
+        # shares = Publication.objects.filter(shared_publication_id__in=pubs_ids).values('shared_publication', 'shared_publication__author')
 
         """
         publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1) \
@@ -185,8 +187,10 @@ def profile_view(request, username,
     except ObjectDoesNotExist:
         publications = None
 
+
+    # context['shares'] = shares
     # Contenido de las tres tabs
-    context['publications'] = publications
+    context['publications'] = list(publications)
     context['component'] = 'react/publications.js'
     context['friends_top12'] = n.get_follows()
 

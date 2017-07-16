@@ -2,9 +2,7 @@
 {% load avatar_tags %}
 {% load app_filters %}
 {% load humanize %}
-{% load mptt_tags %}
 {% load embed_video_tags %}
-
     {% for node in publications %}
         <div class="row">
             <div class="col s12">
@@ -269,19 +267,22 @@
                                         </li>
                                     {% endif %}
                                         {% comment %} Si el usuario esta logueado {% endcomment %}
-                                        <li title="No me gusta" class="hate-comment" id="fa-hate">
+                                        {% with node.user_give_me_hate.all as hates %}
+                                        <li title="No me gusta" class="hate-comment" {% if user in hates %} style="color: rgb(186, 104, 200);"{% endif %}>
                                             <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                            <i class="fa hate-value"></i>
+                                            <i class="fa hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
                                         </li>
-                                        <li id="like-heart" title="¡Me gusta!" class="like-comment"
-                                            >
+                                        {% endwith %}
+                                        {% with node.user_give_me_like.all as likes %}
+                                        <li title="¡Me gusta!" class="like-comment" {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                            <i id="like-value" class="fa"></i>
+                                            <i id="like-value" class="fa">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
                                         </li>
-                                    <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
+                                        {% endwith %}
+                                        <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" {% if node.pk|user_in_shared_list:user.pk %}class="remove-timeline"
+                                        style="color: #bbdefb;" {% else %}class="add-timeline"{% endif %}
                                         ><i
-                                            class="fa fa-quote-right" aria-hidden="true"{% if node.pk|user_in_shared_list:user.pk %}id="remove_from_skyline"
-                                        style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}> </i></li>
+                                            class="fa fa-quote-right" aria-hidden="true"> </i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
@@ -368,4 +369,4 @@
             </div>
         </div>
     {% endwith %}
-{% endif %}
+    {% endif %} 

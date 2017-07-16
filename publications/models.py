@@ -203,7 +203,7 @@ class Publication(PublicationBase):
         (7, _("shared_photo_pub"))
     )
     author = models.ForeignKey(User, null=True)
-    board_owner = models.ForeignKey(User, related_name='board_owner')
+    board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
