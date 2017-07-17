@@ -21081,7 +21081,7 @@ var Skyline = function (_React$Component) {
                     'ul',
                     null,
                     pubs
-                ), document.getElementById('react'));
+                ), document.getElementById('tab-comentarios'));
             });
         }
     }, {

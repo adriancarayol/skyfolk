@@ -56,36 +56,36 @@ class Skyline extends React.Component {
             },
             body: JSON.stringify(data)
         })
-        .then(function(response) {
-            return response.json()
-        }).then(function(body) {
-            const pubs = body.map((elem) =>
+            .then(function(response) {
+                return response.json()
+            }).then(function(body) {
+                const pubs = body.map((elem) =>
                     <li key={elem.id}>
-                    <p>{elem.content}</p>
+                        <p>{elem.content}</p>
                     </li>
-                    );
-            ReactDOM.render(
+                );
+                ReactDOM.render(
                     <ul>{pubs}</ul>,
-                    document.getElementById('react')
-                    );
-        });
+                    document.getElementById('tab-comentarios')
+                );
+            });
     }
     render() {
         return (
-                <form onSubmit={this.handleSubmit} ref="form">
+            <form onSubmit={this.handleSubmit} ref="form">
                 <FilterButton buttonName={'Tiempo'} buttonText={'Tiempo'} onClick={this.onSubmit1}/>
                 <FilterButton buttonName={'Me gusta'} buttonText={'Me gusta'} onClick={this.onSubmit2}/>
                 <FilterButton buttonName={'Relevancia'} buttonText={'Relevancia'} onClick={this.onSubmit3}/>
-                </form>
-               );
+            </form>
+        );
     }
 }
 
 const FilterButton = ({ buttonName, buttonText, onClick }) => (
-        <button className="waffes-effect waves-light btn white black-text" type="submit" name={buttonName} onClick={onClick}>{buttonText}</button>
-        );
+    <button className="waffes-effect waves-light btn white black-text" type="submit" name={buttonName} onClick={onClick}>{buttonText}</button>
+);
 
 
 ReactDOM.render(
-        <Skyline board_owner={ window.board_owner } />,
-        document.getElementById('react'));
+    <Skyline board_owner={ window.board_owner } />,
+    document.getElementById('react'));

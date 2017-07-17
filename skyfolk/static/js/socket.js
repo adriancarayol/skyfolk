@@ -170,7 +170,7 @@ var UTILS = UTILS || (function () {
                             } else {
                                 $(parent).closest('.row').after(content);
                             }
-                        } else $("#tab-comentarios").prepend(content);
+                        } else $("#tab-comentarios .btn-filters").after(content);
                     }
                     var show = $('div#pub-' + data.id + '').find('#show-comment-' + data.id + '');
                     /* Eliminamos el div de "Este perfil no tiene comentarios" */

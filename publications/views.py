@@ -846,7 +846,7 @@ def publication_filter_by_time(request):
         if privacity and privacity != 'all':
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
-        root_nodes = cache_tree_children(Publication.objects.filter(board_owner_id=board_owner_id, deleted=False, parent=None)[:20])
+        root_nodes = cache_tree_children(Publication.objects.filter(board_owner_id=board_owner_id, deleted=False, level__lte=0)[:20])
         dicts = []
         for n in root_nodes:
             dicts.append(recursive_node_to_dict(n))
@@ -880,7 +880,7 @@ def publication_filter_by_like(request):
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
-            .filter(board_owner_id=board_owner_id, deleted=False, parent=None).order_by('-likes')[:20])
+            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by('-likes')[:20])
 
         dicts = []
         for n in root_nodes:
@@ -916,7 +916,7 @@ def publication_filter_by_relevance(request):
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
-            .filter(board_owner_id=board_owner_id, deleted=False, parent=None).order_by('-likes', '-created')[:20])
+            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by('-likes', '-created')[:20])
 
         dicts = []
         for n in root_nodes:
