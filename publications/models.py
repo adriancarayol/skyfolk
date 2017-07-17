@@ -218,7 +218,8 @@ class Publication(PublicationBase):
 
     class Meta:
         unique_together = (('shared_photo_publication', 'id'),
-                           ('shared_publication', 'id'))
+                           ('shared_publication', 'id'),
+                           ('board_owner', 'id'))
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -236,8 +237,7 @@ class Publication(PublicationBase):
 
     @property
     def total_shares(self):
-        return Publication.objects.filter(shared_publication_id=self.id,
-                                          deleted=False).count()
+        return Publication.objects.filter(shared_publication_id=self.id, deleted=False).count()
 
     def has_extra_content(self):
         return hasattr(self, 'extra_content')

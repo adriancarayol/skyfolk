@@ -44,6 +44,7 @@ from django.conf import settings
 from mailer.mailer import Mailer
 from .tasks import send_email
 from django.db.models import Prefetch
+from django.db.models import Count
 
 
 @login_required(login_url='/')
@@ -163,6 +164,7 @@ def profile_view(request, username,
     # cargar lista comentarios
     try:
         # if user_profile.username == username:
+        # Get user_profile publications LIMIT 20
         publications = Publication.objects.filter(board_owner_id=user_profile.id,
                             level__lte=0, deleted=False) \
                             .prefetch_related('extra_content', 'images',
@@ -171,8 +173,15 @@ def profile_view(request, username,
                             .select_related('author',
                             'board_owner', 'shared_publication', 'parent', 'shared_photo_publication')[:20]
 
-        pubs_ids = publications.values_list('id', flat=True)
-        # shares = Publication.objects.filter(shared_publication_id__in=pubs_ids).values('shared_publication', 'shared_publication__author')
+        # Obtenemos los ids de las publicaciones del skyline
+        # Despues recuperamos aquellas publicaciones que han sido compartidas
+        shared_id = publications.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id).values('shared_publication__id')\
+                .order_by('shared_publication__id')\
+                .annotate(total=Count('shared_publication__id'))
+
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id).values('author__id', 'shared_publication__id')
+
 
         """
         publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1) \
@@ -190,6 +199,8 @@ def profile_view(request, username,
 
     # context['shares'] = shares
     # Contenido de las tres tabs
+    context['pubs_shared_with_me'] = pubs_shared_with_me
+    context['pubs_shared'] = pubs_shared
     context['publications'] = list(publications)
     context['component'] = 'react/publications.js'
     context['friends_top12'] = n.get_follows()

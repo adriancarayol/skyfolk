@@ -4,6 +4,7 @@ venv
 .pydevproject
 skyfolk/media/
 avatars/
+whoosh_index/
 skyfolk.sublime-project
 skyfolk.sublime-workspace
 build/
