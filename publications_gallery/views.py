@@ -419,20 +419,22 @@ def share_publication(request):
                     if pub_content.isspace():  # Comprobamos si el comentario esta vacio
                         raise IntegrityError('El comentario esta vacio')
 
-                    Publication.objects.create(
+                    pub = Publication.objects.create(
                         content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
                             pub_to_add.p_author.username, pub_to_add.p_author.username, pub_content),
                         shared_photo_publication_id=pub_to_add.id,
                         author=user,
                         board_owner=user, event_type=7)
                 else:
-                    Publication.objects.create(
+                    pub = Publication.objects.create(
                         content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
                             pub_to_add.p_author.username, pub_to_add.p_author.username),
                         shared_photo_publication_id=pub_to_add.id,
                         author=user,
                         board_owner=user, event_type=7)
 
+                pub.send_notification(csrf_token=get_or_create_csrf_token(
+                        request))
                 response = True
                 status = 1  # Representa la comparticion de la publicacion
                 logger.info('Compartido el comentario %d' % (pub_to_add.id))
