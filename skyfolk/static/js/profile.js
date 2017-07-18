@@ -651,7 +651,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
 
                 }
                 content += '<div class="card-action">';
-                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].shared_photo_pub_id + '">Ver</a></div></div>';
+                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].shared_pub_id + '">Ver</a></div></div>';
             } else if (publications[i].event_type === 7) {
                 content += '<style>.comment .fa-share {color: #1e88e5;font-style: normal;}</style>';
                 content += '<div class="card grey lighten-5">';
@@ -899,8 +899,19 @@ function AJAX_delete_publication(caja_publicacion) {
         data: data,
         success: function (data) {
             // borrar caja publicacion
-            if (data == true) {
+            if (data.response == true) {
                 $(caja_publicacion).fadeToggle("fast");
+                if (data.shared_pub_id) {
+                    var shared_btn = $('#share-' + data.shared_pub_id);
+                    var shared_btn_child = shared_btn.children();
+                    var countShares = shared_btn_child.text();
+                    if (!countShares || (Math.floor(countShares) == countShares && $.isNumeric(countShares))) {
+                        countShares--;
+                        countShares > 0 ? shared_btn_child(countShares) : shared_btn_child.text('');
+                    }
+                    shared_btn.attr('class', 'add-timeline');
+                    shared_btn.css('color', '#555');
+                }
             } else {
                 swal({
                     title: "Fail",

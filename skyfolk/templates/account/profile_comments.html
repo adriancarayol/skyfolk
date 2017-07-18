@@ -3,6 +3,22 @@
 {% load app_filters %}
 {% load humanize %}
 {% load embed_video_tags %}
+<style>
+    .card-content img {
+        max-width: 100%;
+        max-height: 100%;
+        box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
+    }
+    .comment .fa-share {
+        color: #1e88e5;
+        font-style: normal;
+    }
+    .comment .fa-user-plus {
+        color: #1e88e5;
+        font-style: normal;
+    }
+</style>
+
     {% for node in publications %}
         <div class="row">
             <div class="col s12">
@@ -49,28 +65,8 @@
                                                 <a href="#">+ Mostrar más</a>
                                             </div>
                                         </div>
-                                        {% if node.event_type == 2 %}
-                                            <style>
-                                                .comment .fa-user-plus {
-                                                    color: #1e88e5;
-                                                    font-style: normal;
-                                                }
-                                            </style>
-                                        {% endif %}
                                         {% if node.shared_publication %}
                                             {% comment %} Para publicaciones que contienen citas {% endcomment %}
-                                            <style>
-                                                .card-content img {
-                                                    max-width: 100%;
-                                                    max-height: 100%;
-                                                    box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
-                                                }
-
-                                                .comment .fa-share {
-                                                    color: #1e88e5;
-                                                    font-style: normal;
-                                                }
-                                            </style>
                                             <div class="card grey lighten-5">
                                                 <div class="card-content black-text">
                                                     {% avatar node.shared_publication.author %}<br>
@@ -132,18 +128,6 @@
                                         {% endif %}
                                     {% if node.shared_photo_publication %}
                                             {% comment %} Para publicaciones que contienen citas {% endcomment %}
-                                            <style>
-                                                .card-content img {
-                                                    max-width: 100%;
-                                                    max-height: 100%;
-                                                    box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
-                                                }
-
-                                                .comment .fa-share {
-                                                    color: #1e88e5;
-                                                    font-style: normal;
-                                                }
-                                            </style>
                                             <div class="card grey lighten-5">
                                                 <div class="card-content black-text">
                                                     {% avatar node.shared_photo_publication.p_author %}<br>

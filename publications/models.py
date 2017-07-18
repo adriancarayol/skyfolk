@@ -392,6 +392,7 @@ class Publication(PublicationBase):
         if have_extra_content:
             extra_c = self.extra_content
 
+
         notification = {
             "id": self.id,
             "content": self.content,
@@ -414,11 +415,34 @@ class Publication(PublicationBase):
             'parent_avatar': avatar_parent,
         }
 
+        shared_publication = self.shared_publication
+
+        if shared_publication:
+            notification["shared_publication_avatar_path"] = get_author_avatar(authorpk=shared_publication.author.id),
+            notification["shared_publication_id"] = shared_publication.id
+            notification['shared_publication_author_id'] = shared_publication.author.id
+            notification['shared_publication_author_username'] = shared_publication.author.username
+            notification['shared_publication_content'] = shared_publication.content
+            notification['shared_publication_images'] = list(shared_publication.images.all().values('image'))
+            notification['shared_publication_videos'] =list( shared_publication.videos.all().values('video'))
+            notification['shared_publication_created'] = naturaltime(shared_publication.created)
+
+            have_shared_extra_content = shared_publication.has_extra_content()
+            if have_shared_extra_content:
+                shared_extra_c = shared_publication.extra_content
+
+            if have_shared_extra_content:
+                notification['shared_publication_extra_content_title'] = shared_extra_c.title
+                notification['shared_publication_extra_content_description'] = shared_extra_c.description
+                notification['shared_publication_extra_content_image'] = shared_extra_c.image
+                notification['shared_publication_extra_content_url'] = shared_extra_c.url
+
         if have_extra_content:
             notification['extra_content_title'] = extra_c.title
             notification['extra_content_description'] = extra_c.description
             notification['extra_content_image'] = extra_c.image
             notification['extra_content_url'] = extra_c.url
+
         # Enviamos a todos los usuarios que visitan el perfil
         channel_group(group_name(self.board_owner_id)).send({
             "text": json.dumps(notification)

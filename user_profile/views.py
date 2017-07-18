@@ -177,11 +177,11 @@ def profile_view(request, username,
         # Despues recuperamos aquellas publicaciones que han sido compartidas
         #TODO: Se podria hacer pubs_shared y pubs_shared_with_me en una query
         shared_id = publications.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id).values('shared_publication__id')\
+        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values('shared_publication__id')\
                 .order_by('shared_publication__id')\
                 .annotate(total=Count('shared_publication__id'))
 
-        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id).values('author__id', 'shared_publication__id')
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id, deleted=False).values('author__id', 'shared_publication__id')
 
 
         """

@@ -217,7 +217,10 @@ def publication_detail(request, publication_id):
 @transaction.atomic
 def delete_publication(request):
     logger.debug('>>>>>>>> PETICION AJAX BORRAR PUBLICACION')
-    response = False
+    data = {
+        'response': False,
+        'shared_pub_id': None
+    }
     if request.POST:
         # print request.POST['userprofile_id']
         # print request.POST['publication_id']
@@ -226,10 +229,9 @@ def delete_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = Publication.objects.get(id=publication_id)
+            publication = Publication.objects.prefetch_related('extra_content').select_related('shared_publication').defer('content').get(id=publication_id)
         except ObjectDoesNotExist:
-            response = False
-            return HttpResponse(json.dumps(response),
+            return HttpResponse(json.dumps(data),
                                 content_type='application/json'
                                 )
         logger.info('publication_author: {} publication_board_owner: {} request.user: {}'.format(
@@ -239,14 +241,15 @@ def delete_publication(request):
         if user.id == publication.author.id or user.id == publication.board_owner.id:
             publication.deleted = True
             publication.save(update_fields=['deleted'])
-            # Publication.objects.filter(parent=publication).update(deleted=True)
             publication.get_descendants().update(deleted=True)
             if publication.has_extra_content():
                 publication.extra_content.delete()
+            shared_pub = publication.shared_publication
+            data['shared_pub_id'] = shared_pub.id if shared_pub else None
             logger.info('Publication deleted: {}'.format(publication.id))
 
-        response = True
-    return HttpResponse(json.dumps(response),
+        data['response'] = True
+    return HttpResponse(json.dumps(data),
                         content_type='application/json'
                         )
 
@@ -789,20 +792,22 @@ def share_publication(request):
                     if pub_content.isspace():  # Comprobamos si el comentario esta vacio
                         raise IntegrityError('El comentario esta vacio')
 
-                    Publication.objects.create(
+                    pub = Publication.objects.create(
                         content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
                             pub_to_add.author.username, pub_to_add.author.username, pub_content),
                         shared_publication_id=pub_to_add.id,
                         author=user,
                         board_owner=user, event_type=6)
                 else:
-                    Publication.objects.create(
+                    pub = Publication.objects.create(
                         content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
                             pub_to_add.author.username, pub_to_add.author.username),
                         shared_publication_id=pub_to_add.id,
                         author=user,
                         board_owner=user, event_type=6)
 
+                pub.send_notification(csrf_token=get_or_create_csrf_token(
+                        request))
                 response = True
                 status = 1  # Representa la comparticion de la publicacion
                 logger.info('Compartido el comentario %d' % (pub_to_add.id))
