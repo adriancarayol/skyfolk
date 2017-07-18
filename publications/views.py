@@ -189,8 +189,28 @@ def publication_detail(request, publication_id):
     """
     user = request.user
     try:
-        request_pub = Publication.objects.get(id=publication_id, deleted=False)
-        publication = request_pub.get_descendants(include_self=True).filter(deleted=False)
+        request_pub = Publication.objects \
+                .select_related('author').get(id=publication_id, deleted=False)
+        publication = request_pub.get_descendants(include_self=True) \
+                .prefetch_related('extra_content', 'images',
+                                'videos', 'shared_publication__images',
+                                'shared_publication__videos',
+                                'shared_publication__extra_content',
+                                'shared_photo_publication__images',
+                                'shared_photo_publication__videos',
+                                'shared_photo_publication__publication_photo_extra_content',
+                                'user_give_me_like', 'user_give_me_hate') \
+                                        .select_related('author',
+                                                'board_owner', 'shared_publication',
+                                                'parent', 'shared_photo_publication')
+
+        shared_id = publication.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values('shared_publication__id')\
+                .order_by('shared_publication__id')\
+                .annotate(total=Count('shared_publication__id'))
+
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id, deleted=False).values('author__id', 'shared_publication__id')
+
     except ObjectDoesNotExist:
         raise Http404
 
@@ -206,6 +226,9 @@ def publication_detail(request, publication_id):
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
     context = {
+        'pubs_shared': pubs_shared,
+        'pubs_shared_with_me': pubs_shared_with_me,
+        'publication_id': publication_id,
         'publication': publication,
         'publication_shared': SharedPublicationForm()
     }

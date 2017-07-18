@@ -191,7 +191,7 @@ var UTILS = UTILS || (function () {
                         content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
                         content += '                                <i class="fa hate-value"></i>';
                         content += "                            </li>";
-                        content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa"></i></li>';
+                        content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value"></i></li>';
                         content += '                       <li title=\"Añadir a mi skyline\" id="share-' + data.id + '" data-id="' + data.id + '" class=\"add-timeline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>';
                         content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + data.id + '"><\/i><\/li>';
                         content += "                    </ul>";

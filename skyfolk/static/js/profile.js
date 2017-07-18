@@ -464,7 +464,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
             content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
             content += "                            </li>";
-            content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
+            content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
             content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
             content += "                    </ul>";
@@ -712,7 +712,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
             content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
             content += "                            </li>";
-            content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
+            content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
             content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
             content += "                    </ul>";
@@ -953,7 +953,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find('#like-value');
+            var numLikes = $(heart).find('.like-value');
             var countLikes = numLikes.text();
             if (response == true) {
                 if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
@@ -1048,7 +1048,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
                         $(heart).css('color', '#ba68c8');
                         countHates++;
                         var likesObj = $(heart).next();
-                        var likes = likesObj.find("#like-value");
+                        var likes = likesObj.find(".like-value");
                         var countLikes = likes.text();
                         countLikes--;
                         if (countLikes <= 0) {

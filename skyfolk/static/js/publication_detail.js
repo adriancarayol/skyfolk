@@ -52,14 +52,14 @@ $(document).ready(function () {
     });
 
     /* Añadir me gusta a comentario */
-    $(thread).on('click', '#options-comments #like-heart', function () {
+    $(thread).on('click', '#options-comments .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
-    $(thread).on('click', '#options-comments #fa-hate', function () {
+    $(thread).on('click', '#options-comments .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_hate(caja_publicacion, heart, "publication");
@@ -147,7 +147,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find('#like-value');
+            var numLikes = $(heart).find('.like-value');
             var countLikes = numLikes.text();
             if (response == true) {
                 if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
@@ -242,7 +242,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
                         $(heart).css('color', '#ba68c8');
                         countHates++;
                         var likesObj = $(heart).next();
-                        var likes = likesObj.find("#like-value");
+                        var likes = likesObj.find(".like-value");
                         var countLikes = likes.text();
                         countLikes--;
                         if (countLikes <= 0) {

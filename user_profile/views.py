@@ -169,13 +169,15 @@ def profile_view(request, username,
                             level__lte=0, deleted=False) \
                             .prefetch_related('extra_content', 'images',
                                 'videos', 'shared_publication__images',
+                                'shared_photo_publication__images',
+                                'shared_photo_publication__videos',
+                                'shared_photo_publication__publication_photo_extra_content',
                                 'shared_publication__videos', 'shared_publication__extra_content', 'user_give_me_like', 'user_give_me_hate') \
                             .select_related('author',
                             'board_owner', 'shared_publication', 'parent', 'shared_photo_publication')[:20]
 
         # Obtenemos los ids de las publicaciones del skyline
         # Despues recuperamos aquellas publicaciones que han sido compartidas
-        #TODO: Se podria hacer pubs_shared y pubs_shared_with_me en una query
         shared_id = publications.values_list('id', flat=True)
         pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values('shared_publication__id')\
                 .order_by('shared_publication__id')\

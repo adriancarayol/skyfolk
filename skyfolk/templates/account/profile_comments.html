@@ -241,11 +241,11 @@
                             <!-- OPCIONES DE COMENTARIOS -->
                             <div class="options_comentarios" id="options-comments">
                                 <ul class="opciones">
-                                    {% if user.username == node.author.username %}
+                                    {% if user.id == node.author.id %}
                                         {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
-                                    {% elif user.username == user_profile.username %}
+                                    {% elif user.id == user_profile.id %}
                                         {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
@@ -260,7 +260,7 @@
                                         {% with node.user_give_me_like.all as likes %}
                                         <li title="¡Me gusta!" class="like-comment" {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
                                             <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                            <i id="like-value" class="fa">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
+                                            <i class="fa like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
                                         </li>
                                         {% endwith %}
                                         <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class="add-timeline"
@@ -273,7 +273,7 @@
                             </div>
                         </div>
                     </div>
-                    {% if user.username == node.author.username %}
+                    {% if user.id == node.author.id %}
                         {% if node.event_type == 1  or node.event_type == 3 %}
                             <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
                                  class="author-controls">

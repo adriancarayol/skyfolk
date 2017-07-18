@@ -7,6 +7,8 @@ from publications.models import Publication
 from django.db import transaction
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from neomodel import db
+from django.core.cache import cache
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -118,6 +120,7 @@ def handle_login(sender, user, request, **kwargs):
 
 
 def handle_logout(sender, user, request, **kwargs):
+    cache.delete('seen_%s' % user.username)
     logger.info('User {} is_offlne'.format(user.username))
 
 user_logged_in.connect(handle_login)
