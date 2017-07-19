@@ -355,7 +355,7 @@ function AJAX_likeprofile(status) {
 function add_loaded_publication(pub, data, btn, is_skyline) {
     var publications = JSON.parse(data);
 
-    if (publications === undefined || publications.length <= 0) {
+    if (!publications || publications.length <= 0) {
         if (is_skyline)
             $(btn).remove();
         return;
@@ -771,7 +771,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             $('#tab-comentarios').find('#loader_skyline').before(content);
         }
 
-        if (publications === undefined || publications.length <= 20)
+        if (!publications || publications.length < 20)
             $(btn).remove();
         else
             $(btn).attr("data-id", publications[publications.length - 1].id);

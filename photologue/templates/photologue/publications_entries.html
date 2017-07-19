@@ -175,28 +175,16 @@
                         </ul>
                         <div class="row">
                             <div class="col s12">
-                                {% if not node.is_root_node %}
-                                    {% with node.get_descendants_not_deleted as descendants %}
+                                {% with node.get_children_count as descendants %}
                                         {% if descendants > 0 %}
                                             <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
                                                href="#"
-                                               id="load_more_publications"
-                                               data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
-                                                comentarios ({{ descendants }})</a>
-                                        {% endif %}
-                                    {% endwith %}
-                                {% else %}
-                                    {% with node.get_children_count as descendants %}
-                                        {% if descendants > 8 %}
-                                            <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
-                                               href="#"
-                                               id="load_more_publications"
-                                               data-id="{{ node.id }}"><i class=" material-icons left">expand_more</i>Cargar
+                                               id="load_more_descendants"
+                                               data-id="{{ node.id }}" data-created="{{ node.created|date:"U"}}"><i class=" material-icons left">expand_more</i>Cargar
                                                 comentarios (<span
-                                                        id="child_count">{{ descendants|add:"-9" }}</span>)</a>
+                                                        id="child_count">{{ descendants }}</span>)</a>
                                         {% endif %}
                                     {% endwith %}
-                                {% endif %}
                                 <div>
                                     <div class="progress" id="load_publications_descendants" style="display: none">
                                         <div class="indeterminate blue darken-1"></div>
@@ -215,11 +203,11 @@
             <div class="col s12">
                 <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
                    href="#"
-                   id="load_more_skyline"
-                   data-id="{{ last_pub.0.id }}"><i class=" material-icons left">expand_more</i>Cargar
+                   id="load_more_publications"
+                   data-id="{{ last_pub.id }}"><i class=" material-icons left">expand_more</i>Cargar
                     comentarios</a>
                 <div>
-                     <div class="progress" id="load_publications_skyline" style="display: none">
+                     <div class="progress" id="load_publications" style="display: none">
                         <div class="indeterminate blue darken-1"></div>
                      </div>
                 </div>

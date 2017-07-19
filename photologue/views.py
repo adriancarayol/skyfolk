@@ -347,7 +347,7 @@ class PhotoDetailView(DetailView):
         shared_id = publications.values_list('id', flat=True)
         context['form'] = EditFormPhoto(instance=self.photo)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
-        context['publications'] = publications
+        context['publications'] = list(publications)
         context['publication_shared'] = SharedPublicationForm()
         context['pubs_shared'] = PhotoDetailView.get_count_shared(shared_id)
         context['pubs_shared_with_me'] = self.get_publications_shared_with_me(shared_id)
