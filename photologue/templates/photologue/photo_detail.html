@@ -5,7 +5,7 @@
 {% load humanize %}
 
 {% load compress %}
-{% block title %} <title>{{ object.title }} por: {{ object.owner }}</title> {% endblock %}
+{% block title %} <title>Skyfolk / {{ object.title }} por: {{ object.owner }}</title> {% endblock %}
 
 {% block include_files %}
     {% compress css %}
@@ -84,7 +84,7 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        {% if request.user.pk == object.owner_id %}
+                        {% if user.id == object.owner_id %}
                             <div class="row">
                                 <div class="col s12">
                                     <div class="divider"></div>

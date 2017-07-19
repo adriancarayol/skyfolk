@@ -9,6 +9,8 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
+from publications.models import Publication
+from django.db.models import Count
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils.six import BytesIO
@@ -301,62 +303,77 @@ class PhotoDetailView(DetailView):
 
     def __init__(self):
         self.username = None
-        self.object = None
+        self.photo = None
         super(PhotoDetailView, self).__init__()
 
     def dispatch(self, request, *args, **kwargs):
-        photo = self.get_object()
-        self.username = photo.owner.username
+        self.photo = self.get_object(Photo.objects.filter(slug=self.kwargs['slug'])\
+                .select_related('owner', 'effect') \
+                .prefetch_related('tags'))
+        self.username = self.photo.owner.username
 
-        if not photo.is_public and self.username != self.request.user.username:
+        if not self.photo.is_public and self.username != self.request.user.username:
             return redirect('user_profile:profile', username=self.username)
 
         if self.user_pass_test():
             return super(PhotoDetailView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('user_profile:profile', username=self.username)
+        return super().dispatch(request, *args, **kwargs)
 
-    def get_queryset(self):
-        slug = self.kwargs['slug']
-        return Photo.objects.filter(slug=slug)
+    @staticmethod
+    def get_count_shared(shared_id):
+        return Publication.objects.filter(shared_photo_publication__id__in=shared_id, deleted=False) \
+                .values('shared_photo_publication__id')\
+                .order_by('shared_photo_publication__id')\
+                .annotate(total=Count('shared_photo_publication__id'))
+
+
+    def get_publications_shared_with_me(self, shared_id):
+        return Publication.objects.filter(shared_photo_publication__id__in=shared_id, author__id=self.request.user.id, deleted=False).values('author__id', 'shared_photo_publication__id')
+
 
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
-        photo = self.get_object()
-        initial_photo = {'p_author': user.pk, 'board_photo': self.get_object()}
-        context['form'] = EditFormPhoto(instance=self.object)
-        context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
-        context['publications'] = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1)[:10]
-                                   for node in
-                                   PublicationPhoto.objects.filter(
-                                       board_photo_id=photo.id, deleted=False,
-                                       parent=None)[:20]]
-        context['publication_shared'] = SharedPublicationForm()
+        initial_photo = {'p_author': user.pk, 'board_photo': self.photo}
+        publications = PublicationPhoto.objects.filter(board_photo_id=self.photo.id,
+                level__lte=0, deleted=False) \
+                        .prefetch_related('publication_photo_extra_content', 'images', 'videos',
+                                'user_give_me_like', 'user_give_me_hate') \
+                                        .select_related('p_author',
+                                                'board_photo', 'parent')[:20]
 
+        shared_id = publications.values_list('id', flat=True)
+        context['form'] = EditFormPhoto(instance=self.photo)
+        context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
+        context['publications'] = publications
+        context['publication_shared'] = SharedPublicationForm()
+        context['pubs_shared'] = PhotoDetailView.get_count_shared(shared_id)
+        context['pubs_shared_with_me'] = self.get_publications_shared_with_me(shared_id)
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
-        if photo.is_public:
+        if self.photo.is_public:
             try:
-                next = self.object.get_next_in_gallery()
+                next = self.photo.get_next_in_gallery()
                 context['next'] = next
             except Photo.DoesNotExist:
                 pass
             # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
             try:
-                previous = self.object.get_previous_in_gallery()
+                previous = self.photo.get_previous_in_gallery()
                 context['previous'] = previous
             except Photo.DoesNotExist:
                 pass
-        elif not photo.is_public and photo.owner.id == user.id:
+        elif not self.photo.is_public and self.photo.owner.id == user.id:
             try:
-                next = self.object.get_next_in_own_gallery()
+                next = self.photo.get_next_in_own_gallery()
 
                 context['next'] = next
             except Photo.DoesNotExist:
                 pass
             # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
             try:
-                previous = self.object.get_previous_in_own_gallery()
+                previous = self.photo.get_previous_in_own_gallery()
                 context['previous'] = previous
             except Photo.DoesNotExist:
                 pass

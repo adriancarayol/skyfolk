@@ -169,6 +169,7 @@ def profile_view(request, username,
                             level__lte=0, deleted=False) \
                             .prefetch_related('extra_content', 'images',
                                 'videos', 'shared_publication__images',
+                                'tags',
                                 'shared_photo_publication__images',
                                 'shared_publication__author',
                                 'shared_photo_publication__p_author',

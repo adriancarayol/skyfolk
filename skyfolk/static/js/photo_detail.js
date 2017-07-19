@@ -362,7 +362,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
                         $(heart).css('color', '#ba68c8');
                         countHates++;
                         var likesObj = $(heart).next();
-                        var likes = likesObj.find("#like-value");
+                        var likes = likesObj.find(".like-value");
                         var countLikes = likes.text();
                         countLikes--;
                         if (countLikes <= 0) {

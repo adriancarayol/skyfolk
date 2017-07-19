@@ -197,6 +197,7 @@ def publication_detail(request, publication_id):
                                 'videos', 'shared_publication__images',
                                 'shared_publication__videos',
                                 'shared_publication__extra_content',
+                                'tags',
                                 'shared_publication__author',
                                 'shared_photo_publication__p_author',
                                 'shared_photo_publication__images',
