@@ -524,6 +524,11 @@ class PublicationDeleted(models.Model):
     """
     Contiene las publicaciones eliminadas por los usuarios
     """
+    TYPE_PUBLICATIONS = (
+        (1, _("skyline")),
+        (2, _("photo")),
+    )
     author = models.ForeignKey(User, null=True)
     content = models.TextField(blank=False, null=True, max_length=500)
     created = models.DateTimeField(null=True)
+    type_publication = models.IntegerField(choices=TYPE_PUBLICATIONS, default=1)

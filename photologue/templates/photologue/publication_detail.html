@@ -14,7 +14,7 @@
     {% endcompress %}
 {% endblock %}
 
-{% block title %} <title> Skyfolk - Publicacion #{{ publication.0.id }}</title> {% endblock %}
+{% block title %} <title> Skyfolk - Publicacion #{{ publication_id }}</title> {% endblock %}
 {% block content %}
     <div class="container" id="publication-thread">
         {% comment %}
@@ -146,34 +146,34 @@
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12" id="options-comments">
                                     <ul class="opciones">
-                                        {% if user.is_authenticated and user.username == node.p_author.username %}
+                                        {% if user.id == node.p_author.username %}
                                             {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="fa fa-trash"></i>
                                             </li>
-                                        {% elif user.is_authenticated and user.username == user_profile.username %}
+                                        {% elif user.id == node.p_author.id %}
                                             {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="fa fa-trash"></i>
                                             </li>
                                         {% endif %}
-                                        {% if user.is_authenticated %}
                                             {% comment %} Si el usuario esta logueado {% endcomment %}
-                                            <li title="No me gusta" class="hate-comment" id="fa-hate"
-                                                {% if node.pk|user_in_hated_photo_list:user.pk %}style="color: rgb(186, 104, 200);"{% endif %}>
+                                        {% with node.user_give_me_hate.all as hates %}
+                                            <li title="No me gusta" class="hate-comment" 
+                                                {% if user in hates %}style="color: rgb(186, 104, 200);"{% endif %}>
                                                 <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                                <i class="fa hate-value">{% with node.total_hates as hates %}{% if hates > 0 %}{{ hates|intword }}{% endif %}{% endwith %}</i>
+                                                <i class="fa hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
                                             </li>
-                                            <li id="like-heart" title="¡Me gusta!" class="like-comment"
-                                                {% if node.pk|user_in_liked_photo_list:user.pk %}style="color: #f06292;"{% endif %}>
+                                        {% endwith %}
+                                        {% with node.user_give_me_like.all as likes %}
+                                            <li title="¡Me gusta!" class="like-comment"
+                                                {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
                                                 <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                                <i id="like-value" class="fa">{% with node.total_likes as likes %}{% if likes > 0 %}{{ likes|intword }}{% endif %}{% endwith %}</i>
+                                                <i class="fa like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
                                             </li>
-                                        {% endif %}
-                                        <li title="Añadir a mi skyline" data-id="{{ node.pk }}" class="add-timeline"
-                                            {% if node.pk|user_in_shared_photo_list:user.pk %}id="remove_from_skyline"
-                                            style="color: #bbdefb;" {% else %}id="add_to_skyline"{% endif %}><i
-                                                class="fa fa-quote-right" aria-hidden="true"> {% with node.total_shares as shares %}{% if shares > 0 %}{{ shares|intword }}{% endif %}{% endwith %}</i></li>
+                                        {% endwith %} 
+                                        <li title="Añadir a mi skyline" id="share-{{node.id}}" data-id="{{ node.pk }}" class="add-timeline"><i
+                                                class="fa fa-quote-right" aria-hidden="true"> </i></li>
                                         <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                        id="reply-caja-comentario-{{ node.pk }}"></i>
                                         </li>
@@ -193,4 +193,13 @@
         {% endrecursetree %}
     </div>
     <script src="{{ STATIC_URL }}js/photo_detail.js" type="text/javascript"></script>
+    <script>
+    {% for s in pubs_shared %}
+        $('#share-' + {{ s.shared_photo_publication__id }}).children().text(' ' + {{ s.total }});
+    {% endfor %}
+    {% for m in pubs_shared_with_me %}
+        $('#share-' + {{ m.shared_photo_publication__id }}).attr('class', 'remove-timeline').css('color', '#bbdefb');
+    {% endfor %}
+    </script>
+
 {% endblock %}

@@ -22,6 +22,10 @@ app.conf.beat_schedule = {
         'task': 'tasks.clean_deleted_publications',
         'schedule': crontab(minute=0, hour=0),
     },
+    'deleted-photo-publication': {
+        'task': 'tasks.clean_deleted_photo_publications',
+        'schedule': crontab(minute=0, hour=2),
+    }
 }
 
 @app.task(bind=True)

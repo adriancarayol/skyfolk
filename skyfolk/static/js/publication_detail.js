@@ -24,7 +24,7 @@ $(document).ready(function () {
     });
 
     /* Agregar skyline */
-    $(this).on('click', '#options-comments #add_to_skyline', function () {
+    $(this).on('click', '#options-comments .add-timeline', function () {
         var tag = this;
         $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
         $(wrapper_shared_pub).show();
@@ -45,7 +45,7 @@ $(document).ready(function () {
     });
 
     /* Eliminar skyline */
-    $(this).on('click', '#options-comments #remove_from_skyline', function () {
+    $(this).on('click', '#options-comments .remove-timeline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
@@ -311,7 +311,7 @@ function AJAX_add_timeline(pub_id, tag, data_pub) {
                             $(shared_tag).text(" ");
                         }
                     }
-                    $(tag).attr("id", "remove_from_skyline");
+                    $(tag).attr("class", "remove-timeline");
                     $(tag).css('color', '#bbdefb');
                     $('#share-publication-wrapper').hide();
                 } else if (status == 2) {
@@ -323,7 +323,7 @@ function AJAX_add_timeline(pub_id, tag, data_pub) {
                             $(shared_tag).text(" ");
                         }
                     }
-                    $(tag).attr("id", "add_to_skyline");
+                    $(tag).attr("class", "add-timeline");
                     $(tag).css('color', '#555');
                 }
             } else {

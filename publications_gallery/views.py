@@ -19,6 +19,7 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications.models import Publication
 from emoji.models import Emoji
 from .utils import optimize_publication_media
+from django.db.models import Count
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -103,7 +104,22 @@ def publication_detail(request, publication_id):
     user = request.user
     try:
         request_pub = PublicationPhoto.objects.get(id=publication_id, deleted=False)
-        publication = request_pub.get_descendants(include_self=True).filter(deleted=False)
+        publication = request_pub.get_descendants(include_self=True) \
+                .filter(deleted=False) \
+                .prefetch_related('publication_photo_extra_content', 'images',
+                                'videos', 'user_give_me_like', 'user_give_me_hate') \
+                                        .select_related('p_author',
+                                                'board_photo',
+                                                'parent')
+        shared_id = publication.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=shared_id, deleted=False) \
+                .values('shared_photo_publication__id')\
+                .order_by('shared_photo_publication__id')\
+                .annotate(total=Count('shared_photo_publication__id'))
+
+        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=shared_id, author__id=user.id, deleted=False).values('author__id', 'shared_photo_publication__id')
+
+
     except PublicationPhoto.DoesNotExist:
         raise Http404
 
@@ -120,6 +136,9 @@ def publication_detail(request, publication_id):
 
     context = {
         'publication': publication,
+        'publication_id': publication_id,
+        'pubs_shared': pubs_shared,
+        'pubs_shared_with_me': pubs_shared_with_me,
         'photo': request_pub.board_photo,
         'publication_shared': SharedPhotoPublicationForm()
     }
@@ -153,10 +172,8 @@ def delete_publication(request):
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
-            # TODO: Descomentar lineas extra_content
-            # extra_content = publication.extra_content
-            # if extra_content:
-            #     extra_content.delete()
+            if publication.has_extra_content():
+                publication.publication_photo_extra_content.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
 
         response = True

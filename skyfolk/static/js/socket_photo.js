@@ -99,12 +99,12 @@ var UTILS = UTILS || (function () {
                     if (_args == data.photo_owner || data.p_author_id == _args) {
                         content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
                     }
-                    content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
+                    content += "                            <li title=\"No me gusta\" class=\"hate-comment\">";
                     content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
                     content += '                                <i class="fa hate-value"></i>';
                     content += "                            </li>";
-                    content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa"></i></li>';
-                    content += '                       <li title=\"Añadir a mi skyline\" data-id="' + data.id + '" class=\"add-timeline\" id=\"add_to_skyline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>';
+                    content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value"></i></li>';
+                    content += '                       <li title=\"Añadir a mi skyline\" data-id="' + data.id + '" class=\"add-timeline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>';
                     content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + data.id + '"><\/i><\/li>';
                     content += "                    </ul>";
                     content += "                </div>";

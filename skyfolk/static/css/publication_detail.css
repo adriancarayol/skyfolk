@@ -242,7 +242,7 @@ a.fontawesome-cog:hover {
     cursor: pointer;
 }
 
-.options_comentarios ul .like-comment, .quote-comment, .reply-comment, .add-timeline, .hate-comment, .trash-comment {
+.options_comentarios ul .like-comment, .quote-comment, .reply-comment, .remove-timeline, .add-timeline, .hate-comment, .trash-comment {
     margin-left: 3%;
 }
 

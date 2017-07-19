@@ -7,7 +7,7 @@ from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.forms import model_to_dict
-
+from publications_gallery.models import PublicationPhoto
 from notifications.models import Notification
 from skyfolk.celery import app
 from user_profile.utils import notification_channel, group_name
@@ -22,15 +22,15 @@ logger = get_task_logger(__name__)
 def clean_deleted_publications():
     logger.info('Finding deleted publications...')
     publications = Publication.objects.filter(deleted=True)
+    publications_contains_shared = publications.values_list('id', flat=True)
+    pubs_shared = Publications.objects.filter(shared_publication__id__in=publications_contains_shared)
+
     for publication in publications:
         pub, created = PublicationDeleted.objects.get_or_create(author=publication.author, content=publication.content,
                                                                 created=publication.created)
         extra_content = publication.has_extra_content()
-        shared = publication.shared_publication
         if extra_content:
             publication.extra_content.delete()
-        if shared:
-            shared.delete()
 
         logger.info('Deleting images...')
         for img in publication.images.all():
@@ -47,6 +47,53 @@ def clean_deleted_publications():
             logger.info('Image deleted')
         publication.delete()
         logger.info("Publication safe deleted {}".format(pub.id))
+    # Eliminamos publicaciones que referencien
+    # a una publicacion compartida eliminada
+    for publication in pubs_shared:
+        pub, created = PublicationDeleted.objects.get_or_create(author=publication.author, content=publication.content,
+                                                                created=publication.created)
+        extra_content = publication.has_extra_content()
+        if extra_content:
+            publication.extra_content.delete()
+        publication.delete()
+
+@app.task(name='tasks.clean_deleted_photo_publications')
+def clean_deleted_photo_publications():
+    logger.info('Finding deleted publications...')
+    publications = PublicationPhoto.objects.filter(deleted=True)
+    publications_contains_shared = publications.values_list('id', flat=True)
+    pubs_shared = Publications.objects.filter(shared_photo_publication__id__in=publications_contains_shared)
+
+    for publication in publications:
+        pub, created = PublicationDeleted.objects.get_or_create(author=publication.p_author, content=publication.content,
+                                                                created=publication.created, type_publication=2)
+        extra_content = publication.has_extra_content()
+        if extra_content:
+            publication.publication_photo_extra_content.delete()
+
+        logger.info('Deleting images...')
+        for img in publication.images.all():
+            if img.image:
+                if os.path.isfile(img.image.path):
+                    os.remove(img.image.path)
+            img.delete()
+            logger.info('Image deleted')
+        for vid in publication.videos.all():
+            if vid.image:
+                if os.path.isfile(vid.video.path):
+                    os.remove(vid.video.path)
+                vid.delete()
+            logger.info('Image deleted')
+        publication.delete()
+        logger.info("Publication safe deleted {}".format(pub.id))
+
+    for publication in pubs_shared:
+        pub, created = PublicationDeleted.objects.get_or_create(author=publication.p_author, content=publication.content,
+                                                                created=publication.created, type_publication=2)
+        extra_content = publication.has_extra_content()
+        if extra_content:
+            publication.extra_content.delete()
+        publication.delete()
 
 
 @app.task(name='tasks.process_video')

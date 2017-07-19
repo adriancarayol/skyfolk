@@ -43,7 +43,7 @@ $(document).ready(function () {
         window.location.href = '/publication_pdetail/' + id_pub;
     }
 
-    $(tab_messages).on('click', '#options-comments #add_to_skyline', function () {
+    $(tab_messages).on('click', '#options-comments .add-timeline', function () {
         var tag = this;
         $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
         $(wrapper_shared_pub).show();
@@ -64,7 +64,7 @@ $(document).ready(function () {
     });
 
     /* Eliminar skyline */
-    $(tab_messages).on('click', '#options-comments #remove_from_skyline', function () {
+    $(tab_messages).on('click', '#options-comments .remove-timeline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
@@ -91,14 +91,14 @@ $(document).ready(function () {
 
 
     /* Añadir me gusta a comentario */
-    $(tab_messages).on('click', '#options-comments #like-heart', function () {
+    $(tab_messages).on('click', '#options-comments .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
-    $(tab_messages).on('click', '#options-comments #fa-hate', function () {
+    $(tab_messages).on('click', '#options-comments .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_hate(caja_publicacion, heart, "publication");
@@ -267,7 +267,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find('#like-value');
+            var numLikes = $(heart).find('.like-value');
             var countLikes = numLikes.text();
             if (response == true) {
                 if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
@@ -431,7 +431,7 @@ function AJAX_add_timeline(pub_id, tag, data_pub) {
                             $(shared_tag).text(" ");
                         }
                     }
-                    $(tag).attr("id", "remove_from_skyline");
+                    $(tag).attr("class", "remove-timeline");
                     $(tag).css('color', '#bbdefb');
                     $('#share-publication-wrapper').hide();
                 } else if (status == 2) {
@@ -443,7 +443,7 @@ function AJAX_add_timeline(pub_id, tag, data_pub) {
                             $(shared_tag).text(" ");
                         }
                     }
-                    $(tag).attr("id", "add_to_skyline");
+                    $(tag).attr("class", "add-timeline");
                     $(tag).css('color', '#555');
                 }
             } else {

@@ -192,10 +192,13 @@ def publication_detail(request, publication_id):
         request_pub = Publication.objects \
                 .select_related('author').get(id=publication_id, deleted=False)
         publication = request_pub.get_descendants(include_self=True) \
+                .filter(deleted=False) \
                 .prefetch_related('extra_content', 'images',
                                 'videos', 'shared_publication__images',
                                 'shared_publication__videos',
                                 'shared_publication__extra_content',
+                                'shared_publication__author',
+                                'shared_photo_publication__p_author',
                                 'shared_photo_publication__images',
                                 'shared_photo_publication__videos',
                                 'shared_photo_publication__publication_photo_extra_content',
