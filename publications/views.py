@@ -317,10 +317,10 @@ def add_like(request):
         in_like = False
         in_hate = False
 
-        if user in publication.user_give_me_like.all():  # Usuario en lista de likes
+        if publication.user_give_me_like.filter(pk=user.pk).exists():  # Usuario en lista de likes
             in_like = True
 
-        if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
+        if publication.user_give_me_hate.filter(pk=user.pk).exists():  # Usuario en lista de hate
             in_hate = True
 
         if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
@@ -416,10 +416,10 @@ def add_hate(request):
         in_like = False
         in_hate = False
 
-        if user in publication.user_give_me_like.all():  # Usuario en lista de likes
+        if publication.user_give_me_like.filter(pk=user.pk).exists():  # Usuario en lista de likes
             in_like = True
 
-        if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
+        if publication.user_give_me_hate.filter(pk=user.pk).exists():  # Usuario en lista de hate
             in_hate = True
 
         if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
@@ -618,6 +618,8 @@ def load_more_comments(request):
                                 'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                 'event_type': row.event_type, 'extra_content': have_extra_content,
                                 'descendants': row.get_descendants_not_deleted(),
+                                'user_like': row.user_give_me_like.filter(pk=user.pk).exists(),
+                                'user_hate': row.user_give_me_hate.filter(pk=user.pk).exists(),
                                 'token': get_or_create_csrf_token(request),
                                 'parent': True if row.parent else False,
                                 'parent_author': row.parent.author.username,
@@ -711,6 +713,8 @@ def load_more_skyline(request):
                                    'author_username': row.author.username, 'user_id': user.id,
                                    'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
                                    'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
+                                   'user_like': row.user_give_me_like.filter(pk=user.pk).exists(),
+                                   'user_hate': row.user_give_me_hate.filter(pk=user.pk).exists(),
                                    'event_type': row.event_type, 'extra_content': have_extra_content,
                                    'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
                                    'shared_photo_pub': have_shared_photo_publication,

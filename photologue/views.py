@@ -91,8 +91,8 @@ class PhotoListView(AjaxListView):
 
     def get_queryset(self):
         if self.request.user.username == self.username:
-            return Photo.objects.filter(owner__username=self.username)
-        return Photo.objects.filter(owner__username=self.username, is_public=True)
+            return Photo.objects.filter(owner__username=self.username).select_related('owner', 'effect').prefetch_related('tags')
+        return Photo.objects.filter(owner__username=self.username, is_public=True).select_related('owner', 'effect').prefetch_related('tags')
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)

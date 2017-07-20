@@ -608,7 +608,7 @@ def load_more_descendants(request):
 
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                 'author_username': row.p_author.username, 'user_id': user.id,
-                                'author_id': row.p_author.id, 'board_owner_id': row.board_photo_id,
+                                'p_author_id': row.p_author_id, 'board_photo_id': row.board_photo_id,
                                 'event_type': row.event_type, 'extra_content': have_extra_content,
                                 'descendants': row.get_descendants_not_deleted(),
                                 'token': get_or_create_csrf_token(request),
@@ -692,7 +692,7 @@ def load_more_publications(request):
 
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                    'author_username': row.p_author.username, 'user_id': user.id,
-                                   'author_id': row.p_author_id, 'board_owner_id': row.board_photo_id,
+                                   'author_id': row.p_author_id, 'board_photo_id': row.board_photo_id,
                                    'author_avatar': get_author_avatar(row.p_author_id), 'level': row.level,
                                    'event_type': row.event_type, 'extra_content': have_extra_content,
                                    'descendants': row.get_children_count(),
