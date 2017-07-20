@@ -146,7 +146,7 @@ $(document).ready(function () {
         if (last_pub) {
             last_pub_id = last_pub.toString().split('-')[1];
         }
-        AJAX_load_publications($(this).attr("data-id"), loader, last_pub_id, this);
+        AJAX_load_descendants($(this).attr("data-id"), loader, last_pub_id, this);
         return false;
     });
 
@@ -155,7 +155,7 @@ $(document).ready(function () {
         var input_skyline = $(this);
         var loader = $(input_skyline).next().find('#load_publications');
         $(loader).fadeIn();
-        AJAX_load_skyline(loader, input_skyline);
+        AJAX_load_publications(loader, input_skyline);
         return false;
     });
 });
@@ -174,7 +174,7 @@ setInterval(function () {
         var input_skyline = $('#load_more_publications');
         var loader = $(input_skyline).next().find('#load_publications');
         $(loader).fadeIn();
-        AJAX_load_skyline(loader, input_skyline);
+        AJAX_load_publications(loader, input_skyline);
     }
 }, 250);
 
@@ -957,8 +957,8 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             $(btn).attr("data-id", publications[publications.length - 1].id);
     }
 }
-function AJAX_load_skyline(loader, btn) {
-    if ($(btn) === undefined || !($(btn).length)) return;
+function AJAX_load_publications(loader, btn) {
+    if (!$(btn) || !($(btn).length)) return;
 
     var pub = $(btn).attr("data-id");
     var data = {
@@ -966,7 +966,7 @@ function AJAX_load_skyline(loader, btn) {
         'csrfmiddlewaretoken': csrftoken
     };
     $.ajax({
-        url: '/publication/load/skyline/',
+        url: '/publication_p/load_publications/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -992,14 +992,14 @@ function AJAX_load_skyline(loader, btn) {
     });
 }
 
-function AJAX_load_publications(pub, loader, last_pub, btn) {
+function AJAX_load_descendants(pub, loader, last_pub, btn) {
     var data = {
         'id': pub,
         'last_pub': last_pub,
         'csrfmiddlewaretoken': csrftoken
     };
     $.ajax({
-        url: '/publication/load/more/',
+        url: '/publication_p/load_descendants/',
         type: 'POST',
         dataType: 'json',
         data: data,

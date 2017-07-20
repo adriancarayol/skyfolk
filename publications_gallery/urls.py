@@ -15,9 +15,12 @@ urlpatterns = [
         name='add_like_photo_publication'),
     url(r'^publication_p/add_hate/$', views.add_hate,
         name='add_hate_photo_publication'),
-    url(r'^publication_p/share/publication/', views.share_publication,
+    url(r'^publication_p/share/publication/$', views.share_publication,
         name='publication_share_photo_pub'),
-url(r'^publication_p/edit/', views.edit_publication,
+    url(r'^publication_p/edit/$', views.edit_publication,
         name='publication_edit_photo_pub'),
-
+    url(r'^publication_p/load_descendants/$', views.load_more_descendants,
+        name='load_more_descenants_photo_pub'),
+    url(r'^publication_p/load_publications/$', views.load_more_publications,
+        name='load_more_publications_photo_pub'),
 ]
