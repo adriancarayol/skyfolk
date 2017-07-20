@@ -32,6 +32,8 @@ from .utils import parse_string
 from .utils import recursive_node_to_dict
 from mptt.templatetags.mptt_tags import cache_tree_children
 from django.db.models import Count
+from django.db import connection
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -553,10 +555,10 @@ def load_more_comments(request):
 
         if not publication.parent and not last_pub:
             publications = publication.get_descendants().filter(level__lte=1, deleted=False).prefetch_related('extra_content', 'images',
-                                'videos', 'shared_publication__images',
-                                'shared_publication__videos', 'shared_publication__extra_content', 'user_give_me_like', 'user_give_me_hate') \
+                                'videos',
+                                 'user_give_me_like', 'user_give_me_hate') \
                             .select_related('author',
-                            'board_owner', 'shared_publication', 'parent', 'shared_photo_publication') \
+                            'board_owner', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
         elif not publication.parent and last_pub:
@@ -566,31 +568,28 @@ def load_more_comments(request):
                 after_date = 0
 
             publications = publication.get_descendants().filter(level__lte=1, created__lte=after_date, deleted=False).exclude(id=last_pub).prefetch_related('extra_content', 'images',
-                                'videos', 'shared_publication__images',
-                                'shared_publication__videos', 'shared_publication__extra_content', 'user_give_me_like', 'user_give_me_hate') \
+                                'videos', 'user_give_me_like', 'user_give_me_hate') \
                             .select_related('author',
-                            'board_owner', 'shared_publication', 'parent', 'shared_photo_publication') \
+                            'board_owner', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
         elif publication.parent and not last_pub:
             publications = publication.get_descendants().filter(deleted=False).prefetch_related('extra_content', 'images',
-                                'videos', 'shared_publication__images',
-                                'shared_publication__videos', 'shared_publication__extra_content', 'user_give_me_like', 'user_give_me_hate') \
+                                'videos', 'user_give_me_like', 'user_give_me_hate') \
                             .select_related('author',
-                            'board_owner', 'shared_publication', 'parent', 'shared_photo_publication') \
+                            'board_owner', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
-        elif publication .parent and last_pub:
+        elif publication.parent and last_pub:
             try:
                 after_date = Publication.objects.filter(id=last_pub).values("created")
             except Publication.DoesNotExist:
                 after_date = 0
 
             publications =  publication.get_descendants().filter(deleted=False, created__lte=after_date).exclude(id=last_pub).prefetch_related('extra_content', 'images',
-                                'videos', 'shared_publication__images',
-                                'shared_publication__videos', 'shared_publication__extra_content', 'user_give_me_like', 'user_give_me_hate') \
+                                'videos', 'user_give_me_like', 'user_give_me_hate') \
                             .select_related('author',
-                            'board_owner', 'shared_publication', 'parent', 'shared_photo_publication') \
+                            'board_owner', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
 
@@ -600,6 +599,8 @@ def load_more_comments(request):
                 .annotate(total=Count('shared_publication__id'))
 
         shared_pubs = {item['shared_publication__id']:item for item in pubs_shared}
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author_id=user.id) \
+                .values_list('shared_publication__id', flat=True)
 
         for row in publications:
             extra_c = None
@@ -620,6 +621,7 @@ def load_more_comments(request):
                                 'descendants': row.get_descendants_not_deleted(),
                                 'user_like': row.user_give_me_like.filter(pk=user.pk).exists(),
                                 'user_hate': row.user_give_me_hate.filter(pk=user.pk).exists(),
+                                'user_shared': True if row.id in pubs_shared_with_me else False,
                                 'token': get_or_create_csrf_token(request),
                                 'parent': True if row.parent else False,
                                 'parent_author': row.parent.author.username,
@@ -635,6 +637,7 @@ def load_more_comments(request):
                 list_responses[-1]['extra_content_image'] = extra_c.image
                 list_responses[-1]['extra_content_url'] = extra_c.url
 
+        print('COUNT QUERIES: {}'.format(len(connection.queries)))
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True
     return JsonResponse(data)
@@ -684,7 +687,8 @@ def load_more_skyline(request):
                 .order_by('shared_publication__id')\
                 .annotate(total=Count('shared_publication__id'))
 
-
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author_id=user.id) \
+                .values_list('shared_publication__id', flat=True)
         shared_pubs = {item['shared_publication__id']:item for item in pubs_shared}
 
         list_responses = []
@@ -715,6 +719,7 @@ def load_more_skyline(request):
                                    'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
                                    'user_like': row.user_give_me_like.filter(pk=user.pk).exists(),
                                    'user_hate': row.user_give_me_hate.filter(pk=user.pk).exists(),
+                                   'user_shared': True if row.id in pubs_shared_with_me else False,
                                    'event_type': row.event_type, 'extra_content': have_extra_content,
                                    'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
                                    'shared_photo_pub': have_shared_photo_publication,
@@ -762,6 +767,7 @@ def load_more_skyline(request):
                         'shared_photo_pub_extra_image'] = shared_pub.publication_photo_extra_content.image if shared_pub.publication_photo_extra_content.image else None
                     list_responses[-1]['shared_photo_pub_extra_url'] = shared_pub.publication_photo_extra_content.url
 
+        print('COUNT QUERIES: {}'.format(len(connection.queries)))
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True
     return JsonResponse(data)

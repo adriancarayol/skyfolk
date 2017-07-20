@@ -591,8 +591,9 @@ def load_more_descendants(request):
         pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=shared_id).values('shared_photo_publication__id')\
                 .order_by('shared_photo_publication')\
                 .annotate(total=Count('shared_photo_publication'))
-
-        shared_pubs = {item['shared_photo_publication']:item for item in pubs_shared}
+        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=shared_id, author_id=user.id) \
+                .values_list('shared_photo_publication__id', flat=True)
+        shared_pubs = {item['shared_photo_publication__id']:item for item in pubs_shared}
 
         for row in publications:
             extra_c = None
@@ -609,6 +610,9 @@ def load_more_descendants(request):
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                 'author_username': row.p_author.username, 'user_id': user.id,
                                 'p_author_id': row.p_author_id, 'board_photo_id': row.board_photo_id,
+                                'user_like': row.user_give_me_like.filter(pk=user.pk).exists(),
+                                'user_hate': row.user_give_me_hate.filter(pk=user.pk).exists(),
+                                'user_shared': True if row.id in pubs_shared_with_me else False,
                                 'event_type': row.event_type, 'extra_content': have_extra_content,
                                 'descendants': row.get_descendants_not_deleted(),
                                 'token': get_or_create_csrf_token(request),
@@ -674,8 +678,9 @@ def load_more_publications(request):
                 .order_by('shared_photo_publication__id')\
                 .annotate(total=Count('shared_photo_publication__id'))
 
-
-        shared_pubs = {item['shared_publication__id']:item for item in pubs_shared}
+        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=shared_id, author_id=user.id) \
+                .values_list('shared_photo_publication__id', flat=True)
+        shared_pubs = {item['shared_photo_publication__id']:item for item in pubs_shared}
 
         list_responses = []
 
@@ -692,6 +697,9 @@ def load_more_publications(request):
 
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                    'author_username': row.p_author.username, 'user_id': user.id,
+                                   'user_like': row.user_give_me_like.filter(pk=user.pk).exists(),
+                                   'user_hate': row.user_give_me_hate.filter(pk=user.pk).exists(),
+                                   'user_shared': True if row.id in pubs_shared_with_me else False,
                                    'author_id': row.p_author_id, 'board_photo_id': row.board_photo_id,
                                    'author_avatar': get_author_avatar(row.p_author_id), 'level': row.level,
                                    'event_type': row.event_type, 'extra_content': have_extra_content,

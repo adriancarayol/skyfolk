@@ -640,12 +640,24 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             if (publications[i].user_id == publications[i].board_photo_id || publications[i].user_id == publications[i].p_author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
             }
-            content += "                            <li title=\"No me gusta\" class=\"hate-comment\">";
+             if (publications[i].user_hate === true)
+                content += '                            <li title="No me gusta" class="hate-comment" style="color: rgb(186, 104, 200)">';
+            else 
+                content += '                            <li title="No me gusta" class="hate-comment">';
             content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
             content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
             content += "                            </li>";
-            content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
-            content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
+            
+            if (publications[i].user_like === true)
+                content += '                        <li title="¡Me gusta!" class="like-comment" style="color: rgb(240, 98, 146)"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
+            else 
+
+                content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';            
+            if (publications[i].user_shared === true)
+                content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="remove-timeline" style="color: rgb(187, 222, 251)"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
+            else
+                content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
+
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
             content += "                    </ul>";
             content += "                </div>";
@@ -799,12 +811,24 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             if (publications[i].user_id == publications[i].board_photo_id || publications[i].user_id == publications[i].p_author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
             }
-            content += "                            <li title=\"No me gusta\" class=\"hate-comment\">";
+             if (publications[i].user_hate === true)
+                content += '                            <li title="No me gusta" class="hate-comment" style="color: rgb(186, 104, 200)">';
+            else 
+                content += '                            <li title="No me gusta" class="hate-comment">';
             content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
             content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
             content += "                            </li>";
-            content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
-            content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
+            
+            if (publications[i].user_like === true)
+                content += '                        <li title="¡Me gusta!" class="like-comment" style="color: rgb(240, 98, 146)"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
+            else 
+
+                content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';            
+            if (publications[i].user_shared === true)
+                content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="remove-timeline" style="color: rgb(187, 222, 251)"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
+            else
+                content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
+
             content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
             content += "                    </ul>";
             content += "                </div>";
