@@ -75,6 +75,8 @@ urlpatterns = [
         name='like_list'),
     url(r'^pre_search/users/', user_profile_views.search_users,
         name='pre_search_users'),
+     url(r'^recommendations/users/$', user_profile_views.recommendation_real_time,
+             name='recommendation_users'),
     # url(r'^prueba-search/$', login_required(
     #     user_profile_views.SearchUsuarioView.as_view()),
     #     name='busqueda-prueba'),

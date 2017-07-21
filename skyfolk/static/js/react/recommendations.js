@@ -21025,35 +21025,107 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Recommendation = function (_React$Component) {
-    _inherits(Recommendation, _React$Component);
+var RecommendationForm = function (_React$Component) {
+    _inherits(RecommendationForm, _React$Component);
 
-    function Recommendation(props) {
-        _classCallCheck(this, Recommendation);
+    function RecommendationForm(props) {
+        _classCallCheck(this, RecommendationForm);
 
-        var _this = _possibleConstructorReturn(this, (Recommendation.__proto__ || Object.getPrototypeOf(Recommendation)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (RecommendationForm.__proto__ || Object.getPrototypeOf(RecommendationForm)).call(this, props));
 
         _this.state = {
-            user_id: _this.props.user_id
+            user_id: _this.props.user_id,
+            results: null
         };
+        _this.fetchRecommendations = _this.fetchRecommendations.bind(_this);
+        _this.setRecommendations = _this.setRecommendations.bind(_this);
         return _this;
     }
 
-    _createClass(Recommendation, [{
+    _createClass(RecommendationForm, [{
+        key: 'setRecommendations',
+        value: function setRecommendations(result) {
+            this.setState({
+                results: result
+            });
+        }
+    }, {
+        key: 'fetchRecommendations',
+        value: function fetchRecommendations() {
+            var _this2 = this;
+
+            var data = {
+                user_ir: this.state.user_id
+            };
+            fetch('/recommendations/users/', {
+                method: 'POST',
+                credentials: "same-origin",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }).then(function (response) {
+                return response.json();
+            }).then(function (body) {
+                return _this2.setRecommendations(body);
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
+            var _this3 = this;
+
+            var _state = this.state,
+                user_id = _state.user_id,
+                results = _state.results;
+
+            var list = results;
+
             return _react2.default.createElement(
-                'form',
-                { onSubmit: this.handleSubmit, ref: 'form' },
-                _react2.default.createElement(_buttons.FilterButton, { buttonName: 'actualizar', buttonText: 'Actualizar', onClick: this.onSubmit })
+                'div',
+                { className: 'page' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'interactions' },
+                    _react2.default.createElement(_buttons.FilterButton, { buttonName: 'actualizar', buttonText: 'Actualizar', onClick: function onClick() {
+                            return _this3.fetchRecommendations();
+                        } })
+                ),
+                results && _react2.default.createElement(Items, { list: list })
             );
         }
     }]);
 
-    return Recommendation;
+    return RecommendationForm;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(Recommendation, { user_id: window.user_id }), document.getElementById('recommendation-user'));
+var Items = function Items(_ref) {
+    var list = _ref.list;
+    return _react2.default.createElement(
+        'div',
+        { className: 'recommendantions' },
+        list.map(function (item) {
+            return _react2.default.createElement(
+                'div',
+                { key: item.id, className: 'notice-item' },
+                _react2.default.createElement('div', { className: 'col l3 m2 s3 img' }),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'col l8 m9 s8 author' },
+                    _react2.default.createElement(
+                        'a',
+                        { href: '/profile/' + item.title },
+                        item.title
+                    )
+                )
+            );
+        })
+    );
+};
+
+_reactDom2.default.render(_react2.default.createElement(RecommendationForm, { user_id: window.user_id }), document.getElementById('recommendation-user'));
 
 },{"./buttons.js":183,"react":182,"react-dom":30}],185:[function(require,module,exports){
 // shim for using process in browser

@@ -1311,7 +1311,7 @@ class RecommendationUsers(ListView):
     def get_queryset(self):
         user = self.request.user
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id='%d' AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.id)
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.id)
         users = [NodeProfile.inflate(row[0]) for row in results]
         if not users:
             users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[:50]
@@ -1442,3 +1442,16 @@ class SearchUsuarioView(SearchView):
         ctx['q'] = self.initial['q']
         ctx['s'] = self.initial['s']
         return ctx
+
+
+@login_required(login_url='/')
+def recommendation_real_time(request):
+    if request.method == 'POST':
+        user = request.user
+        results, meta = db.cypher_query(
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' RETURN u2.title, u2.user_id, u2.first_name, u2.last_name, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.id)
+        users = []
+        [users.append({'id': x[1], 'title': x[0]}) for x in results]
+        return JsonResponse(users, safe=False)
+
+    return JsonResponse({'response': None})
