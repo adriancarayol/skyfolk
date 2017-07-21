@@ -21025,109 +21025,35 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Skyline = function (_React$Component) {
-    _inherits(Skyline, _React$Component);
+var Recommendation = function (_React$Component) {
+    _inherits(Recommendation, _React$Component);
 
-    function Skyline(props) {
-        _classCallCheck(this, Skyline);
+    function Recommendation(props) {
+        _classCallCheck(this, Recommendation);
 
-        var _this = _possibleConstructorReturn(this, (Skyline.__proto__ || Object.getPrototypeOf(Skyline)).call(this, props));
-
-        _this.handleSubmit = _this.handleFormSubmit.bind(_this);
-        _this.onSubmit1 = _this.onSubmit1.bind(_this);
-        _this.onSubmit2 = _this.onSubmit2.bind(_this);
-        _this.onSubmit3 = _this.onSubmit3.bind(_this);
+        var _this = _possibleConstructorReturn(this, (Recommendation.__proto__ || Object.getPrototypeOf(Recommendation)).call(this, props));
 
         _this.state = {
-            board_owner: _this.props.board_owner,
-            typeOfSubmit: ''
+            user_id: _this.props.user_id
         };
         return _this;
     }
 
-    _createClass(Skyline, [{
-        key: 'onSubmit1',
-        value: function onSubmit1() {
-            this.setState({
-                typeOfSubmit: 'time'
-            }, this.refs.form.handleFormSubmit);
-        }
-    }, {
-        key: 'onSubmit2',
-        value: function onSubmit2() {
-            this.setState({
-                typeOfSubmit: 'like'
-            }, this.refs.form.handleFormSubmit);
-        }
-    }, {
-        key: 'onSubmit3',
-        value: function onSubmit3() {
-            this.setState({
-                typeOfSubmit: 'relevance'
-            }, this.refs.form.handleFormSubmit);
-        }
-    }, {
-        key: 'handleFormSubmit',
-        value: function handleFormSubmit(e) {
-            e.preventDefault();
-            var data = {
-                board_owner: this.state.board_owner
-            };
-            var url = '';
-            if (this.state.typeOfSubmit === 'time') {
-                url = '/publications/filter/time/';
-            } else if (this.state.typeOfSubmit === 'like') {
-                url = '/publications/filter/like/';
-            } else if (this.state.typeOfSubmit === 'relevance') {
-                url = '/publications/filter/relevance/';
-            }
-            fetch(url, {
-                method: 'POST',
-                credentials: "same-origin",
-                headers: {
-                    "X-CSRFToken": getCookie("csrftoken"),
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            }).then(function (response) {
-                return response.json();
-            }).then(function (body) {
-                var pubs = body.map(function (elem) {
-                    return _react2.default.createElement(
-                        'li',
-                        { key: elem.id },
-                        _react2.default.createElement(
-                            'p',
-                            null,
-                            elem.content
-                        )
-                    );
-                });
-                _reactDom2.default.render(_react2.default.createElement(
-                    'ul',
-                    null,
-                    pubs
-                ), document.getElementById('tab-comentarios'));
-            });
-        }
-    }, {
+    _createClass(Recommendation, [{
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
                 'form',
                 { onSubmit: this.handleSubmit, ref: 'form' },
-                _react2.default.createElement(_buttons.FilterButton, { buttonName: 'Tiempo', buttonText: 'Tiempo', onClick: this.onSubmit1 }),
-                _react2.default.createElement(_buttons.FilterButton, { buttonName: 'Me gusta', buttonText: 'Me gusta', onClick: this.onSubmit2 }),
-                _react2.default.createElement(_buttons.FilterButton, { buttonName: 'Relevancia', buttonText: 'Relevancia', onClick: this.onSubmit3 })
+                _react2.default.createElement(_buttons.FilterButton, { buttonName: 'actualizar', buttonText: 'Actualizar', onClick: this.onSubmit })
             );
         }
     }]);
 
-    return Skyline;
+    return Recommendation;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(Skyline, { board_owner: window.board_owner }), document.getElementById('react'));
+_reactDom2.default.render(_react2.default.createElement(Recommendation, { user_id: window.user_id }), document.getElementById('recommendation-user'));
 
 },{"./buttons.js":183,"react":182,"react-dom":30}],185:[function(require,module,exports){
 // shim for using process in browser

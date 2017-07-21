@@ -15,6 +15,13 @@
 			Lista de los 6 usuarios con mayor afinidad.
 			{% endcomment %}
 			<div class="row">
+                <div id="recommendation-user" class="center">
+                    <i class="fa fa-lg fa-spinner fa-spin"></i><br><br>
+                    <script>
+                        window.user_id = {{ user.id }};
+                    </script>
+                    <script src="{{ STATIC_URL}}js/react/recommendations.js" type="text/javascript"></script>
+                </div>
 				{% for fav in mix %}
 				<div class="col l2 m12 s12">
 					<div class="notice-item">
@@ -86,4 +93,5 @@
 UTILS_E.init([{{ user.pk }}]);
 UTILS_E.conn_socket();
 </script>
+
 {% endblock %}

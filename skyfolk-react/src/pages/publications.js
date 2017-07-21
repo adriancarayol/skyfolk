@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom';
+import { FilterButton } from './buttons.js';
 
 class Skyline extends React.Component {
     constructor(props) {
@@ -80,11 +81,6 @@ class Skyline extends React.Component {
         );
     }
 }
-
-const FilterButton = ({ buttonName, buttonText, onClick }) => (
-    <button className="waffes-effect waves-light btn white black-text" type="submit" name={buttonName} onClick={onClick}>{buttonText}</button>
-);
-
 
 ReactDOM.render(
     <Skyline board_owner={ window.board_owner } />,
