@@ -20,9 +20,8 @@ from publications.models import Publication
 from emoji.models import Emoji
 from .utils import optimize_publication_media
 from django.db.models import Count
-from publications.utils import get_author_avatar
 from django.contrib.humanize.templatetags.humanize import naturaltime
-
+from avatar.templatetags.avatar_tags import avatar
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     """
@@ -113,13 +112,13 @@ def publication_detail(request, publication_id):
                                         .select_related('p_author',
                                                 'board_photo',
                                                 'parent')
-        shared_id = publication.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=shared_id, deleted=False) \
+        pubs_id = publication.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, deleted=False) \
                 .values('shared_photo_publication__id')\
                 .order_by('shared_photo_publication__id')\
                 .annotate(total=Count('shared_photo_publication__id'))
 
-        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=shared_id, author__id=user.id, deleted=False).values('author__id', 'shared_photo_publication__id')
+        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author__id=user.id, deleted=False).values('author__id', 'shared_photo_publication__id')
 
 
     except PublicationPhoto.DoesNotExist:
@@ -548,7 +547,7 @@ def load_more_descendants(request):
         if not publication.parent and not last_pub:
             publications = publication.get_descendants().filter(level__lte=1, deleted=False).prefetch_related('publication_photo_extra_content', 'images',
                                 'videos',
-                                'user_give_me_like', 'user_give_me_hate') \
+                                'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                             .select_related('p_author',
                             'board_photo', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
@@ -561,7 +560,7 @@ def load_more_descendants(request):
 
             publications = publication.get_descendants().filter(level__lte=1, created__lte=after_date, deleted=False).exclude(id=last_pub).prefetch_related('publication_photo_extra_content', 'images',
                                 'videos',
-                                'user_give_me_like', 'user_give_me_hate') \
+                                'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                             .select_related('p_author',
                             'board_photo', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
@@ -569,7 +568,7 @@ def load_more_descendants(request):
         elif publication.parent and not last_pub:
             publications = publication.get_descendants().filter(deleted=False).prefetch_related('publication_photo_extra_content', 'images',
                                 'videos',
-                                'user_give_me_like', 'user_give_me_hate') \
+                                'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                             .select_related('p_author',
                             'board_photo', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
@@ -581,20 +580,21 @@ def load_more_descendants(request):
                 after_date = 0
 
             publications =  publication.get_descendants().filter(deleted=False, created__lte=after_date).exclude(id=last_pub).prefetch_related('publication_photo_extra_content', 'images',
-                                'videos', 'user_give_me_like', 'user_give_me_hate') \
+                                'videos', 'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                             .select_related('p_author',
                             'board_photo', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
 
-        shared_id = publications.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=shared_id).values('shared_photo_publication__id')\
+        pubs_id = publications.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id).values('shared_photo_publication__id')\
                 .order_by('shared_photo_publication')\
                 .annotate(total=Count('shared_photo_publication'))
-        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=shared_id, author_id=user.id) \
+        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author_id=user.id) \
                 .values_list('shared_photo_publication__id', flat=True)
         shared_pubs = {item['shared_photo_publication__id']:item for item in pubs_shared}
-
+        likes_with_me = PublicationPhoto.objects.filter(id__in=pubs_id, user_give_me_like__id=user.id).values_list('id', flat=True)
+        hates_with_me = PublicationPhoto.objects.filter(id__in=pubs_id, user_give_me_hate__id=user.id).values_list('id', flat=True)
         for row in publications:
             extra_c = None
             have_extra_content = row.has_extra_content()
@@ -610,18 +610,18 @@ def load_more_descendants(request):
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                 'author_username': row.p_author.username, 'user_id': user.id,
                                 'p_author_id': row.p_author_id, 'board_photo_id': row.board_photo_id,
-                                'user_like': row.user_give_me_like.filter(pk=user.pk).exists(),
-                                'user_hate': row.user_give_me_hate.filter(pk=user.pk).exists(),
+                                'user_like': True if row.id in likes_with_me else False,
+                                'user_hate': True if row.id in hates_with_me else False,
                                 'user_shared': True if row.id in pubs_shared_with_me else False,
                                 'event_type': row.event_type, 'extra_content': have_extra_content,
                                 'descendants': row.get_descendants_not_deleted(),
                                 'token': get_or_create_csrf_token(request),
                                 'parent': True if row.parent else False,
                                 'parent_author': row.parent.p_author.username,
-                                'parent_avatar': get_author_avatar(row.parent.p_author_id),
-                                'images': list(row.images.all().values('image')),
-                                'videos': list(row.videos.all().values('video')),
-                                'author_avatar': get_author_avatar(row.p_author_id),
+                                'parent_avatar': avatar(row.parent.p_author),
+                                'images': [i.image.url for i in row.images.all()],
+                                'videos': [v.video.url for v in row.videos.all()],
+                                'author_avatar': avatar(row.p_author),
                                 'likes': row.likes_count, 'hates': row.hates_count,
                                 'shares': shares_count})
             if have_extra_content:
@@ -666,22 +666,23 @@ def load_more_publications(request):
                                                   created__lte=publication.created).exclude(id=pub_id) \
                                                           .prefetch_related('publication_photo_extra_content', 'images',
                                                                             'videos',
-                                                                            'user_give_me_like', 'user_give_me_hate') \
+                                                                            'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                                                                                     .select_related('p_author',
                                                                         'board_photo',
                                                                         'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
 
-        shared_id = publications.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=shared_id).values('shared_photo_publication__id')\
+        pubs_id = publications.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id).values('shared_photo_publication__id')\
                 .order_by('shared_photo_publication__id')\
                 .annotate(total=Count('shared_photo_publication__id'))
 
-        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=shared_id, author_id=user.id) \
+        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author_id=user.id) \
                 .values_list('shared_photo_publication__id', flat=True)
         shared_pubs = {item['shared_photo_publication__id']:item for item in pubs_shared}
-
+        likes_with_me = PublicationPhoto.objects.filter(id__in=pubs_id, user_give_me_like__id=user.id).values_list('id', flat=True)
+        hates_with_me = PublicationPhoto.objects.filter(id__in=pubs_id, user_give_me_hate__id=user.id).values_list('id', flat=True)
         list_responses = []
 
         for row in publications:
@@ -697,15 +698,15 @@ def load_more_publications(request):
 
             list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
                                    'author_username': row.p_author.username, 'user_id': user.id,
-                                   'user_like': row.user_give_me_like.filter(pk=user.pk).exists(),
-                                   'user_hate': row.user_give_me_hate.filter(pk=user.pk).exists(),
+                                   'user_like': True if row.id in likes_with_me else False,
+                                   'user_hate': True if row.id in hates_with_me else False,
                                    'user_shared': True if row.id in pubs_shared_with_me else False,
                                    'author_id': row.p_author_id, 'board_photo_id': row.board_photo_id,
-                                   'author_avatar': get_author_avatar(row.p_author_id), 'level': row.level,
+                                   'author_avatar': avatar(row.p_author), 'level': row.level,
                                    'event_type': row.event_type, 'extra_content': have_extra_content,
                                    'descendants': row.get_children_count(),
-                                   'images': list(row.images.all().values('image')),
-                                   'videos': list(row.videos.all().values('video')),
+                                   'images': [i.image.url for i in row.images.all()],
+                                   'videos': [v.video.url for v in row.videos.all()],
                                    'token': get_or_create_csrf_token(request),
                                    'likes': row.likes_count, 'hates': row.total_hates, 'shares': shares_count})
             if have_extra_content:

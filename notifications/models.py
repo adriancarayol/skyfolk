@@ -4,13 +4,13 @@ from django.contrib.contenttypes.models import ContentType
 from django import get_version
 from django.utils import timezone
 from avatar.models import Avatar
-from .utils import get_author_avatar
 from django.forms import model_to_dict
 from channels import Group as group_channel
 from user_profile import models as user_profile
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from distutils.version import StrictVersion
 from user_profile.utils import notification_channel
+from avatar.templatetags.avatar_tags import avatar
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -287,7 +287,7 @@ def notify_handler(verb, **kwargs):
         recipients = [recipient]
 
     for recipient in recipients:
-        actor_avatar = get_author_avatar(authorpk=actor.id)
+        actor_avatar = avatar(actor)
         newnotify, created = Notification.objects.get_or_create(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),

@@ -21,7 +21,7 @@ var UTILS_N = UTILS_N || (function () {
 				var content = '<li class=\"collection-item avatar\" data-id="' + data.id + '">';
 				content += '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + data.slug + '"/></a>';
 				if (data.actor_avatar !== null && typeof data.actor_avatar !== 'undefined') {
-					content = content + " <img class=\"circle\" src=\"" + data.actor_avatar + '"/>';
+                    content = content + '<div class="circle">' + data.actor_avatar + '</div>';
 				}
 				if (typeof data.actor !== 'undefined' && data.level !== 'new_follow') {
 					content = content + "<a class=\"title\" href=\"/profile/" + data.actor + '" >' + data.actor + '</a>';

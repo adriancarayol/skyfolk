@@ -373,7 +373,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
         var i;
         for (i = 0; i < publications.length; i++) {
             pub_to_add = $('pub-' + publications[i].id);
-            if (undefined !== pub_to_add && pub_to_add.length) continue;
+            if (pub_to_add && pub_to_add.length) continue;
 
             content = '<div class="row">';
             content += '<div class="col s12">';
@@ -394,13 +394,13 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             } else {
                 content += "      <div class=\"image col l1 m2 s2\">";
             }
-            content += '        <div class="usr-img img-responsive"><img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"></div>';
+            content += '        <div class="usr-img img-responsive">' + publications[i].author_avatar + '</div>';
             content += "      </div>";
             content += '<div class="col l10 m12 s9">';
             content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a>';
             if (publications[i].parent) {
                 content += '<span class="chip">';
-                content += '<img src="' + publications[i].parent_avatar + '" alt="' + publications[i].parent_author + '">';
+                content += publications[i].parent_avatar;
                 content += '<i class="fa fa-reply"></i> <a href="/profile/' + publications[i].parent_author + '">@' + publications[i].parent_author + '</a>';
                 content += '</span>';
             }
@@ -435,7 +435,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<div class="row images">';
                 for (var image = 0; image < publications[i].images.length; image++) {
                     content += '<div class="col s4 z-depth-2">';
-                    content += '<img class="responsive-img" src="/media/' + publications[i].images[image].image + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
+                    content += '<img class="responsive-img" src="' + publications[i].images[image] + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
                     content += "                    </div>";
                 }
                 content += "                    </div>";
@@ -444,7 +444,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<div class="row videos">';
                 for (var video = 0; video < publications[i].videos.length; video++) {
                     content += '<div class="col s4 z-depth-2 center">';
-                    content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video].video + '" type="video/mp4"></video>';
+                    content += '<video class="responsive-video" controls loop><source src="' + publications[i].videos[video] + '" type="video/mp4"></video>';
                     content += "                    </div>";
                 }
                 content += "                    </div>";
@@ -564,14 +564,14 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             } else {
                 content += "      <div class=\"image col l1 m2 s2\">";
             }
-            content += '        <div class="usr-img img-responsive"><img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"></div>';
+            content += '        <div class="usr-img img-responsive">' + publications[i].author_avatar + '</div>';
             content += "      </div>";
             content += '<div class="col l10 m12 s9">';
             content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a>';
 
             if (publications[i].parent) {
                 content += '<span class="chip">';
-                content += '<img src="' + publications[i].parent_avatar + '" alt="' + publications[i].parent_author + '">';
+                content += publications[i].parent_avatar;
                 content += '<i class="fa fa-reply"></i> <a href="/profile/' + publications[i].parent_author + '">@' + publications[i].parent_author + '</a>';
                 content += '</span>';
             }
@@ -606,7 +606,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<div class="row images">';
                 for (var image = 0; image < publications[i].images.length; image++) {
                     content += '<div class="col s4 z-depth-2">';
-                    content += '<img class="responsive-img" src="/media/' + publications[i].images[image].image + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
+                    content += '<img class="responsive-img" src="' + publications[i].images[image] + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
                     content += "                    </div>";
                 }
                 content += "                    </div>";
@@ -615,7 +615,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<div class="row videos">';
                 for (var video = 0; video < publications[i].videos.length; video++) {
                     content += '<div class="col s4 z-depth-2 center">';
-                    content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video].video + '" type="video/mp4"></video>';
+                    content += '<video class="responsive-video" controls loop><source src="' + publications[i].videos[video] + '" type="video/mp4"></video>';
                     content += "                    </div>";
                 }
                 content += "                    </div>";
@@ -632,7 +632,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     content += '<br><div class="row images">';
                     for (var image = 0; image < publications[i].shared_images.length; image++) {
                         content += '<div class="col s4 z-depth-2">';
-                        content += '<img class="responsive-img" src="/media/' + publications[i].shared_images[image].image + '" alt="Imagen de: ' + publications[i].shared_pub_author + '" title="Imagen de: ' + publications[i].shared_pub_author + '">';
+                        content += '<img class="responsive-img" src="' + publications[i].shared_images[image] + '" alt="Imagen de: ' + publications[i].shared_pub_author + '" title="Imagen de: ' + publications[i].shared_pub_author + '">';
                         content += "                    </div>";
                     }
                     content += "                    </div>";
@@ -642,7 +642,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     for (var video = 0; video < publications[i].shared_videos.length; video++) {
                         content += '<div class="col s4 z-depth-2 center">';
                         content += '<video class="responsive-video" controls loop>';
-                        content += '<source src="/media/'+publications[i].shared_videos[video].video+'" type="video/mp4">';
+                        content += '<source src="'+publications[i].shared_videos[video]+'" type="video/mp4">';
                         content += '</video>';
                         content += '</div>';
                     }
@@ -676,7 +676,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     content += '<br><div class="row images">';
                     for (let image = 0; image < publications[i].shared_photo_pub_images.length; image++) {
                         content += '<div class="col s4 z-depth-2">';
-                        content += '<img class="responsive-img" src="/media/' + publications[i].shared_photo_pub_images[image].image + '" alt="Imagen de: ' + publications[i].shared_photo_pub_author + '" title="Imagen de: ' + publications[i].shared_photo_pub_author + '">';
+                        content += '<img class="responsive-img" src="' + publications[i].shared_photo_pub_images[image] + '" alt="Imagen de: ' + publications[i].shared_photo_pub_author + '" title="Imagen de: ' + publications[i].shared_photo_pub_author + '">';
                         content += "                    </div>";
                     }
                     content += "                    </div>";
@@ -686,7 +686,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     for (let video = 0; video < publications[i].shared_photo_pub_videos.length; video++) {
                         content += '<div class="col s4 z-depth-2 center">';
                         content += '<video class="responsive-video" controls loop>';
-                        content += '<source src="/media/'+publications[i].shared_photo_pub_videos[video].video+'" type="video/mp4">';
+                        content += '<source src="'+publications[i].shared_photo_pub_videos[video]+'" type="video/mp4">';
                         content += '</video>';
                         content += '</div>';
                     }
