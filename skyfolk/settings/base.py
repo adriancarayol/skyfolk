@@ -106,6 +106,8 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
+ANONYMOUS_USER_NAME = None
+
 # auth and allauth settings
 LOGIN_REDIRECT_URL = '/'
 # SOCIALACCOUNT_QUERY_EMAIL = True

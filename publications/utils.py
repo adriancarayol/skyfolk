@@ -5,7 +5,7 @@ import os
 import subprocess
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from avatar.models import Avatar
 from user_profile.models import NodeProfile
 from django.conf import settings
@@ -103,6 +103,8 @@ def recursive_node_to_dict(node):
     result = {
         'id': node.pk,
         'content': node.content,
+        'created': naturaltime(node.created),
+        'author__username': node.author.username
     }
     children = [recursive_node_to_dict(c) for c in node.get_descendants().filter(deleted=False, level__lte=1)[:10]]
     if children:

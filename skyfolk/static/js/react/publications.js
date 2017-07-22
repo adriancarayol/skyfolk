@@ -21033,19 +21033,28 @@ var Skyline = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Skyline.__proto__ || Object.getPrototypeOf(Skyline)).call(this, props));
 
+        _this.state = {
+            board_owner: _this.props.board_owner,
+            typeOfSubmit: '',
+            results: null
+        };
+
         _this.handleSubmit = _this.handleFormSubmit.bind(_this);
         _this.onSubmit1 = _this.onSubmit1.bind(_this);
         _this.onSubmit2 = _this.onSubmit2.bind(_this);
         _this.onSubmit3 = _this.onSubmit3.bind(_this);
-
-        _this.state = {
-            board_owner: _this.props.board_owner,
-            typeOfSubmit: ''
-        };
+        _this.setPublications = _this.setPublications.bind(_this);
         return _this;
     }
 
     _createClass(Skyline, [{
+        key: 'setPublications',
+        value: function setPublications(result) {
+            this.setState({
+                results: result
+            });
+        }
+    }, {
         key: 'onSubmit1',
         value: function onSubmit1() {
             this.setState({
@@ -21069,6 +21078,8 @@ var Skyline = function (_React$Component) {
     }, {
         key: 'handleFormSubmit',
         value: function handleFormSubmit(e) {
+            var _this2 = this;
+
             e.preventDefault();
             var data = {
                 board_owner: this.state.board_owner
@@ -21093,39 +21104,74 @@ var Skyline = function (_React$Component) {
             }).then(function (response) {
                 return response.json();
             }).then(function (body) {
-                var pubs = body.map(function (elem) {
-                    return _react2.default.createElement(
-                        'li',
-                        { key: elem.id },
-                        _react2.default.createElement(
-                            'p',
-                            null,
-                            elem.content
-                        )
-                    );
-                });
-                _reactDom2.default.render(_react2.default.createElement(
-                    'ul',
-                    null,
-                    pubs
-                ), document.getElementById('tab-comentarios'));
+                return _this2.setPublications(body);
             });
         }
     }, {
         key: 'render',
         value: function render() {
+            var _state = this.state,
+                board_owner = _state.board_owner,
+                typeOfSubmit = _state.typeOfSubmit,
+                results = _state.results;
+
             return _react2.default.createElement(
-                'form',
-                { onSubmit: this.handleSubmit, ref: 'form' },
-                _react2.default.createElement(_buttons.FilterButton, { buttonName: 'Tiempo', buttonText: 'Tiempo', onClick: this.onSubmit1 }),
-                _react2.default.createElement(_buttons.FilterButton, { buttonName: 'Me gusta', buttonText: 'Me gusta', onClick: this.onSubmit2 }),
-                _react2.default.createElement(_buttons.FilterButton, { buttonName: 'Relevancia', buttonText: 'Relevancia', onClick: this.onSubmit3 })
+                'div',
+                { className: 'btns-filter col s12' },
+                _react2.default.createElement(
+                    'form',
+                    { className: 'center', onSubmit: this.handleSubmit, ref: 'form' },
+                    _react2.default.createElement(_buttons.FilterButton, { buttonName: 'Me gusta', buttonText: 'Me gusta', onClick: this.onSubmit2 }),
+                    _react2.default.createElement(_buttons.FilterButton, { buttonName: 'Relevancia', buttonText: 'Relevancia', onClick: this.onSubmit3 })
+                ),
+                results && _react2.default.createElement(ItemPublication, { result: results })
             );
         }
     }]);
 
     return Skyline;
 }(_react2.default.Component);
+
+var ItemPublication = function ItemPublication(_ref) {
+    var result = _ref.result;
+    return _react2.default.createElement(
+        'ul',
+        { className: 'collection' },
+        result.map(function (item) {
+            return _react2.default.createElement(
+                'li',
+                { key: item.id, className: 'collection-item avatar' },
+                _react2.default.createElement('img', { src: item.author__avatar, className: 'circle' }),
+                _react2.default.createElement(
+                    'span',
+                    { className: 'title' },
+                    item.created
+                ),
+                _react2.default.createElement(
+                    'p',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { href: '/profile/' + item.author__username },
+                        '@',
+                        item.author__username
+                    )
+                ),
+                _react2.default.createElement('h4', { dangerouslySetInnerHTML: { __html: item.content } }),
+                _react2.default.createElement(
+                    'a',
+                    { href: '/publication/' + item.id, className: 'pink-text secondary-content' },
+                    item.likes,
+                    _react2.default.createElement(
+                        'i',
+                        { className: 'material-icons right' },
+                        'favorite'
+                    )
+                )
+            );
+        })
+    );
+};
 
 _reactDom2.default.render(_react2.default.createElement(Skyline, { board_owner: window.board_owner }), document.getElementById('react'));
 

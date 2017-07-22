@@ -9,7 +9,7 @@ from PIL import Image
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.humanize.templatetags.humanize import naturaltime, intword
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import IntegrityError
@@ -31,7 +31,7 @@ from .utils import parse_string
 from .utils import recursive_node_to_dict
 from mptt.templatetags.mptt_tags import cache_tree_children
 from django.db.models import Count
-from avatar.templatetags.avatar_tags import avatar
+from avatar.templatetags.avatar_tags import avatar, avatar_url
 
 
 logging.basicConfig(level=logging.INFO)
@@ -890,12 +890,20 @@ def publication_filter_by_time(request):
         if privacity and privacity != 'all':
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
-        root_nodes = cache_tree_children(Publication.objects.filter(board_owner_id=board_owner_id, deleted=False, level__lte=0)[:20])
+        root_nodes = cache_tree_children(Publication.objects.filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).select_related('author')[:5])
         dicts = []
+        """
         for n in root_nodes:
             dicts.append(recursive_node_to_dict(n))
-
-        return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
+        """
+        [dicts.append({
+            'id': c.id,
+            'content': c.content,
+            'author__username': c.author.username,
+            'created': naturaltime(c.created),
+            'author__avatar': avatar_url(c.author)
+            }) for c in root_nodes]
+        return HttpResponse(json.dumps(dicts), content_type='application/json')
     return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
 
 def publication_filter_by_like(request):
@@ -924,12 +932,21 @@ def publication_filter_by_like(request):
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
-            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by('-likes')[:20])
+            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by('-likes').select_related('author')[:5])
 
         dicts = []
+        [dicts.append({
+            'id': c.id,
+            'content': c.content,
+            'author__username': c.author.username,
+            'created': naturaltime(c.created),
+            'author__avatar': avatar_url(c.author),
+            'likes': intword(c.likes)
+            }) for c in root_nodes]
+        """
         for n in root_nodes:
             dicts.append(recursive_node_to_dict(n))
-
+        """
         return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
     return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
 
@@ -960,12 +977,21 @@ def publication_filter_by_relevance(request):
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
-            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by('-likes', '-created')[:20])
+            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by('-likes', '-created').select_related('author')[:5])
 
         dicts = []
+        [dicts.append({
+            'id': c.id,
+            'content': c.content,
+            'author__username': c.author.username,
+            'created': naturaltime(c.created),
+            'author__avatar': avatar_url(c.author),
+            'likes': intword(c.likes)
+            }) for c in root_nodes]
+        """
         for n in root_nodes:
             dicts.append(recursive_node_to_dict(n))
-
+        """
         return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
     return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
 

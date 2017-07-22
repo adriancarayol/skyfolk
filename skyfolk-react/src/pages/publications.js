@@ -5,15 +5,24 @@ import { FilterButton } from './buttons.js';
 class Skyline extends React.Component {
     constructor(props) {
         super(props);
-        this.handleSubmit = this.handleFormSubmit.bind(this);
-        this.onSubmit1 = this.onSubmit1.bind(this);
-        this.onSubmit2 = this.onSubmit2.bind(this);
-        this.onSubmit3 = this.onSubmit3.bind(this);
 
         this.state = {
             board_owner: this.props.board_owner,
             typeOfSubmit: '',
+            results: null
         };
+
+        this.handleSubmit = this.handleFormSubmit.bind(this);
+        this.onSubmit1 = this.onSubmit1.bind(this);
+        this.onSubmit2 = this.onSubmit2.bind(this);
+        this.onSubmit3 = this.onSubmit3.bind(this);
+        this.setPublications = this.setPublications.bind(this);
+    }
+
+    setPublications(result) {
+        this.setState({
+            results: result
+        });
     }
 
     onSubmit1() {
@@ -57,30 +66,44 @@ class Skyline extends React.Component {
             },
             body: JSON.stringify(data)
         })
-            .then(function(response) {
-                return response.json()
-            }).then(function(body) {
-                const pubs = body.map((elem) =>
-                    <li key={elem.id}>
-                        <p>{elem.content}</p>
-                    </li>
-                );
-                ReactDOM.render(
-                    <ul>{pubs}</ul>,
-                    document.getElementById('tab-comentarios')
-                );
-            });
+            .then(response => response.json())
+            .then(body => this.setPublications(body));
     }
     render() {
+        const { board_owner, typeOfSubmit, results } = this.state;
         return (
-            <form onSubmit={this.handleSubmit} ref="form">
-                <FilterButton buttonName={'Tiempo'} buttonText={'Tiempo'} onClick={this.onSubmit1}/>
-                <FilterButton buttonName={'Me gusta'} buttonText={'Me gusta'} onClick={this.onSubmit2}/>
-                <FilterButton buttonName={'Relevancia'} buttonText={'Relevancia'} onClick={this.onSubmit3}/>
-            </form>
-        );
+            <div className="btns-filter col s12">
+                <form className="center" onSubmit={this.handleSubmit} ref="form">
+                    <FilterButton buttonName={'Me gusta'} buttonText={'Me gusta'} onClick={this.onSubmit2}/>
+                    <FilterButton buttonName={'Relevancia'} buttonText={'Relevancia'} onClick={this.onSubmit3}/>
+                </form>
+                {
+                results && <ItemPublication result={results} />
+                }
+            </div>
+            );
     }
 }
+
+const ItemPublication = ({ result }) => (
+    <ul className="collection">
+    {
+        result.map(item =>
+        <li key={item.id} className="collection-item avatar">
+            <img src={item.author__avatar} className="circle"/>
+            <span className="title">{item.created}</span>
+            <p>
+                <a href={'/profile/' + item.author__username}>@{item.author__username}</a>
+            </p>
+            <h4 dangerouslySetInnerHTML={{__html: item.content}} />
+            <a href={'/publication/' + item.id} className="pink-text secondary-content">{item.likes}
+                <i className="material-icons right">favorite</i>
+            </a>
+        </li>
+            )
+    }
+    </ul>
+);
 
 ReactDOM.render(
     <Skyline board_owner={ window.board_owner } />,
