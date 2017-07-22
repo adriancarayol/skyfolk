@@ -27,22 +27,20 @@ class News(TemplateView):
         initial = {'author': request.user.id, 'board_owner': request.user.id}
 
         n = NodeProfile.nodes.get(user_id=request.user.id)
-        # fav_users = self.get_like_users()
-        # mix = self.__mix_queryset(affinity=affinity_users, favs=fav_users)
-
-        # print('LISTA MEZCLADA: {}'.format(self.__mix_queryset(affinity=affinity_users, favs=fav_users)))
 
         follows = [x.user_id for x in n.follow.match()[:50]]
 
         try:
             publications = Publication.objects.filter(
-                author__in=follows, deleted=False, parent=None)
+                author__in=follows, deleted=False, parent=None).select_related('author', 'shared_publication',
+                        'shared_photo_publication').prefetch_related('extra_content', 'images', 'videos')
         except ObjectDoesNotExist:
             publications = None
 
 
         context = {'publications': publications,
                    'searchForm': SearchForm(),
+                   'follows': follows,
                    'mix': self.get_affinity_users(),}
 
         return render(request, self.template_name, context=context)

@@ -436,7 +436,8 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                 }, function () {
                     $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
                     if (data.friend_username)
-                        addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
+                        if (typeof addItemToFriendList === "function")
+                            addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
                 });
             } else if (response == 'your_own_pin') {
                 swal({

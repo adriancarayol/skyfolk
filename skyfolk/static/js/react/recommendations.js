@@ -21025,6 +21025,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var itemStyle = {
+    boxShadow: '0 1px 5px 0 rgba(165,214,167,1)'
+};
+
 var RecommendationForm = function (_React$Component) {
     _inherits(RecommendationForm, _React$Component);
 
@@ -21034,7 +21038,7 @@ var RecommendationForm = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (RecommendationForm.__proto__ || Object.getPrototypeOf(RecommendationForm)).call(this, props));
 
         _this.state = {
-            user_id: _this.props.user_id,
+            exclude: props.exclude,
             results: null
         };
         _this.fetchRecommendations = _this.fetchRecommendations.bind(_this);
@@ -21043,20 +21047,36 @@ var RecommendationForm = function (_React$Component) {
     }
 
     _createClass(RecommendationForm, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.fetchRecommendations();
+        }
+    }, {
         key: 'setRecommendations',
         value: function setRecommendations(result) {
-            this.setState({
-                results: result
-            });
+            var exclude_ids = this.state.exclude.slice();
+            if (typeof result !== 'undefined' && result.length > 0) {
+                result.map(function (item) {
+                    return exclude_ids.push(item.id);
+                });
+                this.setState({
+                    results: result,
+                    exclude: exclude_ids
+                });
+            } else {
+                if (typeof exclude_ids !== 'undefined' && exclude_ids.length > 0) {
+                    this.setState({
+                        exclude: window.follows
+                    });
+                }
+            }
         }
     }, {
         key: 'fetchRecommendations',
         value: function fetchRecommendations() {
             var _this2 = this;
 
-            var data = {
-                user_ir: this.state.user_id
-            };
+            var exclude = this.state.exclude;
             fetch('/recommendations/users/', {
                 method: 'POST',
                 credentials: "same-origin",
@@ -21065,7 +21085,7 @@ var RecommendationForm = function (_React$Component) {
                     "Accept": "application/json",
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(exclude)
             }).then(function (response) {
                 return response.json();
             }).then(function (body) {
@@ -21078,7 +21098,7 @@ var RecommendationForm = function (_React$Component) {
             var _this3 = this;
 
             var _state = this.state,
-                user_id = _state.user_id,
+                exclude = _state.exclude,
                 results = _state.results;
 
             var list = results;
@@ -21088,7 +21108,7 @@ var RecommendationForm = function (_React$Component) {
                 { className: 'page' },
                 _react2.default.createElement(
                     'div',
-                    { className: 'interactions' },
+                    { className: 'interactions center' },
                     _react2.default.createElement(_buttons.FilterButton, { buttonName: 'actualizar', buttonText: 'Actualizar', onClick: function onClick() {
                             return _this3.fetchRecommendations();
                         } })
@@ -21109,15 +21129,31 @@ var Items = function Items(_ref) {
         list.map(function (item) {
             return _react2.default.createElement(
                 'div',
-                { key: item.id, className: 'notice-item' },
-                _react2.default.createElement('div', { className: 'col l3 m2 s3 img' }),
+                { key: item.id, className: 'col l2 m12 s12' },
                 _react2.default.createElement(
                     'div',
-                    { className: 'col l8 m9 s8 author' },
+                    { style: itemStyle, className: 'notice-item' },
                     _react2.default.createElement(
-                        'a',
-                        { href: '/profile/' + item.title },
-                        item.title
+                        'div',
+                        { className: 'col l3 m2 s3 img' },
+                        _react2.default.createElement('img', { src: item.avatar, alt: item.title, width: '120', height: '120' })
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col l8 m9 s8 author' },
+                        _react2.default.createElement(
+                            'a',
+                            { href: '/profile/' + item.username },
+                            '@',
+                            item.username
+                        ),
+                        _react2.default.createElement(
+                            'i',
+                            null,
+                            item.first_name,
+                            ' ',
+                            item.last_name
+                        )
                     )
                 )
             );
@@ -21125,7 +21161,7 @@ var Items = function Items(_ref) {
     );
 };
 
-_reactDom2.default.render(_react2.default.createElement(RecommendationForm, { user_id: window.user_id }), document.getElementById('recommendation-user'));
+_reactDom2.default.render(_react2.default.createElement(RecommendationForm, { exclude: window.follows }), document.getElementById('recommendation-user'));
 
 },{"./buttons.js":183,"react":182,"react-dom":30}],185:[function(require,module,exports){
 // shim for using process in browser

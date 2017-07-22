@@ -35,7 +35,7 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import NodeProfile, TagProfile, Request
-from publications.utils import get_author_avatar
+from avatar.templatetags.avatar_tags import avatar, avatar_url
 from neomodel import db
 from django.db import transaction
 from django.core.files.storage import FileSystemStorage
@@ -559,11 +559,12 @@ def add_friend_by_username_or_pin(request):
             no_need_petition = friend.privacity == NodeProfile.ALL
             if no_need_petition:
                 user.follow.connect(friend)
+                sql_friend = User.objects.get(id=friend.user_id)
                 data['response'] = 'added_friend'
                 data['friend_username'] = friend.title
-                data['friend_avatar'] = get_author_avatar(friend.user_id)
-                data['friend_first_name'] = User.objects.get(id=friend.user_id).first_name
-                data['friend_last_name'] = User.objects.get(id=friend.user_id).last_name
+                data['friend_avatar'] = avatar(sql_friend)
+                data['friend_first_name'] = sql_friend.first_name
+                data['friend_last_name'] = sql_friend.last_name
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # enviamos peticion de amistad
@@ -630,11 +631,12 @@ def add_friend_by_username_or_pin(request):
             no_need_petition = friend.privacity == NodeProfile.ALL
             if no_need_petition:
                 user.follow.connect(friend)
+                sql_friend = User.objects.get(id=friend.user_id)
                 data['response'] = 'added_friend'
                 data['friend_username'] = friend.title
-                data['friend_avatar'] = get_author_avatar(friend.user_id)
-                data['friend_first_name'] = User.objects.get(id=friend.user_id).first_name
-                data['friend_last_name'] = User.objects.get(id=friend.user_id).last_name
+                data['friend_avatar'] = avatar(sql_friend)
+                data['friend_first_name'] = sql_friend.first_name
+                data['friend_last_name'] = sql_friend.last_name
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # enviamos peticion de amistad
@@ -661,11 +663,12 @@ def add_friend_by_username_or_pin(request):
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
+    sql_friend = User.objects.get(id=friend.user_id)
     data['response'] = response
-    data['friend_username'] = friend.user.username
-    data['friend_avatar'] = get_author_avatar(friend.user_id)
-    data['friend_first_name'] = User.objects.get(id=friend.user_id).first_name
-    data['friend_last_name'] = User.objects.get(id=friend.user_id).last_name
+    data['friend_username'] = sql_friend.username
+    data['friend_avatar'] = avatar(sql_friend)
+    data['friend_first_name'] = sql_friend.first_name
+    data['friend_last_name'] = sql_friend.last_name
     return HttpResponse(json.dumps(data), content_type='application/javascript')
 
 
@@ -1389,7 +1392,7 @@ def search_users(request):
             user_json['username'] = user.username
             user_json['first_name'] = user.first_name
             user_json['last_name'] = user.last_name
-            user_json['avatar'] = get_author_avatar(user.id)
+            user_json['avatar'] = avatar(user)
             result.append(user_json)
 
         return JsonResponse({'result': result})
@@ -1447,11 +1450,30 @@ class SearchUsuarioView(SearchView):
 @login_required(login_url='/')
 def recommendation_real_time(request):
     if request.method == 'POST':
+
+        ids = json.loads(request.body.decode('utf-8'))
+        if ids:
+            exclude_ids = ','.join(str(e) for e in ids)
+        else:
+            exclude_ids = []
         user = request.user
+
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' RETURN u2.title, u2.user_id, u2.first_name, u2.last_name, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.id)
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' AND NOT (u2.user_id IN [%s]) RETURN u2.user_id, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % (user.id, exclude_ids))
         users = []
-        [users.append({'id': x[1], 'title': x[0]}) for x in results]
-        return JsonResponse(users, safe=False)
+
+        if not results:
+            ids.append(user.id)
+            results = NodeProfile.nodes.exclude(privacity='N', user_id__in=ids).order_by('?')[:50]
+            [users.append(x.user_id) for x in results]
+        else:
+            [users.append(x[0]) for x in results]
+
+        sql_result = User.objects.filter(id__in=users)
+        sql_users = []
+        [sql_users.append({'id': u.id, 'username': u.username,
+            'first_name': u.first_name, 'last_name': u.last_name,
+            'avatar': avatar_url(u)}) for u in sql_result]
+        return JsonResponse(sql_users, safe=False)
 
     return JsonResponse({'response': None})

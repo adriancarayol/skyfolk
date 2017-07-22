@@ -185,7 +185,7 @@ UTILS.conn_socket();
 {% comment "Add follow to tab %}
 Add follow to profile tab
 {% endcomment %}
-{% if user_profile.id == request.user.id %}
+{% if user_profile.id == user.id %}
 <script>
 function addItemToFriendList(name, lastname, username, avatar_url) {
     $("#tab-amigos").find("ul").append('<li><img src="' + avatar_url + '" alt="' + username + '" width="120" height="120"><a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
