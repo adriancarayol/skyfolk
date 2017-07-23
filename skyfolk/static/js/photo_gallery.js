@@ -29,11 +29,6 @@ $(document).ready(function () {
         $(this).nextAll('input').click();
     });
 
-    $('#crop-image').on('click', function () {
-        $('#crop-image-preview').show();
-        $('.avatar-form .is-cutted').val('true');
-    });
-
     $('#crop-image-preview').find('.close-crop-image').on('click', function () {
         $('#crop-image-preview').hide();
         $('.avatar-form .is-cutted').val('false');

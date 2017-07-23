@@ -307,7 +307,12 @@
     };
 
     $(function () {
-        return new CropAvatar($('#crop-avatar'));
+        var crop_avatar = new CropAvatar($('#crop-avatar'));
+        $('#crop-image').on('click', function() {
+            $('#crop-image-preview').show();
+            $('.avatar-form .is-cutted').val('true'); 
+            crop_avatar.startCropper();
+        });
     });
 
 });

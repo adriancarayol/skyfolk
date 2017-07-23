@@ -53,10 +53,15 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="backimage-usr">
-                        <p>{{ perfil_form.backImage.errors }}</p>
-                        <p>Elige una imagen de fondo.</p>
-                        <p>{{ perfil_form.backImage }}</p>
+                    <p>{{ perfil_form.backImage.errors }}</p>
+                    <div class="backimage-usr file-field input-field">
+                        <div class="btn blue darken-1">
+                            <span>Imagen de fondo</span>
+                            {{ perfil_form.backImage }}
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
