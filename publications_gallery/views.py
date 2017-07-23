@@ -614,7 +614,7 @@ def load_more_descendants(request):
                                 'user_hate': True if row.id in hates_with_me else False,
                                 'user_shared': True if row.id in pubs_shared_with_me else False,
                                 'event_type': row.event_type, 'extra_content': have_extra_content,
-                                'descendants': row.get_descendants_not_deleted(),
+                                'descendants': row.get_descendants_not_deleted() if row.level <= 1 else None,
                                 'token': get_or_create_csrf_token(request),
                                 'parent': True if row.parent else False,
                                 'parent_author': row.parent.p_author.username,

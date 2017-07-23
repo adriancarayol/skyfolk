@@ -373,14 +373,14 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
         var i;
         for (i = 0; i < publications.length; i++) {
             pub_to_add = $('pub-' + publications[i].id);
-            if (pub_to_add && pub_to_add.length) continue;
+            if (pub_to_add.length) continue;
 
             content = '<div class="row">';
             content += '<div class="col s12">';
             if (publications[i].level > 0 && publications[i].level < 3) {
-                content += ' <div class="col s12 wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 98% !important;">';
+                content += ' <div class="col s12 wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 98% !important; border-right: 3px solid #1e88e5;">';
             } else
-                content += ' <div class=\"col s12 wrapper\" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '">';
+                content += ' <div class=\"col s12 wrapper\" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="border-right: 3px solid #1e88e5;">';
             content += "            <div class=\"box\">";
             content += '            <span id="check-' + publications[i].id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
             if (publications[i].user_id == publications[i].author_id && (publications[i].event_type == 1 || publications[i].event_type == 3)) {

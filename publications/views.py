@@ -602,6 +602,7 @@ def load_more_comments(request):
                 .values_list('shared_publication__id', flat=True)
         likes_with_me = Publication.objects.filter(id__in=pubs_id, user_give_me_like__id=user.id).values_list('id', flat=True)
         hates_with_me = Publication.objects.filter(id__in=pubs_id, user_give_me_hate__id=user.id).values_list('id', flat=True)
+
         for row in publications:
             extra_c = None
             have_extra_content = row.has_extra_content()
@@ -618,7 +619,7 @@ def load_more_comments(request):
                                 'author_username': row.author.username, 'user_id': user.id,
                                 'author_id': row.author_id, 'board_owner_id': row.board_owner_id,
                                 'event_type': row.event_type, 'extra_content': have_extra_content,
-                                'descendants': row.get_descendants_not_deleted(),
+                                'descendants': row.get_descendants_not_deleted() if row.level <= 1 else None,
                                 'user_like': True if row.id in likes_with_me else False,
                                 'user_hate': True if row.id in hates_with_me else False,
                                 'user_shared': True if row.id in pubs_shared_with_me else False,
