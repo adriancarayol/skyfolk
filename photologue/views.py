@@ -129,10 +129,6 @@ def upload_photo(request):
     user = request.user
 
     if request.method == 'POST':
-        import pprint  # Para imprimir el file y los datos del form
-        pprint.pprint(request.POST)
-        pprint.pprint(request.FILES)
-
         form = UploadFormPhoto(request.POST, request.FILES or None)
         if form.is_valid():
             obj = form.save(commit=False)

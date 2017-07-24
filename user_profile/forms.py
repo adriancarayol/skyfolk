@@ -160,7 +160,12 @@ class ProfileForm(forms.Form):
                                                            'maxlength': '20'}), required=False)
 
     backImage = forms.ImageField(label='Escoge una imagen.',
-                                          help_text='Elige una imagen de fondo.', required=False)
+            help_text='Elige una imagen de fondo.', required=False)
+
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(ProfileForm, self).__init__(*args, **kwargs)
 
     def clean_status(self):
         status = self.cleaned_data['status']
@@ -170,7 +175,9 @@ class ProfileForm(forms.Form):
         return status
 
     def clean_backImage(self):
-        back_image = self.cleaned_data.get('backImage', None)
+        back_image = self.request.FILES.get('image', None)
+        if not back_image:
+            return None
         if back_image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise forms.ValidationError("La imágen no puede ser mayor a 5MB.")
         if back_image:

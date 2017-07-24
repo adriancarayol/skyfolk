@@ -31,7 +31,6 @@
         this.$isCutted = this.$avatarForm.find('.is-cutted');
         this.$avatarData = this.$avatarForm.find('.avatar-data');
         this.$avatarInput = this.$avatarForm.find('.avatar-input');
-        this.$avatarURL = this.$avatarForm.find('#id_url_image');
         this.$avatarSave = this.$avatarForm.find('.avatar-save');
         this.$avatarBtns = $('#crop-image-preview').find('.avatar-btns');
 
@@ -156,10 +155,6 @@
         },
 
         submit: function () {
-            if (!this.$avatarSrc.val() && !this.$avatarInput.val() && !this.$avatarURL.val()) {
-                return false;
-            }
-
             if (this.support.formData) {
                 this.ajaxUpload();
                 return false;
@@ -307,7 +302,7 @@
     };
 
     $(function () {
-        var crop_avatar = new CropAvatar($('#crop-avatar'));
+        var crop_avatar = new CropAvatar($('#config-div'));
         $('#crop-image').on('click', function(e) {
             e.preventDefault();
             $('#crop-image-preview').show();

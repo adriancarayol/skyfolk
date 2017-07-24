@@ -156,4 +156,4 @@ class LikeGroup(models.Model):
 
     def __str__(self):
         return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.username, self.to_like.name,
-                                                                self.created)
+                                                                elf.created)

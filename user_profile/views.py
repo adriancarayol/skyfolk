@@ -40,12 +40,9 @@ from neomodel import db
 from django.db import transaction
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.conf import settings
-from mailer.mailer import Mailer
 from .tasks import send_email
-from django.db.models import Prefetch
 from django.db.models import Count
-
+from .utils import crop_image
 
 @login_required(login_url='/')
 @page_template("account/follow_entries.html", key='follow_entries')
@@ -422,12 +419,9 @@ def config_profile(request):
         # formulario enviado
         logging.info('>>>>>>>  paso 1' + str(request.FILES))
         user_form = UserForm(data=request.POST, instance=request.user)
-        perfil_form = ProfileForm(request.POST, request.FILES)
-
-        logging.info('>>>>>>>  paso 1.1')
+        perfil_form = ProfileForm(request.POST, request.FILES or None, request=request)
         if user_form.is_valid() and perfil_form.is_valid():
             # formulario validado correctamente
-            logging.info('>>>>>>  save')
             try:
                 with transaction.atomic(using='default'):
                     with db.transaction:
@@ -439,27 +433,30 @@ def config_profile(request):
                             file_id = str(uuid.uuid4())  # random filename
                             filename, file_extension = os.path.splitext(data.name)  # get extension
                             fs = FileSystemStorage()  # get filestorage
-                            img = pil.open(data)
-                            img.thumbnail((1500, 500), pil.ANTIALIAS)
-                            thumb_io = BytesIO()
-                            img.save(thumb_io, format=data.content_type.split('/')[-1].upper(), quality=95,
-                                     optimize=True)
-                            thumb_io.seek(0)
-                            file = InMemoryUploadedFile(thumb_io,
-                                                        None,
-                                                        filename,
-                                                        data.content_type,
-                                                        thumb_io.tell(),
-                                                        None)
+                            file = crop_image(data, filename, request)
                             filename = fs.save(file_id + file_extension, file)  # get filename
                             filename, file_extension = os.path.splitext(filename)  # only if save change "file_id"
                             node.back_image = filename  # assign filename to back_image node
                         node.save()
                         user_form.save()
+                        logging.info('>>>>>>  save')
+                        data = {
+                                'result': True,
+                                'state': 200,
+                                'message': 'Success',
+                                'gallery': '/config/profile'
+                        }
+                        return JsonResponse({'data': data})
             except Exception as e:
                 logging.info(
                     "No se pudo guardar la configuracion del perfil de la cuenta: {}".format(user_profile.username))
-            return HttpResponseRedirect('/config/profile')
+                data = {
+                        'result': False,
+                        'state': 500,
+                        'message': 'Success'
+                }
+
+                return JsonResponse({'data': data})
     else:
         # formulario inicial
         user_form = UserForm(instance=request.user)
