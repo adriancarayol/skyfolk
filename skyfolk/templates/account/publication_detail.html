@@ -325,7 +325,12 @@
             </div>
         {% endrecursetree %}
     </div>
-    <script src="{{ STATIC_URL }}js/publication_detail.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/publication_detail.js" type="text/javascript"></script> 
+    <script src="{{ STATIC_URL }}js/socket_publication.js"></script>
+    <script>
+    UTILS.init([{{ user.pk }}]);
+    UTILS.conn_socket();
+    </script>
     <script>
     {% for s in pubs_shared %}
         $('#share-' + {{ s.shared_publication__id }}).children().text(' ' + {{ s.total }});

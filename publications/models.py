@@ -19,14 +19,14 @@ from embed_video.backends import detect_backend, EmbedVideoException
 from embed_video.fields import EmbedVideoField
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
-
+from avatar.templatetags.avatar_tags import avatar_url
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.utils import validate_video
 from user_profile.models import NodeProfile
 from user_profile.tasks import send_to_stream
 from user_profile.utils import group_name
-from .utils import get_author_avatar
+from .utils import get_channel_name
 from user_profile.tasks import send_email
 
 
@@ -384,7 +384,7 @@ class Publication(PublicationBase):
         if self.parent:
             id_parent = self.parent.id
             author_parent = self.parent.author.username
-            avatar_parent = get_author_avatar(self.parent.author.id)
+            avatar_parent = avatar_url(self.parent.author)
 
         extra_c = None
 
@@ -396,7 +396,7 @@ class Publication(PublicationBase):
         notification = {
             "id": self.id,
             "content": self.content,
-            "avatar_path": get_author_avatar(authorpk=self.author.id),
+            "avatar_path": avatar_url(self.author),
             "author_id": self.author_id,
             "board_owner_id": self.board_owner_id,
             "author_username": self.author.username,
@@ -424,7 +424,7 @@ class Publication(PublicationBase):
         shared_photo_publication = self.shared_photo_publication
 
         if shared_publication:
-            notification["shared_publication_avatar_path"] = get_author_avatar(authorpk=shared_publication.author.id),
+            notification["shared_publication_avatar_path"] = avatar_url(shared_publication.author),
             notification["shared_publication_id"] = shared_publication.id
             notification['shared_publication_author_id'] = shared_publication.author.id
             notification['shared_publication_author_username'] = shared_publication.author.username
@@ -444,7 +444,7 @@ class Publication(PublicationBase):
                 notification['shared_publication_extra_content_url'] = shared_extra_c.url
 
         elif shared_photo_publication:
-            notification["shared_photo_publication_avatar_path"] = get_author_avatar(authorpk=shared_photo_publication.p_author.id),
+            notification["shared_photo_publication_avatar_path"] = avatar_url(shared_photo_publication.p_author),
             notification["shared_photo_publication_id"] = shared_photo_publication.id
             notification['shared_photo_publication_author_id'] = shared_photo_publication.p_author.id
             notification['shared_photo_publication_author_username'] = shared_photo_publication.p_author.username
@@ -467,7 +467,14 @@ class Publication(PublicationBase):
         channel_group(group_name(self.board_owner_id)).send({
             "text": json.dumps(notification)
         })
+        # Enviamos al blog de la publicacion
+        [channel_group(get_channel_name(x)).send({
+            "text": json.dumps(notification)
+        }) for x in self.get_ancestors().values_list('id', flat=True)]
 
+
+        query = self.get_ancestors().values_list('id', flat=True)
+        print(query.query)
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_owner_id:
             notify.send(self.author, actor=self.author.username,

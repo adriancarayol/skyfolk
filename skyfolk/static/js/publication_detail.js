@@ -36,7 +36,7 @@ $(document).ready(function () {
         var content = $(wrapper_shared_pub).find('#shared_comment_content').val();
         var pub_id = $(wrapper_shared_pub).attr('data-id');
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
-        AJAX_add_timeline(pub_id, tag, content);
+        AJAX_add_timeline_detail(pub_id, tag, content);
     });
 
     /* Cerrar div de compartir publicacion */
@@ -48,21 +48,21 @@ $(document).ready(function () {
     $(this).on('click', '#options-comments .remove-timeline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
-        AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
+        AJAX_add_timeline_detail($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
     $(thread).on('click', '#options-comments .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
-        AJAX_add_like(caja_publicacion, heart, "publication");
+        AJAX_add_like_detail(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
     $(thread).on('click', '#options-comments .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
-        AJAX_add_hate(caja_publicacion, heart, "publication");
+        AJAX_add_hate_detail(caja_publicacion, heart, "publication");
     });
 
     /* Borrar publicacion */
@@ -81,14 +81,14 @@ $(document).ready(function () {
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
-                AJAX_delete_publication(caja_publicacion);
+                AJAX_delete_publication_detail(caja_publicacion);
             }
         });
     });
 }); // END DOCUMENT
 
 
-function AJAX_delete_publication(caja_publicacion) {
+function AJAX_delete_publication_detail(caja_publicacion) {
     var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
     var id_user = $(caja_publicacion).data('id'); // obtengo id
     var data = {
@@ -125,7 +125,7 @@ function AJAX_delete_publication(caja_publicacion) {
 /********** AJAX para añadir me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_like(caja_publicacion, heart, type) {
+function AJAX_add_like_detail(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
@@ -203,7 +203,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
 /******* AJAX para añadir no me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_hate(caja_publicacion, heart, type) {
+function AJAX_add_hate_detail(caja_publicacion, heart, type) {
    var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
@@ -281,7 +281,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
     });
 }
 
-function AJAX_add_timeline(pub_id, tag, data_pub) {
+function AJAX_add_timeline_detail(pub_id, tag, data_pub) {
 
     var data = {
         'publication_id': pub_id,

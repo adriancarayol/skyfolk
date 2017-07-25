@@ -16,6 +16,14 @@ ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
 
+
+def get_channel_name(id):
+    """
+    Devuelve el channel para una publicacion
+    """
+    return "publication-%s" % id
+
+
 def get_author_avatar(authorpk):
     """
     Devuelve el avatar del autor de la publicacion pasada como parametro
