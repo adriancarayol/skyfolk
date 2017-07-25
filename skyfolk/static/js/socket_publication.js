@@ -21,12 +21,12 @@ var UTILS = UTILS || (function () {
                 if (data.type === "pub") {
                     if (!data.is_edited) {
                         var content = "";
-                        content += '<div class="row">';
+                        content += '<div class="row row-pub">';
                         content += '<div class="col s12">';
-                        if (data.level > 0) {
-                            content += ' <div class="col offset-l1 l9 m11 s11 wrapper" id="pub-' + data.id + '" data-id="' + _args + '" style="border-right: 2px solid #1e88e5;">';
-                        } else
-                            content += ' <div class=\"col s12 wrapper\" id="pub-' + data.id + '" data-id="' + _args + '">';
+                        if (data.level == 0)
+                            content += ' <div class="col offset-l1 l10 m11 s12 wrapper" id="pub-' + data.id + '" data-id="' + _args + '">';
+                        else 
+                            content += ' <div class=\"col offset-l2 l9 m10 s11 wrapper\" id="pub-' + data.id + '" data-id="' + _args + '" style="border-right: 2px solid #1e88e5;">';
                         content += "            <div class=\"box\">";
                         content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
                         if (_args == data.author_id && (data.event_type == 1 || data.event_type == 3)) {
@@ -251,16 +251,8 @@ var UTILS = UTILS || (function () {
                     } else {
                         var parent = $('#pub-' + data.parent);
                         if (parent.length) {
-                            if (data.level == 1 || data.level == 2) {
-                                var children_list = $(parent).find('.children').first();
-                                if (!children_list.length) {
-                                    children_list = $(parent).find('.wrapper-reply').after('<ul class="children"></ul>');
-                                }
-                                $(children_list).prepend(content);
-                            } else {
-                                $(parent).closest('.row').after(content);
-                            }
-                        } else $("#tab-comentarios .btn-filters").after(content);
+                            parent.closest('.row-pub').after(content);
+                        } else $("#publication-thread").append(content);
                     }
                     var show = $('div#pub-' + data.id + '').find('#show-comment-' + data.id + '');
                     /* Eliminamos el div de "Este perfil no tiene comentarios" */
