@@ -47,7 +47,7 @@ var UTILS = UTILS || (function () {
                         if (data.parent) {
                             content += '<span class="chip">';
                             content += '<img src="' + data.parent_avatar + '" alt="'+data.author_parent+'">';
-                            content += '<i class="fa fa-reply"></i> <a href="/publication/'+ data.parent +'">@'+ data.parent_author +'</a>';
+                            content += '<i class="fa fa-reply"></i> <a href="/publication/'+ data.parent +'">@'+ data.parent_author +' #<b>'+ data.level +'</b></a>';
                             content += '</span>';
                         }
                         content += '</h2>';

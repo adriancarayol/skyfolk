@@ -30,7 +30,6 @@
             font-style: normal;
         }
     </style>
-
     <div class="container" id="publication-thread">
         {% comment %}
             Formulario para citar un comentario
@@ -73,6 +72,19 @@
                         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11 style="border-right: 2px solid #1e88e5;"{% endif %}"
                              id="pub-{{ node.pk }}"
                              data-id="{{ user.pk }}">
+                             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
+                  data-delay="50"
+                  data-tooltip="Ver conversación completa"><a class="fa fa-plus-square-o" aria-hidden="true" href="/publication/{{ node.id }}/"></a></span>
+                    {% if user.id == node.author.id %}
+                            {% if node.event_type == 1 or node.event_type == 3 %}
+                                <span data-id="{{ node.pk }}" id="edit-comment-content"
+                                      class="top-options edit-comment tooltipped"
+                                      data-position="bottom"
+                                      data-delay="50"
+                                      data-tooltip="Editar comentario"><i class="fa fa-pencil"
+                                                                          aria-hidden="true"></i></span>
+                            {% endif %}
+                        {% endif %}
                             <div class="row">
                                 <div class="image col l2 m2 s2">
                                     <div class="usr-img img-responsive">{% avatar node.author %}</div>
@@ -82,10 +94,10 @@
                                             href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         {% if node.parent %}
                                             <span class="chip">
-                                                        {% avatar node.parent.author %}
-                                                        <i class="fa fa-reply"></i> <a
-                                                    href="/publication/{{ node.parent.id }}">{{ node.parent.content|safe|truncatechars_html:80 }}</a>
-                                                </span>
+                                                {% avatar node.parent.author %}
+                                                <i class="fa fa-reply"></i> <a
+                                                    href="/publication/{{ node.parent.id }}">@{{node.parent.author}} <b>#{{ node.level }}</b></a>
+                                            </span>
                                         {% endif %}
                                     </h2>
                                     <div class="row">
@@ -309,6 +321,37 @@
                                     </ul>
                                 </div>
                             </div>
+                            {% if user.id == node.author.id %}
+                        {% if node.event_type == 1  or node.event_type == 3 %}
+                            <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
+                                 class="author-controls">
+                                <div class="row">
+                                    <div class="col s12">
+                                        <form method="post" accept-charset="utf-8">{% csrf_token %}
+                                            <div class="row">
+                                                <div class="input-field col s12">
+                                                    <i class="material-icons prefix">create</i>
+                                                    <textarea class="materialize-textarea"
+                                                              placeholder="Escribe el contenido del nuevo mensaje"
+                                                              id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
+                                                              name="content" rows="10" required="required"
+                                                              style="height: 10.9969px;"></textarea>
+                                                    <label for="id_caption-{{ node.pk }}">Editar comentario</label>
+                                                </div>
+                                                <div class="row">
+                                                    <button data-id="{{ node.pk }}"
+                                                            class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
+                                                            type="button" id="submit_edit_publication">Editar
+                                                        <i class="material-icons right">mode_edit</i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                             {% with publication as pub %}
                                 {% include "account/new_reply_extend_publication.html" %}
                                 {% endwith %}

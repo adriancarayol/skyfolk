@@ -85,6 +85,19 @@ $(document).ready(function () {
             }
         });
     });
+    
+    /* Editar comentario */
+    $(thread).on('click', '#edit-comment-content', function () {
+        var id = $(this).attr('data-id');
+        $("#author-controls-" + id).slideToggle("fast");
+    });
+
+    $(thread).on('click', '#submit_edit_publication', function (event) {
+        event.preventDefault();
+        var id = $(this).attr('data-id');
+        var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
+        AJAX_edit_publication_detail(id, content);
+    });
 }); // END DOCUMENT
 
 
@@ -337,6 +350,38 @@ function AJAX_add_timeline_detail(pub_id, tag, data_pub) {
         },
         error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + e);
+        }
+    });
+}
+
+/* EDIT PUBLICATION */
+function AJAX_edit_publication_detail(pub, content) {
+    var data = {
+        'id': pub,
+        'content': content,
+        'csrfmiddlewaretoken': csrftoken
+    };
+    $.ajax({
+        url: '/publication/edit/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+
+        success: function (data) {
+            var response = data.data;
+            // borrar caja publicacion
+            if (response == true) {
+                $('#author-controls-' + pub).fadeToggle("fast");
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to edit publish.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
         }
     });
 }

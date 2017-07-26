@@ -385,6 +385,7 @@ class Publication(PublicationBase):
             id_parent = self.parent.id
             author_parent = self.parent.author.username
             avatar_parent = avatar_url(self.parent.author)
+            content_parent = self.parent.content[:20]
 
         extra_c = None
 
@@ -467,14 +468,15 @@ class Publication(PublicationBase):
         channel_group(group_name(self.board_owner_id)).send({
             "text": json.dumps(notification)
         })
+        if is_edited:
+            channel_group(get_channel_name(self.id)).send({
+                'text': json.dumps(notification)
+        })
         # Enviamos al blog de la publicacion
         [channel_group(get_channel_name(x)).send({
             "text": json.dumps(notification)
         }) for x in self.get_ancestors().values_list('id', flat=True)]
 
-
-        query = self.get_ancestors().values_list('id', flat=True)
-        print(query.query)
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_owner_id:
             notify.send(self.author, actor=self.author.username,
