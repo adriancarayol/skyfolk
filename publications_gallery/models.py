@@ -14,7 +14,6 @@ from publications.models import Publication
 from photologue.models import Photo
 from publications.models import PublicationBase
 from publications.utils import get_author_avatar
-from embed_video.fields import EmbedVideoField
 from publications.utils import validate_video
 from django.core.exceptions import ObjectDoesNotExist
 from user_profile.models import NodeProfile
@@ -29,6 +28,7 @@ ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
+
 
 class ExtraContentPubPhoto(models.Model):
     """
@@ -116,9 +116,12 @@ class PublicationPhoto(PublicationBase):
         return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.p_author_id,
                                           deleted=False).count()
 
+    @property
+    def get_channel_name(self):
+        return "photo-pub-%s" % self.id
+
     def has_extra_content(self):
         return hasattr(self, 'publication_photo_extra_content')
-
 
     def parse_content(self):
         """
@@ -158,7 +161,7 @@ class PublicationPhoto(PublicationBase):
         if not link_url and len(link_url) <= 0 and self.has_extra_content():
             self.extra_content.delete()  # Borramos el extra content de esta
             return
-        elif link_url and len(link_url) > 0: # Eliminamos contenido extra para añadir el nuevo
+        elif link_url and len(link_url) > 0:  # Eliminamos contenido extra para añadir el nuevo
             if self.has_extra_content():
                 extra_content = self.extra_content
                 if extra_content.url != link_url[-1]:
@@ -212,7 +215,6 @@ class PublicationPhoto(PublicationBase):
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
             self.tags.add(tag)
-
 
     def parse_mentions(self):
         """
@@ -268,7 +270,6 @@ class PublicationPhoto(PublicationBase):
         if has_extra_content:
             extra_c = self.publication_photo_extra_content
 
-
         notification = {
             "id": self.id,
             "content": self.content,
@@ -302,6 +303,15 @@ class PublicationPhoto(PublicationBase):
         channel_group(self.board_photo.group_name).send({
             "text": json.dumps(notification)
         })
+
+        if is_edited:
+            channel_group(self.get_channel_name).send({
+                'text': json.dumps(notification)
+            })
+        # Enviamos al blog de la publicacion
+        [channel_group(x.get_channel_name).send({
+            "text": json.dumps(notification)
+        }) for x in self.get_ancestors().only('id')]
 
     def save(self, csrf_token=None, new_comment=False, is_edited=False, *args, **kwargs):
         super(PublicationPhoto, self).save(*args, **kwargs)

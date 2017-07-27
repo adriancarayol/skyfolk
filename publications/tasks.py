@@ -11,7 +11,7 @@ from publications_gallery.models import PublicationPhoto
 from notifications.models import Notification
 from skyfolk.celery import app
 from user_profile.utils import notification_channel, group_name
-from .models import Publication, PublicationDeleted
+from publications.models import Publication, PublicationDeleted
 from .models import PublicationVideo
 from .utils import generate_path_video, convert_avi_to_mp4
 
@@ -23,7 +23,7 @@ def clean_deleted_publications():
     logger.info('Finding deleted publications...')
     publications = Publication.objects.filter(deleted=True)
     publications_contains_shared = publications.values_list('id', flat=True)
-    pubs_shared = Publications.objects.filter(shared_publication__id__in=publications_contains_shared)
+    pubs_shared = Publication.objects.filter(shared_publication__id__in=publications_contains_shared)
 
     for publication in publications:
         pub, created = PublicationDeleted.objects.get_or_create(author=publication.author, content=publication.content,
@@ -62,7 +62,7 @@ def clean_deleted_photo_publications():
     logger.info('Finding deleted publications...')
     publications = PublicationPhoto.objects.filter(deleted=True)
     publications_contains_shared = publications.values_list('id', flat=True)
-    pubs_shared = Publications.objects.filter(shared_photo_publication__id__in=publications_contains_shared)
+    pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=publications_contains_shared)
 
     for publication in publications:
         pub, created = PublicationDeleted.objects.get_or_create(author=publication.p_author, content=publication.content,

@@ -13,6 +13,17 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from publications.exceptions import CantOpenMedia, SizeIncorrect, MaxFilesReached, MediaNotSupported
 from .tasks import process_gif_publication, process_video_publication
 
+
+def get_channel_name(id):
+    """
+    Devuelve el nombre del blog para
+    una publicacion en la galeria
+    :param id: ID de la publicacion
+    :return:
+    """
+    return "photo-pub-%s" % id
+
+
 def check_image_property(image):
     if not image:
         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=image.name))
@@ -38,7 +49,8 @@ def optimize_publication_media(instance, image_upload):
             try:
                 if file_type[0] == "video":  # es un video
                     if file_type[1] == 'mp4':
-                        publications_gallery.models.PublicationPhotoVideo.objects.create(publication=instance, video=media)
+                        publications_gallery.models.PublicationPhotoVideo.objects.create(publication=instance,
+                                                                                         video=media)
                     else:
                         tmp = tempfile.NamedTemporaryFile(delete=False)
                         for block in media.chunks():
@@ -69,6 +81,7 @@ def optimize_publication_media(instance, image_upload):
                 raise MediaNotSupported(u'No podemos procesar este tipo de archivo {file}.'.format(file=media.name))
     return content_video
 
+
 def generate_path_video(ext='mp4'):
     """
     Funcion para calcular la ruta
@@ -76,7 +89,8 @@ def generate_path_video(ext='mp4'):
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return [os.path.join('skyfolk/media/photo_publications/videos', filename), os.path.join('photo_publications/videos', filename)]
+    return [os.path.join('skyfolk/media/photo_publications/videos', filename),
+            os.path.join('photo_publications/videos', filename)]
 
 
 def get_photo_channel(photo_id):

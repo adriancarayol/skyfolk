@@ -4,15 +4,15 @@ import logging
 from channels import Group
 from channels.auth import channel_session_user, channel_session_user_from_http
 from .utils import get_channel_name
-from .models import Publication
+from .models import PublicationPhoto
 from user_profile.models import NodeProfile
 
 
 @channel_session_user_from_http
-def connect_publication(message, pubid):
+def connect_photo_publication(message, pubid):
     user = message.user
     try:
-        publication_board_owner = Publication.objects.values_list('board_owner__id', flat=True).get(id=pubid)
+        publication_board_owner = PublicationPhoto.objects.values_list('board_photo__owner_id', flat=True).get(id=pubid)
         print(publication_board_owner)
         n = NodeProfile.nodes.get(user_id=publication_board_owner)
         m = NodeProfile.nodes.get(user_id=user.id)
@@ -22,7 +22,7 @@ def connect_publication(message, pubid):
                                                                                                 publication_board_owner))
             message.reply_channel.send({"accept": False})
             return
-    except Publication.DoesNotExist:
+    except PublicationPhoto.DoesNotExist:
         message.reply_channel.send({
             'text': json.dumps({'error': 'bad_slug'}),
             'close': True,
@@ -33,7 +33,7 @@ def connect_publication(message, pubid):
 
 
 @channel_session_user
-def disconnect_publication(message, pubid):
+def disconnect_photo_publication(message, pubid):
     """
     Removes the user from the liveblog group when they disconnect.
 
@@ -41,8 +41,8 @@ def disconnect_publication(message, pubid):
     entries cluttering up your group will reduce performance.
     """
     try:
-        publication_board_owner = Publication.objects.values_list('board_owner__id', flat=True).get(id=pubid)
-    except Publication.DoesNotExist:
+        publication_board_owner = PublicationPhoto.objects.get(id=pubid)
+    except PublicationPhoto.DoesNotExist:
         # This is the disconnect message, so the socket is already gone; we can't
         # send an error back. Instead, we just return from the consumer.
         return

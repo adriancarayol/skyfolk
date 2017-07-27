@@ -178,8 +178,9 @@ function AJAX_add_like_detail(caja_publicacion, heart, type) {
                         countHates--;
                         if (countHates <= 0) {
                             hates.text('');
-                        } else
+                        } else {
                             hates.text(countHates);
+                        }
                         $(hatesObj).css('color', '#555');
                         countLikes++;
                     }
