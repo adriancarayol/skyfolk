@@ -38,7 +38,7 @@
             <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper"
                  data-id="" hidden>
                 <div class="row">
-                    <div id="status" class="col s12 title-page-wrapper">
+                    <div class="col s12 title-page-wrapper">
                         <h4><i class="fa fa-quote-right" aria-hidden="true"></i> Citar publicacion</h4>
                         <h6>Comparte esta publicación con tus seguidores</h6>
                     </div>
@@ -69,7 +69,7 @@
             <div class="row row-pub">
                 <div class="col s12">
                     <div class="row">
-                        <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11" style="border-right: 2px solid #1e88e5;"{% endif %}
+                        <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" {% if node.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}
                              id="pub-{{ node.pk }}"
                              data-id="{{ user.pk }}">
                              <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
@@ -77,7 +77,7 @@
                   data-tooltip="Ver conversación completa"><a class="fa fa-plus-square-o" aria-hidden="true" href="/publication/{{ node.id }}/"></a></span>
                     {% if user.id == node.author.id %}
                             {% if node.event_type == 1 or node.event_type == 3 %}
-                                <span data-id="{{ node.pk }}" id="edit-comment-content"
+                                <span data-id="{{ node.pk }}"
                                       class="top-options edit-comment tooltipped"
                                       data-position="bottom"
                                       data-delay="50"
@@ -102,8 +102,8 @@
                                     </h2>
                                     <div class="row">
                                         <div class="parrafo comment">
-                                            <p id="pub-created"
-                                               class="blue-text text-darken-2">{{ node.created|naturaltime }}</p>
+                                            <p
+                                               class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}</p>
                                             <div class="wrp-comment">{{ node.content|safe }}</div>
                                         </div>
                                         <div class="show-more" id="show-comment-{{ node.pk }}">
@@ -284,7 +284,7 @@
                             </div>
                             <div class="row">
                                 <div class="divider"></div>
-                                <div class="options_comentarios col s12" id="options-comments">
+                                <div class="options_comentarios col s12">
                                     <ul class="opciones">
                                         {% if user.id == node.author.id %}
                                             {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
@@ -341,7 +341,7 @@
                                                 <div class="row">
                                                     <button data-id="{{ node.pk }}"
                                                             class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
-                                                            type="button" id="submit_edit_publication">Editar
+                                                            type="button">Editar
                                                         <i class="material-icons right">mode_edit</i>
                                                     </button>
                                                 </div>

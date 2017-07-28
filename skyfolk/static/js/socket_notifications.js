@@ -19,7 +19,7 @@ var UTILS_N = UTILS_N || (function () {
 				console.log(data);
 				// Create the inner content of the post div
 				var content = '<li class=\"collection-item avatar\" data-id="' + data.id + '">';
-				content += '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" id="mark-as-read-notification" data-notification="' + data.slug + '"/></a>';
+				content += '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" data-notification="' + data.slug + '"/></a>';
 				if (data.actor_avatar !== null && typeof data.actor_avatar !== 'undefined') {
                     content = content + '<div class="circle">' + data.actor_avatar + '</div>';
 				}

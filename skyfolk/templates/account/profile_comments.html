@@ -30,7 +30,7 @@
                   data-tooltip="Ver conversación completa"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
                         {% if user.id == node.author.id %}
                             {% if node.event_type == 1 or node.event_type == 3 %}
-                                <span data-id="{{ node.pk }}" id="edit-comment-content"
+                                <span data-id="{{ node.pk }}"
                                       class="top-options edit-comment tooltipped"
                                       data-position="bottom"
                                       data-delay="50"
@@ -56,7 +56,7 @@
                                                 </span>
                                             {% endif %}
                                         </h2>
-                                       <p id="pub-created" class="blue-text text-darken-2">{{ node.created|naturaltime }}</p>
+                                       <p class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}</p>
                                         <div class="row publication-content">
                                             <div class="parrafo comment">
                                                 <div class="wrp-comment">{{ node.content|safe }}</div>
@@ -259,7 +259,7 @@
                         <div class="row">
                             <div class="divider"></div>
                             <!-- OPCIONES DE COMENTARIOS -->
-                            <div class="options_comentarios" id="options-comments">
+                            <div class="options_comentarios">
                                 <ul class="opciones">
                                     {% if user.id == node.author.id %}
                                         {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
@@ -313,7 +313,7 @@
                                                 <div class="row">
                                                     <button data-id="{{ node.pk }}"
                                                             class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
-                                                            type="button" id="submit_edit_publication">Editar
+                                                            type="button">Editar
                                                         <i class="material-icons right">mode_edit</i>
                                                     </button>
                                                 </div>
@@ -335,16 +335,15 @@
                             <div class="col s12">    
                                     {% with node.get_children_count as descendants %}
                                         {% if descendants > 0 %}
-                                            <a class="waves-effect waves-light btn-large blue darken-1 white-text center"
+                                            <a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_publications"
                                                href="#"
-                                               id="load_more_publications"
                                                data-id="{{ node.id }}" data-created="{{ node.created|date:"U"}}"><i class=" material-icons left">expand_more</i>Cargar
                                                 comentarios (<span
-                                                        id="child_count">{{ descendants }}</span>)</a>
+                                                        class="child_count">{{ descendants }}</span>)</a>
                                         {% endif %}
                                     {% endwith %}
                                 <div>
-                                    <div class="progress" id="load_publications_descendants" style="display: none">
+                                    <div class="progress load_publications_descendants" style="display: none">
                                         <div class="indeterminate blue darken-1"></div>
                                     </div>
                                 </div>

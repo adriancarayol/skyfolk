@@ -3,40 +3,6 @@
 {% endcomment %}
 {% load notification_tags %}
 {% load compress %}
-{% comment %}
-<nav class="box-tool">
-    <ul class="box-tool-wrapper">
-      <li>
-        {% include "account/menu-vertical.html" %}
-      </li>
-      <li><div class="field" id="searchform">
-        <form method='post' action='/user-search/'>{% csrf_token %}
-          {{searchForm}}
-        </form>
-        <!-- Logotipo que re-direcciona a la pagina principal -->
-         </div></li>
-        <li>
-          <div class="logotipo_skyfolk" onclick="location.href='/profile/{{ request.user }}'" title="Perfil de {{ user }}"><i>S</i>kyfolk</div>
-        </li>
-         <!-- Notificaciones para skyfolk - (Botón campana) -->
-        <li class="notification-bell">
-          <i class="fa fa-bell fa-lg"></i>
-          <em onclick="contador()">{% live_notify_badge %}</em>
-        </li>
-      {% if showPerfilButtons or user.username == user_profile.username %}
-      <!-- BOTONES ESPACIALES PARA EL USUARIO QUE HACE LOGIN, SÓLO VISIBLE POR EL USUARIO QUE INICIA SESIÓN -->
-        {% endif %}
-      <!-- Menu principal - horizontal -->
-        <!-- MENU HORIZONTAL - PANEL DE USUARIO -->
-        {% include "account/menu-horizontal.html" %}
-        <!-- MENU VERTICAL CON NOTIFICACIONES  -->
-        {% include "account/notification-right-menu.html" %}
-        <!-- LOADER DE TODA LA PÁGINA -->
-        <li id="loader"></li>
-    </ul>
-    </nav>
-    {% endcomment %}
-
 <div class="navbar-fixed">
     <nav>
         <div class="nav-wrapper white z-depth-1">

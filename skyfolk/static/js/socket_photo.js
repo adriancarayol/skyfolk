@@ -53,7 +53,7 @@ var UTILS = UTILS || (function () {
                         content += '</span>';
                     }
                     content += '</h2>';
-                    content += '                    <p id="pub-created" class="blue-text text-darken-2">' + data.created + '<\/p><br>';
+                    content += '                    <p class="blue-text text-darken-2 pub-created">' + data.created + '<\/p><br>';
                     content += '<div class="row publication-content">';
                     content += "                  <div class=\"parrafo comment\">";
                     content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
@@ -94,7 +94,7 @@ var UTILS = UTILS || (function () {
                     content += "                    </div>";
                     content += '<div class="row">';
                     content += '<div class="divider"></div>';
-                    content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
+                    content += "                <div class=\"options_comentarios\">";
                     content += "                    <ul class=\"opciones\">";
                     if (_args == data.photo_owner || data.p_author_id == _args) {
                         content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
@@ -111,7 +111,7 @@ var UTILS = UTILS || (function () {
                     content += "                </div>";
                     content += "    </div>";
                     if (_args == data.p_author_id) {
-                        content += '<div data-user-id="' + data.p_author_id + '" id="author-controls-' + data.id + '" class="author-controls">';
+                        content += '<div data-user-id="' + data.p_author_id + '" id="p_author-controls-' + data.id + '" class="p_author-controls">';
                         content += '<div class="row">';
                         content += '<div class="col s12">';
                         content += '<form method="post" accept-charset="utf-8">';
@@ -122,16 +122,16 @@ var UTILS = UTILS || (function () {
                         content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + data.id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
                         content += '<label for="id_caption-' + data.id + '">Editar comentario</label></div>';
                         content += '<div class="row">';
-                        content += '<button data-id="' + data.id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button" id="submit_edit_publication">Editar<i class="material-icons right">mode_edit</i></button>';
+                        content += '<button data-id="' + data.id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button">Editar<i class="material-icons right">mode_edit</i></button>';
                         content += '</div></div></form></div></div></div>';
                     }
                     content += '<div class="wrapper-reply">';
                     content += '<div class="hidden" id="caja-comentario-' + data.id + '">';
                     content += '<form class="reply-form" action="" method="post">';
                     content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + data.token + '">';
-                    content += '<input id="id_p_author" name="p_author" type="hidden" value="' + _args + '">';
-                    content += '<input id="id_board_photo" name="board_photo" type="hidden" value="' + data.board_photo_id + '">';
-                    content += '<input id="id_parent" name="parent" type="hidden">';
+                    content += '<input name="p_author" type="hidden" value="' + _args + '">';
+                    content += '<input name="board_photo" type="hidden" value="' + data.board_photo_id + '">';
+                    content += '<input name="parent" type="hidden">';
                     content += '<div class="row">';
                     content += '<div class="col s12">';
                     content += '<div class="row">';
@@ -158,7 +158,7 @@ var UTILS = UTILS || (function () {
 
                     /* Comprobamos si el elemento existe, si es asi lo modificamos */
                     if (existing.length) {
-                        existing.find('#pub-created').first().text(data.created);
+                        existing.find('.pub-created').first().text(data.created);
                         existing.find('.wrp-comment').first().text(data.content);
                     } else {
                         var parent = $('#pub-' + data.parent);

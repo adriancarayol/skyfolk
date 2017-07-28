@@ -69,18 +69,18 @@ $(document).ready(function () {
     });
 
     /* Abrir respuesta a comentario */
-    $(tab_comentarios).on('click', '#options-comments .fa-reply', function () {
+    $(tab_comentarios).on('click', '.options_comentarios .fa-reply', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
 
     /* Editar comentario */
-    $(tab_comentarios).on('click', '#edit-comment-content', function () {
+    $(tab_comentarios).on('click', '.edit-comment', function () {
         var id = $(this).attr('data-id');
         $("#author-controls-" + id).slideToggle("fast");
     });
 
-    $(tab_comentarios).on('click', '#submit_edit_publication', function (event) {
+    $(tab_comentarios).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var id = $(this).attr('data-id');
         var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
@@ -119,7 +119,7 @@ $(document).ready(function () {
     }
 
     /* Borrar publicacion */
-    $(tab_comentarios).on('click', '#options-comments .fa-trash', function () {
+    $(tab_comentarios).on('click', '.options_comentarios .fa-trash', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
             title: "Are you sure?",
@@ -140,7 +140,7 @@ $(document).ready(function () {
     });
 
     /* Agregar skyline */
-    $(this).on('click', '#options-comments .add-timeline', function (e) {
+    $(this).on('click', '.options_comentarios .add-timeline', function (e) {
         var tag = $(this);
         $(wrapper_shared_pub).attr('data-id', $(tag).data('id'))
         $(wrapper_shared_pub).show();
@@ -161,21 +161,21 @@ $(document).ready(function () {
     });
 
     /* Eliminar skyline */
-    $(this).on('click', '#options-comments .remove-timeline', function () {
+    $(this).on('click', '.options_comentarios .remove-timeline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
-    $(this).on('click', '#options-comments .like-comment', function () {
+    $(this).on('click', '.options_comentarios .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
-    $(document).on('click', '#options-comments .hate-comment', function () {
+    $(document).on('click', '.options_comentarios .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_hate(caja_publicacion, heart, "publication");
@@ -264,8 +264,8 @@ $(document).ready(function () {
     });
 
     /* LOAD MORE ON CLICK */
-    $(tab_comentarios).on('click', '#load_more_publications', function () {
-        var loader = $(this).next().find('#load_publications_descendants');
+    $(tab_comentarios).on('click', '.load_more_publications', function () {
+        var loader = $(this).next().find('.load_publications_descendants');
         $(loader).fadeIn();
         var last_pub = $(loader).closest('.row').prev('.children').find('.wrapper').last().attr('id');
         var last_pub_id = "";
@@ -384,7 +384,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "            <div class=\"box\">";
             content += '            <span id="check-' + publications[i].id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
             if (publications[i].user_id == publications[i].author_id && (publications[i].event_type == 1 || publications[i].event_type == 3)) {
-                content += '            <span data-id="' + publications[i].id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
+                content += '            <span data-id="' + publications[i].id + '" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
             }
             content += '<div class="row">';
             content += "                <div class=\"articulo col s12\">";
@@ -405,7 +405,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '</span>';
             }
             content += '</h2>';
-            content += '                    <p id="pub-created" class="blue-text text-darken-2">' + publications[i].created + '<\/p><br>';
+            content += '                    <p class="blue-text text-darken-2 pub-created">' + publications[i].created + '<\/p><br>';
             content += '<div class="row publication-content">';
             content += "                  <div class=\"parrafo comment\">";
             content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
@@ -455,7 +455,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                    </div>";
             content += '<div class="row">';
             content += '<div class="divider"></div>';
-            content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
+            content += "                <div class=\"options_comentarios\">";
             content += "                    <ul class=\"opciones\">";
             if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications[i].author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
@@ -495,7 +495,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + publications[i].id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
                 content += '<label for="id_caption-' + publications[i].id + '">Editar comentario</label></div>';
                 content += '<div class="row">';
-                content += '<button data-id="' + publications[i].id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button" id="submit_edit_publication">Editar<i class="material-icons right">mode_edit</i></button>';
+                content += '<button data-id="' + publications[i].id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button">Editar<i class="material-icons right">mode_edit</i></button>';
                 content += '</div></div></form></div></div></div>';
             }
             content += '<div class="wrapper-reply">';
@@ -525,16 +525,16 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             if (publications[i].descendants > 0) {
                 content += '<div class="row">';
                 content += '<div class="col s12">';
-                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#" id="load_more_publications" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
+                content += '<span class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_publications" href="#" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios <span class="child_count">(' + publications[i].descendants + ')</span></a>';
                 content += '<div>';
-                content += '<div class="progress" id="load_publications_descendants" style="display: none;">';
+                content += '<div class="progress load_publications_descendants" style="display: none;">';
                 content += '<div class="indeterminate blue darken-1"></div></div>';
                 content += '</div></div></div>';
             }
             content += "    </div></div></div>";
             $(content).appendTo(children_list).hide().fadeIn(250);
         }
-        var child_count = $(btn).find('#child_count');
+        var child_count = $(btn).find('.child_count');
         var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
         if (result_child_count > 0)
             $(child_count).html(result_child_count);
@@ -554,7 +554,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "            <div class=\"box\">";
             content += '            <span id="check-' + publications[i].id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
             if (publications[i].user_id == publications[i].author_id && (publications[i].event_type == 1 || publications[i].event_type == 3)) {
-                content += '            <span data-id="' + publications[i].id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
+                content += '            <span data-id="' + publications[i].id + '" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
             }
             content += '<div class="row">';
             content += "                <div class=\"articulo col s12\">";
@@ -576,7 +576,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '</span>';
             }
             content += '</h2>';
-            content += '                    <p id="pub-created" class="blue-text text-darken-2">' + publications[i].created + '<\/p><br>';
+            content += '                    <p class="blue-text text-darken-2 pub-created">' + publications[i].created + '<\/p><br>';
             content += '<div class="row publication-content">';
             content += "                  <div class=\"parrafo comment\">";
             content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
@@ -715,7 +715,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += "                    </div>";
             content += '<div class="row">';
             content += '<div class="divider"></div>';
-            content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
+            content += "                <div class=\"options_comentarios\">";
             content += "                    <ul class=\"opciones\">";
             if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications[i].author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
@@ -754,7 +754,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + publications[i].id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
                 content += '<label for="id_caption-' + publications[i].id + '">Editar comentario</label></div>';
                 content += '<div class="row">';
-                content += '<button data-id="' + publications[i].id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button" id="submit_edit_publication">Editar<i class="material-icons right">mode_edit</i></button>';
+                content += '<button data-id="' + publications[i].id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button">Editar<i class="material-icons right">mode_edit</i></button>';
                 content += '</div></div></form></div></div></div>';
             }
             content += '<div class="wrapper-reply">';
@@ -784,9 +784,9 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             if (publications[i].descendants > 0) {
                 content += '<div class="row">';
                 content += '<div class="col s12">';
-                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#" id="load_more_publications" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
+                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
                 content += '<div>';
-                content += '<div class="progress" id="load_publications_descendants" style="display: none;">';
+                content += '<div class="progress load_publications_descendants" style="display: none;">';
                 content += '<div class="indeterminate blue darken-1"></div></div>';
                 content += '</div></div></div>';
             }

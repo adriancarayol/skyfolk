@@ -30,7 +30,7 @@ var UTILS = UTILS || (function () {
                         content += "            <div class=\"box\">";
                         content += '            <span id="check-' + data.id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
                         if (_args == data.p_author_id && (data.event_type == 1 || data.event_type == 3)) {
-                            content += '            <span data-id="' + data.id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
+                            content += '            <span data-id="' + data.id + '" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
                         }
                         content += '<div class="row">';
                         content += "                <div class=\"articulo col s12\">";
@@ -47,11 +47,11 @@ var UTILS = UTILS || (function () {
                         if (data.parent) {
                             content += '<span class="chip">';
                             content += '<img src="' + data.parent_avatar + '" alt="'+data.p_author_parent+'">';
-                            content += '<i class="fa fa-reply"></i> <a href="/publication/'+ data.parent +'">@'+ data.parent_p_author +' #<b>'+ data.level +'</b></a>';
+                            content += '<i class="fa fa-reply"></i> <a href="/publication/'+ data.parent +'">@'+ data.p_author_username +' #<b>'+ data.level +'</b></a>';
                             content += '</span>';
                         }
                         content += '</h2>';
-                        content += '                    <p id="pub-created" class="blue-text text-darken-2">' + data.created + '<\/p><br>';
+                        content += '                    <p class="blue-text text-darken-2 pub-created">' + data.created + '<\/p><br>';
                         content += '<div class="row publication-content">';
                         content += "                  <div class=\"parrafo comment\">";
                         content += '                      <div class="wrp-comment">' + data.content + '<\/div>';
@@ -182,16 +182,16 @@ var UTILS = UTILS || (function () {
                         content += "                    </div>";
                         content += '<div class="row">';
                         content += '<div class="divider"></div>';
-                        content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
+                        content += "                <div class=\"options_comentarios\">";
                         content += "                    <ul class=\"opciones\">";
                         if (_args == data.board_owner_id || data.p_author_id == _args) {
                             content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
                         }
-                        content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
+                        content += "                            <li title=\"No me gusta\" class=\"hate-comment\">";
                         content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
                         content += '                                <i class="fa hate-value"></i>';
                         content += "                            </li>";
-                        content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value"></i></li>';
+                        content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value"></i></li>';
                         content += '                       <li title=\"Añadir a mi skyline\" id="share-' + data.id + '" data-id="' + data.id + '" class=\"add-timeline\"><i class=\"fa fa-quote-right\" aria-hidden=\"true\"> <\/i><\/li>';
                         content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + data.id + '"><\/i><\/li>';
                         content += "                    </ul>";
@@ -210,16 +210,16 @@ var UTILS = UTILS || (function () {
                             content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + data.id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
                             content += '<label for="id_caption-' + data.id + '">Editar comentario</label></div>';
                             content += '<div class="row">';
-                            content += '<button data-id="' + data.id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button" id="submit_edit_publication">Editar<i class="material-icons right">mode_edit</i></button>';
+                            content += '<button data-id="' + data.id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button">Editar<i class="material-icons right">mode_edit</i></button>';
                             content += '</div></div></form></div></div></div>';
                         }
                         content += '<div class="wrapper-reply">';
                         content += '<div class="hidden" id="caja-comentario-' + data.id + '">';
                         content += '<form class="reply-form" action="" method="post">';
                         content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + data.token + '">';
-                        content += '<input id="id_p_author" name="p_author" type="hidden" value="' + _args + '">';
-                        content += '<input id="id_board_photo" name="board_photo" type="hidden" value="' + data.board_owner_id + '">';
-                        content += '<input id="id_parent" name="parent" type="hidden">';
+                        content += '<input name="p_author" type="hidden" value="' + _args + '">';
+                        content += '<input name="board_photo" type="hidden" value="' + data.board_owner_id + '">';
+                        content += '<input name="parent" type="hidden">';
                         content += '<div class="row">';
                         content += '<div class="col s12">';
                         content += '<div class="row">';
@@ -231,7 +231,7 @@ var UTILS = UTILS || (function () {
                         content += '<div class="file-field input-field col s12">';
                         content += '<div class="btn">';
                         content += '<span>Imágenes</span>';
-                        content += '<input id="id_image_reply" name="image" type="file" multiple>';
+                        content += '<input name="image" type="file" multiple>';
                         content += '</div>';
                         content += '<div class="file-path-wrapper">';
                         content += '<input class="file-path validate" type="text" placeholder="Upload one or more files">';
@@ -242,23 +242,20 @@ var UTILS = UTILS || (function () {
                     }
                     // See if there's a div to replace it in, or if we should add a new one
                     var existing = $('#pub-' + data.id);
-                    var no_comments = $('#without-comments');
 
                     /* Comprobamos si el elemento existe, si es asi lo modificamos */
                     if (existing.length) {
-                        existing.find('#pub-created').first().text(data.created);
+                        existing.find('.pub-created').first().text(data.created);
                         existing.find('.wrp-comment').first().text(data.content);
                     } else {
                         var parent = $('#pub-' + data.parent);
                         if (parent.length) {
                             parent.closest('.row-pub').after(content);
-                        } else $("#publication-thread").append(content);
+                        } else {
+                            $("#publication-thread").append(content);
+                        }
                     }
                     var show = $('div#pub-' + data.id + '').find('#show-comment-' + data.id + '');
-                    /* Eliminamos el div de "Este perfil no tiene comentarios" */
-                    if ($(no_comments).is(':visible')) {
-                        $(no_comments).fadeOut();
-                    }
                     var wrapper_content = $('#pub-' + data.id + '').find('.wrp-comment');
                     /* Comprobamos la longitud del nuevo comentario */
                     if ($(wrapper_content).height() > _max_height_comment) {

@@ -10,7 +10,7 @@ Base para la interfaz en comun de todos los usuarios.
     <meta name="description" content="Mi perfil">
     <meta name="keywords" content="Mi perfil, Mensajes, Amigos, Seguidores, Comentarios">
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta content="text/html; charset=UTF-8"/>
     {% compress css %}
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/core.css">
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/materialize.min.css">
@@ -68,7 +68,7 @@ Base para la interfaz en comun de todos los usuarios.
             <div class="row">
                 <div id="page-wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
                     <div class="row">
-                        <div id="status" class="col s12 title-page-wrapper">
+                        <div class="col s12 title-page-wrapper">
                             {% if user == user_profile %}
                                 <h4><i class="material-icons left">send</i>Publicar comentario</h4>
                                 <h6>Publica un comentario para que el mundo lo vea.</h6>
@@ -79,7 +79,7 @@ Base para la interfaz en comun de todos los usuarios.
                             {% endif %}
                         </div>
                     </div>
-                    <form id="message-form2" action="" method="post" enctype="multiple/form-data">{% csrf_token %}
+                    <form id="message-form2" method="post" enctype="multiple/form-data">{% csrf_token %}
                         <div class="row">
                             <div class="row">
                                 <div class="input-field col s12">
@@ -98,8 +98,8 @@ Base para la interfaz en comun de todos los usuarios.
                                 <button type="submit" id="sendformpubli"
                                         class="waves-effect waves-light btn right blue">
                                     Enviar<i class="material-icons right">send</i></button>
-                                <button type="button" id="close"
-                                        class="waves-effect waves-light btn right transparent black-text">Cerrar<i
+                                <button type="button"
+                                        class="waves-effect waves-light btn right transparent black-text close">Cerrar<i
                                         class="material-icons right">close</i></button>
                                 <div class="file-field input-field">
                                     <div class="btn">
@@ -123,12 +123,12 @@ Base para la interfaz en comun de todos los usuarios.
         <div class="row">
             <div id="self-page-wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
                 <div class="row">
-                    <div id="status" class="col s12 title-page-wrapper">
+                    <div class="col s12 title-page-wrapper">
                         <h4><i class="material-icons left">send</i>Publicar comentario</h4>
                         <h6>Publica un comentario para que el mundo lo vea.</h6>
                     </div>
                 </div>
-                <form id="message-form3" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <form id="message-form3" method="post" enctype="multipart/form-data">{% csrf_token %}
                     <div class="row">
                         <div class="row">
                             <div class="input-field col s12">
@@ -147,8 +147,8 @@ Base para la interfaz en comun de todos los usuarios.
                             <button type="submit" id="sendselfformpubli"
                                     class="waves-effect waves-light btn right blue">
                                 Enviar<i class="material-icons right">send</i></button>
-                            <button type="button" id="close"
-                                    class="waves-effect waves-light btn right transparent black-text">Cerrar<i
+                            <button type="button"
+                                    class="waves-effect waves-light btn right transparent black-text close">Cerrar<i
                                     class="material-icons right">close</i></button>
                             <div class="file-field input-field">
                                 <div class="btn">
@@ -255,7 +255,7 @@ Base para la interfaz en comun de todos los usuarios.
     {% block create-group %}
         <div class="row">
             <div id="create_group" class="col l5 m12 s12 compose-div default-div" style="display: none;">
-                <form id="from_new_group" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <form id="from_new_group" method="post" enctype="multipart/form-data">{% csrf_token %}
                     <div class="row">
                         {{ groupForm.name.errors }}
                         <div class="input-field col s12">

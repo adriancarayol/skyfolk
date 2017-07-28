@@ -78,13 +78,13 @@ $(document).ready(function () {
     });
 
     /* Close page-wrapper (mensaje) */
-    $(page_wrapper).find('#close').on('click', function (event) {
+    $(page_wrapper).find('.close').on('click', function (event) {
         event.preventDefault();
         $(page_wrapper).find('#message2').val('');
         $(page_wrapper).hide();
     });
     /* Close self-page-wrapper (mensaje propio) */
-    $(self_page_wrapper).find('#close').on('click', function (event) {
+    $(self_page_wrapper).find('.close').on('click', function (event) {
         event.preventDefault();
         $(self_page_wrapper).find('#message3').val('');
         $(self_page_wrapper).hide();

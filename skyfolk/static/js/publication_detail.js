@@ -6,7 +6,7 @@ $(document).ready(function () {
     var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Abrir respuesta a comentario */
-    $(thread).on('click', '#options-comments .fa-reply', function () {
+    $(thread).on('click', '.options_comentarios .fa-reply', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
@@ -24,7 +24,7 @@ $(document).ready(function () {
     });
 
     /* Agregar skyline */
-    $(this).on('click', '#options-comments .add-timeline', function () {
+    $(this).on('click', '.options_comentarios .add-timeline', function () {
         var tag = this;
         $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
         $(wrapper_shared_pub).show();
@@ -45,28 +45,28 @@ $(document).ready(function () {
     });
 
     /* Eliminar skyline */
-    $(this).on('click', '#options-comments .remove-timeline', function () {
+    $(this).on('click', '.options_comentarios .remove-timeline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var tag = this;
         AJAX_add_timeline_detail($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
-    $(thread).on('click', '#options-comments .like-comment', function () {
+    $(thread).on('click', '.options_comentarios .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_like_detail(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
-    $(thread).on('click', '#options-comments .hate-comment', function () {
+    $(thread).on('click', '.options_comentarios .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_hate_detail(caja_publicacion, heart, "publication");
     });
 
     /* Borrar publicacion */
-    $(thread).on('click', '#options-comments .fa-trash', function () {
+    $(thread).on('click', '.options_comentarios .fa-trash', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
             title: "Are you sure?",
@@ -87,12 +87,12 @@ $(document).ready(function () {
     });
     
     /* Editar comentario */
-    $(thread).on('click', '#edit-comment-content', function () {
+    $(thread).on('click', '.edit-comment', function () {
         var id = $(this).attr('data-id');
         $("#author-controls-" + id).slideToggle("fast");
     });
 
-    $(thread).on('click', '#submit_edit_publication', function (event) {
+    $(thread).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var id = $(this).attr('data-id');
         var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
@@ -117,7 +117,7 @@ function AJAX_delete_publication_detail(caja_publicacion) {
         data: data,
         success: function (data) {
             // borrar caja publicacion
-            if (data == true) {
+            if (data.response == true) {
                 $(caja_publicacion).fadeToggle("fast");
             } else {
                 swal({

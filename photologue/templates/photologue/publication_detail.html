@@ -65,15 +65,16 @@
             <div class="row row-pub">
                 <div class="col s12">
                     <div class="row">
-                        <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11" style="border-right: 2px solid #1e88e5;"{% endif %}
-                             id="pub-{{ node.pk }}"
+                        <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" {% if node.level > 0 %}
+                             style="border-right: 2px solid #1e88e5;"{% endif %}
+                             id="pub-{{ node.id }}"
                              data-id="{{ user.pk }}">
                         <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><a class="fa fa-plus-square-o" aria-hidden="true" href="/publication/{{ node.id }}/"></a></span>
                     {% if user.id == node.p_author.id %}
                             {% if node.event_type == 1 or node.event_type == 3 %}
-                                <span data-id="{{ node.pk }}" id="edit-comment-content"
+                                <span data-id="{{ node.pk }}"
                                       class="top-options edit-comment tooltipped"
                                       data-position="bottom"
                                       data-delay="50"
@@ -92,14 +93,14 @@
                                             <span class="chip">
                                                         {% avatar node.parent.p_author %}
                                                         <i class="fa fa-reply"></i> <a
-                                                    href="/publication/{{ node.parent.id }}">@{{ node.parent.author }} <b>#{{ node.level }}</b></a>
+                                                    href="/publication/{{ node.parent.id }}">@{{ node.parent.p_author }} <b>#{{ node.level }}</b></a>
                                                 </span>
                                         {% endif %}
                                     </h2>
                                     <div class="row">
                                         <div class="parrafo comment">
-                                            <p id="pub-created"
-                                               class="blue-text text-darken-2">{{ node.created|naturaltime }}</p>
+                                            <p
+                                               class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}</p>
                                             <div class="wrp-comment">{{ node.content|safe }}</div>
                                         </div>
                                         <div class="show-more" id="show-comment-{{ node.pk }}">
@@ -156,7 +157,7 @@
                             </div>
                             <div class="row">
                                 <div class="divider"></div>
-                                <div class="options_comentarios col s12" id="options-comments">
+                                <div class="options_comentarios col s12">
                                     <ul class="opciones">
                                         {% if user.id == node.p_author.username %}
                                             {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
@@ -192,10 +193,10 @@
                                     </ul>
                                 </div>
                             </div>
-                        {% if user.id == node.author.id %}
+                        {% if user.id == node.p_author.id %}
                         {% if node.event_type == 1  or node.event_type == 3 %}
-                            <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
-                                 class="author-controls">
+                            <div data-user-id="{{ node.p_author.pk }}" id="p_author-controls-{{ node.pk }}"
+                                 class="p_author-controls">
                                 <div class="row">
                                     <div class="col s12">
                                         <form method="post" accept-charset="utf-8">{% csrf_token %}
@@ -212,7 +213,7 @@
                                                 <div class="row">
                                                     <button data-id="{{ node.pk }}"
                                                             class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
-                                                            type="button" id="submit_edit_publication">Editar
+                                                            type="button">Editar
                                                         <i class="material-icons right">mode_edit</i>
                                                     </button>
                                                 </div>
