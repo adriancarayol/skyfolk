@@ -118,12 +118,8 @@ $(document).ready(function () {
 
     /* Submit creacion de grupo */
     $('button#btn_new_group').on('click', function (event) {
-        event.preventDefault();
-        var form = $(this).closest('#from_new_group');
-        var owner_pk = $(form).find('input[name=owner]').val();
-        console.log(owner_pk);
-        var data = $(form).serialize();
-        AJAX_submit_group(data);
+        event.preventDefault(); 
+        AJAX_submit_group();
     });
     /**** ATAJOS DE TECLADO ****/
 
@@ -650,12 +646,18 @@ function AJAX_submit_publication(obj_form, type, pks) {
 }
 
 
-function AJAX_submit_group(data) {
+function AJAX_submit_group() {
+    var form = new FormData($('#from_new_group').get(0));
+    form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     $.ajax({
         url: '/create_group/',
         type: 'POST',
         dataType: 'json',
-        data: data,
+        contentType: false,
+        processData: false,
+        async: true,
+        enctype: 'multipart/form-data',
+        data: form,
         success: function (data) {
             var response = data.response;
             if (response == true) {

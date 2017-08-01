@@ -18,9 +18,9 @@
                                 <div class="row">
                                     <div class="col s12">
                                         <div class="header">
-                                            {% if group.large_image and group.large_image|file_exists %}
+                                            {% if group.back_image  %}
                                                 <img class="back-profile-user"
-                                                     src="{{ MEDIA_URL }}{{ group.large_image }}">
+                                                     src="{{ MEDIA_URL }}{{ group.back_image }}">
                                             {% else %}
                                                 <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                                             {% endif %}
@@ -29,12 +29,12 @@
                                             <div class="bg-user">
                                                 <div onclick="location.href='/group/{{ group.slug }}'"
                                                      class="profile-user-bg">
-                                                    {% if group.small_image and group.small_image|file_exists %}
-                                                        <img src="{{ MEDIA_URL }}{{ group.small_image }}"
-                                                             alt="small_image_group">
+                                                    {% if group.avatar %}
+                                                        <img src="{{ MEDIA_URL }}{{ group.avatar }}"
+                                                             alt="avatar_group">
                                                     {% else %}
                                                         <img src="{{ STATIC_URL }}img/nuevo.png"
-                                                             alt="small_image_group">
+                                                             alt="avatar_group">
                                                     {% endif %}
                                                 </div>
                                             </div>

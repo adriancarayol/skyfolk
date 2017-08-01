@@ -6,8 +6,8 @@
 {% for item in user_list %}
     <li id="friend-{{ item.user__id }}">
         <div class="usr-img img-responsive">{% avatar item.user__username %}</div>
-        <a class="name" href="/profile/{{ item.user__username }}">{{ item.user__first_name }} {{ item.user__last_name }}
-            ({{ item.user__username }})</a>
+        <a class="name" href="/profile/{{ item.username }}">{{ item.first_name }} {{ item.last_name }}
+            ({{ item.username }})</a>
     </li>
 {% endfor %}
 {% show_more %}

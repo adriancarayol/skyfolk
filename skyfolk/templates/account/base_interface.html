@@ -273,6 +273,28 @@ Base para la interfaz en comun de todos los usuarios.
                         </div>
                     </div> 
                     <div class="row">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Avatar</span>
+                                {{ groupForm.avatar }}
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Cabecera</span>
+                                {{ groupForm.back_image }}
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col s12">
                             <button type="submit" id="btn_new_group"
                                     class="waves-effect waves-light btn right blue">

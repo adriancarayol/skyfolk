@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import JsonResponse, Http404
@@ -33,13 +34,13 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-
-        print('POST DATA: {}'.format(request.POST))
         if form.is_valid():
             try:
                 group = form.save(commit=False)
                 user = self.request.user
                 group.owner = user
+                group.avatar = request.FILES.get('avatar', None)
+                group.back_image = request.FILES.get('back_image', None)
                 try:
                     with transaction.atomic():
                         with db.transaction:
@@ -86,24 +87,29 @@ def group_profile(request, groupname, template='groups/group_profile.html',
     user = request.user
     try:
         group_profile = UserGroups.objects.get(slug=groupname)
+    except UserGroups.DoesNotExist:
+        raise Http404
+
+    try:
+        node_group = NodeGroup.nodes.get(group_id=group_profile.id)
     except NodeGroup.DoesNotExist:
         raise Http404
 
-    follow_group = None
     group_initial = {'owner': user.pk}
-    likes = None # LikeGroup.objects.filter(to_like=group_profile).count()
-    user_like_group = None # LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
-    users_in_group = None # group_profile.users.count()
+    likes = LikeGroup.objects.filter(to_like=group_profile).count()
+    user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
+    users_in_group = len(node_group.members.all())
 
+    members = node_group.members.all()
+    list_user_id = [x.user_id for x in members]
+    user_list = User.objects.filter(id__in=list_user_id)
     context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
-               'follow_group': follow_group,
+               'follow_group': node_group.members.is_connected(NodeProfile.nodes.get(user_id=user.id)) if group_profile.owner_id != user.id else False,
                'likes': likes,
                'user_like_group': user_like_group,
                'users_in_group': users_in_group,
-               'user_list': [1,2]}
-               #'user_list': group_profile.users.all().values('user__username', 'user__first_name',
-               #                                              'user__last_name')}
+               'user_list': user_list}
 
     if extra_context is not None:
         context.update(extra_context)
@@ -120,27 +126,39 @@ def follow_group(request):
         if request.is_ajax():
             user = request.user
             group_id = request.POST.get('id', None)
-            print('GROUP ID: {group_id}'.format(**locals()))
             group = get_object_or_404(UserGroups,
                                       pk=group_id)
-            try:
-                if user.pk != group.owner.pk:
-                    obj, created = group.users.get_or_create(
-                        user=user, rol='N')
-                else:
+
+            if user.pk != group.owner.pk:
+                try:
+                    g = NodeGroup.nodes.get(group_id=group_id)
+                except NodeGroup.DoesNotExist:
+                    g = None
+                    #TODO: Return error
+                    pass
+
+                try:
+                    n = NodeProfile.nodes.get(user_id=user.id)
+                except NodeProfile.DoesNotExist:
+                    n = None
+                    #TODO: Return error
+                    pass
+
+                created = g.members.is_connected(n)
+                if created:
                     return JsonResponse({
-                        'response': "own_group",
+                        'response': "in_group"
                     })
-            except IntegrityError:
-                created = False
-            if not created:
+
+                g.members.connect(n)
                 return JsonResponse({
-                    'response': "in_group"
+                    'response': "user_add"
                 })
-            group.save()
-            return JsonResponse({
-                'response': "user_add"
-            })
+            else:
+                return JsonResponse({
+                    'response': "own_group",
+                })
+
     return JsonResponse({
         'response': "error"
     })
@@ -158,12 +176,19 @@ def unfollow_group(request):
             group = get_object_or_404(UserGroups, pk=group_id)
             if user.pk != group.owner.pk:
                 try:
-                    group.users.filter(user=user).delete()
-                    try:
-                        group.save()
-                        return HttpResponse(json.dumps("user_unfollow"), content_type='application/javascript')
-                    except IntegrityError:
-                        return HttpResponse(json.dumps("error"), content_type='application/javascript')
+                    node_group = NodeGroup.nodes.get(group_id=group_id)
+                except NodeGroup.DoesNotExist:
+                    #TODO: Return error
+                    pass
+                try:
+                    n = NodeProfile.nodes.get(user_id=user.id)
+                except NodeProfile.DoesNotExist:
+                    #TODO: Return error
+                    pass
+
+                try:
+                    node_group.members.disconnect(n)
+                    return HttpResponse(json.dumps("user_unfollow"), content_type='application/javascript')
                 except UserGroups.DoesNotExist:
                     return HttpResponse(json.dumps("error"), content_type='application/javascript')
             else:
@@ -182,11 +207,6 @@ def like_group(request):
             group_id = request.POST.get('id', None)
             group = get_object_or_404(UserGroups,
                                       pk=group_id)
-
-            print('user_pk: {} owner_pk: {}'.format(user.pk, group.owner.pk))
-            if user.pk == group.owner.pk:
-                return JsonResponse(
-                    {'response': 'own_group'})
 
             like, created = LikeGroup.objects.get_or_create(
                 from_like=user, to_like=group)
@@ -209,7 +229,10 @@ class FollowersGroup(AjaxListView):
     page_template = 'groups/followers_page.html'
 
     def get_queryset(self):
-        return UserGroups.objects.get(slug__exact=self.kwargs['groupname']).users.all()
+        group_id = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
+        node_group = NodeGroup.nodes.get(group_id=group_id.id)
+        user_ids = [x.user_id for x in node_group.members.all()]
+        return User.objects.filter(id__in=user_ids)
 
 
 followers_group = login_required(FollowersGroup.as_view(), login_url='/')

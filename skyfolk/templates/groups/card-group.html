@@ -12,15 +12,19 @@
                 <a><i class="fa fa-thumb-tack"></i></a>
             </div>
             <div class="user-avatar">
-                {% if group_profile.large_image and group_profile.large_image|file_exists %}
-                    <img src="{{ group_profile.large_image.url }}" class="user-bg">
+                {% if group_profile.back_image %}
+                    <img src="{{ group_profile.back_image.url }}" class="user-bg">
                 {% else %}
                     <img src="{{ STATIC_URL }}img/nuevo_back.png" class="user-bg">
                 {% endif %}
-                <div class="caja">
+                <div class="group-tool">
                     <div class="item">
                         <div class="user-pic">
-                            <img src="{{ STATIC_URL }}img/nuevo.png" height="120" width="120">
+                            {% if group_profile.avatar %}
+                                <img src="{{ group_profile.avatar.url }}" height="120" width="120">
+                            {% else %}
+                                <img src="{{ STATIC_URL }}img/nuevo.png" height="120" width="120">
+                            {% endif %}
                         </div>
                         <span class="informacion">
                         {% if follow_group %}

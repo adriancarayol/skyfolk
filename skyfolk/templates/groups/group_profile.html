@@ -1,14 +1,10 @@
 {% extends "groups/base_group.html" %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css"
-          onload="if(media!='all')media='all'">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css"
-          onload="if(media!='all')media='all'">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/group_profile.css"
-          onload="if(media!='all')media='all'">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/group_profile.css">
     {% block extra-js %}
         <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
-
     {% endblock %}
 {% endblock %}
 {% block title %} <title> Grupo {{ group_profile.name }}</title> {% endblock %}

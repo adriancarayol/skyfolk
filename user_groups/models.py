@@ -7,6 +7,7 @@ from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerPr
 from django.utils.text import slugify
 from user_profile.models import NodeProfile, TagProfile
 
+
 def upload_small_group_image(instance, filename):
     return '%s/small_group_image/%s' % (instance.name, filename)
 
@@ -25,77 +26,11 @@ class NodeGroup(DjangoNode):
         app_label = 'group_node'
 
 
-class RolUserGroup(models.Model):
-    """
-    Establece un rol para un usuario especifico
-    dentro de un grupo.
-    """
-    ROL_CHOICES = (
-        ('A', 'Admin'),
-        ('M', 'Mod'),
-        ('N', 'Normal'),
-    )
-    user = models.ForeignKey(User, related_name='rol_user', blank=True, null=True)
-    rol = models.CharField(max_length=1, choices=ROL_CHOICES, default='A')
+def group_avatar_path(instance, filename):
+    return 'group_{0}_avatar/{1}'.format(instance.id, filename)
 
-    def get_rol_verbose(self):
-        return dict(RolUserGroup.ROL_CHOICES)[self.rol]
-
-
-class UserGroupsQuerySet(models.QuerySet):
-    """
-    QuerySet para UserGroups
-    """
-
-    def get_normal(self):
-        """
-        :return: Los usuarios con el rol normal
-        """
-        return self.filter(users__rol='N')
-
-    def get_admin(self):
-        """
-        :return: Los usuarios con el rol administrador
-        """
-        return self.filter(users__rol='A')
-
-    def get_mod(self):
-        """
-        Devuelve los usuarios con el rot mod
-        :return: Los usuarios con el rol mod
-        """
-        return self.filter(users__rol='M')
-
-    def is_follow(self, group_id, user_id):
-        """
-        :param user_id: ID del usuario del que se quiere comprobar
-        si es seguidor del grupo
-        :param group_id: ID del grupo del que se quiere saber
-        si un usuario lo sigue
-        :return: Si un usuario es seguidor o no del grupo
-        """
-        return self.filter(id=group_id, users__user=user_id).exists()
-
-
-class UserGroupsManager(models.Manager):
-    """
-    Manager para UserGroups
-    """
-
-    def get_queryset(self):
-        return UserGroupsQuerySet(self.model, using=self._db)
-
-    def get_normal(self):
-        return self.get_queryset().get_normal()
-
-    def get_admin(self):
-        return self.get_queryset().get_admin()
-
-    def get_mod(self):
-        return self.get_queryset().get_mod()
-
-    def is_follow(self, group_id, user_id):
-        return self.get_queryset().is_follow(group_id=group_id, user_id=user_id)
+def group_back_image_path(instance, filename):
+    return 'group_{0}_back_image/{1}'.format(instance.id, filename)
 
 
 class UserGroups(Group):
@@ -106,6 +41,8 @@ class UserGroups(Group):
     slug = models.SlugField(max_length=100, unique=True)
     description = models.SlugField(max_length=500)
     is_public = models.BooleanField(default=True)
+    avatar = models.ImageField(upload_to=group_avatar_path, null=True, blank=True)
+    back_image = models.ImageField(upload_to=group_back_image_path, null=True, blank=True)
 
     class Meta:
         permissions = (
@@ -162,4 +99,4 @@ class LikeGroup(models.Model):
 
     def __str__(self):
         return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.username, self.to_like.name,
-                                                                elf.created)
+                                                                self.created)
