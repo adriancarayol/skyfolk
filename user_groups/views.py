@@ -13,6 +13,9 @@ from el_pagination.views import AjaxListView
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup, NodeGroup
+from neomodel import db
+from django.db import transaction
+from user_profile.models import NodeProfile
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -33,13 +36,21 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
 
         print('POST DATA: {}'.format(request.POST))
         if form.is_valid():
-            print('IS VALID')
             try:
                 group = form.save(commit=False)
-                group.owner = self.request.user
-                group.save()
-                # Without this next line the tags won't be saved.
-                #form.save_m2m()
+                user = self.request.user
+                group.owner = user
+                try:
+                    with transaction.atomic():
+                        with db.transaction:
+                            group.save()
+                            g = NodeGroup(group_id=group.id,
+                                    title=group.name).save()
+                            n = NodeProfile.nodes.get(user_id=user.id)
+                            g.members.connect(n)
+                except Exception as e:
+                    print(e)
+                    return self.form_invalid(form=form)
             except IntegrityError as e:
                 print("views.py line 30 -> {}".format(e))
             return self.form_valid(form=form)
@@ -74,7 +85,7 @@ def group_profile(request, groupname, template='groups/group_profile.html',
     """
     user = request.user
     try:
-        group_profile = NodeGroup.nodes.get(slug=groupname)
+        group_profile = UserGroups.objects.get(slug=groupname)
     except NodeGroup.DoesNotExist:
         raise Http404
 

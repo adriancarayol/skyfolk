@@ -269,33 +269,9 @@ Base para la interfaz en comun de todos los usuarios.
                         <div class="input-field col s12">
                             <i class="material-icons prefix">description</i>
                             {{ groupForm.description }}
-                            <label for="description-area">Escribe una descripcion para el grupo.</label>
+                            <label for="id_description">Escribe una descripcion para el grupo.</label>
                         </div>
-                    </div>
-                    <div class="row">
-                        {{ groupForm.type.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">description</i>
-                            {{ groupForm.type }}
-                            <label for="id_type">¿De que tipo es tu grupo? (Ocio, Deportes...).</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ groupForm.tags.errors }}
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">label</i>
-                            {{ groupForm.tags }}
-                            <label for="id_tags">{{ groupForm.tags.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ groupForm.privacity.errors }}
-                        <div class="input-field col s12">
-                            {{ groupForm.privacity }}
-                            <label for="id_privacity">{{ groupForm.privacity.help_text }}</label>
-                        </div>
-                    </div>
-                    {{ groupForm.owner }}
+                    </div> 
                     <div class="row">
                         <div class="col s12">
                             <button type="submit" id="btn_new_group"

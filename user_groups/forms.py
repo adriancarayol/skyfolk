@@ -9,7 +9,7 @@ class FormUserGroup(forms.ModelForm):
 
     class Meta:
         model = UserGroups
-        fields = ['name']
+        fields = ['name', 'description', 'is_public']
 
     def __init__(self, *args, **kwargs):
         super(FormUserGroup, self).__init__(*args, **kwargs)

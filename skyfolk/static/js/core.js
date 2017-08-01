@@ -658,9 +658,10 @@ function AJAX_submit_group(data) {
         data: data,
         success: function (data) {
             var response = data.response;
-            console.log('RESPONSE AQUI (grupos): ' + response);
             if (response == true) {
-                $('#create_group').hide();
+                var create_group = $('#create_group');
+                create_group.hide();
+                create_group.find('input').val('');
             } else {
                 swal({
                     title: "¡Ups!",

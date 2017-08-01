@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.auth.models import Group
 from django_neomodel import DjangoNode
 from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, One
+from django.utils.text import slugify
+from user_profile.models import NodeProfile, TagProfile
 
 def upload_small_group_image(instance, filename):
     return '%s/small_group_image/%s' % (instance.name, filename)
@@ -14,13 +16,10 @@ def upload_large_group_image(instance, filename):
 
 
 class NodeGroup(DjangoNode):
-    slug = StringProperty(unique_index=True)
     title = StringProperty(unique_index=True)
     group_id = IntegerProperty(unique_index=True)
-    description = StringProperty()
     members = RelationshipFrom('NodeProfile', 'MEMBER')
     interest = RelationshipTo('TagProfile', 'INTEREST_GROUP')
-    owner = RelationshipTo('NodeProfile', 'OWNER', cardinality=One)
 
     class Meta:
         app_label = 'group_node'
@@ -104,6 +103,10 @@ class UserGroups(Group):
         Proxy para grupos.
     """
     owner = models.ForeignKey(User, related_name='owner_group')
+    slug = models.SlugField(max_length=100, unique=True)
+    description = models.SlugField(max_length=500)
+    is_public = models.BooleanField(default=True)
+
     class Meta:
         permissions = (
             ('view_notification', 'View notification'),
@@ -115,6 +118,9 @@ class UserGroups(Group):
             ('modify_notification', 'Modify notification'),
         )
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(UserGroups, self).save(*args, **kwargs)
 
 class LikeGroupQuerySet(models.QuerySet):
     def has_like(self, group_id, user_id):
