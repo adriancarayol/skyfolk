@@ -247,6 +247,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'user_profile.custom_context.notifications_processor',
                 'user_profile.custom_context.search_processor',
+                'user_profile.custom_context.group_processor',
             ],
         },
     },

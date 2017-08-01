@@ -30,7 +30,6 @@ from notifications.signals import notify
 from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
 from publications.models import Publication, PublicationImage, PublicationVideo
-from user_groups.forms import FormUserGroup
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
@@ -68,11 +67,9 @@ def profile_view(request, username,
     privacity = n.is_visible(m)
 
     # Para escribir mensajes en mi propio perfil.
-    group_initial = {'owner': user.pk}
     context['user_profile'] = user_profile
     context['node_profile'] = n
     context['privacity'] = privacity
-    context['groupForm'] = FormUserGroup(initial=group_initial)
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":

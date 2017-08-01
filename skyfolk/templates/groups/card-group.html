@@ -44,12 +44,13 @@
                     </div>
                 </div>
             </div>
-            <header>
-                <p class="user-profile-name">{{ group_profile.name }}</p><br>
+            <div class="group-info center">
+                <br>
+                <p class="group-name"><b>{{ group_profile.name }}</b></p><br>
                 {% if group_profile.description != None %}
-                    <p class="status">{{ group_profile.description }}</p><br><br>
+                    <p class="group-description">{{ group_profile.description }}</p><br><br>
                 {% endif %}
-            </header>
+            </div>
             <ul id="user-stats" class="stats">
                 <li>
                     <a href="/users/{{ group_profile.slug }}"><strong

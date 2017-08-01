@@ -70,7 +70,7 @@ class UserGroupList(ListView):
     """
     model = UserGroups
     template_name = "groups/list_group.html"
-
+    paginate_by = 20
 
 group_list = login_required(UserGroupList.as_view(), login_url='/')
 
@@ -250,7 +250,7 @@ class LikeListGroup(AjaxListView):
         group = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
         return LikeGroup.objects.filter(to_like=group).values('from_like__username',
                                                               'from_like__first_name', 'from_like__last_name',
-                                                              'from_like__profile__backImage')
+                                                              )
 
 
 likes_group = login_required(LikeListGroup.as_view(), login_url='/')
