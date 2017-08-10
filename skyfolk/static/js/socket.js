@@ -265,7 +265,9 @@ var UTILS = UTILS || (function () {
                     var show = $('div#pub-' + data.id + '').find('#show-comment-' + data.id + '');
                     /* Eliminamos el div de "Este perfil no tiene comentarios" */
                     if ($(no_comments).is(':visible')) {
-                        $(no_comments).fadeOut();
+                        $(no_comments).fadeOut(function() {
+                            $(this).remove();
+                        });
                     }
                     var wrapper_content = $('#pub-' + data.id + '').find('.wrp-comment');
                     /* Comprobamos la longitud del nuevo comentario */

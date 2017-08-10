@@ -2,4 +2,6 @@
 {{ object.title }}
 {{ object.thumbnail }}
 {{ object.url_image }}
-{{ object.date_added }}
+{{ object.date }}
+{{ object.external_image }}
+{{ object.slug }}

@@ -97,16 +97,6 @@ Template para el perfil de cada usuario
                             Incluimos el tab comentarios
                             {% endcomment %}
                             <div id="tab-comentarios">
-                                {% if publications|length == 0 %}
-                                <!-- Si el usuario no tiene comentarios, proponemos uno -->
-                                <div class="no-comments" id="without-comments">
-                                    <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-                                    <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
-                                       class="no-comments-new-comment">
-                                        <i class="fa fa-paper-plane fa-lg"></i>
-                                    </a>
-                                </div>
-                                {% else %} 
                                 <div class="btn-filters row">
                                     <div id="react">
                                         <i class="fa fa-lg fa-spinner fa-spin"></i><br><br>
@@ -116,6 +106,16 @@ Template para el perfil de cada usuario
                                     </script>
                                     <script src="{{ STATIC_URL }}js/{{component}}"></script>
                                 </div>
+                                {% if publications|length == 0 %}
+                                <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                                <div class="no-comments" id="without-comments">
+                                    <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+                                    <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
+                                       class="no-comments-new-comment">
+                                        <i class="fa fa-paper-plane fa-lg"></i>
+                                    </a>
+                                </div>
+                                {% else %}  
                                 {% include "account/profile_comments.html" %}
                                 {% endif %}
                             </div>
