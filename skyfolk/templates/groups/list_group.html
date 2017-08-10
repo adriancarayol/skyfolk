@@ -71,7 +71,7 @@
 </div>
 <div class="row">
     {% if is_paginated %}
-    <ul class="pagination">
+    <ul class="pagination center">
         {% if page_obj.has_previous %}
         <li><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
         {% else %}
@@ -79,7 +79,7 @@
         {% endif %}
         {% for i in paginator.page_range %}
         {% if page_obj.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+        <li class="active blue darken-1 white-text"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
         {% else %}
         <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
         {% endif %}

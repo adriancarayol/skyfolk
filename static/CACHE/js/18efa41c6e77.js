@@ -1,0 +1,1 @@
+$('.chips-placeholder').material_chip({placeholder:'Introduce un tema',secondaryPlaceholder:'+Música, +Cine...'});

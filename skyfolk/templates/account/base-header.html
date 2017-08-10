@@ -1,5 +1,5 @@
 {% comment %}
-  Base para el head de la pagina (menu horizontal con busqueda etc...)
+Base para el head de la pagina (menu horizontal con busqueda etc...)
 {% endcomment %}
 {% load notification_tags %}
 {% load compress %}
@@ -24,19 +24,20 @@
 </div>
 <li id="loader"></li>
 {% compress js %}
-    <script src="{{ STATIC_URL }}js/core.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.shorten.1.0.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.textcomplete.min.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.shorten.1.0.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/materialize.min.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}dist/sweetalert.min.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/materialize.min.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/core.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/jquery.shorten.1.0.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/jquery.textcomplete.min.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}js/jquery.shorten.1.0.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL }}dist/sweetalert.min.js" type="text/javascript"></script> 
 {% endcompress %}
+
 <!-- <script async src="{{STATIC_URL}}js/jquery.textcomplete.js"></script> -->
 <!-- Mentions -->
 <!--
-    <script src="{{STATIC_URL}}js/mentions/bootstrap-typeahead.js"></script>
-    <script src="{{STATIC_URL}}js/mentions/mention.js"></script>
-  -->
+<script src="{{STATIC_URL}}js/mentions/bootstrap-typeahead.js"></script>
+<script src="{{STATIC_URL}}js/mentions/mention.js"></script>
+-->
 <!-- Sweet Alert -->
 {% compress css %}
 <link rel="stylesheet" href="{{ STATIC_URL }}dist/sweetalert.css">

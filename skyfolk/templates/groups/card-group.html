@@ -27,7 +27,9 @@
                             {% endif %}
                         </div>
                         <span class="informacion">
-                        {% if follow_group %}
+                        {% if group_owner %}
+                            <span id="configurationOnProfile" class="fa fa-cog" title="Configuracion"></span>
+                        {% elif follow_group %}
                             <span id="unfollow-group" class="fa fa-remove group-follow" title="Dejar de seguir"
                                   style="color: #29b203;"></span>
                         {% else %}

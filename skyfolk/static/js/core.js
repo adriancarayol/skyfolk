@@ -11,10 +11,9 @@ $(document).ready(function () {
     var _group_profile = $('#group-profile');
     var tab_comentarios = $('#tab-comentarios');
 
-    $('select').material_select();
+    $('select').material_select(); 
 
     $('textarea#message2, textarea#message3').characterCounter();
-
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin

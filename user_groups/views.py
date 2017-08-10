@@ -72,6 +72,7 @@ class UserGroupList(ListView):
     template_name = "groups/list_group.html"
     paginate_by = 20
 
+
 group_list = login_required(UserGroupList.as_view(), login_url='/')
 
 
@@ -86,7 +87,7 @@ def group_profile(request, groupname, template='groups/group_profile.html',
     """
     user = request.user
     try:
-        group_profile = UserGroups.objects.get(slug=groupname)
+        group_profile = UserGroups.objects.select_related('owner').get(slug=groupname)
     except UserGroups.DoesNotExist:
         raise Http404
 
@@ -109,6 +110,7 @@ def group_profile(request, groupname, template='groups/group_profile.html',
                'likes': likes,
                'user_like_group': user_like_group,
                'users_in_group': users_in_group,
+               'group_owner': True if user.id == group_profile.owner_id else False,
                'user_list': user_list}
 
     if extra_context is not None:
