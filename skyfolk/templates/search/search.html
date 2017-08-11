@@ -60,6 +60,42 @@ Template para las busquedas
         background-color: rgba(30, 136, 229, 0.5);
         padding: 3px;
     }
+    .publication-div {
+        margin-bottom: 2.5%;
+    }
+    .cards-container {
+        column-break-inside: avoid;
+    }
+    .cards-container .card {
+        display: inline-block;
+        overflow: visible;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .cards-container {
+            -webkit-column-count: 1;
+            -moz-column-count: 1;
+            column-count: 1;
+        }
+    }
+    @media only screen and (min-width: 601px) {
+        .cards-container {
+            -webkit-column-count: 2;
+            -moz-column-count: 2;
+            column-count: 2;
+        }
+    }
+    @media only screen and (min-width: 993px) {
+        .cards-container {
+            -webkit-column-count: 3;
+            -moz-column-count: 3;
+            column-count: 3;
+        }
+    }
+    .text-center {
+        text-align: center;
+    }
+
 </style>
 {% endblock %}
 {% block content %}
@@ -103,7 +139,7 @@ Template para las busquedas
     <div class="row">
         {% for item in object_list %}
         {% if item.model_name == 'user' %}
-        <div class="col l3 m5 s12">
+        <div class="col l2 m6 s12">
             <div class="personal-card">
                 <div class="header">
                     {% if item.profile.backImage %}
@@ -126,10 +162,10 @@ Template para las busquedas
             </div>
         </div>
         {% elif item.model_name == 'publication' %}
-        <div class="col l3 m5 s12">
+        <div class="col l2 m6 s12 publication-div">
             <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
-                <div class="col s3">
-                    {% avatar item.author 60 %}
+                <div class="col s3" style="padding: 10px">
+                    {% avatar item.author 50 %}
                 </div>
                 <div class="col s9">
                     <div class="row">
@@ -137,14 +173,14 @@ Template para las busquedas
                     </div>
                     <div class="row">
                         {% with item.content|safe|truncatechars:"150" as content %}
-                            <p>{% highlight content with request.GET.q %}</p>
+                        <p>{% highlight content with request.GET.q %}</p>
                         {% endwith %}
                     </div>
                 </div>
             </div>
         </div>
         {% elif item.model_name == 'photo' %}
-        <div class="col l2 m12 s12 image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description }}">
+        <div class="col l2 m6 s12 image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description }}">
             <div class="container-image">
                 <div class="principal-content">
                     {% if item.object.tags.all %}
@@ -211,7 +247,7 @@ Template para las busquedas
         <div class="col l3 m5 s12">
             <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                 <div class="col s3">
-                    {% avatar item.author 60 %}
+                    {% avatar item.author 50 %}
                 </div>
                 <div class="col s9">
                     <div class="row">
@@ -219,7 +255,7 @@ Template para las busquedas
                     </div>
                     <div class="row">
                         {% with item.content|safe|truncatechars:"150" as content %}
-                            <p>{% highlight content with request.GET.q %}</p>
+                        <p>{% highlight content with request.GET.q %}</p>
                         {% endwith %}                    
                     </div>
                 </div>
