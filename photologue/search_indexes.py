@@ -17,6 +17,7 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
     external_image = indexes.CharField(model_attr='url_image')
     tags = indexes.MultiValueField()
     slug = indexes.CharField(model_attr='slug')
+    description = indexes.CharField(model_attr='caption')
 
     def get_model(self):
         return Photo

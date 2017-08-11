@@ -324,7 +324,7 @@
     cursor: pointer;
     display: inline-block;
     clear: both;
-    height: 33px;
+    line-height: 30px;
     box-sizing: border-box;
     padding: 0 1%;
     -webkit-touch-callout: none;
@@ -340,9 +340,6 @@
     border-bottom: 3px solid #1e88e5;
 }
 
-.query-options .list-vertical:nth-child(6) {
-    padding: 0 0 2%;
-}
 
 .query-options .dropdown-options {
     position: absolute;

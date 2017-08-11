@@ -5,9 +5,10 @@ Template para las busquedas
 {% load app_filters %}
 {% load avatar_tags %}
 {% load humanize %}
+{% load highlight %}
 {% block title %} <title>Búsqueda en Skyfolk.</title> {% endblock %}
 {% block include_files %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
 <!-- Estilos para la galeria de fotos -->
 <style>
     .notice-item {
@@ -54,6 +55,11 @@ Template para las busquedas
         margin-top: 2%;
         display: block;
     }
+    .highlighted {
+        font-weight: bold;
+        background-color: rgba(30, 136, 229, 0.5);
+        padding: 3px;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -61,11 +67,11 @@ Template para las busquedas
     <div class="row">
         <div class="col l12 m12 s12">
             <ul class="query-options">
-                <li class="list-vertical" {% if s == 'all' %} style="background-color: #ccccff" {% endif %}><a href="{% url 'user_profile:category-search' 'all' %}?q={{ q }}">Ensalada de Frutas</a></li>
-                <li class="list-vertical" {% if s == 'images' %} style="background-color: #ccccff" {% endif %}><a href="{% url 'user_profile:category-search' 'images' %}?q={{ q }}">Imágenes</a></li>
-                <li class="list-vertical" {% if s == 'publications' %} style="background-color: #ccccff" {% endif %}><a href="{% url 'user_profile:category-search' 'publications' %}?q={{ q }}">Publicaciones</a></li>
-                <li class="list-vertical" {% if s == 'videos' %} style="background-color: #ccccff" {% endif %}><a href="{% url 'user_profile:category-search' 'videos' %}?q={{ q }}">Videos</a></li>
-                <li class="list-vertical" {% if s == 'accounts' %} style="background-color: #ccccff" {% endif %}><a href="{% url 'user_profile:category-search' 'accounts' %}?q={{ q }}">Cuentas</a></li>
+                <li class="list-vertical" {% if s == 'all' %}style="border-bottom: 3px solid #1e88e5;"{% endif %}><a href="{% url 'user_profile:category-search' 'all' %}?q={{ q }}">Ensalada de Frutas</a></li>
+                <li class="list-vertical" {% if s == 'images' %} style="border-bottom: 3px solid #1e88e5;" {% endif %}><a href="{% url 'user_profile:category-search' 'images' %}?q={{ q }}">Imágenes</a></li>
+                <li class="list-vertical" {% if s == 'publications' %} style="border-bottom: 3px solid #1e88e5;" {% endif %}><a href="{% url 'user_profile:category-search' 'publications' %}?q={{ q }}">Publicaciones</a></li>
+                <li class="list-vertical" {% if s == 'videos' %} style="border-bottom: 3px solid #1e88e5;" {% endif %}><a href="{% url 'user_profile:category-search' 'videos' %}?q={{ q }}">Videos</a></li>
+                <li class="list-vertical" {% if s == 'accounts' %} style="border-bottom: 3px solid #1e88e5;" {% endif %}><a href="{% url 'user_profile:category-search' 'accounts' %}?q={{ q }}">Cuentas</a></li>
                 <li class="list-vertical">Más opciones <i class="fa fa-caret-down" aria-hidden="true"></i>
                     <div id="dropdown-search" class="dropdown-options">
                         <ul class="dropdown-ul">
@@ -99,19 +105,17 @@ Template para las busquedas
         {% if item.model_name == 'user' %}
         <div class="col l3 m5 s12">
             <div class="personal-card">
-                <div class="col s12">
-                    <div class="header">
-                        {% if item.profile.backImage %}
-                        <img class="back-profile-user" src="{{ item.profile.backImage.url }}">
-                        {% else %}
-                        <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
-                        {% endif %}
-                        <i class="fa fa-user fa-2x like-him">
-                        </i>
-                        <div class="bg-user">
-                            <div onclick="location.href='/profile/{{ item.author }}'"
-                                class="profile-user-bg">{% avatar item.author %}</div>
-                        </div>
+                <div class="header">
+                    {% if item.profile.backImage %}
+                    <img class="back-profile-user" src="{{ item.profile.backImage.url }}">
+                    {% else %}
+                    <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                    {% endif %}
+                    <i class="fa fa-user fa-2x like-him">
+                    </i>
+                    <div class="bg-user">
+                        <div onclick="location.href='/profile/{{ item.author }}'"
+                            class="profile-user-bg">{% avatar item.author %}</div>
                     </div>
                 </div>
                 <div class="col s12">
@@ -122,15 +126,50 @@ Template para las busquedas
             </div>
         </div>
         {% elif item.model_name == 'publication' %}
-        <div class="col l3 m5 s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
-            <div class="card">
-                <div class="card-content">
-                    <span class="card-title"><a href="/profile/{{ item.author }}">{% avatar item.author 60 class="img-circle" %} @{{ item.author }}</a></span>
-                    <p>{{ item.content|safe|truncatechars:"150" }}</p>
+        <div class="col l3 m5 s12">
+            <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
+                <div class="col s3">
+                    {% avatar item.author 60 %}
                 </div>
-                <div class="card-action right">
-                    <a class="blue-text text-darken-1" href="#">Ver</a>
-                    <a class="blue-text text-darken-1" href="#">OK</a>
+                <div class="col s9">
+                    <div class="row">
+                        <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</p>
+                    </div>
+                    <div class="row">
+                        {% with item.content|safe|truncatechars:"150" as content %}
+                            <p>{% highlight content with request.GET.q %}</p>
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif item.model_name == 'photo' %}
+        <div class="col l2 m12 s12 image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description }}">
+            <div class="container-image">
+                <div class="principal-content">
+                    {% if item.object.tags.all %}
+                    <div class="tags-content">
+                        {% for tag in item.object.tags.all %}
+                        <blockquote
+                            onclick="location.href='{% url 'photologue:collection-list' item.author tag.name %}'">{{ tag.name }}</blockquote>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <img class="lazyload" data-src="
+                    {% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                    alt="{{ item.title }}" title="{{ item.title }}"
+                    onclick="location.href='/photo/{{ item.slug }}'">
+                </div>
+                <div class="col s12 legend-content">
+                    <div class="legend-user-image">
+                        {% avatar item.author %}
+                    </div>
+                    <div class="col l8 m8 s8 legend-user-data">
+                        <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
+                        <i class="photo-title truncate">{{ item.title }}</i>
+                        <i class="truncate photo-date"><i class="fa fa-clock-o"
+                                aria-hidden="true"></i> {{ item.date|naturaltime }}</i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -138,25 +177,22 @@ Template para las busquedas
         {% endfor %}
     </div>
     {% endif %}
-
     {% if s == 'accounts' %}
     <div class="row">
         {% for item in object_list %}
         <div class="col l3 m5 s12">
             <div class="personal-card">
-                <div class="col s12">
-                    <div class="header">
-                        {% if item.profile.backImage %}
-                        <img class="back-profile-user" src="{{ item.profile.backImage.url }}">
-                        {% else %}
-                        <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
-                        {% endif %}
-                        <i class="fa fa-user fa-2x like-him">
-                        </i>
-                        <div class="bg-user">
-                            <div onclick="location.href='/profile/{{ item.username }}'"
-                                class="profile-user-bg">{% avatar item.id %}</div>
-                        </div>
+                <div class="header">
+                    {% if item.profile.backImage %}
+                    <img class="back-profile-user" src="{{ item.profile.backImage.url }}">
+                    {% else %}
+                    <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                    {% endif %}
+                    <i class="fa fa-user fa-2x like-him">
+                    </i>
+                    <div class="bg-user">
+                        <div onclick="location.href='/profile/{{ item.username }}'"
+                            class="profile-user-bg">{% avatar item.id %}</div>
                     </div>
                 </div>
                 <div class="col s12">
@@ -169,30 +205,33 @@ Template para las busquedas
         {% endfor %}
     </div>
     {% endif %}
-
     {% if s == 'publications' %}
     <div class="row">
         {% for item in object_list %}
-        <div class="col l3 m5 s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
-            <div class="card">
-                <div class="card-content">
-                    <span class="card-title"><a href="/profile/{{ item.author }}">{% avatar item.author 60 class="img-circle" %} @{{ item.author }}</a></span>
-                    <p>{{ item.content|safe|truncatechars:"150" }}</p>
+        <div class="col l3 m5 s12">
+            <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
+                <div class="col s3">
+                    {% avatar item.author 60 %}
                 </div>
-                <div class="card-action right">
-                    <a class="blue-text text-darken-1" href="#">Ver</a>
-                    <a class="blue-text text-darken-1" href="#">OK</a>
+                <div class="col s9">
+                    <div class="row">
+                        <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</p>
+                    </div>
+                    <div class="row">
+                        {% with item.content|safe|truncatechars:"150" as content %}
+                            <p>{% highlight content with request.GET.q %}</p>
+                        {% endwith %}                    
+                    </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
     {% endif %}
-
     {% if s == 'images' %}
     <div class="row">
         {% for item in object_list %}
-        <div class="col l2 m12 s12 image-div">
+        <div class="col l2 m12 s12 image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description }}">
             <div class="container-image">
                 <div class="principal-content">
                     {% if item.object.tags.all %}
@@ -224,7 +263,6 @@ Template para las busquedas
         {% endfor %}
     </div>
     {% endif %}
-
     {% if s == 'videos' %}
     <div class="row">
         {% for result in object_list %}
