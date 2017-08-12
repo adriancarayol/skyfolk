@@ -180,7 +180,7 @@ Template para las busquedas
             </div>
         </div>
         {% elif item.model_name == 'photo' %}
-        <div class="col l2 m6 s12 image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description }}">
+        <div class="col l2 m6 s12 image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description|truncatechars:"150" }}">
             <div class="container-image">
                 <div class="principal-content">
                     {% if item.object.tags.all %}

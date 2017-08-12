@@ -32,6 +32,7 @@ from .utils import recursive_node_to_dict
 from mptt.templatetags.mptt_tags import cache_tree_children
 from django.db.models import Count
 from avatar.templatetags.avatar_tags import avatar, avatar_url
+from embed_video.backends import detect_backend
 
 
 logging.basicConfig(level=logging.INFO)
@@ -637,6 +638,8 @@ def load_more_comments(request):
                 list_responses[-1]['extra_content_description'] = extra_c.description
                 list_responses[-1]['extra_content_image'] = extra_c.image
                 list_responses[-1]['extra_content_url'] = extra_c.url
+                video = detect_backend(extra_c.video)
+                list_responses[-1]['extra_content_video'] = video.get_embed_code(640, 480)
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True
@@ -736,6 +739,8 @@ def load_more_skyline(request):
                 list_responses[-1]['extra_content_description'] = extra_c.description
                 list_responses[-1]['extra_content_image'] = extra_c.image
                 list_responses[-1]['extra_content_url'] = extra_c.url
+                video = detect_backend(extra_c.video)
+                list_responses[-1]['extra_content_video'] = video.get_embed_code(640, 480)
 
             if have_shared_publication:
                 list_responses[-1]['shared_pub_id'] = shared_pub.pk
