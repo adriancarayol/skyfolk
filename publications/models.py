@@ -335,7 +335,7 @@ class Publication(PublicationBase):
                     extra_content.delete()
 
         try:
-            backend = detect_backend(link_url[-1])  # youtube o soundcloud
+            backend = detect_backend(link_url[-1])  # youtube, soundcloud...
         except (EmbedVideoException, IndexError) as e:
             backend = None
 
@@ -420,6 +420,8 @@ class Publication(PublicationBase):
             notification['extra_content_description'] = extra_c.description
             notification['extra_content_image'] = extra_c.image
             notification['extra_content_url'] = extra_c.url
+            video = detect_backend(extra_c.video)
+            notification['extra_content_video'] = video.get_embed_code(640, 480)
 
         shared_publication = self.shared_publication
         shared_photo_publication = self.shared_photo_publication
@@ -443,6 +445,12 @@ class Publication(PublicationBase):
                 notification['shared_publication_extra_content_description'] = shared_extra_c.description
                 notification['shared_publication_extra_content_image'] = shared_extra_c.image
                 notification['shared_publication_extra_content_url'] = shared_extra_c.url
+                video = detect_backend(shared_extra_c.video)
+                notification['shared_publication_extra_video'] = video.get_embed_code(640, 480)
+                notification['shared_publication_extra_content'] = True
+            else:
+                notification['shared_publication_extra_content'] = False
+
 
         elif shared_photo_publication:
             notification["shared_photo_publication_avatar_path"] = avatar_url(shared_photo_publication.p_author),
@@ -463,6 +471,11 @@ class Publication(PublicationBase):
                 notification['shared_photo_publication_extra_content_description'] = shared_extra_c.description
                 notification['shared_photo_publication_extra_content_image'] = shared_extra_c.image
                 notification['shared_photo_publication_extra_content_url'] = shared_extra_c.url
+                video = detect_backend(shared_extra_c.video)
+                notification['shared_photo_publication_extra_video'] = video.get_embed_code(640, 480)
+                notification['shared_photo_publication_extra_content'] = True
+            else:
+                notification['shared_photo_publication_extra_content'] = False
 
         # Enviamos a todos los usuarios que visitan el perfil
         channel_group(group_name(self.board_owner_id)).send({

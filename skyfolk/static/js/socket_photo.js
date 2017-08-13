@@ -63,6 +63,9 @@ var UTILS = UTILS || (function () {
                     content += "                    </div>";
                     content += "                    </div>";
                     if (data.extra_content) {
+                        if (data.extra_content_video) {
+                            content += data.extra_content_video;
+                        } else {
                         content += '<div class="card small">';
                         content += '<div class="card-image">';
                         if (data.extra_content_image) {
@@ -77,7 +80,8 @@ var UTILS = UTILS || (function () {
                         content += '</div>';
                         content += '<div class="card-action">';
                         content += '<a href="' + data.extra_content_url + '">Ver</a>';
-                        content += '</div></div>';
+                            content += '</div></div>';
+                        }
                     }
                     if (data.images !== undefined && data.images.length > 0) {
                         content += '<div class="row images">';

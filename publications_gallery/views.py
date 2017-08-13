@@ -22,6 +22,8 @@ from .utils import optimize_publication_media
 from django.db.models import Count
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from avatar.templatetags.avatar_tags import avatar
+from embed_video.backends import detect_backend
+
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     """
@@ -629,6 +631,8 @@ def load_more_descendants(request):
                 list_responses[-1]['extra_content_description'] = extra_c.description
                 list_responses[-1]['extra_content_image'] = extra_c.image
                 list_responses[-1]['extra_content_url'] = extra_c.url
+                video = detect_backend(extra_c.video)
+                list_responses[-1]['extra_content_video'] = video.get_embed_code(640, 480)
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True
@@ -714,6 +718,8 @@ def load_more_publications(request):
                 list_responses[-1]['extra_content_description'] = extra_c.description
                 list_responses[-1]['extra_content_image'] = extra_c.image
                 list_responses[-1]['extra_content_url'] = extra_c.url
+                video = detect_backend(extra_c.video)
+                list_responses[-1]['extra_content_video'] = video.get_embed_code(640, 480)
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True

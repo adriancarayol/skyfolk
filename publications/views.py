@@ -748,7 +748,7 @@ def load_more_skyline(request):
                 list_responses[-1]['shared_pub_author'] = shared_pub.author.username
                 list_responses[-1]['shared_pub_avatar'] = avatar(shared_pub.author)
                 list_responses[-1]['shared_created'] = naturaltime(shared_pub.created)
-                list_responses[-1]['shared_images'] = [i.image.url for i in shared_pub.images.all()],
+                list_responses[-1]['shared_images'] = [i.image.url for i in shared_pub.images.all()]
                 list_responses[-1]['shared_videos'] = [v.video.url for v in shared_pub.videos.all()]
 
                 if shared_pub.has_extra_content():
@@ -758,6 +758,12 @@ def load_more_skyline(request):
                     list_responses[-1][
                         'shared_pub_extra_image'] = shared_pub.extra_content.image if shared_pub.extra_content.image else None
                     list_responses[-1]['shared_pub_extra_url'] = shared_pub.extra_content.url
+                    print('URL: {}'.format(shared_pub.extra_content.url))
+                    video = detect_backend(shared_pub.extra_content.video)
+                    list_responses[-1]['shared_pub_extra_video'] = video.get_embed_code(640, 480)
+                    list_responses[-1]['shared_pub_extra_content'] = True
+                else:
+                    list_responses[-1]['shared_pub_extra_content'] = False
 
             if have_shared_photo_publication:
                 list_responses[-1]['shared_photo_pub_id'] = shared_photo_pub.pk
@@ -775,6 +781,11 @@ def load_more_skyline(request):
                     list_responses[-1][
                         'shared_photo_pub_extra_image'] = shared_pub.publication_photo_extra_content.image if shared_pub.publication_photo_extra_content.image else None
                     list_responses[-1]['shared_photo_pub_extra_url'] = shared_pub.publication_photo_extra_content.url
+                    video = detect_backend(shared_pub.publication_photo_extra_content.video)
+                    list_responses[-1]['shared_photo_pub_extra_video'] = video.get_embed_code(640, 480)
+                    list_responses[-1]['shared_photo_pub_extra_content'] = True
+                else:
+                    list_responses[-1]['shared_photo_pub_extra_video'] = False
 
         data['pubs'] = json.dumps(list_responses)
         data['response'] = True

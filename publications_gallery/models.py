@@ -298,6 +298,8 @@ class PublicationPhoto(PublicationBase):
             notification['extra_content_description'] = extra_c.description
             notification['extra_content_image'] = extra_c.image
             notification['extra_content_url'] = extra_c.url
+            video = detect_backend(extra_c.video)
+            notification['extra_content_video'] = video.get_embed_code(640, 480)
 
         # Enviamos a todos los usuarios que visitan el perfil
         channel_group(self.board_photo.group_name).send({

@@ -137,7 +137,7 @@ $(document).ready(function () {
         var content = $(this).closest('#p_author-controls-' + id).find('#id_caption-' + id).val();
         AJAX_edit_publication_gallery(id, content);
     });
-    
+
     $(tab_messages).on('click', '.load_more_descendants', function () {
         var loader = $(this).next().find('.load_publications_descendants');
         $(loader).fadeIn();
@@ -163,7 +163,7 @@ $(document).ready(function () {
 var didScroll = false;
 
 $('#tab-messages').scroll(function () {
-if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+    if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
         didScroll = true;
     }
 });
@@ -362,7 +362,7 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
 /*****************************************************/
 
 function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
-   var id_pub;
+    var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
     } else if (type.localeCompare("timeline") == 0) {
@@ -595,21 +595,25 @@ function add_loaded_publication_gallery(pub, data, btn, is_skyline) {
             content += "                    </div>";
             content += "                    </div>";
             if (publications[i].extra_content) {
-                content += '<div class="card small">';
-                content += '<div class="card-image">';
-                if (publications[i].extra_content_image) {
-                    content += '<img src="' + publications[i].extra_content_image + '">';
+                if (publications[i].extra_content_video) {
+                    content += publications[i].extra_content_video;
                 } else {
-                    content += '<img src="/static/dist/img/nuevo_back.png">';
+                    content += '<div class="card small">';
+                    content += '<div class="card-image">';
+                    if (publications[i].extra_content_image) {
+                        content += '<img src="' + publications[i].extra_content_image + '">';
+                    } else {
+                        content += '<img src="/static/dist/img/nuevo_back.png">';
+                    }
+                    content += '<span class="card-title white-text">' + publications[i].extra_content_title + '</span>';
+                    content += '</div>';
+                    content += '<div class="card-content">';
+                    content += '<p>' + publications[i].extra_content_description + '</p>';
+                    content += '</div>';
+                    content += '<div class="card-action">';
+                    content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
+                    content += '</div></div>';
                 }
-                content += '<span class="card-title white-text">' + publications[i].extra_content_title + '</span>';
-                content += '</div>';
-                content += '<div class="card-content">';
-                content += '<p>' + publications[i].extra_content_description + '</p>';
-                content += '</div>';
-                content += '<div class="card-action">';
-                content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
-                content += '</div></div>';
             }
             if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
                 content += '<div class="row images">';
@@ -640,14 +644,14 @@ function add_loaded_publication_gallery(pub, data, btn, is_skyline) {
             if (publications[i].user_id == publications[i].board_photo_id || publications[i].user_id == publications[i].p_author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
             }
-             if (publications[i].user_hate === true)
+            if (publications[i].user_hate === true)
                 content += '                            <li title="No me gusta" class="hate-comment" style="color: rgb(186, 104, 200)">';
             else 
                 content += '                            <li title="No me gusta" class="hate-comment">';
             content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
             content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
             content += "                            </li>";
-            
+
             if (publications[i].user_like === true)
                 content += '                        <li title="¡Me gusta!" class="like-comment" style="color: rgb(240, 98, 146)"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
             else 
@@ -766,21 +770,26 @@ function add_loaded_publication_gallery(pub, data, btn, is_skyline) {
             content += "                    </div>";
             content += "                    </div>";
             if (publications[i].extra_content) {
-                content += '<div class="card small">';
-                content += '<div class="card-image">';
-                if (publications[i].extra_content_image) {
-                    content += '<img src="' + publications[i].extra_content_image + '">';
-                } else {
-                    content += '<img src="/static/dist/img/nuevo_back.png">';
+                if (publications[i].extra_content_video) {
+                    content += publications[i].extra_content_video;
                 }
-                content += '<span class="card-title white-text">' + publications[i].extra_content_title + '</span>';
-                content += '</div>';
-                content += '<div class="card-content">';
-                content += '<p>' + publications[i].extra_content_description + '</p>';
-                content += '</div>';
-                content += '<div class="card-action">';
-                content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
-                content += '</div></div>';
+                else {
+                    content += '<div class="card small">';
+                    content += '<div class="card-image">';
+                    if (publications[i].extra_content_image) {
+                        content += '<img src="' + publications[i].extra_content_image + '">';
+                    } else {
+                        content += '<img src="/static/dist/img/nuevo_back.png">';
+                    }
+                    content += '<span class="card-title white-text">' + publications[i].extra_content_title + '</span>';
+                    content += '</div>';
+                    content += '<div class="card-content">';
+                    content += '<p>' + publications[i].extra_content_description + '</p>';
+                    content += '</div>';
+                    content += '<div class="card-action">';
+                    content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
+                    content += '</div></div>';
+                }
             }
             if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
                 content += '<div class="row images">';
@@ -811,14 +820,14 @@ function add_loaded_publication_gallery(pub, data, btn, is_skyline) {
             if (publications[i].user_id == publications[i].board_photo_id || publications[i].user_id == publications[i].p_author_id) {
                 content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
             }
-             if (publications[i].user_hate === true)
+            if (publications[i].user_hate === true)
                 content += '                            <li title="No me gusta" class="hate-comment" style="color: rgb(186, 104, 200)">';
             else 
                 content += '                            <li title="No me gusta" class="hate-comment">';
             content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
             content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
             content += "                            </li>";
-            
+
             if (publications[i].user_like === true)
                 content += '                        <li title="¡Me gusta!" class="like-comment" style="color: rgb(240, 98, 146)"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
             else 

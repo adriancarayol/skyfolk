@@ -632,7 +632,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<style>.comment .fa-share {color: #1e88e5;font-style: normal;}</style>';
                 content += '<div class="card grey lighten-5">';
                 content += '<div class="card-content black-text">';
-                content += '<img src="' + publications[i].shared_pub_avatar + '" alt="' + publications[i].shared_pub_author + '" width="70" height="70" style="box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);"><br>';
+                content += publications[i].shared_pub_avatar + '<br>';
                 content += '<span class="card-title"><a href="/profile/' + publications[i].shared_pub_author + '">@' + publications[i].author_username + '</a>';
                 content += '<i class="blue-text text-darken-2"> ' + publications[i].shared_created + '</i></span>';
                 content += '<p>' + publications[i].shared_pub_content + '</p>';
@@ -656,7 +656,10 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     }
                     content += '</div>';
                 }
-                if (typeof(publications[i].shared_pub_extra_url) !== 'undefined' && publications[i].shared_pub_extra_url) {
+                if (typeof(publications[i].shared_pub_extra_content) !== 'undefined' && publications[i].shared_pub_extra_content) {
+                    if (publications[i].shared_pub_extra_video) {
+                        content += publications[i].shared_pub_extra_video;
+                    } else {
                     content += '<div class="card small">';
                     content += '<div class="card-image">';
                     if (publications[i].shared_pub_extra_image)
@@ -667,7 +670,8 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     content += '<div class="card-content">';
                     content += '<p>' + publications[i].shared_pub_extra_description + '</p></div>';
                     content += '<div class="card-action">';
-                    content += '<a href="' + publications[i].shared_pub_extra_url + '">Ver</a></div></div></div>';
+                        content += '<a href="' + publications[i].shared_pub_extra_url + '">Ver</a></div></div></div>';
+                    }
 
                 }
                 content += '<div class="card-action">';
@@ -676,7 +680,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                 content += '<style>.comment .fa-share {color: #1e88e5;font-style: normal;}</style>';
                 content += '<div class="card grey lighten-5">';
                 content += '<div class="card-content black-text">';
-                content += '<img src="' + publications[i].shared_photo_pub_avatar + '" alt="' + publications[i].shared_photo_pub_author + '" width="70" height="70" style="box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);"><br>';
+                content += publications[i].shared_photo_pub_avatar + '<br>';
                 content += '<span class="card-title"><a href="/profile/' + publications[i].shared_photo_pub_author + '">@' + publications[i].shared_photo_pub_author + '</a>';
                 content += '<i class="blue-text text-darken-2"> ' + publications[i].shared_photo_pub_created + '</i></span>';
                 content += '<p>' + publications[i].shared_photo_pub_content + '</p>';
@@ -700,7 +704,10 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     }
                     content += '</div>';
                 }
-                if (typeof(publications[i].shared_photo_pub_extra_url) !== 'undefined' && publications[i].shared_photo_pub_extra_url) {
+                if (typeof(publications[i].shared_photo_pub_extra_content) !== 'undefined' && publications[i].shared_photo_pub_extra_content) {
+                    if (publications[i].shared_photo_pub_extra_video) {
+                        content += publications[i].shared_photo_pub_extra_video;
+                    } else {
                     content += '<div class="card small">';
                     content += '<div class="card-image">';
                     if (publications[i].shared_photo_pub_extra_image)
@@ -712,7 +719,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
                     content += '<p>' + publications[i].shared_photo_pub_extra_description + '</p></div>';
                     content += '<div class="card-action">';
                     content += '<a href="' + publications[i].shared_photo_pub_extra_url + '">Ver</a></div></div></div>';
-
+                    }
                 }
                 content += '<div class="card-action">';
                 content += '<a class="blue-text text-darken-2" href="/publication_pdetail/' + publications[i].shared_photo_pub_id + '">Ver</a></div></div>';
@@ -792,7 +799,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             if (publications[i].descendants > 0) {
                 content += '<div class="row">';
                 content += '<div class="col s12">';
-                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
+                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_publications" href="#" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
                 content += '<div>';
                 content += '<div class="progress load_publications_descendants" style="display: none;">';
                 content += '<div class="indeterminate blue darken-1"></div></div>';
