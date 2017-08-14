@@ -128,25 +128,26 @@ Template para las busquedas
     {% if s == 'all' %}
     <div class="row flow-columns">
         {% for item in object_list %}
-        {% if item.model_name == 'user' %}
+        {% if item.model_name == 'profile' %}
         <div class="item">
             <div class="personal-card">
                 <div class="header">
-                    {% if item.profile.backImage %}
-                    <img class="back-profile-user" src="{{ item.profile.backImage.url }}">
+                    {% if item.back_image %}
+                    <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.back_image }}">
                     {% else %}
                     <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                     {% endif %}
                     <i class="fa fa-user fa-2x like-him">
                     </i>
                     <div class="bg-user">
-                        <div onclick="location.href='/profile/{{ item.author }}'"
-                            class="profile-user-bg">{% avatar item.author %}</div>
+                        <div onclick="location.href='/profile/{{ item.username }}'"
+                            class="profile-user-bg">{% avatar item.username %}</div>
                     </div>
                 </div>
                 <div class="col s12">
-                    <div style="cursor: default" onclick="location.href='{% url "publications:publication_detail" publication_id=item.pk %}'" class="name-friend">
-                        <p>{{ item.object.username }}</p>
+                    <div style="cursor: default" class="name-friend">
+                        <a href="{% url "user_profile:profile" username=item.username %}">@{{ item.username }}</a>
+                        <p>{{ item.firstname }} {{ item.lastname }}</p>
                     </div>
                 </div>
             </div>
@@ -209,8 +210,8 @@ Template para las busquedas
         <div class="col l3 m5 s12">
             <div class="personal-card">
                 <div class="header">
-                    {% if item.profile.backImage %}
-                    <img class="back-profile-user" src="{{ item.profile.backImage.url }}">
+                    {% if item.back_image %}
+                    <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.back_image }}">
                     {% else %}
                     <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                     {% endif %}
@@ -222,8 +223,9 @@ Template para las busquedas
                     </div>
                 </div>
                 <div class="col s12">
-                    <div style="cursor: default" onclick="location.href='{% url "publications:publication_detail" publication_id=item.pk %}'" class="name-friend">
-                        <p>{{ item.object.username }}</p>
+                    <div style="cursor: default" class="name-friend">
+                        <a href="{% url "user_profile:profile" username=item.username %}">@{{ item.username }}</a>
+                        <p>{{ item.firstname }} {{ item.lastname }}</p>
                     </div>
                 </div>
             </div>

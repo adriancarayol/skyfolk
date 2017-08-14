@@ -13,8 +13,8 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <a><i class="fa fa-thumb-tack"></i></a>
             </div>
             <div class="row">
-                <div class="user-avatar" style="background: {% if node_profile.back_image %}
-                    url({{ node_profile.back_image }})
+                <div class="user-avatar" style="background: {% if user_profile.profile.back_image %}
+                    url({{ user_profile.profile.back_image.url }})
                     {% else %}
                     url({{ STATIC_URL }}dist/img/nuevo_back.png)
                     {% endif %} no-repeat center center; background-size: cover;">
@@ -43,7 +43,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <div class="caja">
                     <div class="item">
                         <div class="user-pic"
-                             style="{% if node_profile.online %}-webkit-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
+                             style="{% if user_profile.profile.online %}-webkit-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
                                  -moz-box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);
                                  box-shadow: 0 0 10px 0 rgba(70, 241, 118, 0.75);{% else %}
                                  -webkit-box-shadow: 0 0 10px 0 rgba(255, 99, 71, 0.75);
@@ -68,17 +68,17 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     </div>
                 </div>
                 <div class="header">
-                    <p class="user-profile-name">@{{ node_profile.title }}</p>
-                    <p id="profileId" hidden>{{ node_profile.user_id }}</p>
-                    {% if node_profile.status != None and node_profile.status|length != 0 %}
-                    <p class="status"> - {{ node_profile.status }}</p>
+                    <p class="user-profile-name">@{{ user_profile.username }}</p>
+                    <p id="profileId" hidden>{{ user_profile.id }}</p>
+                    {% if user_profile.profile.status != None and user_profile.profile.status|length != 0 %}
+                    <p class="status"> - {{ user_profile.profile.status }}</p>
                     {% endif %}
                     {% if not isFollower %}
                     <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ node_profile.title }}"></span>
+                                                                                    data-tooltip="Acerca de {{ user_profile.username }}"></span>
                     {% else %}
                     <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ node_profile.title }} - ¡Te sigue!"
+                                                                                    data-tooltip="Acerca de {{ user_profile.username }} - ¡Te sigue!"
                                                                                     style="color: #1e88e5"></span>
                     {% endif %}
                     <ul id="user-stats" class="stats">
@@ -114,7 +114,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
                     <h4 class="info-user-stats">Seguidores: {{ followers }}</h4>
                     <h4 class="info-user-stats">Seguidos: {{ following }} </h4>
-                    <h4 class="info-user-stats">Activo hace: {{ node_profile.last_seen|timesince }}</h4>
+                    <h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>
                 </div>
                 <ul class="personal-card-controls">
                     {% if user.username != user_profile.username %}

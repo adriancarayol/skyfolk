@@ -7,7 +7,7 @@ import subprocess
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from avatar.models import Avatar
-from user_profile.models import NodeProfile
+from user_profile.models import Profile
 from django.conf import settings
 
 # Los tags HTML que permitimos en los comentarios
@@ -36,7 +36,7 @@ def get_author_avatar(authorpk):
     if avatars:
         return avatars.get_absolute_url()
     else:
-        return NodeProfile.nodes.get(user_id=authorpk).gravatar
+        return Profile.nodes.get(user_id=authorpk).gravatar
 
 
 def parse_string(content):

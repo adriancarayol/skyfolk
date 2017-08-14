@@ -1,6 +1,6 @@
 import datetime
 from haystack import indexes
-from django.contrib.auth.models import User
+from .models import Profile
 
 
 class UserProfileIndex(indexes.SearchIndex, indexes.Indexable):
@@ -8,14 +8,15 @@ class UserProfileIndex(indexes.SearchIndex, indexes.Indexable):
         document=True, use_template=True,
         template_name='search/indexes/profiles/profiles_text.txt')
 
-    username = indexes.EdgeNgramField(model_attr='username')
-    first_name = indexes.EdgeNgramField(model_attr='first_name')
-    last_name = indexes.EdgeNgramField(model_attr='last_name')
+    username = indexes.EdgeNgramField(model_attr='user__username')
+    firstname = indexes.EdgeNgramField(model_attr='user__first_name')
+    lastname = indexes.EdgeNgramField(model_attr='user__last_name')
+    back_image = indexes.CharField(model_attr='back_image')
     # user_fullname = indexes.CharField(model_attr='user')
     # backImage = indexes.CharField(model_attr='backImage')
 
     def get_model(self):
-        return User
+        return Profile
 
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""

@@ -27,8 +27,72 @@ REQUEST_STATUSES = (
 )
 
 
-def uploadBackImagePath(instance, filename):
-    return '%s/backImage/%s' % (instance.user.username, filename)
+def upload_cover_path(instance, filename):
+    return '%s/cover_image/%s' % (instance.user.username, filename)
+
+
+class Profile(models.Model):
+    """
+    Modelo para guardar
+    informacion extra del usuario
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    back_image = models.ImageField(blank=True, null=True, upload_to=upload_cover_path)
+    status = models.CharField(blank=True, null=True, max_length=100)
+    is_first_login = models.BooleanField(default=True)
+
+    def last_seen(self):
+        return cache.get('seen_%s' % self.user.username)
+
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    @property
+    def gravatar(self, size=120):
+        """
+        Devuelve el gravatar por defecto asociado al email
+        del usuario
+        :param size => tamaño de la imagen:
+        :return url con el gravatar del usuario, o la imagen por defecto de skyfolk:
+        """
+        default = 'http://pre.skyfolk.net/static/img/nuevo.png'
+        return "https://www.gravatar.com/avatar/%s?%s" % (
+            hashlib.md5(str(User.objects.get(id=self.user_id).email).encode('utf-8')).hexdigest(),
+            urlencode({'d': default, 's': str(size).encode('utf-8')}))
+
+    def check_if_first_time_login(self):
+        """
+        Funcion para comprobar si un usuario se ha logueado
+        por primera vez.
+        """
+        is_first_time_login = self.is_first_login
+
+        if is_first_time_login:
+            self.is_first_login = False
+            self.save()
+
+        return is_first_time_login
+
+
+    # Methods of multimedia
+    def get_num_multimedia(self):
+        """
+        Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
+        """
+        return Photo.objects.filter(owner=self.user_id, is_public=True).count()
+
+    def get_total_num_multimedia(self):
+        """
+        Devuelve el numero de contenido multimedia de un perfil.
+        """
+        return Photo.objects.filter(owner=self.user_id).count()
 
 
 class TagProfile(DjangoNode):
@@ -68,17 +132,12 @@ class FollowRel(StructuredRel):
 
 
 class NodeProfile(DjangoNode):
-    uid = UniqueIdProperty()
+    uid = UniqueIdProperty() #TODO: Eliminar este field
     user_id = IntegerProperty(unique_index=True)  # user_id
     title = StringProperty(unique_index=True)  # username
-    first_name = StringProperty()  # first_name
-    last_name = StringProperty()  # last_name
     follow = RelationshipTo('NodeProfile', 'FOLLOW', model=FollowRel)  # follow user
     like = RelationshipTo('NodeProfile', 'LIKE')  # like user
     bloq = RelationshipTo('NodeProfile', 'BLOQ')  # bloq user
-    is_first_login = BooleanProperty(default=True)
-    status = StringProperty(required=False)
-    back_image_ = UploadedFileProperty(db_property='back_image')
     is_active = BooleanProperty(default=True, help_text=_(
         'Designates whether this user should be treated as active. '
         'Unselect this instead of deleting accounts.'))
@@ -94,37 +153,6 @@ class NodeProfile(DjangoNode):
         (NOTHING, 'Nothing'),
     )
     privacity = StringProperty(choices=OPTIONS_PRIVACITY, default='A')
-
-    @property
-    def back_image(self):
-        try:
-            file = glob.glob("%s.*" % (settings.MEDIA_ROOT + '/' + self.back_image_))
-            if file and len(file) > 0:
-                fs = FileSystemStorage()
-                return fs.url(os.path.basename(file[0]))
-            return None
-        except Exception:
-            return None
-
-    @back_image.setter
-    def back_image(self, value):
-        if self.back_image_:
-            try:
-                for filename in glob.glob("%s*" % (settings.MEDIA_ROOT + '/' + self.back_image_)):
-                    fs = FileSystemStorage()
-                    fs.delete(filename)
-            except Exception:
-                pass
-            self.back_image_ = None
-
-        # set the value
-        if isinstance(value, str):
-            try:
-                self.back_image_ = value
-            except ValueError:
-                raise TypeError('Value "{}" is not a path'.format(value))
-        else:
-            TypeError('Value "{}" should be of type str'.format(value))
 
     @property
     def group_name(self):
@@ -236,57 +264,7 @@ class NodeProfile(DjangoNode):
 
         return None
 
-    # Methods of multimedia
-    def get_num_multimedia(self):
-        """
-        Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
-        """
-        return Photo.objects.filter(owner=self.user_id, is_public=True).count()
 
-    def get_total_num_multimedia(self):
-        """
-        Devuelve el numero de contenido multimedia de un perfil.
-        """
-        return Photo.objects.filter(owner=self.user_id).count()
-
-    def check_if_first_time_login(self):
-        """
-        Funcion para comprobar si un usuario se ha logueado
-        por primera vez.
-        """
-        is_first_time_login = self.is_first_login
-
-        if is_first_time_login:
-            self.is_first_login = False
-            self.save()
-
-        return is_first_time_login
-
-    @property
-    def gravatar(self, size=120):
-        """
-        Devuelve el gravatar por defecto asociado al email
-        del usuario
-        :param size => tamaño de la imagen:
-        :return url con el gravatar del usuario, o la imagen por defecto de skyfolk:
-        """
-        default = 'http://pre.skyfolk.net/static/img/nuevo.png'
-        return "https://www.gravatar.com/avatar/%s?%s" % (
-            hashlib.md5(str(User.objects.get(id=self.user_id).email).encode('utf-8')).hexdigest(),
-            urlencode({'d': default, 's': str(size).encode('utf-8')}))
-
-    def last_seen(self):
-        return cache.get('seen_%s' % self.title)
-
-    def online(self):
-        if self.last_seen():
-            now = datetime.datetime.now()
-            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
-                return False
-            else:
-                return True
-        else:
-            return False
 
 class RequestManager(models.Manager):
     def get_follow_request(self, from_profile, to_profile):

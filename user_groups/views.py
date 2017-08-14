@@ -29,7 +29,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
     success_url = '/thanks/'
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(UserGroupCreate, self).__init__(**kwargs)
         self.object = None
 
     def post(self, request, *args, **kwargs):
@@ -153,16 +153,12 @@ def follow_group(request):
                 try:
                     g = NodeGroup.nodes.get(group_id=group_id)
                 except NodeGroup.DoesNotExist:
-                    g = None
-                    #TODO: Return error
-                    pass
+                    raise Http404
 
                 try:
                     n = NodeProfile.nodes.get(user_id=user.id)
                 except NodeProfile.DoesNotExist:
-                    n = None
-                    #TODO: Return error
-                    pass
+                    raise Http404
 
                 created = g.members.is_connected(n)
                 if created:
@@ -198,13 +194,11 @@ def unfollow_group(request):
                 try:
                     node_group = NodeGroup.nodes.get(group_id=group_id)
                 except NodeGroup.DoesNotExist:
-                    #TODO: Return error
-                    pass
+                    raise Http404
                 try:
                     n = NodeProfile.nodes.get(user_id=user.id)
                 except NodeProfile.DoesNotExist:
-                    #TODO: Return error
-                    pass
+                    raise Http404
 
                 try:
                     node_group.members.disconnect(n)
@@ -252,7 +246,7 @@ class FollowersGroup(AjaxListView):
         group_id = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
         node_group = NodeGroup.nodes.get(group_id=group_id.id)
         user_ids = [x.user_id for x in node_group.members.all()]
-        return User.objects.filter(id__in=user_ids)
+        return User.objects.filter(id__in=user_ids).select_related('profile')
 
 
 followers_group = login_required(FollowersGroup.as_view(), login_url='/')
@@ -270,6 +264,7 @@ class LikeListGroup(AjaxListView):
         group = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
         return LikeGroup.objects.filter(to_like=group).values('from_like__username',
                                                               'from_like__first_name', 'from_like__last_name',
+                                                              'from_like__profile__back_image'
                                                               )
 
 

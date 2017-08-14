@@ -20,27 +20,27 @@
     <div class="col l12 m12 s12 wrapper-profilex">
         <ul>
             {% for item in blocked %}
-                <li class="bloq-user col l3 m12 s12" data-id="{{ item.user_id }}">
+                <li class="bloq-user col l3 m12 s12" data-id="{{ item.id }}">
                     <div class="col s12">
                         <div class="header">
-                            {% if item.back_image %}
-                                <img class="back-profile-user lazyload" data-src="{{ item.back_image }}">
+                            {% if item.profile.back_image %}
+                                <img class="back-profile-user lazyload" data-src="{{ item.profile.back_image.url }}">
                             {% else %}
                                 <img class="back-profile-user lazyload" data-src="{{ STATIC_URL }}img/nuevo_back.png">
                             {% endif %}
                             <div class="bg-user">
-                                <div onclick="location.href='/profile/{{ item.title }}'"
-                                     class="profile-user-bg">{% avatar item.title %}</div>
+                                <div onclick="location.href='/profile/{{ item.username }}'"
+                                     class="profile-user-bg">{% avatar item.username %}</div>
                             </div>
                         </div>
                     </div>
                     <div class="col s12">
                         <div class="name-friend">
-                            <a href="/profile/{{ item.title }}">@{{ item.title }} </a><br><br>
+                            <a href="/profile/{{ item.username }}">@{{ item.username }} </a><br><br>
                             <p>{{ item.first_name }} {{ item.last_name }}</p>
                         </div>
                         <div class="col s12 unblock-user-div">
-                            <a class="waves-effect waves-light btn blue darken-1" data-id="{{ item.user_id }}"
+                            <a class="waves-effect waves-light btn blue darken-1" data-id="{{ item.id }}"
                                onclick="AJAX_remove_bloq_from_config(this)">Desbloquear</a>
                         </div>
                     </div>

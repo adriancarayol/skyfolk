@@ -153,7 +153,7 @@ def get_tags(request):
     :return Lista de intereses del usuario:
     """
     r, m = db.cypher_query(
-        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.uid='%s' RETURN tag" % request
+        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.user_id=%s RETURN tag" % request
     )
     results = [TagProfile.inflate(row[0]) for row in r]
     return results

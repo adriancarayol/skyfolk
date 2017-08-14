@@ -3,7 +3,7 @@ import re
 from allauth.account.adapter import DefaultAccountAdapter
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from user_profile.models import NodeProfile
+from user_profile.models import Profile
 from django.http import Http404
 
 
@@ -29,8 +29,8 @@ class MyAccountAdapter(DefaultAccountAdapter):
         """
 
         try:
-            user = NodeProfile.nodes.get(user_id=request.user.id)
-        except NodeProfile.DoesNotExist:
+            user = Profile.objects.get(user_id=request.user.id)
+        except Profile.DoesNotExist:
             raise Http404
 
         is_first_time_login = user.check_if_first_time_login()

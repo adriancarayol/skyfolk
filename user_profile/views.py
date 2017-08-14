@@ -6,8 +6,6 @@ import PIL.Image as pil
 from django.utils.six import BytesIO
 
 from allauth.account.views import PasswordChangeView, EmailView
-from dal import autocomplete
-from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -33,7 +31,7 @@ from publications.models import Publication, PublicationImage, PublicationVideo
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import NodeProfile, TagProfile, Request
+from user_profile.models import NodeProfile, TagProfile, Request, Profile
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from neomodel import db
 from django.db import transaction
@@ -42,6 +40,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from .tasks import send_email
 from django.db.models import Count
 from .utils import crop_image
+
 
 @login_required(login_url='/')
 @page_template("account/follow_entries.html", key='follow_entries')
@@ -56,7 +55,7 @@ def profile_view(request, username,
     :param extra_context => Para paginacion :
     """
     user = request.user
-    user_profile = get_object_or_404(get_user_model(),
+    user_profile = get_object_or_404(User.objects.select_related('profile'),
                                      username__iexact=username)
 
     n = NodeProfile.nodes.get(user_id=user_profile.id)
@@ -68,7 +67,6 @@ def profile_view(request, username,
 
     # Para escribir mensajes en mi propio perfil.
     context['user_profile'] = user_profile
-    context['node_profile'] = n
     context['privacity'] = privacity
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
@@ -125,9 +123,9 @@ def profile_view(request, username,
     # Recuperamos el numero de contenido multimedia que tiene el perfil
     try:
         if user.username == username:
-            multimedia_count = n.get_total_num_multimedia()
+            multimedia_count = user_profile.profile.get_total_num_multimedia()
         else:
-            multimedia_count = n.get_num_multimedia()
+            multimedia_count = user_profile.profile.get_num_multimedia()
     except ObjectDoesNotExist:
         multimedia_count = 0
     # Comprobamos si existe una peticion de seguimiento
@@ -160,28 +158,31 @@ def profile_view(request, username,
         # if user_profile.username == username:
         # Get user_profile publications LIMIT 20
         publications = Publication.objects.filter(board_owner_id=user_profile.id,
-                            level__lte=0, deleted=False) \
-                            .prefetch_related('extra_content', 'images',
-                                'videos', 'shared_publication__images',
-                                'tags',
-                                'shared_photo_publication__images',
-                                'shared_publication__author',
-                                'shared_photo_publication__p_author',
-                                'shared_photo_publication__videos',
-                                'shared_photo_publication__publication_photo_extra_content',
-                                'shared_publication__videos', 'shared_publication__extra_content', 'user_give_me_like', 'user_give_me_hate') \
-                            .select_related('author',
-                            'board_owner', 'shared_publication', 'parent', 'shared_photo_publication')[:20]
+                                                  level__lte=0, deleted=False) \
+                           .prefetch_related('extra_content', 'images',
+                                             'videos', 'shared_publication__images',
+                                             'tags',
+                                             'shared_photo_publication__images',
+                                             'shared_publication__author',
+                                             'shared_photo_publication__p_author',
+                                             'shared_photo_publication__videos',
+                                             'shared_photo_publication__publication_photo_extra_content',
+                                             'shared_publication__videos', 'shared_publication__extra_content',
+                                             'user_give_me_like', 'user_give_me_hate') \
+                           .select_related('author',
+                                           'board_owner', 'shared_publication', 'parent', 'shared_photo_publication')[
+                       :20]
 
         # Obtenemos los ids de las publicaciones del skyline
         # Despues recuperamos aquellas publicaciones que han sido compartidas
         shared_id = publications.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values('shared_publication__id')\
-                .order_by('shared_publication__id')\
-                .annotate(total=Count('shared_publication__id'))
+        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values(
+            'shared_publication__id') \
+            .order_by('shared_publication__id') \
+            .annotate(total=Count('shared_publication__id'))
 
-        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id, deleted=False).values('author__id', 'shared_publication__id')
-
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id,
+                                                         deleted=False).values('author__id', 'shared_publication__id')
 
         """
         publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1) \
@@ -195,7 +196,6 @@ def profile_view(request, username,
         """
     except ObjectDoesNotExist:
         publications = None
-
 
     # context['shares'] = shares
     # Contenido de las tres tabs
@@ -409,8 +409,7 @@ def config_privacity(request):
 
 @login_required(login_url='/')
 def config_profile(request):
-    user_profile = request.user
-    node = NodeProfile.nodes.get(user_id=user_profile.id)
+    user_profile = Profile.objects.select_related('user').get(user=request.user)
     logging.info('>>>>>>>  PETICION CONFIG')
     if request.POST:
         # formulario enviado
@@ -421,48 +420,39 @@ def config_profile(request):
             # formulario validado correctamente
             try:
                 with transaction.atomic(using='default'):
-                    with db.transaction:
-                        node.first_name = user_form.cleaned_data['first_name']
-                        node.last_name = user_form.cleaned_data['last_name']
-                        node.status = perfil_form.clean_status()
-                        data = perfil_form.clean_backImage()
-                        if data:
-                            file_id = str(uuid.uuid4())  # random filename
-                            filename, file_extension = os.path.splitext(data.name)  # get extension
-                            fs = FileSystemStorage()  # get filestorage
-                            file = crop_image(data, filename, request)
-                            filename = fs.save(file_id + file_extension, file)  # get filename
-                            filename, file_extension = os.path.splitext(filename)  # only if save change "file_id"
-                            node.back_image = filename  # assign filename to back_image node
-                        node.save()
-                        user_form.save()
-                        logging.info('>>>>>>  save')
-                        data = {
-                                'result': True,
-                                'state': 200,
-                                'message': 'Success',
-                                'gallery': '/config/profile'
-                        }
-                        return JsonResponse({'data': data})
+                    data = perfil_form.clean_backImage()
+                    if data:
+                        file = crop_image(data, "cover-%s.jpge" % request.user.username, request)
+                        user_profile.back_image = file
+                    user_profile.status = perfil_form.clean_status()
+                    user_profile.save()
+                    user_form.save()
+                    logging.info('>>>>>>  save')
+                    data = {
+                        'result': True,
+                        'state': 200,
+                        'message': 'Success',
+                        'gallery': '/config/profile'
+                    }
+                    return JsonResponse({'data': data})
             except Exception as e:
                 logging.info(
-                    "No se pudo guardar la configuracion del perfil de la cuenta: {}".format(user_profile.username))
+                    "No se pudo guardar la configuracion del perfil de la cuenta: {}".format(request.user.username))
                 data = {
-                        'result': False,
-                        'state': 500,
-                        'message': 'Success'
+                    'result': False,
+                    'state': 500,
+                    'message': 'Success'
                 }
 
                 return JsonResponse({'data': data})
     else:
         # formulario inicial
         user_form = UserForm(instance=request.user)
-        perfil_form = ProfileForm(initial={'status': node.status})
+        perfil_form = ProfileForm(initial={'status': user_profile.status})
 
     logging.Manager('>>>>>>>  paso x')
     context = {'showPerfilButtons': True,
                'user_profile': user_profile,
-               'node_profile': node,
                'user_form': user_form, 'perfil_form': perfil_form,
                }
     return render(request, 'account/cf-profile.html', context)
@@ -489,7 +479,8 @@ def config_pincode(request):
 def config_blocked(request):
     user = request.user
     n = NodeProfile.nodes.get(user_id=user.id)
-    list_blocked = n.bloq.match()
+    id_users = [u.user_id for u in n.bloq.match()]
+    list_blocked = User.objects.filter(id__in=id_users).select_related('profile')
 
     return render(request, 'account/cf-blocked.html', {'showPerfilButtons': True,
                                                        'blocked': list_blocked,
@@ -698,16 +689,17 @@ def like_profile(request):
                             rel.weight = rel.weight + 10
                             rel.save()
                         notify.send(user, actor=User.objects.get(pk=user.pk).username,
-                                           recipient=actual_profile,
-                                           verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (user.username, user.username), level='like_profile')
+                                    recipient=actual_profile,
+                                    verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
+                                        user.username, user.username), level='like_profile')
                 response = "like"
             except Exception as e:
                 pass
 
             # Enviar email...
             send_email.delay('Skyfolk - %s te ha dado un like.' % user.username, [actual_profile.email],
-                    {'to_user': actual_profile.username,'from_user': user.username}
-                    , 'emails/like_profile.html')
+                             {'to_user': actual_profile.username, 'from_user': user.username}
+                             , 'emails/like_profile.html')
 
         logging.info('%s da like a %s' % (user.username, actual_profile.username))
         logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
@@ -761,8 +753,8 @@ def request_friend(request):
 
                 # enviamos mail
                 send_email.delay('Skyfolk - %s ahora te sigue.' % user.username, [recipient.email],
-                    {'to_user': recipient.username,'from_user': user.username}
-                    , 'emails/new_follow.html')
+                                 {'to_user': recipient.username, 'from_user': user.username}
+                                 , 'emails/new_follow.html')
 
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
             response = "inprogress"
@@ -790,8 +782,8 @@ def request_friend(request):
                                                                  m.user_id,
                                                                  notification[0][1])
                     send_email.delay('Skyfolk - %s quiere seguirte.' % user.username, [recipient.email],
-                        {'to_user': recipient.username,'from_user': user.username} ,
-                        'emails/follow_request.html')
+                                     {'to_user': recipient.username, 'from_user': user.username},
+                                     'emails/follow_request.html')
 
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
@@ -831,8 +823,8 @@ def respond_friend_request(request):
                         evel='new_follow')
 
             send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [recipient.email],
-                        {'to_user': recipient.username,'from_user': user.username} ,
-                        'emails/new_follow_added.html')
+                             {'to_user': recipient.username, 'from_user': user.username},
+                             'emails/new_follow_added.html')
 
             response = "added_friend"
 
@@ -968,7 +960,8 @@ class FollowersListView(AjaxListView):
         except Exception:
             raise Http404
 
-        return n.get_followers()
+        id_users = [u.user_id for u in n.get_followers()]
+        return User.objects.filter(id__in=id_users).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
@@ -994,7 +987,8 @@ class FollowingListView(AjaxListView):
         except Exception:
             raise Http404
 
-        return n.get_follows()
+        id_users = [u.user_id for u in n.get_follows()]
+        return User.objects.filter(id__in=id_users).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
@@ -1225,7 +1219,7 @@ def welcome_view(request, username):
     View para pagina de bienvenida despues
     del registro.
     """
-    user_profile = get_object_or_404(get_user_model(),
+    user_profile = get_object_or_404(User,
                                      username__iexact=username)
     user = request.user
 
@@ -1309,11 +1303,13 @@ class RecommendationUsers(ListView):
         user = self.request.user
         results, meta = db.cypher_query(
             "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.id)
+
         users = [NodeProfile.inflate(row[0]) for row in results]
         if not users:
             users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[:50]
 
-        return users
+        user_ids = [u.user_id for u in users]
+        return User.objects.filter(id__in=user_ids).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(RecommendationUsers, self).get_context_data(**kwargs)
@@ -1337,7 +1333,8 @@ class LikeListUsers(AjaxListView):
         username = self.kwargs['username']
 
         n = NodeProfile.nodes.get(title=username)
-        return n.get_like_to_me()
+        id_users = [u.user_id for u in n.get_like_to_me()]
+        return User.objects.filter(id__in=id_users).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
@@ -1349,42 +1346,20 @@ class LikeListUsers(AjaxListView):
 
 like_list = login_required(LikeListUsers.as_view(), login_url='/')
 
+
 def autocomplete(request):
     """
     Autocompletado de usuarios
     """
     q = request.GET.get('q', '')
-    sqs = SearchQuerySet().models(User).filter(SQ(username=q) | SQ(first_name=q) | SQ(last_name=q))[:5]
-    suggestions = [{'username': result.username, 'first_name': result.first_name,
-        'last_name': result.last_name, 'avatar': avatar(result.username)} for result in sqs]
+    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:5]
+    suggestions = [{'username': result.username, 'first_name': result.firstname,
+                    'last_name': result.lastname, 'avatar': avatar(result.username)} for result in sqs]
     the_data = json.dumps({
         'results': suggestions
-        })
+    })
     return HttpResponse(the_data, content_type='application/json')
 
-def search_users(request):
-    """
-    Busqueda de usuarios por AJAX,
-    para el autocompletado sin tener que entrar
-    en el template de busqueda
-    """
-    user = request.user
-
-    if user.is_authenticated() and request.is_ajax():
-        value = request.GET.get('value', None)
-
-        query = User.objects.filter(
-            Q(username__icontains=value) | Q(first_name__icontains=value) | Q(last_name__icontains=value))[:20]
-        result = []
-        for user in query:
-            user_json = {}
-            user_json['username'] = user.username
-            user_json['first_name'] = user.first_name
-            user_json['last_name'] = user.last_name
-            user_json['avatar'] = avatar(user)
-            result.append(user_json)
-
-        return JsonResponse({'result': result})
 
 class SearchUsuarioView(SearchView):
     # formview
@@ -1401,12 +1376,12 @@ class SearchUsuarioView(SearchView):
             criteria = 'all'
 
         if criteria == 'all':
-            models.append(User)
+            models.append(Profile)
             models.append(Publication)
             models.append(Photo)
             models.append(PublicationVideo)
         if criteria == 'accounts':
-            models.append(User)
+            models.append(Profile)
         if criteria == 'publications':
             models.append(Publication)
         if criteria == 'images':
@@ -1448,7 +1423,8 @@ def recommendation_real_time(request):
         user = request.user
 
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' AND NOT (u2.user_id IN [%s]) RETURN u2.user_id, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % (user.id, exclude_ids))
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' AND NOT (u2.user_id IN [%s]) RETURN u2.user_id, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % (
+                user.id, exclude_ids))
         users = []
 
         if not results:
@@ -1461,8 +1437,8 @@ def recommendation_real_time(request):
         sql_result = User.objects.filter(id__in=users)
         sql_users = []
         [sql_users.append({'id': u.id, 'username': u.username,
-            'first_name': u.first_name, 'last_name': u.last_name,
-            'avatar': avatar_url(u)}) for u in sql_result]
+                           'first_name': u.first_name, 'last_name': u.last_name,
+                           'avatar': avatar_url(u)}) for u in sql_result]
         return JsonResponse(sql_users, safe=False)
 
     return JsonResponse({'response': None})
