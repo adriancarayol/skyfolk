@@ -14,6 +14,79 @@ $(document).ready(function () {
     $('select').material_select(); 
 
     $('textarea#message2, textarea#message3').characterCounter();
+    var Autocomplete = function(options) {
+        this.form_selector = options.form_selector;
+        this.url = options.url || '/search/autocomplete/';
+        this.delay = parseInt(options.delay || 300);
+        this.minimum_length = parseInt(options.minimum_length || 3);
+        this.form_elem = null;
+        this.query_box = null;
+    }
+
+    Autocomplete.prototype.setup = function() {
+        var self = this;
+
+        this.form_elem = $(this.form_selector);
+        this.query_box = this.form_elem.find('input[name=q]');
+
+        // Watch the input box.
+        this.query_box.on('keyup', function() {
+            var query = self.query_box.val();
+
+            if(query.length < self.minimum_length) {
+                return false;
+            }
+
+            self.fetch(query);
+        })
+    }
+
+    Autocomplete.prototype.fetch = function(query) {
+        var self = this
+
+        $.ajax({
+            url: this.url
+            , data: {
+                'q': query
+            }
+            , success: function(data) {
+                self.show_results(data);
+            }
+        })
+    }
+
+    Autocomplete.prototype.show_results = function(data) {
+        // Remove any existing results.
+        $('.ac-results').remove();
+
+        var results = data.results || [];
+        var results_wrapper = $('<div class="ac-results"></div>');
+        var base_elem = $('<div class="result-wrapper"><a href="#" class="ac-result"></a></div>');
+
+        if(results.length > 0) {
+            for(var res_offset in results) {
+                var elem = base_elem.clone();
+                var result = elem.find('.ac-result');
+                result.attr('href', '/profile/' + results[res_offset].username);
+                result.text('@' + results[res_offset].username + ' (' + results[res_offset].first_name + ' ' +
+                    results[res_offset].last_name + ')');
+                result.prepend(results[res_offset].avatar);
+                results_wrapper.append(elem);
+            }
+        }
+        else {
+            var elem = base_elem.clone()
+            elem.text("No se encontraron resultados.");
+            results_wrapper.append(elem);
+        }
+
+        this.query_box.after(results_wrapper);
+    }
+    window.autocomplete = new Autocomplete({
+        form_selector: '.autocomplete-me'
+    })
+
+    window.autocomplete.setup();
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
@@ -203,6 +276,7 @@ $(document).ready(function () {
             $(messageWrapperMessage3).val("");
             $(self_page_wrapper).hide(); // Oculta form para crear comentario.
             $(atj).hide(); // Oculta atajos de teclado.
+            $('.ac-results').remove(); // Elimina resultados sugeridos
             $(ampliado).hide(); // Oculta mensaje ampliado.
             $(personalInfo).hide(); // Oculta informacion personal
             $("#create_group").hide(); // Oculta form para crear grupo
@@ -212,6 +286,14 @@ $(document).ready(function () {
             $('.side-nav').sideNav('hide');
         }
     });
+
+    /* REMOVE suggestion results */ 
+    $(this).click(function (event) {
+        if (!$(event.target).closest('.ac-results').length) {
+            $('.ac-results').remove();
+        }
+    });
+
     /* Focus on input search */
     $(this).on('keydown', function (e) {
         if (e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // escape
@@ -277,39 +359,39 @@ $(document).ready(function () {
     $('#id_searchText').on("keydown", function (event) {
         clearTimeout(keyPressTimeout);
         keyPressTimeout = setTimeout(function () {
-                var data = {
-                    'value': $('#id_searchText').val()
-                };
-                $.ajax({
-                    url: '/pre_search/users/',
-                    type: "GET",
-                    dataType: "json",
-                    data: data,
-                    success: function (result) {
-                        $('#id_searchText').atwho({
-                            at: '',
-                            searchKey: "username",
-                            insertTpl: "${username}",
-                            displayTpl: "<li class='search-live-item' data-value='${username}'><img src='${avatar}' width='30px' height='30px'>${username} <small>${first_name} ${last_name}</small></li>",
-                            data: result.result,
-                            displayTimeout: 100,
-                            callback: {
-                                filter: function (query, data, searchKey) {
-                                    return $.map(data, function (item, i) {
-                                        if (item[searchKey].toLowerCase().indexOf(query) < 0 ||
-                                            item['first_name'].toLowerCase().indexOf(query) < 0 ||
-                                            item['last_name'].toLowerCase().indexOf(query) < 0) {
-                                            return item;
-                                        } else {
-                                            return null;
-                                        }
-                                    })
-                                }
+            var data = {
+                'value': $('#id_searchText').val()
+            };
+            $.ajax({
+                url: '/pre_search/users/',
+                type: "GET",
+                dataType: "json",
+                data: data,
+                success: function (result) {
+                    $('#id_searchText').atwho({
+                        at: '',
+                        searchKey: "username",
+                        insertTpl: "${username}",
+                        displayTpl: "<li class='search-live-item' data-value='${username}'><img src='${avatar}' width='30px' height='30px'>${username} <small>${first_name} ${last_name}</small></li>",
+                        data: result.result,
+                        displayTimeout: 100,
+                        callback: {
+                            filter: function (query, data, searchKey) {
+                                return $.map(data, function (item, i) {
+                                    if (item[searchKey].toLowerCase().indexOf(query) < 0 ||
+                                        item['first_name'].toLowerCase().indexOf(query) < 0 ||
+                                        item['last_name'].toLowerCase().indexOf(query) < 0) {
+                                        return item;
+                                    } else {
+                                        return null;
+                                    }
+                                })
                             }
-                        });
-                    }
-                });
-            },
+                        }
+                    });
+                }
+            });
+        },
             250
         );
     });
@@ -704,17 +786,17 @@ function AJAX_requestfriend(status) {
             success: function (response) {
                 if (response == "isfriend") {
                     swal({
-                            title: "¡Ya es tu amigo!",
-                            type: "warning",
-                            customClass: 'default-div',
-                            animation: "slide-from-top",
-                            showConfirmButton: true,
-                            showCancelButton: true,
-                            confirmButtonColor: "#DD6B55",
-                            confirmButtonText: "Unfollow",
-                            cancelButtonText: "Ok, fine!",
-                            closeOnConfirm: true
-                        },
+                        title: "¡Ya es tu amigo!",
+                        type: "warning",
+                        customClass: 'default-div',
+                        animation: "slide-from-top",
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Unfollow",
+                        cancelButtonText: "Ok, fine!",
+                        closeOnConfirm: true
+                    },
                         function (isConfirm) {
                             if (isConfirm) {
                                 AJAX_remove_relationship(slug);

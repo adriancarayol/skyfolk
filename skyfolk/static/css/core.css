@@ -61,6 +61,22 @@ table {
   border-bottom: 1px solid #64b5f6 !important;
   box-shadow: 0 1px 0 0 #64b5f6 !important; }
 
+.autocomplete-me .ac-results {
+  border-bottom: 2px solid #64b5f6;
+  background-color: #fefefe;
+  margin-top: -14px;
+  color: #555 !important; }
+
+.autocomplete-me .ac-results .ac-result {
+  text-decoration: none;
+  font-weight: 600; }
+  .autocomplete-me .ac-results .ac-result img {
+    width: 60px;
+    height: 60px;
+    vertical-align: middle;
+    margin-right: 7px;
+    box-shadow: 0 1px 5px #64b5f6; }
+
 .container {
   *zoom: 1;
   max-width: 100%;

@@ -63,39 +63,29 @@ Template para las busquedas
     .publication-div {
         margin-bottom: 2.5%;
     }
-    .cards-container {
-        column-break-inside: avoid;
+    .flow-columns {
+        column-width: 320px;
+        column-gap: 15px;
+        width: 90%;
+        max-width: 1140px;
     }
-    .cards-container .card {
+    .flow-columns .item {
+        margin: 0 2px 15px;
+        padding: 15px;
+        padding-bottom: 10px;
         display: inline-block;
-        overflow: visible;
+        -webkit-column-break-inside: avoid;
+        page-break-inside: avoid;
+        break-inside: avoid;
     }
-
-    @media only screen and (max-width: 600px) {
-        .cards-container {
-            -webkit-column-count: 1;
-            -moz-column-count: 1;
-            column-count: 1;
-        }
+    @media screen and (max-width: 750px) { 
+        .flow-columns { column-gap: 0px; }
+        .flow-columns .item { width: 100%; }
+        .flow-columns .image-div { width: 100%; }
     }
-    @media only screen and (min-width: 601px) {
-        .cards-container {
-            -webkit-column-count: 2;
-            -moz-column-count: 2;
-            column-count: 2;
-        }
+    .flow-columns .image-div {
+        max-width: 320px;
     }
-    @media only screen and (min-width: 993px) {
-        .cards-container {
-            -webkit-column-count: 3;
-            -moz-column-count: 3;
-            column-count: 3;
-        }
-    }
-    .text-center {
-        text-align: center;
-    }
-
 </style>
 {% endblock %}
 {% block content %}
@@ -136,10 +126,10 @@ Template para las busquedas
     </div>
     {% endif %}
     {% if s == 'all' %}
-    <div class="row">
+    <div class="row flow-columns">
         {% for item in object_list %}
         {% if item.model_name == 'user' %}
-        <div class="col l2 m6 s12">
+        <div class="item">
             <div class="personal-card">
                 <div class="header">
                     {% if item.profile.backImage %}
@@ -162,7 +152,7 @@ Template para las busquedas
             </div>
         </div>
         {% elif item.model_name == 'publication' %}
-        <div class="col l2 m6 s12 publication-div">
+        <div class="item">
             <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                 <div class="col s3" style="padding: 10px">
                     {% avatar item.author 50 %}
@@ -180,7 +170,7 @@ Template para las busquedas
             </div>
         </div>
         {% elif item.model_name == 'photo' %}
-        <div class="col l2 m6 s12 image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description|truncatechars:"150" }}">
+        <div class="item image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description|truncatechars:"150" }}">
             <div class="container-image">
                 <div class="principal-content">
                     {% if item.object.tags.all %}
@@ -245,7 +235,7 @@ Template para las busquedas
     <div class="row">
         {% for item in object_list %}
         <div class="col l3 m5 s12">
-            <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
+            <div class="col s12 publication-div" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                 <div class="col s3">
                     {% avatar item.author 50 %}
                 </div>

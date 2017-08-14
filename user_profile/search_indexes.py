@@ -8,6 +8,9 @@ class UserProfileIndex(indexes.SearchIndex, indexes.Indexable):
         document=True, use_template=True,
         template_name='search/indexes/profiles/profiles_text.txt')
 
+    username = indexes.EdgeNgramField(model_attr='username')
+    first_name = indexes.EdgeNgramField(model_attr='first_name')
+    last_name = indexes.EdgeNgramField(model_attr='last_name')
     # user_fullname = indexes.CharField(model_attr='user')
     # backImage = indexes.CharField(model_attr='backImage')
 

@@ -24,7 +24,7 @@ from el_pagination.views import AjaxListView
 from django.http import JsonResponse
 from django.core import serializers
 from haystack.generic_views import SearchView
-from haystack.query import SearchQuerySet
+from haystack.query import SearchQuerySet, SQ
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
@@ -1349,23 +1349,18 @@ class LikeListUsers(AjaxListView):
 
 like_list = login_required(LikeListUsers.as_view(), login_url='/')
 
-
-class UserAutocomplete(autocomplete.Select2QuerySetView):
+def autocomplete(request):
     """
     Autocompletado de usuarios
     """
-
-    def get_queryset(self):
-        if not self.request.user.is_authenticated():
-            return User.objects.none()
-
-        users = User.objects.all()
-
-        if self.q:
-            users = users.filter(username__istartswith=self.q)
-
-        return users
-
+    q = request.GET.get('q', '')
+    sqs = SearchQuerySet().models(User).filter(SQ(username=q) | SQ(first_name=q) | SQ(last_name=q))[:5]
+    suggestions = [{'username': result.username, 'first_name': result.first_name,
+        'last_name': result.last_name, 'avatar': avatar(result.username)} for result in sqs]
+    the_data = json.dumps({
+        'results': suggestions
+        })
+    return HttpResponse(the_data, content_type='application/json')
 
 def search_users(request):
     """

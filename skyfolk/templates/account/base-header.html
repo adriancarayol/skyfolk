@@ -13,7 +13,7 @@ Base para el head de la pagina (menu horizontal con busqueda etc...)
             <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span
                     id="live_notify_badge">{{ user_notifications|length }}</span></a>
             <div class="right field hide-on-med-and-down" id="searchform">
-                <form method='get' action="{% url 'user_profile:general-search' %}">
+                <form class="autocomplete-me" method='get' action="{% url 'user_profile:general-search' %}">
                     {{ searchForm }}
                 </form>
             </div>

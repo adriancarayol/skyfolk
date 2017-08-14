@@ -77,6 +77,9 @@ urlpatterns = [
         name='pre_search_users'),
      url(r'^recommendations/users/$', user_profile_views.recommendation_real_time,
              name='recommendation_users'),
+     url(r'^search/autocomplete/$', user_profile_views.autocomplete,
+             name='autocomplete'),
+
     # url(r'^prueba-search/$', login_required(
     #     user_profile_views.SearchUsuarioView.as_view()),
     #     name='busqueda-prueba'),
