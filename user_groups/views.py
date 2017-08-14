@@ -16,7 +16,7 @@ from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup, NodeGroup
 from neomodel import db
 from django.db import transaction
-from user_profile.models import NodeProfile
+from user_profile.models import NodeProfile, TagProfile
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -41,6 +41,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 group.owner = user
                 group.avatar = request.FILES.get('avatar', None)
                 group.back_image = request.FILES.get('back_image', None)
+                tags = form.cleaned_data['tags']
                 try:
                     with transaction.atomic():
                         with db.transaction:
@@ -49,6 +50,12 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                                     title=group.name).save()
                             n = NodeProfile.nodes.get(user_id=user.id)
                             g.members.connect(n)
+                            for tag in tags:
+                                interest = TagProfile.nodes.get_or_none(title=tag)
+                                if not interest:
+                                    interest = TagProfile(title=tag).save()
+                                if interest:
+                                    g.interest.connect(interest)
                 except Exception as e:
                     print(e)
                     return self.form_invalid(form=form)
@@ -72,6 +79,17 @@ class UserGroupList(ListView):
     template_name = "groups/list_group.html"
     paginate_by = 20
 
+    def get_in_groups(self):
+        """
+        Obtenemos los grupos
+        del usuario que hace la peticion
+        """
+        results, meta = db.cypher_query("MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id" % self.request.user.id)
+        return [y for x in results for y in x]
+
+    def get_queryset(self):
+        groups = self.get_in_groups()
+        return UserGroups.objects.filter(id__in=groups)
 
 group_list = login_required(UserGroupList.as_view(), login_url='/')
 

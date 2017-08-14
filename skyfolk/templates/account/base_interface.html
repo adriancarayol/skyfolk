@@ -101,14 +101,14 @@ ga('send', 'pageview');
                             <button type="button"
                                 class="waves-effect waves-light btn right transparent black-text close">Cerrar<i
                                     class="material-icons right">close</i></button>
-                            <div class="file-field input-field">
-                                <div class="btn">
-                                    <span>Imágenes</span>
+                            <div class="file-field">
+                                <div class="btn blue lighten-2">
+                                    <span><i class="fa fa-camera" aria-hidden="true"></i></span>
                                     <input id="id_image" name="image" type="file" multiple>
                                 </div>
                                 <div class="file-path-wrapper">
                                     <input class="file-path validate" type="text"
-                                    placeholder="Upload one or more files">
+                                    placeholder="Subir imágenes o videos">
                                 </div>
                             </div>
                         </div>
@@ -150,14 +150,14 @@ ga('send', 'pageview');
                             <button type="button"
                                 class="waves-effect waves-light btn right transparent black-text close">Cerrar<i
                                     class="material-icons right">close</i></button>
-                            <div class="file-field input-field">
-                                <div class="btn">
-                                    <span>Imágenes</span>
+                            <div class="file-field">
+                                <div class="btn blue lighten-2">
+                                    <span><i class="fa fa-camera" aria-hidden="true"></i></span>
                                     <input id="id_image_self" name="image" type="file" multiple>
                                 </div>
                                 <div class="file-path-wrapper">
                                     <input class="file-path validate" type="text"
-                                    placeholder="Upload one or more files">
+                                    placeholder="Subir imágenes o videos">
                                 </div>
                             </div>
                         </div>
@@ -274,7 +274,7 @@ ga('send', 'pageview');
                     </div> 
                     <div class="row">
                         <div class="file-field input-field">
-                            <div class="btn">
+                            <div class="btn blue lighten-2">
                                 <span>Avatar</span>
                                 {{ groupForm.avatar }}
                             </div>
@@ -285,7 +285,7 @@ ga('send', 'pageview');
                     </div>
                     <div class="row">
                         <div class="file-field input-field">
-                            <div class="btn">
+                            <div class="btn blue lighten-2">
                                 <span>Cabecera</span>
                                 {{ groupForm.back_image }}
                             </div>
@@ -295,9 +295,19 @@ ga('send', 'pageview');
                         </div>
                     </div>
                     <div class="row">
+                        {{ groupForm.tags.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">bookmark</i>
+                            {{ groupForm.tags }}
+                            <label for="id_tags">Introduce una "," para añadir un nuevo tema. (Música, Deporte)</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ groupForm.is_public.errors }}
                         <div class="col s12">
-                            <div class="chips chips-placeholder"></div>
-                            <p>Introduce una "," para añadir un nuevo interés.</p>
+                            <i class="material-icons prefix"></i>
+                            {{ groupForm.is_public }}
+                            <label for="id_is_public">Active esta casilla para hacer el grupo privado.</label>
                         </div>
                     </div>
                     <div class="row">

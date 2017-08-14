@@ -202,6 +202,7 @@ class Publication(PublicationBase):
         (6, _("shared")),
         (7, _("shared_photo_pub"))
     )
+    #TODO: Eliminar null=True de author...
     author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True)
     user_give_me_like = models.ManyToManyField(User, blank=True,
@@ -522,24 +523,6 @@ class PublicationVideo(models.Model):
 class PublicationImage(models.Model):
     publication = models.ForeignKey(Publication, related_name='images')
     image = models.ImageField(upload_to=upload_image_publication)
-
-
-class PublicationGroup(PublicationBase):
-    g_author = models.ForeignKey(User, null=True)
-    board_group = models.ForeignKey(Group, related_name='board_group')
-    user_give_me_like = models.ManyToManyField(User, blank=True,
-                                               related_name='likes_group_me')
-    user_give_me_hate = models.ManyToManyField(User, blank=True,
-                                               related_name='hates_group_me')
-    user_share_me = models.ManyToManyField(User, blank=True,
-                                           related_name='share_group_me')
-    parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_group')
-
-    # TODO objects = PublicationManager()
-
-    def __str__(self):
-        return self.content
 
 
 class PublicationDeleted(models.Model):

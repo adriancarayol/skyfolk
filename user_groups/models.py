@@ -39,7 +39,7 @@ class UserGroups(Group):
     """
     owner = models.ForeignKey(User, related_name='owner_group')
     slug = models.SlugField(max_length=100, unique=True)
-    description = models.SlugField(max_length=500)
+    description = models.CharField(max_length=500)
     is_public = models.BooleanField(default=True)
     avatar = models.ImageField(upload_to=group_avatar_path, null=True, blank=True)
     back_image = models.ImageField(upload_to=group_back_image_path, null=True, blank=True)

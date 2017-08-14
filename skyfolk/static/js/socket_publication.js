@@ -88,7 +88,10 @@ var UTILS = UTILS || (function () {
                                 }
                                 content += '</div>';
                             }
-                            if (typeof(data.shared_publication_extra_content_url) !== 'undefined' && data.shared_publication_extra_content_url) {
+                            if (data.shared_publication_extra_content) {
+                                if (data.shared_publication_extra_video) {
+                                    content += data.shared_publication_extra_video;
+                                } else {
                                 content += '<div class="card small">';
                                 content += '<div class="card-image">';
                                 if (data.shared_publication_extra_content_image)
@@ -100,7 +103,7 @@ var UTILS = UTILS || (function () {
                                 content += '<p>' + data.shared_publication_extra_content_description + '</p></div>';
                                 content += '<div class="card-action">';
                                 content += '<a href="' + data.shared_publication_extra_content_url + '">Ver</a></div></div></div>';
-
+                                }
                             }
                             content += '<div class="card-action">';
                             content += '<a class="blue-text text-darken-2" href="/publication/' + data.shared_publication_id + '">Ver</a></div></div>';
@@ -133,7 +136,10 @@ var UTILS = UTILS || (function () {
                                 }
                                 content += '</div>';
                             }
-                            if (typeof(data.shared_photo_publication_extra_content_url) !== 'undefined' && data.shared_photo_publication_extra_content_url) {
+                            if (data.shared_photo_publication_extra_content) {
+                                if (data.shared_photo_publication_extra_video) {
+                                    content += data.shared_photo_publication_extra_video;
+                                } else {
                                 content += '<div class="card small">';
                                 content += '<div class="card-image">';
                                 if (data.shared_photo_publication_extra_content_image)
@@ -145,12 +151,15 @@ var UTILS = UTILS || (function () {
                                 content += '<p>' + data.shared_photo_publication_extra_content_description + '</p></div>';
                                 content += '<div class="card-action">';
                                 content += '<a href="' + data.shared_photo_publication_extra_content_url + '">Ver</a></div></div></div>';
-
+                                }
                             }
                             content += '<div class="card-action">';
                             content += '<a class="blue-text text-darken-2" href="/publication_pdetail/' + data.shared_photo_publication_id + '">Ver</a></div></div>';
                         }
                         if (data.extra_content) {
+                            if (data.extra_content_video) {
+                                content += data.extra_content_video;
+                            } else {
                             content += '<div class="card small">';
                             content += '<div class="card-image">';
                             if (data.extra_content_image) {
@@ -165,7 +174,8 @@ var UTILS = UTILS || (function () {
                             content += '</div>';
                             content += '<div class="card-action">';
                             content += '<a href="' + data.extra_content_url + '">Ver</a>';
-                            content += '</div></div>';
+                                content += '</div></div>';
+                            }
                         }
                         if (typeof(data.images) !== 'undefined' && data.images !== null && data.images.length > 0) {
                             content += '<div class="row images">';

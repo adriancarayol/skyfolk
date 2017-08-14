@@ -89,6 +89,7 @@ FIRST_PARTY_APPS = (
     'user_profile',  # perfil de usuario
     'publications',  # publicaciones en el perfil
     'publications_gallery', # publicaciones en galeria
+    'publications_groups', # publicaciones en grupos
     'about',  # sobre los autores
     'latest_news',
     'user_groups',  # Para grupos de usuarios

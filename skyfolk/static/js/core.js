@@ -69,11 +69,13 @@ $(document).ready(function () {
 
     $("#new_group").click(function () {
         $('#create_group').toggle();
+        $('.button-menu-left').sideNav('hide');
     });
 
     /* Close nuevo grupo */
     $("#btn_close_group").click(function () {
         $('#create_group').hide();
+        return false;
     });
 
     /* Close page-wrapper (mensaje) */

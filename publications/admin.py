@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from .models import Publication, ExtraContent, PublicationVideo, \
-        PublicationImage, PublicationGroup, PublicationDeleted
+        PublicationImage, PublicationDeleted
 
 
 class PublicationBaseAdmin(admin.ModelAdmin):
@@ -26,11 +26,6 @@ class PublicationImageAdmin(admin.ModelAdmin):
     list_filter = ('publication', )
 
 
-class PublicationGroupAdmin(admin.ModelAdmin):
-    list_display = ('g_author', 'board_group', 'content')
-    list_filter = ('created', 'board_group', 'parent')
-
-
 class PublicationDeletedAdmin(admin.ModelAdmin):
     list_display = ('author', 'content', 'created')
     list_filter = ('author', 'created', 'type_publication')
@@ -39,6 +34,5 @@ class PublicationDeletedAdmin(admin.ModelAdmin):
 admin.site.register(ExtraContent, ExtraContentAdmin)
 admin.site.register(PublicationVideo, PublicationVideoAdmin)
 admin.site.register(PublicationImage, PublicationImageAdmin)
-admin.site.register(PublicationGroup, PublicationGroupAdmin)
 admin.site.register(PublicationDeleted, PublicationDeletedAdmin)
 admin.site.register(Publication, PublicationBaseAdmin)
