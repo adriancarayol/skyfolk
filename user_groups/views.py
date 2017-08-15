@@ -17,6 +17,12 @@ from .models import UserGroups, LikeGroup, NodeGroup
 from neomodel import db
 from django.db import transaction
 from user_profile.models import NodeProfile, TagProfile
+from user_profile.utils import make_pagination_html
+from user_profile.utils import crop_image
+from django.conf import settings
+from PIL import Image
+from django.utils import six
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -40,7 +46,16 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 user = self.request.user
                 group.owner = user
                 group.avatar = request.FILES.get('avatar', None)
-                group.back_image = request.FILES.get('back_image', None)
+                image = request.FILES.get('back_image', None)
+                if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+                    raise ValueError('BackImage > 5MB!')
+                im = Image.open(image).convert('RGBA')
+                im.thumbnail((1500, 630), Image.ANTIALIAS)
+                tempfile_io = six.BytesIO()
+                im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
+                tempfile_io.seek(0)
+                image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg', tempfile_io.tell(), None)
+                group.back_image = image_file
                 tags = form.cleaned_data['tags']
                 try:
                     with transaction.atomic():
@@ -234,38 +249,77 @@ def like_group(request):
         {'response': 'error'})
 
 
-class FollowersGroup(AjaxListView):
+class FollowersGroup(ListView):
     """
     Vista con los seguidores (usuarios) de un grupo
     """
     context_object_name = 'user_list'
     template_name = 'groups/followers.html'
-    page_template = 'groups/followers_page.html'
+
+    def __init__(self, *args, **kwargs):
+        super(FollowersGroup, self).__init__(*args, **kwargs)
+        self.pagination = None
+        self.group = None
 
     def get_queryset(self):
-        group_id = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
-        node_group = NodeGroup.nodes.get(group_id=group_id.id)
-        user_ids = [x.user_id for x in node_group.members.all()]
+        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        limit = 25 * current_page
+        offset = limit - 25
+
+        self.group = UserGroups.objects.values('id', 'name').get(slug__exact=self.kwargs['groupname'])
+        node_group = NodeGroup.nodes.get(group_id=self.group['id'])
+        user_ids = [x.user_id for x in node_group.members.all()[offset:limit]]
+
+        total_users = len(node_group.members.all())
+        total_pages = int(total_users / 25)
+        if total_users % 25 != 0:
+            total_pages += 1
+            self.pagination = make_pagination_html(current_page, total_pages)
+
         return User.objects.filter(id__in=user_ids).select_related('profile')
+
+    def get_context_data(self, **kwargs):
+        context = super(FollowersGroup, self).get_context_data(**kwargs)
+        context['pagination'] = self.pagination
+        context['group'] = self.group
+        return context
 
 
 followers_group = login_required(FollowersGroup.as_view(), login_url='/')
 
 
-class LikeListGroup(AjaxListView):
+class LikeListGroup(ListView):
     """
     Vista con los usuarios que han dado like a un grupo
     """
     context_object_name = 'like_list'
     template_name = 'groups/user_likes.html'
-    page_template = 'groups/user_list_page.html'
+
+    def __init__(self, *args, **kwargs):
+        super(LikeListGroup, self).__init__(*args, **kwargs)
+        self.pagination = None
+        self.group = None
 
     def get_queryset(self):
-        group = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
-        return LikeGroup.objects.filter(to_like=group).values('from_like__username',
+        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        limit = 25 * current_page
+        offset = limit - 25
+
+        self.group = UserGroups.objects.values('id', 'name').get(slug__exact=self.kwargs['groupname'])
+
+        total_users = LikeGroup.objects.filter(to_like_id=self.group['id']).count()
+        total_pages = int(total_users / 25)
+        if total_users % 25 != 0:
+            total_pages += 1
+            self.pagination = make_pagination_html(current_page, total_pages)
+        return LikeGroup.objects.filter(to_like_id=self.group['id']).values('from_like__username',
                                                               'from_like__first_name', 'from_like__last_name',
                                                               'from_like__profile__back_image'
                                                               )
-
+    def get_context_data(self, **kwargs):
+        context = super(LikeListGroup, self).get_context_data(**kwargs)
+        context['group'] = self.group
+        context['pagination'] = self.pagination
+        return context
 
 likes_group = login_required(LikeListGroup.as_view(), login_url='/')

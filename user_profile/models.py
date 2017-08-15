@@ -41,6 +41,9 @@ class Profile(models.Model):
     status = models.CharField(blank=True, null=True, max_length=100)
     is_first_login = models.BooleanField(default=True)
 
+    def __str__(self):
+        return "%s profile" % self.user.username
+
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)
 
@@ -179,8 +182,13 @@ class NodeProfile(DjangoNode):
     class Meta:
         app_label = 'node_profile'
 
-    def get_followers(self):
-        results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
+    def get_followers(self, offset=None, limit=None):
+        if limit and offset:
+
+            results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b SKIP %d LIMIT %d" % (offset, limit))
+        else:
+            results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
+
         return [self.inflate(row[0]) for row in results]
 
     def count_followers(self):
@@ -188,8 +196,11 @@ class NodeProfile(DjangoNode):
             "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
         return results[0][0]
 
-    def get_follows(self):
-        results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
+    def get_follows(self, offset=None, limit=None):
+        if limit and offset:
+            results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b SKIP %d LIMIT %d" % (offset, limit))
+        else:
+            results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
         return [self.inflate(row[0]) for row in results]
 
     def count_follows(self):
@@ -207,14 +218,23 @@ class NodeProfile(DjangoNode):
             "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN COUNT(like)")
         return results[0][0]
 
-    def get_like_to_me(self):
-        results, columns = self.cypher(
-            "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
+    def get_like_to_me(self, offset=None, limit=None):
+        if offset and limit:
+            results, columns = self.cypher(
+                "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m SKIP %d LIMIT %d" % (offset, limit))
+        else:
+            results, columns = self.cypher(
+                "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
         return [self.inflate(row[0]) for row in results]
 
     def get_favs_users(self):
         results, columns = self.cypher(
             "MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT 6")
+        return [self.inflate(row[0]) for row in results]
+
+    def get_favs_followers_users(self):
+        results, columns = self.cypher(
+            "MATCH (a)<-[follow:FOLLOW]-(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT 6")
         return [self.inflate(row[0]) for row in results]
 
     def is_visible(self, user_profile):

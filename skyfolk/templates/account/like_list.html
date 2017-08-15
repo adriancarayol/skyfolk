@@ -16,20 +16,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    {% block js %}
-        {{ block.super }}
-        <script src="{{ STATIC_URL }}el-pagination/js/el-pagination.js"></script>
-        <script>
-            $.endlessPaginate({
-                paginateOnScroll: true,
-                paginateOnScrollMargin: 20
-            });
-        </script>
-        {% if url_name == "following" %}
-            <script>
-                $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
-            </script>
-        {% endif %}
-    {% endblock %}
+        {{ pagination|safe }}
+    </div> 
 {% endblock %}

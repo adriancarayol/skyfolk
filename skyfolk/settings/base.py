@@ -128,6 +128,7 @@ ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USERNAME_MIN_LENGTH = 3
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/accounts/login'
 EXTERNAL_LOGIN_URL = None
@@ -150,7 +151,11 @@ SESSION_UPDATE_SECONDS = 10 * 60
 #                   http://www.django-rest-framework.org/
 REST_FRAMEWORK = {
     # hace la api solo accesible para admins
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
     # paginado de la api
     'PAGINATE_BY': 10
 }

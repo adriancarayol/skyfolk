@@ -49,12 +49,11 @@
   border-color: #1e88e5;
   opacity: 1; }
 
-.container .personal-card .header .like-him {
+.container .personal-card .header .like-him, .container .personal-card .header .affinity {
   position: relative;
   margin-top: -30px;
   float: right;
   margin-right: 20px;
-  background-color: #1e88e5;
   color: #fff;
   border-radius: 100%;
   width: 50px;
@@ -63,6 +62,12 @@
   box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
   padding-top: 14px;
   display: inline-block; }
+
+.container .personal-card .header .like-him {
+  background-color: #1e88e5; }
+
+.container .personal-card .header .affinity {
+  background-color: tomato; }
 
 .container .personal-card .name-friend {
   position: relative;

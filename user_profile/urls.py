@@ -11,6 +11,12 @@ urlpatterns = [
     url(r'^user-search/$', login_required(
             user_profile_views.SearchUsuarioView.as_view()),
             name='general-search'),
+    url(r'^follow/by_affinity/$', login_required(
+            user_profile_views.FollowingByAffinityList.as_view()),
+            name='follow-by-affinity'),
+    url(r'^followers/by_affinity/$', login_required(
+            user_profile_views.FollowersByAffinityList.as_view()),
+            name='followers-by-affinity'),
     # url(r'^user-search/(?P<option>[\w]*)/$', user_profile_views.search),
     url(r'^user-search/(?P<option>[\w]*)/$', login_required(
             user_profile_views.SearchUsuarioView.as_view()),
@@ -36,10 +42,6 @@ urlpatterns = [
     url(r'^respond_friend_request/$',
         user_profile_views.respond_friend_request,
         name='respond_friend_request'),
-    # Cargar mas followers
-    url(r'^load_followers/$', user_profile_views.load_followers),
-    # Cargar mas follows
-    url(r'^load_follows/$', user_profile_views.load_follows),
     url(r'^request_friend/$', user_profile_views.request_friend),
     url(r'^remove_relationship/$', user_profile_views.remove_relationship),
     url(r'^remove_blocked/$', user_profile_views.remove_blocked),

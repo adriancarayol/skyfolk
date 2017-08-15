@@ -16,7 +16,7 @@
                 <div class="col s12 m12 l4">
                     <div class="card white">
                         <div class="card-content" {% if item.profile.back_image %}style="background: url({{ item.profile.back_image.url }}) top center repeat-y; background-size: 100%" {% endif %}>
-                            {% avatar item.username %}
+                            {% avatar item %}
                             <span class="card-title grey-text darken-1">
                                 <a href="/profile/{{ item.username }}">{{ item.username }}</a>
                             </span>
@@ -60,6 +60,7 @@
                 </div>
             </div>
         </div>
+        {{ pagination|safe }}
     </div>
 {% endblock %}
 </body>

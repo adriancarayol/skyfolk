@@ -39,7 +39,11 @@ from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from .tasks import send_email
 from django.db.models import Count
-from .utils import crop_image
+from .utils import crop_image, make_pagination_html
+from .serializers import UserSerializer
+from rest_framework import generics
+from rest_framework.renderers import JSONRenderer
+from django.db.models import Case, When
 
 
 @login_required(login_url='/')
@@ -911,126 +915,89 @@ def remove_request_follow(request):
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
 
-# Load followers
-@login_required(login_url='/')
-def load_followers(request):
-    """
-    Funcion para cargar seguidores
-    :return lista de seguidores:
-    """
-    logging.info('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
-
-    try:
-        m = NodeProfile.nodes.get(user_id=request.user.id)
-    except NodeProfile.DoesNotExist:
-        friends_next = None
-        return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
-
-    friendslist = m.get_followers()
-
-    if friendslist is None:
-        friends_next = None
-    else:
-        # friendslist = json.loads(friendslist)
-        if request.method == 'POST':
-            slug = request.POST.get('slug', None)
-            logging.info('>>>>>>> SLUG: ' + slug)
-            n = int(slug) * 2
-            # devolvera None si esta fuera de rango?
-            friends_next = friendslist[n - 2:n]
-            logging.info('>>>>>>> LISTA: ')
-            logging.info(friends_next)
-        else:
-            friends_next = None
-    return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
-
-
-class FollowersListView(AjaxListView):
+class FollowersListView(ListView):
     """
     Lista de seguidores del usuario
     """
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
-    page_template = "account/relations_page.html"
+
+    def __init__(self, *args, **kwargs):
+        super(FollowersListView, self).__init__(*args, **kwargs)
+        self.pagination = None
 
     def get_queryset(self):
+        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        limit = 25 * current_page
+        offset = limit - 25
 
         try:
             n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
         except Exception:
             raise Http404
 
-        id_users = [u.user_id for u in n.get_followers()]
+        total_users = n.count_followers()
+        total_pages = int(total_users / 25)
+
+        if total_users % 25 != 0:
+            total_pages += 1
+            self.pagination = make_pagination_html(current_page, total_pages)
+
+        id_users = [u.user_id for u in n.get_followers(offset=offset, limit=limit)]
         return User.objects.filter(id__in=id_users).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         user = self.request.user
         context['url_name'] = "followers"
+        context['pagination'] = self.pagination
+        context['component'] = 'react/followers_react.js'
         return context
 
 
 followers = login_required(FollowersListView.as_view())
 
 
-class FollowingListView(AjaxListView):
+class FollowingListView(ListView):
     """
     Lista de seguidos del usuario
     """
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
-    page_template = "account/relations_page.html"
+
+    def __init__(self, *args, **kwargs):
+        super(FollowingListView, self).__init__(*args, **kwargs)
+        self.pagination = None
 
     def get_queryset(self):
+        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        limit = 25 * current_page
+        offset = limit - 25
+
         try:
             n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
         except Exception:
             raise Http404
 
-        id_users = [u.user_id for u in n.get_follows()]
+        total_users = n.count_follows()
+        total_pages = int(total_users / 25)
+        if total_users % 25 != 0:
+            total_pages += 1
+            self.pagination = make_pagination_html(current_page, total_pages)
+
+        id_users = [u.user_id for u in n.get_follows(offset=offset, limit=limit)]
         return User.objects.filter(id__in=id_users).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         user = self.request.user
         context['url_name'] = "following"
+        context['pagination'] = self.pagination
+        context['component'] = 'react/following_react.js'
         return context
 
 
 following = login_required(FollowingListView.as_view())
-
-
-# Load follows
-@login_required(login_url='/')
-def load_follows(request):
-    """
-    Funcion para cargar mas seguidos
-    :return lista de seguidos:
-    """
-    logging.info('>>>>>> PETICION AJAX, CARGAR MAS AMIGOS')
-    try:
-        m = NodeProfile.nodes.get(user_id=request.user.id)
-    except NodeProfile.DoesNotExist:
-        friends_next = None
-        return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
-
-    friendslist = m.get_follows()
-
-    if friendslist is None:
-        friends_next = None
-    else:
-        # friendslist = json.loads(friendslist)
-        if request.method == 'POST':
-            slug = request.POST.get('slug', None)
-            logging.info('>>>>>>> SLUG: ' + slug)
-            n = int(slug) * 4
-            # devolvera None si esta fuera de rango?
-            friends_next = friendslist[n - 4:n]
-            logging.info('>>>>>>> LISTA: ')
-            logging.info(friends_next)
-        else:
-            friends_next = None
-    return HttpResponse(json.dumps(list(friends_next)), content_type='application/json')
 
 
 class PassWordChangeDone(TemplateView):
@@ -1299,14 +1266,32 @@ class RecommendationUsers(ListView):
     model = User
     template_name = "account/reccomendation_after_login.html"
 
+    def __init__(self, *args, **kwargs):
+        super(RecommendationUsers, self).__init__(*args, **kwargs)
+        self.pagination = None
+
     def get_queryset(self):
         user = self.request.user
+        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        limit = 25 * current_page
+        offset = limit - 25
+
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % user.id)
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT %d" %
+            (user.id, offset, limit))
 
         users = [NodeProfile.inflate(row[0]) for row in results]
+
         if not users:
-            users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[:50]
+            users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[offset:limit]
+            total_users = len(NodeProfile.nodes.all())
+        else:
+            total_users = len(users)
+
+        total_pages = int(total_users / 25)
+        if total_users % 25 != 0:
+            total_pages += 1
+            self.pagination = make_pagination_html(current_page, total_pages)
 
         user_ids = [u.user_id for u in users]
         return User.objects.filter(id__in=user_ids).select_related('profile')
@@ -1314,6 +1299,7 @@ class RecommendationUsers(ListView):
     def get_context_data(self, **kwargs):
         context = super(RecommendationUsers, self).get_context_data(**kwargs)
         context['user_profile'] = self.request.user
+        context['pagination'] = self.pagination
         return context
 
 
@@ -1327,18 +1313,33 @@ class LikeListUsers(AjaxListView):
     model = User
     template_name = "account/like_list.html"
     context_object_name = "object_list"
-    page_template = "account/like_entries.html"
+
+    def __init__(self, *args, **kwargs):
+        super(LikeListUsers, self).__init__(*args, **kwargs)
+        self.pagination = None
 
     def get_queryset(self):
         username = self.kwargs['username']
+        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        limit = 25 * current_page
+        offset = limit - 25
+
 
         n = NodeProfile.nodes.get(title=username)
-        id_users = [u.user_id for u in n.get_like_to_me()]
+        id_users = [u.user_id for u in n.get_like_to_me(offset=offset, limit=limit)]
+
+        total_users = n.count_likes()
+        total_pages = int(total_users / 25)
+        if total_users % 25 != 0:
+            total_pages += 1
+            self.pagination = make_pagination_html(current_page, total_pages)
+
         return User.objects.filter(id__in=id_users).select_related('profile')
 
     def get_context_data(self, **kwargs):
         context = super(LikeListUsers, self).get_context_data(**kwargs)
         context['user_profile'] = self.kwargs['username']
+        context['pagination'] = self.pagination
         user = self.request.user
 
         return context
@@ -1442,3 +1443,26 @@ def recommendation_real_time(request):
         return JsonResponse(sql_users, safe=False)
 
     return JsonResponse({'response': None})
+
+
+class FollowingByAffinityList(generics.ListAPIView):
+    serializer_class = UserSerializer
+    renderer_classes = (JSONRenderer, )
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        n = NodeProfile.nodes.get(user_id=user_id)
+        pk_list = [u.user_id for u in n.get_favs_users()]
+        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
+        return User.objects.filter(id__in=pk_list).order_by(preserved)
+
+class FollowersByAffinityList(generics.ListAPIView):
+    serializer_class = UserSerializer
+    renderer_classes = (JSONRenderer, )
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        n = NodeProfile.nodes.get(user_id=user_id)
+        pk_list = [u.user_id for u in n.get_favs_followers_users()]
+        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
+        return User.objects.filter(id__in=pk_list).order_by(preserved)

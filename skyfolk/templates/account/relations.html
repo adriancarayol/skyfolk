@@ -1,36 +1,34 @@
 {% extends 'account/base_interface.html' %}
 {% comment %}
-  Template para los seguidores de un perfil
+Template para los seguidores de un perfil
 {% endcomment %}
 {% block title %}<title>{% if url_name == "followers" %}Seguidores {% else %}
     Seguidos {% endif %}{{ request.user.username }}</title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css" onload="if(media!='all')media='all'">
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col l12 m10 s12 container-responsive">
-                <div class="row">
-                    {% include "account/relations_page.html" %}
+<div class="container"> 
+    <div class="row"> 
+        <div class="col l12 m10 s12 container-responsive">
+            <div class="row">
+                <div id="by_affinity">
+                    <i class="fa fa-lg fa-spinner fa-spin"></i><br><br>
                 </div>
+                <div class="divider"></div>
+            </div>
+            <div class="row">
+                {% include "account/relations_page.html" %}
             </div>
         </div>
     </div>
-    <script src="{{ STATIC_URL }}js/friends.js"></script>
-    {% block js %}
-        {{ block.super }}
-        <script src="{{ STATIC_URL }}el-pagination/js/el-pagination.js"></script>
-        <script>
-            $.endlessPaginate({
-                paginateOnScroll: true,
-                paginateOnScrollMargin: 20
-            });
-        </script>
-        {% if url_name == "following" %}
-            <script>
-                $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
-            </script>
-        {% endif %}
-    {% endblock %}
+    {{ pagination|safe }}
+</div>
+<script src="{{ STATIC_URL }}js/friends.js"></script>
+{% if url_name == "following" %}
+<script>
+    $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
+</script>
+{% endif %}
+<script src="{{ STATIC_URL }}js/{{ component }}"></script>
 {% endblock %}

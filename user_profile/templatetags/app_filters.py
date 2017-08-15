@@ -158,3 +158,7 @@ def get_tags(request):
     results = [TagProfile.inflate(row[0]) for row in r]
     return results
 
+
+@register.filter
+def classname(obj):
+    return obj.__class__.__name__

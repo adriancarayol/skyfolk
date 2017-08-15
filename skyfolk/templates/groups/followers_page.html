@@ -1,7 +1,5 @@
 {% load app_filters %}
 {% load avatar_tags %}
-{% load el_pagination_tags %}
-{% paginate user_list %}
 {% for item in user_list %}
     <div class="col l3 m10 s12 offset-m1">
         <div class="personal-card">
@@ -33,4 +31,3 @@
         </div>
     </div>
 {% endfor %}
-{% show_more %}
