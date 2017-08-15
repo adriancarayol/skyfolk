@@ -6,6 +6,8 @@ from django.db import models
 class PublicationGroup(PublicationBase):
     author = models.ForeignKey(User)
     board_group = models.ForeignKey(Group, db_index=True)
+    parent = models.ForeignKey('self', blank=True, null=True,
+                               related_name='reply_group')
 
     class Meta:
         unique_together = ('board_group', 'id')
@@ -15,3 +17,4 @@ class PublicationGroup(PublicationBase):
 
     def  __str__(self):
         return self.content
+

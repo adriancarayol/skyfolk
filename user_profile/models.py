@@ -83,7 +83,6 @@ class Profile(models.Model):
 
         return is_first_time_login
 
-
     # Methods of multimedia
     def get_num_multimedia(self):
         """
@@ -135,7 +134,7 @@ class FollowRel(StructuredRel):
 
 
 class NodeProfile(DjangoNode):
-    uid = UniqueIdProperty() #TODO: Eliminar este field
+    uid = UniqueIdProperty()  # TODO: Eliminar este field
     user_id = IntegerProperty(unique_index=True)  # user_id
     title = StringProperty(unique_index=True)  # username
     follow = RelationshipTo('NodeProfile', 'FOLLOW', model=FollowRel)  # follow user
@@ -185,7 +184,9 @@ class NodeProfile(DjangoNode):
     def get_followers(self, offset=None, limit=None):
         if limit and offset:
 
-            results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b SKIP %d LIMIT %d" % (offset, limit))
+            results, columns = self.cypher(
+                "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b SKIP %d LIMIT %d" % (
+                offset, limit))
         else:
             results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
 
@@ -198,7 +199,9 @@ class NodeProfile(DjangoNode):
 
     def get_follows(self, offset=None, limit=None):
         if limit and offset:
-            results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b SKIP %d LIMIT %d" % (offset, limit))
+            results, columns = self.cypher(
+                "MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b SKIP %d LIMIT %d" % (
+                offset, limit))
         else:
             results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
         return [self.inflate(row[0]) for row in results]
@@ -221,7 +224,8 @@ class NodeProfile(DjangoNode):
     def get_like_to_me(self, offset=None, limit=None):
         if offset and limit:
             results, columns = self.cypher(
-                "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m SKIP %d LIMIT %d" % (offset, limit))
+                "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m SKIP %d LIMIT %d" % (
+                offset, limit))
         else:
             results, columns = self.cypher(
                 "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
@@ -241,7 +245,7 @@ class NodeProfile(DjangoNode):
         """
         Devuelve si el perfil con id user_id
         es visible por nosotros.
-        :param user_id:
+        :param user_profile:
         :return template que determina si el perfil es visible:
         """
 
@@ -283,7 +287,6 @@ class NodeProfile(DjangoNode):
             return "all"
 
         return None
-
 
 
 class RequestManager(models.Manager):

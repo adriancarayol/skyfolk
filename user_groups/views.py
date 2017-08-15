@@ -1,6 +1,5 @@
 import json
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -9,8 +8,6 @@ from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
-from el_pagination.decorators import page_template
-from el_pagination.views import AjaxListView
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup, NodeGroup
@@ -18,11 +15,12 @@ from neomodel import db
 from django.db import transaction
 from user_profile.models import NodeProfile, TagProfile
 from user_profile.utils import make_pagination_html
-from user_profile.utils import crop_image
 from django.conf import settings
 from PIL import Image
 from django.utils import six
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from publications_groups.forms import PublicationGroupForm
+from publications_groups.models import PublicationGroup
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -54,7 +52,8 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 tempfile_io = six.BytesIO()
                 im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
                 tempfile_io.seek(0)
-                image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg', tempfile_io.tell(), None)
+                image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg',
+                                                  tempfile_io.tell(), None)
                 group.back_image = image_file
                 tags = form.cleaned_data['tags']
                 try:
@@ -62,7 +61,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                         with db.transaction:
                             group.save()
                             g = NodeGroup(group_id=group.id,
-                                    title=group.name).save()
+                                          title=group.name).save()
                             n = NodeProfile.nodes.get(user_id=user.id)
                             g.members.connect(n)
                             for tag in tags:
@@ -99,20 +98,20 @@ class UserGroupList(ListView):
         Obtenemos los grupos
         del usuario que hace la peticion
         """
-        results, meta = db.cypher_query("MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id" % self.request.user.id)
+        results, meta = db.cypher_query(
+            "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id" % self.request.user.id)
         return [y for x in results for y in x]
 
     def get_queryset(self):
         groups = self.get_in_groups()
         return UserGroups.objects.filter(id__in=groups)
 
+
 group_list = login_required(UserGroupList.as_view(), login_url='/')
 
 
 @login_required(login_url='/')
-@page_template('groups/user_entries.html')
-def group_profile(request, groupname, template='groups/group_profile.html',
-                  extra_context=None):
+def group_profile(request, groupname, template='groups/group_profile.html'):
     """
     Vista del perfil de un grupo
     :param request:
@@ -139,15 +138,16 @@ def group_profile(request, groupname, template='groups/group_profile.html',
     user_list = User.objects.filter(id__in=list_user_id)
     context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
-               'follow_group': node_group.members.is_connected(NodeProfile.nodes.get(user_id=user.id)) if group_profile.owner_id != user.id else False,
+               'follow_group': node_group.members.is_connected(
+                   NodeProfile.nodes.get(user_id=user.id)) if group_profile.owner_id != user.id else False,
                'likes': likes,
                'user_like_group': user_like_group,
                'users_in_group': users_in_group,
+               'publication_group_form': PublicationGroupForm(
+                   initial={'author': request.user, 'board_group': group_profile}),
+               'publications': PublicationGroup.objects.filter(board_group=group_profile),
                'group_owner': True if user.id == group_profile.owner_id else False,
                'user_list': user_list}
-
-    if extra_context is not None:
-        context.update(extra_context)
 
     return render(request, template, context)
 
@@ -262,7 +262,7 @@ class FollowersGroup(ListView):
         self.group = None
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
         offset = limit - 25
 
@@ -301,7 +301,7 @@ class LikeListGroup(ListView):
         self.group = None
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
         offset = limit - 25
 
@@ -313,13 +313,16 @@ class LikeListGroup(ListView):
             total_pages += 1
             self.pagination = make_pagination_html(current_page, total_pages)
         return LikeGroup.objects.filter(to_like_id=self.group['id']).values('from_like__username',
-                                                              'from_like__first_name', 'from_like__last_name',
-                                                              'from_like__profile__back_image'
-                                                              )
+                                                                            'from_like__first_name',
+                                                                            'from_like__last_name',
+                                                                            'from_like__profile__back_image'
+                                                                            )
+
     def get_context_data(self, **kwargs):
         context = super(LikeListGroup, self).get_context_data(**kwargs)
         context['group'] = self.group
         context['pagination'] = self.pagination
         return context
+
 
 likes_group = login_required(LikeListGroup.as_view(), login_url='/')
