@@ -1,5 +1,6 @@
-{{ object.lastname }}
-{{ object.firstname }}
-{{ object.back_image }}
 {{ object.username }}
+{{ object.firstname }}
+{{ object.lastname }}
+{{ object.user.get_full_name }}
+{{ object.pub_date }}
 

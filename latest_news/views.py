@@ -35,7 +35,7 @@ class News(TemplateView):
         try:
             publications = Publication.objects.filter(
                 author__in=follows, deleted=False, parent=None).select_related('author', 'shared_publication',
-                        'shared_photo_publication', 'parent').prefetch_related('extra_content', 'images', 'videos', 'shared_photo_publication__extra_content', 'shared_publication__extra_content', 'shared_publication__images', 'shared_publication__videos', 'shared_photo_publication__videos', 'shared_photo_publication__images')
+                        'shared_photo_publication', 'parent').prefetch_related('extra_content', 'images', 'videos', 'shared_photo_publication__extra_content', 'shared_publication__extra_content', 'shared_publication__images', 'shared_publication__videos', 'shared_photo_publication__videos', 'shared_photo_publication__images', 'shared_publication__author', 'shared_photo_publication__author')
         except ObjectDoesNotExist:
             publications = []
 

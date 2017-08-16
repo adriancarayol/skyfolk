@@ -132,8 +132,8 @@ Template para las busquedas
         <div class="item">
             <div class="personal-card">
                 <div class="header">
-                    {% if item.back_image %}
-                    <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.back_image }}">
+                    {% if item.object.back_image %}
+                    <img class="back-profile-user" src="{{ item.object.back_image.url }}">
                     {% else %}
                     <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                     {% endif %}
@@ -141,7 +141,7 @@ Template para las busquedas
                     </i>
                     <div class="bg-user">
                         <div onclick="location.href='/profile/{{ item.username }}'"
-                            class="profile-user-bg">{% avatar item.username %}</div>
+                            class="profile-user-bg">{% avatar item.object.user %}</div>
                     </div>
                 </div>
                 <div class="col s12">
@@ -156,16 +156,20 @@ Template para las busquedas
         <div class="item">
             <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                 <div class="col s3" style="padding: 10px">
-                    {% avatar item.author 50 %}
+                    {% avatar item.object.author 50 %}
                 </div>
                 <div class="col s9">
                     <div class="row">
                         <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</p>
                     </div>
                     <div class="row">
-                        {% with item.content|safe|truncatechars:"150" as content %}
-                        <p>{% highlight content with request.GET.q %}</p>
-                        {% endwith %}
+                         <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
+                        <br>
+                        {% for i in item.object.images.all %}
+                        <div class="col s12">
+                            <img src="{{ i.image.url }}" alt="{{ item.author }}" width="100%" height="100%" />
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -189,13 +193,13 @@ Template para las busquedas
                 </div>
                 <div class="col s12 legend-content">
                     <div class="legend-user-image">
-                        {% avatar item.author %}
+                        {% avatar item.object.owner %}
                     </div>
                     <div class="col l8 m8 s8 legend-user-data">
                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
                         <i class="photo-title truncate">{{ item.title }}</i>
                         <i class="truncate photo-date"><i class="fa fa-clock-o"
-                                aria-hidden="true"></i> {{ item.date|naturaltime }}</i>
+                                aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</i>
                     </div>
                 </div>
             </div>
@@ -210,8 +214,8 @@ Template para las busquedas
         <div class="col l3 m5 s12">
             <div class="personal-card">
                 <div class="header">
-                    {% if item.back_image %}
-                    <img class="back-profile-user" src="{{ MEDIA_URL }}{{ item.back_image }}">
+                    {% if item.object.back_image %}
+                    <img class="back-profile-user" src="{{ item.object.back_image.url }}">
                     {% else %}
                     <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                     {% endif %}
@@ -219,7 +223,7 @@ Template para las busquedas
                     </i>
                     <div class="bg-user">
                         <div onclick="location.href='/profile/{{ item.username }}'"
-                            class="profile-user-bg">{% avatar item.id %}</div>
+                            class="profile-user-bg">{% avatar item.object.user %}</div>
                     </div>
                 </div>
                 <div class="col s12">
@@ -239,16 +243,20 @@ Template para las busquedas
         <div class="col l3 m5 s12">
             <div class="col s12 publication-div" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                 <div class="col s3">
-                    {% avatar item.author 50 %}
+                    {% avatar item.object.author 50 %}
                 </div>
                 <div class="col s9">
                     <div class="row">
                         <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</p>
                     </div>
                     <div class="row">
-                        {% with item.content|safe|truncatechars:"150" as content %}
-                        <p>{% highlight content with request.GET.q %}</p>
-                        {% endwith %}                    
+                         <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
+                        <br>
+                        {% for i in item.object.images.all %}
+                        <div class="col s12">
+                            <img src="{{ i.image.url }}" alt="{{ item.author }}" width="100%" height="100%" />
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -277,20 +285,20 @@ Template para las busquedas
                 </div>
                 <div class="col s12 legend-content">
                     <div class="legend-user-image">
-                        {% avatar item.author %}
+                        {% avatar item.object.owner %}
                     </div>
                     <div class="col l8 m8 s8 legend-user-data">
                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
                         <i class="photo-title truncate">{{ item.title }}</i>
                         <i class="truncate photo-date"><i class="fa fa-clock-o"
-                                aria-hidden="true"></i> {{ item.date|naturaltime }}</i>
+                                aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</i>
                     </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-    {% endif %}
+    {% endif %} 
     {% if s == 'videos' %}
     <div class="row">
         {% for result in object_list %}
@@ -309,16 +317,36 @@ Template para las busquedas
                 </div>
             </div>
         </div>
-        {% endfor %}
-        {% if page.has_previous or page.has_next %}
-        <div>
-            {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
-            |
-            {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
-        </div>
-        {% endif %}
+        {% endfor %} 
     </div>
     {% endif %}
+    <div class="row">
+        {% if is_paginated %}
+    <ul class="pagination center">
+        {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}&q={{ q }}"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+        <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+        {% if page_obj.number == i %}
+        <li class="active blue darken-1 white-text"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+        <li class="waves-effect"><a href="?page={{ i }}&q={{ q }}">{{ i }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}&q={{ q }}">
+                <i class="material-icons">chevron_right</i>
+        </a></li>
+        {% else %}
+        <li class="disabled"><span>
+                <i class="material-icons">chevron_right</i>
+        </span></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+    </div>
 </div>
 <script async src="{{ STATIC_URL }}js/search.js"></script>
 <script async src="{{ STATIC_URL }}js/photo_gallery.js" type="text/javascript"></script>

@@ -68,7 +68,7 @@ const Items = ({ list }) => (
                                     <img className="back-profile-user lazyload" data-src={item.back_image} />
                                     <i className="fa fa-fire fa-2x affinity"></i>
                                     <div className="bg-user">
-                                        <div className="profile-user-bg"><img src={item.avatar} alt={item.username} />
+                                        <div className="profile-user-bg"><a href={'/profile/' + item.username}><img src={item.avatar} alt={item.username} /></a>
                                         </div>
                                 </div>
                             </div>

@@ -279,6 +279,7 @@ class ImageModel(models.Model):
         self.view_count += 1
         models.Model.save(self)
 
+    """
     def __getattr__(self, name):
         global size_method_map
         if not size_method_map:
@@ -290,7 +291,7 @@ class ImageModel(models.Model):
             return result
         else:
             raise AttributeError
-
+    """
     def size_exists(self, photosize):
         func = getattr(self, "get_%s_filename" % photosize.name, None)
         if func is not None:

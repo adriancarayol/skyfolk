@@ -2,7 +2,7 @@
 {{ object.title }}
 {{ object.thumbnail }}
 {{ object.url_image }}
-{{ object.date }}
+{{ object.pub_date }}
 {{ object.external_image }}
 {{ object.slug }}
 {{ object.description }}

@@ -13,7 +13,7 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
     title = indexes.CharField(model_attr='title')
     thumbnail = indexes.CharField(model_attr='thumbnail')
     url_image = indexes.CharField(model_attr='image')
-    date = indexes.DateTimeField(model_attr='date_added')
+    pub_date = indexes.DateTimeField(model_attr='date_added')
     external_image = indexes.CharField(model_attr='url_image')
     tags = indexes.MultiValueField()
     slug = indexes.CharField(model_attr='slug')
@@ -24,3 +24,4 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_tags(self, obj):
         return [tag.name for tag in obj.tags.all()]
+

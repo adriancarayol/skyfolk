@@ -21128,7 +21128,11 @@ var Items = function Items(_ref) {
                                     _react2.default.createElement(
                                         'div',
                                         { className: 'profile-user-bg' },
-                                        _react2.default.createElement('img', { src: item.avatar, alt: item.username })
+                                        _react2.default.createElement(
+                                            'a',
+                                            { href: '/profile/' + item.username },
+                                            _react2.default.createElement('img', { src: item.avatar, alt: item.username })
+                                        )
                                     )
                                 )
                             )

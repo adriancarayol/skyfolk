@@ -22,7 +22,7 @@ from el_pagination.views import AjaxListView
 from django.http import JsonResponse
 from django.core import serializers
 from haystack.generic_views import SearchView
-from haystack.query import SearchQuerySet, SQ
+from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
@@ -1365,7 +1365,12 @@ def autocomplete(request):
 class SearchUsuarioView(SearchView):
     # formview
     template_name = 'search/search.html'
-    queryset = SearchQuerySet().all()
+    queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
+            Publication, Publication.objects.filter(deleted=False).select_related('author').prefetch_related('images')
+            ).load_all_queryset(
+                    Photo, Photo.objects.filter(is_public=True).select_related('owner').prefetch_related('tags')
+            ).load_all_queryset(
+                    Profile, Profile.objects.filter(user__is_active=True))
     form_class = SearchForm
 
     def get_queryset(self):
