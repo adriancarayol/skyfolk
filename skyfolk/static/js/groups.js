@@ -17,7 +17,20 @@ $(function () {
             "overflow": "auto"
         });
     });
-}); // end document ready
+
+    $("#publish_group").click(function (e) {
+        if (!$('#group_form_wrapper').is(':visible')) {
+            $('#group_form_wrapper').show(); 
+        } else {
+            $('#group_form_wrapper').hide(); 
+        }
+    }); 
+    $('#group_form_wrapper .close').click(function() {
+        $('#group_form_wrapper').hide();
+    });
+});// end document ready
+
+
 
 function AJAX_follow_group(_id) {
     $.ajax({
@@ -123,4 +136,72 @@ function AJAX_like_group(_id) {
 
         }
     });
+}
+
+function AJAX_submit_publication(obj_form, type, pks) {
+    var form = new FormData($(obj_form).get(0));
+    form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+    type = typeof type !== 'undefined' ? type : "reply"; //default para type
+    $.ajax({
+        url: '/publication_g/',
+        type: 'POST',
+        data: form,
+        async: true,
+        dataType: "json",
+        contentType: false,
+        enctype: 'multipart/form-data',
+        processData: false,
+        success: function (data) {
+            var response = data.response;
+            var msg = data.msg;
+
+            if (response === true && (typeof(msg) !== 'undefined' && msg !== null)) {
+                swal({
+                    title: "",
+                    text: msg,
+                    customClass: 'default-div',
+                    type: "success"
+                });
+            } else if (response === true) {
+
+            } else {
+                swal({
+                    title: "",
+                    text: "Failed to publish",
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            }
+            if (type === "reply") {
+                var caja_comentarios = $('#caja-comentario-' + pks[2]);
+                $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
+                $(caja_comentarios).fadeOut();
+            } else if (type === "publication") {
+                $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+            }
+        },
+        error: function (data, textStatus) {
+            var response = $.parseJSON(data.responseText);
+            var error_msg = response.error[0];
+            var type_error = response.type_error;
+
+            if (type_error === 'incorrent_data') {
+                swal({
+                    title: '¡Ups!',
+                    text: error_msg, // rs.responseText,
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            } else {
+                swal({
+                    title: '¡Ups!',
+                    text: 'Revisa el contenido de tu mensaje', // rs.responseText,
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            }
+        }
+    }).done(function () {
+
+    })
 }

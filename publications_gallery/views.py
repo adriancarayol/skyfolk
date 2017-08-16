@@ -97,7 +97,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         return self.form_invalid(form=form)
 
 
-publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
+publication_photo_view = transaction.atomic(login_required(PublicationPhotoView.as_view(), login_url='/'))
 
 
 def publication_detail(request, publication_id):
@@ -530,7 +530,7 @@ def load_more_descendants(request):
 
         try:
             publication = PublicationPhoto.objects.get(id=pub_id)
-        except ObjectDoesNotExist:
+        except PublicationPhoto.DoesNotExist:
             return JsonResponse(data)
 
         try:
@@ -587,6 +587,8 @@ def load_more_descendants(request):
                             'board_photo', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
+        else:
+            return JsonResponse({'data': None})
 
         pubs_id = publications.values_list('id', flat=True)
         pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id).values('shared_photo_publication__id')\
@@ -652,7 +654,7 @@ def load_more_publications(request):
         pub_id = request.POST.get('id', None)  # ultima publicacion en skyline
         try:
             publication = PublicationPhoto.objects.get(id=pub_id)
-        except ObjectDoesNotExist:
+        except PublicationPhoto.DoesNotExist:
             return JsonResponse(data)
 
         try:
