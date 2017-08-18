@@ -28,6 +28,13 @@ $(function () {
     $('#group_form_wrapper .close').click(function() {
         $('#group_form_wrapper').hide();
     });
+    
+    /* Submit publication */
+    $('#group_form_wrapper').find('#group_publication').on('submit', function (event) {
+        event.preventDefault();
+        var form = $(this);
+        AJAX_submit_group_publication(form, 'publication');
+    });
 });// end document ready
 
 
@@ -138,7 +145,7 @@ function AJAX_like_group(_id) {
     });
 }
 
-function AJAX_submit_publication(obj_form, type, pks) {
+function AJAX_submit_group_publication(obj_form, type, pks) {
     var form = new FormData($(obj_form).get(0));
     form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     type = typeof type !== 'undefined' ? type : "reply"; //default para type
@@ -177,7 +184,8 @@ function AJAX_submit_publication(obj_form, type, pks) {
                 $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type === "publication") {
-                $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+                $('#group_form_wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
+                $('#group_publication_form').val('');
             }
         },
         error: function (data, textStatus) {

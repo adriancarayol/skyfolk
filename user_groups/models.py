@@ -47,6 +47,7 @@ class UserGroups(Group):
     class Meta:
         permissions = (
             ('view_notification', 'View notification'),
+            ('can_publish', 'Can publish'),
             ('change_description', 'Change description'),
             ('delete_publication', 'Delete publication'),
             ('delete_image', 'Delete image'),

@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 @receiver(post_save, sender=UserGroups)
 def handle_new_group(sender, instance, created, **kwargs):
     if created:  # Primera vez que se crea el usuario, creamos Perfil y Nodo
-        assign_perm('view_notification', instance.owner, instance)
+        aassign_perm('view_notification', instance.owner, instance)
+        assign_perm('can_publish', instance.owner, instance)
         assign_perm('change_description', instance.owner, instance)
         assign_perm('delete_publication', instance.owner, instance)
         assign_perm('delete_image', instance.owner, instance)

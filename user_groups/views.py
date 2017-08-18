@@ -21,6 +21,8 @@ from django.utils import six
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from publications_groups.forms import PublicationGroupForm
 from publications_groups.models import PublicationGroup
+from guardian.shortcuts import assign_perm, remove_perm
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -45,16 +47,17 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 group.owner = user
                 group.avatar = request.FILES.get('avatar', None)
                 image = request.FILES.get('back_image', None)
-                if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
-                    raise ValueError('BackImage > 5MB!')
-                im = Image.open(image).convert('RGBA')
-                im.thumbnail((1500, 630), Image.ANTIALIAS)
-                tempfile_io = six.BytesIO()
-                im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
-                tempfile_io.seek(0)
-                image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg',
+                if image:
+                    if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+                        raise ValueError('BackImage > 5MB!')
+                    im = Image.open(image).convert('RGBA')
+                    im.thumbnail((1500, 630), Image.ANTIALIAS)
+                    tempfile_io = six.BytesIO()
+                    im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
+                    tempfile_io.seek(0)
+                    image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg',
                                                   tempfile_io.tell(), None)
-                group.back_image = image_file
+                    group.back_image = image_file
                 tags = form.cleaned_data['tags']
                 try:
                     with transaction.atomic():
@@ -167,21 +170,22 @@ def follow_group(request):
             if user.pk != group.owner.pk:
                 try:
                     g = NodeGroup.nodes.get(group_id=group_id)
-                except NodeGroup.DoesNotExist:
-                    raise Http404
-
-                try:
                     n = NodeProfile.nodes.get(user_id=user.id)
-                except NodeProfile.DoesNotExist:
+                    group = UserGroups.objects.get(id=group_id)
+                except ObjectDoesNotExist:
                     raise Http404
 
                 created = g.members.is_connected(n)
+
                 if created:
                     return JsonResponse({
                         'response': "in_group"
                     })
 
-                g.members.connect(n)
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        g.members.connect(n)
+                        assign_perm('can_publish', user, group)
                 return JsonResponse({
                     'response': "user_add"
                 })
@@ -208,17 +212,18 @@ def unfollow_group(request):
             if user.pk != group.owner.pk:
                 try:
                     node_group = NodeGroup.nodes.get(group_id=group_id)
-                except NodeGroup.DoesNotExist:
-                    raise Http404
-                try:
                     n = NodeProfile.nodes.get(user_id=user.id)
-                except NodeProfile.DoesNotExist:
+                except ObjectDoesNotExist:
                     raise Http404
 
                 try:
-                    node_group.members.disconnect(n)
+                    group = UserGroups.objects.get(id=group_id)
+                    with transaction.atomic(using="default"):
+                        with db.transaction:
+                            node_group.members.disconnect(n)
+                            remove_perm('can_publish', user, group)
                     return HttpResponse(json.dumps("user_unfollow"), content_type='application/javascript')
-                except UserGroups.DoesNotExist:
+                except (ObjectDoesNotExist, Exception) as e:
                     return HttpResponse(json.dumps("error"), content_type='application/javascript')
             else:
                 return HttpResponse(json.dumps("error"), content_type='application/javascript')
