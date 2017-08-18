@@ -31,7 +31,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from mimetypes import guess_extension, guess_type
-
+from user_groups.models import UserGroups
 from .validators import validate_extension
 from .validators import validate_file_extension
 from .tasks import generate_thumbnails
@@ -451,6 +451,172 @@ class ImageModel(models.Model):
         if self.image:
             self.image.storage.delete(self.image.name)
 
+
+
+@python_2_unicode_compatible
+class PhotoGroup(ImageModel):
+    title = models.CharField(_('title'),
+                             max_length=250)
+    slug = models.SlugField(_('slug'),
+                            unique=True,
+                            max_length=250,
+                            help_text=_('A "slug" is a unique URL-friendly title for an object.'))
+
+    caption = models.TextField(_('caption'),
+                               blank=True, max_length=1000)
+
+    date_added = models.DateTimeField(_('date added'),
+                                      default=now)
+
+    tags = TaggableManager(blank=True)
+
+    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_photos')
+
+    url_image = models.URLField(max_length=255, blank=True, null=True)
+
+    thumbnail = models.ImageField(_('thumbnail'),
+                                  upload_to=get_storage_path,
+                                  null=True, blank=True)
+
+    group = models.ForeignKey(UserGroups, related_name="group_photos")
+
+    objects = PhotoQuerySet.as_manager()
+
+    class Meta:
+        ordering = ['-date_added']
+        get_latest_by = 'date_added'
+        verbose_name = _("photo")
+        verbose_name_plural = _("photos")
+
+    def __str__(self):
+        return self.title
+
+    def save(self, created=True, *args, **kwargs):
+        if created and not self.slug:
+            self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(uuid.uuid1()))
+            self.get_remote_image()
+        super(PhotoGroup, self).save(*args, **kwargs)
+
+    def get_remote_image(self):
+        """
+        Obtiene la url introducida por el usuario
+        """
+
+        if not self.url_image and not self.image:
+            raise ValueError('Select image')
+
+        if self.url_image and not self.image:
+            if len(self.url_image) > 255:
+                raise ValueError('URL is very long.')
+
+            parsed = urlparse(self.url_image)
+            name, ext = splitext(parsed.path)
+
+            validate_extension(ext)
+
+            response = requests.head(self.url_image)
+            length = response.headers.get('content-length', None)
+
+            if length and int(length) > settings.BACK_IMAGE_DEFAULT_SIZE:
+                raise ValueError("La imagen no puede exceder de 5MB")
+
+            else:
+                request = requests.get(self.url_image, stream=True)
+
+                if request.status_code != requests.codes.ok:
+                    raise ValueError('Cant get image')
+
+                tmp = tempfile.NamedTemporaryFile()
+                read = 0
+                for block in request.iter_content(1024 * 8):
+                    if not block:
+                        break
+                    read += len(block)
+                    if read > settings.BACK_IMAGE_DEFAULT_SIZE:
+                        raise ValueError("La imagen no puede exceder de 5MB")
+                    tmp.write(block)
+                # Comprobamos que se trata de una imagen
+                try:
+                    im = Image.open(tmp)
+                    im.thumbnail((800, 600), Image.ANTIALIAS)
+                    im.save(tmp, format='JPEG', optimize=True, quality=90)
+                    tmp.seek(0)
+                    tmp.close()
+                except IOError:
+                    raise ValueError('Cant get image')
+
+                self.image.save(self.slug + ext, File(tmp))
+
+    def get_absolute_url(self):
+        return reverse('photologue:pl-photo', args=[self.slug])
+
+    def public_galleries(self):
+        """Return the public galleries to which this photo belongs."""
+        return self.galleries.filter(is_public=True)
+
+    def get_previous_in_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        if not self.is_public:
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+            return None
+        photos = PhotoGroup.objects.filter(owner=self.owner, is_public=True)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        previous = None
+        for photo in photos:
+            if photo == self:
+                return previous
+            previous = photo
+        return None
+
+    def get_next_in_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        if not self.is_public:
+            return None
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+        photos = PhotoGroup.objects.filter(owner=self.owner, is_public=True)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        matched = False
+        for photo in photos:
+            if matched:
+                return photo
+            if photo == self:
+                matched = True
+        return None
+
+    def get_previous_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        photos = PhotoGroup.objects.filter(owner=self.owner)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        previous = None
+        for photo in photos:
+            if photo == self:
+                return previous
+            previous = photo
+        return None
+
+    def get_next_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        photos = PhotoGroup.objects.filter(owner=self.owner)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        matched = False
+        for photo in photos:
+            if matched:
+                return photo
+            if photo == self:
+                matched = True
+        return None
 
 @python_2_unicode_compatible
 class Photo(ImageModel):

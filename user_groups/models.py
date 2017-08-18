@@ -5,8 +5,16 @@ from django.contrib.auth.models import Group
 from django_neomodel import DjangoNode
 from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, One
 from django.utils.text import slugify
-from user_profile.models import NodeProfile, TagProfile
+from notifications.models import Notification
 
+REQUEST_FOLLOWING = 1
+REQUEST_FOLLOWER = 2
+REQUEST_BLOCKED = 3
+REQUEST_STATUSES = (
+    (REQUEST_FOLLOWING, 'Following'),
+    (REQUEST_FOLLOWER, 'Follower'),
+    (REQUEST_BLOCKED, 'Blocked'),
+)
 
 def upload_small_group_image(instance, filename):
     return '%s/small_group_image/%s' % (instance.name, filename)
@@ -101,3 +109,60 @@ class LikeGroup(models.Model):
     def __str__(self):
         return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.username, self.to_like.name,
                                                                 self.created)
+
+class RequestGroupManager(models.Manager):
+    def get_follow_request(self, from_profile, to_group):
+        """
+        Devuelve la petición de seguimiento de un perfil
+        :param profile => Perfil del que se quiere recuperar la solicitud de seguimiento:
+        :return Devuelve la petición de seguimiento de un perfil:
+        """
+        return self.get(emitter_id=from_profile,
+                        receiver_id=to_group, status=REQUEST_FOLLOWING)
+
+    def add_follow_request(self, from_profile, to_group, notify):
+        """
+        Añade una solicitud de seguimiento
+        :param profile => Perfil que quiero seguir:
+        :param notify => Notificacion generada:
+        """
+        obj, created = self.get_or_create(emitter_id=from_profile,
+                                          receiver_id=to_group,
+                                          status=REQUEST_FOLLOWING)
+        # Si existe la peticion de amistad, actualizamos la notificacion
+        obj.notification = notify
+        obj.save()
+        return obj
+
+    def remove_received_follow_request(self, from_profile, to_group):
+        """
+        Elimina la petición de seguimiento hacia un perfil
+        :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
+        """
+        try:
+            request = self.get(emitter_id=from_group, receiver_id=to_group, status=REQUEST_FOLLOWING)
+            request.notification.delete()  # Eliminamos la notificacion
+            request.delete()
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+
+class RequestGroup(models.Model):
+    """
+        Modelo que gestiona las peticiones de amistad:
+            <<emitter>>: Emisor de la petición
+            <<receiver>>: Receptor de la petición
+            <<status>>: Estado en el que se encuentra la petición
+            <<created>>: Fecha en la que se creó la petición
+            <<notification>>: Notificación asociada a la petición
+    """
+    emitter = models.ForeignKey(User, related_name='from_group_request')
+    receiver = models.ForeignKey(Group, related_name='to_group_request')
+    status = models.IntegerField(choices=REQUEST_STATUSES)
+    created = models.DateTimeField(auto_now_add=True)
+    notification = models.ForeignKey(Notification, related_name='request_group_notification', null=True)
+    objects = RequestGroupManager()
+
+    class Meta:
+        unique_together = ('emitter', 'receiver', 'status')

@@ -10,7 +10,7 @@ from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
-from .models import UserGroups, LikeGroup, NodeGroup
+from .models import UserGroups, LikeGroup, NodeGroup, RequestGroup
 from neomodel import db
 from django.db import transaction
 from user_profile.models import NodeProfile, TagProfile
@@ -23,6 +23,7 @@ from publications_groups.forms import PublicationGroupForm
 from publications_groups.models import PublicationGroup
 from guardian.shortcuts import assign_perm, remove_perm
 from django.core.exceptions import ObjectDoesNotExist
+from notifications.signals import notify
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -171,7 +172,7 @@ def follow_group(request):
                 try:
                     g = NodeGroup.nodes.get(group_id=group_id)
                     n = NodeProfile.nodes.get(user_id=user.id)
-                    group = UserGroups.objects.get(id=group_id)
+                    group = UserGroups.objects.select_related('owner').get(id=group_id)
                 except ObjectDoesNotExist:
                     raise Http404
 
@@ -182,13 +183,19 @@ def follow_group(request):
                         'response': "in_group"
                     })
 
-                with transaction.atomic(using="default"):
-                    with db.transaction:
-                        g.members.connect(n)
-                        assign_perm('can_publish', user, group)
-                return JsonResponse({
-                    'response': "user_add"
-                })
+                if group.is_public:
+                    try:
+                        with transaction.atomic(using="default"):
+                            with db.transaction:
+                                g.members.connect(n)
+                                assign_perm('can_publish', user, group)
+                                return JsonResponse({
+                                    'response': "user_add"
+                                })
+                    except Exception:
+                        return JsonResponse({
+                            'response': "error"
+                    })
             else:
                 return JsonResponse({
                     'response': "own_group",

@@ -557,6 +557,7 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # enviamos peticion de amistad
+            #TODO: Hacer transaction atomic
             try:
                 friend_request = Request.objects.get_follow_request(from_profile=user.user_id,
                                                                     to_profile=friend.user_id)
