@@ -73,9 +73,10 @@
                         <div class="col l3 m2 s3 img">
                             {% avatar item.author %}
                         </div>
-                        <div class="col l8 m9 s8 author">
-                            <a href="/profile/{{ item.author.username }}">@{{ item.author.username }}</a><i>{{ item.author.first_name }} {{ item.author.last_name }}</i>
-                            <i class="pub-date">{{ item.created|naturaltime }}</i>
+                        <div class="col l9 m9 s8 author">
+                            <span><a href="/profile/{{ item.author.username }}">@{{ item.author.username }}</a><i>{{ item.author.first_name }} {{ item.author.last_name }}</i><span>
+                            <span><a href="/publication/{{item.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></span>
+                            <p><i class="pub-date">{{ item.created|naturaltime }}</i></p>
                         </div>
                         <div class="col l9 m10 s9 contenido">
                             <p>{{ item.content|safe }}</p>

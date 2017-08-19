@@ -1375,7 +1375,6 @@ class SearchUsuarioView(SearchView):
     form_class = SearchForm
 
     def get_queryset(self):
-
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N')) &
                 ((SQ(board_owner_id=self.request.user.id)

@@ -1,3 +1,4 @@
+import json
 from itertools import chain, zip_longest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -13,6 +14,7 @@ from photologue.models import Photo
 from publications.models import Publication
 from user_profile.forms import SearchForm
 from user_profile.models import Relationship, NodeProfile
+from django.http import JsonResponse
 from random import shuffle
 
 

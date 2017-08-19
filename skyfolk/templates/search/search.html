@@ -160,7 +160,8 @@ Template para las busquedas
                 </div>
                 <div class="col s9">
                     <div class="row">
-                        <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</p>
+                        <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}
+                            <a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></p>
                     </div>
                     <div class="row">
                          <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
@@ -247,7 +248,7 @@ Template para las busquedas
                 </div>
                 <div class="col s9">
                     <div class="row">
-                        <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</p>
+                        <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}<a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></p>
                     </div>
                     <div class="row">
                          <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
