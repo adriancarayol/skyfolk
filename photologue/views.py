@@ -51,7 +51,7 @@ def collection_list(request, username,
 
     visibility = user_profile.is_visible(m)
 
-    if visibility == ("nothing" or "both" or "followers" or "block"):
+    if visibility and visibility != 'all':
         return redirect('user_profile:profile', username=user_profile.title)
 
     form = UploadFormPhoto()
@@ -114,7 +114,7 @@ class PhotoListView(AjaxListView):
 
         visibility = user_profile.is_visible(m)
 
-        if visibility == ("nothing" or "both" or "followers" or "block"):
+        if visibility and visibility != 'all':
             return False
         return True
 
@@ -389,7 +389,7 @@ class PhotoDetailView(DetailView):
 
         visibility = user_profile.is_visible(n)
 
-        if visibility == ("nothing" or ("both" or "followers") or "block"):
+        if visibility and visibility != 'all':
             return False
         return True
 

@@ -19,6 +19,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
+from itertools import chain
 from django.http import JsonResponse
 from django.core import serializers
 from haystack.generic_views import SearchView
@@ -376,7 +377,8 @@ def config_privacity(request):
     user = request.user
     try:
         user_profile = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
+        profile = Profile.objects.get(user_id=user.id)
+    except ObjectDoesNotExist:
         raise Http404
 
     logging.info('>>>>> PETICION CONFIG - User: {}'.format(user.username))
@@ -384,9 +386,13 @@ def config_privacity(request):
         privacity_form = PrivacityForm(data=request.POST)
         if privacity_form.is_valid():
             try:
-                user_profile.privacity = privacity_form.clean_privacity()
-                user_profile.save()
-                print(user_profile.privacity)
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        privacity = privacity_form.clean_privacity()
+                        user_profile.privacity = privacity
+                        profile.privacity = privacity
+                        user_profile.save()
+                        profile.save()
             except Exception:
                 logging.info('>>>> PETICION CONFIG - User: {} - ERROR'.format(user.username))
             logging.info('>>>> PETICION CONFIG - User: {} - CAMBIOS GUARDADOS CORRECTAMENTE'.format(user.username))
@@ -1353,8 +1359,9 @@ def autocomplete(request):
     """
     Autocompletado de usuarios
     """
+    user = request.user
     q = request.GET.get('q', '')
-    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:5]
+    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
     suggestions = [{'username': result.username, 'first_name': result.firstname,
                     'last_name': result.lastname, 'avatar': avatar(result.username)} for result in sqs]
     the_data = json.dumps({
@@ -1364,18 +1371,22 @@ def autocomplete(request):
 
 
 class SearchUsuarioView(SearchView):
-    # formview
     template_name = 'search/search.html'
-    queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
-            Publication, Publication.objects.filter(deleted=False).select_related('author').prefetch_related('images')
-            ).load_all_queryset(
-                    Photo, Photo.objects.filter(is_public=True).select_related('owner').prefetch_related('tags')
-            ).load_all_queryset(
-                    Profile, Profile.objects.filter(user__is_active=True))
     form_class = SearchForm
 
     def get_queryset(self):
-        queryset = super(SearchUsuarioView, self).get_queryset()
+
+        queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
+            Publication, Publication.objects.filter((SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N')) &
+                ((SQ(board_owner_id=self.request.user.id)
+                    | SQ(author_id=self.request.user.id)) | SQ(board_owner__profile__privacity='A'))) \
+            .select_related('author').prefetch_related('images')
+            ).load_all_queryset(
+                    Photo, Photo.objects.filter(~SQ(owner__profile__privacity='N')
+                        & (SQ(owner_id=self.request.user.id) | (SQ(owner__profile__privacity='A') & SQ(is_public=True)))) \
+                    .select_related('owner').prefetch_related('tags')
+            ).load_all_queryset(
+                    Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))
         models = []
         try:
             criteria = self.kwargs['option']

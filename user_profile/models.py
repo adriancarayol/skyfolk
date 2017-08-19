@@ -40,6 +40,17 @@ class Profile(models.Model):
     back_image = models.ImageField(blank=True, null=True, upload_to=upload_cover_path)
     status = models.CharField(blank=True, null=True, max_length=100)
     is_first_login = models.BooleanField(default=True)
+    ONLYFOLLOWERS = 'OF'
+    ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
+    ALL = 'A'
+    NOTHING = 'N'
+    OPTIONS_PRIVACITY = (
+        (ONLYFOLLOWERS, 'OnlyFo'),
+        (ONLYFOLLOWERSANDFOLLOWS, 'OnlyFAF'),
+        (ALL, 'All'),
+        (NOTHING, 'Nothing'),
+    )
+    privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
 
     def __str__(self):
         return "%s profile" % self.user.username
@@ -231,9 +242,12 @@ class NodeProfile(DjangoNode):
                 "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
         return [self.inflate(row[0]) for row in results]
 
-    def get_favs_users(self):
-        results, columns = self.cypher(
-            "MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT 6")
+    def get_favs_users(self, offset=None, limit=None):
+        if not limit and not offset:
+            results, columns = self.cypher(
+                "MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT 6")
+        else:
+            results, columns = self.cypher("MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT %d" % limit)
         return [self.inflate(row[0]) for row in results]
 
     def get_favs_followers_users(self):

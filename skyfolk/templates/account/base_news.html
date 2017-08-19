@@ -125,7 +125,7 @@
                                     {% comment %} Para publicaciones con URL {% endcomment %}
                                     {% if  item.shared_publication.extra_content.video %}
                                     {% video item.shared_publication.extra_content.video as my_video %}
-                                    {% video my_video "medium" %}
+                                    {% video my_video "300x100" %}
                                     {% endvideo %}
                                     {% else %}
                                     <div class="card small">
@@ -196,7 +196,7 @@
                                     {% comment %} Para publicaciones con URL {% endcomment %}
                                     {% if item.shared_photo_publication.extra_content.video %}
                                     {% video item.shared_photo_publication.extra_content.video as my_video %}
-                                    {% video my_video "medium" %}
+                                    {% video my_video "300x100" %}
                                     {% endvideo %}
                                     {% else %}
                                     <div class="card small">
@@ -250,7 +250,7 @@
                             {% if item.extra_content %}
                             {% if item.extra_content.video %}
                             {% video item.extra_content.video as my_video %}
-                            {% video my_video "medium" %}
+                            {% video my_video "300x100" %}
                             {% endvideo %}
                             {% else %}
                             {% comment %} Para publicaciones con URL {% endcomment %}
@@ -306,6 +306,8 @@
             </div>
         </div>
     </div>
+
+    {{ pagination|safe }}
 </div>
 <script src="{{ STATIC_URL }}js/socket_news.js" type="text/javascript"></script>
 <script>

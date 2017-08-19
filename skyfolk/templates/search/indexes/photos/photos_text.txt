@@ -1,4 +1,5 @@
 {{ object.owner.get_full_name }}
+{{ object.owner.username }}
 {{ object.title }}
 {{ object.thumbnail }}
 {{ object.url_image }}
