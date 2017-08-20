@@ -190,7 +190,7 @@ Add follow to profile tab
                 {% if user_profile.id == user.id %}
                     <script>
                         function addItemToFriendList(name, lastname, username, avatar_url) {
-                            $("#tab-amigos").find("ul").append('<li><img src="' + avatar_url + '" alt="' + username + '" width="120" height="120"><a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
+                            $("#tab-amigos").find("ul").append('<li>'+ avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
                         }
                     </script>
                 {% endif %}

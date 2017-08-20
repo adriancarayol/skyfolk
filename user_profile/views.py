@@ -32,7 +32,8 @@ from publications.models import Publication, PublicationImage, PublicationVideo
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import NodeProfile, TagProfile, Request, Profile
+from user_profile.models import NodeProfile, TagProfile, Request, Profile, \
+        RelationShipProfile, FOLLOWING
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from neomodel import db
 from django.db import transaction
@@ -69,7 +70,6 @@ def profile_view(request, username,
     context = {}
     # Privacidad del usuario
     privacity = n.is_visible(m)
-
     # Para escribir mensajes en mi propio perfil.
     context['user_profile'] = user_profile
     context['privacity'] = privacity
@@ -553,9 +553,18 @@ def add_friend_by_username_or_pin(request):
             # Comprobamos si el usuario necesita peticion de amistad
             no_need_petition = friend.privacity == NodeProfile.ALL
             if no_need_petition:
-                user.follow.connect(friend)
-                sql_friend = User.objects.get(id=friend.user_id)
-                data['response'] = 'added_friend'
+                try:
+                    with transaction.atomic(using="default"):
+                        with db.transaction:
+                            user.follow.connect(friend)
+                            sql_friend = User.objects.select_related('profile').get(id=friend.user_id)
+                            emitter = Profile.objects.get(user_id=user_request.id)
+                            RelationShipProfile.objects.create(to_profile=sql_friend.profile,
+                                    from_profile=emitter, type=FOLLOWING)
+                            data['response'] = 'added_friend'
+                except Exception as e:
+                    logging.info(e)
+
                 data['friend_username'] = friend.title
                 data['friend_avatar'] = avatar(sql_friend)
                 data['friend_first_name'] = sql_friend.first_name
@@ -572,12 +581,13 @@ def add_friend_by_username_or_pin(request):
 
             if not friend_request:
                 # Eliminamos posibles notificaciones residuales
+                sql_friend = User.objects.get(id=friend.user_id)
                 Notification.objects.filter(actor_object_id=user_request.pk,
-                                            recipient=friend.user,
+                                            recipient=sql_friend,
                                             level='friendrequest').delete()
                 # Enviamos la notificacion
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
-                                           recipient=friend.user,
+                                           recipient=sql_friend,
                                            verb=u'quiere seguirte.', level='friendrequest')
                 # Enlazamos notificacion con peticion de amistad
                 try:
@@ -626,9 +636,17 @@ def add_friend_by_username_or_pin(request):
             # Comprobamos si el usuario necesita peticion de amistad
             no_need_petition = friend.privacity == NodeProfile.ALL
             if no_need_petition:
-                user.follow.connect(friend)
-                sql_friend = User.objects.get(id=friend.user_id)
-                data['response'] = 'added_friend'
+                try:
+                    with transaction.atomic(using="default"):
+                        with db.transaction:
+                            user.follow.connect(friend)
+                            sql_friend = User.objects.select_related('profile').get(id=friend.user_id)
+                            emitter = Profile.objects.get(user_id=user_request.id)
+                            RelationShipProfile.objects.create(to_profile=sql_friend.profile,
+                                    from_profile=emitter, type=FOLLOWING)
+                            data['response'] = 'added_friend'
+                except Exception as e:
+                    logging.info(e)
                 data['friend_username'] = friend.title
                 data['friend_avatar'] = avatar(sql_friend)
                 data['friend_first_name'] = sql_friend.first_name
@@ -645,12 +663,13 @@ def add_friend_by_username_or_pin(request):
 
             if not friend_request:
                 # Eliminamos posibles notificaciones residuales
+                sql_friend = User.objects.get(id=friend.user_id)
                 Notification.objects.filter(actor_object_id=user_request.pk,
-                                            recipient=friend.user,
+                                            recipient=sql_friend,
                                             level='friendrequest').delete()
                 # Enviamos nueva notificacion
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
-                                           recipient=friend.user,
+                                           recipient=sql_friend,
                                            verb=u'quiere seguirte.', level='friendrequest')
                 # Enlazamos notificacion y peticion de amistad
                 try:
@@ -751,21 +770,27 @@ def request_friend(request):
             # Comprobamos si el perfil necesita peticion de amistad
             no_need_petition = m.privacity == NodeProfile.ALL
             if no_need_petition:
-                n.follow.connect(m)
-                response = "added_friend"
-                # enviamos notificacion informando del evento
-
-                recipient = User.objects.get(id=m.user_id)
-
-                notify.send(user, actor=n.title,
-                            recipient=recipient,
-                            verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (n.title, n.title),
-                            level='new_follow')
-
-                # enviamos mail
-                send_email.delay('Skyfolk - %s ahora te sigue.' % user.username, [recipient.email],
+                try:
+                    with transaction.atomic(using="default"):
+                        with db.transaction:
+                            n.follow.connect(m)
+                            recipient = User.objects.select_related('profile').get(id=m.user_id)
+                            emitter = Profile.objects.get(user_id=user.id)
+                            RelationShipProfile.objects.create(to_profile=recipient.profile,
+                                    from_profile=emitter, type=FOLLOWING)
+                            # enviamos notificacion informando del evento
+                            notify.send(user, actor=n.title,
+                                recipient=recipient,
+                                verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (n.title, n.title),
+                                level='new_follow')
+                    response = "added_friend"
+                    # enviamos mail
+                    send_email.delay('Skyfolk - %s ahora te sigue.' % user.username, [recipient.email],
                                  {'to_user': recipient.username, 'from_user': user.username}
                                  , 'emails/new_follow.html')
+                except Exception as e:
+                    logging.info(e)
+                    response = "no_added_friend"
 
                 return HttpResponse(json.dumps(response), content_type='application/javascript')
             response = "inprogress"
@@ -823,21 +848,27 @@ def respond_friend_request(request):
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         if request_status == 'accept':
-            n.follow.connect(m)
-            logging.info('user.profile: {} emitter_profile: {}'.format(m.title, n.title))
-
-            # enviamos notificacion informando del evento
-            recipient = User.objects.get(id=profile_user_id)
-            notify.send(user, actor=m.title,
-                        recipient=recipient,
-                        verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (m.title, m.title),
-                        evel='new_follow')
-
-            send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [recipient.email],
+            try:
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        n.follow.connect(m)
+                        recipient = User.objects.select_related('profile').get(id=profile_user_id)
+                        emitter = Profile.objects.get(user_id=user.id)
+                        RelationShipProfile.objects.create(to_profile=emitter,
+                                    from_profile=recipient.profile, type=FOLLOWING)
+                        notify.send(user, actor=m.title,
+                                recipient=recipient,
+                                verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (m.title, m.title),
+                                level='new_follow')
+                response = "added_friend"
+                logging.info('user.profile: {} emitter_profile: {}'.format(m.title, n.title))
+                # enviamos notificacion informando del evento
+                send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [recipient.email],
                              {'to_user': recipient.username, 'from_user': user.username},
                              'emails/new_follow_added.html')
-
-            response = "added_friend"
+            except Exception as e:
+                logging.info(e)
+                response = 'rejected'
 
         elif request_status == 'rejected':
             response = "rejected"
@@ -867,7 +898,13 @@ def remove_relationship(request):
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         try:
-            me.follow.disconnect(profile_user)  # Comprobamos si YO ya sigo al perfil deseado.
+            with transaction.atomic(using="default"):
+                with db.transaction:
+                    emitter = Profile.objects.get(user_id=user.id)
+                    recipient = Profile.objects.get(user_id=slug)
+                    me.follow.disconnect(profile_user)  # Comprobamos si YO ya sigo al perfil deseado.
+                    RelationShipProfile.objects.filter(to_profile=recipient,
+                            from_profile=emitter, type=FOLLOWING).delete()
             response = True
         except Exception:
             response = None
@@ -1159,9 +1196,23 @@ def bloq_user(request):
         # Ver si seguimos al perfil que vamos a bloquear
 
         if m.follow.is_connected(n):
-            m.follow.disconnect(n)
-            n.follow.disconnect(m)
-            status = "isfollow"
+            try:
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        emitter = Profile.objects.get(user_id=user.id)
+                        recipient = Profile.objects.get(user_id=id_user)
+                        RelationShipProfile.objects.filter(to_profile=recipient,
+                                from_profile=emitter, type=FOLLOWING).delete()
+                        RelationShipProfile.objects.filter(to_profile=emitter,
+                                from_profile=recipient, type=FOLLOWING).delete()
+                        m.follow.disconnect(n)
+                        n.follow.disconnect(m)
+                status = "isfollow"
+            except Exception as e:
+                logging.info(e)
+                response = False
+                data = {'response': response, 'haslike': haslike, 'status': status}
+                return HttpResponse(json.dumps(data), content_type='application/json')
 
         # Ver si hay una peticion de "seguir" pendiente (al perfil contrario)
         try:
@@ -1175,8 +1226,22 @@ def bloq_user(request):
         # Ver si seguimos al perfil que vamos a bloquear
 
         if n.follow.is_connected(m):
-            m.follow.disconnect(n)
-            n.follow.disconnect(m)
+            try:
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        emitter = Profile.objects.get(user_id=user.id)
+                        recipient = Profile.objects.get(user_id=id_user)
+                        RelationShipProfile.objects.filter(to_profile=emitter,
+                                from_profile=recipient, type=FOLLOWING).delete()
+                        RelationShipProfile.objects.filter(to_profile=recipient,
+                                from_profile=emitter, type=FOLLOWING).delete()
+                        m.follow.disconnect(n)
+                        n.follow.disconnect(m)
+            except Exception as e:
+                logging.info(e)
+                response = False
+                data = {'response': response, 'haslike': haslike, 'status': status}
+                return HttpResponse(json.dumps(data), content_type='application/json')
 
         m.bloq.connect(n)  # Creamos relacion de bloqueo
 
@@ -1378,11 +1443,16 @@ class SearchUsuarioView(SearchView):
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N')) &
                 ((SQ(board_owner_id=self.request.user.id)
-                    | SQ(author_id=self.request.user.id)) | SQ(board_owner__profile__privacity='A'))) \
+                    | SQ(author_id=self.request.user.id)) | SQ(board_owner__profile__privacity='A') | (SQ(board_owner__profile__privacity='OF') &
+                            SQ(board_owner__profile__to_profile__from_profile=self.request.user.profile)) | (SQ(board_owner__profile__privacity='OFAF') &
+                            (SQ(board_owner__profile__to_profile__from_profile=self.request.user.profile) | SQ(board_owner__profile__from_profile__to_profile=self.request.user.profile))))) \
             .select_related('author').prefetch_related('images')
             ).load_all_queryset(
                     Photo, Photo.objects.filter(~SQ(owner__profile__privacity='N')
-                        & (SQ(owner_id=self.request.user.id) | (SQ(owner__profile__privacity='A') & SQ(is_public=True)))) \
+                        & (SQ(owner_id=self.request.user.id) | (SQ(owner__profile__privacity='OF') &
+                            SQ(owner__profile__to_profile__from_profile=self.request.user.profile)
+                            & SQ(is_public=True))
+                            | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (SQ(owner__profile__privacity='OFAF') & (SQ(owner__profile__from_profile__to_profile=self.request.user.profile) | SQ(owner__profile__to_profile__from_profile=self.request.user.profile))))) \
                     .select_related('owner').prefetch_related('tags')
             ).load_all_queryset(
                     Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))

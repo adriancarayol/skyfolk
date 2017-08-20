@@ -26,10 +26,29 @@ REQUEST_STATUSES = (
     (REQUEST_BLOCKED, 'Blocked'),
 )
 
+FOLLOWING = 1
+FOLLOWER = 2
+BLOCK = 3
+RELATIONSHIP_STATUSES = (
+        (FOLLOWING, 1),
+        (FOLLOWER, 2),
+        (BLOCK, 3)
+)
+
 
 def upload_cover_path(instance, filename):
     return '%s/cover_image/%s' % (instance.user.username, filename)
 
+class RelationShipProfile(models.Model):
+    """
+    Establece una relacion entre dos usuarios
+    """
+    to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True)
+    from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True)
+    type = models.IntegerField(choices=RELATIONSHIP_STATUSES)
+
+    class Meta:
+        unique_together = ('to_profile', 'from_profile', 'type')
 
 class Profile(models.Model):
     """
@@ -51,6 +70,7 @@ class Profile(models.Model):
         (NOTHING, 'Nothing'),
     )
     privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
+    relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False)
 
     def __str__(self):
         return "%s profile" % self.user.username
@@ -116,25 +136,6 @@ class TagProfile(DjangoNode):
 
     class Meta:
         app_label = 'tag_profile'
-
-
-class UploadedFileProperty(Property):
-    def __init__(self, **kwargs):
-        for item in ['required', 'unique_index', 'index', 'default']:
-            if item in kwargs:
-                raise ValueError('{} argument ignored by {}'.format(item, self.__class__.__name__))
-
-        # kwargs['unique_index'] = True
-        super(UploadedFileProperty, self).__init__(**kwargs)
-
-    @validator
-    def inflate(self, value):
-        return str(value)
-
-    @validator
-    def deflate(self, value):
-        return str(value)
-
 
 class FollowRel(StructuredRel):
     weight = IntegerProperty(default=0)
@@ -415,3 +416,4 @@ class AuthDevices(models.Model):
     user_profile = models.ForeignKey(User, related_name='device_to_profile')
     browser_token = models.CharField(max_length=1024)
     objects = AuthDevicesManager()
+

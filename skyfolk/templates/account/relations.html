@@ -22,7 +22,9 @@ Template para los seguidores de un perfil
             </div>
         </div>
     </div>
-    {{ pagination|safe }}
+    {% if pagination %}
+        {{ pagination|safe }}
+    {% endif %}
 </div>
 <script src="{{ STATIC_URL }}js/friends.js"></script>
 {% if url_name == "following" %}

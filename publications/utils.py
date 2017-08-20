@@ -36,7 +36,7 @@ def get_author_avatar(authorpk):
     if avatars:
         return avatars.get_absolute_url()
     else:
-        return Profile.nodes.get(user_id=authorpk).gravatar
+        return Profile.objects.get(user_id=authorpk).gravatar
 
 
 def parse_string(content):
