@@ -308,9 +308,6 @@ class PhotoDetailView(DetailView):
                 .prefetch_related('tags'))
         self.username = self.photo.owner.username
 
-        if not self.photo.is_public and self.username != self.request.user.username:
-            return redirect('user_profile:profile', username=self.username)
-
         if self.user_pass_test():
             return super(PhotoDetailView, self).dispatch(request, *args, **kwargs)
         else:
@@ -381,6 +378,11 @@ class PhotoDetailView(DetailView):
         para ver la galeria solicitada.
         """
         user = self.request.user
+        if not self.photo.is_public and user.id != self.photo.owner.id:
+            return False
+        elif user.id == self.photo.owner.id:
+            return True
+
         try:
             user_profile = NodeProfile.nodes.get(title=self.username)
             n = NodeProfile.nodes.get(user_id=user.id)

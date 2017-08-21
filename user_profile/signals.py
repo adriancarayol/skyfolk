@@ -2,17 +2,65 @@ import logging
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from .models import NodeProfile, FollowRel, Profile
+from .models import NodeProfile, FollowRel, Profile, BlockedProfile, \
+        RelationShipProfile
 from publications.models import Publication
 from django.db import transaction
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from neomodel import db
 from django.core.cache import cache
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+@receiver(post_save, sender=RelationShipProfile)
+def handle_new_relationship(sender, instance, created, **kwargs):
+    emitter = instance.from_profile.user
+    recipient = instance.to_profile.user
+
+    try:
+        n = NodeProfile.nodes.get(user_id=emitter.id)
+        m = NodeProfile.nodes.get(user_id=recipient.id)
+    except NodeProfile.DoesNotExist:
+        raise Exception("No se encuentran los nodos en neo4j")
+
+    n.follow.connect(m)
+
+    if created:
+        try:
+            Publication.objects.update_or_create(author_id=recipient.id,
+                                                  board_owner_id=recipient.id,
+                                                  content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                      recipient.username,
+                                                      recipient.username,
+                                                      emitter.username,
+                                                      emitter.username),
+                                                  event_type=2)
+
+            Publication.objects.update_or_create(author_id=emitter.id,
+                                                  board_owner_id=emitter.id,
+                                                  content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                      emitter.username,
+                                                      emitter.username,
+                                                      recipient.username,
+                                                      recipient.username),
+                                                  event_type=2)
+        except Exception as e:
+            raise Exception("Publication relationship not created: {}".format(e))
+
+
+@receiver(post_delete, sender=RelationShipProfile)
+def handle_delete_relationship(sender, instance, *args, **kwargs):
+    emitter_id = instance.from_profile.user_id
+    recipient_id = instance.to_profile.user_id
+
+    try:
+        n = NodeProfile.nodes.get(user_id=emitter_id)
+        m = NodeProfile.nodes.get(user_id=recipient_id)
+    except NodeProfile.DoesNotExist:
+        raise Exception("No se encuentran los nodos en neo4j")
+
+    n.follow.disconnect(m)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -54,32 +102,38 @@ def save_user_profile(sender, instance, created, **kwargs):
     else:
         instance.profile.save()
 
-@receiver(post_save, sender=FollowRel)
-def handle_new_relationship(sender, instance, created, **kwargs):
-    if created:
-        logging.info("Relationship with weight: {} between: {} - {}".format(instance.weight, instance.start_node().title, instance.end_node().title))
 
-        try:
-            with transaction.atomic(using="default"):
-                Publication.objects.create(author_id=instance.end_node().user_id,
-                                                  board_owner_id=instance.end_node().user_id,
-                                                  content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                      instance.end_node().title,
-                                                      instance.end_node().title,
-                                                      instance.start_node().title,
-                                                      instance.start_node().title),
-                                                  event_type=2)
 
-                Publication.objects.create(author_id=instance.start_node().user_id,
-                                                  board_owner_id=instance.start_node().user_id,
-                                                  content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                      instance.start_node().title,
-                                                      instance.start_node().title,
-                                                      instance.end_node().title,
-                                                      instance.end_node().title),
-                                                  event_type=2)
-        except Exception as e:
-            logging.info("Publication new relationship can't created")
+
+
+@receiver(post_save, sender=BlockedProfile)
+def handle_new_blocked(sender, instance, created, **kwargs):
+    emitter_id = instance.from_blocked.user_id
+    recipient_id = instance.to_blocked.user_id
+
+    try:
+        n = NodeProfile.nodes.get(user_id=emitter_id)
+        m = NodeProfile.nodes.get(user_id=recipient_id)
+    except NodeProfile.DoesNotExist:
+        raise Exception("No existen los nodos en neo4j")
+
+    n.bloq.connect(m)
+
+
+@receiver(post_delete, sender=BlockedProfile)
+def handle_delete_blocked(sender, instance, *args, **kwargs):
+    emitter_id = instance.from_blocked.user_id
+    recipient_id = instance.to_blocked.user_id
+
+    try:
+        m = NodeProfile.nodes.get(user_id=emitter_id)
+        n = NodeProfile.nodes.get(user_id=recipient_id)
+    except NodeProfile.DoesNotExist:
+        raise Exception("No existen los nodos en neo4j")
+
+    m.bloq.disconnect(n)
+    logging.info('%s ya no bloquea a %s' % (m.title, n.title))
+
 
 def handle_login(sender, user, request, **kwargs):
     try:

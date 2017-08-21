@@ -11,6 +11,7 @@ from publications.utils import parse_string
 from publications_gallery.models import PublicationPhoto
 from photologue.models import Photo
 from publications.exceptions import EmptyContent
+from django.core.exceptions import ObjectDoesNotExist
 from publications_gallery.forms import PublicationPhotoForm
 from publications_gallery.forms import SharedPhotoPublicationForm
 from publications.views import logger, get_or_create_csrf_token
@@ -106,7 +107,10 @@ def publication_detail(request, publication_id):
     """
     user = request.user
     try:
-        request_pub = PublicationPhoto.objects.get(id=publication_id, deleted=False)
+        request_pub = PublicationPhoto.objects.select_related('board_photo', ).get(id=publication_id, deleted=False)
+        if not request_pub.board_photo.is_public and user.id != request_pub.board_photo.owner.id:
+            return redirect('photologue:photo-list', username=request_pub.board_photo.owner.username)
+
         publication = request_pub.get_descendants(include_self=True) \
                 .filter(deleted=False) \
                 .prefetch_related('publication_photo_extra_content', 'images',
@@ -123,7 +127,7 @@ def publication_detail(request, publication_id):
         pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author__id=user.id, deleted=False).values('author__id', 'shared_photo_publication__id')
 
 
-    except PublicationPhoto.DoesNotExist:
+    except ObjectDoesNotExist:
         raise Http404
 
     try:

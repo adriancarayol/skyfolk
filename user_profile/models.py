@@ -42,6 +42,7 @@ def upload_cover_path(instance, filename):
 class RelationShipProfile(models.Model):
     """
     Establece una relacion entre dos usuarios
+    (Modelo util para hacer busquedas)
     """
     to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True)
     from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True)
@@ -49,6 +50,19 @@ class RelationShipProfile(models.Model):
 
     class Meta:
         unique_together = ('to_profile', 'from_profile', 'type')
+
+
+class BlockedProfile(models.Model):
+    """
+    Establece una relacion de bloqueo entre dos usuarios
+    (Modelo util para hacer busquedas)
+    """
+    to_blocked = models.ForeignKey('Profile', related_name='to_blocked', db_index=True)
+    from_blocked = models.ForeignKey('Profile', related_name='from_blocked', db_index=True)
+
+    class Meta:
+        unique_together = ('to_blocked', 'from_blocked')
+
 
 class Profile(models.Model):
     """
@@ -70,7 +84,8 @@ class Profile(models.Model):
         (NOTHING, 'Nothing'),
     )
     privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
-    relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False)
+    relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False, related_name="profile_relationships")
+    blockeds = models.ManyToManyField('self', through=BlockedProfile, symmetrical=False, related_name="profile_blockeds")
 
     def __str__(self):
         return "%s profile" % self.user.username

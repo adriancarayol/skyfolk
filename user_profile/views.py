@@ -33,7 +33,7 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import NodeProfile, TagProfile, Request, Profile, \
-        RelationShipProfile, FOLLOWING
+        RelationShipProfile, FOLLOWING, BlockedProfile
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from neomodel import db
 from django.db import transaction
@@ -556,7 +556,6 @@ def add_friend_by_username_or_pin(request):
                 try:
                     with transaction.atomic(using="default"):
                         with db.transaction:
-                            user.follow.connect(friend)
                             sql_friend = User.objects.select_related('profile').get(id=friend.user_id)
                             emitter = Profile.objects.get(user_id=user_request.id)
                             RelationShipProfile.objects.create(to_profile=sql_friend.profile,
@@ -639,7 +638,6 @@ def add_friend_by_username_or_pin(request):
                 try:
                     with transaction.atomic(using="default"):
                         with db.transaction:
-                            user.follow.connect(friend)
                             sql_friend = User.objects.select_related('profile').get(id=friend.user_id)
                             emitter = Profile.objects.get(user_id=user_request.id)
                             RelationShipProfile.objects.create(to_profile=sql_friend.profile,
@@ -773,7 +771,6 @@ def request_friend(request):
                 try:
                     with transaction.atomic(using="default"):
                         with db.transaction:
-                            n.follow.connect(m)
                             recipient = User.objects.select_related('profile').get(id=m.user_id)
                             emitter = Profile.objects.get(user_id=user.id)
                             RelationShipProfile.objects.create(to_profile=recipient.profile,
@@ -851,7 +848,6 @@ def respond_friend_request(request):
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        n.follow.connect(m)
                         recipient = User.objects.select_related('profile').get(id=profile_user_id)
                         emitter = Profile.objects.get(user_id=user.id)
                         RelationShipProfile.objects.create(to_profile=emitter,
@@ -897,17 +893,19 @@ def remove_relationship(request):
         except NodeProfile.DoesNotExist:
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-        try:
-            with transaction.atomic(using="default"):
-                with db.transaction:
-                    emitter = Profile.objects.get(user_id=user.id)
-                    recipient = Profile.objects.get(user_id=slug)
-                    me.follow.disconnect(profile_user)  # Comprobamos si YO ya sigo al perfil deseado.
-                    RelationShipProfile.objects.filter(to_profile=recipient,
-                            from_profile=emitter, type=FOLLOWING).delete()
-            response = True
-        except Exception:
-            response = None
+
+        if me.follow.is_connected(profile_user):
+            try:
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        emitter = Profile.objects.get(user_id=user.id)
+                        recipient = Profile.objects.get(user_id=slug)
+                        RelationShipProfile.objects.filter(to_profile=recipient,
+                                from_profile=emitter, type=FOLLOWING).delete()
+                response = True
+            except Exception as e:
+                logging.info(e)
+                response = None
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -920,19 +918,27 @@ def remove_blocked(request):
     response = None
     user = request.user
     slug = int(request.POST.get('slug', None))
-    try:
-        m = NodeProfile.nodes.get(user_id=user.id)
-        n = NodeProfile.nodes.get(user_id=slug)
-    except Exception:
-        return HttpResponse(json.dumps(response), content_type='application/javascript')
-
-    logging.info('%s ya no bloquea a %s' % (m.title, n.title))
 
     if request.method == 'POST':
         try:
-            m.bloq.disconnect(n)
-            response = True
-        except Exception:
+            m = NodeProfile.nodes.get(user_id=user.id)
+            n = NodeProfile.nodes.get(user_id=slug)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps(response), content_type='application/javascript')
+
+        try:
+            if m.bloq.is_connected(n):
+                emitter = Profile.objects.get(user_id=user.id)
+                recipient = Profile.objects.get(user_id=slug)
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        BlockedProfile.objects.filter(to_blocked=recipient, from_blocked=emitter).delete()
+                response = True
+            else:
+                logging.info('%s no tiene bloqueado a %s' % (m.title, n.title))
+                response = False
+        except Exception as e:
+            logging.info(e)
             response = False
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
@@ -1194,19 +1200,16 @@ def bloq_user(request):
             status = "inprogress"
 
         # Ver si seguimos al perfil que vamos a bloquear
-
+        emitter = Profile.objects.get(user_id=user.id)
+        recipient = Profile.objects.get(user_id=id_user)
         if m.follow.is_connected(n):
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        emitter = Profile.objects.get(user_id=user.id)
-                        recipient = Profile.objects.get(user_id=id_user)
                         RelationShipProfile.objects.filter(to_profile=recipient,
                                 from_profile=emitter, type=FOLLOWING).delete()
                         RelationShipProfile.objects.filter(to_profile=emitter,
                                 from_profile=recipient, type=FOLLOWING).delete()
-                        m.follow.disconnect(n)
-                        n.follow.disconnect(m)
                 status = "isfollow"
             except Exception as e:
                 logging.info(e)
@@ -1229,24 +1232,27 @@ def bloq_user(request):
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        emitter = Profile.objects.get(user_id=user.id)
-                        recipient = Profile.objects.get(user_id=id_user)
                         RelationShipProfile.objects.filter(to_profile=emitter,
                                 from_profile=recipient, type=FOLLOWING).delete()
                         RelationShipProfile.objects.filter(to_profile=recipient,
                                 from_profile=emitter, type=FOLLOWING).delete()
-                        m.follow.disconnect(n)
-                        n.follow.disconnect(m)
             except Exception as e:
                 logging.info(e)
                 response = False
                 data = {'response': response, 'haslike': haslike, 'status': status}
                 return HttpResponse(json.dumps(data), content_type='application/json')
 
-        m.bloq.connect(n)  # Creamos relacion de bloqueo
+        try:
+            with transaction.atomic(using="default"):
+                with db.transaction:
+                    BlockedProfile.objects.create(to_blocked=recipient, from_blocked=emitter)
+        except Exception as e:
+            logging.info(e)
+            response = False
+            data = {'response': response, 'haslike': haslike, 'status': status}
+            return HttpResponse(json.dumps(data), content_type='application/json')
 
         response = True
-
         print('response: %s, haslike: %s, status: %s' % (response, haslike, status))
         data = {'response': response, 'haslike': haslike, 'status': status}
         return HttpResponse(json.dumps(data), content_type='application/json')
@@ -1441,14 +1447,14 @@ class SearchUsuarioView(SearchView):
 
     def get_queryset(self):
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
-            Publication, Publication.objects.filter((SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N')) &
+            Publication, Publication.objects.filter((~SQ(board_owner__profile__from_blocked__to_blocked=self.request.user.profile) & SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N')) &
                 ((SQ(board_owner_id=self.request.user.id)
                     | SQ(author_id=self.request.user.id)) | SQ(board_owner__profile__privacity='A') | (SQ(board_owner__profile__privacity='OF') &
                             SQ(board_owner__profile__to_profile__from_profile=self.request.user.profile)) | (SQ(board_owner__profile__privacity='OFAF') &
                             (SQ(board_owner__profile__to_profile__from_profile=self.request.user.profile) | SQ(board_owner__profile__from_profile__to_profile=self.request.user.profile))))) \
             .select_related('author').prefetch_related('images')
             ).load_all_queryset(
-                    Photo, Photo.objects.filter(~SQ(owner__profile__privacity='N')
+                    Photo, Photo.objects.filter((~SQ(owner__profile__privacity='N') & ~SQ(owner__profile__from_blocked__to_blocked=self.request.user.profile))
                         & (SQ(owner_id=self.request.user.id) | (SQ(owner__profile__privacity='OF') &
                             SQ(owner__profile__to_profile__from_profile=self.request.user.profile)
                             & SQ(is_public=True))
