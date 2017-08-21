@@ -10,6 +10,23 @@ from user_profile.models import NodeProfile, Request
 
 register = template.Library()
 
+CHOICES = (
+        ('D', '<i class="fa fa-futbol-o" aria-hidden="true"></i>'),
+        ('M', '<i class="fa fa-globe" aria-hidden="true"></i>'),
+        ('MU', '<i class="fa fa-music" aria-hidden="true"></i>'),
+        ('C', '<i class="fa fa-flask" aria-hidden="true"></i>'),
+        ('L', '<i class="fa fa-pencil" aria-hidden="true"></i>'),
+        ('T', '<i class="fa fa-laptop" aria-hidden="true"></i>'),
+        ('CO', '<i class="fa fa-cutlery" aria-hidden="true"></i>'),
+        ('MO', '<i class="fa fa-motorcycle" aria-hidden="true"></i>'),
+        ('CON', '<i class="fa fa-users" aria-hidden="true"></i>'),
+        ('F', '<i class="fa fa-glass" aria-hidden="true"></i>'),
+        ('DM', '<i class="fa fa-hashtag" aria-hidden="true"></i>'),
+        ('VJ', '<i class="fa fa-gamepad" aria-hidden="true"></i>'),
+        ('FT', '<i class="fa fa-camera" aria-hidden="true"></i>'),
+        ('CI', '<i class="fa fa-video-camera" aria-hidden="true"></i>'),
+        ('A', '<i class="fa fa-paint-brush" aria-hidden="true"></i>'),
+)
 
 @register.filter(name='file_exists')
 def file_exists(value):
@@ -162,3 +179,8 @@ def get_tags(request):
 @register.filter
 def classname(obj):
     return obj.__class__.__name__
+
+
+@register.filter
+def interest_to_icon(tag):
+    return dict(CHOICES).get(tag)
