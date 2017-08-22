@@ -36,7 +36,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container" id="my-feed">
     <div class="row">
         <div class="col s12 wrapper-news">
             {% comment "Usuarios con mayor afinidad" %}
@@ -68,7 +68,7 @@
             <div id="stream-publications" class="row flow-columns">
                 {% for item in publications %}
                 {% if item|classname == 'Publication' %}
-                <div data-id="{{ item.id }}" class="item">
+                <div data-id="{{ item.id }}" class="item infinite-item">
                     <div class="notice-item">
                         <div class="col l3 m2 s3 img">
                             {% avatar item.author %}
@@ -273,7 +273,7 @@
                     </div>
                 </div>
                 {% else %}
-                <div class="item image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.caption }}">
+                <div class="item infinite-item image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.caption }}">
                     <div class="container-image">
                         <div class="principal-content">
                             {% if item.tags.all %}
@@ -307,13 +307,21 @@
             </div>
         </div>
     </div>
-
-    {{ pagination|safe }}
+    {% if pagination %}
+        <a class="infinite-more-link" href="?page={{ pagination }}">More</a>
+    {% endif %}
 </div>
 <script src="{{ STATIC_URL }}js/socket_news.js" type="text/javascript"></script>
+<script src="{{ STATIC_URL}}js/jquery.waypoints.min.js"></script>
+<script src="{{ STATIC_URL}}js/infinite.min.js"></script>
+<script>
+    var infinite = new Waypoint.Infinite({
+        element: $('#stream-publications')
+    })
+</script>
 <script>
     UTILS_E.init([{{ user.pk }}]);
-UTILS_E.conn_socket();
+    UTILS_E.conn_socket();
 </script>
 
 {% endblock %}

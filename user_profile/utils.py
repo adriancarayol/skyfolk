@@ -148,7 +148,7 @@ def make_pagination_html(current_page, total_pages):
 
     value = current_page + 1
 
-    while value < total_pages  and count_limit < 10:
+    while value < total_pages and count_limit < 10:
         pagination_string = pagination_string + "<li><a href='?page=%s'>%s</a></li>" % (value, value)
         value += 1
         count_limit +=1

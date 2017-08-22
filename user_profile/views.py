@@ -1369,10 +1369,8 @@ class RecommendationUsers(ListView):
 
         if not users:
             users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[offset:limit]
-            total_users = len(NodeProfile.nodes.all())
-        else:
-            total_users = len(users)
 
+        total_users = len(NodeProfile.nodes.all())
         total_pages = int(total_users / 25)
         if total_users % 25 != 0:
             total_pages += 1
@@ -1534,6 +1532,10 @@ def recommendation_real_time(request):
             exclude_ids = ','.join(str(e) for e in ids)
         else:
             exclude_ids = []
+
+        if len(exclude_ids) > 100:
+            exclude_ids = []
+
         user = request.user
 
         results, meta = db.cypher_query(
