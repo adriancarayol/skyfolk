@@ -74,14 +74,6 @@ def profile_view(request, username,
     context['user_profile'] = user_profile
     context['privacity'] = privacity
 
-    # Cuando no tenemos permisos suficientes para ver nada del perfil
-    if privacity == "nothing":
-        template = "account/privacity/private_profile.html"
-        return render(request, template, context)
-    elif n.bloq.is_connected(m):
-        template = "account/privacity/block_profile.html"
-        return render(request, template, context)
-
     # Recuperamos requests para el perfil y si el perfil es gustado.
     if user.username != username:
         try:
@@ -90,18 +82,6 @@ def profile_view(request, username,
             liked = False
     else:
         liked = False
-
-    # Recuperamos el numero de seguidores
-    try:
-        num_followers = n.count_followers()
-    except Exception:
-        num_followers = 0
-
-    # Recuperamos el numero de seguidos y la lista de seguidos
-    try:
-        num_follows = n.count_follows()
-    except Exception:
-        num_follows = 0
 
     # Comprobamos si el perfil esta bloqueado
     isBlocked = False
@@ -125,6 +105,33 @@ def profile_view(request, username,
             isFollow = m.follow.is_connected(n)
         except Exception:
             pass
+
+    # Cuando no tenemos permisos suficientes para ver nada del perfil
+    if privacity == "nothing":
+        context['isBlocked'] = isBlocked
+        context['liked'] = liked
+        context['isFollower'] = isFollower
+        context['isFriend'] = isFollow
+        template = "account/privacity/private_profile.html"
+        return render(request, template, context)
+    elif n.bloq.is_connected(m):
+        template = "account/privacity/block_profile.html"
+        context['isBlocked'] = isBlocked
+        context['liked'] = liked
+        return render(request, template, context)
+
+    # Recuperamos el numero de seguidores
+    try:
+        num_followers = n.count_followers()
+    except Exception:
+        num_followers = 0
+
+    # Recuperamos el numero de seguidos y la lista de seguidos
+    try:
+        num_follows = n.count_follows()
+    except Exception:
+        num_follows = 0
+
     # Recuperamos el numero de contenido multimedia que tiene el perfil
     try:
         if user.username == username:
@@ -1446,19 +1453,33 @@ class SearchUsuarioView(SearchView):
     form_class = SearchForm
 
     def get_queryset(self):
+        profile = Profile.objects.get(user_id=self.request.user.id)
+
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
-            Publication, Publication.objects.filter((~SQ(board_owner__profile__from_blocked__to_blocked=self.request.user.profile) & SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N')) &
-                ((SQ(board_owner_id=self.request.user.id)
-                    | SQ(author_id=self.request.user.id)) | SQ(board_owner__profile__privacity='A') | (SQ(board_owner__profile__privacity='OF') &
-                            SQ(board_owner__profile__to_profile__from_profile=self.request.user.profile)) | (SQ(board_owner__profile__privacity='OFAF') &
-                            (SQ(board_owner__profile__to_profile__from_profile=self.request.user.profile) | SQ(board_owner__profile__from_profile__to_profile=self.request.user.profile))))) \
+            Publication, Publication.objects.filter((SQ(board_owner_id=self.request.user.id)
+                    | SQ(author_id=self.request.user.id)) | ((~SQ(board_owner__profile__from_blocked__to_blocked=profile) &
+                SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N') & ~SQ(author__profile__from_blocked__to_blocked=profile)) &
+                ((SQ(board_owner__profile__privacity='A') | ((SQ(board_owner__profile__privacity='OF') &
+                            SQ(board_owner__profile__to_profile__from_profile=profile)) | (SQ(board_owner__profile__privacity='OFAF') &
+                            (SQ(board_owner__profile__to_profile__from_profile=profile) | SQ(board_owner__profile__from_profile__to_profile=profile))
+                            )) & ((SQ(author__profile__privacity='OF') &
+                            SQ(author__profile__to_profile__from_profile=profile)) | (SQ(author__profile__privacity='OFAF') &
+                            (SQ(author__profile__to_profile__from_profile=profile) | SQ(author__profile__from_profile__to_profile=profile))
+                            ) | SQ(author__profile__privacity='A'))) | (SQ(author__profile__privacity='A') | ((SQ(author__profile__privacity='OF') &
+                            SQ(author__profile__to_profile__from_profile=profile)) | (SQ(author__profile__privacity='OFAF') &
+                            (SQ(author__profile__to_profile__from_profile=profile) | SQ(author__profile__from_profile__to_profile=profile))
+                            )) & ((SQ(board_owner__profile__privacity='OF') &
+                            SQ(board_owner__profile__to_profile__from_profile=profile)) | (SQ(board_owner__profile__privacity='OFAF') &
+                            (SQ(board_owner__profile__to_profile__from_profile=profile) | SQ(board_owner__profile__from_profile__to_profile=profile))
+                            ) | SQ(board_owner__profile__privacity='A')))))) \
             .select_related('author').prefetch_related('images')
             ).load_all_queryset(
-                    Photo, Photo.objects.filter((~SQ(owner__profile__privacity='N') & ~SQ(owner__profile__from_blocked__to_blocked=self.request.user.profile))
-                        & (SQ(owner_id=self.request.user.id) | (SQ(owner__profile__privacity='OF') &
-                            SQ(owner__profile__to_profile__from_profile=self.request.user.profile)
+                    Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
+                        ((~SQ(owner__profile__privacity='N') & ~SQ(owner__profile__from_blocked__to_blocked=profile))
+                        & ((SQ(owner__profile__privacity='OF') &
+                            SQ(owner__profile__to_profile__from_profile=profile)
                             & SQ(is_public=True))
-                            | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (SQ(owner__profile__privacity='OFAF') & (SQ(owner__profile__from_profile__to_profile=self.request.user.profile) | SQ(owner__profile__to_profile__from_profile=self.request.user.profile))))) \
+                            | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (SQ(owner__profile__privacity='OFAF') & (SQ(owner__profile__from_profile__to_profile=profile) | SQ(owner__profile__to_profile__from_profile=profile)))))) \
                     .select_related('owner').prefetch_related('tags')
             ).load_all_queryset(
                     Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))

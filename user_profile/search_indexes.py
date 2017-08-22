@@ -12,7 +12,6 @@ class ProfileIndex(indexes.SearchIndex, indexes.Indexable):
     lastname = indexes.EdgeNgramField(model_attr='user__last_name')
     pub_date = indexes.DateTimeField(model_attr='user__date_joined')
 
-
     def get_model(self):
         return Profile
 
