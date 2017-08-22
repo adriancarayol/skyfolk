@@ -87,6 +87,8 @@ class Profile(models.Model):
     relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False, related_name="profile_relationships")
     blockeds = models.ManyToManyField('self', through=BlockedProfile, symmetrical=False, related_name="profile_blockeds")
 
+    reindex_related = ('user', )
+
     def __str__(self):
         return "%s profile" % self.user.username
 

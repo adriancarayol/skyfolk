@@ -169,8 +169,8 @@ def profile_view(request, username,
     try:
         # if user_profile.username == username:
         # Get user_profile publications LIMIT 20
-        publications = Publication.objects.filter(board_owner_id=user_profile.id,
-                                                  level__lte=0, deleted=False) \
+        publications = Publication.objects.filter(~Q(author__profile__from_blocked__to_blocked=user.profile) &
+                Q(board_owner_id=user_profile.id) & Q(level__lte=0) & Q(deleted=False)) \
                            .prefetch_related('extra_content', 'images',
                                              'videos', 'shared_publication__images',
                                              'tags',
@@ -196,16 +196,7 @@ def profile_view(request, username,
         pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id,
                                                          deleted=False).values('author__id', 'shared_publication__id')
 
-        """
-        publications = [node.get_descendants(include_self=True).filter(deleted=False, level__lte=1) \
-                .prefetch_related('images', 'videos', 'user_give_me_hate', 'user_give_me_like', 'extra_content') \
-                .select_related('author', 'board_owner',
-                            'shared_publication', 'parent', 'shared_photo_publication')[:10]
-                            for node in
-                            Publication.objects.filter(
-                                board_owner_id=user_profile.id, deleted=False,
-                                parent=None).only('id', 'level', 'tree_id', 'lft', 'rght')[:20]]
-        """
+
     except ObjectDoesNotExist:
         publications = None
 
