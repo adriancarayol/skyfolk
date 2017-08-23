@@ -32,6 +32,8 @@
                         {% elif follow_group %}
                             <span id="unfollow-group" class="fa fa-remove group-follow" title="Dejar de seguir"
                                   style="color: #29b203;"></span>
+                        {% elif friend_request %}
+                            <span class="fa fa-clock-o" id="follow_request" title="En proceso"></span>
                         {% else %}
                             <span id="follow-group" class="fa fa-plus group-follow" title="Seguir"></span>
                         {% endif %}

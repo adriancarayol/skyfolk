@@ -350,13 +350,9 @@ class RequestManager(models.Manager):
         Elimina la petición de seguimiento hacia un perfil
         :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
         """
-        try:
-            request = Request.objects.get(emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING)
-            request.notification.delete()  # Eliminamos la notificacion
-            request.delete()
-            return True
-        except ObjectDoesNotExist:
-            return False
+        request = Request.objects.get(emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING)
+        request.notification.delete()  # Eliminamos la notificacion
+        request.delete()
 
 
 class Request(models.Model):

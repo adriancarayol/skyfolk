@@ -63,6 +63,8 @@ function AJAX_follow_group(_id) {
                     text: "¡No puedes seguir a tu propio grupo!",
                     customClass: 'default-div'
                 });
+            } else if (_response === "in_progress") {
+                $('#follow-group').replaceWith('<span class="fa fa-clock-o" id="cancel_group_request" title="En proceso" onclick="AJAX_remove_group_request();">' + ' ' + '</span>');
             } else {
                 swal({
                     title: "¡Ups!",
@@ -213,3 +215,5 @@ function AJAX_submit_group_publication(obj_form, type, pks) {
 
     })
 }
+
+

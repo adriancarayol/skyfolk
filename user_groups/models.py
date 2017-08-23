@@ -121,7 +121,7 @@ class RequestGroupManager(models.Manager):
         return self.get(emitter_id=from_profile,
                         receiver_id=to_group, status=REQUEST_FOLLOWING)
 
-    def add_follow_request(self, from_profile, to_group, notify):
+    def add_follow_request(self, from_profile, to_group):
         """
         Añade una solicitud de seguimiento
         :param profile => Perfil que quiero seguir:
@@ -131,7 +131,6 @@ class RequestGroupManager(models.Manager):
                                           receiver_id=to_group,
                                           status=REQUEST_FOLLOWING)
         # Si existe la peticion de amistad, actualizamos la notificacion
-        obj.notification = notify
         obj.save()
         return obj
 
@@ -142,7 +141,6 @@ class RequestGroupManager(models.Manager):
         """
         try:
             request = self.get(emitter_id=from_group, receiver_id=to_group, status=REQUEST_FOLLOWING)
-            request.notification.delete()  # Eliminamos la notificacion
             request.delete()
             return True
         except ObjectDoesNotExist:
@@ -162,7 +160,6 @@ class RequestGroup(models.Model):
     receiver = models.ForeignKey(Group, related_name='to_group_request')
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
-    notification = models.ForeignKey(Notification, related_name='request_group_notification', null=True)
     objects = RequestGroupManager()
 
     class Meta:

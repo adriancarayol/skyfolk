@@ -18,24 +18,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     {% else %}
                     url({{ STATIC_URL }}dist/img/nuevo_back.png)
                     {% endif %} no-repeat center center; background-size: cover;">
-                    <!--<input type="checkbox" id="button-menu"  />-->
-                    {% if user.username != user_profile.username %}
-                    <!-- si es usuario esta visitando un perfil que no es el suyo -->
-                    <!-- Cambiamos el icono "+" por "reloj" mientras esperamos que acepte la peticion -->
-                    <script type="text/javascript">
-                        $(window).load(function () {
-                            var addFriend = document.getElementById('addfriend');
-                            {% if isFriend == True %}
-                                $(addFriend).replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
-                            {% elif isBlocked == True %}
-                                $(addFriend).replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
-                                $('#bloq-user').css('color', '#FF6347');
-                            {% elif existFollowRequest == True %}
-                                $(addFriend).replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick=AJAX_remove_request_friend();>' + ' ' + '</div>');
-                            {% endif %}
-                        });
-                    </script>
-                    {% endif %}
             </div>
         </div>
         <div class="row">
@@ -58,8 +40,17 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                                                                                                title="Grupos"></span>
                             <span id="publish3" class="fa fa-paper-plane" title="Escribir"></span>
                             {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
+                            {% if isFriend == True %}
+                            <span id="addfriend" class="fa fa-remove" title="Dejar de seguir"
+                                onclick="AJAX_requestfriend('noabort')" style="color: #29b203;" onclick="AJAX_requestfriend('abort');"></span>
+                            {% elif isBlocked == True %}
+                            <span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();"></span>
+                            {% elif existFollowRequest == True %}
+                            <span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();"></span>
+                            {% else %}
                             <span id="addfriend" class="fa fa-plus" title="Seguir"
-                                                                    onclick=AJAX_requestfriend('noabort');></span>
+                                onclick="AJAX_requestfriend('noabort')";></span>
+                            {% endif %}
                             <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!"
                                                                          onclick=AJAX_likeprofile('noabort');></span>
                             <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>

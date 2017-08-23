@@ -641,6 +641,39 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
 
 }
 
+function AJAX_respondGroupRequest(id_object, status, obj_data) {
+    $.ajax({
+        type: "POST",
+        url: "/respond_group_request/",
+        data: {
+            'slug': parseInt(id_object),
+            'status': status,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: "json",
+        success: function (data) {
+            var response = data.response;
+            if (response == "added_friend") {
+                sweetAlert("¡Has añadido un nuevo miembro al grupo!");
+                $('li[data-id=' + obj_data + ']').fadeOut("fast");
+            } else if (response == 'error') {
+                swal({
+                    title: "¡Ups!",
+                    text: "Hay un fallo con tu petición.",
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            } else {
+                $('li[data-id=' + obj_data + ']').fadeOut("fast");
+            }
+        },
+        error: function (rs, e) {
+            alert(rs.responseText + " " + e);
+        }
+    });
+
+
+}
 /*
  function addNewPublication(type, user_pk, board_owner_pk, parent) {
  if (type == "reply") {

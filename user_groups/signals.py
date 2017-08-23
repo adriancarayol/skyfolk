@@ -1,11 +1,14 @@
 import logging
 from django.db.models.signals import post_save, post_delete
-from .models import NodeGroup, UserGroups
+from .models import NodeGroup, UserGroups, RequestGroup
 from user_profile.models import NodeProfile
 from neomodel import db
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from guardian.shortcuts import assign_perm
+from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,3 +24,10 @@ def handle_new_group(sender, instance, created, **kwargs):
         assign_perm('kick_member', instance.owner, instance)
         assign_perm('ban_member', instance.owner, instance)
         assign_perm('modify_notification', instance.owner, instance)
+
+
+@receiver(post_delete, sender=RequestGroup)
+def handle_delete_request(sender, instance, *args, **kwargs):
+    Notification.objects.filter(action_object_object_id=instance.id,
+            action_object_content_type=ContentType.objects.get_for_model(instance)).delete()
+

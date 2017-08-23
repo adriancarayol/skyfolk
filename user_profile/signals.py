@@ -104,9 +104,6 @@ def save_user_profile(sender, instance, created, **kwargs):
         instance.profile.save()
 
 
-
-
-
 @receiver(post_save, sender=BlockedProfile)
 def handle_new_blocked(sender, instance, created, **kwargs):
     emitter_id = instance.from_blocked.user_id

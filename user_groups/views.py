@@ -1,5 +1,5 @@
 import json
-
+import logging
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
+from django.views import View
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup, NodeGroup, RequestGroup
@@ -24,6 +25,8 @@ from publications_groups.models import PublicationGroup
 from guardian.shortcuts import assign_perm, remove_perm
 from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
+from notifications.models import Notification
+from user_profile.tasks import send_email
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -64,7 +67,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                     with transaction.atomic():
                         with db.transaction:
                             group.save()
-                            g = NodeGroup(group_id=group.id,
+                            g = NodeGroup(group_id=group.group_ptr_id,
                                           title=group.name).save()
                             n = NodeProfile.nodes.get(user_id=user.id)
                             g.members.connect(n)
@@ -108,7 +111,7 @@ class UserGroupList(ListView):
 
     def get_queryset(self):
         groups = self.get_in_groups()
-        return UserGroups.objects.filter(id__in=groups)
+        return UserGroups.objects.filter(group_ptr_id__in=groups)
 
 
 group_list = login_required(UserGroupList.as_view(), login_url='/')
@@ -140,6 +143,13 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     members = node_group.members.all()
     list_user_id = [x.user_id for x in members]
     user_list = User.objects.filter(id__in=list_user_id)
+
+    try:
+        friend_request = RequestGroup.objects.get_follow_request(
+                from_profile=user.id, to_group=group_profile)
+    except ObjectDoesNotExist:
+        friend_request = None
+
     context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
                'follow_group': node_group.members.is_connected(
@@ -151,6 +161,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                    initial={'author': request.user, 'board_group': group_profile}),
                'publications': PublicationGroup.objects.filter(board_group=group_profile),
                'group_owner': True if user.id == group_profile.owner_id else False,
+               'friend_request': friend_request,
                'user_list': user_list}
 
     return render(request, template, context)
@@ -166,13 +177,12 @@ def follow_group(request):
             user = request.user
             group_id = request.POST.get('id', None)
             group = get_object_or_404(UserGroups,
-                                      pk=group_id)
+                                      group_ptr_id=group_id)
 
             if user.pk != group.owner.pk:
                 try:
                     g = NodeGroup.nodes.get(group_id=group_id)
                     n = NodeProfile.nodes.get(user_id=user.id)
-                    group = UserGroups.objects.select_related('owner').get(id=group_id)
                 except ObjectDoesNotExist:
                     raise Http404
 
@@ -196,6 +206,39 @@ def follow_group(request):
                         return JsonResponse({
                             'response': "error"
                     })
+                else:
+                    # Recuperamos peticion al grupo
+                    try:
+                        group_request = RequestGroup.objects.get_follow_request(user, group)
+                    except ObjectDoesNotExist:
+                        group_request = None
+
+                    # Si no existe, creamos una nueva
+                    if not group_request:
+                        Notification.objects.filter(actor_object_id=user.id, recipient=group.owner,
+                                level='grouprequest').delete()
+                        try:
+                            with transaction.atomic(using="default"):
+                                request_group = RequestGroup.objects.add_follow_request(user.id,
+                                        group.id)
+
+                                notify.send(user,
+                                        actor=user.username,
+                                        recipient=group.owner, verb=u'%s solicita unirse al grupo %s'
+                                        % (user.username, group.name), level='grouprequest', action_object=request_group)
+
+                        except IntegrityError:
+                            return JsonResponse({
+                                'response': "no_added_group"
+                            })
+                        send_email.delay('Skyfolk - %s quiere seguirte.' % user.username, [group.owner.email],
+                            {'to_user': group.owner.username, 'from_user': user.username},
+                            'emails/follow_request.html')
+
+                    return JsonResponse({
+                        'response': 'in_progress'
+                    })
+
             else:
                 return JsonResponse({
                     'response': "own_group",
@@ -215,7 +258,7 @@ def unfollow_group(request):
         if request.is_ajax():
             user = request.user
             group_id = request.POST.get('id', None)
-            group = get_object_or_404(UserGroups, pk=group_id)
+            group = get_object_or_404(UserGroups, group_ptr_id=group_id)
             if user.pk != group.owner.pk:
                 try:
                     node_group = NodeGroup.nodes.get(group_id=group_id)
@@ -224,7 +267,6 @@ def unfollow_group(request):
                     raise Http404
 
                 try:
-                    group = UserGroups.objects.get(id=group_id)
                     with transaction.atomic(using="default"):
                         with db.transaction:
                             node_group.members.disconnect(n)
@@ -247,7 +289,7 @@ def like_group(request):
             user = request.user
             group_id = request.POST.get('id', None)
             group = get_object_or_404(UserGroups,
-                                      pk=group_id)
+                                      group_ptr_id=group_id)
 
             like, created = LikeGroup.objects.get_or_create(
                 from_like=user, to_like=group)
@@ -338,3 +380,54 @@ class LikeListGroup(ListView):
 
 
 likes_group = login_required(LikeListGroup.as_view(), login_url='/')
+
+class RespondGroupRequest(View):
+    http_method = ['post', ]
+
+    def post(self, request, **kwargs):
+        user = request.user
+        request_id = int(request.POST.get('slug', None))
+        request_status = request.POST.get('status', None)
+        response = 'error'
+        try:
+            request_group = RequestGroup.objects.select_related('emitter').get(id=request_id)
+            group = UserGroups.objects.get(group_ptr_id=request_group.receiver_id)
+        except ObjectDoesNotExist:
+            return JsonResponse({'response': response})
+
+        if request_status == 'accept':
+            if user.id == group.owner_id:
+                try:
+                    g = NodeGroup.nodes.get(group_id=group.group_ptr_id)
+                    n = NodeProfile.nodes.get(user_id=request_group.emitter_id)
+                except ObjectDoesNotExist:
+                    return JsonResponse({'response': response})
+                try:
+                    with transaction.atomic(using="default"):
+                        with db.transaction:
+                            request_group.delete()
+                            g.members.connect(n)
+                            notify.send(user, actor=user.username,
+                                recipient=request_group.emitter,
+                                verb=u'¡ahora eres miembro de <a href="/group/%s">%s</a>!.' % (group.name, group.name),
+                                level='new_member_group')
+                except Exception as e:
+                    return JsonResponse({'response': 'error'})
+
+                response = "added_friend"
+                send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [request_group.emitter.email],
+                             {'to_user': request_group.emitter.username, 'from_user': user.username},
+                             'emails/new_follow_added.html')
+        elif request_status == 'rejected':
+            if user.id == group.owner_id:
+                try:
+                    with transaction.atomic(using="default"):
+                        request_group.delete()
+                    response = 'removed'
+                except ObjectDoesNotExist:
+                    pass
+
+        return JsonResponse({'response': response})
+
+
+respond_group_request = login_required(RespondGroupRequest.as_view(), login_url='/')

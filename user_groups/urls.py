@@ -25,5 +25,7 @@ urlpatterns = [
     url(r'^users/(?P<groupname>[\w-]+)/$',
         user_groups_views.followers_group),
     url(r'^glikes/(?P<groupname>[\w-]+)/$',
-        user_groups_views.likes_group)
+        user_groups_views.likes_group),
+    url(r'^respond_group_request/$',
+        user_groups_views.respond_group_request)
 ]

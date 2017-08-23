@@ -45,8 +45,12 @@ var UTILS_N = UTILS_N || (function () {
 						'button data-notification="' + data.slug + '" onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "accept" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="accept-response waves-effect waves-light btn white-text green"><i class="material-icons">done</i></button>\<' +
 						'button data-notification="' + data.slug + '"onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "rejected" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
 						'/div>';
+				} else if (typeof data.level !== 'undefined' && data.level == 'grouprequest') {
+					content = content + " <div class=\"notification-buttons\"><" +
+						'button data-notification="' + data.slug + '" onclick="AJAX_respondGroupRequest(\'' + data.action_object + '\',\'' + "accept" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="accept-response waves-effect waves-light btn white-text green"><i class="material-icons">done</i></button>\<' +
+						'button data-notification="' + data.slug + '"onclick="AJAX_respondGroupRequest(\'' + data.action_object + '\',\'' + "rejected" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
+						'/div>';
 				}
-
 				if (typeof data.actor !== 'undefined' && typeof data.verb !== 'undefined') {
 				    Materialize.toast('@' + data.actor + ' - ' + data.verb, 4000);
                 }

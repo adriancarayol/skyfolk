@@ -317,7 +317,7 @@ def notify_handler(verb, **kwargs):
         if newnotify.target:
             data['target'] = str(newnotify.target)
         if newnotify.action_object:
-            data['action_object'] = str(newnotify.action_object)
+            data['action_object'] = newnotify.action_object_object_id
         if newnotify.slug:
             data['slug'] = str(newnotify.slug)
         if newnotify.timestamp:

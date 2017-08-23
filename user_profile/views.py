@@ -105,6 +105,11 @@ def profile_view(request, username,
             isFollow = m.follow.is_connected(n)
         except Exception:
             pass
+    # Comprobamos si existe una peticion de seguimiento
+    try:
+        friend_request = Request.objects.get_follow_request(from_profile=user.id, to_profile=user_profile.id)
+    except ObjectDoesNotExist:
+        friend_request = None
 
     # Cuando no tenemos permisos suficientes para ver nada del perfil
     if privacity == "nothing":
@@ -112,6 +117,7 @@ def profile_view(request, username,
         context['liked'] = liked
         context['isFollower'] = isFollower
         context['isFriend'] = isFollow
+        context['existFollowRequest'] = True if friend_request else False
         template = "account/privacity/private_profile.html"
         return render(request, template, context)
     elif n.bloq.is_connected(m):
@@ -140,11 +146,7 @@ def profile_view(request, username,
             multimedia_count = user_profile.profile.get_num_multimedia()
     except ObjectDoesNotExist:
         multimedia_count = 0
-    # Comprobamos si existe una peticion de seguimiento
-    try:
-        friend_request = Request.objects.get_follow_request(from_profile=user.id, to_profile=user_profile.id)
-    except ObjectDoesNotExist:
-        friend_request = None
+
 
     context['liked'] = liked
     context['n_likes'] = n.count_likes()
@@ -837,25 +839,27 @@ def respond_friend_request(request):
         request_status = request.POST.get('status', None)
 
         try:
-            n = NodeProfile.nodes.get(user_id=profile_user_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            recipient = User.objects.select_related('profile').get(id=profile_user_id)
+            emitter = Profile.objects.get(user_id=user.id)
+        except ObjectDoesNotExist:
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         if request_status == 'accept':
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        recipient = User.objects.select_related('profile').get(id=profile_user_id)
-                        emitter = Profile.objects.get(user_id=user.id)
                         RelationShipProfile.objects.create(to_profile=emitter,
                                     from_profile=recipient.profile, type=FOLLOWING)
-                        notify.send(user, actor=m.title,
+                        notify.send(user, actor=user.username,
                                 recipient=recipient,
-                                verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (m.title, m.title),
+                                verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (user.username, user.username),
                                 level='new_follow')
+
+                        Request.objects.remove_received_follow_request(from_profile=recipient.id,
+                                to_profile=user.id)
+
                 response = "added_friend"
-                logging.info('user.profile: {} emitter_profile: {}'.format(m.title, n.title))
+                logging.info('user.profile: {} emitter_profile: {}'.format(user.username, recipient.id))
                 # enviamos notificacion informando del evento
                 send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [recipient.email],
                              {'to_user': recipient.username, 'from_user': user.username},
@@ -865,11 +869,16 @@ def respond_friend_request(request):
                 response = 'rejected'
 
         elif request_status == 'rejected':
-            response = "rejected"
+            try:
+                with transaction.atomic(using="default"):
+                    Request.objects.remove_received_follow_request(from_profile=recipient.id,
+                        to_profile=user.id)
+                response = "rejected"
+            except Exception as e:
+                response = "null"
         else:
             response = "rejected"
 
-        Request.objects.remove_received_follow_request(from_profile=n.user_id, to_profile=m.user_id)
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -956,7 +965,11 @@ def remove_request_follow(request):
     logging.info('REMOVE REQUEST FOLLOW: u1: {} - u2: {}'.format(user.id, slug))
     if request.method == 'POST':
         if status == 'cancel':
-            response = Request.objects.remove_received_follow_request(from_profile=user.id, to_profile=slug)
+            try:
+                response = Request.objects.remove_received_follow_request(from_profile=user.id, to_profile=slug)
+            except ObjectDoesNotExist:
+                response = False
+            response = True
         else:
             response = False
         logging.info('Response -> ' + str(response))
