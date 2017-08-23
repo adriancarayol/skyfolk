@@ -21,6 +21,9 @@ def connect_blog(message, username):
     user = message.user
 
     try:
+        if not user.id or not isinstance(user.id, int):
+            message.reply_channel.send({"accept": False})
+            return
         profile_blog = NodeProfile.nodes.get(title=username)
         n = NodeProfile.nodes.get(user_id=user.id)
         visibility = profile_blog.is_visible(n)

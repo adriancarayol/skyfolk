@@ -78,6 +78,15 @@ class News(ListView):
             photos = Photo.objects.filter(
                     Q(owner__profile__privacity='A') & Q(is_public=True)).order_by('-date_added')[offset:limit]
 
+        if len(photos) <= 0 or len(publications) <= 0:
+            extended_list = [u.user_id for u in self.get_recommendation_users(offset, limit)]
+
+        if len(photos) <= 0:
+            photos = Photo.objects.filter(owner_id__in=extended_list)[offset:limit]
+
+        if len(publications) <= 0:
+            publications = Publication.objects.filter(board_owner_id__in=extended_list)[offset:limit]
+
         result_list = list(chain.from_iterable([filter(None, zipped) for zipped in zip_longest(publications, photos)]))
 
         total_pubs = len(publications)

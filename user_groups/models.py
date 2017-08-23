@@ -1,4 +1,5 @@
 # encoding:utf-8
+import user_profile
 from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import Group
@@ -27,8 +28,8 @@ def upload_large_group_image(instance, filename):
 class NodeGroup(DjangoNode):
     title = StringProperty(unique_index=True)
     group_id = IntegerProperty(unique_index=True)
-    members = RelationshipFrom('NodeProfile', 'MEMBER')
-    interest = RelationshipTo('TagProfile', 'INTEREST_GROUP')
+    members = RelationshipFrom('user_profile.models.NodeProfile', 'MEMBER')
+    interest = RelationshipTo('user_profile.models.TagProfile', 'INTEREST_GROUP')
 
     class Meta:
         app_label = 'group_node'

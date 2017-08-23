@@ -456,7 +456,7 @@ class ImageModel(models.Model):
 @python_2_unicode_compatible
 class PhotoGroup(ImageModel):
     title = models.CharField(_('title'),
-                             max_length=250)
+                             max_length=60)
     slug = models.SlugField(_('slug'),
                             unique=True,
                             max_length=250,
@@ -621,7 +621,7 @@ class PhotoGroup(ImageModel):
 @python_2_unicode_compatible
 class Photo(ImageModel):
     title = models.CharField(_('title'),
-                             max_length=250)
+                             max_length=60)
     slug = models.SlugField(_('slug'),
                             unique=True,
                             max_length=250,

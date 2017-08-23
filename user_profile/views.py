@@ -1443,7 +1443,6 @@ class SearchUsuarioView(SearchView):
 
     def get_queryset(self):
         profile = Profile.objects.get(user_id=self.request.user.id)
-
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(board_owner_id=self.request.user.id)
                     | SQ(author_id=self.request.user.id)) | ((~SQ(board_owner__profile__from_blocked__to_blocked=profile) &
@@ -1473,6 +1472,7 @@ class SearchUsuarioView(SearchView):
             ).load_all_queryset(
                     Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))
         models = []
+
         try:
             criteria = self.kwargs['option']
         except KeyError:

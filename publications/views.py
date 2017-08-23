@@ -415,11 +415,7 @@ def add_hate(request):
         logger.info("(USUARIO PETICIÓN): " + user.username)
         logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
-        ELECT DISTINCT "photologue_photo"."id", "photologue_photo"."image", "photologue_photo"."date_taken", "photologue_photo"."view_count", "photologue_photo"."crop_from", "photologue_photo"."effect_id", "photologue_photo"."title", "photologue_photo"."slug", "photologue_photo"."caption", "photologue_photo"."date_added", "photologue_photo"."is_public", "photologue_photo"."owner_id", "photologue_photo"."url_image", "photologue_photo"."thumbnail", "auth_user"."id", "auth_user"."password",
-        "auth_user"."last_login", "auth_user"."is_superuser", "auth_user"."username", "auth_user"."first_name", "auth_user"."last_name", "auth_user"."email", "auth_user"."is_staff", "auth_user"."is_active", "auth_user"."date_joined" FROM "photologue_photo" INNER JOIN "auth_user" ON ("photologue_photo"."owner_id" = "auth_user"."id") LEFT OUTER JOIN "user_profile_profile" ON ("auth_user"."id" = "user_profile_profile"."user_id") LEFT OUTER JOIN
-        "user_profile_relationshipprofile" ON ("user_profile_profile"."id" = "user_profile_relationshipprofile"."to_profile_id") WHERE (("user_profile_relationshipprofile"."from_profile_id" = 3 OR "photologue_photo"."owner_id" IN (1)) AND NOT ("user_profile_profile"."id" IN (SELECT U3."from_blocked_id" AS Col1 FROM "user_profile_blockedprofile" U3 WHERE U3."to_blocked_id" = 3) AND "user_profile_profile"."id" IS NOT NULL) AND "photologue_photo"."is_public" = True) ORDER BY
-        "photologue_photo"."date_added" DESC LIMIT 25 OFFSET 25
-
+        in_like = False
         in_hate = False
 
         if publication.user_give_me_like.filter(pk=user.pk).exists():  # Usuario en lista de likes
