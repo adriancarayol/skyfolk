@@ -10,9 +10,13 @@ class PublicationIndex(indexes.SearchIndex, indexes.Indexable):
     author = indexes.CharField(model_attr='author')
     content = indexes.CharField(model_attr='content')
     pub_date = indexes.DateTimeField(model_attr='created')
+    tag = indexes.MultiValueField(indexed=True, stored=True)
 
     def get_model(self):
         return Publication
+
+    def prepare_tags(self, obj):
+        return [tag.name for tag in obj.tags.all()]
 
         # def index_queryset(self, using=None):
     #     return self.get_model().objects.all()

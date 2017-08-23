@@ -12,10 +12,16 @@ class AjaxableResponseMixin(object):
     def form_invalid(self, form, errors=None):
         response = super(AjaxableResponseMixin, self).form_invalid(form)
         if self.request.is_ajax():
-            data = {
-                'error': list(errors) if errors else [u'Comprueba el contenido de tu publicación.'],
-                'type_error': 'incorrent_data'
-            }
+            if not errors:
+                data = {
+                        'error': [u'No hemos podido procesar tu petición.'],
+                        'type_error': 'incorret_data',
+                }
+            else:
+                data = {
+                    'error': list(errors) if errors else [u'Comprueba el contenido de tu publicación.'],
+                    'type_error': 'incorrent_data'
+                }
             return JsonResponse(data, status=400)
         else:
             return response

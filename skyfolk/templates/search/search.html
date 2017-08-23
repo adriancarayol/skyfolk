@@ -6,10 +6,8 @@ Template para las busquedas
 {% load avatar_tags %}
 {% load humanize %}
 {% load highlight %}
-{% block title %} <title>Búsqueda en Skyfolk.</title> {% endblock %}
+{% block title %} <title>Skyfolk / Busqueda {{ q }}</title> {% endblock %}
 {% block include_files %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/news.css"/>
 <!-- Estilos para la galeria de fotos -->
 <style>
     .grid {
@@ -19,6 +17,17 @@ Template para las busquedas
         width: 300px;
         margin-bottom: 10px;
         float: left;
+    }
+    .photo-date {
+        display: initial;
+    }
+    .grid-item .img { 
+        border-radius: 3px;
+        box-shadow: 0 1px 5px #1e88e5;
+    }
+    .grid-item .img > img {
+        width: 100%;
+        height: 100%;
     }
 </style>
 {% endblock %}
@@ -60,7 +69,7 @@ Template para las busquedas
     </div>
     {% endif %}
     {% if s == 'all' %}
-    <div class="grid">
+    <div class="grid row">
         {% for item in object_list %}
         {% if item.model_name == 'profile' %}
         <div class="grid-item">
@@ -88,15 +97,16 @@ Template para las busquedas
         </div>
         {% elif item.model_name == 'publication' %}
         <div class="grid-item">
-            <div class="notice-item" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
+            <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
                 <div class="col s3 img">
-                    {% avatar item.object.author 50 %}
+                    {% avatar item.object.author %}
                 </div>
-                <div class="col s9">
+                <div class="col l9 m9 s8 author">
                     <div class="row">
-                        <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}
-                            <a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></p>
-                    </div>
+                        <span><a href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i><span>
+                                    <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></span>
+                                    <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
+                        </div>
                     <div class="row">
                          <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
                         <br>
@@ -144,9 +154,9 @@ Template para las busquedas
     </div>
     {% endif %}
     {% if s == 'accounts' %}
-    <div class="row">
+    <div class="grid row">
         {% for item in object_list %}
-        <div class="col l3 m5 s12">
+        <div class="grid-item">
             <div class="personal-card">
                 <div class="header">
                     {% if item.object.back_image %}
@@ -173,17 +183,19 @@ Template para las busquedas
     </div>
     {% endif %}
     {% if s == 'publications' %}
-    <div class="row">
+    <div class="grid row">
         {% for item in object_list %}
-        <div class="col l3 m5 s12">
-            <div class="col s12 publication-div" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
-                <div class="col s3">
-                    {% avatar item.object.author 50 %}
+        <div class="grid-item">
+            <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
+                <div class="col s3 img">
+                    {% avatar item.object.author %}
                 </div>
-                <div class="col s9">
+                <div class="col l9 m9 s8 author">
                     <div class="row">
-                        <p><a href="/profile/{{ item.author }}">@{{ item.author }}</a> - <i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.pub_date|naturaltime }}<a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></p>
-                    </div>
+                        <span><a href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i><span>
+                                    <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></span>
+                                    <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
+                        </div>
                     <div class="row">
                          <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
                         <br>
@@ -200,9 +212,9 @@ Template para las busquedas
     </div>
     {% endif %}
     {% if s == 'images' %}
-    <div class="row">
+    <div class="grid row">
         {% for item in object_list %}
-        <div class="col l2 m12 s12 image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description }}">
+        <div class="grid-item image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description }}">
             <div class="container-image">
                 <div class="principal-content">
                     {% if item.object.tags.all %}
@@ -235,9 +247,9 @@ Template para las busquedas
     </div>
     {% endif %} 
     {% if s == 'videos' %}
-    <div class="row">
+    <div class="grid row">
         {% for result in object_list %}
-        <div class="col l3 m5 s12">
+        <div class="grid-item">
             <div class="personal-card">
                 <div class="col s12">
                     <div class="header">

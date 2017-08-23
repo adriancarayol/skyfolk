@@ -1517,8 +1517,11 @@ class SearchUsuarioView(SearchView):
 @login_required(login_url='/')
 def recommendation_real_time(request):
     if request.method == 'POST':
+        try:
+            ids = json.loads(request.body.decode('utf-8'))
+        except Exception:
+            return JsonResponse({'response': None})
 
-        ids = json.loads(request.body.decode('utf-8'))
         if ids:
             exclude_ids = ','.join(str(e) for e in ids)
         else:

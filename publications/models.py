@@ -255,7 +255,7 @@ class Publication(PublicationBase):
                 tag = tag[:-1]
             self.tags.add(tag)
             self.content = self.content.replace(tag,
-                                                '<a href="/user-search/">{0}</a>'.format(tag))
+                    '<a href="/user-search/?q={0}">{1}</a>'.format(tag[1:], tag))
 
     def parse_mentions(self):
         """

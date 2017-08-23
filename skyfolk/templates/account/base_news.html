@@ -294,8 +294,11 @@
                 </div>
             </div>
             {% if pagination %}
-            <a class="infinite-more-link" href="?page={{ pagination }}">More</a>
+                <a class="infinite-more-link" href="?page={{ pagination }}">More</a>
             {% endif %}
+            <div class="progress load-feed" style="display: none">
+                <div class="indeterminate blue darken-1"></div>
+            </div>
         </div>
         <script src="{{ STATIC_URL }}js/socket_news.js" type="text/javascript"></script>
         <script src="{{ STATIC_URL}}js/jquery.waypoints.min.js"></script>
@@ -311,18 +314,20 @@
             });
             $grid.imagesLoaded().progress( function() {
                 $grid.masonry('layout');
-            })
+            });
             var infinite = new Waypoint.Infinite({
                 element: $('#stream-publications'),
+                onBeforePageLoad: function () {
+                    $('.load-feed').show();
+                },
                 onAfterPageLoad: function() {
                     $grid.imagesLoaded().progress( function() {
                         $grid.masonry('reloadItems');
-                        $grid.imagesLoaded().progress( function() {
-                             $grid.masonry('layout');
-                        })
-                    })
+                        $grid.masonry('layout');
+                    });
+                    $('.load-feed').hide();
                 }
-            })
+            });
         </script>
         <script>
             UTILS_E.init([{{ user.pk }}]);
