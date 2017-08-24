@@ -3,9 +3,9 @@
 {% load embed_video_tags %}
 
 {% for node in publications %}
-    <div class="row">
+    <div class="row" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
             <div class="col s12">
-                <div class="col s12 wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}"
+                <div class="col s12 wrapper" 
                      {% if node.level > 0 and node.level < 3 %}style="min-width: 98% !important;"{% endif %}>
                     <div class="box">
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
@@ -242,14 +242,10 @@
                         <div class="row">
                             <div class="divider"></div>
                             <!-- OPCIONES DE COMENTARIOS -->
-                            <div class="options_comentarios">
+                            <div class="options_comentarios" data-id="{{ node.id }}" data-board="{{ node.board_group.id }}">
                                 <ul class="opciones">
-                                    {% if user.id == node.author.id %}
+                                    {% if enable_control_pubs_btn or user.id == node.author.id %}
                                         {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
-                                        </li>
-                                    {% elif user.id == user_profile.id %}
-                                        {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
                                         </li>
                                     {% endif %}
@@ -308,7 +304,7 @@
                         {% endif %}
                     {% endif %}
                     <div class="wrapper-reply">
-                        {% include "account/new_reply.html" %}
+                        {% include "groups/new_reply.html" %}
                     </div>
                     {% if not node.is_leaf_node %}
                         <ul class="children">

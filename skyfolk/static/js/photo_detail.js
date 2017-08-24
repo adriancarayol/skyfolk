@@ -82,11 +82,7 @@ $(document).ready(function () {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
-        $(form).find('input[name=parent]').val(parent_pk);
-        var p_author = $(form).find('input[name=p_author]').val();
-        var board_photo = $(form).find('input[name=board_photo]').val();
-        var pks = [p_author, board_photo, parent_pk];
-        AJAX_submit_photo_publication(form, 'reply', pks);
+        AJAX_submit_photo_publication(form, 'reply', parent_pk);
     });
 
 
@@ -213,7 +209,7 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
                 });
             }
             if (type === "reply") {
-                var caja_comentarios = $('#caja-comentario-' + pks[2]);
+                var caja_comentarios = $('#caja-comentario-' + pks);
                 $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type === "publication") {
@@ -688,7 +684,7 @@ function add_loaded_publication_gallery(pub, data, btn, is_skyline) {
             content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
             content += '<input id="id_author" name="p_author" type="hidden" value="' + publications[i].user_id + '">';
             content += '<input id="id_board_photo" name="board_photo" type="hidden" value="' + publications[i].board_photo_id + '">';
-            content += '<input id="id_parent" name="parent" type="hidden">';
+            content += '<input id="id_parent" name="parent" type="hidden" value="' + publications[i].id + '">';
             content += '<div class="row">';
             content += '<div class="col s12">';
             content += '<div class="row">';
@@ -864,7 +860,7 @@ function add_loaded_publication_gallery(pub, data, btn, is_skyline) {
             content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
             content += '<input id="id_author" name="p_author" type="hidden" value="' + publications[i].user_id + '">';
             content += '<input id="id_board_photo" name="board_photo" type="hidden" value="' + publications[i].board_photo_id + '">';
-            content += '<input id="id_parent" name="parent" type="hidden">';
+            content += '<input id="id_parent" name="parent" type="hidden" value="' + publications[i].id + '">';
             content += '<div class="row">';
             content += '<div class="col s12">';
             content += '<div class="row">';

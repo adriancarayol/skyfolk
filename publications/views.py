@@ -126,9 +126,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         form = self.get_form(form_class)
 
         emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        print(request.POST)
-        board_owner = NodeProfile.nodes.get(user_id=int(request.POST['board_owner']))
-
+        board_owner = NodeProfile.nodes.get(user_id=request.POST['board_owner'])
         privacity = board_owner.is_visible(emitter)
 
         if privacity and privacity != 'all':
@@ -268,16 +266,20 @@ def delete_publication(request):
 
         # Borramos publicacion
         if user.id == publication.author.id or user.id == publication.board_owner.id:
-            publication.deleted = True
-            publication.save(update_fields=['deleted'])
-            publication.get_descendants().update(deleted=True)
-            if publication.has_extra_content():
-                publication.extra_content.delete()
+            try:
+                with transaction.atomic(using="default"):
+                    publication.deleted = True
+                    publication.save(update_fields=['deleted'])
+                    publication.get_descendants().update(deleted=True)
+                    if publication.has_extra_content():
+                        publication.extra_content.delete()
+            except Exception as e:
+                logger.info(e)
+                return HttpResponse(json.dumps(data), content_type='application/json')
             shared_pub = publication.shared_publication
             data['shared_pub_id'] = shared_pub.id if shared_pub else None
             logger.info('Publication deleted: {}'.format(publication.id))
-
-        data['response'] = True
+            data['response'] = True
     return HttpResponse(json.dumps(data),
                         content_type='application/json'
                         )

@@ -231,7 +231,7 @@ var UTILS = UTILS || (function () {
                         content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + data.token + '">';
                         content += '<input name="author" type="hidden" value="' + _args + '">';
                         content += '<input name="board_owner" type="hidden" value="' + data.board_owner_id + '">';
-                        content += '<input name="parent" type="hidden">';
+                        content += '<input name="parent" type="hidden" value="' + data.id + '">';
                         content += '<div class="row">';
                         content += '<div class="col s12">';
                         content += '<div class="row">';

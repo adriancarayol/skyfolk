@@ -16,7 +16,9 @@
                 </div>
             </div>
         </div>
+        {% if pagination %}
         {{ pagination|safe }}
+        {% endif %}
         <script type="text/javascript" src="{{ STATIC_URL}}js/groups.js"></script>
     </div>
 {% endblock %}

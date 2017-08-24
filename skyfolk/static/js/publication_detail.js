@@ -17,10 +17,7 @@ $(document).ready(function () {
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
         $(form).find('input[name=parent]').val(parent_pk);
-        var user_pk = $(form).find('input[name=author]').val();
-        var owner_pk = $(form).find('input[name=board_owner]').val();
-        var pks = [user_pk, owner_pk, parent_pk];
-        AJAX_submit_publication(form, 'reply', pks);
+        AJAX_submit_publication(form, 'reply', parent_pk);
     });
 
     /* Agregar skyline */

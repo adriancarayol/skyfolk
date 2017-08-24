@@ -132,8 +132,8 @@ var UTILS = UTILS || (function () {
                         content += '<form class="reply-form" action="" method="post">';
                         content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + data.token + '">';
                         content += '<input name="p_author" type="hidden" value="' + _args + '">';
-                        content += '<input name="board_photo" type="hidden" value="' + data.board_owner_id + '">';
-                        content += '<input name="parent" type="hidden">';
+                        content += '<input name="board_photo" type="hidden" value="' + data.board_photo_id + '">';
+                        content += '<input name="parent" type="hidden" value="' + data.id + '">';
                         content += '<div class="row">';
                         content += '<div class="col s12">';
                         content += '<div class="row">';

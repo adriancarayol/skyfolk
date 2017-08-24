@@ -10,7 +10,7 @@ class PublicationGroupForm(forms.ModelForm):
     class Meta:
         model = PublicationGroup
         # Excluir atributos en el formulario.
-        fields = ['content', ]
+        fields = ['content', 'parent']
 
 
 class ReplyPublicationGroupForm(forms.ModelForm):
@@ -20,4 +20,4 @@ class ReplyPublicationGroupForm(forms.ModelForm):
     class Meta:
         model = PublicationGroup
         # Excluir atributos en el formulario.
-        fields = ['content', ]
+        fields = ['content', 'parent']

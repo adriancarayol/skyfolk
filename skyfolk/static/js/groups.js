@@ -67,7 +67,57 @@ $(function () {
     $('.kick-member').click(function() {
         var id = $(this).data('id');
         var group_id = $('#group_id').val();
-        AJAX_kick_member(id, group_id);
+        swal({
+            title: "¿Estas seguro?",
+            text: "¡Vas a expulsar a este miembro del grupo!",
+            type: "warning",
+            animation: "slide-from-top",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "¡No!",
+            closeOnConfirm: true
+        }, function(isConfirm) {
+            if (isConfirm) {
+                AJAX_kick_member(id, group_id);
+            }
+        });
+    });
+    /* Borrar publicacion */
+    $('#tab-comentarios').on('click', '.options_comentarios .trash-comment', function () {
+        var id = $(this).closest('.options_comentarios').data('id');
+        var board_group = $(this).closest('.options_comentarios').data('board');
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this publication!",
+            type: "warning",
+            animation: "slide-from-top",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No God, please no!",
+            closeOnConfirm: true
+        }, function (isConfirm) {
+            if (isConfirm) { 
+                AJAX_delete_group_publication(id, board_group);
+            }
+        });
+    });
+
+    /* Responder comentario */
+    /* Abrir respuesta a comentario */
+    $('#tab-comentarios').on('click', '.options_comentarios .fa-reply', function () {
+        var id_ = $(this).attr("id").slice(6);
+        $("#" + id_).slideToggle("fast");
+    });
+    /* Submit reply publication */
+    $('#tab-comentarios').on('click', '.group_reply', function (event) {
+        event.preventDefault();
+        var form = $(this).closest('form'); 
+        var parent_pk = $(this).attr('id').split('-')[1];
+        AJAX_submit_group_publication(form, 'reply', parent_pk);
     });
 });// end document ready
 
@@ -215,7 +265,7 @@ function AJAX_submit_group_publication(obj_form, type, pks) {
                 });
             }
             if (type === "reply") {
-                var caja_comentarios = $('#caja-comentario-' + pks[2]);
+                var caja_comentarios = $('#caja-comentario-' + pks);
                 $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type === "publication") {
@@ -308,6 +358,50 @@ function AJAX_kick_member(id, group_id) {
             }
         }, error: function (rs, e) {
             // swal(rs.responseText + " " + e);
+        }
+    });
+}
+
+function AJAX_delete_group_publication(id, board_group) {
+    console.log(id + ' ' + board_group);
+    var data = {
+        'id': id,
+        'board_group': board_group,
+        'csrfmiddlewaretoken': csrftoken
+    };
+    $.ajax({
+        url: '/publication/group/delete/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: function (data) {
+            // borrar caja publicacion
+            if (data.response == true) {
+                $('#pub-'+id).fadeToggle("fast");
+                /*
+                if (data.shared_pub_id) {
+                    var shared_btn = $('#share-' + data.shared_pub_id);
+                    var shared_btn_child = shared_btn.children();
+                    var countShares = shared_btn_child.text();
+                    if (!countShares || (Math.floor(countShares) == countShares && $.isNumeric(countShares))) {
+                        countShares--;
+                        countShares > 0 ? shared_btn_child(countShares) : shared_btn_child.text('');
+                    }
+                    shared_btn.attr('class', 'add-timeline');
+                    shared_btn.css('color', '#555');
+                }
+                */
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to delete publish.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
+            // alert('ERROR: ' + rs.responseText + ' ' + e);
         }
     });
 }

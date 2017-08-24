@@ -159,9 +159,10 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'users_in_group': users_in_group,
                'publication_group_form': PublicationGroupForm(
                    initial={'author': request.user, 'board_group': group_profile}),
-               'publications': PublicationGroup.objects.filter(board_group=group_profile),
+               'publications': PublicationGroup.objects.filter(board_group=group_profile, deleted=False),
                'group_owner': True if user.id == group_profile.owner_id else False,
                'friend_request': friend_request,
+               'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
                'user_list': user_list}
 
     return render(request, template, context)
@@ -385,7 +386,7 @@ class LikeListGroup(ListView):
 likes_group = login_required(LikeListGroup.as_view(), login_url='/')
 
 class RespondGroupRequest(View):
-    http_method = ['post', ]
+    http_method_names= ['post', ]
 
     def post(self, request, **kwargs):
         user = request.user
@@ -438,7 +439,7 @@ respond_group_request = login_required(RespondGroupRequest.as_view(), login_url=
 
 class RemoveRequestFollow(View):
 
-    http_method = ['post', ]
+    http_method_names = ['post', ]
 
     def post(self, request, **kwargs):
         user = request.user
@@ -458,7 +459,7 @@ class RemoveRequestFollow(View):
 remove_group_request = login_required(RemoveRequestFollow.as_view(), login_url='/')
 
 class KickMemberGroup(View):
-    http_method = ['post', ]
+    http_method_names = ['post', ]
 
     def post(self, request, **kwargs):
         user = request.user
@@ -471,7 +472,7 @@ class KickMemberGroup(View):
         except ObjectDoesNotExist:
             return JsonResponse({'response': 'error'})
 
-        if user_id == user.id:
+        if user.id == user_id or user_id == group.owner_id:
             return JsonResponse({'response': 'is_owner'})
 
         if user.has_perm('kick_member', group):

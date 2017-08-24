@@ -1,9 +1,11 @@
 from bs4 import BeautifulSoup
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView
+from django.views import View
 from publications.utils import parse_string
 from publications_groups.forms import PublicationGroupForm
 from user_groups.models import UserGroups
@@ -34,6 +36,7 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
         form = self.get_form()
         group = get_object_or_404(UserGroups, id=request.POST.get('board_group', None))
         emitter = User.objects.get(id=self.request.user.id)
+        print(request.POST)
 
         if group.owner.id != emitter.id:
             can_publish = emitter.has_perm('can_publish', group)
@@ -71,3 +74,37 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
 
 
 publication_group_view = transaction.atomic(login_required(PublicationGroupView.as_view(), login_url='/'))
+
+class DeletePublication(View):
+    http_method_names = ['post', ]
+
+
+    def post(self, request, **kwargs):
+        user = request.user
+        pub_id = request.POST.get('id', None)
+        board_group_id = request.POST.get('board_group', None)
+        response = 'error'
+
+        if not pub_id or not board_group_id:
+            return JsonResponse({'response': response})
+
+        try:
+            group = UserGroups.objects.get(group_ptr_id=board_group_id)
+            publication = PublicationGroup.objects.get(id=pub_id, board_group_id=board_group_id)
+        except ObjectDoesNotExist:
+            return JsonResponse({'response': response})
+
+        if publication.author_id == user.id or user.has_perm('delete_publication', group):
+            try:
+                with transaction.atomic(using="default"):
+                    publication.deleted = True
+                    publication.save(update_fields=['deleted'])
+                    publication.get_descendants().update(deleted=True)
+            except Exception as e:
+                logger.info(e)
+                return JsonResponse({'response': response})
+            response = True
+        return JsonResponse({'response': response})
+
+
+delete_publication = login_required(DeletePublication.as_view(), login_url='/')

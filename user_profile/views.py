@@ -693,7 +693,7 @@ def like_profile(request):
     response = "null"
     if request.method == 'POST':
         user = request.user
-        slug = int(request.POST.get('slug', None))
+        slug = request.POST.get('slug', None)
 
         actual_profile = get_object_or_404(User,
                                            id=slug)
@@ -746,7 +746,7 @@ def request_friend(request):
     response = "null"
     if request.method == 'POST':
         user = request.user
-        slug = int(request.POST.get('slug', None))
+        slug = request.POST.get('slug', None)
 
         n = NodeProfile.nodes.get(user_id=user.id)
         m = NodeProfile.nodes.get(user_id=slug)
@@ -835,7 +835,7 @@ def respond_friend_request(request):
     response = "null"
     if request.method == 'POST':
         user = request.user
-        profile_user_id = int(request.POST.get('slug', None))
+        profile_user_id = request.POST.get('slug', None)
         request_status = request.POST.get('status', None)
 
         try:
@@ -891,7 +891,7 @@ def remove_relationship(request):
     """
     response = None
     user = request.user
-    slug = int(request.POST.get('slug', None))
+    slug = request.POST.get('slug', None)
 
     if request.method == 'POST':
         try:
@@ -924,7 +924,7 @@ def remove_blocked(request):
     """
     response = None
     user = request.user
-    slug = int(request.POST.get('slug', None))
+    slug = request.POST.get('slug', None)
 
     if request.method == 'POST':
         try:
@@ -959,7 +959,7 @@ def remove_request_follow(request):
     """
     response = False
     user = request.user
-    slug = int(request.POST.get('slug', None))
+    slug = request.POST.get('slug', None)
     status = request.POST.get('status', None)
 
     logging.info('REMOVE REQUEST FOLLOW: u1: {} - u2: {}'.format(user.id, slug))

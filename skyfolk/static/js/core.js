@@ -182,11 +182,7 @@ $(document).ready(function () {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
-        $(form).find('input[name=parent]').val(parent_pk);
-        var user_pk = $(form).find('input[name=author]').val();
-        var owner_pk = $(form).find('input[name=board_owner]').val();
-        var pks = [user_pk, owner_pk, parent_pk];
-        AJAX_submit_publication(form, 'reply', pks);
+        AJAX_submit_publication(form, 'reply', parent_pk);
     });
 
     /* Submit creacion de grupo */
@@ -704,7 +700,7 @@ function AJAX_submit_publication(obj_form, type, pks) {
                 });
             }
             if (type === "reply") {
-                var caja_comentarios = $('#caja-comentario-' + pks[2]);
+                var caja_comentarios = $('#caja-comentario-' + pks);
                 $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type === "publication") {

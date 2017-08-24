@@ -508,7 +508,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
             content += '<input id="id_author" name="author" type="hidden" value="' + publications[i].user_id + '">';
             content += '<input id="id_board_owner" name="board_owner" type="hidden" value="' + publications[i].board_owner_id + '">';
-            content += '<input id="id_parent" name="parent" type="hidden">';
+            content += '<input id="id_parent" name="parent" type="hidden" value="' + publications[i].id + '">';
             content += '<div class="row">';
             content += '<div class="col s12">';
             content += '<div class="row">';
@@ -778,7 +778,7 @@ function add_loaded_publication(pub, data, btn, is_skyline) {
             content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
             content += '<input id="id_author" name="author" type="hidden" value="' + publications[i].user_id + '">';
             content += '<input id="id_board_owner" name="board_owner" type="hidden" value="' + publications[i].board_owner_id + '">';
-            content += '<input id="id_parent" name="parent" type="hidden">';
+            content += '<input id="id_parent" name="parent" type="hidden" value="' + publications[i].id + '">';
             content += '<div class="row">';
             content += '<div class="col s12">';
             content += '<div class="row">';
