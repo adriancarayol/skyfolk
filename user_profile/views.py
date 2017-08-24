@@ -966,8 +966,9 @@ def remove_request_follow(request):
     if request.method == 'POST':
         if status == 'cancel':
             try:
-                response = Request.objects.remove_received_follow_request(from_profile=user.id, to_profile=slug)
-            except ObjectDoesNotExist:
+                with transaction.atomic(using="default"):
+                    response = Request.objects.remove_received_follow_request(from_profile=user.id, to_profile=slug)
+            except (ObjectDoesNotExist, IntegrityError) as e:
                 response = False
             response = True
         else:

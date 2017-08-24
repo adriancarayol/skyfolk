@@ -1,5 +1,43 @@
 {% load app_filters %}
 {% load avatar_tags %}
+{% if enable_kick_btn %}
+{% for item in user_list %}
+<div id="member-{{item.id}}" class="col l3 m10 s12 offset-m1">
+        <div class="personal-card">
+            <div class="row">
+                <div class="col s12">
+                    <div class="header">
+                        {% if item.profile.back_image %}
+                            <img class="back-profile-user" src="{{ item.profile.back_image.url }}">
+                        {% else %}
+                            <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                        {% endif %}
+                        <i class="fa fa-user fa-2x like-him">
+                        </i>
+                        <div class="bg-user">
+                            <div onclick="location.href='/profile/{{ item.username }}'"
+                                 class="profile-user-bg">{% avatar item.username %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="name-friend">
+                        <a href="/profile/{{ item.username }}">@{{ item.username }}</a><br><br>
+                        <p>{{ item.first_name }} {{ item.last_name }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row center">
+                <div class="col s12">
+                    <button data-id="{{ item.id }}" class="kick-member waves-effect waves-light btn red">Expulsar</button> 
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% else %}
 {% for item in user_list %}
     <div class="col l3 m10 s12 offset-m1">
         <div class="personal-card">
@@ -31,3 +69,4 @@
         </div>
     </div>
 {% endfor %}
+{% endif %}

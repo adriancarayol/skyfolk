@@ -5,7 +5,7 @@
 {% load avatar_tags %}
 <div class="row">
     <div class="col l12 m12 s12">
-        <div id="group-profile" data-id="{{ group_profile.id }}" class="user-card card">
+        <div id="group-profile" data-id="{{ group_profile.group_ptr_id }}" class="user-card card">
             <div class="ventana-pin">
                 <a><i class="fa fa-times"></i></a>
                 <a><i class="fa fa-expand"></i></a>
@@ -33,7 +33,7 @@
                             <span id="unfollow-group" class="fa fa-remove group-follow" title="Dejar de seguir"
                                   style="color: #29b203;"></span>
                         {% elif friend_request %}
-                            <span class="fa fa-clock-o" id="follow_request" title="En proceso"></span>
+                            <span class="fa fa-clock-o" id="cancel_group_request" title="En proceso"></span>
                         {% else %}
                             <span id="follow-group" class="fa fa-plus group-follow" title="Seguir"></span>
                         {% endif %}

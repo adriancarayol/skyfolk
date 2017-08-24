@@ -8,6 +8,7 @@
 {% endblock %}
 {% block content %}
     <div class="container">
+        <input id="group_id" type="hidden" value="{{ group.group_ptr_id }}" />
         <div class="row">
             <div class="col l12 m10 s12 container-responsive">
                 <div class="row">
@@ -16,5 +17,6 @@
             </div>
         </div>
         {{ pagination|safe }}
+        <script type="text/javascript" src="{{ STATIC_URL}}js/groups.js"></script>
     </div>
 {% endblock %}

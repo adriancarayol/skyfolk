@@ -8,7 +8,6 @@ $(window).ready(function () {
 $(document).ready(function () {
     var page_wrapper = $('#page-wrapper');
     var self_page_wrapper = $('#self-page-wrapper');
-    var _group_profile = $('#group-profile');
     var tab_comentarios = $('#tab-comentarios');
 
     $('select').material_select(); 
@@ -330,30 +329,7 @@ $(document).ready(function () {
             }
             AJAX_addNewFriendByUsernameOrPin(inputValue);
         });
-    });
-
-    // FOLLOW GROUP
-    $(_group_profile).on('click', '#follow-group', function (e) {
-        e.preventDefault();
-        var id = $(_group_profile).attr('data-id');
-        AJAX_follow_group(id);
-        return false;
-    });
-    // UNFOLLOW GROUP
-    $(_group_profile).on('click', '#unfollow-group', function (e) {
-        e.preventDefault();
-        var id = $(_group_profile).attr('data-id');
-        AJAX_unfollow_group(id);
-        return false;
-    });
-
-    // LIKE GROUP
-    $(_group_profile).on('click', '#like-group', function (e) {
-        e.preventDefault();
-        var id = $(_group_profile).attr('data-id');
-        AJAX_like_group(id);
-        return false;
-    });
+    }); 
 
     // Search users
     $('#id_searchText').on("keydown", function (event) {
@@ -627,14 +603,14 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
             if (response == "added_friend") {
                 //TODO: Add to "seguidos" list
                 // addItemToFriendList('Nuevo', 'nuevo');
-                sweetAlert("You have added a friend!");
+                sweetAlert("¡Has añadido un seguidor!");
                 $('li[data-id=' + obj_data + ']').fadeOut("fast");
             } else {
                 $('li[data-id=' + obj_data + ']').fadeOut("fast");
             }
         },
         error: function (rs, e) {
-            alert(rs.responseText + " " + e);
+            // alert(rs.responseText + " " + e);
         }
     });
 
@@ -659,7 +635,7 @@ function AJAX_respondGroupRequest(id_object, status, obj_data) {
             } else if (response == 'error') {
                 swal({
                     title: "¡Ups!",
-                    text: "Hay un fallo con tu petición.",
+                    text: "Es posible que el usuario haya cancelado la solicitud.",
                     customClass: 'default-div',
                     type: "error"
                 });
@@ -668,7 +644,7 @@ function AJAX_respondGroupRequest(id_object, status, obj_data) {
             }
         },
         error: function (rs, e) {
-            alert(rs.responseText + " " + e);
+            // alert(rs.responseText + " " + e);
         }
     });
 

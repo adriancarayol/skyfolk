@@ -232,8 +232,9 @@ def follow_group(request):
                                 'response': "no_added_group"
                             })
                         send_email.delay('Skyfolk - %s quiere seguirte.' % user.username, [group.owner.email],
-                            {'to_user': group.owner.username, 'from_user': user.username},
-                            'emails/follow_request.html')
+                            {'to_user': group.owner.username, 'from_user': user.username,
+                                'to_group': group.name},
+                            'emails/member_request.html')
 
                     return JsonResponse({
                         'response': 'in_progress'
@@ -320,8 +321,8 @@ class FollowersGroup(ListView):
         limit = 25 * current_page
         offset = limit - 25
 
-        self.group = UserGroups.objects.values('id', 'name').get(slug__exact=self.kwargs['groupname'])
-        node_group = NodeGroup.nodes.get(group_id=self.group['id'])
+        self.group = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
+        node_group = NodeGroup.nodes.get(group_id=self.group.group_ptr_id)
         user_ids = [x.user_id for x in node_group.members.all()[offset:limit]]
 
         total_users = len(node_group.members.all())
@@ -334,8 +335,10 @@ class FollowersGroup(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(FollowersGroup, self).get_context_data(**kwargs)
+        user = self.request.user
         context['pagination'] = self.pagination
         context['group'] = self.group
+        context['enable_kick_btn'] = user.has_perm('kick_member', self.group)
         return context
 
 
@@ -416,8 +419,8 @@ class RespondGroupRequest(View):
 
                 response = "added_friend"
                 send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [request_group.emitter.email],
-                             {'to_user': request_group.emitter.username, 'from_user': user.username},
-                             'emails/new_follow_added.html')
+                             {'to_user': request_group.emitter.username, 'from_group': group.name},
+                             'emails/new_member_added.html')
         elif request_status == 'rejected':
             if user.id == group.owner_id:
                 try:
@@ -431,3 +434,56 @@ class RespondGroupRequest(View):
 
 
 respond_group_request = login_required(RespondGroupRequest.as_view(), login_url='/')
+
+
+class RemoveRequestFollow(View):
+
+    http_method = ['post', ]
+
+    def post(self, request, **kwargs):
+        user = request.user
+        response = False
+        slug = int(request.POST.get('slug', None))
+        status = request.POST.get('status', None)
+
+        if status == 'cancel':
+            try:
+                request_group = RequestGroup.objects.remove_received_follow_request(from_profile=user.id,
+                        to_group=slug)
+            except ObjectDoesNotExist:
+                response = False
+            response = True
+        return JsonResponse({'response': response})
+
+remove_group_request = login_required(RemoveRequestFollow.as_view(), login_url='/')
+
+class KickMemberGroup(View):
+    http_method = ['post', ]
+
+    def post(self, request, **kwargs):
+        user = request.user
+        response = 'error'
+        user_id = int(request.POST.get('id', None))
+        group_id = int(request.POST.get('group_id', None))
+
+        try:
+            group = UserGroups.objects.get(group_ptr_id=group_id)
+        except ObjectDoesNotExist:
+            return JsonResponse({'response': 'error'})
+
+        if user_id == user.id:
+            return JsonResponse({'response': 'is_owner'})
+
+        if user.has_perm('kick_member', group):
+            try:
+                n = NodeProfile.nodes.get(user_id=user_id)
+                g = NodeGroup.nodes.get(group_id=group.group_ptr_id)
+            except ObjectDoesNotExist:
+                return JsonResponse({'response': response})
+
+            g.members.disconnect(n)
+            response = 'kicked'
+
+        return JsonResponse({'response': response})
+
+kick_member = login_required(KickMemberGroup.as_view(), login_url='/')

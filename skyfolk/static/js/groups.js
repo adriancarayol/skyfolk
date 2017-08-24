@@ -1,4 +1,6 @@
 $(function () {
+    var _group_profile = $('#group-profile');
+
     $("#li-tab-amigos").click(function () {
         $('#tab-amigos').css({
             "overflow": "auto"
@@ -35,6 +37,38 @@ $(function () {
         var form = $(this);
         AJAX_submit_group_publication(form, 'publication');
     });
+    $(_group_profile).on('click', '#cancel_group_request', function() {
+        AJAX_remove_group_request();
+        return false;
+    });
+    // FOLLOW GROUP
+    $(_group_profile).on('click', '#follow-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_follow_group(id);
+        return false;
+    });
+    // UNFOLLOW GROUP
+    $(_group_profile).on('click', '#unfollow-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_unfollow_group(id);
+        return false;
+    });
+
+    // LIKE GROUP
+    $(_group_profile).on('click', '#like-group', function (e) {
+        e.preventDefault();
+        var id = $(_group_profile).attr('data-id');
+        AJAX_like_group(id);
+        return false;
+    });
+    // KICK MEMBER
+    $('.kick-member').click(function() {
+        var id = $(this).data('id');
+        var group_id = $('#group_id').val();
+        AJAX_kick_member(id, group_id);
+    });
 });// end document ready
 
 
@@ -50,7 +84,6 @@ function AJAX_follow_group(_id) {
         dataType: 'json',
         success: function (response) {
             var _response = response.response;
-            console.log(_response);
             if (_response === "user_add") {
                 $('#follow-group').attr({
                     "id": "unfollow-group",
@@ -64,7 +97,7 @@ function AJAX_follow_group(_id) {
                     customClass: 'default-div'
                 });
             } else if (_response === "in_progress") {
-                $('#follow-group').replaceWith('<span class="fa fa-clock-o" id="cancel_group_request" title="En proceso" onclick="AJAX_remove_group_request();">' + ' ' + '</span>');
+                $('#follow-group').replaceWith('<span class="fa fa-clock-o" id="cancel_group_request" title="En proceso">' + ' ' + '</span>');
             } else {
                 swal({
                     title: "¡Ups!",
@@ -216,4 +249,65 @@ function AJAX_submit_group_publication(obj_form, type, pks) {
     })
 }
 
+function AJAX_remove_group_request() {
+    var slug = $("#group-profile").data('id');
+    $.ajax({
+        type: 'POST',
+        url: '/remove_group_request/',
+        data: {
+            'slug': slug,
+            'status': 'cancel',
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: 'json',
+        success: function (data) {
+            var response = data.response;
+            if (response == true) {
+                $('#cancel_group_request').replaceWith('<span id="follow-group" class="fa fa-plus group-follow" title="Seguir"></span>');
+            } else if (response == false) {
+                swal({
+                    title: "¡Ups!",
+                    text: "Ha surgido un error, inténtalo de nuevo más tarde :-(",
+                    customClass: 'default-div'
+                });
+            }
+        }, error: function (rs, e) {
+            // swal(rs.responseText + " " + e);
+        }
+    });
+}
 
+
+function AJAX_kick_member(id, group_id) {
+    $.ajax({
+        type: 'POST',
+        url: '/kick_member/',
+        data: {
+            'id': id,
+            'group_id': group_id,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: 'json',
+        success: function (data) {
+            var response = data.response;
+            if (response === 'kicked') {
+                $('#member-'+id).remove();
+            } else if (response === 'is_owner') {
+                swal({
+                    title: "¡Ups!",
+                    text: "¿Estas intentando expulsarte de tu grupo?",
+                    customClass: 'default-div',
+                    type: 'error',
+                });
+            } else if (response === 'error') {
+                swal({
+                    title: "¡Ups!",
+                    text: "Ha surgido un error, inténtalo de nuevo más tarde :-(",
+                    customClass: 'default-div'
+                });
+            }
+        }, error: function (rs, e) {
+            // swal(rs.responseText + " " + e);
+        }
+    });
+}

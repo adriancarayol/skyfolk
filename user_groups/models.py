@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from django_neomodel import DjangoNode
 from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, One
 from django.utils.text import slugify
+from django.core.exceptions import ObjectDoesNotExist
 from notifications.models import Notification
 
 REQUEST_FOLLOWING = 1
@@ -140,7 +141,7 @@ class RequestGroupManager(models.Manager):
         :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
         """
         try:
-            request = self.get(emitter_id=from_group, receiver_id=to_group, status=REQUEST_FOLLOWING)
+            request = self.get(emitter_id=from_profile, receiver_id=to_group, status=REQUEST_FOLLOWING)
             request.delete()
             return True
         except ObjectDoesNotExist:

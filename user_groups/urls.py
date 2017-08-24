@@ -27,5 +27,9 @@ urlpatterns = [
     url(r'^glikes/(?P<groupname>[\w-]+)/$',
         user_groups_views.likes_group),
     url(r'^respond_group_request/$',
-        user_groups_views.respond_group_request)
+        user_groups_views.respond_group_request),
+    url(r'^remove_group_request/$',
+        user_groups_views.remove_group_request),
+    url(r'^kick_member/$',
+        user_groups_views.kick_member)
 ]
