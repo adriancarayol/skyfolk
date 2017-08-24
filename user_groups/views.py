@@ -150,6 +150,9 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     except ObjectDoesNotExist:
         friend_request = None
 
+    publications = PublicationGroup.objects.filter(board_group=group_profile,
+            deleted=False, level__lte=0)
+
     context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
                'follow_group': node_group.members.is_connected(
@@ -159,7 +162,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'users_in_group': users_in_group,
                'publication_group_form': PublicationGroupForm(
                    initial={'author': request.user, 'board_group': group_profile}),
-               'publications': PublicationGroup.objects.filter(board_group=group_profile, deleted=False),
+               'publications': publications,
                'group_owner': True if user.id == group_profile.owner_id else False,
                'friend_request': friend_request,
                'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),

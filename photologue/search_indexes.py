@@ -1,6 +1,6 @@
 from haystack import indexes
 from django.contrib.humanize.templatetags.humanize import naturaltime
-
+from avatar.templatetags.avatar_tags import avatar_url
 from .models import Photo
 
 
@@ -10,6 +10,7 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
         template_name='search/indexes/photos/photos_text.txt')
 
     author = indexes.CharField(model_attr='owner')
+    avatar = indexes.CharField()
     title = indexes.CharField(model_attr='title')
     thumbnail = indexes.CharField(model_attr='thumbnail')
     url_image = indexes.CharField(model_attr='image')
@@ -24,4 +25,7 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_tags(self, obj):
         return [tag.name for tag in obj.tags.all()]
+
+    def prepare_avatar(self, obj):
+        return avatar_url(obj.owner)
 

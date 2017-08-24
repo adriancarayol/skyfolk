@@ -123,11 +123,11 @@ Template para las busquedas
         <div class="grid-item image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description|truncatechars:"150" }}">
             <div class="container-image">
                 <div class="principal-content">
-                    {% if item.object.tags.all %}
+                    {% if item.tags %}
                     <div class="tags-content">
-                        {% for tag in item.object.tags.all %}
+                        {% for tag in item.tags %}
                         <blockquote
-                            onclick="location.href='{% url 'photologue:collection-list' item.author tag.name %}'">{{ tag.name }}</blockquote>
+                            onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
                         {% endfor %}
                     </div>
                     {% endif %}
@@ -138,7 +138,7 @@ Template para las busquedas
                 </div>
                 <div class="col s12 legend-content">
                     <div class="legend-user-image">
-                        {% avatar item.object.owner %}
+                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author}}" />
                     </div>
                     <div class="col l8 m8 s8 legend-user-data">
                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
@@ -217,11 +217,11 @@ Template para las busquedas
         <div class="grid-item image-div tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{ item.description }}">
             <div class="container-image">
                 <div class="principal-content">
-                    {% if item.object.tags.all %}
+                    {% if item.tags %}
                     <div class="tags-content">
-                        {% for tag in item.object.tags.all %}
+                        {% for tag in item.tags %}
                         <blockquote
-                            onclick="location.href='{% url 'photologue:collection-list' item.author tag.name %}'">{{ tag.name }}</blockquote>
+                            onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
                         {% endfor %}
                     </div>
                     {% endif %}
@@ -232,7 +232,7 @@ Template para las busquedas
                 </div>
                 <div class="col s12 legend-content">
                     <div class="legend-user-image">
-                        {% avatar item.object.owner %}
+                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author}}" />
                     </div>
                     <div class="col l8 m8 s8 legend-user-data">
                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>

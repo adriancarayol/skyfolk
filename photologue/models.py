@@ -472,7 +472,7 @@ class PhotoGroup(ImageModel):
 
     owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_photos')
 
-    url_image = models.URLField(max_length=255, blank=True, null=True)
+    url_image = models.URLField(max_length=255, default='')
 
     thumbnail = models.ImageField(_('thumbnail'),
                                   upload_to=get_storage_path,

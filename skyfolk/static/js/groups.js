@@ -77,7 +77,7 @@ $(function () {
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Si, estoy seguro",
             cancelButtonText: "¡No!",
-            closeOnConfirm: true
+            closeOnConfirm: false,
         }, function(isConfirm) {
             if (isConfirm) {
                 AJAX_kick_member(id, group_id);
@@ -211,13 +211,7 @@ function AJAX_like_group(_id) {
                 if ($(_numLikes).find("strong").html() > 0) {
                     $(_numLikes).find("strong").html(parseInt($(_numLikes).find("strong").html()) - 1);
                 }
-            } else if (_response === "own_group") {
-                swal({
-                    title: "¡Ups!",
-                    text: "¡No puedes dar like a tu propio grupo!",
-                    customClass: 'default-div'
-                });
-            } else {
+            }  else {
                 swal({
                     title: "¡Ups!",
                     text: "Hay un error con tu petición, intentalo de nuevo mas tarde.",
