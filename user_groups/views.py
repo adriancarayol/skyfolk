@@ -14,6 +14,7 @@ from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup, NodeGroup, RequestGroup
 from neomodel import db
 from django.db import transaction
+from django.db.models import Q
 from user_profile.models import NodeProfile, TagProfile
 from user_profile.utils import make_pagination_html
 from django.conf import settings
@@ -150,8 +151,8 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     except ObjectDoesNotExist:
         friend_request = None
 
-    publications = PublicationGroup.objects.filter(board_group=group_profile,
-            deleted=False, level__lte=0)
+    publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
+            Q(deleted=False) & Q(level__lte=0) & ~Q(author__profile__from_blocked__to_blocked=user.profile))
 
     context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,

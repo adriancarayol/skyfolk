@@ -10,7 +10,7 @@ from django.http import Http404
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
 from publications.models import Publication
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils.six import BytesIO
@@ -330,8 +330,8 @@ class PhotoDetailView(DetailView):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         initial_photo = {'p_author': user.pk, 'board_photo': self.photo}
-        publications = PublicationPhoto.objects.filter(board_photo_id=self.photo.id,
-                level__lte=0, deleted=False) \
+        publications = PublicationPhoto.objects.filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(board_photo_id=self.photo.id),
+                Q(level__lte=0) & Q(deleted=False)) \
                         .prefetch_related('publication_photo_extra_content', 'images', 'videos',
                                 'user_give_me_like', 'user_give_me_hate') \
                                         .select_related('p_author',

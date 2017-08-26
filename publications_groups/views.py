@@ -16,6 +16,8 @@ from publications.views import logger, get_or_create_csrf_token
 from django.contrib.auth.models import User, Group
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from emoji.models import Emoji
+from user_profile.models import NodeProfile
+from django.core.exceptions import PermissionDenied
 
 
 class PublicationGroupView(AjaxableResponseMixin, CreateView):
@@ -50,6 +52,12 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication = form.save(commit=False)
                 publication.author_id = emitter.id
                 publication.board_group_id = group.id
+                parent = publication.parent
+                if parent:
+                    author = NodeProfile.nodes.get(user_id=parent.author_id)
+                    emitter_node = NodeProfile.nodes.get(user_id=emitter.id)
+                    if author.bloq.is_connected(emitter_node):
+                        raise PermissionDenied('El autor de la publicación te ha bloqueado')
 
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):

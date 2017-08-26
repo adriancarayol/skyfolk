@@ -30,7 +30,7 @@ from .tasks import process_video_publication, process_gif_publication
 from .utils import parse_string
 from .utils import recursive_node_to_dict
 from mptt.templatetags.mptt_tags import cache_tree_children
-from django.db.models import Count
+from django.db.models import Count, Q
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from embed_video.backends import detect_backend
 
@@ -140,6 +140,13 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
+                parent = publication.parent
+                if parent:
+                    parent_owner = parent.author_id
+                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
+                    if parent_node.bloq.is_connected(emitter):
+                        raise IntegrityError('No have permissions')
+
                 publication.author_id = emitter.user_id
                 publication.board_owner_id = board_owner.user_id
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
@@ -556,7 +563,7 @@ def load_more_comments(request):
         list_responses = []
 
         if not publication.parent and not last_pub:
-            publications = publication.get_descendants().filter(level__lte=1, deleted=False).prefetch_related('extra_content', 'images',
+            publications = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(level__lte=1) & Q(deleted=False)).prefetch_related('extra_content', 'images',
                                 'videos',
                                  'user_give_me_like', 'user_give_me_hate', 'parent__author') \
                             .select_related('author',
@@ -569,14 +576,14 @@ def load_more_comments(request):
             except Publication.DoesNotExist:
                 after_date = 0
 
-            publications = publication.get_descendants().filter(level__lte=1, created__lte=after_date, deleted=False).exclude(id=last_pub).prefetch_related('extra_content', 'images',
+            publications = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(level__lte=1) & Q(created__lte=after_date) & Q(deleted=False)).exclude(id=last_pub).prefetch_related('extra_content', 'images',
                                 'videos', 'user_give_me_like', 'user_give_me_hate', 'parent__author') \
                             .select_related('author',
                             'board_owner', 'parent') \
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
         elif publication.parent and not last_pub:
-            publications = publication.get_descendants().filter(deleted=False).prefetch_related('extra_content', 'images',
+            publications = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(deleted=False)).prefetch_related('extra_content', 'images',
                                 'videos', 'user_give_me_like', 'user_give_me_hate', 'parent__author') \
                             .select_related('author',
                             'board_owner', 'parent') \
@@ -588,7 +595,7 @@ def load_more_comments(request):
             except Publication.DoesNotExist:
                 after_date = 0
 
-            publications =  publication.get_descendants().filter(deleted=False, created__lte=after_date).exclude(id=last_pub).prefetch_related('extra_content', 'images',
+            publications =  publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(deleted=False) & Q(created__lte=after_date)).exclude(id=last_pub).prefetch_related('extra_content', 'images',
                                 'videos', 'user_give_me_like', 'user_give_me_hate', 'parent__author') \
                             .select_related('author',
                             'board_owner', 'parent') \
@@ -675,8 +682,8 @@ def load_more_skyline(request):
         if privacity and privacity != 'all':
             return JsonResponse(data)
 
-        publications = Publication.objects.filter(board_owner=publication.board_owner, deleted=False, parent=None,
-                                                  created__lte=publication.created).exclude(id=pub_id) \
+        publications = Publication.objects.filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(board_owner=publication.board_owner) & Q(deleted=False) & Q(parent=None) &
+                                                  Q(created__lte=publication.created)).exclude(id=pub_id) \
                                                           .prefetch_related('extra_content', 'images',
                                                                             'videos', 'shared_publication__images',
                                                                             'shared_publication__videos', 'shared_publication__extra_content',

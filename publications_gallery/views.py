@@ -24,6 +24,7 @@ from django.db.models import Count
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from avatar.templatetags.avatar_tags import avatar
 from embed_video.backends import detect_backend
+from django.db.models import Q
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -59,6 +60,12 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
+                parent = publication.parent
+                if parent:
+                    parent_owner = parent.p_author_id
+                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
+                    if parent_node.bloq.is_connected(emitter):
+                        raise IntegrityError('No have permissions')
                 publication.author_id = emitter.user_id
                 publication.board_photo_id = photo.id
 
@@ -551,7 +558,7 @@ def load_more_descendants(request):
         list_responses = []
 
         if not publication.parent and not last_pub:
-            publications = publication.get_descendants().filter(level__lte=1, deleted=False).prefetch_related('publication_photo_extra_content', 'images',
+            publications = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(level__lte=1) & Q(deleted=False)).prefetch_related('publication_photo_extra_content', 'images',
                                 'videos',
                                 'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                             .select_related('p_author',
@@ -564,7 +571,7 @@ def load_more_descendants(request):
             except PublicationPhoto.DoesNotExist:
                 after_date = 0
 
-            publications = publication.get_descendants().filter(level__lte=1, created__lte=after_date, deleted=False).exclude(id=last_pub).prefetch_related('publication_photo_extra_content', 'images',
+            publications = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(level__lte=1) & Q(created__lte=after_date) & Q(deleted=False)).exclude(id=last_pub).prefetch_related('publication_photo_extra_content', 'images',
                                 'videos',
                                 'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                             .select_related('p_author',
@@ -572,7 +579,7 @@ def load_more_descendants(request):
                                                                                 .annotate(likes_count=Count('user_give_me_like')) \
                                                                                 .annotate(hates_count=Count('user_give_me_hate'))[:20]
         elif publication.parent and not last_pub:
-            publications = publication.get_descendants().filter(deleted=False).prefetch_related('publication_photo_extra_content', 'images',
+            publications = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(deleted=False)).prefetch_related('publication_photo_extra_content', 'images',
                                 'videos',
                                 'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                             .select_related('p_author',
@@ -585,7 +592,7 @@ def load_more_descendants(request):
             except PublicationPhoto.DoesNotExist:
                 after_date = 0
 
-            publications =  publication.get_descendants().filter(deleted=False, created__lte=after_date).exclude(id=last_pub).prefetch_related('publication_photo_extra_content', 'images',
+            publications =  publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(deleted=False) & Q(created__lte=after_date)).exclude(id=last_pub).prefetch_related('publication_photo_extra_content', 'images',
                                 'videos', 'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
                             .select_related('p_author',
                             'board_photo', 'parent') \
@@ -672,8 +679,8 @@ def load_more_publications(request):
         if privacity and privacity != 'all':
             return JsonResponse(data)
 
-        publications = PublicationPhoto.objects.filter(board_photo_id=publication.board_photo_id, deleted=False, parent=None,
-                                                  created__lte=publication.created).exclude(id=pub_id) \
+        publications = PublicationPhoto.objects.filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(board_photo_id=publication.board_photo_id) & Q(deleted=False) & Q(parent=None) &
+                                                  Q(created__lte=publication.created)).exclude(id=pub_id) \
                                                           .prefetch_related('publication_photo_extra_content', 'images',
                                                                             'videos',
                                                                             'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \

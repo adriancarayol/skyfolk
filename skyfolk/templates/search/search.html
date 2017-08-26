@@ -107,7 +107,7 @@ Template para las busquedas
                                     <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></span>
                                     <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
                         </div>
-                    <div class="row">
+                    <div class="row" style="word-wrap: break-word;">
                          <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
                         <br>
                         {% for i in item.object.images.all %}
@@ -196,7 +196,7 @@ Template para las busquedas
                                     <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></span>
                                     <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
                         </div>
-                    <div class="row">
+                    <div class="row" style="word-wrap: break-word;">
                          <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
                         <br>
                         {% for i in item.object.images.all %}
