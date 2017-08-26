@@ -17,7 +17,7 @@ var UTILS_E = UTILS_E || (function () {
 				console.log("Got message " + message.data);
 				var data = JSON.parse(message.data);
 				// Create the inner content of the post div
-				var content = '<div class=\"col l3 m12 s12\" data-id="' + data.id + '">';
+				var content = '<div class=\"grid-item infinite-item\" data-id="' + data.id + '">';
 				content += '<div class=\"notice-item\">';
 				content += '<div class=\"col l3 m2 s3 img\">';
 				content += '<img src="'+data.author_avatar+'"></div>';
@@ -35,6 +35,16 @@ var UTILS_E = UTILS_E || (function () {
 				} else {
 					$(list_notifications).prepend(content);
 				}
+                var $grid = $('.grid').masonry({
+                    itemSelector: '.grid-item',
+                    columnWidth: 300,
+                    gutter: 10,
+                    fitWidth: true
+                });
+                $grid.imagesLoaded().progress( function() {
+                    $grid.masonry('reloadItems');
+                    $grid.masonry('layout');
+                });
 			};
 
 			// Helpful debugging

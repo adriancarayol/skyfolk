@@ -93,8 +93,9 @@ def _optimize_publication_media(instance, image_upload):
                         image = Image.open(media)
                     except IOError:
                         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=media.name))
-                    if image.mode != 'RGBA':
-                        image = image.convert('RGBA')
+
+                    if image.mode != 'RGB':
+                        image = image.convert('RGB')
                     image.thumbnail((800, 600), Image.ANTIALIAS)
                     output = io.BytesIO()
                     image.save(output, format='JPEG', optimize=True, quality=70)
@@ -163,16 +164,16 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise EmptyContent('¡Comprueba el texto del comentario!')
 
-                publication.save()  # Creamos publicacion
-                publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
+                publication.add_hashtag()  # add hashtags
+
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
+                publication.save(new_comment=True, csrf_token=get_or_create_csrf_token(
+                        self.request))  # Creamos publicacion
+
                 form.save_m2m()  # Saving tags
                 content_video = _optimize_publication_media(publication, request.FILES.getlist('image'))
-                publication.save(update_fields=['content'],
-                                 new_comment=True, csrf_token=get_or_create_csrf_token(
-                        self.request))  # Guardamos la publicacion si no hay errores
                 if not content_video:
                     return self.form_valid(form=form)
                 else:

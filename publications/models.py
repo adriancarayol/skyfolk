@@ -24,7 +24,6 @@ from notifications.signals import notify
 from photologue.models import Photo
 from publications.utils import validate_video
 from user_profile.models import NodeProfile
-from user_profile.tasks import send_to_stream
 from user_profile.utils import group_name
 from .utils import get_channel_name
 from user_profile.tasks import send_email
@@ -265,31 +264,11 @@ class Publication(PublicationBase):
         menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
         menciones = set(menciones)
         for mencion in menciones:
-            try:
-                recipientprofile = User.objects.get(username=mencion[1:])
-            except ObjectDoesNotExist:
-                continue
-
             self.content = self.content.replace(mencion,
                                                 '<a href="/profile/%s">%s</a>' %
                                                 (mencion[1:], mencion))
 
-            if self.author.pk != recipientprofile.pk:
-                try:
-                    n = NodeProfile.nodes.get(user_id=self.author_id)
-                    m = NodeProfile.nodes.get(user_id=recipientprofile.id)
-                except Exception:
-                    continue
 
-                privacity = m.is_visible(n)
-
-                if privacity and privacity != 'all':
-                    continue
-
-                notify.send(self.author, actor=self.author.username,
-                            recipient=recipientprofile,
-                            verb=u'¡te ha mencionado!',
-                            description='<a href="%s">Ver</a>' % ('/publication/' + str(self.id)))
 
     def parse_content(self):
         """
@@ -509,10 +488,6 @@ class Publication(PublicationBase):
         if new_comment:
             if not self.deleted:
                 self.send_notification(csrf_token=csrf_token, is_edited=is_edited)  # Enviar publicacion por socket
-
-        # Enviamos al tablon de noticias (inicio)
-        if new_comment and self.author == self.board_owner:
-            send_to_stream.delay(self.author_id, self.id)
 
 
 class PublicationVideo(models.Model):

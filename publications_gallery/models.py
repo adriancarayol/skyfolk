@@ -226,31 +226,11 @@ class PublicationPhoto(PublicationBase):
         menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
         menciones = set(menciones)
         for mencion in menciones:
-            try:
-                recipientprofile = User.objects.get(username=mencion[1:])
-            except ObjectDoesNotExist:
-                continue
-
             self.content = self.content.replace(mencion,
                                                 '<a href="/profile/%s">%s</a>' %
                                                 (mencion[1:], mencion))
 
-            if self.p_author.pk != recipientprofile.pk:
-                try:
-                    n = NodeProfile.nodes.get(user_id=self.p_author)
-                    m = NodeProfile.nodes.get(user_id=recipientprofile.id)
-                except Exception:
-                    continue
 
-                privacity = m.is_visible(n)
-
-                if privacity and privacity != 'all':
-                    continue
-
-                notify.send(self.p_author, actor=self.p_author.username,
-                            recipient=recipientprofile,
-                            verb=u'¡te ha mencionado!',
-                            description='<a href="%s">Ver</a>' % ('/publication/' + str(self.id)))
 
     def send_notification(self, csrf_token=None, type="pub", is_edited=False):
         """

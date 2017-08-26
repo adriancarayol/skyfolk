@@ -18,6 +18,8 @@ logger = get_task_logger(__name__)
 def send_to_stream(author_id, pub_id):
     logger.info("AUTHOR: {}".format(author_id))
     author_id = int(author_id)
+    pub_id = int(pub_id)
+    #TODO: Error, no encuentra la publicacion?
     try:
         profile = NodeProfile.nodes.get(user_id=author_id)
     except NodeProfile.DoesNotExist:
@@ -25,8 +27,8 @@ def send_to_stream(author_id, pub_id):
 
     try:
         publication = publications.models.Publication.objects.get(id=pub_id)
-    except ObjectDoesNotExist:
-        raise ValueError("Publication not exist")
+    except Publication.DoesNotExist:
+        raise ValueError("Publication not exist %d" % pub_id)
 
     logger.info("Sent to followers stream")
 
@@ -40,6 +42,7 @@ def send_to_stream(author_id, pub_id):
         'content': publication.content,
     }
     logger.info("DATA: {}".format(data))
+
     [Group(follower_channel.news_channel).send({
         "text": json.dumps(data, cls=DjangoJSONEncoder)
     }) for follower_channel in

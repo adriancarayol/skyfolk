@@ -83,16 +83,15 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise EmptyContent('¡Comprueba el texto del comentario!')
 
-                publication.save()  # Creamos publicacion
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
+
+                publication.save(new_comment=True, csrf_token=get_or_create_csrf_token(
+                        self.request))  # Creamos publicacion
                 form.save_m2m()  # Saving tags
                 content_video = optimize_publication_media(publication, request.FILES.getlist('image'))
-                publication.save(update_fields=['content'],
-                                 new_comment=True, csrf_token=get_or_create_csrf_token(
-                        self.request))  # Guardamos la publicacion si no hay errores
                 if not content_video:
                     return self.form_valid(form=form)
                 else:

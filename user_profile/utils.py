@@ -111,7 +111,7 @@ def crop_image(image, filename, request):
     if is_cutted:  # el usuario ha recortado la foto
         if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise ValueError("Backimage > 5MB!")
-        im = Image.open(image).convert('RGBA')
+        im = Image.open(image).convert('RGB')
         tempfile = im.rotate(-rotate, expand=True)
         tempfile = tempfile.crop((int(x), int(y), int(w + x), int(h + y)))
         tempfile_io = six.BytesIO()
@@ -122,7 +122,7 @@ def crop_image(image, filename, request):
     else:  # no la recorta, optimizamos la imagen
         if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise ValueError("Backimage > 5MB!")
-        im = Image.open(request.FILES['image']).convert('RGBA')
+        im = Image.open(request.FILES['image']).convert('RGB')
         im.thumbnail((1500, 630), Image.ANTIALIAS)
         tempfile_io = six.BytesIO()
         im.save(tempfile_io, format='JPEG', optimize=True, quality=90)

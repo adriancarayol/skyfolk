@@ -268,7 +268,7 @@ CELERY_RESULT_BACKEND = 'django-db'
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_rabbitmq.RabbitmqChannelLayer",
+        'BACKEND': 'asgi_rabbitmq.RabbitmqChannelLayer',
         "CONFIG": {
             "url": rabbitmq_url
         },
