@@ -17,7 +17,6 @@ Base para la interfaz en comun de todos los usuarios.
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/buscar.css">
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}fonts/iconfont/material-icons.css">
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.atwho.min.css">
         <link href="{{ STATIC_URL }}tellme/feedback.min.css" rel="stylesheet">
         {% endcompress %}
         <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
@@ -336,8 +335,6 @@ ga('send', 'pageview');
         {% block footer %}
         {% compress js %}
         <script src="{{ STATIC_URL }}emoji/js/textarea_find_emoji.js" type="text/javascript"></script>
-        <script src="{{ STATIC_URL }}js/jquery.caret.min.js" type="text/javascript"></script>
-        <script src="{{ STATIC_URL }}js/jquery.atwho.min.js" type="text/javascript"></script>
         {% endcompress %}
         {% endblock %}
     </body>

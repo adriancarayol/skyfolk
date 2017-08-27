@@ -275,36 +275,7 @@ $(document).ready(function () {
         AJAX_load_publications($(this).attr("data-id"), loader, last_pub_id, this);
         return false;
     });
-
-    /* LOAD MORE SKYLINE ON CLICK */
-    $(tab_comentarios).on('click', '#load_more_skyline', function () {
-        var input_skyline = $(this);
-        var loader = $(input_skyline).next().find('#load_publications_skyline');
-        $(loader).fadeIn();
-        AJAX_load_skyline(loader, input_skyline);
-        return false;
-    });
 }); // END DOCUMENT READY */
-
-
-var didScroll = false;
-
-$(window).scroll(function () {
-    if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-        didScroll = true;
-    }
-});
-
-setInterval(function () {
-    if (didScroll) {
-        didScroll = false;
-        var input_skyline = $('#load_more_skyline');
-        var loader = $(input_skyline).next().find('#load_publications_skyline');
-        $(loader).fadeIn();
-        AJAX_load_skyline(loader, input_skyline);
-    }
-}, 250);
-
 
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/
 function AJAX_likeprofile(status) {
@@ -832,41 +803,6 @@ function AJAX_load_publications(pub, loader, last_pub, btn) {
             var response = data.response;
             if (response == true) {
                 add_loaded_publication(pub, data.pubs, btn, false);
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to load more publications.",
-                    type: "error"
-                });
-            }
-        },
-        complete: function () {
-            $(loader).fadeOut();
-        },
-        error: function (rs, e) {
-        }
-    });
-}
-
-function AJAX_load_skyline(loader, btn) {
-    if ($(btn) === undefined || !($(btn).length)) return;
-
-    var pub = $(btn).attr("data-id");
-    var data = {
-        'id': pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-    $.ajax({
-        url: '/publication/load/skyline/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-
-        success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                add_loaded_publication(pub, data.pubs, btn, true);
             } else {
                 swal({
                     title: "Fail",

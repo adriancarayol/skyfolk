@@ -19,8 +19,6 @@ urlpatterns = [
         name='publication_edit'),
     url(r'^publication/load/more/', publications_views.load_more_comments,
         name='publication_load_more'),
-    url(r'^publication/load/skyline/', publications_views.load_more_skyline,
-        name='publication_load_skyline'),
     url(r'^publication/share/publication/', publications_views.share_publication,
         name='publication_share_pub'),
 

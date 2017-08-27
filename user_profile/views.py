@@ -8,7 +8,7 @@ from django.utils.six import BytesIO
 from allauth.account.views import PasswordChangeView, EmailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -46,10 +46,101 @@ from .serializers import UserSerializer
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from django.db.models import Case, When
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+def load_profile_publications(request, page, profile):
+    """
+    Devuelve los comentarios de un perfil
+    """
+    user = request.user
+    try:
+        paginator = Paginator(Publication.objects.filter(~Q(author__profile__from_blocked__to_blocked=user.profile) &
+                Q(board_owner_id=profile.id) & Q(level__lte=0) & Q(deleted=False)) \
+                           .prefetch_related('extra_content', 'images',
+                                             'videos', 'shared_publication__images',
+                                             'tags',
+                                             'shared_photo_publication__images',
+                                             'shared_publication__author',
+                                             'shared_photo_publication__p_author',
+                                             'shared_photo_publication__videos',
+                                             'shared_photo_publication__publication_photo_extra_content',
+                                             'shared_publication__videos', 'shared_publication__extra_content',
+                                             'user_give_me_like', 'user_give_me_hate') \
+                           .select_related('author',
+                                        'board_owner', 'shared_publication',
+                                        'parent', 'shared_photo_publication'), 25)
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
+
+        # Obtenemos los ids de las publicaciones del skyline
+        # Despues recuperamos aquellas publicaciones que han sido compartidas
+        shared_id = publications.object_list.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values(
+            'shared_publication__id') \
+            .order_by('shared_publication__id') \
+            .annotate(total=Count('shared_publication__id'))
+
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id,
+                                                         deleted=False).values('author__id', 'shared_publication__id')
+    except Exception as e:
+        publications = []
+        pubs_shared_with_me = []
+        pubs_shared = []
+        logging.info(e)
+
+    return pubs_shared_with_me, pubs_shared, publications
+
+
+def profile_view_ajax(request, user_profile, node_profile=None):
+    """
+    Vista AJAX para paginacion
+    de la vista profile
+    """
+    qs = request.GET.get('qs', None)
+
+    if not qs:
+        raise ViewDoesNotExist('Parametro QS no encontrado')
+
+    if qs == 'publications':
+        page = request.GET.get('page', 1)
+        template='account/profile_comments.html'
+        pubs_shared_with_me, pubs_shared, publications = load_profile_publications(request, page, user_profile)
+        context = {
+            'user_profile': user_profile,
+            'publications': publications,
+            'pubs_shared': pubs_shared,
+            'pubs_shared_with_me': pubs_shared_with_me
+        }
+    elif qs == 'following':
+        page = int(request.GET.get('pagefollowing', 1))
+        template='account/follow_entries.html'
+        limit = 25 * page
+        offset = limit - 25
+        total_users = node_profile.count_follows()
+        total_pages = total_users / 25
+        print(total_pages)
+        if total_users % 25 != 0:
+            total_pages += 1
+            if page < total_pages:
+                page = page + 1
+        context = {
+            'user_profile': user_profile,
+            'friends_top12': node_profile.get_follows(offset, limit),
+            'friend_page': page,
+        }
+    else:
+        raise ValueError('No existe el querystring %s' % qs[:25])
+
+    return render(request, template_name=template, context=context)
+
 
 
 @login_required(login_url='/')
-@page_template("account/follow_entries.html", key='follow_entries')
 def profile_view(request, username,
                  template="account/profile.html",
                  extra_context=None):
@@ -58,7 +149,6 @@ def profile_view(request, username,
     :param request:
     :param username => Username del perfil:
     :param template => Template por defecto que muestra el perfil:
-    :param extra_context => Para paginacion :
     """
     user = request.user
     user_profile = get_object_or_404(User.objects.select_related('profile'),
@@ -70,7 +160,15 @@ def profile_view(request, username,
     context = {}
     # Privacidad del usuario
     privacity = n.is_visible(m)
-    # Para escribir mensajes en mi propio perfil.
+
+    # Si es una peticion AJAX (cargar skyline, seguidos...)
+    if request.is_ajax():
+        if privacity and privacity != 'all':
+            pass
+        else:
+            return profile_view_ajax(request, user_profile, node_profile=n)
+
+
     context['user_profile'] = user_profile
     context['privacity'] = privacity
 
@@ -167,51 +265,15 @@ def profile_view(request, username,
     context['publication_edit'] = PublicationEdit()
     context['publication_shared'] = SharedPublicationForm()
 
-    # cargar lista comentarios
-    try:
-        # if user_profile.username == username:
-        # Get user_profile publications LIMIT 20
-        publications = Publication.objects.filter(~Q(author__profile__from_blocked__to_blocked=user.profile) &
-                Q(board_owner_id=user_profile.id) & Q(level__lte=0) & Q(deleted=False)) \
-                           .prefetch_related('extra_content', 'images',
-                                             'videos', 'shared_publication__images',
-                                             'tags',
-                                             'shared_photo_publication__images',
-                                             'shared_publication__author',
-                                             'shared_photo_publication__p_author',
-                                             'shared_photo_publication__videos',
-                                             'shared_photo_publication__publication_photo_extra_content',
-                                             'shared_publication__videos', 'shared_publication__extra_content',
-                                             'user_give_me_like', 'user_give_me_hate') \
-                           .select_related('author',
-                                           'board_owner', 'shared_publication', 'parent', 'shared_photo_publication')[
-                       :20]
+    # Cargamos las publicaciones del perfil
+    pubs_shared_with_me, pubs_shared, publications = load_profile_publications(request, 1, user_profile)
 
-        # Obtenemos los ids de las publicaciones del skyline
-        # Despues recuperamos aquellas publicaciones que han sido compartidas
-        shared_id = publications.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values(
-            'shared_publication__id') \
-            .order_by('shared_publication__id') \
-            .annotate(total=Count('shared_publication__id'))
-
-        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id,
-                                                         deleted=False).values('author__id', 'shared_publication__id')
-
-
-    except ObjectDoesNotExist:
-        publications = None
-
-    # context['shares'] = shares
     # Contenido de las tres tabs
     context['pubs_shared_with_me'] = pubs_shared_with_me
     context['pubs_shared'] = pubs_shared
-    context['publications'] = list(publications)
+    context['publications'] = publications
     context['component'] = 'react/publications.js'
-    context['friends_top12'] = n.get_follows()
-
-    if extra_context is not None:
-        context.update(extra_context)
+    context['friend_page'] = 1
 
     return render(request, template, context)
 

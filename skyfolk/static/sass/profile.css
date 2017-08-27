@@ -1006,7 +1006,7 @@
     height: 100%;
 }
 
-#tab-amigos ul.list {
+#tab-amigos .list-following {
     position: relative;
     margin: auto;
     list-style-type: none;
@@ -1021,7 +1021,7 @@
     display: none;
 }
 
-#tab-amigos ul.list li {
+#tab-amigos .list-following .following-item {
     display: table;
     background-color: #FAFAFA;
     margin: 10px;
@@ -1034,7 +1034,7 @@
     box-shadow: 0 0 3px 1px #1e88e5;
 }
 
-#tab-amigos ul.list li img {
+#tab-amigos .list-following .following-item img {
     width: 72px;
     height: 72px;
     float: left;
@@ -1042,7 +1042,7 @@
     cursor: pointer;
 }
 
-#tab-amigos ul.list li a {
+#tab-amigos .list-following .following-item a {
     text-decoration: none;
     vertical-align: middle;
     display: table-cell;
@@ -1056,7 +1056,7 @@
     width: 100%;
 }
 
-#tab-amigos ul.list li a:hover {
+#tab-amigos .list-following .following-item a:hover {
     opacity: 0.5;
     transition: all 0.2s ease-in;
 }

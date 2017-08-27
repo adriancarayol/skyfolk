@@ -844,14 +844,14 @@ $followcolor: #64b5f6
   background: #FAFAFA
 
 #tab-amigos
-  overflow: auto
+  overflow: hidden !important
   height: 100%
 
 #tab-comentarios
-  overflow: auto
+  overflow: hidden
   height: 100%
 
-#tab-amigos ul.list
+#tab-amigos .infinite-following
   position: relative
   margin: auto
   list-style-type: none
@@ -863,7 +863,7 @@ $followcolor: #64b5f6
 #hood-tabs::-webkit-scrollbar
   display: none
 
-#tab-amigos ul.list li
+#tab-amigos .infinite-following .following-item
   display: table
   background-color: #FAFAFA
   margin: 10px
@@ -875,14 +875,14 @@ $followcolor: #64b5f6
   -moz-box-shadow: 0 0 3px 1px #1e88e5
   box-shadow: 0 0 3px 1px #1e88e5
 
-#tab-amigos ul.list li img
+#tab-amigos .infinite-following .following-item img
   width: 72px
   height: 72px
   float: left
   border-right: 2px solid #1e88e5
   cursor: pointer
 
-#tab-amigos ul.list li a
+#tab-amigos .infinite-following .following-item a
   text-decoration: none
   vertical-align: middle
   display: table-cell
@@ -895,7 +895,7 @@ $followcolor: #64b5f6
   margin: auto auto auto 0
   width: 100%
 
-#tab-amigos ul.list li a:hover
+#tab-amigos .infinite-following .following-item a:hover
   opacity: 0.5
   transition: all .2s ease-in
 

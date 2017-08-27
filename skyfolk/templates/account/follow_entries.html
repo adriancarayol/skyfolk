@@ -1,13 +1,14 @@
 {% load avatar_tags %}
 {% load app_filters %}
-{% load el_pagination_tags %}
 
-{% paginate friends_top12 using "follow_entries" %}
-{% for item in friends_top12 %}
-    <li id="friend-{{ item.user_id }}">
+<div class="infinite-following" id="list-following">
+    {% for item in friends_top12 %}
+    <div class="following-item" id="friend-{{ item.user_id }}">
         <div class="usr-img img-responsive">{% avatar item.title %}</div>
         <a class="name" href="/profile/{{ item.title }}">{{ item.first_name }} {{ item.last_name }}
             ({{ item.title }})</a>
-    </li>
-{% endfor %}
-{% show_more %}
+    </div>
+    {% endfor %}
+</div>
+
+
