@@ -3,7 +3,10 @@
 {% load app_filters %}
 {% load humanize %}
 {% load embed_video_tags %}
-    <input type="hidden" value="{{ publications|length }}" id="childs_for_{{ pub_id }}">
+    <input type="hidden" value="{{ publications|length }}" class="childs_for_{{ pub_id }}">
+    {% if publications.has_next %}
+        <input type="hidden" value="{{ publications.next_page_number }}" class="page_for_{{ pub_id }}">
+    {% endif %}
     {% for node in publications %}
         <div class="row">
             <div class="col s12">
@@ -268,9 +271,9 @@
                                             <i class="fa like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
                                         </li>
                                         {% endwith %}
-                                        <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class="add-timeline"
+                                        <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}
                                         ><i
-                                        class="fa fa-quote-right" aria-hidden="true"> </i></li>
+                                        class="fa fa-quote-right" aria-hidden="true"> {{ pubs_shared|lookup:node.id }}</i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
@@ -341,15 +344,3 @@
             </div>
         </div>
         {% endfor %}
-    <script>
-    {% if pubs_shared %}
-    {% for ja in pubs_shared %}
-        $('#share-' + {{ ja.shared_publication__id }}).children().text(' ' + {{ ja.total }});
-    {% endfor %}
-    {% endif %}
-    {% if pubs_shared_with_me %}
-    {% for je in pubs_shared_with_me %}
-        $('#share-' + {{ je.shared_publication__id }}).attr('class', 'remove-timeline').css('color', '#bbdefb');
-    {% endfor %}
-    {% endif %}
-    </script>

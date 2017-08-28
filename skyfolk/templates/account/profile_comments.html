@@ -268,9 +268,9 @@
                                             <i class="fa like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
                                         </li>
                                         {% endwith %}
-                                        <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class="add-timeline"
+                                        <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}
                                         ><i
-                                        class="fa fa-quote-right" aria-hidden="true"> </i></li>
+                                        class="fa fa-quote-right" aria-hidden="true"> {{ pubs_shared|lookup:node.id }}</i></li>
                                     <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                    id="reply-caja-comentario-{{ node.pk }}"></i>
                                     </li>
@@ -346,11 +346,3 @@
     <div class="progress loading_skyline" style="display: none">
         <div class="indeterminate blue darken-1"></div>
     </div>
-    <script>
-    {% for s in pubs_shared %}
-        $('#share-' + {{ s.shared_publication__id }}).children().text(' ' + {{ s.total }});
-    {% endfor %}
-    {% for m in pubs_shared_with_me %}
-        $('#share-' + {{ m.shared_publication__id }}).attr('class', 'remove-timeline').css('color', '#bbdefb');
-    {% endfor %}
-    </script>

@@ -32,7 +32,7 @@ from mptt.templatetags.mptt_tags import cache_tree_children
 from django.db.models import Count, Q
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from embed_video.backends import detect_backend
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -219,8 +219,9 @@ def publication_detail(request, publication_id):
         pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values('shared_publication__id')\
                 .order_by('shared_publication__id')\
                 .annotate(total=Count('shared_publication__id'))
-
-        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id, deleted=False).values('author__id', 'shared_publication__id')
+        shared_pubs = {item['shared_publication__id']:item.get('total', 0) for item in pubs_shared}
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id, deleted=False) \
+            .values_list('shared_publication__id', flat=True)
 
     except ObjectDoesNotExist:
         raise Http404
@@ -237,7 +238,7 @@ def publication_detail(request, publication_id):
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
     context = {
-        'pubs_shared': pubs_shared,
+        'pubs_shared': shared_pubs,
         'pubs_shared_with_me': pubs_shared_with_me,
         'publication_id': publication_id,
         'publication': publication,
@@ -536,14 +537,10 @@ def load_more_comments(request):
     Carga respuestas de un comentario padre (carga comentarios hijos (nivel 1) de un comentario padre (nivel 0))
     o carga comentarios a respuestas (cargar comentarios descendientes (nivel > 1) de un comentario hijo (nivel 1))
     """
-    from django.db import connection
-    data = {
-        'response': False
-    }
     if request.is_ajax():
         user = request.user
         pub_id = request.GET.get('pubid', None)  # publicacion padre
-        last_pub = request.GET.get('lastpub', None)  # Ultima publicacion add
+        page = request.GET.get('page', 1)  # Ultima publicacion add
 
         try:
             publication = Publication.objects.select_related('board_owner').get(id=pub_id)
@@ -561,47 +558,52 @@ def load_more_comments(request):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-        if not publication.parent and not last_pub:
-            publications = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(level__lte=1) & Q(deleted=False))[:20]
-        elif not publication.parent and last_pub:
-            try:
-                after_date = Publication.objects.filter(id=last_pub).values("created")
-            except Publication.DoesNotExist:
-                after_date = 0
-            publications = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(level__lte=1) & Q(created__lte=after_date) & Q(deleted=False)).exclude(id=last_pub)[:20]
-        elif publication.parent and not last_pub:
-            publications = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(deleted=False))[:20]
-        elif publication.parent and last_pub:
-            try:
-                after_date = Publication.objects.filter(id=last_pub).values("created")
-            except Publication.DoesNotExist:
-                after_date = 0
-            publications = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile) & Q(deleted=False) & Q(created__lte=after_date)).exclude(id=last_pub)[:20]
+        if not publication.parent:
+            publications = publication.get_descendants() \
+            .filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+                & Q(level__lte=1) & Q(deleted=False))
+
+        else:
+            publications = publication.get_descendants() \
+                .filter(
+                    ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                    & Q(deleted=False))
+
+        paginator = Paginator(publications, 10)
 
         publications = publications.prefetch_related('extra_content', 'images',
-                                             'videos',
-                                             'tags',
-                                             'user_give_me_like', 'user_give_me_hate') \
-                           .select_related('author',
-                                        'board_owner',
-                                        'parent')
-        pubs_id = publications.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_publication__id__in=pubs_id).values('shared_publication__id')\
-                .order_by('shared_publication__id')\
-                .annotate(total=Count('shared_publication__id'))
+            'videos',
+            'tags',
+            'user_give_me_like', 'user_give_me_hate') \
+        .select_related('author',
+            'board_owner',
+            'parent')
 
-        shared_pubs = {item['shared_publication__id']:item for item in pubs_shared}
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
+
+        pubs_id = publications.object_list.values_list('id', flat=True)
+
+        pubs_shared = Publication.objects.filter(
+            shared_publication__id__in=pubs_id).values('shared_publication__id') \
+        .order_by('shared_publication__id') \
+        .annotate(total=Count('shared_publication__id'))
+
+        shared_pubs = {item['shared_publication__id']:item.get('total', 0) for item in pubs_shared}
         pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=pubs_id, author_id=user.id) \
                 .values_list('shared_publication__id', flat=True)
 
     context = {
         'pub_id': pub_id,
         'publications': publications,
-        'pubs_shared': pubs_shared,
+        'pubs_shared': shared_pubs,
         'pubs_shared_with_me': pubs_shared_with_me,
         'user_profile': publication.board_owner
     }
-    print(connection.queries)
     return render(request, 'account/ajax_load_replies.html', context=context)
 
 

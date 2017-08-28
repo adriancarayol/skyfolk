@@ -84,16 +84,17 @@ def load_profile_publications(request, page, profile):
             'shared_publication__id') \
             .order_by('shared_publication__id') \
             .annotate(total=Count('shared_publication__id'))
+        shared_pubs = {item['shared_publication__id']:item.get('total', 0) for item in pubs_shared}
 
         pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id,
-                                                         deleted=False).values('author__id', 'shared_publication__id')
+                                                         deleted=False).values_list('shared_publication__id', flat=True)
     except Exception as e:
         publications = []
         pubs_shared_with_me = []
         pubs_shared = []
         logging.info(e)
 
-    return pubs_shared_with_me, pubs_shared, publications
+    return pubs_shared_with_me, shared_pubs, publications
 
 
 def profile_view_ajax(request, user_profile, node_profile=None):

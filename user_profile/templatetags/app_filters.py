@@ -184,3 +184,10 @@ def classname(obj):
 @register.filter
 def interest_to_icon(tag):
     return dict(CHOICES).get(tag)
+
+@register.filter
+def lookup(d, key):
+    try:
+        return d[key]
+    except KeyError:
+        return ''

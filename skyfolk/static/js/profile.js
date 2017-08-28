@@ -267,12 +267,11 @@ $(document).ready(function () {
     $(tab_comentarios).on('click', '.load_more_publications', function (e) {
         e.preventDefault();
         var loader = $(this).next().find('.load_publications_descendants');
-        var last_pub = $(loader).closest('.row').prev('.children').find('.wrapper').last().attr('id');
-        var last_pub_id = "";
-        if (last_pub) {
-            last_pub_id = last_pub.toString().split('-')[1];
-        }
-        AJAX_load_publications($(this).attr("data-id"), loader, last_pub_id, this);
+        var pub_id = $(this).data('id');
+        var page = $('.page_for_' + pub_id).last().val();
+        if (typeof page === 'undefined')
+            page = 1;
+        AJAX_load_publications(pub_id, loader, page, this);
     });
 }); // END DOCUMENT READY */
 
@@ -323,9 +322,9 @@ function AJAX_likeprofile(status) {
 }
 
 /* LOAD MORE COMMENTS */
-function AJAX_load_publications(pub, loader, last_pub, btn) {
+function AJAX_load_publications(pub, loader, page, btn) {
     $.ajax({
-        url: '/publication/load/more/?pubid='+ pub + '&lastpub=' + last_pub,
+        url: '/publication/load/more/?pubid='+ pub + '&page=' + page,
         type: 'GET',
         beforeSend: function() {
             $(loader).fadeIn();
@@ -338,7 +337,7 @@ function AJAX_load_publications(pub, loader, last_pub, btn) {
             }
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
-            var $result_child_count = parseInt($child_count.html(), 10) - $('#childs_for_' + pub).val();
+            var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
             if ($result_child_count > 0)
                 $($child_count).html($result_child_count);
             else
