@@ -3,7 +3,9 @@ Pestaña de amigos en el perfil
 {% endcomment %}
 <div id="tab-amigos">
     {% include "account/follow_entries.html" %}
-    <a class="following-more-link" href="?pagefollowing={{ friend_page }}&qs=following">Más</a>
+    {% comment %}
+    <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center" href="?page=2&qs=following">More</a>
+    {% endcomment %}
     <div class="progress load_following" style="display: none">
         <div class="indeterminate blue darken-1"></div>
     </div>
