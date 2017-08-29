@@ -87,11 +87,14 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
+                try:
+                    publication.save()  # Creamos publicacion
+                    form.save_m2m()  # Saving tags
+                    content_video = optimize_publication_media(publication, request.FILES.getlist('image'))
+                except Exception as e:
+                    raise IntegrityError(e)
 
-                publication.save(new_comment=True, csrf_token=get_or_create_csrf_token(
-                        self.request))  # Creamos publicacion
-                form.save_m2m()  # Saving tags
-                content_video = optimize_publication_media(publication, request.FILES.getlist('image'))
+                publication.send_notification(is_edited=False)
                 if not content_video:
                     return self.form_valid(form=form)
                 else:
@@ -498,9 +501,11 @@ def edit_publication(request):
         if publication.event_type != 1 and publication.event_type != 3:
             return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
-        publication.content = request.POST.get('content', None)
-
+        publication.content = Emoji.replace(request.POST.get('content', None))
         publication.add_hashtag()  # add hashtags
+        publication.parse_content()
+        publication.parse_mentions()
+        
         # publication.parse_content()  # parse publication content
         is_correct_content = False
         soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
@@ -517,8 +522,8 @@ def edit_publication(request):
             raise IntegrityError('El comentario esta vacio')
 
         publication.parse_mentions()  # add mentions
-        publication.save(update_fields=['content', 'created'],
-                         new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
+        publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
+        publication.send_notification(is_edited=True)
 
         return JsonResponse({'data': True})
     return JsonResponse({'data': "No puedes acceder a esta URL."})

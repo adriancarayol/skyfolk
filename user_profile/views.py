@@ -155,8 +155,11 @@ def profile_view(request, username,
     user_profile = get_object_or_404(User.objects.select_related('profile'),
                                      username__iexact=username)
 
-    n = NodeProfile.nodes.get(user_id=user_profile.id)
-    m = NodeProfile.nodes.get(user_id=user.id)
+    try:
+        n = NodeProfile.nodes.get(user_id=user_profile.id)
+        m = NodeProfile.nodes.get(user_id=user.id)
+    except NodeProfile.DoesNotExist:
+        raise Http404
 
     context = {}
     # Privacidad del usuario
@@ -592,7 +595,7 @@ def add_friend_by_username_or_pin(request):
 
             try:
                 friend = NodeProfile.nodes.get(uid=pin)
-            except ObjectDoesNotExist:
+            except NodeProfile.DoesNotExist:
                 data['response'] = 'no_match'
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
@@ -674,7 +677,7 @@ def add_friend_by_username_or_pin(request):
 
             try:
                 friend = NodeProfile.nodes.get(title=username)
-            except ObjectDoesNotExist:
+            except NodeProfile.DoesNotExist:
                 data['response'] = 'no_match'
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
@@ -1058,7 +1061,7 @@ class FollowersListView(ListView):
 
         try:
             n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
-        except Exception:
+        except NodeProfile.DoesNotExist:
             raise Http404
 
         total_users = n.count_followers()
@@ -1101,7 +1104,7 @@ class FollowingListView(ListView):
 
         try:
             n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
-        except Exception:
+        except NodeProfile.DoesNotExist:
             raise Http404
 
         total_users = n.count_follows()

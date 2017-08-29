@@ -16,52 +16,14 @@ var UTILS_N = UTILS_N || (function () {
 			socket.onmessage = function (message) {
 				// Decode the JSON
 				var data = JSON.parse(message.data);
-				console.log(data);
-				// Create the inner content of the post div
-				var content = '<li class=\"collection-item avatar\" data-id="' + data.id + '">';
-				content += '<a onclick="AJAX_mark_read(this)" class="fa fa-remove" data-notification="' + data.slug + '"/></a>';
-				if (data.actor_avatar !== null && typeof data.actor_avatar !== 'undefined') {
-                    content = content + '<div class="circle">' + data.actor_avatar + '</div>';
-				}
-				if (typeof data.actor !== 'undefined' && data.level !== 'new_follow') {
-					content = content + "<a class=\"title\" href=\"/profile/" + data.actor + '" >' + data.actor + '</a>';
-				}
-
-				if (typeof data.verb !== 'undefined') {
-					content = content + " <span class=\"title\"/>" + data.verb + '</span>';
-				}
-
-				if (typeof data.target !== 'undefined') {
-					content = content + " " + data.target;
-				}
-				if (typeof data.description !== 'undefined' && data.description != null) {
-					content = content + " " + data.description;
-				}
-				if (typeof data.timestamp !== 'undefined') {
-					content = content + "<p><i>" + data.timestamp + '</i></p>';
-				}
-				if (typeof data.level !== 'undefined' && data.level == 'friendrequest') {
-					content = content + " <div class=\"notification-buttons\"><" +
-						'button data-notification="' + data.slug + '" onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "accept" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="accept-response waves-effect waves-light btn white-text green"><i class="material-icons">done</i></button>\<' +
-						'button data-notification="' + data.slug + '"onclick="AJAX_respondFriendRequest(\'' + data.actor_object_id + '\',\'' + "rejected" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
-						'/div>';
-				} else if (typeof data.level !== 'undefined' && data.level == 'grouprequest') {
-					content = content + " <div class=\"notification-buttons\"><" +
-						'button data-notification="' + data.slug + '" onclick="AJAX_respondGroupRequest(\'' + data.action_object + '\',\'' + "accept" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="accept-response waves-effect waves-light btn white-text green"><i class="material-icons">done</i></button>\<' +
-						'button data-notification="' + data.slug + '"onclick="AJAX_respondGroupRequest(\'' + data.action_object + '\',\'' + "rejected" + '\',\'' + data.id + '\'); AJAX_delete_notification(\'' + data.slug + '\',\'' + data.id + '\')" class="rejected-response waves-effect waves-light btn white-text red"> <i class="material-icons">cancel</i></button>\<' +
-						'/div>';
-				}
-				if (typeof data.actor !== 'undefined' && typeof data.verb !== 'undefined') {
-				    Materialize.toast('@' + data.actor + ' - ' + data.verb, 4000);
-                }
 				// See if there's a div to replace it in, or if we should add a new one
 				var list_notifications = $('#list-notify');
 				var existing = $(list_notifications).find("[data-id='" + data.id + "']");
 				/* Comprobamos si el elemento existe, si es asi lo modifcamos */
 				if (existing.length) {
-					existing.html(content);
+					existing.replaceWith(data.content);
 				} else {
-					$(list_notifications).prepend(content);
+					$(list_notifications).prepend(data.content);
 					var live_notify = $('#live_notify_badge');
 					$(live_notify).html(parseInt($(live_notify).html(), 10)+1);
 				}

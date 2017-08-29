@@ -125,8 +125,12 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
-        emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_owner = NodeProfile.nodes.get(user_id=request.POST['board_owner'])
+        try:
+            emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
+            board_owner = NodeProfile.nodes.get(user_id=request.POST['board_owner'])
+        except NodeProfile.DoesNotExist as e:
+            return self.form_invalid(form=form, errors=e)
+
         privacity = board_owner.is_visible(emitter)
 
         if privacity and privacity != 'all':
@@ -166,27 +170,34 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
                 publication.add_hashtag()  # add hashtags
-
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
-                publication.save(new_comment=True, csrf_token=get_or_create_csrf_token(
-                        self.request))  # Creamos publicacion
 
-                form.save_m2m()  # Saving tags
-                content_video = _optimize_publication_media(publication, request.FILES.getlist('image'))
+                try:
+                    with transaction.atomic(using="default"):
+                        publication.save()  # Creamos publicacion
+                        form.save_m2m()  # Saving tags
+                        content_video = _optimize_publication_media(publication,
+                            request.FILES.getlist('image'))
+                except Exception as e:
+                    raise IntegrityError(e)
+
+                publication.send_notification(request, is_edited=False)
                 if not content_video:
                     return self.form_valid(form=form)
                 else:
                     return self.form_valid(form=form,
-                                           msg=u"Estamos procesando tus videos, te avisamos "
-                                               u"cuando la publicación esté lista,")
+                        msg=u"Estamos procesando tus videos, te avisamos "
+                        u"cuando la publicación esté lista,")
+
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
                 return self.form_invalid(form=form, errors=e)
+
         return self.form_invalid(form=form)
 
 
-publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
-publication_new_view = transaction.atomic(publication_new_view)
+publication_new_view = login_required(
+    PublicationNewView.as_view(), login_url='/')
 
 
 @login_required(login_url='/')
@@ -505,10 +516,11 @@ def edit_publication(request):
         if publication.event_type != 1 and publication.event_type != 3:
             return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
-        publication.content = request.POST.get('content', None)
-
+        publication.content = Emoji.replace(request.POST.get('content', None))
         publication.add_hashtag()  # add hashtags
         publication.parse_content()  # parse publication content
+        publication.parse_mentions()
+
         is_correct_content = False
         soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
         for tag in soup.find_all(recursive=True):
@@ -524,8 +536,8 @@ def edit_publication(request):
             raise IntegrityError('El comentario esta vacio')
 
         publication.parse_mentions()  # add mentions
-        publication.save(update_fields=['content', 'created'],
-                         new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
+        publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
+        publication.send_notification(request, is_edited=True)
 
         return JsonResponse({'data': True})
     return JsonResponse({'data': "No puedes acceder a esta URL."})
@@ -677,8 +689,7 @@ def share_publication(request):
                         author=user,
                         board_owner=user, event_type=6)
 
-                pub.send_notification(csrf_token=get_or_create_csrf_token(
-                        request))
+                pub.send_notification(request)
                 response = True
                 status = 1  # Representa la comparticion de la publicacion
                 logger.info('Compartido el comentario %d' % (pub_to_add.id))

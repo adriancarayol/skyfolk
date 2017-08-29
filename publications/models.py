@@ -27,6 +27,7 @@ from user_profile.models import NodeProfile
 from user_profile.utils import group_name
 from .utils import get_channel_name
 from user_profile.tasks import send_email
+from django.template.loader import render_to_string
 
 
 # Los tags HTML que permitimos en los comentarios
@@ -352,143 +353,52 @@ class Publication(PublicationBase):
 
             self.event_type = 3
 
-    def send_notification(self, csrf_token=None, type="pub", is_edited=False):
+    def send_notification(self, request, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
-        id_parent = None
-        author_parent = None
-        avatar_parent = None
-
-        if self.parent:
-            id_parent = self.parent.id
-            author_parent = self.parent.author.username
-            avatar_parent = avatar_url(self.parent.author)
-            content_parent = self.parent.content[:20]
-
-        extra_c = None
-
-        have_extra_content = self.has_extra_content()
-        if have_extra_content:
-            extra_c = self.extra_content
-
-
-        notification = {
-            "id": self.id,
-            "content": self.content,
-            "avatar_path": avatar_url(self.author),
-            "author_id": self.author_id,
-            "board_owner_id": self.board_owner_id,
-            "author_username": self.author.username,
-            "author_first_name": self.author.first_name,
-            "author_last_name": self.author.last_name,
-            "created": naturaltime(self.created),
-            "type": type,
-            "parent": id_parent,
-            "level": self.get_level(),
-            'is_edited': is_edited,
-            'token': csrf_token,
-            'event_type': self.event_type,
-            'extra_content': have_extra_content,
-            'parent_author': author_parent,
-            'images': list(self.images.all().values('image')),
-            'parent_avatar': avatar_parent,
+        data = {
+            'type': 'pub',
+            'id': self.id,
+            'parent_id': self.parent_id,
+            'level': self.level,
+            'content': render_to_string(request=request, template_name='channels/new_publication.html',
+                context={'node': self, 'user_profile': self.board_owner})
         }
-        if have_extra_content:
-            notification['extra_content_title'] = extra_c.title
-            notification['extra_content_description'] = extra_c.description
-            notification['extra_content_image'] = extra_c.image
-            notification['extra_content_url'] = extra_c.url
-            video = detect_backend(extra_c.video)
-            notification['extra_content_video'] = video.get_embed_code(640, 480)
-
-        shared_publication = self.shared_publication
-        shared_photo_publication = self.shared_photo_publication
-
-        if shared_publication:
-            notification["shared_publication_avatar_path"] = avatar_url(shared_publication.author),
-            notification["shared_publication_id"] = shared_publication.id
-            notification['shared_publication_author_id'] = shared_publication.author.id
-            notification['shared_publication_author_username'] = shared_publication.author.username
-            notification['shared_publication_content'] = shared_publication.content
-            notification['shared_publication_images'] = list(shared_publication.images.all().values('image'))
-            notification['shared_publication_videos'] =list( shared_publication.videos.all().values('video'))
-            notification['shared_publication_created'] = naturaltime(shared_publication.created)
-
-            have_shared_extra_content = shared_publication.has_extra_content()
-            if have_shared_extra_content:
-                shared_extra_c = shared_publication.extra_content
-
-            if have_shared_extra_content:
-                notification['shared_publication_extra_content_title'] = shared_extra_c.title
-                notification['shared_publication_extra_content_description'] = shared_extra_c.description
-                notification['shared_publication_extra_content_image'] = shared_extra_c.image
-                notification['shared_publication_extra_content_url'] = shared_extra_c.url
-                video = detect_backend(shared_extra_c.video)
-                notification['shared_publication_extra_video'] = video.get_embed_code(640, 480)
-                notification['shared_publication_extra_content'] = True
-            else:
-                notification['shared_publication_extra_content'] = False
-
-
-        elif shared_photo_publication:
-            notification["shared_photo_publication_avatar_path"] = avatar_url(shared_photo_publication.p_author),
-            notification["shared_photo_publication_id"] = shared_photo_publication.id
-            notification['shared_photo_publication_author_id'] = shared_photo_publication.p_author.id
-            notification['shared_photo_publication_author_username'] = shared_photo_publication.p_author.username
-            notification['shared_photo_publication_content'] = shared_photo_publication.content
-            notification['shared_photo_publication_images'] = list(shared_photo_publication.images.all().values('image'))
-            notification['shared_photo_publication_videos'] =list(shared_photo_publication.videos.all().values('video'))
-            notification['shared_photo_publication_created'] = naturaltime(shared_photo_publication.created)
-
-            have_photo_shared_extra_content = shared_photo_publication.has_extra_content()
-            if have_photo_shared_extra_content:
-                shared_extra_c = shared_photo_publication.publication_photo_extra_content
-
-            if have_photo_shared_extra_content:
-                notification['shared_photo_publication_extra_content_title'] = shared_extra_c.title
-                notification['shared_photo_publication_extra_content_description'] = shared_extra_c.description
-                notification['shared_photo_publication_extra_content_image'] = shared_extra_c.image
-                notification['shared_photo_publication_extra_content_url'] = shared_extra_c.url
-                video = detect_backend(shared_extra_c.video)
-                notification['shared_photo_publication_extra_video'] = video.get_embed_code(640, 480)
-                notification['shared_photo_publication_extra_content'] = True
-            else:
-                notification['shared_photo_publication_extra_content'] = False
 
         # Enviamos a todos los usuarios que visitan el perfil
         channel_group(group_name(self.board_owner_id)).send({
-            "text": json.dumps(notification)
+            "text": json.dumps(data)
         })
+
+        #TODO: Mezclar templates para ahorrar el render
+        data['content'] = render_to_string(request=request, template_name='channels/new_publication_detail.html',
+            context={'node': self, 'user_profile': self.board_owner})
+
+        # Enviamos por el socket de la publicacion
         if is_edited:
             channel_group(get_channel_name(self.id)).send({
-                'text': json.dumps(notification)
+                'text': json.dumps(data)
         })
+
         # Enviamos al blog de la publicacion
         [channel_group(get_channel_name(x)).send({
-            "text": json.dumps(notification)
+            "text": json.dumps(data)
         }) for x in self.get_ancestors().values_list('id', flat=True)]
 
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_owner_id:
             notify.send(self.author, actor=self.author.username,
                             recipient=self.board_owner,
-                            verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' % (self.author.username, self.author.username), level='notification_board_owner')
+                            verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' % 
+                            (self.author.username, self.author.username), level='notification_board_owner')
 
             # Enviamos email al board_owner
             send_email.delay("Skyfolk - %s ha comentado en tu skyline." % self.author.username,
                     [self.board_owner.email],
                     {'to_user': self.board_owner.username, 'from_user': self.author.username},
                    'emails/new_publication.html')
-
-    def save(self, csrf_token=None, new_comment=False, is_edited=False, *args, **kwargs):
-        super(Publication, self).save(*args, **kwargs)
-
-        if new_comment:
-            if not self.deleted:
-                self.send_notification(csrf_token=csrf_token, is_edited=is_edited)  # Enviar publicacion por socket
-
 
 class PublicationVideo(models.Model):
     publication = models.ForeignKey(Publication, related_name='videos')

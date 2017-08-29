@@ -5,9 +5,9 @@
 {% load embed_video_tags %}
     <div id="list-publications" class="infinite-container">
     {% for node in publications %}
-        <div class="row infinite-item">
+        <div class="row infinite-item wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
             <div class="col s12">
-                <div class="col s12 wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}"
+                <div class="col s12"
                      {% if node.level > 0 and node.level < 3 %}style="min-width: 98% !important;"{% endif %}>
                     <div class="box">
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"

@@ -43,28 +43,28 @@ $(document).ready(function () {
 
     /* Eliminar skyline */
     $(this).on('click', '.options_comentarios .remove-timeline', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
+        var caja_publicacion = $(this).closest('.row-pub');
         var tag = this;
         AJAX_add_timeline_detail($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
     $(thread).on('click', '.options_comentarios .like-comment', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
+        var caja_publicacion = $(this).closest('.row-pub');
         var heart = this;
         AJAX_add_like_detail(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
     $(thread).on('click', '.options_comentarios .hate-comment', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
+        var caja_publicacion = $(this).closest('.row-pub');
         var heart = this;
         AJAX_add_hate_detail(caja_publicacion, heart, "publication");
     });
 
     /* Borrar publicacion */
     $(thread).on('click', '.options_comentarios .fa-trash', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
+        var caja_publicacion = $(this).closest('.row-pub');
         swal({
             title: "Are you sure?",
             text: "You will not be able to recover this publication!",

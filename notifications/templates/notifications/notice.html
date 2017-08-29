@@ -33,6 +33,19 @@
                     class="rejected-response">Aceptar
             </button>
         </div>
+        {% elif notice.level == "grouprequest" %}
+            <div class="notification-buttons">
+                <button data-notification="{{ notice.slug }}"
+                    class="accept-response waves-effect waves-light btn white-text green"
+                    onclick="AJAX_respondGroupRequest({{ notice.action_object_object_id }}, 'accept', {{ notice.id }})">
+                    <i class="material-icons">done</i>
+                </button>
+                <button data-notification="{{ notice.slug }}"
+                    class="rejected-response waves-effect waves-light btn white-text red"
+                    onclick="AJAX_respondGroupRequest({{ notice.action_object_object_id }}, 'rejected', {{ notice.id }})">
+                    <i class="material-icons">cancel</i>
+                </button>
+            </div>
     {% endif %}
     <div class="notice-actions">
         {% for action in notice.data.actions %}

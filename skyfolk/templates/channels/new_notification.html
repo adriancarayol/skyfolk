@@ -1,0 +1,43 @@
+{% load humanize %}
+{% load avatar_tags %}
+
+<li class="collection-item avatar" data-id="{{ notification.id }}">
+    <a onclick="AJAX_mark_read(this)" class="fa fa-remove"
+    data-notification="{{ notification.slug }}"></a>
+    <div class="circle">
+        {% avatar notification.actor %}
+    </div>
+    {% if notification.level != "new_follow" %}
+    De: <a class="title" href="/profile/{{ notification.actor }}">{{ notification.actor }}</a>
+    {% endif %}
+    <span class="title">{{ notification.verb|safe }} {% if notification.description %}
+        {{ notification.description|safe }} {% endif %}</span>
+        <p><i>{{ notification.timestamp|naturaltime }}</i></p>
+        {% if notification.level == "friendrequest" %}
+        <div class="notification-buttons">
+            <button data-notification="{{ notification.slug }}"
+            class="accept-response waves-effect waves-light btn white-text green"
+            onclick="AJAX_respondFriendRequest({{ notification.actor_object_id }}, 'accept', {{ notification.id }})">
+            <i class="material-icons">done</i>
+        </button>
+        <button data-notification="{{ notification.slug }}"
+        class="rejected-response waves-effect waves-light btn white-text red"
+        onclick="AJAX_respondFriendRequest({{ notification.actor_object_id }}, 'rejected', {{ notification.id }})">
+        <i class="material-icons">cancel</i>
+    </button>
+</div>
+{% elif notification.level == "grouprequest" %}
+<div class="notification-buttons">
+    <button data-notification="{{ notification.slug }}"
+    class="accept-response waves-effect waves-light btn white-text green"
+    onclick="AJAX_respondGroupRequest({{ notification.action_object_object_id }}, 'accept', {{ notification.id }})">
+    <i class="material-icons">done</i>
+</button>
+<button data-notification="{{ notification.slug }}"
+class="rejected-response waves-effect waves-light btn white-text red"
+onclick="AJAX_respondGroupRequest({{ notification.action_object_object_id }}, 'rejected', {{ notification.id }})">
+<i class="material-icons">cancel</i>
+</button>
+</div>
+{% endif %}
+</li>

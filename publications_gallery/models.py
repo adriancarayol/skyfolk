@@ -296,10 +296,3 @@ class PublicationPhoto(PublicationBase):
         [channel_group(x.get_channel_name).send({
             "text": json.dumps(notification)
         }) for x in self.get_ancestors().only('id')]
-
-    def save(self, csrf_token=None, new_comment=False, is_edited=False, *args, **kwargs):
-        super(PublicationPhoto, self).save(*args, **kwargs)
-
-        if new_comment:
-            if not self.deleted:
-                self.send_notification(csrf_token=csrf_token, is_edited=is_edited)  # Enviar publicacion por socket

@@ -11,6 +11,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from distutils.version import StrictVersion
 from user_profile.utils import notification_channel
 from avatar.templatetags.avatar_tags import avatar
+from django.template.loader import render_to_string
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -266,7 +267,6 @@ def notify_handler(verb, **kwargs):
     """
     Handler function to create Notification instance upon action signal call.
     """
-
     # Pull the options out of kwargs
     kwargs.pop('signal', None)
     recipient = kwargs.pop('recipient')
@@ -311,17 +311,14 @@ def notify_handler(verb, **kwargs):
             newnotify.data = kwargs
 
         newnotify.save()
-        data = model_to_dict(newnotify)
-        if newnotify.actor:
-            data['actor'] = str(newnotify.actor)
-        if newnotify.target:
-            data['target'] = str(newnotify.target)
-        if newnotify.action_object:
-            data['action_object'] = newnotify.action_object_object_id
-        if newnotify.slug:
-            data['slug'] = str(newnotify.slug)
-        if newnotify.timestamp:
-            data['timestamp'] = str(naturaltime(newnotify.timestamp))
+
+        content = render_to_string(template_name='channels/new_notification.html',
+            context={'notification': newnotify})
+
+        data = {
+            'content': content,
+            'id': newnotify.id
+        }
         # Enviamos notificacion al canal del receptor
         if send_channel:
             group_channel(notification_channel(recipient.id)).send({
