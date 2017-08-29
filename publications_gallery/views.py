@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.db import transaction
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 from publications.utils import parse_string
@@ -25,6 +25,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from avatar.templatetags.avatar_tags import avatar
 from embed_video.backends import detect_backend
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -466,8 +467,7 @@ def share_publication(request):
                         author=user,
                         board_owner=user, event_type=7)
 
-                pub.send_notification(csrf_token=get_or_create_csrf_token(
-                        request))
+                pub.send_notification(request)
                 response = True
                 status = 1  # Representa la comparticion de la publicacion
                 logger.info('Compartido el comentario %d' % (pub_to_add.id))
@@ -535,14 +535,12 @@ def load_more_descendants(request):
     Carga respuestas de un comentario padre (carga comentarios hijos (nivel 1) de un comentario padre (nivel 0))
     o carga comentarios a respuestas (cargar comentarios descendientes (nivel > 1) de un comentario hijo (nivel 1))
     """
-    data = {
-        'response': False
-    }
-    if request.method == 'POST':
+    if request.is_ajax():
         user = request.user
-        pub_id = request.POST.get('id', None)  # publicacion padre
-        last_pub = request.POST.get('last_pub', None)  # Ultima publicacion add
+        pub_id = request.GET.get('pubid', None)  # publicacion padre
+        page = request.GET.get('page', 1)  # Ultima publicacion add
 
+        print('PAGE: {}, PUB_ID: {}'.format(page, pub_id))
         try:
             publication = PublicationPhoto.objects.get(id=pub_id)
         except PublicationPhoto.DoesNotExist:
@@ -552,192 +550,53 @@ def load_more_descendants(request):
             board_owner = NodeProfile.nodes.get(user_id=publication.board_photo.owner_id)
             m = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
-            return JsonResponse(data)
+            raise Http404
 
         privacity = board_owner.is_visible(m)
 
         if privacity and privacity != 'all':
-            return JsonResponse(data)
+            return HttpResponseForbidden()
 
-        list_responses = []
-
-        if not publication.parent and not last_pub:
-            publications = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(level__lte=1) & Q(deleted=False)).prefetch_related('publication_photo_extra_content', 'images',
-                                'videos',
-                                'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
-                            .select_related('p_author',
-                            'board_photo', 'parent') \
-                                                                                .annotate(likes_count=Count('user_give_me_like')) \
-                                                                                .annotate(hates_count=Count('user_give_me_hate'))[:20]
-        elif not publication.parent and last_pub:
-            try:
-                after_date = PublicationPhoto.objects.filter(id=last_pub).values("created")
-            except PublicationPhoto.DoesNotExist:
-                after_date = 0
-
-            publications = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(level__lte=1) & Q(created__lte=after_date) & Q(deleted=False)).exclude(id=last_pub).prefetch_related('publication_photo_extra_content', 'images',
-                                'videos',
-                                'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
-                            .select_related('p_author',
-                            'board_photo', 'parent') \
-                                                                                .annotate(likes_count=Count('user_give_me_like')) \
-                                                                                .annotate(hates_count=Count('user_give_me_hate'))[:20]
-        elif publication.parent and not last_pub:
-            publications = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(deleted=False)).prefetch_related('publication_photo_extra_content', 'images',
-                                'videos',
-                                'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
-                            .select_related('p_author',
-                            'board_photo', 'parent') \
-                                                                                .annotate(likes_count=Count('user_give_me_like')) \
-                                                                                .annotate(hates_count=Count('user_give_me_hate'))[:20]
-        elif publication .parent and last_pub:
-            try:
-                after_date = PublicationPhoto.objects.filter(id=last_pub).values("created")
-            except PublicationPhoto.DoesNotExist:
-                after_date = 0
-
-            publications =  publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(deleted=False) & Q(created__lte=after_date)).exclude(id=last_pub).prefetch_related('publication_photo_extra_content', 'images',
-                                'videos', 'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
-                            .select_related('p_author',
-                            'board_photo', 'parent') \
-                                                                                .annotate(likes_count=Count('user_give_me_like')) \
-                                                                                .annotate(hates_count=Count('user_give_me_hate'))[:20]
+        if not publication.parent:
+            pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) 
+                & Q(level__lte=1) 
+                & Q(deleted=False))
         else:
-            return JsonResponse({'data': None})
+            pubs =  publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) 
+                & Q(deleted=False))
 
-        pubs_id = publications.values_list('id', flat=True)
+
+        pubs = pubs.prefetch_related('publication_photo_extra_content', 'images',
+                                'videos',
+                                'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
+                            .select_related('p_author',
+                            'board_photo', 'parent') \
+                            .annotate(likes_count=Count('user_give_me_like')) \
+                            .annotate(hates_count=Count('user_give_me_hate'))
+
+        paginator = Paginator(pubs, 10)
+
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
+
+        pubs_id = publications.object_list.values_list('id', flat=True)
         pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id).values('shared_photo_publication__id')\
                 .order_by('shared_photo_publication')\
                 .annotate(total=Count('shared_photo_publication'))
         pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author_id=user.id) \
                 .values_list('shared_photo_publication__id', flat=True)
         shared_pubs = {item['shared_photo_publication__id']:item for item in pubs_shared}
-        likes_with_me = PublicationPhoto.objects.filter(id__in=pubs_id, user_give_me_like__id=user.id).values_list('id', flat=True)
-        hates_with_me = PublicationPhoto.objects.filter(id__in=pubs_id, user_give_me_hate__id=user.id).values_list('id', flat=True)
-        for row in publications:
-            extra_c = None
-            have_extra_content = row.has_extra_content()
 
-            if have_extra_content:
-                extra_c = row.publication_photo_extra_content
-
-            try:
-                shares_count = shared_pubs[row.id]['total']
-            except KeyError:
-                shares_count = 0
-
-            list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                                'author_username': row.p_author.username, 'user_id': user.id,
-                                'p_author_id': row.p_author_id, 'board_photo_id': row.board_photo_id,
-                                'user_like': True if row.id in likes_with_me else False,
-                                'user_hate': True if row.id in hates_with_me else False,
-                                'user_shared': True if row.id in pubs_shared_with_me else False,
-                                'event_type': row.event_type, 'extra_content': have_extra_content,
-                                'descendants': row.get_descendants_not_deleted() if row.level <= 1 else None,
-                                'token': get_or_create_csrf_token(request),
-                                'parent': True if row.parent else False,
-                                'parent_author': row.parent.p_author.username,
-                                'parent_avatar': avatar(row.parent.p_author),
-                                'images': [i.image.url for i in row.images.all()],
-                                'videos': [v.video.url for v in row.videos.all()],
-                                'author_avatar': avatar(row.p_author),
-                                'likes': row.likes_count, 'hates': row.hates_count,
-                                'shares': shares_count})
-            if have_extra_content:
-                list_responses[-1]['extra_content_title'] = extra_c.title
-                list_responses[-1]['extra_content_description'] = extra_c.description
-                list_responses[-1]['extra_content_image'] = extra_c.image
-                list_responses[-1]['extra_content_url'] = extra_c.url
-                video = detect_backend(extra_c.video)
-                list_responses[-1]['extra_content_video'] = video.get_embed_code(640, 480)
-
-        data['pubs'] = json.dumps(list_responses)
-        data['response'] = True
-    return JsonResponse(data)
-
-
-@login_required(login_url='/')
-def load_more_publications(request):
-    """
-    Carga comentarios de nivel 0 en el skyline del perfil
-    """
-    data = {
-        'response': False
-    }
-    if request.method == 'POST':
-        user = request.user
-        pub_id = request.POST.get('id', None)  # ultima publicacion en skyline
-        try:
-            publication = PublicationPhoto.objects.get(id=pub_id)
-        except PublicationPhoto.DoesNotExist:
-            return JsonResponse(data)
-
-        try:
-            board_owner = NodeProfile.nodes.get(user_id=publication.board_photo.owner_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            return JsonResponse(data)
-
-        privacity = board_owner.is_visible(m)
-
-        if privacity and privacity != 'all':
-            return JsonResponse(data)
-
-        publications = PublicationPhoto.objects.filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(board_photo_id=publication.board_photo_id) & Q(deleted=False) & Q(parent=None) &
-                                                  Q(created__lte=publication.created)).exclude(id=pub_id) \
-                                                          .prefetch_related('publication_photo_extra_content', 'images',
-                                                                            'videos',
-                                                                            'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
-                                                                                    .select_related('p_author',
-                                                                        'board_photo',
-                                                                        'parent') \
-                                                                                .annotate(likes_count=Count('user_give_me_like')) \
-                                                                                .annotate(hates_count=Count('user_give_me_hate'))[:20]
-
-        pubs_id = publications.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id).values('shared_photo_publication__id')\
-                .order_by('shared_photo_publication__id')\
-                .annotate(total=Count('shared_photo_publication__id'))
-
-        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author_id=user.id) \
-                .values_list('shared_photo_publication__id', flat=True)
-        shared_pubs = {item['shared_photo_publication__id']:item for item in pubs_shared}
-        likes_with_me = PublicationPhoto.objects.filter(id__in=pubs_id, user_give_me_like__id=user.id).values_list('id', flat=True)
-        hates_with_me = PublicationPhoto.objects.filter(id__in=pubs_id, user_give_me_hate__id=user.id).values_list('id', flat=True)
-        list_responses = []
-
-        for row in publications:
-            extra_c = None
-            have_extra_content = row.has_extra_content()
-            if have_extra_content:
-                extra_c = row.publication_photo_extra_content
-
-            try:
-                shares_count = shared_pubs[row.id]['total']
-            except KeyError:
-                shares_count = 0
-
-            list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                                   'author_username': row.p_author.username, 'user_id': user.id,
-                                   'user_like': True if row.id in likes_with_me else False,
-                                   'user_hate': True if row.id in hates_with_me else False,
-                                   'user_shared': True if row.id in pubs_shared_with_me else False,
-                                   'author_id': row.p_author_id, 'board_photo_id': row.board_photo_id,
-                                   'author_avatar': avatar(row.p_author), 'level': row.level,
-                                   'event_type': row.event_type, 'extra_content': have_extra_content,
-                                   'descendants': row.get_children_count(),
-                                   'images': [i.image.url for i in row.images.all()],
-                                   'videos': [v.video.url for v in row.videos.all()],
-                                   'token': get_or_create_csrf_token(request),
-                                   'likes': row.likes_count, 'hates': row.total_hates, 'shares': shares_count})
-            if have_extra_content:
-                list_responses[-1]['extra_content_title'] = extra_c.title
-                list_responses[-1]['extra_content_description'] = extra_c.description
-                list_responses[-1]['extra_content_image'] = extra_c.image
-                list_responses[-1]['extra_content_url'] = extra_c.url
-                video = detect_backend(extra_c.video)
-                list_responses[-1]['extra_content_video'] = video.get_embed_code(640, 480)
-
-        data['pubs'] = json.dumps(list_responses)
-        data['response'] = True
-    return JsonResponse(data)
+        context = {
+            'pub_id': pub_id,
+            'publications': publications,
+            'pubs_shared': shared_pubs,
+            'pubs_shared_with_me': pubs_shared_with_me,
+            'photo': publication.board_photo
+        }
+        return render(request, 'photologue/ajax_load_replies.html', context=context)
+    return HttpResponseForbidden()

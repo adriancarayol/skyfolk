@@ -563,7 +563,7 @@ def load_more_comments(request):
             board_owner = NodeProfile.nodes.get(user_id=publication.board_owner_id)
             m = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
-            return JsonResponse(data)
+            raise Http404
 
         privacity = board_owner.is_visible(m)
 
@@ -609,14 +609,16 @@ def load_more_comments(request):
         pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=pubs_id, author_id=user.id) \
                 .values_list('shared_publication__id', flat=True)
 
-    context = {
-        'pub_id': pub_id,
-        'publications': publications,
-        'pubs_shared': shared_pubs,
-        'pubs_shared_with_me': pubs_shared_with_me,
-        'user_profile': publication.board_owner
-    }
-    return render(request, 'account/ajax_load_replies.html', context=context)
+        context = {
+            'pub_id': pub_id,
+            'publications': publications,
+            'pubs_shared': shared_pubs,
+            'pubs_shared_with_me': pubs_shared_with_me,
+            'user_profile': publication.board_owner
+        }
+        return render(request, 'account/ajax_load_replies.html', context=context)
+
+    return HttpResponseForbidden()
 
 
 @login_required(login_url='/')

@@ -20,7 +20,7 @@ from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArch
 from django.views.generic.detail import DetailView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from publications_gallery.models import PublicationPhoto
 from publications.forms import SharedPublicationForm
 from publications_gallery.forms import PublicationPhotoForm
@@ -291,7 +291,6 @@ def edit_photo(request, photo_id):
 
 class PhotoDetailView(DetailView):
     """
-    Modificado por @adriancarayol.
     Cogemos el parametro de la url (para mostrar los detalles de la foto)
     """
     template_name = 'photologue/photo_detail.html'
@@ -316,34 +315,55 @@ class PhotoDetailView(DetailView):
 
     @staticmethod
     def get_count_shared(shared_id):
-        return Publication.objects.filter(shared_photo_publication__id__in=shared_id, deleted=False) \
+        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=shared_id, deleted=False) \
                 .values('shared_photo_publication__id')\
                 .order_by('shared_photo_publication__id')\
                 .annotate(total=Count('shared_photo_publication__id'))
+        return {item['shared_photo_publication__id']:item.get('total', 0) for item in pubs_shared}
 
 
     def get_publications_shared_with_me(self, shared_id):
-        return Publication.objects.filter(shared_photo_publication__id__in=shared_id, author__id=self.request.user.id, deleted=False).values('author__id', 'shared_photo_publication__id')
+        return Publication.objects.filter(shared_photo_publication__id__in=shared_id,
+            author__id=self.request.user.id, deleted=False) \
+            .values_list('shared_photo_publication__id', flat=True)
 
 
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
-        initial_photo = {'p_author': user.pk, 'board_photo': self.photo}
-        publications = PublicationPhoto.objects.filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) & Q(board_photo_id=self.photo.id),
+        page = self.request.GET.get('page', 1)
+
+        paginator = Paginator(PublicationPhoto.objects.filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                & Q(board_photo_id=self.photo.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                         .prefetch_related('publication_photo_extra_content', 'images', 'videos',
                                 'user_give_me_like', 'user_give_me_hate') \
                                         .select_related('p_author',
-                                                'board_photo', 'parent')[:20]
+                                                'board_photo', 'parent'), 10)
 
-        shared_id = publications.values_list('id', flat=True)
-        context['form'] = EditFormPhoto(instance=self.photo)
-        context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
-        context['publications'] = list(publications)
-        context['publication_shared'] = SharedPublicationForm()
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
+
+
+        shared_id = publications.object_list.values_list('id', flat=True)
+        context['publications'] = publications
         context['pubs_shared'] = PhotoDetailView.get_count_shared(shared_id)
         context['pubs_shared_with_me'] = self.get_publications_shared_with_me(shared_id)
+
+        if self.request.is_ajax():
+            self.template_name = 'photologue/publications_entries.html'
+            return context
+
+        initial_photo = {'p_author': user.pk, 'board_photo': self.photo}
+
+        context['form'] = EditFormPhoto(instance=self.photo)
+        context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
+        context['publication_shared'] = SharedPublicationForm()
+
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         if self.photo.is_public:
             try:

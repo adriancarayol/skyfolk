@@ -1,10 +1,8 @@
-{% load photo_publications_tags %}
+{% load decorators %}
+{% load avatar_tags %}
 {% load app_filters %}
 {% load humanize %}
-{% load avatar_tags %}
-{% load mptt_tags %}
 {% load embed_video_tags %}
-{% for node in publications %}
 <div class="row">
     <div class="col s12">
         <div class="col s12 wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}"
@@ -191,7 +189,3 @@
 </div>
 </div>
 </div>
-{% endfor %}
-{% if publications.has_next %}
-<a id="load-comments" class="waves-effect waves-light btn-large blue darken-1 white-text center" href="?page={{ publications.next_page_number }}">Cargar comentarios</a>
-{% endif %}

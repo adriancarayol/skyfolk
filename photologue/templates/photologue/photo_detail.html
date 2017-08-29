@@ -156,6 +156,10 @@
                         <div id="messages-wrapper">
                             {% if publications|length > 0 %}
                                 {% include "photologue/publications_entries.html" %}
+                                    <div class="progress loading_publications" style="display: none">
+                                        <div class="indeterminate blue darken-1"></div>
+                                    </div>
+
                             {% else %}
                                 <div class="no-comments" id="without-comments">
                                     <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
@@ -195,5 +199,4 @@
         UTILS.init([{{ user.pk }}]);
         UTILS.conn_socket();
     </script>
-
 {% endblock %}

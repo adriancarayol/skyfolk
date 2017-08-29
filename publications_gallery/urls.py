@@ -21,6 +21,4 @@ urlpatterns = [
         name='publication_edit_photo_pub'),
     url(r'^publication_p/load_descendants/$', views.load_more_descendants,
         name='load_more_descenants_photo_pub'),
-    url(r'^publication_p/load_publications/$', views.load_more_publications,
-        name='load_more_publications_photo_pub'),
 ]

@@ -44,7 +44,7 @@ urlpatterns = [
         name='pl-photo-archive'),
 
     url(r'^photo/(?P<slug>[\-\d\w]+)/$',
-        PhotoDetailView.as_view(),
+        login_required(PhotoDetailView.as_view()),
         name='pl-photo'),
 
     url(r'^delete/photo/$', login_required(delete_photo), name='delete-photo'),

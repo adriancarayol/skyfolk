@@ -134,45 +134,31 @@ $(document).ready(function () {
         AJAX_edit_publication_gallery(id, content);
     });
 
-    $(tab_messages).on('click', '.load_more_descendants', function () {
+    $(tab_messages).on('click', '.load_more_descendants', function (e) {
+        e.preventDefault();
         var loader = $(this).next().find('.load_publications_descendants');
-        $(loader).fadeIn();
-        var last_pub = $(loader).closest('.row').prev('.children').find('.wrapper').last().attr('id');
-        var last_pub_id = "";
-        if (last_pub) {
-            last_pub_id = last_pub.toString().split('-')[1];
-        }
-        AJAX_load_descendants_gallery($(this).attr("data-id"), loader, last_pub_id, this);
-        return false;
+        var pub_id = $(this).attr("data-id");
+        var page = $('.page_for_' + pub_id).last().val();
+        if (typeof page === 'undefined')
+            page = 1;
+        AJAX_load_descendants_gallery(pub_id, loader, page, this);
     });
 
-    /* LOAD MORE SKYLINE ON CLICK */
-    $(tab_messages).on('click', '#load_more_publications', function () {
-        var input_skyline = $(this);
-        var loader = $(input_skyline).next().find('#load_publications');
-        $(loader).fadeIn();
-        AJAX_load_publications_gallery(loader, input_skyline);
-        return false;
+    $('#messages-wrapper').on('click', '#load-comments', function(e) {
+        e.preventDefault();
+        $.ajax({ 
+            type: "GET",
+            url: $(this).attr('href'),   
+            success : function(data)
+            {
+                $('#load-comments').remove();
+                $('.loading_publications').before(data);
+            }
+        });
     });
+
 });
 
-var didScroll = false;
-
-$('#tab-messages').scroll(function () {
-    if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-        didScroll = true;
-    }
-});
-
-setInterval(function () {
-    if (didScroll) {
-        didScroll = false;
-        var input_skyline = $('#load_more_publications');
-        var loader = $(input_skyline).next().find('#load_publications');
-        $(loader).fadeIn();
-        AJAX_load_publications_gallery(loader, input_skyline);
-    }
-}, 250);
 
 function AJAX_submit_photo_publication(obj_form, type, pks) {
     var form = new FormData($(obj_form).get(0));
@@ -528,434 +514,28 @@ function AJAX_edit_publication_gallery(pub, content) {
         }
     });
 }
-function add_loaded_publication_gallery(pub, data, btn, is_skyline) {
-    var publications = JSON.parse(data);
 
-    if (!publications || publications.length <= 0) {
-        if (is_skyline)
-            $(btn).remove();
-        return;
-    }
-
-    var existing = $('#pub-' + pub);
-    var pub_to_add;
-
-    if (existing.length && !is_skyline) {
-        var children_list = $(existing).find('.children').first();
-        if (!children_list.length) {
-            children_list = $(existing).find('.wrapper-reply').after('<ul class="children"></ul>');
-        }
-        var content = "";
-        var i;
-        for (i = 0; i < publications.length; i++) {
-            pub_to_add = $('pub-' + publications[i].id);
-            if (undefined !== pub_to_add && pub_to_add.length) continue;
-
-            content = '<div class="row">';
-            content += '<div class="col s12">';
-            if (publications[i].level > 0 && publications[i].level < 3) {
-                content += ' <div class="col s12 wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 98% !important;">';
-            } else
-                content += ' <div class=\"col s12 wrapper\" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '">';
-            content += "            <div class=\"box\">";
-            content += '            <span id="check-' + publications[i].id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
-            if (publications[i].user_id == publications[i].p_author_id && (publications[i].event_type == 1 || publications[i].event_type == 3)) {
-                content += '            <span data-id="' + publications[i].id + '" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
-            }
-            content += '<div class="row">';
-            content += "                <div class=\"articulo col s12\">";
-            content += '<div class="row">';
-            if (publications[i].user_id == publications[i].p_author_id) {
-                content += '      <div class="image col l1 m2 s2" style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);">';
-            } else {
-                content += "      <div class=\"image col l1 m2 s2\">";
-            }
-            content += '        <div class="usr-img img-responsive">' + publications[i].author_avatar + '</div>';
-            content += "      </div>";
-            content += '<div class="col l10 m12 s9">';
-            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a>';
-            if (publications[i].parent) {
-                content += '<span class="chip">';
-                content += publications[i].parent_avatar;
-                content += '<i class="fa fa-reply"></i> <a href="/profile/' + publications[i].parent_author + '">@' + publications[i].parent_author + '</a>';
-                content += '</span>';
-            }
-            content += '</h2>';
-            content += '                    <p class="blue-text text-darken-2 pub-created">' + publications[i].created + '<\/p><br>';
-            content += '<div class="row publication-content">';
-            content += "                  <div class=\"parrafo comment\">";
-            content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
-            content += "                  </div>";
-            content += '                    <div class="show-more" id="show-comment-' + publications[i].id + '">';
-            content += "                        <a href=\"#\">+ Mostrar más<\/a>";
-            content += "                    </div>";
-            content += "                    </div>";
-            if (publications[i].extra_content) {
-                if (publications[i].extra_content_video) {
-                    content += publications[i].extra_content_video;
-                } else {
-                    content += '<div class="card small">';
-                    content += '<div class="card-image">';
-                    if (publications[i].extra_content_image) {
-                        content += '<img src="' + publications[i].extra_content_image + '">';
-                    } else {
-                        content += '<img src="/static/dist/img/nuevo_back.png">';
-                    }
-                    content += '<span class="card-title white-text">' + publications[i].extra_content_title + '</span>';
-                    content += '</div>';
-                    content += '<div class="card-content">';
-                    content += '<p>' + publications[i].extra_content_description + '</p>';
-                    content += '</div>';
-                    content += '<div class="card-action">';
-                    content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
-                    content += '</div></div>';
-                }
-            }
-            if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
-                content += '<div class="row images">';
-                for (var image = 0; image < publications[i].images.length; image++) {
-                    content += '<div class="col s4 z-depth-2">';
-                    content += publications[i].images[image];
-                    content += "                    </div>";
-                }
-                content += "                    </div>";
-            }
-            if (typeof(publications[i].videos) !== 'undefined' && publications[i].videos.length > 0) {
-                content += '<div class="row videos">';
-                for (var video = 0; video < publications[i].videos.length; video++) {
-                    content += '<div class="col s4 z-depth-2 center">';
-                    content += '<video class="responsive-video" controls loop><source src="' + publications[i].videos[video] + '" type="video/mp4"></video>';
-                    content += "                    </div>";
-                }
-                content += "                    </div>";
-            }
-            content += "                    </div>";
-            content += "                    </div>";
-            content += "                    </div>";
-            content += "                    </div>";
-            content += '<div class="row">';
-            content += '<div class="divider"></div>';
-            content += "                <div class=\"options_comentarios\">";
-            content += "                    <ul class=\"opciones\">";
-            if (publications[i].user_id == publications[i].board_photo_id || publications[i].user_id == publications[i].p_author_id) {
-                content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
-            }
-            if (publications[i].user_hate === true)
-                content += '                            <li title="No me gusta" class="hate-comment" style="color: rgb(186, 104, 200)">';
-            else 
-                content += '                            <li title="No me gusta" class="hate-comment">';
-            content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
-            content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
-            content += "                            </li>";
-
-            if (publications[i].user_like === true)
-                content += '                        <li title="¡Me gusta!" class="like-comment" style="color: rgb(240, 98, 146)"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
-            else 
-
-                content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';            
-            if (publications[i].user_shared === true)
-                content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="remove-timeline" style="color: rgb(187, 222, 251)"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
-            else
-                content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
-
-            content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                    </ul>";
-            content += "                </div>";
-            content += "                </div>";
-            content += "    </div>";
-            if (publications[i].user_id == publications[i].p_author_id) {
-                content += '<div data-user-id="' + publications[i].p_author_id + '" id="author-controls-' + publications[i].id + '" class="author-controls">';
-                content += '<div class="row">';
-                content += '<div class="col s12">';
-                content += '<form method="post" accept-charset="utf-8">';
-                content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-                content += '<div class="row">';
-                content += '<div class="input-field col s12">';
-                content += '<i class="material-icons prefix">create</i>';
-                content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + publications[i].id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
-                content += '<label for="id_caption-' + publications[i].id + '">Editar comentario</label></div>';
-                content += '<div class="row">';
-                content += '<button data-id="' + publications[i].id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button">Editar<i class="material-icons right">mode_edit</i></button>';
-                content += '</div></div></form></div></div></div>';
-            }
-            content += '<div class="wrapper-reply">';
-            content += '<div class="hidden" id="caja-comentario-' + publications[i].id + '">';
-            content += '<form class="reply-form" action="" method="post">';
-            content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-            content += '<input id="id_author" name="p_author" type="hidden" value="' + publications[i].user_id + '">';
-            content += '<input id="id_board_photo" name="board_photo" type="hidden" value="' + publications[i].board_photo_id + '">';
-            content += '<input id="id_parent" name="parent" type="hidden" value="' + publications[i].id + '">';
-            content += '<div class="row">';
-            content += '<div class="col s12">';
-            content += '<div class="row">';
-            content += '<div class="input-field col s12">';
-            content += '<textarea class="materialize-textarea message-reply" id="message-reply-' + publications[i].id + '" cols="40" maxlength="500" name="content" placeholder="Responder a @' + publications[i].author_username + '" rows="10" required=""></textarea>';
-            content += '<label for="message-reply-' + publications[i].id + '">Escribe tu mensaje aqui...</label>';
-            content += '</div>';
-            content += '<div class="file-field input-field col s12">';
-            content += '<div class="btn">';
-            content += '<span>Imágenes</span>';
-            content += '<input id="id_image_reply" name="image" type="file" multiple>';
-            content += '</div>';
-            content += '<div class="file-path-wrapper">';
-            content += '<input class="file-path validate" type="text" placeholder="Upload one or more files">';
-            content += '</div></div></div></div></div>';
-            content += '<button type="button" id="reply-' + publications[i].id + '" class="waves-effect waves-light btn right blue enviar">Enviar<i class="material-icons right">send</i></button>';
-            content += '</form></div></div>';
-            if (publications[i].descendants > 0) {
-                content += '<div class="row">';
-                content += '<div class="col s12">';
-                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_descendants" href="#" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios <span class="child_count">(' + publications[i].descendants + ')</span></a>';
-                content += '<div>';
-                content += '<div class="progress load_publications_descendants" style="display: none;">';
-                content += '<div class="indeterminate blue darken-1"></div></div>';
-                content += '</div></div></div>';
-            }
-            content += "    </div></div></div>";
-            $(content).appendTo(children_list).hide().fadeIn(250);
-        }
-        var child_count = $(btn).find('.child_count');
-        var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
-        if (result_child_count > 0)
-            $(child_count).html(result_child_count);
-        else
-            $(btn).remove();
-    } else if (is_skyline) {
-        for (var i = 0; i < publications.length; i++) {
-            pub_to_add = $('pub-' + publications[i].id);
-            if (pub_to_add.length) continue;
-
-            var content = '<div class="row">';
-            content += '<div class="col s12">';
-            if (publications[i].level > 0 && publications[i].level < 3) {
-                content += ' <div class="col s12 wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 98% !important;">';
-            } else
-                content += ' <div class=\"col s12 wrapper\" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '">';
-            content += "            <div class=\"box\">";
-            content += '            <span id="check-' + publications[i].id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
-            if (publications[i].user_id == publications[i].p_author_id && (publications[i].event_type == 1 || publications[i].event_type == 3)) {
-                content += '            <span data-id="' + publications[i].id + '" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
-            }
-            content += '<div class="row">';
-            content += "                <div class=\"articulo col s12\">";
-            content += '<div class="row">';
-            if (publications[i].user_id == publications[i].p_author_id) {
-                content += '      <div class="image col l1 m2 s2" style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);">';
-            } else {
-                content += "      <div class=\"image col l1 m2 s2\">";
-            }
-            content += '        <div class="usr-img img-responsive">' + publications[i].author_avatar + '</div>';
-            content += "      </div>";
-            content += '<div class="col l10 m12 s9">';
-            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a>';
-
-            if (publications[i].parent) {
-                content += '<span class="chip">';
-                content += publications[i].parent_avatar;
-                content += '<i class="fa fa-reply"></i> <a href="/profile/' + publications[i].parent_author + '">@' + publications[i].parent_author + '</a>';
-                content += '</span>';
-            }
-            content += '</h2>';
-            content += '                    <p class="blue-text text-darken-2 pub-created">' + publications[i].created + '<\/p><br>';
-            content += '<div class="row publication-content">';
-            content += "                  <div class=\"parrafo comment\">";
-            content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
-            content += "                  </div>";
-            content += '                    <div class="show-more" id="show-comment-' + publications[i].id + '">';
-            content += "                        <a href=\"#\">+ Mostrar más<\/a>";
-            content += "                    </div>";
-            content += "                    </div>";
-            if (publications[i].extra_content) {
-                if (publications[i].extra_content_video) {
-                    content += publications[i].extra_content_video;
-                }
-                else {
-                    content += '<div class="card small">';
-                    content += '<div class="card-image">';
-                    if (publications[i].extra_content_image) {
-                        content += '<img src="' + publications[i].extra_content_image + '">';
-                    } else {
-                        content += '<img src="/static/dist/img/nuevo_back.png">';
-                    }
-                    content += '<span class="card-title white-text">' + publications[i].extra_content_title + '</span>';
-                    content += '</div>';
-                    content += '<div class="card-content">';
-                    content += '<p>' + publications[i].extra_content_description + '</p>';
-                    content += '</div>';
-                    content += '<div class="card-action">';
-                    content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
-                    content += '</div></div>';
-                }
-            }
-            if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
-                content += '<div class="row images">';
-                for (var image = 0; image < publications[i].images.length; image++) {
-                    content += '<div class="col s4 z-depth-2">';
-                    content += publications[i].images[image];
-                    content += "                    </div>";
-                }
-                content += "                    </div>";
-            }
-            if (typeof(publications[i].videos) !== 'undefined' && publications[i].videos.length > 0) {
-                content += '<div class="row videos">';
-                for (var video = 0; video < publications[i].videos.length; video++) {
-                    content += '<div class="col s4 z-depth-2 center">';
-                    content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video] + '" type="video/mp4"></video>';
-                    content += "                    </div>";
-                }
-                content += "                    </div>";
-            }
-            content += "                    </div>";
-            content += "                    </div>";
-            content += "                    </div>";
-            content += "                    </div>";
-            content += '<div class="row">';
-            content += '<div class="divider"></div>';
-            content += "                <div class=\"options_comentarios\">";
-            content += "                    <ul class=\"opciones\">";
-            if (publications[i].user_id == publications[i].board_photo_id || publications[i].user_id == publications[i].p_author_id) {
-                content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
-            }
-            if (publications[i].user_hate === true)
-                content += '                            <li title="No me gusta" class="hate-comment" style="color: rgb(186, 104, 200)">';
-            else 
-                content += '                            <li title="No me gusta" class="hate-comment">';
-            content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
-            content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
-            content += "                            </li>";
-
-            if (publications[i].user_like === true)
-                content += '                        <li title="¡Me gusta!" class="like-comment" style="color: rgb(240, 98, 146)"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
-            else 
-
-                content += '                        <li title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i class="fa like-value">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';            
-            if (publications[i].user_shared === true)
-                content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="remove-timeline" style="color: rgb(187, 222, 251)"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
-            else
-                content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
-
-            content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                    </ul>";
-            content += "                </div>";
-            content += "                </div>";
-            content += "    </div>";
-            if (publications[i].user_id == publications[i].p_author_id) {
-                content += '<div data-user-id="' + publications[i].p_author_id + '" id="author-controls-' + publications[i].id + '" class="author-controls">';
-                content += '<div class="row">';
-                content += '<div class="col s12">';
-                content += '<form method="post" accept-charset="utf-8">';
-                content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-                content += '<div class="row">';
-                content += '<div class="input-field col s12">';
-                content += '<i class="material-icons prefix">create</i>';
-                content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + publications[i].id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
-                content += '<label for="id_caption-' + publications[i].id + '">Editar comentario</label></div>';
-                content += '<div class="row">';
-                content += '<button data-id="' + publications[i].id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button">Editar<i class="material-icons right">mode_edit</i></button>';
-                content += '</div></div></form></div></div></div>';
-            }
-            content += '<div class="wrapper-reply">';
-            content += '<div class="hidden" id="caja-comentario-' + publications[i].id + '">';
-            content += '<form class="reply-form" action="" method="post">';
-            content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-            content += '<input id="id_author" name="p_author" type="hidden" value="' + publications[i].user_id + '">';
-            content += '<input id="id_board_photo" name="board_photo" type="hidden" value="' + publications[i].board_photo_id + '">';
-            content += '<input id="id_parent" name="parent" type="hidden" value="' + publications[i].id + '">';
-            content += '<div class="row">';
-            content += '<div class="col s12">';
-            content += '<div class="row">';
-            content += '<div class="input-field col s12">';
-            content += '<textarea class="materialize-textarea message-reply" id="message-reply-' + publications[i].id + '" cols="40" maxlength="500" name="content" placeholder="Responder a @' + publications[i].author_username + '" rows="10" required=""></textarea>';
-            content += '<label for="message-reply-' + publications[i].id + '">Escribe tu mensaje aqui...</label>';
-            content += '</div>';
-            content += '<div class="file-field input-field col s12">';
-            content += '<div class="btn">';
-            content += '<span>Imágenes</span>';
-            content += '<input id="id_image_reply" name="image" type="file" multiple>';
-            content += '</div>';
-            content += '<div class="file-path-wrapper">';
-            content += '<input class="file-path validate" type="text" placeholder="Upload one or more files">';
-            content += '</div></div></div></div></div>';
-            content += '<button type="button" id="reply-' + publications[i].id + '" class="waves-effect waves-light btn right blue enviar">Enviar<i class="material-icons right">send</i></button>';
-            content += '</form></div></div>';
-            if (publications[i].descendants > 0) {
-                content += '<div class="row">';
-                content += '<div class="col s12">';
-                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_descendants" href="#" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
-                content += '<div>';
-                content += '<div class="progress load_publications_descendants" style="display: none;">';
-                content += '<div class="indeterminate blue darken-1"></div></div>';
-                content += '</div></div></div>';
-            }
-            content += "    </div></div></div>";
-            $('#tab-messages').find('#loader_skyline').before(content);
-        }
-
-        if (!publications || publications.length < 20)
-            $(btn).remove();
-        else
-            $(btn).attr("data-id", publications[publications.length - 1].id);
-    }
-}
-function AJAX_load_publications_gallery(loader, btn) {
-    if (!$(btn) || !($(btn).length)) return;
-
-    var pub = $(btn).attr("data-id");
-    var data = {
-        'id': pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
+function AJAX_load_descendants_gallery(pub, loader, page, btn) {
     $.ajax({
-        url: '/publication_p/load_publications/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-
-        success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                add_loaded_publication_gallery(pub, data.pubs, btn, true);
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to load more publications.",
-                    type: "error"
-                });
-            }
+        url: '/publication_p/load_descendants/?pubid=' + pub + '&page=' + page,
+        type: 'GET',
+        dataType: 'html',
+        beforeSend: function() {
+            $(loader).fadeIn();
         },
-        complete: function () {
-            $(loader).fadeOut();
-        },
-        error: function (rs, e) {
-        }
-    });
-}
-
-function AJAX_load_descendants_gallery(pub, loader, last_pub, btn) {
-    var data = {
-        'id': pub,
-        'last_pub': last_pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-    $.ajax({
-        url: '/publication_p/load_descendants/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-
         success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                add_loaded_publication_gallery(pub, data.pubs, btn, false);
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to load more publications.",
-                    type: "error"
-                });
+            var $existing = $('#pub-' + pub);
+            var $children_list = $existing.find('.children').first();
+            if (!$children_list.length) {
+                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
             }
+            $children_list.append(data);
+            var $child_count = $(btn).find('.child_count');
+            var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
+            if ($result_child_count > 0)
+                $($child_count).html($result_child_count);
+            else
+                $(btn).remove();
         },
         complete: function () {
             $(loader).fadeOut();
