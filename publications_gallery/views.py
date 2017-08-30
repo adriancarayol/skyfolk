@@ -88,10 +88,12 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
+
                 try:
-                    publication.save()  # Creamos publicacion
-                    form.save_m2m()  # Saving tags
-                    content_video = optimize_publication_media(publication, request.FILES.getlist('image'))
+                    with transaction.atomic(using="default"):
+                        publication.save()  # Creamos publicacion
+                        form.save_m2m()  # Saving tags
+                        content_video = optimize_publication_media(publication, request.FILES.getlist('image'))
                 except Exception as e:
                     raise IntegrityError(e)
 
@@ -108,7 +110,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         return self.form_invalid(form=form)
 
 
-publication_photo_view = transaction.atomic(login_required(PublicationPhotoView.as_view(), login_url='/'))
+publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
 
 
 def publication_detail(request, publication_id):
@@ -525,7 +527,6 @@ def edit_publication(request):
         publication.parse_content()
         publication.parse_mentions()
         
-        # publication.parse_content()  # parse publication content
         is_correct_content = False
         soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
         for tag in soup.find_all(recursive=True):
@@ -540,7 +541,6 @@ def edit_publication(request):
         if publication.content.isspace():  # Comprobamos si el comentario esta vacio
             raise IntegrityError('El comentario esta vacio')
 
-        publication.parse_mentions()  # add mentions
         publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
         publication.send_notification(request, is_edited=True)
 

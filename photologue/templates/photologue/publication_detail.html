@@ -246,6 +246,7 @@
     UTILS.conn_socket();
     var infinite = new Waypoint.Infinite({
         element: $('.infinite-container')[0],
+        offset: 'bottom-in-view',
         onBeforePageLoad: function() {
             $('.loading_skyline').show();
         },

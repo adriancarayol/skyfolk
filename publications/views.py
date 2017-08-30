@@ -150,7 +150,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     parent_node = NodeProfile.nodes.get(user_id=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
                         raise IntegrityError('No have permissions')
-
                 publication.author_id = emitter.user_id
                 publication.board_owner_id = board_owner.user_id
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
@@ -182,6 +181,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     raise IntegrityError(e)
 
                 publication.send_notification(request, is_edited=False)
+                
                 if not content_video:
                     return self.form_valid(form=form)
                 else:
@@ -555,7 +555,6 @@ def edit_publication(request):
         if publication.content.isspace():  # Comprobamos si el comentario esta vacio
             raise IntegrityError('El comentario esta vacio')
 
-        publication.parse_mentions()  # add mentions
         publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
         publication.send_notification(request, is_edited=True)
 

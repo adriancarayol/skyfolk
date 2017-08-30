@@ -9,6 +9,7 @@ from publications.utils import get_author_avatar
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from channels import Group
 from mailer.mailer import Mailer
+from django.template.loader import render_to_string
 
 
 logger = get_task_logger(__name__)
@@ -34,14 +35,8 @@ def send_to_stream(author_id, pub_id):
 
     data = {
         'id': publication.id,
-        'author_username': publication.author.username,
-        'author_first_name': publication.author.first_name,
-        'author_last_name': publication.author.last_name,
-        'created': naturaltime(publication.created),
-        'author_avatar': str(get_author_avatar(authorpk=publication.author.id)),
-        'content': publication.content,
+        'content': render_to_string(template_name="channels/new_feed_publication.html", context={'item': publication})
     }
-    logger.info("DATA: {}".format(data))
 
     [Group(follower_channel.news_channel).send({
         "text": json.dumps(data, cls=DjangoJSONEncoder)

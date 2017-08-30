@@ -14,33 +14,17 @@ var UTILS_E = UTILS_E || (function () {
 			// Handle incoming messages
 			socket.onmessage = function (message) {
 				// Decode the JSON
-				console.log("Got message " + message.data);
 				var data = JSON.parse(message.data);
 				// Create the inner content of the post div
-				var content = '<div class=\"grid-item infinite-item\" data-id="' + data.id + '">';
-				content += '<div class=\"notice-item\">';
-				content += '<div class=\"col l3 m2 s3 img\">';
-				content += '<img src="'+data.author_avatar+'"></div>';
-				content += '<div class=\"col l8 m9 s8 author\">';
-				content += '<a href=\"/profile/\"'+data.author_username+'>'+data.author_username+'</a><i>'+data.author_first_name + ' ' + data.author_last_name +'</i>';
-				content += '<i class=\"pub-date\">'+data.created+'</i></div>';
-				content += '<div class=\"col l9 m10 s9 contenido\"><p>'+data.content+'</p></div>';
-				content += '</div></div>';
-				// See if there's a div to replace it in, or if we should add a new one
 				var list_notifications = $('#stream-publications');
 				var existing = $(list_notifications).find("[data-id='" + message.id + "']");
 				/* Comprobamos si el elemento existe, si es asi lo modifcamos */
 				if (existing.length) {
-					existing.html(content);
+					existing.replaceWith(data.content);
 				} else {
-					$(list_notifications).prepend(content);
+					$(list_notifications).prepend(data.content);
 				}
-                var $grid = $('.grid').masonry({
-                    itemSelector: '.grid-item',
-                    columnWidth: 300,
-                    gutter: 10,
-                    fitWidth: true
-                });
+                var $grid = $('.grid').masonry();
                 $grid.imagesLoaded().progress( function() {
                     $grid.masonry('reloadItems');
                     $grid.masonry('layout');

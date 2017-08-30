@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=PublicationPhoto, dispatch_uid='photo_publication_save')
 def photo_publication_handler(sender, instance, created, **kwargs):
-    if created:
+    if not instance.deleted:
         logger.info('New comment by: {} with content: {}'.format(instance.p_author, instance.content))
         n = NodeProfile.nodes.get(user_id=instance.p_author.id)
         m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
@@ -54,7 +54,7 @@ def photo_publication_handler(sender, instance, created, **kwargs):
                             description='<a href="%s">Ver</a>' % ('/publication_pdetail/' + str(instance.id)))
 
 
-    if instance.deleted:
+    else:
         logger.info('Publication soft deleted, with content: {}'.format(instance.content))
         n = NodeProfile.nodes.get(user_id=instance.p_author.id)
         m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)

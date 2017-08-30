@@ -9,10 +9,6 @@ Template para el perfil de cada usuario
 {% block include_files %}
 {% endblock %}
 
-{% block extra-js %}
-<script src="{{ STATIC_URL }}js/list.min.js"></script>
-{% endblock %}
-
 {% block extra-css %}
 {% compress css %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
@@ -180,6 +176,7 @@ Template para el perfil de cada usuario
 
 var infinite = new Waypoint.Infinite({
     element: $('#list-publications'),
+    offset: 'bottom-in-view',
     onBeforePageLoad: function() {
         $('.loading_skyline').show();
     },

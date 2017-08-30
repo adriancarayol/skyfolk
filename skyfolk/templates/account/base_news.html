@@ -301,31 +301,31 @@
             </div>
         </div>
         <script src="{{ STATIC_URL }}js/socket_news.js" type="text/javascript"></script>
-        <script src="{{ STATIC_URL}}js/jquery.waypoints.min.js"></script>
-        <script src="{{ STATIC_URL}}js/infinite.min.js"></script>
-        <script src="{{ STATIC_URL }}js/masonry.pkgd.min.js"></script>
-        <script src="{{ STATIC_URL }}js/imagesloaded.pkgd.min.js"></script> 
         <script>
             var $grid = $('.grid').masonry({
                 itemSelector: '.grid-item',
                 columnWidth: 300,
                 gutter: 10,
-                fitWidth: true
+                fitWidth: true,
+                initLayout: false,
+                horizontalOrder: true,
+                transitionDuration: '0.3s'
             });
             $grid.imagesLoaded().progress( function() {
                 $grid.masonry('layout');
             });
             var infinite = new Waypoint.Infinite({
                 element: $('#stream-publications'),
+                offset: 'bottom-in-view',
                 onBeforePageLoad: function () {
                     $('.load-feed').show();
                 },
                 onAfterPageLoad: function() {
+                    $('.load-feed').hide();
                     $grid.imagesLoaded().progress( function() {
                         $grid.masonry('reloadItems');
                         $grid.masonry('layout');
                     });
-                    $('.load-feed').hide();
                 }
             });
         </script>
@@ -333,5 +333,4 @@
             UTILS_E.init([{{ user.pk }}]);
             UTILS_E.conn_socket();
         </script>
-
 {% endblock %}

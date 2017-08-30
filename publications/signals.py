@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Publication, dispatch_uid='publication_save')
 def publication_handler(sender, instance, created, **kwargs):
-    if created:
+    if not instance.deleted:
         logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))
         n = NodeProfile.nodes.get(user_id=instance.author.id)
         m = NodeProfile.nodes.get(user_id=instance.board_owner.id)
@@ -57,7 +57,7 @@ def publication_handler(sender, instance, created, **kwargs):
             send_to_stream.delay(instance.author_id, instance.id)
 
 
-    if instance.deleted:
+    else:
         logger.info('Publication soft deleted, with content: {}'.format(instance.content))
         n = NodeProfile.nodes.get(user_id=instance.author.id)
         m = NodeProfile.nodes.get(user_id=instance.board_owner.id)
