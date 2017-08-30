@@ -31,7 +31,6 @@ var UTILS = UTILS || (function () {
                             parent.closest('.row-pub').after(data.content);
                         } else $("#publication-thread").append(data.content);
                     }
-                    var show = $('div#pub-' + data.id + '').find('#show-comment-' + data.id + '');
                     /* Eliminamos el div de "Este perfil no tiene comentarios" */
                     if ($(no_comments).is(':visible')) {
                         $(no_comments).fadeOut();

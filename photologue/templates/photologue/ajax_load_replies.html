@@ -43,7 +43,7 @@
                             {% if node.parent %}
                             <span class="chip">
                                 {% avatar node.parent.p_author %}
-                                <i class="fa fa-reply"></i> <a href="/profile/{{ node.parent.p_author }}">@{{ node.parent.p_author }}</a>
+                                <i class="fa fa-reply"></i> <a href="/profile/{{ node.parent.p_author }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                             </span>
                             {% endif %}
                         </h2>

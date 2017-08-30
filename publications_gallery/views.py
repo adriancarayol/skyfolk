@@ -95,7 +95,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 except Exception as e:
                     raise IntegrityError(e)
 
-                publication.send_notification(is_edited=False)
+                publication.send_notification(request, is_edited=False)
                 if not content_video:
                     return self.form_valid(form=form)
                 else:
@@ -523,7 +523,7 @@ def edit_publication(request):
 
         publication.parse_mentions()  # add mentions
         publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
-        publication.send_notification(is_edited=True)
+        publication.send_notification(request, is_edited=True)
 
         return JsonResponse({'data': True})
     return JsonResponse({'data': "No puedes acceder a esta URL."})
@@ -589,7 +589,7 @@ def load_more_descendants(request):
                 .annotate(total=Count('shared_photo_publication'))
         pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author_id=user.id) \
                 .values_list('shared_photo_publication__id', flat=True)
-        shared_pubs = {item['shared_photo_publication__id']:item for item in pubs_shared}
+        shared_pubs = {item['shared_photo_publication__id']:item.get('total', 0) for item in pubs_shared}
 
         context = {
             'pub_id': pub_id,

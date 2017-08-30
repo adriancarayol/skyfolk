@@ -25,7 +25,7 @@
                 <div class="articulo col s12">
                     <div class="row">
                         <div class="image col l1 m2 s2"
-                        {% if   user.id == node.author.id %}title="¡Eres el autor!"
+                        {% if user.id == node.p_author.id %}title="¡Eres el autor!"
                         style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
                         <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
                     </div>
@@ -35,7 +35,7 @@
                             {% if node.parent %}
                             <span class="chip">
                                 {% avatar node.parent.p_author %}
-                                <i class="fa fa-reply"></i> <a href="/profile/{{ node.parent.p_author }}">@{{ node.parent.p_author }}</a>
+                                <i class="fa fa-reply"></i> <a href="/profile/{{ node.parent.p_author }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                             </span>
                             {% endif %}
                         </h2>
@@ -124,8 +124,8 @@
                         <i class="fa like-value">{% with node.total_likes as likes %}{% if likes > 0 %}{{ likes|intword }}{% endif %}{% endwith %}</i>
                     </li>
                     {% endwith %}
-                    <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i
-                        class="fa fa-quote-right" aria-hidden="true"> {{ pubs_shared|lookup:node.id }}</i></li>
+                    <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class="add-timeline"><i
+                        class="fa fa-quote-right" aria-hidden="true"> </i></li>
                         <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                          id="reply-caja-comentario-{{ node.pk }}"></i>
                      </li>

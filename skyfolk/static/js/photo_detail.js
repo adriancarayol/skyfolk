@@ -44,8 +44,8 @@ $(document).ready(function () {
     }
 
     $(tab_messages).on('click', '.options_comentarios .add-timeline', function () {
-        var tag = this;
-        $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
+        var tag = $(this);
+        $(wrapper_shared_pub).attr('data-id', tag.attr('data-id'));
         $(wrapper_shared_pub).show();
     });
 
@@ -66,7 +66,7 @@ $(document).ready(function () {
     /* Eliminar skyline */
     $(tab_messages).on('click', '.options_comentarios .remove-timeline', function () {
         var caja_publicacion = $(this).closest('.wrapper');
-        var tag = this;
+        var tag = $(this);
         AJAX_add_timeline_gallery($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
@@ -89,14 +89,14 @@ $(document).ready(function () {
     /* Añadir me gusta a comentario */
     $(tab_messages).on('click', '.options_comentarios .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
-        var heart = this;
+        var heart = $(this);
         AJAX_add_like_gallery(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
     $(tab_messages).on('click', '.options_comentarios .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
-        var heart = this;
+        var heart = $(this);
         AJAX_add_hate_gallery(caja_publicacion, heart, "publication");
     });
 
@@ -287,19 +287,19 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find('.like-value');
+            var numLikes = heart.find('.like-value');
             var countLikes = numLikes.text();
             if (response == true) {
                 if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
                     if (status == 1) {
-                        $(heart).css('color', '#f06292');
+                        heart.css('color', '#f06292');
                         countLikes++;
                     } else if (status == 2) {
-                        $(heart).css('color', '#555');
+                        heart.css('color', '#555');
                         countLikes--;
                     } else if (status == 3) {
-                        $(heart).css('color', '#f06292');
-                        var hatesObj = $(heart).prev();
+                        heart.css('color', '#f06292');
+                        var hatesObj = heart.prev();
                         var hates = hatesObj.find(".hate-value");
                         var countHates = hates.text();
                         countHates--;
@@ -317,9 +317,9 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
                     }
                 } else {
                     if (status == 1)
-                        $(heart).css('color', '#f06292');
+                        heart.css('color', '#f06292');
                     if (status == 2)
-                        $(heart).css('color', '#555');
+                        heart.css('color', '#555');
                 }
             } else {
                 swal({
@@ -368,20 +368,20 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
             var statusInLike = 3;
             var response = data.response;
             var status = data.statuslike;
-            var numHates = $(heart).find(".hate-value");
+            var numHates = heart.find(".hate-value");
             var countHates = numHates.text();
             if (response == true) {
                 if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
                     if (status === statusOk) {
-                        $(heart).css('color', '#ba68c8');
+                        heart.css('color', '#ba68c8');
                         countHates++;
                     } else if (status === statusNo) {
-                        $(heart).css('color', '#555');
+                        heart.css('color', '#555');
                         countHates--;
                     } else if (status === statusInLike) {
-                        $(heart).css('color', '#ba68c8');
+                        heart.css('color', '#ba68c8');
                         countHates++;
-                        var likesObj = $(heart).next();
+                        var likesObj = heart.next();
                         var likes = likesObj.find(".like-value");
                         var countLikes = likes.text();
                         countLikes--;
@@ -398,9 +398,9 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
                     }
                 } else {
                     if (status === statusOk) {
-                        $(heart).css('color', '#ba68c8');
+                        heart.css('color', '#ba68c8');
                     } else if (status === statusNo) {
-                        $(heart).css('color', '#555');
+                        heart.css('color', '#555');
                     }
                 }
             } else {
@@ -429,7 +429,7 @@ function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
         'csrfmiddlewaretoken': csrftoken
     };
 
-    var shared_tag = $(tag).find('.fa-quote-right');
+    var shared_tag = tag.find('.fa-quote-right');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
 
@@ -451,8 +451,8 @@ function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
                             $(shared_tag).text(" ");
                         }
                     }
-                    $(tag).attr("class", "remove-timeline");
-                    $(tag).css('color', '#bbdefb');
+                    tag.attr("class", "remove-timeline");
+                    tag.css('color', '#bbdefb');
                     $('#share-publication-wrapper').hide();
                 } else if (status == 2) {
                     if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
@@ -463,8 +463,8 @@ function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
                             $(shared_tag).text(" ");
                         }
                     }
-                    $(tag).attr("class", "add-timeline");
-                    $(tag).css('color', '#555');
+                    tag.attr("class", "add-timeline");
+                    tag.css('color', '#555');
                 }
             } else {
                 swal({
@@ -527,8 +527,10 @@ function AJAX_load_descendants_gallery(pub, loader, page, btn) {
             var $existing = $('#pub-' + pub);
             var $children_list = $existing.find('.children').first();
             if (!$children_list.length) {
-                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
+                $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
+                $children_list = $existing.find('.children').first();
             }
+            
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();

@@ -22,6 +22,7 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 from embed_video.fields import EmbedVideoField
 from embed_video.backends import detect_backend, EmbedVideoException
+from django.template.loader import render_to_string
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -232,67 +233,34 @@ class PublicationPhoto(PublicationBase):
 
 
 
-    def send_notification(self, csrf_token=None, type="pub", is_edited=False):
+    def send_notification(self, request, type="pub", is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
-        id_parent = None
-        author_parent = None
-        avatar_parent = None
-
-        if self.parent:
-            id_parent = self.parent.id
-            author_parent = self.parent.p_author.username
-            avatar_parent = get_author_avatar(self.parent.p_author.id)
-
-        extra_c = None
-
-        has_extra_content = self.has_extra_content()
-        if has_extra_content:
-            extra_c = self.publication_photo_extra_content
-
-        notification = {
-            "id": self.id,
-            "content": self.content,
-            "avatar_path": get_author_avatar(authorpk=self.p_author.id),
-            "p_author_id": self.p_author_id,
-            "board_photo_id": self.board_photo_id,
-            "photo_owner": self.board_photo.owner_id,
-            "p_author_username": self.p_author.username,
-            "p_author_first_name": self.p_author.first_name,
-            "p_author_last_name": self.p_author.last_name,
-            "created": naturaltime(self.created),
-            "type": type,
-            "parent": id_parent,
-            "level": self.get_level(),
-            'is_edited': is_edited,
-            'token': csrf_token,
-            'event_type': self.event_type,
-            'extra_content': has_extra_content,
-            'parent_author': author_parent,
-            'images': list(self.images.all().values('image')),
-            'parent_avatar': avatar_parent,
+        data = {
+            'type': type,
+            'id': self.id,
+            'parent_id': self.parent_id,
+            'level': self.level,
+            'content': render_to_string(request=request, 
+                template_name='channels/new_photo_publication.html',
+                context={'node': self, 'photo': self.board_photo})
         }
 
-        if has_extra_content:
-            notification['extra_content_title'] = extra_c.title
-            notification['extra_content_description'] = extra_c.description
-            notification['extra_content_image'] = extra_c.image
-            notification['extra_content_url'] = extra_c.url
-            video = detect_backend(extra_c.video)
-            notification['extra_content_video'] = video.get_embed_code(640, 480)
-
-        # Enviamos a todos los usuarios que visitan el perfil
+        # Enviamos a todos los usuarios que visitan la foto
         channel_group(self.board_photo.group_name).send({
-            "text": json.dumps(notification)
+            "text": json.dumps(data)
         })
+
+        data['content'] = render_to_string(request=request, template_name='channels/new_photo_publication_detail.html',
+            context={'node': self, 'photo': self.board_photo})
 
         if is_edited:
             channel_group(self.get_channel_name).send({
-                'text': json.dumps(notification)
+                'text': json.dumps(data)
             })
         # Enviamos al blog de la publicacion
         [channel_group(x.get_channel_name).send({
-            "text": json.dumps(notification)
+            "text": json.dumps(data)
         }) for x in self.get_ancestors().only('id')]
