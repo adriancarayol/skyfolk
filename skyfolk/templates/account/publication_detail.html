@@ -65,8 +65,9 @@
                 </form>
             </div>
         </div>
+        <div class="infinite-container">
          {% for node in publication %}
-            <div class="row row-pub" id="pub-{{ node.pk }}">
+            <div class="row row-pub infinite-item" id="pub-{{ node.pk }}">
                 <div class="col s12">
                     <div class="row">
                         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" data-id="{{ user.pk }}" {% if node.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}>
@@ -360,10 +361,26 @@
             </div>
         {% endfor %}
     </div>
+    {% if publication.has_next %}
+        <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center" href="?page={{ publication.next_page_number }}">More</a>
+    {% endif %}
+    <div class="progress loading_skyline" style="display: none">
+        <div class="indeterminate blue darken-1"></div>
+    </div>
+    </div>
     <script src="{{ STATIC_URL }}js/publication_detail.js" type="text/javascript"></script> 
     <script src="{{ STATIC_URL }}js/socket_publication.js"></script>
     <script>
     UTILS.init([{{ user.pk }}]);
     UTILS.conn_socket();
+    var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function() {
+        $('.loading_skyline').show();
+    },
+    onAfterPageLoad: function() {
+        $('.loading_skyline').hide();
+    }
+    });
     </script>
 {% endblock %}

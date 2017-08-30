@@ -206,9 +206,26 @@ def publication_detail(request, publication_id):
     Muestra el thread de una conversacion
     """
     user = request.user
+    page = request.GET.get('page', 1)
+
     try:
         request_pub = Publication.objects \
                 .select_related('author').get(id=publication_id, deleted=False)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    try:
+        author = NodeProfile.nodes.get(user_id=request_pub.author_id)
+        m = NodeProfile.nodes.get(user_id=user.id)
+    except NodeProfile.DoesNotExist:
+        return redirect('user_profile:profile', username=request_pub.board_owner.username)
+
+    privacity = author.is_visible(m)
+
+    if privacity and privacity != 'all':
+        return redirect('user_profile:profile', username=request_pub.board_owner.username)
+
+    try:
         publication = request_pub.get_descendants(include_self=True) \
                 .filter(deleted=False) \
                 .prefetch_related('extra_content', 'images',
@@ -225,28 +242,31 @@ def publication_detail(request, publication_id):
                                         .select_related('author',
                                                 'board_owner', 'shared_publication',
                                                 'parent', 'shared_photo_publication')
+    except Exception as e:
+        logger.info(e)
+        raise Exception('Error al cargar descendientes para la publicacion: {}'.format(request_pub))
 
-        shared_id = publication.values_list('id', flat=True)
+    paginator = Paginator(publication, 10)
+
+    try:
+        publication = paginator.page(page)
+    except PageNotAnInteger:
+        publication = paginator.page(1)
+    except EmptyPage:
+        publication = paginator.page(paginator.num_pages)
+
+    try:
+        shared_id = publication.object_list.values_list('id', flat=True)
         pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values('shared_publication__id')\
                 .order_by('shared_publication__id')\
                 .annotate(total=Count('shared_publication__id'))
         shared_pubs = {item['shared_publication__id']:item.get('total', 0) for item in pubs_shared}
         pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id, deleted=False) \
             .values_list('shared_publication__id', flat=True)
-
-    except ObjectDoesNotExist:
-        raise Http404
-
-    try:
-        author = NodeProfile.nodes.get(user_id=request_pub.author_id)
-        m = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
-        return redirect('user_profile:profile', username=request_pub.board_owner.username)
-
-    privacity = author.is_visible(m)
-
-    if privacity and privacity != 'all':
-        return redirect('user_profile:profile', username=request_pub.board_owner.username)
+    except Exception as e:
+        logger.info('No se pudo obtener las publicaciones compartidas para la publicacion: {}'.format(request_pub))
+        shared_pubs = None
+        pubs_shared_with_me = None
 
     context = {
         'pubs_shared': shared_pubs,

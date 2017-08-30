@@ -61,8 +61,9 @@
                 </div>
             </div>
         </div>
+        <div class="infinite-container">
         {% for node in publication %}
-            <div class="row row-pub">
+            <div class="row row-pub infinite-item">
                 <div class="col s12">
                     <div class="row">
                         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" {% if node.level > 0 %}
@@ -185,8 +186,8 @@
                                                 <i class="fa like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
                                             </li>
                                         {% endwith %} 
-                                        <li title="Añadir a mi skyline" id="share-{{node.id}}" data-id="{{ node.pk }}" class="add-timeline"><i
-                                                class="fa fa-quote-right" aria-hidden="true"> </i></li>
+                                        <li title="Añadir a mi skyline" id="share-{{node.id}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i
+                                                class="fa fa-quote-right" aria-hidden="true"> {{ pubs_shared|lookup:node.id|intword }}</i></li>
                                         <li title="Responder" class="reply-comment"><i class="fa fa-reply"
                                                                                        id="reply-caja-comentario-{{ node.pk }}"></i>
                                         </li>
@@ -230,20 +231,27 @@
                 </div>
             </div>
         {% endfor %}
+        </div>
+        {% if publication.has_next %}
+        <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center" href="?page={{ publication.next_page_number }}">More</a>
+        {% endif %}
+        <div class="progress loading_skyline" style="display: none">
+            <div class="indeterminate blue darken-1"></div>
+        </div>
     </div>
     <script src="{{ STATIC_URL }}js/photo_detail.js" type="text/javascript"></script>
      <script src="{{ STATIC_URL }}js/socket_photo_publication.js"></script>
     <script>
     UTILS.init([{{ user.pk }}]);
     UTILS.conn_socket();
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container')[0],
+        onBeforePageLoad: function() {
+            $('.loading_skyline').show();
+        },
+        onAfterPageLoad: function() {
+            $('.loading_skyline').hide();
+        }
+    });
     </script>
-    <script>
-    {% for s in pubs_shared %}
-        $('#share-' + {{ s.shared_photo_publication__id }}).children().text(' ' + {{ s.total }});
-    {% endfor %}
-    {% for m in pubs_shared_with_me %}
-        $('#share-' + {{ m.shared_photo_publication__id }}).attr('class', 'remove-timeline').css('color', '#bbdefb');
-    {% endfor %}
-    </script>
-
 {% endblock %}

@@ -116,27 +116,11 @@ def publication_detail(request, publication_id):
     Muestra el thread de una conversacion
     """
     user = request.user
+    page = request.GET.get('page', 1)
     try:
         request_pub = PublicationPhoto.objects.select_related('board_photo', ).get(id=publication_id, deleted=False)
         if not request_pub.board_photo.is_public and user.id != request_pub.board_photo.owner.id:
             return redirect('photologue:photo-list', username=request_pub.board_photo.owner.username)
-
-        publication = request_pub.get_descendants(include_self=True) \
-                .filter(deleted=False) \
-                .prefetch_related('publication_photo_extra_content', 'images',
-                                'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
-                                        .select_related('p_author',
-                                                'board_photo',
-                                                'parent')
-        pubs_id = publication.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, deleted=False) \
-                .values('shared_photo_publication__id')\
-                .order_by('shared_photo_publication__id')\
-                .annotate(total=Count('shared_photo_publication__id'))
-
-        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author__id=user.id, deleted=False).values('author__id', 'shared_photo_publication__id')
-
-
     except ObjectDoesNotExist:
         raise Http404
 
@@ -151,10 +135,45 @@ def publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_photo.owner.username)
 
+    try:
+        publication = request_pub.get_descendants(include_self=True) \
+                .filter(deleted=False) \
+                .prefetch_related('publication_photo_extra_content', 'images',
+                                'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
+                                        .select_related('p_author',
+                                                'board_photo',
+                                                'parent')
+    except Exception as e:
+        raise Exception('No se pudo cargar los descendientes de: {}'.format(request_pub))
+
+    paginator = Paginator(publication, 10)
+
+    try:
+        publication = paginator.page(page)
+    except PageNotAnInteger:
+        publication = paginator.page(1)
+    except EmptyPage:
+        publication = paginator.page(paginator.num_pages)
+
+    try:
+        pubs_id = publication.object_list.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, deleted=False) \
+                .values('shared_photo_publication__id')\
+                .order_by('shared_photo_publication__id')\
+                .annotate(total=Count('shared_photo_publication__id'))
+        shared_pubs = {item['shared_photo_publication__id']:item.get('total', 0) for item in pubs_shared}
+        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author__id=user.id, deleted=False) \
+        .values_list('shared_photo_publication__id', flat=True)
+
+    except Exception as e:
+        logger.info('No se pudo obtener las publicaciones compartidas para la publicacion: {}'.format(request_pub))
+        pubs_shared = None
+        pubs_shared_with_me = None
+
     context = {
-        'publication': list(publication),
+        'publication': publication,
         'publication_id': publication_id,
-        'pubs_shared': pubs_shared,
+        'pubs_shared': shared_pubs,
         'pubs_shared_with_me': pubs_shared_with_me,
         'photo': request_pub.board_photo,
         'publication_shared': SharedPhotoPublicationForm()
