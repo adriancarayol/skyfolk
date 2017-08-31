@@ -68,8 +68,12 @@ def optimize_publication_media(instance, image_upload):
                         image = Image.open(media)
                     except IOError:
                         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=media.name))
-                    if image.mode != 'RGB':
-                        image = image.convert('RGB')
+                        
+                    fill_color = (255, 255, 255, 0)
+                    if image.mode in ('RGBA', 'LA'):
+                        background = Image.new(image.mode[:-1], image.size, fill_color)
+                        background.paste(image, image.split()[-1])
+                        image = background
                     image.thumbnail((800, 600), Image.ANTIALIAS)
                     output = io.BytesIO()
                     image.save(output, format='JPEG', optimize=True, quality=70)

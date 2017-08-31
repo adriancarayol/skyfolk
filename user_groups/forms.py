@@ -73,7 +73,7 @@ class CommaSeparatedIntegerField(forms.Field):
 
 class FormUserGroup(forms.ModelForm):
     # users_in_group = forms.ModelMultipleChoiceField(queryset=User.objects.all())
-    tags = CommaSeparatedCharField()
+    tags = CommaSeparatedCharField(max_length=120)
 
     class Meta:
         model = UserGroups
@@ -84,6 +84,7 @@ class FormUserGroup(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FormUserGroup, self).__init__(*args, **kwargs)
         self.fields['is_public'].initial = False
+        self.fields['tags'].required = False
 
     def clean_is_public(self):
         is_public = self.cleaned_data['is_public']

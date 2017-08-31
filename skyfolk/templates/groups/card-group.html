@@ -54,6 +54,13 @@
                 {% if group_profile.description != None %}
                     <p class="group-description">{{ group_profile.description }}</p><br><br>
                 {% endif %}
+                {% if interests %}
+                <div class="interests">
+                    {% for i in interests %}
+                        <span class="chip">{{ i.title }}</span>
+                    {% endfor %}
+                {% endif %}
+                </div>
             </div>
             <ul id="user-stats" class="stats">
                 <li>

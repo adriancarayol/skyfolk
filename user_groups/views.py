@@ -63,7 +63,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                     image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg',
                                                   tempfile_io.tell(), None)
                     group.back_image = image_file
-                tags = form.cleaned_data['tags']
+                tags = form.cleaned_data.get('tags', None)
                 try:
                     with transaction.atomic():
                         with db.transaction:
@@ -72,12 +72,13 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                                           title=group.name).save()
                             n = NodeProfile.nodes.get(user_id=user.id)
                             g.members.connect(n)
-                            for tag in tags:
-                                interest = TagProfile.nodes.get_or_none(title=tag)
-                                if not interest:
-                                    interest = TagProfile(title=tag).save()
-                                if interest:
-                                    g.interest.connect(interest)
+                            if tags:
+                                for tag in tags:
+                                    interest = TagProfile.nodes.get_or_none(title=tag)
+                                    if not interest:
+                                        interest = TagProfile(title=tag).save()
+                                    if interest:
+                                        g.interest.connect(interest)
                 except Exception as e:
                     print(e)
                     return self.form_invalid(form=form)
@@ -167,6 +168,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'group_owner': True if user.id == group_profile.owner_id else False,
                'friend_request': friend_request,
                'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
+               'interests': node_group.interest.match(),
                'user_list': user_list}
 
     return render(request, template, context)
