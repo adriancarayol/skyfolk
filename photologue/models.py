@@ -32,8 +32,7 @@ from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from mimetypes import guess_extension, guess_type
 from user_groups.models import UserGroups
-from .validators import validate_extension
-from .validators import validate_file_extension
+from .validators import validate_file_extension, validate_video, validate_extension
 from .tasks import generate_thumbnails
 
 # Required PIL classes may or may not be available from the root namespace
@@ -791,6 +790,44 @@ class Photo(ImageModel):
             if photo == self:
                 matched = True
         return None
+
+
+def upload_video(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('skyfolk/media/photologue/videos', filename)
+
+
+class Video(models.Model):
+    name = models.CharField(_('name'),
+                            max_length=60)
+    slug = models.SlugField(_('slug'),
+                            unique=True,
+                            max_length=250,
+                            help_text=_('A "slug" is a unique URL-friendly title for an object.'))
+    caption = models.TextField(_('caption'),
+                               blank=True, max_length=1000)
+    is_public = models.BooleanField(_('is public'),
+                                    default=True,
+                                    help_text=_('Public photographs will be displayed in the default views.'))
+    date_added = models.DateTimeField(_('date added'),
+                                      default=now)
+    tags = TaggableManager(blank=True)
+    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_videos')
+    video = models.FileField(_('video'), upload_to=upload_video, 
+        max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
+
+    class Meta:
+        ordering = ['-date_added']
+        get_latest_by = 'date_added'
+        verbose_name = _("video")
+        verbose_name_plural = _("videos")
+
 
 
 @python_2_unicode_compatible

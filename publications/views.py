@@ -33,6 +33,7 @@ from django.db.models import Count, Q
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from embed_video.backends import detect_backend
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import ValidationError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -124,7 +125,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         self.object = None
 
     def post(self, request, *args, **kwargs):
-
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
@@ -181,7 +181,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                         content_video = _optimize_publication_media(publication,
                             request.FILES.getlist('image'))
                 except Exception as e:
-                    raise IntegrityError(e)
+                    raise ValidationError(e)
 
                 publication.send_notification(request, is_edited=False)
                 
@@ -579,7 +579,7 @@ def load_more_comments(request):
         try:
             publication = Publication.objects.select_related('board_owner').get(id=pub_id)
         except ObjectDoesNotExist:
-            return JsonResponse(data)
+            raise Http404
 
         try:
             board_owner = NodeProfile.nodes.get(user_id=publication.board_owner_id)

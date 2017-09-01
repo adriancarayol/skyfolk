@@ -27,6 +27,4 @@ else:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
 
 
-
 channel_layer = get_channel_layer()
-

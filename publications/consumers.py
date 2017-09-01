@@ -2,50 +2,55 @@ import json
 import logging
 
 from channels import Group
-from channels.auth import channel_session_user, channel_session_user_from_http
+from channels.generic.websockets import WebsocketConsumer
 from .utils import get_channel_name
 from .models import Publication
 from user_profile.models import NodeProfile
 
+class PublicationConsumer(WebsocketConsumer):
+    """
+    Consumidor para conectarse al perfil
+    de un usuario
+    """
+    http_user = True
+    strict_ordering = False
 
-@channel_session_user_from_http
-def connect_publication(message, pubid):
-    user = message.user
-    try:
-        publication_board_owner = Publication.objects.values_list('board_owner__id', flat=True).get(id=pubid)
-        print(publication_board_owner)
-        n = NodeProfile.nodes.get(user_id=publication_board_owner)
-        m = NodeProfile.nodes.get(user_id=user.id)
-        visibility = n.is_visible(m)
+    def __init__(self, message, **kwargs):
+        pubid = kwargs.get('pubid', None)
+        if not pubid:
+            raise Http404
+
+        try:
+            publication_board_owner = Publication.objects.values_list('board_owner__id', flat=True).get(id=pubid)
+        except Publication.DoesNotExist:
+            raise Http404
+
+        try:
+            self.board_owner = NodeProfile.nodes.get(user_id=publication_board_owner)
+        except NodeProfile.DoesNotExist:
+            raise Http404
+
+        super(PublicationConsumer, self).__init__(message, **kwargs)
+
+    def connection_groups(self, **kwargs):
+        pubid = kwargs.get('pubid', None)
+        return [get_channel_name(pubid)]
+
+    def connect(self, message, **kwargs):
+        user = message.user
+        try:
+            n = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            self.message.reply_channel.send({'accept': False})
+
+        visibility = self.board_owner.is_visible(n)
         if visibility and visibility != 'all':
-            logging.warning('User: {} no puede conectarse al socket de: publication: {}'.format(user.username,
-                                                                                                publication_board_owner))
-            message.reply_channel.send({"accept": False})
-            return
-    except Publication.DoesNotExist:
-        message.reply_channel.send({
-            'text': json.dumps({'error': 'bad_slug'}),
-            'close': True,
-        })
-        return
-    message.reply_channel.send({'accept': True})
-    Group(get_channel_name(pubid)).add(message.reply_channel)
+            self.message.reply_channel({'accept': False})
 
+        self.message.reply_channel.send({'accept': True})
 
-@channel_session_user
-def disconnect_publication(message, pubid):
-    """
-    Removes the user from the liveblog group when they disconnect.
+    def receive(self, content, **kwargs):
+        self.send(content)
 
-    Channels will auto-cleanup eventually, but it can take a while, and having old
-    entries cluttering up your group will reduce performance.
-    """
-    try:
-        publication_board_owner = Publication.objects.values_list('board_owner__id', flat=True).get(id=pubid)
-    except Publication.DoesNotExist:
-        # This is the disconnect message, so the socket is already gone; we can't
-        # send an error back. Instead, we just return from the consumer.
-        return
-    # It's called .discard() because if the reply channel is already there it
-    # won't fail - just like the set() type.
-    Group(get_channel_name(pubid)).discard(message.reply_channel)
+    def disconnect(self, message, **kwargs):
+        pass

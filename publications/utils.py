@@ -99,7 +99,7 @@ def validate_video(value):
     ''' if value.file is an instance of InMemoryUploadedFile, it means that the
     file was just uploaded with this request (i.e., it's a creation process,
     not an editing process. '''
-    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/')[
+    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/').lower()[
         1] not in settings.VIDEO_EXTENTIONS:
         raise ValueError('Please upload a valid video file')
 
