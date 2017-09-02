@@ -30,7 +30,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
         try:
             Publication.objects.update_or_create(author_id=recipient.id,
                                                   board_owner_id=recipient.id,
-                                                  content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
+                                                  content='<i class="material-icons blue1e88e5">person_add</i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
                                                       recipient.username,
                                                       recipient.username,
                                                       emitter.username,
@@ -39,7 +39,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
 
             Publication.objects.update_or_create(author_id=emitter.id,
                                                   board_owner_id=emitter.id,
-                                                  content='<i class="fa fa-user-plus" aria-hidden="true"></i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
+                                                  content='<i class="material-icons blue1e88e5">person_add</i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
                                                       emitter.username,
                                                       emitter.username,
                                                       recipient.username,

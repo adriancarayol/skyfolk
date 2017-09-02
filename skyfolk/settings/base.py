@@ -259,7 +259,7 @@ TEMPLATES = [
 
 # rabbitmq
 rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
-rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F?backpressure_detection=t' % (rabbitmq_host)
+rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F?heartbeat=15' % rabbitmq_host
 
 # celery
 CELERY_CONFIG = 'skyfolk.celeryconf'

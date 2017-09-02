@@ -36,7 +36,7 @@ $(document).ready(function () {
         return false;
     });
 
-    $('.fa-paw').on('click', function () {
+    $('.menu-profile').on('click', function () {
         $(".info-paw").show();
     });
 
@@ -69,7 +69,7 @@ $(document).ready(function () {
     });
 
     /* Abrir respuesta a comentario */
-    $(tab_comentarios).on('click', '.options_comentarios .fa-reply', function () {
+    $(tab_comentarios).on('click', '.options_comentarios .reply-comment', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
@@ -119,7 +119,7 @@ $(document).ready(function () {
     }
 
     /* Borrar publicacion */
-    $(tab_comentarios).on('click', '.options_comentarios .fa-trash', function () {
+    $(tab_comentarios).on('click', '.options_comentarios .trash-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
             title: "Are you sure?",
@@ -255,7 +255,7 @@ $(document).ready(function () {
     $(this).click(function (event) {
         var _personal_card_info = $('#personal-card-info');
         if (!$(event.target).closest('#personal-card-info').length) {
-            if (!$(event.target).closest('.fa-paw').length) {
+            if (!$(event.target).closest('.menu-profile').length) {
                 if ($(_personal_card_info).is(":visible")) {
                     $(_personal_card_info).hide();
                 }
@@ -604,7 +604,7 @@ function AJAX_add_timeline(pub_id, tag, data_pub) {
         'csrfmiddlewaretoken': csrftoken
     };
 
-    var shared_tag = $(tag).find('.fa-quote-right');
+    var shared_tag = $(tag).find('.share-values');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
 
@@ -670,12 +670,12 @@ function AJAX_bloq_user(buttonBan) {
         success: function (data) {
             if (data.response == true) {
                 $(buttonBan).css('color', '#FF6347');
-                if (data.status == "none" || data.status == "isfollow") {
-                    $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
-                } else if (data.status == "inprogress") {
-                    $('#follow_request').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
+                if (data.status === "none" || data.status === "isfollow") {
+                    $('#addfriend').replaceWith('<span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</span>');
+                } else if (data.status === "inprogress") {
+                    $('#follow_request').replaceWith('<span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</span>');
                 }
-                if (data.haslike == "liked") {
+                if (data.haslike === "liked") {
                     $("#ilike_profile").css('color', '#46494c');
                     var obj_likes = document.getElementById('likes');
                     if ($(obj_likes).find("strong").html() > 0) {
@@ -708,7 +708,7 @@ function AJAX_remove_bloq() {
         dataType: "json",
         success: function (response) {
             if (response == true) {
-                $('#bloq-user-span').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                $('#bloq-user-span').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
                 $('#bloq-user').css('color', '#555');
             } else {
                 swal({

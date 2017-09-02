@@ -1,5 +1,5 @@
-from channels import route
-
+from channels.routing import route
+from channels.staticfiles import StaticFilesConsumer
 from photologue.consumers import PhotoConsumer
 from user_profile.consumers import BlogConsumer, NotificationConsumer
 from latest_news.consumers import MyFeedConsumer
@@ -12,6 +12,7 @@ from publications_gallery.consumers import PublicationPhotoConsumer
 # While this is under stream/ compared to the HTML page, we could have it on the
 # same URL if we wanted; Daphne separates by protocol as it negotiates with a browser.
 channel_routing = [
+    route('http.request', StaticFilesConsumer()),
     # Consumidor para el perfil del usuario
     BlogConsumer.as_route(path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
     # channels en fotos

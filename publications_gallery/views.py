@@ -475,14 +475,14 @@ def share_publication(request):
                         raise IntegrityError('El comentario esta vacio')
 
                     pub = Publication.objects.create(
-                        content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
+                        content='<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
                             pub_to_add.p_author.username, pub_to_add.p_author.username, pub_content),
                         shared_photo_publication_id=pub_to_add.id,
                         author=user,
                         board_owner=user, event_type=7)
                 else:
                     pub = Publication.objects.create(
-                        content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
+                        content='<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
                             pub_to_add.p_author.username, pub_to_add.p_author.username),
                         shared_photo_publication_id=pub_to_add.id,
                         author=user,

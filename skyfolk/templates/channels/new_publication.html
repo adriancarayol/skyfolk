@@ -9,16 +9,15 @@
         {% if node.level > 0 and node.level < 3 %}style="min-width: 98% !important;"{% endif %}>
         <div class="box">
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
-            data-delay="50"
-            data-tooltip="Ver conversación completa"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
+                  data-delay="50"
+                  data-tooltip="Ver conversación completa"><i class="material-icons md-18">open_in_new</i></span>
             {% if user.id == node.author.id %}
             {% if node.event_type == 1 or node.event_type == 3 %}
             <span data-id="{{ node.pk }}"
-            class="top-options edit-comment tooltipped"
-            data-position="bottom"
-            data-delay="50"
-            data-tooltip="Editar comentario"><i class="fa fa-pencil"
-            aria-hidden="true"></i></span>
+                                      class="top-options edit-comment tooltipped"
+                                      data-position="bottom"
+                                      data-delay="50"
+                                      data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
             {% endif %}
             {% endif %}
             <div class="row">
@@ -35,7 +34,7 @@
                             {% if node.parent %}
                             <span class="chip">
                                 {% avatar node.parent.author %}
-                                <i class="fa fa-reply"></i> <a href="/profile/{{ node.parent.author }}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                                <a href="/profile/{{ node.parent.author }}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                             </span>
                             {% endif %}
                         </h2>
@@ -244,31 +243,33 @@
                     <!-- OPCIONES DE COMENTARIOS -->
                     <div class="options_comentarios">
                         <ul class="opciones">
-                            {% if user.id == node.author.id %}
-                            {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                            <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
-                            </li>
-                            {% elif user.id == user_profile.id %}
-                            {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
-                            <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
-                            </li>
-                            {% endif %}
-                            {% comment %} Si el usuario esta logueado {% endcomment %}
-                            <li title="No me gusta" class="hate-comment" {% if user in hates %} style="color: rgb(186, 104, 200);"{% endif %}>
-                                <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                <i class="fa hate-value"></i>
-                            </li>
-                            <li title="¡Me gusta!" class="like-comment" {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                <i class="fa like-value"></i>
-                            </li>
-                            <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class="add-timeline"
-                            ><i
-                            class="fa fa-quote-right" aria-hidden="true"> </i></li>
-                            <li title="Responder" class="reply-comment"><i class="fa fa-reply"
-                             id="reply-caja-comentario-{{ node.pk }}"></i>
-                         </li>
-                     </ul>
+                                    {% if user.id == node.author.id or user.id == user_profile.id %}
+                                        {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
+                                        <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
+                                        </li>
+                                    {% endif %}
+                                        {% comment %} Si el usuario esta logueado {% endcomment %}
+                                        {% with node.user_give_me_hate.all as hates %}
+                                        <li title="No me gusta" class="hate-comment">
+                                            <i class="material-icons md-18">keyboard_arrow_down</i>
+                                            <i class="hate-value"></i>
+                                        </li>
+                                        {% endwith %}
+                                        {% with node.user_give_me_like.all as likes %}
+                                        <li title="¡Me gusta!" class="like-comment" {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
+                                            <i class="material-icons md-18">keyboard_arrow_up</i>
+                                            <i class="like-value"></i>
+                                        </li>
+                                        {% endwith %}
+                                        <li id="share-{{node.pk}}" data-id="{{ node.pk }}" class="add-timeline" title="Añadir a mi skyline"
+                                        >
+                                        <i class="material-icons md-18">format_quote</i>
+                                        <iclass="share-values"></i>
+                                        </li>
+                                    <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}">
+                                    <i class="material-icons md-18">reply</i>
+                                    </li>
+                                </ul>
                  </div>
              </div>
          </div>

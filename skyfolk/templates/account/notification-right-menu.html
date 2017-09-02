@@ -18,8 +18,8 @@ UTILS_N.conn_socket();
         {% if user_notifications %}
         {% for notification in user_notifications %}
         <li class="collection-item avatar" data-id="{{ notification.id }}">
-            <a onclick="AJAX_mark_read(this)" class="fa fa-remove"
-                data-notification="{{ notification.slug }}"></a>
+            <a onclick="AJAX_mark_read(this)" class="remove-notification material-icons"
+                data-notification="{{ notification.slug }}">remove</a>
             <div class="circle">
                 {% avatar notification.actor %}
             </div>

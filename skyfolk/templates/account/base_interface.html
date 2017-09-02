@@ -18,6 +18,7 @@ Base para la interfaz en comun de todos los usuarios.
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}fonts/iconfont/material-icons.css">
     <link href="{{ STATIC_URL }}tellme/feedback.min.css" rel="stylesheet">
+    
     {% endcompress %}
     <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
     {% compress js %}
@@ -107,7 +108,7 @@ Base para la interfaz en comun de todos los usuarios.
                         class="material-icons right">close</i></button>
                         <div class="file-field">
                             <div class="btn blue lighten-2">
-                                <span><i class="fa fa-camera" aria-hidden="true"></i></span>
+                                <span><i class="material-icons md-24">photo_camera</i></span>
                                 <input id="id_image" name="image" type="file" multiple>
                             </div>
                             <div class="file-path-wrapper">
@@ -156,7 +157,7 @@ Base para la interfaz en comun de todos los usuarios.
                         class="material-icons right">close</i></button>
                         <div class="file-field">
                             <div class="btn blue lighten-2">
-                                <span><i class="fa fa-camera" aria-hidden="true"></i></span>
+                                <span><i class="material-icons md-24" aria-hidden="true">photo_camera</i></span>
                                 <input id="id_image_self" name="image" type="file" multiple>
                             </div>
                             <div class="file-path-wrapper">
@@ -176,7 +177,7 @@ Base para la interfaz en comun de todos los usuarios.
         <table class="responsive-table highlight modal-table" summary="Atajos para acciones comunes.">
             <caption class="hide-on-med-and-down atajos-title">
                 <p>Atajos de teclado</p>
-                <i class="fa fa-close"></i>
+                <i class="material-icons close-shortcuts">remove</i>
             </caption>
             <thead>
                 <tr class="acc-atajos">

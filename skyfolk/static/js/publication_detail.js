@@ -6,7 +6,7 @@ $(document).ready(function () {
     var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Abrir respuesta a comentario */
-    $(thread).on('click', '.options_comentarios .fa-reply', function () {
+    $(thread).on('click', '.options_comentarios .reply-comment', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
@@ -300,7 +300,7 @@ function AJAX_add_timeline_detail(pub_id, tag, data_pub) {
         'csrfmiddlewaretoken': csrftoken
     };
 
-    var shared_tag = $(tag).find('.fa-quote-right');
+    var shared_tag = $(tag).find('.share-values');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
 

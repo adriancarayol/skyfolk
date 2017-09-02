@@ -12,21 +12,12 @@ Template para el perfil de cada usuario
 {% block extra-css %}
 {% compress css %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/timeline.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css">
 <style>
     .card-content img {
         max-width: 100%;
         max-height: 100%;
         box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
-    }
-    .comment .fa-share {
-        color: #1e88e5;
-        font-style: normal;
-    }
-    .comment .fa-user-plus {
-        color: #1e88e5;
-        font-style: normal;
     }
 </style>
 {% endcompress %}
@@ -90,9 +81,8 @@ Template para el perfil de cada usuario
                 <div id="div-separator">
                     <div class="sidebar card" id="tab-container">
                         <div class="ventana-pin">
-                            <a><i class="fa fa-times"></i></a>
-                            <a><i class="fa fa-expand"></i></a>
-                            <a><i class="fa fa-thumb-tack"></i></a>
+                            <a><i class="material-icons">remove</i></a>
+                            <a><i class="material-icons">flip_to_front</i></a>
                         </div>
                         <ul class="unstyled table fullwidth links">
                             {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}

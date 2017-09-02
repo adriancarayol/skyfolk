@@ -8,9 +8,8 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
     <div class="col l12 m12 s12">
         <div class="user-card card">
             <div class="ventana-pin">
-                <a><i class="fa fa-times"></i></a>
-                <a><i class="fa fa-expand"></i></a>
-                <a><i class="fa fa-thumb-tack"></i></a>
+                <a><i class="material-icons">remove</i></a>
+                <a><i class="material-icons">flip_to_front</i></a>
             </div>
             <div class="row">
                 <div class="user-avatar" style="background: {% if user_profile.profile.back_image %}
@@ -34,26 +33,26 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                         <div class="informacion">
                             {% if user.username == user_profile.username %}
                             <!-- Si el usuario esta visitando su propio perfil -->
-                            <span id="configurationOnProfile" class="fa fa-cog" title="Configuracion"></span>
+                            <span id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</span>
                             <span onclick="location.href='{% url "user_groups:list-group" %}'" id="conf"
-                                                                                               class="fa fa-users"
-                                                                                               title="Grupos"></span>
-                            <span id="publish3" class="fa fa-paper-plane" title="Escribir"></span>
+                                                                                               class="material-icons group-profile"
+                                                                                               title="Grupos">group</span>
+                            <span id="publish3" class="material-icons write-profile" title="Escribir">send</span>
                             {% else %} <!-- si es usuario esta visitando un perfil que no es el suyo -->
                             {% if isFriend == True %}
-                            <span id="addfriend" class="fa fa-remove" title="Dejar de seguir"
-                                onclick="AJAX_requestfriend('noabort')" style="color: #29b203;" onclick="AJAX_requestfriend('abort');"></span>
+                            <span id="addfriend" class="material-icons unfollow-profile" title="Dejar de seguir"
+                                onclick="AJAX_requestfriend('noabort')" style="color: #29b203;" onclick="AJAX_requestfriend('abort');">remove</span>
                             {% elif isBlocked == True %}
-                            <span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();"></span>
+                            <span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">block</span>
                             {% elif existFollowRequest == True %}
-                            <span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();"></span>
+                            <span class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">watch_later</span>
                             {% else %}
-                            <span id="addfriend" class="fa fa-plus" title="Seguir"
-                                onclick="AJAX_requestfriend('noabort')";></span>
+                            <span id="addfriend" class="material-icons follow-profile" title="Seguir"
+                                onclick="AJAX_requestfriend('noabort')";>add</span>
                             {% endif %}
-                            <span id="ilike_profile" class="fa fa-heart" title="¡Me gusta!"
-                                                                         onclick=AJAX_likeprofile('noabort');></span>
-                            <span id="publish" class="fa fa-paper-plane" title="Escribir"></span>
+                            <span id="ilike_profile" class="material-icons like-profile" title="¡Me gusta!"
+                                                                         onclick=AJAX_likeprofile('noabort');>favorite</span>
+                            <span id="publish" class="material-icons write-profile" title="Escribir">send</span>
                             {% endif %}
                         </div>
                     </div>
@@ -65,12 +64,12 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     <p class="status"> - {{ user_profile.profile.status }}</p>
                     {% endif %}
                     {% if not isFollower %}
-                    <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
-                                                                                    data-tooltip="Acerca de {{ user_profile.username }}"></span>
+                    <span class="material-icons tooltipped menu-profile" data-position="bottom" data-delay="50"
+                                                                                    data-tooltip="Acerca de {{ user_profile.username }}">menu</span>
                     {% else %}
-                    <span class="fa fa-paw fa-lg tooltipped" data-position="bottom" data-delay="50"
+                    <span class="material-icons tooltipped menu-profile" data-position="bottom" data-delay="50"
                                                                                     data-tooltip="Acerca de {{ user_profile.username }} - ¡Te sigue!"
-                                                                                    style="color: #1e88e5"></span>
+                                                                                    style="color: #1e88e5">menu</span>
                     {% endif %}
                     <ul id="user-stats" class="stats">
                         <li>
@@ -102,87 +101,44 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     <h1 id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.username }}">
                         @{{ user_profile.username }}</h1>
                     <h3 class="info-user-name_last">{{ user_profile.first_name }} {{ user_profile.last_name }}</h3>
-                    <h4 class="info-user-ciudad"><i class="fa fa-map-marker"></i>Mi ciudad</h4>
+                    <h4 class="info-user-ciudad"><i class="material-icons">my_location</i> Mi ciudad</h4>
                     <h4 class="info-user-stats">Seguidores: {{ followers }}</h4>
                     <h4 class="info-user-stats">Seguidos: {{ following }} </h4>
                     <h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>
                 </div>
                 <ul class="personal-card-controls">
                     {% if user.username != user_profile.username %}
-                    <li id="bloq-user"><i class="fa fa-ban" aria-hidden="true"></i></li>
+                    <li id="bloq-user"><i class="material-icons" aria-hidden="true">block</i></li>
                     {% endif %}
-                    <li class="info-groups" title="Grupos de {{ user_profile.username }}"><i class="fa fa-users"
-                                                                                             aria-hidden="true"></i>
+                    <li class="info-groups" title="Grupos de {{ user_profile.username }}"><i class="material-icons">group</i>
                     </li>
-                    <li class="info-trof" title="Logros de {{ user_profile.username }}"><i class="fa fa-trophy"
-                                                                                           aria-hidden="true"></i>
+                    <li class="info-trof" title="Logros de {{ user_profile.username }}"><i class="material-icons">save</i>
                     </li>
                     {% if user.username == user_profile.username %}
-                    <li class="info-content" title="Mis publicaciones"><i class="fa fa-at"
-                                                                          aria-hidden="true"></i></li>
+                    <li class="info-content" title="Mis publicaciones"><i class="material-icons">favorite</i></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
         <!-- Trofeos -->
         <div class="col s12 m12 l10 trofeos">
-            <span id="close-trofeos" class="fa fa-close fa-2x"></span>
+            <span id="close-trofeos" class="material-icons right">remove</span>
             <h3 class="trofeos-title">Logros de {{ user_profile.username }}</h3>
             <div class="col l12 m12 s12 wrapper-trofeos">
                 <div class="col s3 m3 l1 trofeo-user">
                 </div>
                 <div class="col s3 m3 l1 trofeo-user">
                 </div>
-                <div class="col-sm-3 col-md-3 col-lg-1 trofeo-user">
-                </div>
             </div>
         </div>
         <!-- Grupos -->
         <div class="col-lg-10 col-md-12 col-sm-12 grupos">
-            <span id="close-grupos" class="fa fa-close fa-2x"></span>
+            <span id="close-grupos" class="material-icons right">remove</span>
             <h3 class="grupos-title">Grupos de {{ user_profile.username }}</h3>
             <div class="col-lg-12 col-md-12 col-sm-12 wrapper-grupos">
                 <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
                     <img src="{{ STATIC_URL }}dist/img/nuevo.png" alt="img-group">
                     <span class="text-description">Nombre del grupo</span>
-                    <i class="fa fa-users"> 50</i>
-                    <i class="fa fa-heart"> 12</i>
-                </div>
-                <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                    <img src="{{ STATIC_URL }}dist/img/nuevo.png" alt="img-group">
-                    <span class="text-description">Nombre del grupo</span>
-                    <i class="fa fa-users"> 50</i>
-                    <i class="fa fa-heart"> 12</i>
-                </div>
-                <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                    <img src="{{ STATIC_URL }}dist/img/nuevo.png" alt="img-group">
-                    <span class="text-description">Nombre del grupo</span>
-                    <i class="fa fa-users"> 50</i>
-                    <i class="fa fa-heart"> 12</i>
-                </div>
-                <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                    <img src="{{ STATIC_URL }}dist/img/nuevo.png" alt="img-group">
-                    <span class="text-description">Nombre del grupo</span>
-                    <i class="fa fa-users"> 50</i>
-                    <i class="fa fa-heart"> 12</i>
-                </div>
-                <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                    <img src="{{ STATIC_URL }}dist/img/nuevo.png" alt="img-group">
-                    <span class="text-description">Nombre del grupo</span>
-                    <i class="fa fa-users"> 50</i>
-                    <i class="fa fa-heart"> 12</i>
-                </div>
-                <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                    <img src="{{ STATIC_URL }}dist/img/nuevo.png" alt="img-group">
-                    <span class="text-description">Nombre del grupo</span>
-                    <i class="fa fa-users"> 50</i>
-                    <i class="fa fa-heart"> 12</i>
-                </div>
-                <div class="col-lg-2 col-md-5 col-sm-12 grupo-user">
-                    <img src="{{ STATIC_URL }}dist/img/nuevo.png" alt="img-group">
-                    <span class="text-description">Nombre del grupo</span>
-                    <i class="fa fa-users"> 50</i>
-                    <i class="fa fa-heart"> 12</i>
                 </div>
             </div>
         </div>

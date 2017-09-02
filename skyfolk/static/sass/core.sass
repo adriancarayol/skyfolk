@@ -52,6 +52,33 @@ table
   border-collapse: collapse
   border-spacing: 0
 
+.material-icons
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  vertical-align: middle
+
+.material-icons.md-18
+  font-size: 18px
+.material-icons.md-24
+  font-size: 24px
+.material-icons.md-36 
+  font-size: 36px
+.material-icons.md-48
+  font-size: 48px
+
+.material-icons.md-dark
+  color: rgba(0, 0, 0, 0.54)
+.material-icons.md-dark.md-inactive
+  color: rgba(0, 0, 0, 0.26)
+
+.material-icons.md-light
+  color: rgba(255, 255, 255, 1)
+.material-icons.md-light.md-inactive
+  color: rgba(255, 255, 255, 0.3)
+.material-icons.blue1e88e5
+  color: #1e88e5
+  font-style: normal
 .input-field input[type=text]:focus + label
   color: #64b5f6 !important
 
@@ -82,7 +109,12 @@ table
     vertical-align: middle
     margin-right: 7px
     box-shadow: 0 1px 5px #64b5f6
-
+.card
+  .card-title-md-18
+    font-size: 18px
+    padding-top: 10px
+    padding-bottom: 10px
+    line-height: 20px
 .collection .collection-item
   height: auto
 .container
@@ -298,12 +330,12 @@ body > .container
     & .notification-verb
       color: $followcolor
       font-weight: 800
-    & .fa-remove
+    & .remove-notification
       position: relative
       float: right
-      margin-top: -10px
       right: -10px
       color: #616161
+      cursor: pointer
       &:hover
         opacity: 0.8
     &:hover
@@ -333,7 +365,7 @@ body > .container
   padding-bottom: 2.5px
   padding-top: 2.5px
 
-#atajos-keyboard-profile .atajos-title .fa-close
+#atajos-keyboard-profile .atajos-title .close-shortcuts
   float: right
   font-size: 14px
   margin-right: 5px

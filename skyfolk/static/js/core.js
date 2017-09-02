@@ -193,7 +193,7 @@ $(document).ready(function () {
     /**** ATAJOS DE TECLADO ****/
 
     /* Mostrar atajos */
-    $('#atajos-keyboard-profile').find('.atajos-title .fa-close').on('click', function () {
+    $('#atajos-keyboard-profile').find('.atajos-title .close-shortcuts').on('click', function () {
         $('#atajos-keyboard-profile').hide();
     });
 
@@ -485,7 +485,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 }, function () {
-                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                    $('#addfriend').replaceWith('<span class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</span>');
                     if (data.friend_username)
                         if (typeof addItemToFriendList === "function")
                             addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
@@ -808,7 +808,7 @@ function AJAX_requestfriend(status) {
                             }
                         });
                 } else if (response == "inprogress") {
-                    $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + ' ' + '</span>');
+                    $('#addfriend').replaceWith('<span class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + 'watch_later' + '</span>');
                 } else if (response == "user_blocked") {
                     swal({
                         title: "Petición denegada.",
@@ -822,7 +822,7 @@ function AJAX_requestfriend(status) {
                 } else if (response == "added_friend") {
                     var currentValue = document.getElementById('followers-stats');
                     $(currentValue).html(parseInt($(currentValue).html()) + 1);
-                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                    $('#addfriend').replaceWith('<span class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</span>');
                 }
                 else {
 
@@ -851,7 +851,7 @@ function AJAX_remove_relationship(slug) {
                 var currentValue = document.getElementById('followers-stats');
                 var addFriendButton = document.getElementById('addfriend');
                 $(currentValue).html(parseInt($(currentValue).html()) - 1);
-                $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                $(addFriendButton).replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
@@ -879,7 +879,7 @@ function AJAX_remove_request_friend() {
         dataType: 'json',
         success: function (response) {
             if (response == true) {
-                $('#follow_request').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend("noabort");></span>');
+                $('#follow_request').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" onclick=AJAX_requestfriend("noabort");>'+'add'+'</span>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",

@@ -389,33 +389,10 @@ a.fontawesome-cog:hover {
 }
 .wrapper .top-options {
     position: relative;
-    width: 20px;
-    height: 20px;
-    background-color: #fff;
-    border-radius: 100%;
     float: right;
-    margin-right: 7px;
-    margin-top: 7px;
-    text-align: center;
-    -webkit-box-shadow: 0 0 1px 0 rgba(50, 50, 50, 0.75);
-    -moz-box-shadow: 0 0 1px 0 rgba(50, 50, 50, 0.75);
-    box-shadow: 0 0 1px 0 rgba(50, 50, 50, 0.75);
-}
-.wrapper .zoom-pub .fa-plus-square-o, .wrapper .edit-comment .fa-pencil {
-    color: #212121;
-    font-size: 100%;
-    -webkit-transition: all 0.1s linear;
-    -moz-transition: all 0.1s linear;
-    transition: all 0.1s linear;
+    margin: 10px;
     cursor: pointer;
 }
-
-.wrapper .zoom-pub .fa-plus-square-o:hover, .wrapper .edit-comment .fa-pencil:hover {
+.wrapper .top-options:hover {
     color: #1e88e5;
-}
-
-.wrapper .zoom-pub:hover, .wrapper .edit-comment:hover {
-    -webkit-box-shadow: 0 0 1px 0 #1e88e5;
-    -moz-box-shadow: 0 0 1px 0 #1e88e5;
-    box-shadow: 0 0 1px 0 #1e88e5;
 }
