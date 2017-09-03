@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = (
     'embed_video',
     'tellme',
     'haystack',
+    'badgify',
 )
 
 FIRST_PARTY_APPS = (
@@ -94,6 +95,7 @@ FIRST_PARTY_APPS = (
     'latest_news',
     'user_groups',  # Para grupos de usuarios
     'support',  # modulo para ofrecer soporte al usuario
+    'awards', # logros
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
@@ -129,7 +131,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_USERNAME_MIN_LENGTH = 3
-# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/accounts/login'
 EXTERNAL_LOGIN_URL = None
 EXTERNAL_SIGNUP_URL = None
@@ -344,3 +346,6 @@ HAYSTACK_CONNECTIONS = {
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
+
+# LOGROS
+BADGIFY_BATCH_SIZE = None

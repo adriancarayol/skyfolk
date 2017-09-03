@@ -1,0 +1,376 @@
+@font-face {
+    font-family: 'Pacifico';
+    font-weight: 400;
+    font-style: normal;
+    src: url('../fonts/Pacifico-regular/Pacifico-regular.eot');
+    src: url('../fonts/Pacifico-regular/Pacifico-regular.eot?#iefix') format('embedded-opentype'), local('Pacifico Regular'), local('Pacifico-regular'), url('../fonts/Pacifico-regular/Pacifico-regular.woff2') format('woff2'), url('../fonts/Pacifico-regular/Pacifico-regular.woff') format('woff'), url('../fonts/Pacifico-regular/Pacifico-regular.ttf') format('truetype'), url('../fonts/Pacifico-regular/Pacifico-regular.svg#Pacifico') format('svg')
+}
+
+.container {
+    margin-top: 1.3em !important;
+}
+
+/*caja de busqueda*/
+.field > form input[type=text],
+.field > form button {
+    font: 1.2em 'Open Sans', sans-serif;
+}
+
+.field > form input[type=text] {
+    position: relative;
+    width: 300px;
+    border: none;
+    height: 46px;
+    line-height: 46px;
+    text-align: left;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    box-shadow: none;
+    outline: none;
+    transition: all .3s ease-in;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    background: #f0f0f0 url('/static/img/search-icon.png') no-repeat 95%;
+    background-size: 13px;
+    padding: 0 20px;
+    color: black !important;
+}
+
+.field > form input[type=text]:focus {
+    background: #fefefe url(/static/img/search-icon.png) no-repeat 1%;
+    background-size: 13px;
+    border-bottom: 0;
+}
+
+.field > form input[type="text"] {
+    transition: all .3s ease-in;
+}
+
+#search-noelements {
+    width: 40%;
+    text-align: center;
+    font: 1.6em "Montserrat Alternates";
+    margin: 10px auto 0;
+}
+
+/* cf */
+.float-right {
+    float: right;
+}
+
+.fa {
+    font-size: 0.8em;
+    line-height: 22px !important;
+}
+
+.fa-comment, .notification-bell {
+    float: right;
+    display: inline-block;
+    position: relative;
+    right: -280px;
+    top: 12px;
+    text-decoration: none;
+    margin-left: 50px;
+    cursor: pointer;
+    color: rgba(44, 44, 44, 0.854);
+}
+
+.fa-bars {
+    color: rgba(44, 44, 44, 0.854);
+    display: inline-block;
+    position: relative;
+    list-style-type: none;
+    margin-left: 50px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+}
+
+.notification-bell em {
+    background-color: tomato;
+    font-size: 10px;
+    padding: 5px 5px;
+    text-decoration: none;
+    border-radius: 10px 100% 100% 100%;
+    display: inline-block;
+    color: white;
+}
+
+.fa-comment:hover, .notification-bell:hover {
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    transform: scale(1.1);
+    color: #556B75;
+}
+
+.fa-bars:hover {
+    opacity: 0.8;
+}
+
+.fa-bars-rotate {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.fa-bars-rotate-2 {
+    color: tomato;
+}
+
+@media only screen and (min-width: 641px) and (max-width: 959px) {
+    .field {
+        width: 831px;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    .field {
+        width: 631px;
+    }
+}
+
+@media only screen and (max-width: 640px) {
+    .field {
+        width: 600px;
+    }
+
+    .notification-bell, .fa-comment {
+        right: -255px;
+    }
+}
+
+.box-tool {
+    width: 100%;
+    height: 40px;
+    display: block;
+    background-color: #fff;
+    box-shadow: 1px 1px 1px #f0f0f0;
+    list-style-type: none;
+    position: fixed;
+    top: 0;
+    z-index: 9999;
+}
+
+.logotipo_skyfolk {
+    position: fixed;
+    font-family: "Pacifico", cursive !important;
+    margin: auto;
+    left: 50%;
+    cursor: pointer;
+    color: #555 !important;
+    font-size: 1.7em;
+    letter-spacing: 0.2px;
+}
+
+.logotipo_skyfolk span {
+    color: #1e88e5;
+    text-shadow: 1px 1px 1px #ccc;
+}
+
+.fa-bars .fa-bars-content li:nth-child(1) {
+    list-style-type: none;
+    position: absolute;
+    background: none;
+    top: 0;
+    left: 50px;
+    font-size: 20px;
+}
+
+.fa-bars .fa-bars-content li:nth-child(2) {
+    list-style-type: none;
+    position: absolute;
+    left: 100px;
+    top: 0;
+    font-size: 20px;
+}
+
+.fa-bars .fa-bars-content li:nth-child(3) {
+    list-style-type: none;
+    position: absolute;
+    cursor: pointer;
+    left: 150px;
+    top: 0;
+    font-size: 20px;
+}
+
+.fa-bars .fa-bars-content li:nth-child(4) {
+    list-style-type: none;
+    position: absolute;
+    cursor: pointer;
+    left: 200px;
+    top: 0;
+    font-size: 20px;
+}
+
+.fa-bars .fa-bars-content li:nth-child(5) {
+    list-style-type: none;
+    position: absolute;
+    left: 250px;
+    cursor: pointer;
+    top: 30px;
+    width: 40px;
+    height: 40px;
+}
+
+.fa-bars .fa-bars-content li:nth-child(5) img {
+    width: 40px;
+    height: 40px;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+}
+
+/* Menu superior izquierda */
+.fa-bars .fa-bars-content {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 300px;
+    height: 30px;
+    left: 13px;
+    background: none;
+}
+
+.fa-bars:hover .fa-bars-content {
+    display: inline-block;
+}
+
+.fa-bars .fa-bars-content li:hover {
+    color: #1976d2;
+}
+
+.box-tool .logo {
+    position: fixed;
+    margin: auto;
+    text-align: center;
+    left: 50%;
+    padding: 0;
+    top: -280px;
+}
+
+.box-tool img {
+    width: 120px;
+    height: 120px;
+    top: 0;
+    cursor: pointer;
+    position: fixed;
+}
+
+/* Buscar en el tab-amigos */
+#tab-amigos .search {
+    position: relative;
+    border: none;
+    width: 70%;
+    height: 30px;
+    margin: 10px 0 20px 15%;
+    padding-left: 20px;
+    font-family: "Open Sans", sans-serif;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+    background: #eeeeee url("/static/img/search-icon.png") no-repeat 95%;
+    background-size: 13px;
+}
+
+#tab-amigos .search:focus {
+    background: #fefefe url("/static/img/search-icon.png") no-repeat 1%;
+    background-size: 13px;
+}
+
+#tab-amigos .sort {
+    position: relative;
+    display: block;
+    outline: none;
+    margin: auto;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease-out 0s;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 2rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #1e88e5;
+    background-color: transparent;
+    border: medium none;
+    border-radius: 2px;
+}
+
+#tab-amigos .sort:hover {
+    background-color: #eee;
+}
+
+@media only screen and (min-width: 640px) and (max-width: 1080px) {
+    .logotipo_skyfolk {
+        left: 200px;
+    }
+}
+
+/*# sourceMappingURL=buscar.css.map */
+
+.query-options {
+    margin-top: 2.5%;
+    text-align: center;
+    border-bottom: 2px solid #e0e0e0;
+    font-size: 1.3em;
+    height: auto;
+    position: relative;
+    display: block;
+    z-index: 1;
+}
+
+.query-options .list-vertical {
+    margin-left: 2%;
+    transition: all .1s ease-in-out;
+    cursor: pointer;
+    display: inline-block;
+    clear: both;
+    line-height: 30px;
+    box-sizing: border-box;
+    padding: 0 1%;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.query-options .list-vertical:hover {
+    color: #1e88e5;
+    border-bottom: 3px solid #1e88e5;
+}
+
+
+.query-options .dropdown-options {
+    position: absolute;
+    height: auto;
+    display: none;
+    background-color: #ffffff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    color: #555 !important;
+    top: 100%;
+    margin-left: -1%;
+}
+
+.query-options .dropdown-options-open {
+    display: block;
+}
+
+.query-options li .dropdown-options ul li {
+    display: table;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    font-size: 0.9em;
+    margin-top: 5%;
+}
+
+.query-options a {
+    color: #555;
+    text-decoration: none;
+}
+
+.query-options li .dropdown-options ul li:hover {
+    background-color: #1e88e5;
+    color: #fff;
+}

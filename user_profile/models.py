@@ -1,6 +1,7 @@
 import hashlib
 import datetime
 import os, glob
+import logging
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -16,6 +17,8 @@ from django.core.cache import cache
 from neomodel.properties import validator
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.storage import FileSystemStorage
+from badgify.models import Award, Badge
+from django.db import transaction
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
@@ -34,6 +37,10 @@ RELATIONSHIP_STATUSES = (
         (FOLLOWER, 2),
         (BLOCK, 3)
 )
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def upload_cover_path(instance, filename):
@@ -126,8 +133,13 @@ class Profile(models.Model):
         is_first_time_login = self.is_first_login
 
         if is_first_time_login:
-            self.is_first_login = False
-            self.save()
+            try:
+                with transaction.atomic(using='default'):
+                    self.is_first_login = False
+                    Award.objects.create(user=self.user, badge=Badge.objects.get(slug='new-account'))
+                    self.save()
+            except Exception as e:
+                logger.info(e)
 
         return is_first_time_login
 

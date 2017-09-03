@@ -8,6 +8,8 @@ from .models import Publication, ExtraContent
 from user_profile.models import NodeProfile
 from user_profile.tasks import send_to_stream
 from notifications.signals import notify
+from badgify.models import Award, Badge
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,6 +17,11 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Publication, dispatch_uid='publication_save')
 def publication_handler(sender, instance, created, **kwargs):
+    if created:
+        total_pubs = Publication.objects.filter(author__id=instance.author_id).count()
+        if total_pubs == 10:
+            Award.objects.create(user=instance.author, badge=Badge.objects.get(slug='10-pubs-reached'))
+
     if not instance.deleted:
         logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))
         n = NodeProfile.nodes.get(user_id=instance.author.id)

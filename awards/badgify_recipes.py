@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+from django.conf import settings
+
+from badgify.recipe import BaseRecipe
+import badgify
+
+from django.contrib.auth.models import User
+
+
+class FirstLoginRecipe(BaseRecipe):
+    """
+    People loving Python.
+    """
+    name = '¡Todo tiene un inicio!'
+    slug = 'new-account'
+    description = '¡Bienvenido a Skyfolk! - Has obtenido este logro al registrarte exitosamente.'
+
+    @property
+    def image(self):
+        return '/badges/generic_avatar.png'
+
+    @property
+    def user_ids(self):
+        return User.objects.filter(love_python=True).values_list('id', flat=True)
+
+
+class TenPubsReachedRecipe(BaseRecipe):
+    """
+    People loving JS.
+    """
+    name = '¡10 publicaciones realizadas!'
+    slug = '10-pubs-reached'
+    description = 'Has obtenido este logro por realizar 10 publicaciones en Skyfolk.'
+
+    @property
+    def image(self):
+        return '/badges/generic_avatar.png'
+
+    @property
+    def user_ids(self):
+        return User.objects.filter(love_js=True).values_list('id', flat=True)
+
+
+badgify.register(FirstLoginRecipe)
+badgify.register(TenPubsReachedRecipe)

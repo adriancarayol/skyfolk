@@ -1,0 +1,278 @@
+.hgroup {
+    border-bottom: 1px solid #66757f;
+    margin-bottom: 70px;
+    padding: 10px 0;
+}
+
+.hgroup h4 {
+    color: #66757F;
+    display: block;
+    font-weight: 100;
+    font-size: 22px;
+}
+
+.hgroup h6 {
+    display: inline-block;
+    margin-top: 7px;
+    margin-left: 18px !important;
+    color: #66757F;
+    font-weight: 100;
+    font-size: 15px !important;
+}
+
+.wrapper-p {
+    background-color: #fafafa;
+    padding: 10px;
+    margin-top: 1.3em;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+}
+
+.wrapper-p .div-messages {
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    position: relative;
+    display: block;
+    margin-bottom: 2%;
+    padding: 10px;
+}
+
+.wrapper-p .div-messages strong {
+    color: #555;
+}
+
+.wrapper-p .div-messages ul {
+    position: relative;
+    margin-top: 2%;
+    color: #424242;
+}
+
+.wrapper-p .div-messages ul li {
+    margin-top: 1.25%;
+}
+
+/* Menu horizontal */
+.wrapper-config-menu {
+    position: relative;
+    margin-right: 10%;
+}
+
+.menu-config {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid #e1e8ed;
+    border-radius: 5px;
+    margin-top: 1.3em;
+}
+
+.menu-config li {
+    color: #555;
+    text-align: left;
+    height: 40px;
+    display: block;
+    background-color: #fff;
+    border-top: 1px solid #e1e8ed;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.menu-config li:hover {
+    color: #1e88e5;
+    background-color: #f5f8fa;
+}
+
+.wr {
+    position: relative;
+    margin: auto;
+    width: auto;
+    height: 300px;
+    left: 27%;
+}
+
+#recent, #new, #new2 {
+    display: list-item;
+}
+
+.password_change {
+    position: relative;
+    display: block;
+    width: 90%;
+    margin-left: 1%;
+}
+
+.password_change label {
+    font-size: 1.2em;
+}
+
+.img-profile {
+    width: 120px;
+    height: 120px;
+    box-shadow: 0 1px 5px #1976D2;
+    cursor: pointer;
+    display: block;
+    position: relative;
+    margin: auto;
+    top: 80px;
+}
+
+.index-wrapper {
+    position: relative;
+    display: block;
+    width: 350px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 2.6em;
+    height: auto;
+    font-size: 1.4em;
+}
+
+.backimage-usr {
+    position: relative;
+    display: block;
+    margin-bottom: 30px;
+}
+
+.nameConfig .errorlist, .lastConfig .errorlist {
+    color: tomato;
+}
+
+#float {
+    font-size: 15px;
+    font-family: "Open Sans", sans-serif;
+    margin: -30px;
+    padding-right: 5px;
+    background: #FFFFFF;
+    border: 50px solid #FFF;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: #c4c4c4 5px 5px;
+}
+
+#contra {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    background-color: #fff;
+    top: 15%;
+    height: 570px;
+    width: 50%;
+    border-radius: 7px;
+    box-shadow: 2px 2px 7px 0 #efefef;
+    border: 1px solid #e0e0e0;
+}
+
+#contra li {
+    list-style-type: none;
+    position: relative;
+    display: list-item;
+    margin-top: 30px;
+}
+
+#contra-2 {
+    margin-top: 10px;
+    height: 100%;
+    width: 100%;
+}
+
+/* Boton salvar cambios */
+.wrapper-p button[type="submit"] {
+    margin-bottom: 5px;
+}
+
+.wrapper-p .btn-password {
+    margin-right: -10%;
+}
+
+#id_image {
+    display: list-item;
+    position: relative;
+    top: 0;
+    margin-top: 20px;
+}
+
+label[for="id_image"] {
+    color: #212121;
+    font-weight: 100;
+}
+
+.cn {
+    font-size: 20px;
+    text-shadow: #ccc 0.5px 0.5px 0.5px;
+    color: #424242;
+    font-family: "Open Sans", sans-serif;
+    margin-left: 17px;
+}
+
+.ch {
+    font-size: 12px;
+    text-shadow: #ccc 0.2px 0.2px 0.2px;
+    color: #424242;
+    margin-left: 20px;
+    margin-top: 20px;
+    font-family: "Open Sans", sans-serif;
+}
+
+.wrapper-profilex {
+    min-height: initial;
+}
+
+.profilex {
+    position: relative;
+    height: 200px;
+    box-shadow: 0 1px 5px grey;
+    background-color: transparent;
+}
+
+.profilex .delete-profile-image, .profilex .add-profile-image {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    top: 30px;
+    padding: 20px;
+    background-color: #fff;
+    color: #1e88e5;
+    display: inline-block;
+    transition: 0.2s ease-in-out;
+    border-radius: 3px;
+}
+
+.profilex .delete-profile-image:hover > i, .profilex .add-profile-image:hover > i {
+    opacity: 0.7;
+}
+
+.profilex .delete-profile-image i, .profilex .add-profile-image i {
+    font-size: 2em;
+    transition: 0.2s ease-in-out;
+}
+
+.profilex .add-profile-image {
+    left: 0;
+    margin-left: -60px;
+}
+
+.profilex .delete-profile-image {
+    margin-right: -60px;
+    right: 0;
+}
+
+/* Message password reset done */
+.password-reset-done {
+    margin-left: 1.5%;
+}
+
+/* Account disabled */
+.disable-account-wrapper p {
+    font-size: 1.3em;
+    color: #555;
+    display: block;
+    text-align: center;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    margin-bottom: 5%;
+    padding: 10px;
+}
+
+/*# sourceMappingURL=configuracion.css.map */

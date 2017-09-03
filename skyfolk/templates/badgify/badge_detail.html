@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {{ badge.name }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ badge.name }}</h1>
+    <p><em>{{ badge.description }}</em></p>
+    <p><strong>{{ badge.users_count }} users</strong>:</p>
+    <ul>
+        {% for user in awarded_users %}
+        <li>{{ user.username }}</li>
+        {% endfor %}
+    </ul>
+    {% if is_paginated %}
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li><a href="?page=1">⟪⟪</a></li>
+    <li><a href="?page={{ page_obj.previous_page_number }}">←</a></li>
+    {% endif %}
+    {% for i in paginator.page_range %}
+    <li {% if page_obj.number == i %} class="active" {% endif %}><a href="?page={{i}}">{{i}}</a></li>
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <li><a href="?page={{ page_obj.next_page_number }}">➝</a></li>
+    <li><a href="?page={{ page_obj.paginator.num_pages }}">⟫⟫</a></li>
+    {% endif %}
+</ul>
+{% endif %}
+{% endblock %}
