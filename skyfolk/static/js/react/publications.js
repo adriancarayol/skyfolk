@@ -21159,13 +21159,23 @@ var ItemPublication = function ItemPublication(_ref) {
                 ),
                 _react2.default.createElement('h4', { dangerouslySetInnerHTML: { __html: item.content } }),
                 _react2.default.createElement(
+                    'p',
+                    null,
+                    _react2.default.createElement(
+                        'i',
+                        { className: 'material-icons' },
+                        'favorite'
+                    ),
+                    ' ',
+                    item.likes
+                ),
+                _react2.default.createElement(
                     'a',
                     { href: '/publication/' + item.id, className: 'pink-text secondary-content' },
-                    item.likes,
                     _react2.default.createElement(
                         'i',
                         { className: 'material-icons right' },
-                        'favorite'
+                        'open_in_new'
                     )
                 )
             );

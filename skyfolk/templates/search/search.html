@@ -41,7 +41,7 @@ Template para las busquedas
                 <li class="list-vertical" {% if s == 'publications' %} style="border-bottom: 3px solid #1e88e5;" {% endif %}><a href="{% url 'user_profile:category-search' 'publications' %}?q={{ q }}">Publicaciones</a></li>
                 <li class="list-vertical" {% if s == 'videos' %} style="border-bottom: 3px solid #1e88e5;" {% endif %}><a href="{% url 'user_profile:category-search' 'videos' %}?q={{ q }}">Videos</a></li>
                 <li class="list-vertical" {% if s == 'accounts' %} style="border-bottom: 3px solid #1e88e5;" {% endif %}><a href="{% url 'user_profile:category-search' 'accounts' %}?q={{ q }}">Cuentas</a></li>
-                <li class="list-vertical">Más opciones <i class="fa fa-caret-down" aria-hidden="true"></i>
+                <li class="list-vertical">Más opciones<i class="material-icons">arrow_drop_down</i>
                     <div id="dropdown-search" class="dropdown-options">
                         <ul class="dropdown-ul">
                             <li>Todo</li>
@@ -80,8 +80,7 @@ Template para las busquedas
                     {% else %}
                     <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                     {% endif %}
-                    <i class="fa fa-user fa-2x like-him">
-                    </i>
+                    <i class="material-icons like-him">person</i>
                     <div class="bg-user">
                         <div onclick="location.href='/profile/{{ item.username }}'"
                             class="profile-user-bg">{% avatar item.object.user %}</div>
@@ -104,7 +103,7 @@ Template para las busquedas
                 <div class="col l9 m9 s8 author">
                     <div class="row">
                         <span><a href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i><span>
-                                    <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></span>
+                                    <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="material-icons md-18 right" aria-hidden="true">open_in_new</i></a></span>
                                     <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
                         </div>
                     <div class="row" style="word-wrap: break-word;">
@@ -143,8 +142,7 @@ Template para las busquedas
                     <div class="col l8 m8 s8 legend-user-data">
                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
                         <i class="photo-title truncate">{{ item.title }}</i>
-                        <i class="truncate photo-date"><i class="fa fa-clock-o"
-                                aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</i>
+                        <i class="truncate photo-date"><i class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}</i>
                     </div>
                 </div>
             </div>
@@ -164,8 +162,7 @@ Template para las busquedas
                     {% else %}
                     <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
                     {% endif %}
-                    <i class="fa fa-user fa-2x like-him">
-                    </i>
+                    <i class="material-icons like-him">person</i>
                     <div class="bg-user">
                         <div onclick="location.href='/profile/{{ item.username }}'"
                             class="profile-user-bg">{% avatar item.object.user %}</div>
@@ -193,7 +190,7 @@ Template para las busquedas
                 <div class="col l9 m9 s8 author">
                     <div class="row">
                         <span><a href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i><span>
-                                    <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="fa fa-plus-square-o right" aria-hidden="true"></i></a></span>
+                                    <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="material-icons md-18 right">open_in_new</i></a></span>
                                     <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
                         </div>
                     <div class="row" style="word-wrap: break-word;">
@@ -237,8 +234,7 @@ Template para las busquedas
                     <div class="col l8 m8 s8 legend-user-data">
                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
                         <i class="photo-title truncate">{{ item.title }}</i>
-                        <i class="truncate photo-date"><i class="fa fa-clock-o"
-                                aria-hidden="true"></i> {{ item.pub_date|naturaltime }}</i>
+                        <i class="truncate photo-date"><i class="material-icons">access_time</i> {{ item.pub_date|naturaltime }}</i>
                     </div>
                 </div>
             </div>

@@ -72,7 +72,7 @@ $(document).ready(function () {
 
 
     /* Abrir respuesta a comentario */
-    $(tab_messages).on('click', '.options_comentarios .fa-reply', function () {
+    $(tab_messages).on('click', '.options_comentarios .reply-comment', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
@@ -101,7 +101,7 @@ $(document).ready(function () {
     });
 
     /* Borrar publicacion */
-    $(tab_messages).on('click', '.options_comentarios .fa-trash', function () {
+    $(tab_messages).on('click', '.options_comentarios .trash-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
             title: "Are you sure?",
@@ -429,7 +429,7 @@ function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
         'csrfmiddlewaretoken': csrftoken
     };
 
-    var shared_tag = tag.find('.fa-quote-right');
+    var shared_tag = tag.find('.share-values');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
 

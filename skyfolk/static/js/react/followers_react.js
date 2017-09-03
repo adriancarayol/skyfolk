@@ -21121,7 +21121,11 @@ var Items = function Items(_ref) {
                                 'div',
                                 { className: 'header' },
                                 _react2.default.createElement('img', { className: 'back-profile-user lazyload', 'data-src': item.back_image }),
-                                _react2.default.createElement('i', { className: 'fa fa-fire fa-2x affinity' }),
+                                _react2.default.createElement(
+                                    'i',
+                                    { className: 'material-icons affinity' },
+                                    'mood'
+                                ),
                                 _react2.default.createElement(
                                     'div',
                                     { className: 'bg-user' },

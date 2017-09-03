@@ -12,15 +12,14 @@
         <div class="box">
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
             data-delay="50"
-            data-tooltip="Ver conversación completa"><i class="fa fa-plus-square-o" aria-hidden="true"></i></span>
+            data-tooltip="Ver conversación completa"><i class="material-icons md-18">open_in_new</i></span>
             {% if user.id == node.p_author.id %}
             {% if node.event_type == 1 or node.event_type == 3 %}
             <span data-id="{{ node.pk }}"
             class="top-options edit-comment tooltipped"
             data-position="bottom"
             data-delay="50"
-            data-tooltip="Editar comentario"><i class="fa fa-pencil"
-            aria-hidden="true"></i></span>
+            data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
             {% endif %}
             {% endif %}
             <div class="row">
@@ -37,7 +36,7 @@
                             {% if node.parent %}
                             <span class="chip">
                                 {% avatar node.parent.p_author %}
-                                <i class="fa fa-reply"></i> <a href="/profile/{{ node.parent.p_author }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                                <a href="/profile/{{ node.parent.p_author }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                             </span>
                             {% endif %}
                         </h2>
@@ -104,32 +103,27 @@
             <!-- OPCIONES DE COMENTARIOS -->
             <div class="options_comentarios">
                 <ul class="opciones">
-                    {% if   user.id == node.p_author.id %}
+                    {% if   user.id == node.p_author.id or user.id == node.p.author.id %}
                     {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
-                    <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
-                    </li>
-                    {% elif   user.id == node.p.author.id %}
-                    {% comment %} Si estamos visitando nuestro propio perfil {% endcomment %}
-                    <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i>
+                    <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
                     </li>
                     {% endif %}
                     {% comment %} Si el usuario esta logueado {% endcomment %}
                     {% with node.user_give_me_hate.all as hates %}
                     <li title="No me gusta" class="hate-comment"{% if user in hates %} style="color: rgb(186, 104, 200);"{% endif %}>
-                        <i class="fa fa-angle-down" aria-hidden="true"></i>
-                        <i class="fa hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
+                        <i class="material-icons md-18">keyboard_arrow_down</i>
+                        <i class="hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
                     </li>
                     {% endwith %}
                     {% with node.user_give_me_like.all as likes %}
                     <li title="¡Me gusta!" class="like-comment" {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                        <i class="fa fa-angle-up" aria-hidden="true"></i>
-                        <i class="fa like-value">{% with node.total_likes as likes %}{% if likes > 0 %}{{ likes|intword }}{% endif %}{% endwith %}</i>
+                        <i class="material-icons md-18">keyboard_arrow_up</i>
+                        <i class="like-value">{% with node.total_likes as likes %}{% if likes > 0 %}{{ likes|intword }}{% endif %}{% endwith %}</i>
                     </li>
                     {% endwith %}
-                    <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i
-                        class="fa fa-quote-right" aria-hidden="true"> {{ pubs_shared|lookup:node.id|intword }}</i></li>
-                        <li title="Responder" class="reply-comment"><i class="fa fa-reply"
-                         id="reply-caja-comentario-{{ node.pk }}"></i>
+                    <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i class="material-icons md-18">format_quote</i>
+                                        <i class="share-values"> {{ pubs_shared|lookup:node.id|intword }}</i></li>
+                        <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
                      </li>
                  </ul>
              </div>

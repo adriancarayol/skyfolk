@@ -27,8 +27,7 @@
                 <div class="col l8 m8 s8 legend-user-data">
                     <a href="/profile/{{ photo.owner.username }}">@{{ photo.owner.username }}</a>
                     <i class="photo-title truncate">{{ photo.title }}</i>
-                    <i class="truncate photo-date"><i class="fa fa-clock-o"
-                                                      aria-hidden="true"></i> {{ photo.date_added|naturaltime }}</i>
+                    <i class="truncate photo-date"><i class="material-icons md-18">access_time</i> {{ photo.date_added|naturaltime }}</i>
                 </div>
             </div>
         </div>

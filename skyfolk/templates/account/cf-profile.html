@@ -30,9 +30,9 @@ Template para la configuracion del perfil de usuario
                         style="background-image: url({% avatar_url request.user %}); background-repeat: no-repeat; background-position: center;
                         background-size: 100% 100%">
                         <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
-                                class="fa fa-trash"></i></a>
+                                class="material-icons">delete_forever</i></a>
                         <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
-                                class="fa fa-plus"></i></a>
+                                class="material-icons">add</i></a>
                     </div>
                 </div>
                 <div class="col l12 m12 s12 index-wrapper">
@@ -60,7 +60,7 @@ Template para la configuracion del perfil de usuario
                         <div class="backimage-usr file-field input-field avatar-upload">
                             <p>{{ perfil_form.backImage.errors }}</p>
                             <div class="btn blue darken-1 waves-effect wavesl-light">
-                                <span>Imagen</span>
+                                <span>Imagen de fondo</span>
                                 <input id="id_backImage" name="image" type="file" class="avatar-input">
                             </div>
                             <div class="file-path-wrapper">
@@ -148,7 +148,7 @@ Para evitar cadenas de texto muy largas (a la hora de mostrar el nombre del fich
 {% block cropper %}
     <div id="crop-image-preview" class="crop-image-div">
         <div class="row">
-            <span class="close-crop-image fa fa-close right"></span>
+            <span class="close-crop-image material-icons right">remove</span>
         </div>
         <div class="row">
             <div class="col s12">

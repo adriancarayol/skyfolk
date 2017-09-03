@@ -1,18 +1,18 @@
 {% load humanize %}
 <div class="alert alert-block alert-{{ notice.level }}">
     <a title="Borrar notificación" class="close pull-right" href="{% url 'notifications:delete' notice.slug %}">
-        <i class="fa fa-trash" aria-hidden="true"></i>
+        <i class="material-icons md-18">delete_forever</i>
     </a>
     <a title="Marcar como no leido" class="close pull-right"
        href="{% url 'notifications:mark_as_unread' notice.slug %}">
-        <i class="fa fa-eye-slash" aria-hidden="true"></i>
+        <i class="material-icons md-18">undo</i>
     </a>
     <a title="Marcar como leido" class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
-        <i class="fa fa-eye" aria-hidden="true"></i>
+        <i class="material-icons md-18">done</i>
     </a>
     <h5>
-        {% if notice.unread %}<i class="fa fa-bell" aria-hidden="true" title="Sin leer"></i>{% endif %}
-        {% if not notice.level == "new_follow" %}<a href="/profile/{{ notice.actor }}">{{ notice.actor }}</a>{% endif %}
+        {% if notice.unread %}<i class="material-icons" title="Sin leer">notifications</i>{% endif %}
+        {% if not notice.level == "new_follow" %}<a href="/profile/{{ notice.actor }}">@{{ notice.actor }}</a>{% endif %}
         <b>{{ notice.verb|safe }}</b>
         {% if notice.target %}
             of {{ notice.target }}

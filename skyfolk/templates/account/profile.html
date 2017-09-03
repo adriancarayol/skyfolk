@@ -46,7 +46,7 @@ Template para el perfil de cada usuario
             data-id="">
             <div class="row">
                 <div class="col s12 title-page-wrapper">
-                    <h4><i class="fa fa-quote-right" aria-hidden="true"></i> Citar publicacion</h4>
+                    <h4><i class="material-icons">format_quote</i> Citar publicacion</h4>
                     <h6>Comparte esta publicación con tus seguidores</h6>
                 </div>
             </div>
@@ -101,7 +101,6 @@ Template para el perfil de cada usuario
                             <div id="tab-comentarios">
                                 <div class="btn-filters row">
                                     <div id="react">
-                                        <i class="fa fa-lg fa-spinner fa-spin"></i><br><br>
                                     </div>
                                     <script>
                                         window.board_owner = {{ user_profile.id }};
@@ -114,7 +113,7 @@ Template para el perfil de cada usuario
                                     <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
                                     <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
                                         class="no-comments-new-comment">
-                                        <i class="fa fa-paper-plane fa-lg"></i>
+                                        <i class="material-icons">send</i>
                                     </a>
                                 </div>
                                 {% else %}

@@ -22,7 +22,7 @@ from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from publications_gallery.models import PublicationPhoto
-from publications.forms import SharedPublicationForm
+from publications_gallery.forms import SharedPhotoPublicationForm
 from publications_gallery.forms import PublicationPhotoForm
 from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
@@ -366,7 +366,7 @@ class PhotoDetailView(DetailView):
 
         context['form'] = EditFormPhoto(instance=self.photo)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
-        context['publication_shared'] = SharedPublicationForm()
+        context['publication_shared'] = SharedPhotoPublicationForm()
 
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         if self.photo.is_public:

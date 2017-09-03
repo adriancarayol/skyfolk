@@ -7,9 +7,8 @@
     <div class="col l12 m12 s12">
         <div id="group-profile" data-id="{{ group_profile.group_ptr_id }}" class="user-card card">
             <div class="ventana-pin">
-                <a><i class="fa fa-times"></i></a>
-                <a><i class="fa fa-expand"></i></a>
-                <a><i class="fa fa-thumb-tack"></i></a>
+                <a><i class="material-icons">remove</i></a>
+                <a><i class="material-icons">flip_to_front</i></a>
             </div>
             <div class="user-avatar">
                 {% if group_profile.back_image %}
@@ -28,29 +27,29 @@
                         </div>
                         <span class="informacion">
                         {% if group_owner %}
-                            <span id="configurationOnProfile" class="fa fa-cog" title="Configuracion"></span>
+                            <span id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</span>
                         {% elif follow_group %}
-                            <span id="unfollow-group" class="fa fa-remove group-follow" title="Dejar de seguir"
-                                  style="color: #29b203;"></span>
+                            <span id="unfollow-group" class="material-icons group-follow" title="Dejar de seguir"
+                                  style="color: #29b203;">remove</span>
                         {% elif friend_request %}
-                            <span class="fa fa-clock-o" id="cancel_group_request" title="En proceso"></span>
+                            <span class="material-icons" id="cancel_group_request" title="En proceso">watch_later</span>
                         {% else %}
-                            <span id="follow-group" class="fa fa-plus group-follow" title="Seguir"></span>
+                            <span id="follow-group" class="material-icons group-follow" title="Seguir">add</span>
                         {% endif %}
                             {% if user_like_group %}
-                                <span id="like-group" class="fa fa-heart group-like" title="¡Me gusta!"
-                                      style="color: rgb(236, 64, 122);"></span>
+                                <span id="like-group" class="material-icons group-like" title="¡Me gusta!"
+                                      style="color: rgb(236, 64, 122);">favorite</span>
                             {% else %}
-                                <span id="like-group" class="fa fa-heart group-like" title="¡Me gusta!"></span>
+                                <span id="like-group" class="material-icons group-like" title="¡Me gusta!">favorite</span>
                             {% endif %}
-                            <span id="publish_group" class="fa fa-paper-plane group-comment" title="Escribir"></span>
+                            <span id="publish_group" class="material-icons group-comment" title="Escribir">send</span>
                         </span>
                     </div>
                 </div>
             </div>
             <div class="group-info center">
                 <br>
-                <p class="group-name">{% if not group_profile.is_public %}<i class="fa fa-lock" aria-hidden="true"></i> {% endif %}<b>{{ group_profile.name }}</b></p><br>
+                <p class="group-name">{% if not group_profile.is_public %}<i class="material-icons">lock</i> {% endif %}<b>{{ group_profile.name }}</b></p><br>
                 {% if group_profile.description != None %}
                     <p class="group-description">{{ group_profile.description }}</p><br><br>
                 {% endif %}
@@ -59,8 +58,8 @@
                     {% for i in interests %}
                         <span class="chip">{{ i.title }}</span>
                     {% endfor %}
-                {% endif %}
                 </div>
+                {% endif %}
             </div>
             <ul id="user-stats" class="stats">
                 <li>

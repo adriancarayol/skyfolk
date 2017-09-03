@@ -96,8 +96,9 @@ const ItemPublication = ({ result }) => (
                 <a href={'/profile/' + item.author__username}>@{item.author__username}</a>
             </p>
             <h4 dangerouslySetInnerHTML={{__html: item.content}} />
-            <a href={'/publication/' + item.id} className="pink-text secondary-content">{item.likes}
-                <i className="material-icons right">favorite</i>
+            <p><i className="material-icons">favorite</i> {item.likes}</p>
+            <a href={'/publication/' + item.id} className="pink-text secondary-content">
+                <i className="material-icons right">open_in_new</i>
             </a>
         </li>
             )

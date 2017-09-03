@@ -26,7 +26,7 @@
                 <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper" data-id="">
                     <div class="row">
                         <div id="status" class="col s12 title-page-wrapper">
-                            <h4><i class="fa fa-quote-right" aria-hidden="true"></i> Citar publicacion</h4>
+                            <h4><i class="material-icons">format_quote</i> Citar publicacion</h4>
                             <h6>Comparte esta publicación con tus seguidores</h6>
                         </div>
                     </div>
@@ -74,8 +74,7 @@
                                 <a href="/profile/{{ object.owner.username }}">@{{ object.owner.username }}</a>
                                 <i class="photo-title">{{ object.title }}{% if object.caption %}
                                     <p>{{ object.caption|safe }} </p>{% endif %}</i>
-                                <i class="photo-date"><i class="fa fa-clock-o"
-                                                         aria-hidden="true"></i> {% trans "Published" %} {{ object.date_added|naturaltime }}
+                                <i class="photo-date"><i class="material-icons">access_time</i> {% trans "Published" %} {{ object.date_added|naturaltime }}
                                 </i>
                             </div>
                             <div class="col l12 m12 s12 tags-content">
