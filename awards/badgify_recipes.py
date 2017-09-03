@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
-
-from badgify.recipe import BaseRecipe
 import badgify
-
+from django.conf import settings
+from badgify.recipe import BaseRecipe
 from django.contrib.auth.models import User
 
 
@@ -17,7 +15,7 @@ class FirstLoginRecipe(BaseRecipe):
 
     @property
     def image(self):
-        return '/badges/generic_avatar.png'
+        return settings.MEDIA_ROOT + '/badges/generic_avatar.png'
 
     @property
     def user_ids(self):
@@ -34,7 +32,7 @@ class TenPubsReachedRecipe(BaseRecipe):
 
     @property
     def image(self):
-        return '/badges/generic_avatar.png'
+        return settings.MEDIA_ROOT + '/badges/generic_avatar.png'
 
     @property
     def user_ids(self):

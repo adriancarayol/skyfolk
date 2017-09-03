@@ -153,7 +153,7 @@ SESSION_UPDATE_SECONDS = 10 * 60
 #                   http://www.django-rest-framework.org/
 REST_FRAMEWORK = {
     # hace la api solo accesible para admins
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',

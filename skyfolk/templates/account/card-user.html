@@ -112,7 +112,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     {% endif %}
                     <li class="info-groups" title="Grupos de {{ user_profile.username }}"><i class="material-icons">group</i>
                     </li>
-                    <li class="info-trof" title="Logros de {{ user_profile.username }}"><i class="material-icons">save</i>
+                    <li class="info-trof" title="Logros de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">save</i>
                     </li>
                     {% if user.username == user_profile.username %}
                     <li class="info-content" title="Mis publicaciones"><i class="material-icons">favorite</i></li>
@@ -121,13 +121,13 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
             </div>
         </div>
         <!-- Trofeos -->
-        <div class="col s12 m12 l10 trofeos">
+        <div class="col s12 m12 l10 offset-l1 trofeos">
             <span id="close-trofeos" class="material-icons right">remove</span>
-            <h3 class="trofeos-title">Logros de {{ user_profile.username }}</h3>
-            <div class="col l12 m12 s12 wrapper-trofeos">
-                <div class="col s3 m3 l1 trofeo-user">
-                </div>
-                <div class="col s3 m3 l1 trofeo-user">
+            <div class="row">
+               <h3 class="trofeos-title">Logros de {{ user_profile.username }}</h3>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12 wrapper-trofeos">
                 </div>
             </div>
         </div>

@@ -41,7 +41,10 @@ $(document).ready(function () {
     });
 
     $('.info-trof').on('click', function () {
-        $(".trofeos").show();
+        var id = $(this).data('id');
+        $(".trofeos").show(0, function() {
+            $('.wrapper-trofeos').load('/awards/user/'+ id + '/');
+        });
     });
 
     $('.info-groups').on('click', function () {

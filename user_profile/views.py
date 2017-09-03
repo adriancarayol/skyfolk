@@ -47,6 +47,7 @@ from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 from django.db.models import Case, When
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework.decorators import api_view, permission_classes
 
 
 def load_profile_publications(request, page, profile):
@@ -1644,6 +1645,7 @@ class FollowingByAffinityList(generics.ListAPIView):
         pk_list = [u.user_id for u in n.get_favs_users()]
         preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
         return User.objects.filter(id__in=pk_list).order_by(preserved)
+
 
 class FollowersByAffinityList(generics.ListAPIView):
     serializer_class = UserSerializer
