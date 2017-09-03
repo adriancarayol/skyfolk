@@ -15,7 +15,7 @@ class FirstLoginRecipe(BaseRecipe):
 
     @property
     def image(self):
-        return settings.MEDIA_ROOT + '/badges/generic_avatar.png'
+        return settings.MEDIA_URL + 'badges/ic_pets_black_24dp_2x.png'
 
     @property
     def user_ids(self):
@@ -32,7 +32,7 @@ class TenPubsReachedRecipe(BaseRecipe):
 
     @property
     def image(self):
-        return settings.MEDIA_ROOT + '/badges/generic_avatar.png'
+        return settings.MEDIA_URL + 'badges/ic_comment_black_24dp_2x.png'
 
     @property
     def user_ids(self):

@@ -28,6 +28,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from notifications.signals import notify
 from notifications.models import Notification
 from user_profile.tasks import send_email
+from django.http import HttpResponseForbidden
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -494,3 +498,47 @@ class KickMemberGroup(View):
         return JsonResponse({'response': response})
 
 kick_member = login_required(KickMemberGroup.as_view(), login_url='/')
+
+
+class ProfileGroups(APIView):
+
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name  = "groups/list_group_profile.html"
+
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs.pop('user_id', None)
+        print('user_id: {}'.format(user_id))
+        if not user_id:
+            raise Http404
+
+        try:
+            profile = NodeProfile.nodes.get(user_id=user_id)
+            request_user = NodeProfile.nodes.get(user_id=request.user.id)
+        except User.DoesNotExist:
+            raise Http404
+
+        privacity = profile.is_visible(request_user)
+        if privacity and privacity != 'all':
+            return HttpResponseForbidden
+
+        try:
+            results, meta = db.cypher_query(
+                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id" % user_id)
+        except Exception as e:
+            logging.info(e)
+
+        groups_ids = [y for x in results for y in x]
+        queryset = UserGroups.objects.filter(group_ptr_id__in=groups_ids)
+
+        try:
+            id_list = ', '.join(str(x) for x in groups_ids)
+            results, meta = db.cypher_query(
+                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE n.group_id IN [%s] RETURN n.group_id, COUNT(m) as members" % id_list)
+            members_in_groups = dict((item[0], (item[1])) for item in results)
+        except Exception as e:
+            logging.info(e)
+            members_in_groups = []
+
+        return Response({'groups': queryset, 'members': members_in_groups})
+
+list_group_profile = login_required(ProfileGroups.as_view(), login_url='/')

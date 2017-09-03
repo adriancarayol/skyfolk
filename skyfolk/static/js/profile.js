@@ -42,13 +42,20 @@ $(document).ready(function () {
 
     $('.info-trof').on('click', function () {
         var id = $(this).data('id');
-        $(".trofeos").show(0, function() {
-            $('.wrapper-trofeos').load('/awards/user/'+ id + '/');
+        $(".trofeos").toggle(0, function() {
+            if ($(this).is(":visible")) {
+                $('.wrapper-trofeos').load('/awards/user/'+ id + '/');
+            }
         });
     });
 
     $('.info-groups').on('click', function () {
-        $(".grupos").show();
+        var id = $(this).data('id');
+        $(".grupos").toggle(0, function() {
+            if ($(this).is(":visible")) {
+                $('.wrapper-groups').load('/groups/profile/'+ id + '/');
+            }
+        });
     });
 
     $('#close-trofeos').on('click', function () {

@@ -31,5 +31,7 @@ urlpatterns = [
     url(r'^remove_group_request/$',
         user_groups_views.remove_group_request),
     url(r'^kick_member/$',
-        user_groups_views.kick_member)
+        user_groups_views.kick_member),
+    url(r'^groups/profile/(?P<user_id>\d+)/$', user_groups_views.list_group_profile,
+        name='list_group_profile'),
 ]

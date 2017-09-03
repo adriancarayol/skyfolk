@@ -1,7 +1,8 @@
+{% load humanize %}
 <ul>
     {% for award in awards %}
     	<li>
-    		<div class="col s3">
+    		<div class="col l3 m6 s12">
     			<div class="user-award z-depth-2">
 	    			<div class="row">
 	    				<div class="col s2">
@@ -12,10 +13,10 @@
 	    				</div>
 	    			</div>
 	    			<div class="row">
-	    				<p>{{ award.badge.description }}
+	    				<p>{{ award.badge.description }}</p>
 	    			</div>
 	    			<div class="row center">
-	    				<a class="btn-large disabled"><i class="material-icons left">person</i>{{ award.badge.users_count }}</a>
+	    				<a class="btn-large disabled"><i class="material-icons left">person</i>{{ award.badge.users_count|intword }}</a>
 	    			</div>
     			</div>
     		</div>
