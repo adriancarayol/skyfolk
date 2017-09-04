@@ -1,4 +1,5 @@
 {% load humanize %}
+<div class="row">
 <ul>
     {% for award in awards %}
     	<li>
@@ -23,3 +24,23 @@
     	</li>
     {% endfor %}
 </ul>
+</div>
+<div class="row">
+    <ul class="pagination center">
+        {% if awards.has_previous %}
+	        <li><a href="/awards/user/{{ user_id }}/?page={{ awards.previous_page_number }}" class="prev-awards"><i class="material-icons">chevron_left</i></a></li>
+	        {% else %}
+	        <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+        {% endif %}
+        <li class="active blue darken-1 white-text"><span>{{ awards.number }} de {{ awards.paginator.num_pages }} </span></li>
+        {% if awards.has_next %}
+	        <li><a href="/awards/user/{{ user_id }}/?page={{ awards.next_page_number }}" class="next-awards">
+	                <i class="material-icons">chevron_right</i>
+	        </a></li>
+        {% else %}
+	        <li class="disabled"><span>
+	                <i class="material-icons">chevron_right</i>
+	        </span></li>
+        {% endif %}
+    </ul>
+</div>

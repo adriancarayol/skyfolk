@@ -334,13 +334,13 @@ class FollowersGroup(ListView):
 
         self.group = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
         node_group = NodeGroup.nodes.get(group_id=self.group.group_ptr_id)
-        user_ids = [x.user_id for x in node_group.members.all()[offset:limit]]
+        user_ids = [x.user_id for x in node_group.members.all()[offset:25]]
 
         total_users = len(node_group.members.all())
         total_pages = int(total_users / 25)
         if total_users % 25 != 0:
             total_pages += 1
-            self.pagination = make_pagination_html(current_page, total_pages)
+        self.pagination = make_pagination_html(current_page, total_pages)
 
         return User.objects.filter(id__in=user_ids).select_related('profile')
 
@@ -379,7 +379,7 @@ class LikeListGroup(ListView):
         total_pages = int(total_users / 25)
         if total_users % 25 != 0:
             total_pages += 1
-            self.pagination = make_pagination_html(current_page, total_pages)
+        self.pagination = make_pagination_html(current_page, total_pages)
         return LikeGroup.objects.filter(to_like_id=self.group['id']).values('from_like__username',
                                                                             'from_like__first_name',
                                                                             'from_like__last_name',
@@ -507,7 +507,7 @@ class ProfileGroups(APIView):
 
     def get(self, request, *args, **kwargs):
         user_id = kwargs.pop('user_id', None)
-        print('user_id: {}'.format(user_id))
+        
         if not user_id:
             raise Http404
 
@@ -521,9 +521,27 @@ class ProfileGroups(APIView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden
 
+
+        current_page = int(request.GET.get('page', '1'))  # page or 1
+        limit = 12 * current_page
+        offset = limit - 12
+
         try:
             results, meta = db.cypher_query(
-                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id" % user_id)
+                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN COUNT(n) as groups" % user_id)
+        except Exception as e:
+            logging.info(e)
+
+        total_groups = [item for sublist in results for item in sublist][0]
+        total_pages = int(total_groups / 12)
+
+        if total_groups % 12 != 0:
+            total_pages += 1
+        pagination = make_pagination_html(current_page, total_pages, full_path='/groups/profile/%s/' % user_id)
+        
+        try:
+            results, meta = db.cypher_query(
+                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id ORDER BY n.group_id DESC SKIP %d LIMIT 12" % (user_id, offset))
         except Exception as e:
             logging.info(e)
 
@@ -539,6 +557,6 @@ class ProfileGroups(APIView):
             logging.info(e)
             members_in_groups = []
 
-        return Response({'groups': queryset, 'members': members_in_groups})
+        return Response({'groups': queryset, 'members': members_in_groups, 'pagination': pagination})
 
 list_group_profile = login_required(ProfileGroups.as_view(), login_url='/')

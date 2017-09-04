@@ -135,30 +135,30 @@ def crop_image(image, filename, request):
     return image_file
 
 
-def make_pagination_html(current_page, total_pages):
+def make_pagination_html(current_page, total_pages, full_path=''):
     pagination_string = ''
 
     if current_page > 1:
-        pagination_string += '<li><a href="?page=%s"><i class="material-icons">chevron_left</i></a></li>' % (current_page -1)
+        pagination_string += '<li><a href="%s?page=%s"><i class="material-icons">chevron_left</i></a></li>' % (full_path, current_page - 1)
 
     pagination_string += '<li class="active blue darken-1 white-text"><span> %d </span></li>' % current_page
     count_limit = 1
     value = current_page - 1
 
     while value > 0 and count_limit < 5:
-        pagination_string = '<li class="waves-effect"><a href="?page=%s">%s</a></li>' % (value, value) + pagination_string
+        pagination_string = '<li class="waves-effect"><a href="%s?page=%s">%s</a></li>' % (full_path, value, value) + pagination_string
         value -= 1
         count_limit += 1
 
     value = current_page + 1
 
     while value < total_pages and count_limit < 10:
-        pagination_string = pagination_string + "<li><a href='?page=%s'>%s</a></li>" % (value, value)
+        pagination_string = pagination_string + "<li><a href='%s?page=%s'>%s</a></li>" % (full_path, value, value)
         value += 1
         count_limit +=1
 
     if current_page < total_pages:
-        pagination_string += '<li><a href="?page=%s"><i class="material-icons">chevron_right</i></a></li>' % (current_page + 1)
+        pagination_string += '<li><a href="%s?page=%s"><i class="material-icons">chevron_right</i></a></li>' % (full_path, current_page + 1)
 
     pagination_string = '<ul class="center pagination">' + pagination_string + '</ul>'
     return pagination_string

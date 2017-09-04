@@ -66,6 +66,15 @@ $(document).ready(function () {
         $(".grupos").hide();
     });
 
+    $('.trofeos').on('click', '.next-awards, .prev-awards', function(e) {
+        e.preventDefault()
+        $('.wrapper-trofeos').load($(this).attr('href'));
+    });
+
+    $('.grupos').on('click', '.wrapper-groups .pagination a', function(e) {
+        e.preventDefault()
+        $('.wrapper-groups').load($(this).attr('href'));
+    });
 
     $('#configurationOnProfile').on('click', function () {
         var _ventana_pin = $('.ventana-pin');

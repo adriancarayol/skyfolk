@@ -132,7 +132,7 @@ def profile_view_ajax(request, user_profile, node_profile=None):
                 page = page + 1
         context = {
             'user_profile': user_profile,
-            'friends_top12': node_profile.get_follows(offset, limit),
+            'friends_top12': node_profile.get_follows(offset, 25),
             'friend_page': page,
         }
     else:
@@ -1070,9 +1070,9 @@ class FollowersListView(ListView):
 
         if total_users % 25 != 0:
             total_pages += 1
-            self.pagination = make_pagination_html(current_page, total_pages)
+        self.pagination = make_pagination_html(current_page, total_pages)
 
-        id_users = [u.user_id for u in n.get_followers(offset=offset, limit=limit)]
+        id_users = [u.user_id for u in n.get_followers(offset=offset, limit=25)]
         return User.objects.filter(id__in=id_users).select_related('profile')
 
     def get_context_data(self, **kwargs):
@@ -1112,9 +1112,9 @@ class FollowingListView(ListView):
         total_pages = int(total_users / 25)
         if total_users % 25 != 0:
             total_pages += 1
-            self.pagination = make_pagination_html(current_page, total_pages)
+        self.pagination = make_pagination_html(current_page, total_pages)
 
-        id_users = [u.user_id for u in n.get_follows(offset=offset, limit=limit)]
+        id_users = [u.user_id for u in n.get_follows(offset=offset, limit=25)]
         return User.objects.filter(id__in=id_users).select_related('profile')
 
     def get_context_data(self, **kwargs):
@@ -1435,18 +1435,18 @@ class RecommendationUsers(ListView):
 
         results, meta = db.cypher_query(
             "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT %d" %
-            (user.id, offset, limit))
+            (user.id, offset, 25))
 
         users = [NodeProfile.inflate(row[0]) for row in results]
 
         if not users:
-            users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[offset:limit]
+            users = NodeProfile.nodes.filter(privacity__ne='N', user_id__ne=user.id).order_by('?')[offset:25]
 
         total_users = len(NodeProfile.nodes.all())
         total_pages = int(total_users / 25)
         if total_users % 25 != 0:
             total_pages += 1
-            self.pagination = make_pagination_html(current_page, total_pages)
+        self.pagination = make_pagination_html(current_page, total_pages)
 
         user_ids = [u.user_id for u in users]
         return User.objects.filter(id__in=user_ids).select_related('profile')
@@ -1481,13 +1481,13 @@ class LikeListUsers(AjaxListView):
 
 
         n = NodeProfile.nodes.get(title=username)
-        id_users = [u.user_id for u in n.get_like_to_me(offset=offset, limit=limit)]
+        id_users = [u.user_id for u in n.get_like_to_me(offset=offset, limit=25)]
 
         total_users = n.count_likes()
         total_pages = int(total_users / 25)
         if total_users % 25 != 0:
             total_pages += 1
-            self.pagination = make_pagination_html(current_page, total_pages)
+        self.pagination = make_pagination_html(current_page, total_pages)
 
         return User.objects.filter(id__in=id_users).select_related('profile')
 

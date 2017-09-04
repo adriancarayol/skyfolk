@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.http import Http404
 from user_profile.models import NodeProfile
 from django.http import HttpResponseForbidden
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class UserAwards(APIView):
@@ -16,7 +17,7 @@ class UserAwards(APIView):
 	
 	def get(self, request, *args, **kwargs):
 		user_id = kwargs.pop('user_id', None)
-		print('user_id: {}'.format(user_id))
+		
 		if not user_id:
 			raise Http404
 
@@ -31,5 +32,15 @@ class UserAwards(APIView):
 			return HttpResponseForbidden
 
 		queryset = Award.objects.filter(user_id=profile.user_id)
+		paginator = Paginator(queryset, 12)
 
-		return Response({'awards': queryset})
+		page = request.GET.get('page', 1)
+
+		try:
+			awards = paginator.page(page)
+		except PageNotAnInteger:
+			awards = paginator.page(1)
+		except EmptyPage:
+			awards = paginator.page(paginator.num_pages)
+
+		return Response({'awards': awards, 'user_id': user_id})

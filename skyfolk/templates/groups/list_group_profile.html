@@ -1,5 +1,6 @@
 {% load humanize %}
 {% load app_filters %}
+<div class="row">
 <ul>
     {% for group in groups %}
     	<li>
@@ -30,3 +31,9 @@
     	</li>
     {% endfor %}
 </ul>
+</div>
+{% if pagination %}
+<div class="row">
+	{{ pagination|safe }}
+</div>
+{% endif %}

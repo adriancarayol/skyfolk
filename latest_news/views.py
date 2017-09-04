@@ -37,8 +37,8 @@ class News(ListView):
 
     def get_recommendation_users(self, offset, limit):
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND u2.privacity='A' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT %d" %
-            (self.request.user.id, offset, limit))
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND u2.privacity='A' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT 25" %
+            (self.request.user.id, offset))
 
         users = [NodeProfile.inflate(row[0]) for row in results]
         return users
