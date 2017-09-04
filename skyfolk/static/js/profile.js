@@ -195,7 +195,7 @@ $(document).ready(function () {
 
     /* Añadir no me gusta a comentario */
     $(document).on('click', '.options_comentarios .hate-comment', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
+        var caja_publicacion = $(this).closest('.row');
         var heart = this;
         AJAX_add_hate(caja_publicacion, heart, "publication");
     });

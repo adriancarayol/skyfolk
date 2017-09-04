@@ -3,11 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import CreateView
 
+from django.db import IntegrityError
+from django.core.exceptions import ObjectDoesNotExist
 from emoji.models import Emoji
 from publications.exceptions import EmptyContent
 from publications.views import logger
@@ -75,7 +77,7 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
-                
+
                 publication.save()  # Creamos publicacion
                 return self.form_valid(form=form)
             except Exception as e:
@@ -86,9 +88,9 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
 
 publication_group_view = transaction.atomic(login_required(PublicationGroupView.as_view(), login_url='/'))
 
+
 class DeletePublication(View):
     http_method_names = ['post', ]
-
 
     def post(self, request, **kwargs):
         user = request.user
@@ -119,3 +121,173 @@ class DeletePublication(View):
 
 
 delete_publication = login_required(DeletePublication.as_view(), login_url='/')
+
+
+class AddPublicationLike(View):
+    """
+    Clase para dar me gusta a un comentario
+    """
+    model = PublicationGroup
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        pub_id = request.POST.get('pk', None)
+
+        if not user.is_authenticated:
+            return HttpResponseForbidden()
+
+        if not pub_id:
+            raise Http404
+
+        try:
+            publication = PublicationGroup.objects.get(id=pub_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        try:
+            author = NodeProfile.nodes.get(user_id=publication.author_id)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponseForbidden()
+
+        privacity = author.is_visible(m)
+
+        if privacity and privacity != 'all':
+            return HttpResponseForbidden()
+
+        in_like = False
+        in_hate = False
+
+        if publication.user_give_me_like.filter(pk=user.pk).exists():  # Usuario en lista de likes
+            in_like = True
+
+        if publication.user_give_me_hate.filter(pk=user.pk).exists():  # Usuario en lista de hate
+            in_hate = True
+
+        if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
+            publication.user_give_me_like.remove(user)
+            publication.user_give_me_hate.remove(user)
+            logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+
+        if in_hate:  # Si ha dado antes unlike
+            logger.info("Incrementando like")
+            logger.info("Decrementando hate")
+            try:
+                publication.user_give_me_hate.remove(user)  # remove from hates
+                publication.user_give_me_like.add(user)  # add to like
+                publication.save()
+                response = True
+                statuslike = 3
+
+            except IntegrityError:
+                response = False
+                statuslike = 0
+
+        elif in_like:  # Si ha dado antes like
+            logger.info("Decrementando like")
+            try:
+                publication.user_give_me_like.remove(request.user)
+                publication.save()
+                response = True
+                statuslike = 2
+            except IntegrityError:
+                response = False
+                statuslike = 0
+
+        else:  # Si no ha dado like ni unlike
+            try:
+                publication.user_give_me_like.add(user)
+                publication.save()
+                response = True
+                statuslike = 1
+            except IntegrityError:
+                response = False
+                statuslike = 0
+
+        data = {'response': response, 'statuslike': statuslike}
+        return JsonResponse(data)
+
+
+class AddPublicationHate(View):
+    """
+    Clase para dar me gusta a un comentario
+    """
+    model = PublicationGroup
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        pub_id = request.POST.get('pk', None)
+
+        if not user.is_authenticated:
+            return HttpResponseForbidden()
+
+        if not pub_id:
+            raise Http404
+
+        try:
+            publication = PublicationGroup.objects.get(id=pub_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        try:
+            author = NodeProfile.nodes.get(user_id=publication.author_id)
+            m = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponseForbidden()
+
+        privacity = author.is_visible(m)
+
+        if privacity and privacity != 'all':
+            return HttpResponseForbidden()
+
+        in_like = False
+        in_hate = False
+
+        if publication.user_give_me_like.filter(pk=user.pk).exists():  # Usuario en lista de likes
+            in_like = True
+
+        if publication.user_give_me_hate.filter(pk=user.pk).exists():  # Usuario en lista de hate
+            in_hate = True
+
+        if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
+            publication.user_give_me_like.remove(user)
+            publication.user_give_me_hate.remove(user)
+            logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+
+        if in_like:  # Si ha dado antes like
+            logger.info("Incrementando hate")
+            logger.info("Decrementando like")
+            try:
+                publication.user_give_me_like.remove(user)  # remove from like
+                publication.user_give_me_hate.add(user)  # add to hate
+                publication.save()
+                response = True
+                status_like = 3
+
+            except IntegrityError as e:
+                response = False
+                status_like = 0
+
+        elif in_hate:  # Si ha dado antes hate
+            logger.info("Decrementando hate")
+            try:
+                publication.user_give_me_hate.remove(request.user)
+                publication.save()
+                response = True
+                status_like = 2
+            except IntegrityError as e:
+                response = False
+                status_like = 0
+
+        else:  # Si no ha dado like ni unlike
+            try:
+                publication.user_give_me_hate.add(user)
+                publication.save()
+                response = True
+                status_like = 1
+            except IntegrityError as e:
+                response = False
+                status_like = 0
+
+        data = {'response': response, 'statuslike': status_like}
+        return JsonResponse(data)

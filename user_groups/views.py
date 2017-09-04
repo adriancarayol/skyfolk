@@ -67,7 +67,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                     im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
                     tempfile_io.seek(0)
                     image_file = InMemoryUploadedFile(tempfile_io, None, 'cover_%s.jpg' % group.name, 'image/jpeg',
-                                                  tempfile_io.tell(), None)
+                                                      tempfile_io.tell(), None)
                     group.back_image = image_file
                 tags = form.cleaned_data.get('tags', None)
                 try:
@@ -154,12 +154,14 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
 
     try:
         friend_request = RequestGroup.objects.get_follow_request(
-                from_profile=user.id, to_group=group_profile)
+            from_profile=user.id, to_group=group_profile)
     except ObjectDoesNotExist:
         friend_request = None
 
     publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
-            Q(deleted=False) & Q(level__lte=0) & ~Q(author__profile__from_blocked__to_blocked=user.profile))
+                                                   Q(deleted=False) & Q(level__lte=0) & ~Q(
+        author__profile__from_blocked__to_blocked=user.profile)) \
+        .prefetch_related('user_give_me_like', 'user_give_me_hate').select_related('group_extra_content')
 
     context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
@@ -218,7 +220,7 @@ def follow_group(request):
                     except Exception:
                         return JsonResponse({
                             'response': "error"
-                    })
+                        })
                 else:
                     # Recuperamos peticion al grupo
                     try:
@@ -229,25 +231,26 @@ def follow_group(request):
                     # Si no existe, creamos una nueva
                     if not group_request:
                         Notification.objects.filter(actor_object_id=user.id, recipient=group.owner,
-                                level='grouprequest').delete()
+                                                    level='grouprequest').delete()
                         try:
                             with transaction.atomic(using="default"):
                                 request_group = RequestGroup.objects.add_follow_request(user.id,
-                                        group.id)
+                                                                                        group.id)
 
                                 notify.send(user,
-                                        actor=user.username,
-                                        recipient=group.owner, verb=u'%s solicita unirse al grupo %s'
-                                        % (user.username, group.name), level='grouprequest', action_object=request_group)
+                                            actor=user.username,
+                                            recipient=group.owner, verb=u'%s solicita unirse al grupo %s'
+                                                                        % (user.username, group.name),
+                                            level='grouprequest', action_object=request_group)
 
                         except IntegrityError:
                             return JsonResponse({
                                 'response': "no_added_group"
                             })
                         send_email.delay('Skyfolk - %s quiere seguirte.' % user.username, [group.owner.email],
-                            {'to_user': group.owner.username, 'from_user': user.username,
-                                'to_group': group.name},
-                            'emails/member_request.html')
+                                         {'to_user': group.owner.username, 'from_user': user.username,
+                                          'to_group': group.name},
+                                         'emails/member_request.html')
 
                     return JsonResponse({
                         'response': 'in_progress'
@@ -397,8 +400,9 @@ class LikeListGroup(ListView):
 
 likes_group = login_required(LikeListGroup.as_view(), login_url='/')
 
+
 class RespondGroupRequest(View):
-    http_method_names= ['post', ]
+    http_method_names = ['post', ]
 
     def post(self, request, **kwargs):
         user = request.user
@@ -424,16 +428,18 @@ class RespondGroupRequest(View):
                             request_group.delete()
                             g.members.connect(n)
                             notify.send(user, actor=user.username,
-                                recipient=request_group.emitter,
-                                verb=u'¡ahora eres miembro de <a href="/group/%s">%s</a>!.' % (group.name, group.name),
-                                level='new_member_group')
+                                        recipient=request_group.emitter,
+                                        verb=u'¡ahora eres miembro de <a href="/group/%s">%s</a>!.' % (
+                                        group.name, group.name),
+                                        level='new_member_group')
                 except Exception as e:
                     return JsonResponse({'response': 'error'})
 
                 response = "added_friend"
-                send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [request_group.emitter.email],
-                             {'to_user': request_group.emitter.username, 'from_group': group.name},
-                             'emails/new_member_added.html')
+                send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username,
+                                 [request_group.emitter.email],
+                                 {'to_user': request_group.emitter.username, 'from_group': group.name},
+                                 'emails/new_member_added.html')
         elif request_status == 'rejected':
             if user.id == group.owner_id:
                 try:
@@ -450,7 +456,6 @@ respond_group_request = login_required(RespondGroupRequest.as_view(), login_url=
 
 
 class RemoveRequestFollow(View):
-
     http_method_names = ['post', ]
 
     def post(self, request, **kwargs):
@@ -462,13 +467,15 @@ class RemoveRequestFollow(View):
         if status == 'cancel':
             try:
                 request_group = RequestGroup.objects.remove_received_follow_request(from_profile=user.id,
-                        to_group=slug)
+                                                                                    to_group=slug)
             except ObjectDoesNotExist:
                 response = False
             response = True
         return JsonResponse({'response': response})
 
+
 remove_group_request = login_required(RemoveRequestFollow.as_view(), login_url='/')
+
 
 class KickMemberGroup(View):
     http_method_names = ['post', ]
@@ -499,17 +506,17 @@ class KickMemberGroup(View):
 
         return JsonResponse({'response': response})
 
+
 kick_member = login_required(KickMemberGroup.as_view(), login_url='/')
 
 
 class ProfileGroups(APIView):
-
     renderer_classes = [TemplateHTMLRenderer]
-    template_name  = "groups/list_group_profile.html"
+    template_name = "groups/list_group_profile.html"
 
     def get(self, request, *args, **kwargs):
         user_id = kwargs.pop('user_id', None)
-        
+
         if not user_id:
             raise Http404
 
@@ -522,7 +529,6 @@ class ProfileGroups(APIView):
         privacity = profile.is_visible(request_user)
         if privacity and privacity != 'all':
             return HttpResponseForbidden
-
 
         current_page = int(request.GET.get('page', '1'))  # page or 1
         limit = 12 * current_page
@@ -540,10 +546,11 @@ class ProfileGroups(APIView):
         if total_groups % 12 != 0:
             total_pages += 1
         pagination = make_pagination_html(current_page, total_pages, full_path='/groups/profile/%s/' % user_id)
-        
+
         try:
             results, meta = db.cypher_query(
-                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id ORDER BY n.group_id DESC SKIP %d LIMIT 12" % (user_id, offset))
+                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id ORDER BY n.group_id DESC SKIP %d LIMIT 12" % (
+                user_id, offset))
         except Exception as e:
             logging.info(e)
 
@@ -560,5 +567,6 @@ class ProfileGroups(APIView):
             members_in_groups = []
 
         return Response({'groups': queryset, 'members': members_in_groups, 'pagination': pagination})
+
 
 list_group_profile = login_required(ProfileGroups.as_view(), login_url='/')

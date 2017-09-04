@@ -22,22 +22,22 @@ $(function () {
 
     $("#publish_group").click(function (e) {
         if (!$('#group_form_wrapper').is(':visible')) {
-            $('#group_form_wrapper').show(); 
+            $('#group_form_wrapper').show();
         } else {
-            $('#group_form_wrapper').hide(); 
+            $('#group_form_wrapper').hide();
         }
-    }); 
-    $('#group_form_wrapper .close').click(function() {
+    });
+    $('#group_form_wrapper .close').click(function () {
         $('#group_form_wrapper').hide();
     });
-    
+
     /* Submit publication */
     $('#group_form_wrapper').find('#group_publication').on('submit', function (event) {
         event.preventDefault();
         var form = $(this);
         AJAX_submit_group_publication(form, 'publication');
     });
-    $(_group_profile).on('click', '#cancel_group_request', function() {
+    $(_group_profile).on('click', '#cancel_group_request', function () {
         AJAX_remove_group_request();
         return false;
     });
@@ -64,7 +64,7 @@ $(function () {
         return false;
     });
     // KICK MEMBER
-    $('.kick-member').click(function() {
+    $('.kick-member').click(function () {
         var id = $(this).data('id');
         var group_id = $('#group_id').val();
         swal({
@@ -78,7 +78,7 @@ $(function () {
             confirmButtonText: "Si, estoy seguro",
             cancelButtonText: "¡No!",
             closeOnConfirm: false,
-        }, function(isConfirm) {
+        }, function (isConfirm) {
             if (isConfirm) {
                 AJAX_kick_member(id, group_id);
             }
@@ -100,7 +100,7 @@ $(function () {
             cancelButtonText: "No God, please no!",
             closeOnConfirm: true
         }, function (isConfirm) {
-            if (isConfirm) { 
+            if (isConfirm) {
                 AJAX_delete_group_publication(id, board_group);
             }
         });
@@ -108,19 +108,30 @@ $(function () {
 
     /* Responder comentario */
     /* Abrir respuesta a comentario */
-    $('#tab-comentarios').on('click', '.options_comentarios .fa-reply', function () {
+    $('#tab-comentarios').on('click', '.reply-comment', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
     /* Submit reply publication */
     $('#tab-comentarios').on('click', '.group_reply', function (event) {
         event.preventDefault();
-        var form = $(this).closest('form'); 
+        var form = $(this).closest('form');
         var parent_pk = $(this).attr('id').split('-')[1];
         AJAX_submit_group_publication(form, 'reply', parent_pk);
     });
-});// end document ready
 
+    /* ADD LIKE */
+    $('#tab-comentarios').on('click', '.like-comment', function () {
+        var pub_box = $(this).closest('.wrapper').closest('.row');
+        AJAX_add_like_group_publication(pub_box, $(this), "publication");
+    });
+    /* ADD HATE */
+    $('#tab-comentarios').on('click', '.hate-comment', function () {
+        var pub_box = $(this).closest('.wrapper').closest('.row');
+        AJAX_add_hate_group_publication(pub_box, $(this), "publication");
+    });
+
+});// end document ready
 
 
 function AJAX_follow_group(_id) {
@@ -214,7 +225,7 @@ function AJAX_like_group(_id) {
                 if ($(_numLikes).find("strong").html() > 0) {
                     $(_numLikes).find("strong").html(parseInt($(_numLikes).find("strong").html()) - 1);
                 }
-            }  else {
+            } else {
                 swal({
                     title: "¡Ups!",
                     text: "Hay un error con tu petición, intentalo de nuevo mas tarde.",
@@ -338,7 +349,7 @@ function AJAX_kick_member(id, group_id) {
         success: function (data) {
             var response = data.response;
             if (response === 'kicked') {
-                $('#member-'+id).remove();
+                $('#member-' + id).remove();
             } else if (response === 'is_owner') {
                 swal({
                     title: "¡Ups!",
@@ -360,7 +371,6 @@ function AJAX_kick_member(id, group_id) {
 }
 
 function AJAX_delete_group_publication(id, board_group) {
-    console.log(id + ' ' + board_group);
     var data = {
         'id': id,
         'board_group': board_group,
@@ -373,8 +383,8 @@ function AJAX_delete_group_publication(id, board_group) {
         data: data,
         success: function (data) {
             // borrar caja publicacion
-            if (data.response == true) {
-                $('#pub-'+id).fadeToggle("fast");
+            if (data.response === true) {
+                $('#pub-' + id).fadeToggle("fast");
                 /*
                 if (data.shared_pub_id) {
                     var shared_btn = $('#share-' + data.shared_pub_id);
@@ -399,6 +409,152 @@ function AJAX_delete_group_publication(id, board_group) {
         },
         error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + ' ' + e);
+        }
+    });
+}
+
+function AJAX_add_like_group_publication(caja_publicacion, heart, type) {
+    var id_pub;
+    if (type.localeCompare("publication") === 0) {
+        id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+    }
+
+    var data = {
+        'pk': id_pub,
+        'csrfmiddlewaretoken': csrftoken
+    };
+
+    $.ajax({
+        url: '/publication/group/add_like/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: function (data) {
+            var response = data.response;
+            var status = data.statuslike;
+            var numLikes = $(heart).find('.like-value');
+            var countLikes = numLikes.text();
+            if (response === true) {
+                if (!countLikes || (Math.floor(countLikes) === parseInt(countLikes) && $.isNumeric(countLikes))) {
+                    if (status === 1) {
+                        $(heart).css('color', '#f06292');
+                        countLikes++;
+                    } else if (status === 2) {
+                        $(heart).css('color', '#555');
+                        countLikes--;
+                    } else if (status === 3) {
+                        $(heart).css('color', '#f06292');
+                        var hatesObj = $(heart).prev();
+                        var hates = hatesObj.find(".hate-value");
+                        var countHates = hates.text();
+                        countHates--;
+                        if (countHates <= 0) {
+                            hates.text('');
+                        } else
+                            hates.text(countHates);
+                        $(hatesObj).css('color', '#555');
+                        countLikes++;
+                    }
+                    if (countLikes <= 0) {
+                        numLikes.text('');
+                    } else {
+                        numLikes.text(countLikes);
+                    }
+                } else {
+                    if (status === 1)
+                        $(heart).css('color', '#f06292');
+                    if (status === 2)
+                        $(heart).css('color', '#555');
+                }
+            } else {
+                swal({
+                    title: ":-(",
+                    text: "¡No puedes dar me gusta a este comentario!",
+                    timer: 4000,
+                    customClass: 'default-div',
+                    animation: "slide-from-bottom",
+                    showConfirmButton: false,
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
+            // alert('ERROR: ' + rs.responseText + e);
+        }
+    });
+}
+
+function AJAX_add_hate_group_publication(caja_publicacion, heart, type) {
+    var id_pub;
+    if (type.localeCompare("publication") === 0) {
+        id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
+    }
+
+    var data = {
+        'pk': id_pub,
+        'csrfmiddlewaretoken': csrftoken
+    };
+
+    $.ajax({
+        url: '/publication/group/add_hate/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: function (data) {
+            var statusOk = 1;
+            var statusNo = 2;
+            var statusInLike = 3;
+            var response = data.response;
+            var status = data.statuslike;
+            var numHates = $(heart).find(".hate-value");
+            var countHates = numHates.text();
+            if (response == true) {
+                if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
+                    if (status === statusOk) {
+                        $(heart).css('color', '#ba68c8');
+                        countHates++;
+                    } else if (status === statusNo) {
+                        $(heart).css('color', '#555');
+                        countHates--;
+                    } else if (status === statusInLike) {
+                        $(heart).css('color', '#ba68c8');
+                        countHates++;
+                        var likesObj = $(heart).next();
+                        var likes = likesObj.find(".like-value");
+                        var countLikes = likes.text();
+                        countLikes--;
+                        if (countLikes <= 0) {
+                            likes.text('');
+                        } else
+                            likes.text(countLikes);
+                        $(likesObj).css('color', '#555');
+                    }
+                    if (countHates <= 0) {
+                        numHates.text("");
+                    } else {
+                        numHates.text(countHates);
+                    }
+                } else {
+                    if (status === statusOk) {
+                        $(heart).css('color', '#ba68c8');
+                    } else if (status === statusNo) {
+                        $(heart).css('color', '#555');
+                    }
+                }
+            } else {
+                swal({
+                    title: ":-(",
+                    text: "¡No puedes dar no me gusta a este comentario!",
+                    timer: 4000,
+                    customClass: 'default-div',
+                    animation: "slide-from-bottom",
+                    showConfirmButton: false,
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
+            // alert('ERROR: ' + rs.responseText + e);
         }
     });
 }
