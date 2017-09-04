@@ -1,10 +1,7 @@
-import json
-import logging
-
-from channels import Group
 from channels.generic.websockets import WebsocketConsumer
-from .models import Photo
+
 from user_profile.models import NodeProfile
+from .models import Photo
 
 
 class PhotoConsumer(WebsocketConsumer):

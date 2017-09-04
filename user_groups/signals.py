@@ -1,14 +1,12 @@
 import logging
-from django.db.models.signals import post_save, post_delete
-from .models import NodeGroup, UserGroups, RequestGroup
-from user_profile.models import NodeProfile
-from neomodel import db
-from django.dispatch import receiver
-from django.template.defaultfilters import slugify
-from guardian.shortcuts import assign_perm
-from notifications.models import Notification
-from django.contrib.contenttypes.models import ContentType
 
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from guardian.shortcuts import assign_perm
+
+from notifications.models import Notification
+from .models import UserGroups, RequestGroup
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

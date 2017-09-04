@@ -1,8 +1,8 @@
 import logging
-from badgify.models import Award
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 
+from badgify.models import Award
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

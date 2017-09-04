@@ -1,11 +1,9 @@
 from django.utils.translation import ugettext_lazy as _
-
 from vishap import render_video
 
+from .forms import VideoForm
 from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
-
-from .forms import VideoForm
 
 __title__ = 'dash.contrib.plugins.video.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

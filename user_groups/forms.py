@@ -1,9 +1,9 @@
 # encoding:utf-8
 from django import forms
-from django.contrib.auth.models import User
-from .models import UserGroups
 from django.core import validators
 from django.core.exceptions import ValidationError
+
+from .models import UserGroups
 
 
 class MinLengthValidator(validators.MinLengthValidator):

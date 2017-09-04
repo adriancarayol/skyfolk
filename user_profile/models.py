@@ -1,24 +1,22 @@
-import hashlib
 import datetime
-import os, glob
+import hashlib
 import logging
 
+from badgify.models import Award, Badge
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db import transaction
 from django.utils.http import urlencode
-from notifications.models import Notification
-from photologue.models import Photo
+from django.utils.translation import ugettext_lazy as _
 from django_neomodel import DjangoNode
 from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, \
-    BooleanProperty, Property, StructuredRel, DateTimeProperty
-from django.core.cache import cache
-from neomodel.properties import validator
-from django.utils.translation import ugettext_lazy as _
-from django.core.files.storage import FileSystemStorage
-from badgify.models import Award, Badge
-from django.db import transaction
+    BooleanProperty, StructuredRel, DateTimeProperty
+
+from notifications.models import Notification
+from photologue.models import Photo
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2

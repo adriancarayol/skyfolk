@@ -1,10 +1,13 @@
-import photologue
 import os
-from skyfolk.celery import app
-from PIL import Image
 from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from PIL import Image
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+import photologue
+from skyfolk.celery import app
+
 
 def flat(*nums):
     'Build a tuple of ints from float or integer arguments. Useful because PIL crop and resize require integer points.'

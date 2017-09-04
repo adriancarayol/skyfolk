@@ -2,7 +2,6 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from ....base import DashboardPluginFormBase
-from ....widgets import BooleanRadioSelect
 
 __title__ = 'dash.contrib.plugins.video.forms'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

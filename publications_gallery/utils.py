@@ -4,12 +4,11 @@ import tempfile
 import uuid
 
 import magic
-import publications_gallery
-
 from PIL import Image
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
+import publications_gallery
 from publications.exceptions import CantOpenMedia, SizeIncorrect, MaxFilesReached, MediaNotSupported
 from .tasks import process_gif_publication, process_video_publication
 

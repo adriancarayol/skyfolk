@@ -5,7 +5,6 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
-
 from nine import versions
 
 from .base import (
@@ -37,6 +36,7 @@ from .helpers import (
     safe_text,
     slugify_workspace,
 )
+from .json_package import json
 from .models import DashboardEntry, DashboardWorkspace
 from .settings import RAISE_EXCEPTION_WHEN_PERMISSIONS_INSUFFICIENT
 from .utils import (
@@ -49,7 +49,6 @@ from .utils import (
     get_widgets,
     get_workspaces,
 )
-from .json_package import json
 
 if versions.DJANGO_GTE_1_10:
     from django.shortcuts import render

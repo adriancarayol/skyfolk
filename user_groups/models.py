@@ -1,12 +1,12 @@
 # encoding:utf-8
-import user_profile
-from django.contrib.auth.models import User
-from django.db import models
 from django.contrib.auth.models import Group
-from django_neomodel import DjangoNode
-from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, One
-from django.utils.text import slugify
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+from django.utils.text import slugify
+from django_neomodel import DjangoNode
+from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty
+
 from notifications.models import Notification
 
 REQUEST_FOLLOWING = 1

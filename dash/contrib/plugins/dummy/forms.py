@@ -1,20 +1,18 @@
 import logging
 
-from six import PY2
-
 from django import forms
 from django.utils.text import Truncator
 from django.utils.translation import ugettext_lazy as _
-
+from six import PY2
 from transliterate.contrib.apps.translipsum import TranslipsumGenerator
 
-from ....base import DashboardPluginFormBase
-from ....widgets import BooleanRadioSelect
 from .defaults import (
     DEFAULT_MAX_CHARS,
     LANGUAGE_CHOICES,
     LANGUAGE_CHOICES_KEYS,
 )
+from ....base import DashboardPluginFormBase
+from ....widgets import BooleanRadioSelect
 
 if PY2:
     from lipsum import Generator

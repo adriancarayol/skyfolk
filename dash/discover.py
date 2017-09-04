@@ -3,9 +3,7 @@ import logging
 import sys
 
 import six
-
 from django.conf import settings
-
 from nine.versions import DJANGO_GTE_1_7
 
 from .conf import get_setting

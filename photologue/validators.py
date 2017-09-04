@@ -1,7 +1,8 @@
 import os
-from django.core.files.uploadedfile import InMemoryUploadedFile
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 def validate_file_extension(value):

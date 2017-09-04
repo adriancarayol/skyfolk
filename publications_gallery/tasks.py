@@ -1,20 +1,20 @@
 import json
 import os
-import publications_gallery
 
 import moviepy.editor as mp
 from celery.utils.log import get_task_logger
 from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.forms import model_to_dict
-from notifications.models import Notification
-from skyfolk.celery import app
-from user_profile.utils import notification_channel, group_name
-from .models import PublicationPhotoVideo, PublicationPhoto
-from publications.utils import convert_avi_to_mp4
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import model_to_dict
 
+import publications_gallery
+from notifications.models import Notification
+from publications.utils import convert_avi_to_mp4
+from skyfolk.celery import app
+from user_profile.utils import notification_channel
+from .models import PublicationPhotoVideo, PublicationPhoto
 
 logger = get_task_logger(__name__)
 

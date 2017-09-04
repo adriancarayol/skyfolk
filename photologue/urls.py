@@ -1,15 +1,9 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse_lazy
 from django.views.decorators.http import require_POST
-from django.views.generic import RedirectView
 
 from .views import PhotoDetailView, \
-    PhotoArchiveIndexView, PhotoDateDetailView, PhotoDayArchiveView, \
-    PhotoYearArchiveView, PhotoMonthArchiveView, \
-    GalleryDateDetailOldView, \
-    GalleryDayArchiveOldView, GalleryMonthArchiveOldView, PhotoDateDetailOldView, \
-    PhotoDayArchiveOldView, PhotoMonthArchiveOldView, photo_list, delete_photo, edit_photo, \
+    photo_list, delete_photo, edit_photo, \
     upload_zip_form, upload_photo, collection_list
 
 """NOTE: the url names are changing. In the long term, I want to remove the 'pl-'

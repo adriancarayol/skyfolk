@@ -1,14 +1,16 @@
 import logging
+
+from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.core.cache import cache
+from django.db import transaction
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from django.contrib.auth.models import User
-from .models import NodeProfile, FollowRel, Profile, BlockedProfile, \
-        RelationShipProfile
-from publications.models import Publication
-from django.db import transaction
-from django.contrib.auth.signals import user_logged_in, user_logged_out
 from neomodel import db
-from django.core.cache import cache
+
+from publications.models import Publication
+from .models import NodeProfile, Profile, BlockedProfile, \
+    RelationShipProfile
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

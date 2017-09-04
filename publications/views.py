@@ -11,14 +11,19 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import naturaltime, intword
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db import transaction
+from django.db.models import Count, Q
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.middleware import csrf
 from django.shortcuts import get_object_or_404, render, redirect, Http404
 from django.views.generic.edit import CreateView
-from django.core import serializers
+from mptt.templatetags.mptt_tags import cache_tree_children
+
+from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
 from publications.forms import PublicationForm, SharedPublicationForm
 from publications.models import Publication, PublicationImage, PublicationVideo
@@ -27,13 +32,6 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
 from .tasks import process_video_publication, process_gif_publication
 from .utils import parse_string
-from .utils import recursive_node_to_dict
-from mptt.templatetags.mptt_tags import cache_tree_children
-from django.db.models import Count, Q
-from avatar.templatetags.avatar_tags import avatar, avatar_url
-from embed_video.backends import detect_backend
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.exceptions import ValidationError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

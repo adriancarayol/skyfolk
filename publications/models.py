@@ -4,31 +4,24 @@ import re
 import uuid
 
 import bleach
-import requests
-from bs4 import BeautifulSoup
 from channels import Group as channel_group
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
+from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
-from embed_video.backends import detect_backend, EmbedVideoException
 from embed_video.fields import EmbedVideoField
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
-from avatar.templatetags.avatar_tags import avatar_url
+
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.utils import validate_video
-from user_profile.models import NodeProfile
+from user_profile.tasks import send_email
 from user_profile.utils import group_name
 from .utils import get_channel_name
-from user_profile.tasks import send_email
-from django.template.loader import render_to_string
-
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -175,6 +168,62 @@ class PublicationBase(MPTTModel):
     def get_descendants_not_deleted(self):
         return self.get_descendants().filter(deleted=False).count()
 
+    def add_hashtag(self):
+        """
+        Añadimos los hashtags encontramos a la
+        lista de tags => atributo "tags"
+        """
+        hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
+        hashtags = set(hashtags)
+        for tag in hashtags:
+            if tag.endswith((',', '.')):
+                tag = tag[:-1]
+            self.content = self.content.replace(tag,
+                                                '<a href="/user-search/?q={0}">{1}</a>'.format(tag[1:], tag))
+
+    def parse_mentions(self):
+        """
+        Buscamos menciones en el contenido del mensaje
+        y enviamos un mensaje al usuario
+        """
+        menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
+        menciones = set(menciones)
+        for mencion in menciones:
+            self.content = self.content.replace(mencion,
+                                                '<a href="/profile/%s">%s</a>' %
+                                                (mencion[1:], mencion))
+
+    def parse_content(self):
+        """
+        Parseamos el contenido en busca de
+        tags html no permitidos y los eliminamos
+        """
+        self.content = self.content.replace('\n', '').replace('\r', '')
+        self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
+                                    attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+        self.parse_extra_content()
+
+        """
+        bold = re.findall('\*[^\*]+\*', self.content)
+        bold = list(set(bold))
+
+        for b in bold:
+            self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
+
+        italic = re.findall('~[^~]+~', self.content)
+        italic = list(set(italic))
+        for i in italic:
+            self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
+
+        tachado = re.findall('\^[^\^]+\^', self.content)
+        tachado = list(set(tachado))
+        for i in tachado:
+            self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
+        """
+
+    def parse_extra_content(self):
+        pass
+
 
 class ExtraContent(models.Model):
     """
@@ -202,7 +251,7 @@ class Publication(PublicationBase):
         (6, _("shared")),
         (7, _("shared_photo_pub"))
     )
-    #TODO: Eliminar null=True de author...
+    # TODO: Eliminar null=True de author...
     author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True)
     user_give_me_like = models.ManyToManyField(User, blank=True,
@@ -243,115 +292,18 @@ class Publication(PublicationBase):
     def has_extra_content(self):
         return hasattr(self, 'extra_content')
 
-    def add_hashtag(self):
-        """
-        Añadimos los hashtags encontramos a la
-        lista de tags => atributo "tags"
-        """
-        hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
-        hashtags = set(hashtags)
-        for tag in hashtags:
-            if tag.endswith((',', '.')):
-                tag = tag[:-1]
-            self.tags.add(tag)
-            self.content = self.content.replace(tag,
-                    '<a href="/user-search/?q={0}">{1}</a>'.format(tag[1:], tag))
-
-    def parse_mentions(self):
-        """
-        Buscamos menciones en el contenido del mensaje
-        y enviamos un mensaje al usuario
-        """
-        menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
-        menciones = set(menciones)
-        for mencion in menciones:
-            self.content = self.content.replace(mencion,
-                                                '<a href="/profile/%s">%s</a>' %
-                                                (mencion[1:], mencion))
-
-
-
-    def parse_content(self):
-        """
-        Parseamos el contenido en busca de
-        tags html no permitidos y los eliminamos
-        """
-        self.content = self.content.replace('\n', '').replace('\r', '')
-        self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
-                                    attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
-        self.parse_extra_content()
-
-        """
-        bold = re.findall('\*[^\*]+\*', self.content)
-        bold = list(set(bold))
-
-        for b in bold:
-            self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
-
-        italic = re.findall('~[^~]+~', self.content)
-        italic = list(set(italic))
-        for i in italic:
-            self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
-
-        tachado = re.findall('\^[^\^]+\^', self.content)
-        tachado = list(set(tachado))
-        for i in tachado:
-            self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
-        """
-
     def parse_extra_content(self):
         # Buscamos en el contenido del mensaje una URL y mostramos un breve resumen de ella
         link_url = re.findall(
             r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
             self.content)
 
-        # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
-        if not link_url and len(link_url) <= 0 and self.has_extra_content():
-            self.extra_content.delete()  # Borramos el extra content de esta
-            return
-        elif link_url and len(link_url) > 0: # Eliminamos contenido extra para añadir el nuevo
-            if self.has_extra_content():
-                extra_content = self.extra_content
-                if extra_content.url != link_url[-1]:
-                    extra_content.delete()
-
-        try:
-            backend = detect_backend(link_url[-1])  # youtube, soundcloud...
-        except (EmbedVideoException, IndexError) as e:
-            backend = None
-
-        if link_url and len(link_url) > 0 and backend:
+        if link_url and len(link_url) > 0:
+            self.event_type = 3
+            """
             for u in list(set(link_url)):  # Convertimos URL a hipervinculo
                 self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
-            self.event_type = 3
-            ExtraContent.objects.get_or_create(publication=self, video=link_url[-1])
-
-        elif link_url and len(link_url) > 0:
-            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
-                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
-
-            url = link_url[-1]  # Get last url
-            response = requests.get(url)
-            soup = BeautifulSoup(response.text)
-
-            description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
-                'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
-            title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
-                'property': 'og:title'}) or soup.find('meta', attrs={'name': 'title'})
-            image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
-                'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
-
-            extra_c, created = ExtraContent.objects.get_or_create(url=url, publication=self)
-
-            if description:
-                extra_c.description = description.get('content', None)[:265]
-            if title:
-                extra_c.title = title.get('content', None)[:63]
-            if image:
-                extra_c.image = image.get('content', None)
-            extra_c.save()
-
-            self.event_type = 3
+            """
 
     def send_notification(self, request, type="pub", is_edited=False):
         """
@@ -364,7 +316,7 @@ class Publication(PublicationBase):
             'parent_id': self.parent_id,
             'level': self.level,
             'content': render_to_string(request=request, template_name='channels/new_publication.html',
-                context={'node': self, 'user_profile': self.board_owner})
+                                        context={'node': self, 'user_profile': self.board_owner})
         }
 
         # Enviamos a todos los usuarios que visitan el perfil
@@ -372,15 +324,15 @@ class Publication(PublicationBase):
             "text": json.dumps(data)
         })
 
-        #TODO: Mezclar templates para ahorrar el render
+        # TODO: Mezclar templates para ahorrar el render
         data['content'] = render_to_string(request=request, template_name='channels/new_publication_detail.html',
-            context={'node': self, 'user_profile': self.board_owner})
+                                           context={'node': self, 'user_profile': self.board_owner})
 
         # Enviamos por el socket de la publicacion
         if is_edited:
             channel_group(get_channel_name(self.id)).send({
                 'text': json.dumps(data)
-        })
+            })
 
         # Enviamos al blog de la publicacion
         [channel_group(get_channel_name(x)).send({
@@ -390,15 +342,16 @@ class Publication(PublicationBase):
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_owner_id:
             notify.send(self.author, actor=self.author.username,
-                            recipient=self.board_owner,
-                            verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' % 
-                            (self.author.username, self.author.username), level='notification_board_owner')
+                        recipient=self.board_owner,
+                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' %
+                             (self.author.username, self.author.username), level='notification_board_owner')
 
             # Enviamos email al board_owner
             send_email.delay("Skyfolk - %s ha comentado en tu skyline." % self.author.username,
-                    [self.board_owner.email],
-                    {'to_user': self.board_owner.username, 'from_user': self.author.username},
-                   'emails/new_publication.html')
+                             [self.board_owner.email],
+                             {'to_user': self.board_owner.username, 'from_user': self.author.username},
+                             'emails/new_publication.html')
+
 
 class PublicationVideo(models.Model):
     publication = models.ForeignKey(Publication, related_name='videos')

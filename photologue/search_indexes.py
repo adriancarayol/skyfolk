@@ -1,5 +1,5 @@
 from haystack import indexes
-from django.contrib.humanize.templatetags.humanize import naturaltime
+
 from avatar.templatetags.avatar_tags import avatar_url
 from .models import Photo
 

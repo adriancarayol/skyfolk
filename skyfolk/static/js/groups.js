@@ -135,11 +135,13 @@ function AJAX_follow_group(_id) {
         success: function (response) {
             var _response = response.response;
             if (_response === "user_add") {
+                $('#follow-group').text('remove');
                 $('#follow-group').attr({
                     "id": "unfollow-group",
-                    "class": "fa fa-remove group-follow",
+                    "class": "material-icons group-follow",
                     "style": "color: #29b203;"
                 });
+
             } else if (_response === "own_group") {
                 swal({
                     title: "¡Ups!",
@@ -147,7 +149,7 @@ function AJAX_follow_group(_id) {
                     customClass: 'default-div'
                 });
             } else if (_response === "in_progress") {
-                $('#follow-group').replaceWith('<span class="fa fa-clock-o" id="cancel_group_request" title="En proceso">' + ' ' + '</span>');
+                $('#follow-group').replaceWith('<span class="cancel-request material-icons" id="cancel_group_request" title="En proceso">' + 'watch_later' + '</span>');
             } else {
                 swal({
                     title: "¡Ups!",
@@ -173,9 +175,10 @@ function AJAX_unfollow_group(_id) {
         dataType: 'json',
         success: function (response) {
             if (response == "user_unfollow") {
+                $('#unfollow-group').text('add');
                 $('#unfollow-group').attr({
                     "id": "follow-group",
-                    "class": "fa fa-plus group-follow",
+                    "class": "material-icons group-follow",
                     "style": "color: #555;"
                 });
             } else if (response == false) {
@@ -307,7 +310,7 @@ function AJAX_remove_group_request() {
         success: function (data) {
             var response = data.response;
             if (response == true) {
-                $('#cancel_group_request').replaceWith('<span id="follow-group" class="fa fa-plus group-follow" title="Seguir"></span>');
+                $('#cancel_group_request').replaceWith('<span id="follow-group" class="material-icons group-follow" title="Seguir">add</span>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",

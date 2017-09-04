@@ -1,14 +1,14 @@
-import re
-import uuid
-import bleach
 import os
 import subprocess
+import uuid
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
+import bleach
+from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
 from avatar.models import Avatar
 from user_profile.models import Profile
-from django.conf import settings
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS

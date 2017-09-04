@@ -1,8 +1,9 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Publication, ExtraContent
+from django.test import TestCase
 from neomodel import clear_neo4j_database
 from neomodel import db
+
+from .models import Publication, ExtraContent
 
 
 class PublicationTestCase(TestCase):

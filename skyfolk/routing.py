@@ -1,10 +1,11 @@
 from channels.routing import route
 from channels.staticfiles import StaticFilesConsumer
-from photologue.consumers import PhotoConsumer
-from user_profile.consumers import BlogConsumer, NotificationConsumer
+
 from latest_news.consumers import MyFeedConsumer
+from photologue.consumers import PhotoConsumer
 from publications.consumers import PublicationConsumer
 from publications_gallery.consumers import PublicationPhotoConsumer
+from user_profile.consumers import BlogConsumer, NotificationConsumer
 
 # The channel routing defines what channels get handled by what consumers,
 # including optional matching on message attributes. WebSocket messages of all

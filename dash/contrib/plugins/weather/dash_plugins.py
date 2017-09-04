@@ -1,24 +1,21 @@
 import logging
 
-from django.utils.translation import ugettext_lazy as _
 from django.core.cache import cache
-
+from django.utils.translation import ugettext_lazy as _
 from nine import versions
-
 from six.moves.urllib.request import urlopen
 
+from .forms import WeatherForm
+from .settings import API_KEY, API_ENDPOINT_URL
 from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
 from ....json_package import json
 from ....settings import DEBUG
 
-from .forms import WeatherForm
-from .settings import API_KEY, API_ENDPOINT_URL
-
 if versions.DJANGO_GTE_1_10:
-    from django.urls import reverse
+    pass
 else:
-    from django.core.urlresolvers import reverse
+    pass
 
 __title__ = 'dash.contrib.plugins.weather.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

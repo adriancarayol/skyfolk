@@ -1,18 +1,19 @@
 from __future__ import unicode_literals
+
 import datetime
 
 from django import VERSION
 from django.contrib.auth import get_user_model
 from django.http import QueryDict
+from django.template import Library
 from django.template import Node
 from django.template import TemplateSyntaxError
-from django.template import Library
 from django.template.defaultfilters import date
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 
-from postman.models import ORDER_BY_KEY, ORDER_BY_MAPPER, Message,\
+from postman.models import ORDER_BY_KEY, ORDER_BY_MAPPER, Message, \
     get_user_representation
 
 register = Library()

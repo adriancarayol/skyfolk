@@ -1,6 +1,7 @@
 import os
 from os.path import splitext
 from urllib.parse import urlparse
+
 import requests
 from django import forms
 from django.forms import widgets

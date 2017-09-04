@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from .models import Publication, ExtraContent, PublicationVideo, \
-        PublicationImage, PublicationDeleted
+    PublicationImage, PublicationDeleted
 
 
 class PublicationBaseAdmin(admin.ModelAdmin):

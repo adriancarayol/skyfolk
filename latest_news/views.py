@@ -1,22 +1,15 @@
-import json
 from itertools import chain, zip_longest
-from django.contrib.auth import get_user_model
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
 from django.views.generic import ListView
 from neomodel import db
-from user_profile.utils import make_pagination_html
-from django.db.models import Q
-from publications.forms import PublicationForm
+
 from photologue.models import Photo
 from publications.models import Publication
-from user_profile.forms import SearchForm
-from user_profile.models import Relationship, NodeProfile, Profile
-from django.http import JsonResponse
-from random import shuffle
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from user_profile.models import NodeProfile, Profile
 
 
 class News(ListView):

@@ -1,11 +1,10 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from .models import Bookmark
+from .settings import IMAGE_CHOICES_WITH_EMPTY_OPTION
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
-
-from .settings import IMAGE_CHOICES_WITH_EMPTY_OPTION
-from .models import Bookmark
 
 __title__ = 'dash.contrib.plugins.url.forms'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

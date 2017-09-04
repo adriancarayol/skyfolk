@@ -2,9 +2,10 @@ import re
 
 from allauth.account.adapter import DefaultAccountAdapter
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
-from user_profile.models import Profile
 from django.http import Http404
+from django.utils.translation import ugettext_lazy as _
+
+from user_profile.models import Profile
 
 
 class MyAccountAdapter(DefaultAccountAdapter):

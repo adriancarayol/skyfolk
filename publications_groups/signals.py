@@ -9,20 +9,21 @@ from django.dispatch import receiver
 from embed_video.backends import detect_backend, EmbedVideoException
 
 from notifications.signals import notify
+from publications_groups.models import PublicationGroup, ExtraGroupContent
 from user_profile.models import NodeProfile
-from .models import PublicationPhoto, ExtraContentPubPhoto
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender=PublicationPhoto, dispatch_uid='photo_publication_save')
-def photo_publication_handler(sender, instance, created, **kwargs):
+@receiver(post_save, sender=PublicationGroup, dispatch_uid='publication_save')
+def publication_handler(sender, instance, created, **kwargs):
     if not instance.deleted:
-        logger.info('New comment by: {} with content: {}'.format(instance.p_author, instance.content))
+        logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))
+
         # Parse extra content
         add_extra_content(instance)
-        # add hashtags
+        # add hashtag
         add_hashtags(instance)
         # Incrementamos afinidad entre usuarios
         increase_affinity(instance)
@@ -31,14 +32,13 @@ def photo_publication_handler(sender, instance, created, **kwargs):
 
     else:
         logger.info('Publication soft deleted, with content: {}'.format(instance.content))
-        # Reducimos afinidad entre usuarios
         decrease_affinity(instance)
 
         if instance.has_extra_content():  # Para publicaciones editadas
-            ExtraContentPubPhoto.objects.filter(publication=instance.id).exclude(
-                url=instance.publication_photo_extra_content.url).delete()
+            ExtraGroupContent.objects.filter(publication=instance.id).exclude(
+                url=instance.group_extra_content.url).delete()
         else:
-            ExtraContentPubPhoto.objects.filter(publication=instance.id).delete()
+            ExtraGroupContent.objects.filter(publication=instance.id).delete()
 
 
 def add_hashtags(instance):
@@ -54,38 +54,35 @@ def add_extra_content(instance):
     link_url = re.findall(
         r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
         instance.content)
-
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
     if not link_url and len(link_url) <= 0 and instance.has_extra_content():
-        instance.publication_photo_extra_content.delete()  # Borramos el extra content de esta
+        instance.group_extra_content.delete()  # Borramos el extra content de esta
         return
     elif link_url and len(link_url) > 0:  # Eliminamos contenido extra para añadir el nuevo
         if instance.has_extra_content():
-            publication_photo_extra_content = instance.publication_photo_extra_content
-            if publication_photo_extra_content.url != link_url[-1]:
-                publication_photo_extra_content.delete()
-
+            group_extra_content = instance.group_extra_content
+            if group_extra_content.url != link_url[-1]:
+                group_extra_content.delete()
+    # Detectamos el origen de la url
     try:
-        backend = detect_backend(link_url[-1])  # youtube o soundcloud
+        backend = detect_backend(link_url[-1])  # youtube, soundcloud...
     except (EmbedVideoException, IndexError) as e:
         backend = None
-
+    # Si existe el backend:
     if link_url and len(link_url) > 0 and backend:
-        ExtraContentPubPhoto.objects.get_or_create(publication=instance, video=link_url[-1])
-
+        ExtraGroupContent.objects.get_or_create(publication=instance, video=link_url[-1])
+    # Si no existe el backend
     elif link_url and len(link_url) > 0:
         url = link_url[-1]  # Get last url
         response = requests.get(url)
         soup = BeautifulSoup(response.text)
-
         description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
             'property': 'og:description'}) or soup.find('meta', attrs={'name': 'description'})
         title = soup.find('meta', attrs={'name': 'og:title'}) or soup.find('meta', attrs={
             'property': 'og:title'}) or soup.find('meta', attrs={'name': 'title'})
         image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
             'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
-
-        extra_c, created = ExtraContentPubPhoto.objects.get_or_create(url=url, publication=instance)
+        extra_c, created = ExtraGroupContent.objects.get_or_create(url=url, publication=instance)
 
         if description:
             extra_c.description = description.get('content', None)[:265]
@@ -94,16 +91,6 @@ def add_extra_content(instance):
         if image:
             extra_c.image = image.get('content', None)
         extra_c.save()
-
-
-def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.p_author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
-    if n.uid != m.uid:
-        rel = n.follow.relationship(m)
-        if rel:
-            rel.weight = rel.weight - 1
-            rel.save()
 
 
 def notify_mentions(instance):
@@ -115,9 +102,9 @@ def notify_mentions(instance):
         except User.DoesNotExist:
             continue
 
-        if instance.p_author.pk != recipientprofile.pk:
+        if instance.author.pk != recipientprofile.pk:
             try:
-                n = NodeProfile.nodes.get(user_id=instance.p_author_id)
+                n = NodeProfile.nodes.get(user_id=instance.author_id)
                 m = NodeProfile.nodes.get(user_id=recipientprofile.id)
             except Exception:
                 continue
@@ -127,18 +114,28 @@ def notify_mentions(instance):
             if privacity and privacity != 'all':
                 continue
 
-        notify.send(instance.p_author, actor=instance.p_author.username,
+        notify.send(instance.author, actor=instance.author.username,
                     recipient=recipientprofile,
                     verb=u'¡te ha mencionado!',
-                    description='<a href="%s">Ver</a>' % ('/publication_pdetail/' + str(instance.id)))
+                    description='<a href="%s">Ver</a>' % ('/publication/' + str(instance.id)))
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.p_author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
+    n = NodeProfile.nodes.get(user_id=instance.author.id)
+    m = NodeProfile.nodes.get(user_id=instance.board_group.owner_id)
     # Aumentamos la fuerza de la relacion entre los usuarios
     if n.uid != m.uid:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight + 1
+            rel.save()
+
+
+def decrease_affinity(instance):
+    n = NodeProfile.nodes.get(user_id=instance.author.id)
+    m = NodeProfile.nodes.get(user_id=instance.board_group.owner_id)
+    if n.uid != m.uid:
+        rel = n.follow.relationship(m)
+        if rel:
+            rel.weight = rel.weight - 1
             rel.save()

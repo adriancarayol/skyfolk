@@ -32,10 +32,11 @@ INSTALLED_APPS = (
 
 """
 from __future__ import unicode_literals
+
 import copy
-from datetime import datetime, timedelta
 import re
 import sys
+from datetime import datetime, timedelta
 
 from django import VERSION
 from django.conf import settings
@@ -49,6 +50,7 @@ from django.db.models import Q
 from django.http import QueryDict
 from django.template import Template, Context, TemplateSyntaxError, TemplateDoesNotExist
 from django.test import TestCase, TransactionTestCase
+
 if VERSION >= (1, 10):
     from django.test import override_settings
 from django.utils.encoding import force_text
@@ -56,7 +58,7 @@ from django.utils.formats import localize
 from django.utils import six
 from django.utils.six.moves import reload_module
 from django.utils.timezone import localtime, now
-from django.utils.translation import activate, deactivate
+from django.utils.translation import activate
 
 from .api import pm_broadcast, pm_write
 # because of reload()'s, do "from postman.fields import CommaSeparatedUserField" just before needs

@@ -1,12 +1,13 @@
+from badgify.models import Award
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import Http404
+from django.http import HttpResponseForbidden
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from badgify.models import Award
-from django.contrib.auth.models import User
-from django.http import Http404
+
 from user_profile.models import NodeProfile
-from django.http import HttpResponseForbidden
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class UserAwards(APIView):

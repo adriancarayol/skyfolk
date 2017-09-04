@@ -5,12 +5,12 @@ from PIL import Image
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
+from django.db.models import Count, Q
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
-from publications.models import Publication
-from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils.six import BytesIO
@@ -20,10 +20,11 @@ from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArch
 from django.views.generic.detail import DetailView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from publications_gallery.models import PublicationPhoto
-from publications_gallery.forms import SharedPhotoPublicationForm
+
+from publications.models import Publication
 from publications_gallery.forms import PublicationPhotoForm
+from publications_gallery.forms import SharedPhotoPublicationForm
+from publications_gallery.models import PublicationPhoto
 from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
 from .models import Photo

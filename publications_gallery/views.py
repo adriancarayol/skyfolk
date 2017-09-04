@@ -2,30 +2,28 @@ import json
 
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db import transaction
+from django.db.models import Count
+from django.db.models import Q
 from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
-from publications.utils import parse_string
-from publications_gallery.models import PublicationPhoto
+
+from emoji.models import Emoji
 from photologue.models import Photo
 from publications.exceptions import EmptyContent
-from django.core.exceptions import ObjectDoesNotExist
+from publications.models import Publication
+from publications.utils import parse_string
+from publications.views import logger
 from publications_gallery.forms import PublicationPhotoForm
 from publications_gallery.forms import SharedPhotoPublicationForm
-from publications.views import logger, get_or_create_csrf_token
+from publications_gallery.models import PublicationPhoto
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from publications.models import Publication
-from emoji.models import Emoji
 from .utils import optimize_publication_media
-from django.db.models import Count
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from avatar.templatetags.avatar_tags import avatar
-from embed_video.backends import detect_backend
-from django.db.models import Q
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):

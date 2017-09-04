@@ -1,23 +1,21 @@
 from bs4 import BeautifulSoup
-from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
-from django.db import transaction
-from django.shortcuts import get_object_or_404
-from django.views.generic import CreateView
-from django.views import View
-from publications.utils import parse_string
-from publications_groups.forms import PublicationGroupForm
-from user_groups.models import UserGroups
-from publications_groups.models import PublicationGroup
-from publications.exceptions import EmptyContent
-from publications_gallery.forms import PublicationPhotoForm
-from publications.views import logger, get_or_create_csrf_token
-from django.contrib.auth.models import User, Group
-from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from emoji.models import Emoji
-from user_profile.models import NodeProfile
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views import View
+from django.views.generic import CreateView
+
+from emoji.models import Emoji
+from publications.exceptions import EmptyContent
+from publications.views import logger
+from publications_groups.forms import PublicationGroupForm
+from publications_groups.models import PublicationGroup
+from user_groups.models import UserGroups
+from user_profile.models import NodeProfile
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 
 
 class PublicationGroupView(AjaxableResponseMixin, CreateView):
@@ -73,6 +71,11 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise EmptyContent('¡Comprueba el texto del comentario!')
 
+                publication.parse_mentions()  # add mentions
+                publication.parse_content()  # parse publication content
+                publication.add_hashtag()  # add hashtags
+                publication.content = Emoji.replace(publication.content)  # Add emoji img
+                
                 publication.save()  # Creamos publicacion
                 return self.form_valid(form=form)
             except Exception as e:

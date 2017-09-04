@@ -1,6 +1,5 @@
-from ....contrib.plugins.url.forms import URLForm
-
 from .settings import IMAGE_CHOICES_WITH_EMPTY_OPTION
+from ....contrib.plugins.url.forms import URLForm
 
 __title__ = 'dash.contrib.layouts.bootstrap3.dash_widgets'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

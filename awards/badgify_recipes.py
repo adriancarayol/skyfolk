@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import badgify
-from django.conf import settings
 from badgify.recipe import BaseRecipe
+from django.conf import settings
 from django.contrib.auth.models import User
 
 

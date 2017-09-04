@@ -1,17 +1,16 @@
 import json
+from distutils.version import StrictVersion
+
+from channels import Group as group_channel
+from django import get_version
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django import get_version
-from django.utils import timezone
-from avatar.models import Avatar
-from django.forms import model_to_dict
-from channels import Group as group_channel
-from user_profile import models as user_profile
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from distutils.version import StrictVersion
-from user_profile.utils import notification_channel
-from avatar.templatetags.avatar_tags import avatar
 from django.template.loader import render_to_string
+from django.utils import timezone
+from django.utils.timesince import timesince as timesince_
+from avatar.models import Avatar
+from avatar.templatetags.avatar_tags import avatar
+from user_profile.utils import notification_channel
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -19,7 +18,6 @@ else:
     from django.contrib.contenttypes.generic import GenericForeignKey
 
 from django.db import models
-from django.db.models.query import QuerySet
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.six import text_type
 from .utils import id2slug
@@ -239,7 +237,6 @@ class Notification(models.Model):
         Shortcut for the ``django.utils.timesince.timesince`` function of the
         current timestamp.
         """
-        from django.utils.timesince import timesince as timesince_
         return timesince_(self.timestamp, now)
 
     @property

@@ -6,4 +6,3 @@ class AwardsConfiguration(AppConfig):
 
     def ready(self):
         super(AwardsConfiguration, self).ready()
-        from awards import signals

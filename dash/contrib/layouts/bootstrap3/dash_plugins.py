@@ -1,5 +1,9 @@
-from ....factory import plugin_factory, plugin_widget_factory
-
+from .dash_widgets import (
+    BaseURLBootstrapThreeBootstrap3DashboardMainWidget,
+    BaseBookmarkBootstrapThreeWidget,
+    BaseImageBootstrapThreeWidget
+)
+from .forms import URLBootstrapThreeForm
 from ....contrib.plugins.dummy.dash_widgets import BaseDummyWidget
 # from ....contrib.plugins.image.dash_widgets import BaseImageWidget
 from ....contrib.plugins.memo.dash_widgets import (
@@ -9,14 +13,9 @@ from ....contrib.plugins.memo.dash_widgets import (
 # from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
 from ....contrib.plugins.url.dash_plugins import BaseURLPlugin
 from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
-# from ....contrib.plugins.weather.dash_widgets import BaseWeatherWidget
+from ....factory import plugin_factory, plugin_widget_factory
 
-from .dash_widgets import (
-    BaseURLBootstrapThreeBootstrap3DashboardMainWidget,
-    BaseBookmarkBootstrapThreeWidget,
-    BaseImageBootstrapThreeWidget
-)
-from .forms import URLBootstrapThreeForm
+# from ....contrib.plugins.weather.dash_widgets import BaseWeatherWidget
 
 __title__ = 'dash.contrib.layouts.bootstrap3.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

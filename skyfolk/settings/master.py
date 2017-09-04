@@ -1,5 +1,7 @@
-from .base import *
 from django.core.exceptions import ImproperlyConfigured
+
+from .base import *
+
 
 # Cargamos SECRET_KEY
 def get_env_variable(var_name):

@@ -3,8 +3,9 @@ from __future__ import unicode_literals
 from django import VERSION
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+
 try:
     from django.contrib.sites.shortcuts import get_current_site  # Django 1.7
 except ImportError:
@@ -29,7 +30,6 @@ from .forms import WriteForm, AnonymousWriteForm, QuickReplyForm, FullReplyForm
 from .models import OPTION_MESSAGES, Message, get_order_by
 from .utils import format_subject, format_body
 from user_profile.models import NodeProfile
-from publications.forms import PublicationForm
 
 login_required_m = method_decorator(login_required)
 csrf_protect_m = method_decorator(csrf_protect)

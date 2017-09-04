@@ -6,7 +6,9 @@ ASGI applications at "liveblog.asgi:channel_layer" as their channel layer.
 """
 
 import os
+
 from channels.asgi import get_channel_layer
+
 
 def get_env_variable(var_name):
     '''Intenta leer una variable de entorno'''

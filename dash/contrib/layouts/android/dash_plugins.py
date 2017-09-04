@@ -1,5 +1,9 @@
+from .dash_widgets import (
+    BaseBookmarkAndroidWidget,
+    URL1x1AndroidMainWidget,
+    URL1x1AndroidShortcutWidget,
+)
 from ....base import plugin_widget_registry
-from ....factory import plugin_widget_factory
 from ....contrib.plugins.dummy.dash_widgets import BaseDummyWidget
 from ....contrib.plugins.image.dash_widgets import BaseImageWidget
 from ....contrib.plugins.memo.dash_widgets import (
@@ -9,12 +13,7 @@ from ....contrib.plugins.memo.dash_widgets import (
 from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
 from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
 from ....contrib.plugins.weather.dash_widgets import BaseWeatherWidget
-
-from .dash_widgets import (
-    BaseBookmarkAndroidWidget,
-    URL1x1AndroidMainWidget,
-    URL1x1AndroidShortcutWidget,
-)
+from ....factory import plugin_widget_factory
 
 __title__ = 'dash.contrib.layouts.android.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

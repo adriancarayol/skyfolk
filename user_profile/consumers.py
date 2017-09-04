@@ -1,10 +1,7 @@
-import json
-import logging
-
-from channels import Group
 from channels.generic.websockets import WebsocketConsumer
-from .models import NodeProfile
 from django.http import Http404
+
+from .models import NodeProfile
 
 
 class BlogConsumer(WebsocketConsumer):

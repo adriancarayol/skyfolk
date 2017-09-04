@@ -1,6 +1,7 @@
-from publications_gallery.models import PublicationPhoto
-from publications.models import Publication
 from django import template
+
+from publications.models import Publication
+from publications_gallery.models import PublicationPhoto
 
 register = template.Library()
 

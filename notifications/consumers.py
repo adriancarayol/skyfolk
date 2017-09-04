@@ -2,7 +2,6 @@ import json
 
 from channels import Group
 from channels.auth import channel_session_user_from_http
-from django.core.exceptions import ObjectDoesNotExist
 
 from user_profile.models import NodeProfile
 

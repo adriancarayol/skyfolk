@@ -1,16 +1,14 @@
 import json
-import publications
-from skyfolk.celery import app
+
 from celery.utils.log import get_task_logger
-from .models import NodeProfile
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.serializers.json import DjangoJSONEncoder
-from publications.utils import get_author_avatar
-from django.contrib.humanize.templatetags.humanize import naturaltime
 from channels import Group
-from mailer.mailer import Mailer
+from django.core.serializers.json import DjangoJSONEncoder
 from django.template.loader import render_to_string
 
+import publications
+from mailer.mailer import Mailer
+from skyfolk.celery import app
+from .models import NodeProfile
 
 logger = get_task_logger(__name__)
 

@@ -15,6 +15,15 @@ Nueva respuesta a una publicacion
                                   placeholder="Responder a @{{node.author}}" rows="10" required=""></textarea>
                         <label for="message-reply-{{ node.pk }}">Escribe tu mensaje aqui...</label>
                     </div>
+                    <div class="file-field input-field col s12">
+                        <div class="btn">
+                            <span>Imágenes</span>
+                            <input name="image" type="file" multiple>
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Subir imagenes o videos">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,19 +1,20 @@
 # encoding:utf-8
 import logging
-import requests
+
+from PIL import Image
 from allauth.account.forms import LoginForm
-from haystack.forms import SearchForm
 from django import forms
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
+from haystack.forms import SearchForm
+from ipware.ip import get_real_ip, get_ip
+
 from user_profile.models import AuthDevices, NodeProfile
 from .validators import validate_file_extension
-from ipware.ip import get_real_ip, get_ip
-from PIL import Image
-from django.conf import settings
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)

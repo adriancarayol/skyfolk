@@ -6,4 +6,3 @@ class GroupAppConfiguration(AppConfig):
 
     def ready(self):
         super(GroupAppConfiguration, self).ready()
-        import user_groups.signals

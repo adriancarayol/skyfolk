@@ -1,6 +1,5 @@
-from user_profile.forms import SearchForm
-
 from user_groups.forms import FormUserGroup
+from user_profile.forms import SearchForm
 
 
 def user_processor(request):

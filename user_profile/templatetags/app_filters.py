@@ -4,9 +4,9 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
 from neomodel import db
-from user_profile.models import TagProfile
-from depot.manager import DepotManager
+
 from user_profile.models import NodeProfile, Request
+from user_profile.models import TagProfile
 
 register = template.Library()
 

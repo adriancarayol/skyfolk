@@ -1,9 +1,9 @@
 import tempfile
-from PIL import Image
 from os.path import splitext
 from urllib.parse import urlparse
 
 import requests
+from PIL import Image
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import File
@@ -17,7 +17,6 @@ from avatar.models import Avatar
 from avatar.signals import avatar_updated
 from avatar.utils import (get_primary_avatar, get_default_avatar_url,
                           invalidate_cache)
-from publications.forms import PublicationForm
 
 
 def _get_next(request):

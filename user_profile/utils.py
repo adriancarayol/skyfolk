@@ -1,10 +1,13 @@
-import uuid, os, hashlib, json
+import hashlib
+import json
+import os
+
+from PIL import Image
 from django.conf import settings
 from django.core.cache import cache
-from PIL import Image
-from django.utils import six
-from django.template.defaultfilters import slugify
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.template.defaultfilters import slugify
+from django.utils import six
 
 try:
     from django.utils.encoding import force_bytes

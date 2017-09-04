@@ -5,4 +5,4 @@ class PublicationAppConfig(AppConfig):
     name = 'publications'
 
     def ready(self):
-        from publications import signals
+        super(PublicationAppConfig, self).ready()

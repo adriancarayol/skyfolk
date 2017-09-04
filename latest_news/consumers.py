@@ -1,8 +1,7 @@
-import json
-
-from channels import Group
 from channels.generic.websockets import WebsocketConsumer
+
 from user_profile.models import NodeProfile
+
 
 class MyFeedConsumer(WebsocketConsumer):
     """

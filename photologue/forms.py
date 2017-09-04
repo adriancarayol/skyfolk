@@ -1,5 +1,5 @@
-import zipfile
 import uuid
+import zipfile
 
 try:
     from zipfile import BadZipFile

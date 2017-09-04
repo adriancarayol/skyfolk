@@ -1,6 +1,8 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
 from avatar.templatetags.avatar_tags import avatar_url
+
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField()

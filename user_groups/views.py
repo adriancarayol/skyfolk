@@ -1,37 +1,39 @@
 import json
 import logging
-from django.contrib.auth.models import User
+
+from PIL import Image
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import IntegrityError
+from django.db import transaction
+from django.db.models import Q
+from django.http import HttpResponseForbidden
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
+from django.utils import six
+from django.views import View
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
-from django.views import View
-from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from .forms import FormUserGroup
-from .models import UserGroups, LikeGroup, NodeGroup, RequestGroup
-from neomodel import db
-from django.db import transaction
-from django.db.models import Q
-from user_profile.models import NodeProfile, TagProfile
-from user_profile.utils import make_pagination_html
-from django.conf import settings
-from PIL import Image
-from django.utils import six
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from publications_groups.forms import PublicationGroupForm
-from publications_groups.models import PublicationGroup
 from guardian.shortcuts import assign_perm, remove_perm
-from django.core.exceptions import ObjectDoesNotExist
-from notifications.signals import notify
-from notifications.models import Notification
-from user_profile.tasks import send_email
-from django.http import HttpResponseForbidden
+from neomodel import db
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from notifications.models import Notification
+from notifications.signals import notify
+from publications_groups.forms import PublicationGroupForm
+from publications_groups.models import PublicationGroup
+from user_profile.models import NodeProfile, TagProfile
+from user_profile.tasks import send_email
+from user_profile.utils import make_pagination_html
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from .forms import FormUserGroup
+from .models import UserGroups, LikeGroup, NodeGroup, RequestGroup
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):

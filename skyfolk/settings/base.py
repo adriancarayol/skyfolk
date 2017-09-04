@@ -7,7 +7,6 @@ import os
 from neomodel import config
 from neomodel import db
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 

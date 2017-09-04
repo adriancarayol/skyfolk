@@ -7,11 +7,12 @@ from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.forms import model_to_dict
-from publications_gallery.models import PublicationPhoto
+
 from notifications.models import Notification
+from publications.models import Publication, PublicationDeleted
+from publications_gallery.models import PublicationPhoto
 from skyfolk.celery import app
 from user_profile.utils import notification_channel, group_name
-from publications.models import Publication, PublicationDeleted
 from .models import PublicationVideo
 from .utils import generate_path_video, convert_avi_to_mp4
 

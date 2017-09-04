@@ -1,6 +1,5 @@
 import logging
 import os
-import random
 import tempfile
 import unicodedata
 import uuid
@@ -26,14 +25,13 @@ from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text, smart_str, filepath_to_uri
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.functional import curry
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
-from mimetypes import guess_extension, guess_type
+
 from user_groups.models import UserGroups
-from .validators import validate_file_extension, validate_video, validate_extension
 from .tasks import generate_thumbnails
+from .validators import validate_file_extension, validate_video, validate_extension
 
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
@@ -53,11 +51,9 @@ except ImportError:
             'Photologue was unable to import the Python Imaging Library. Please confirm it`s installed and available '
             'on your current Python path.')
 
-from sortedm2m.fields import SortedManyToManyField
-
 from .utils.reflection import add_reflection
 from .utils.watermark import apply_watermark
-from .managers import GalleryQuerySet, PhotoQuerySet
+from .managers import PhotoQuerySet
 
 logger = logging.getLogger('photologue.models')
 

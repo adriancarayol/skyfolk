@@ -1,11 +1,9 @@
-import json
-import logging
-
-from channels import Group
 from channels.generic.websockets import WebsocketConsumer
-from .utils import get_channel_name
-from .models import Publication
+
 from user_profile.models import NodeProfile
+from .models import Publication
+from .utils import get_channel_name
+
 
 class PublicationConsumer(WebsocketConsumer):
     """

@@ -1,7 +1,9 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import PublicationGroup
+from django.test import TestCase
+
 from user_groups.models import UserGroups
+from .models import PublicationGroup
+
 
 class PublicationGroupTestCase(TestCase):
     def setUp(self):

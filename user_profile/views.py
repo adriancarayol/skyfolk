@@ -1,53 +1,44 @@
 import json
 import logging
-import os
-import uuid
-import PIL.Image as pil
-from django.utils.six import BytesIO
 
 from allauth.account.views import PasswordChangeView, EmailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
+from django.db import transaction
+from django.db.models import Case, When
+from django.db.models import Count
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
-from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
-from itertools import chain
-from django.http import JsonResponse
-from django.core import serializers
 from haystack.generic_views import SearchView
 from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
+from neomodel import db
+from rest_framework import generics
+from rest_framework.renderers import JSONRenderer
+
+from avatar.templatetags.avatar_tags import avatar, avatar_url
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
-from publications.models import Publication, PublicationImage, PublicationVideo
+from publications.models import Publication, PublicationVideo
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import NodeProfile, TagProfile, Request, Profile, \
-        RelationShipProfile, FOLLOWING, BlockedProfile
-from avatar.templatetags.avatar_tags import avatar, avatar_url
-from neomodel import db
-from django.db import transaction
-from django.core.files.storage import FileSystemStorage
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from .tasks import send_email
-from django.db.models import Count
-from .utils import crop_image, make_pagination_html
+    RelationShipProfile, FOLLOWING, BlockedProfile
 from .serializers import UserSerializer
-from rest_framework import generics
-from rest_framework.renderers import JSONRenderer
-from django.db.models import Case, When
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from rest_framework.decorators import api_view, permission_classes
+from .tasks import send_email
+from .utils import crop_image, make_pagination_html
 
 
 def load_profile_publications(request, page, profile):
