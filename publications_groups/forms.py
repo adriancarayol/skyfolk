@@ -21,3 +21,22 @@ class ReplyPublicationGroupForm(forms.ModelForm):
         model = PublicationGroup
         # Excluir atributos en el formulario.
         fields = ['content', 'parent']
+
+
+class GroupPublicationEdit(forms.ModelForm):
+    """
+    Formulario para editar una publicacion existente
+    """
+    def __init__(self, *args, **kwargs):
+        super(GroupPublicationEdit, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = PublicationGroup
+        fields = ['content', ]
+        widgets = {
+            'content': forms.Textarea(
+                attrs={'required': True, 'placeholder': 'Editar comentario',
+                       'class': 'materialize-textarea'
+                }
+            )
+        }

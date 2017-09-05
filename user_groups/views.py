@@ -26,7 +26,7 @@ from rest_framework.views import APIView
 
 from notifications.models import Notification
 from notifications.signals import notify
-from publications_groups.forms import PublicationGroupForm
+from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications_groups.models import PublicationGroup
 from user_profile.models import NodeProfile, TagProfile
 from user_profile.tasks import send_email

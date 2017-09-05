@@ -77,14 +77,14 @@ def _optimize_publication_media(instance, image_upload):
                         for block in media.chunks():
                             tmp.write(block)
                         process_video_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
-                                board_owner_id=instance.board_owner_id)
+                                                        board_owner_id=instance.board_owner_id)
                     content_video = True
                 elif file_type[0] == "image" and file_type[1] == "gif":  # es un gif
                     tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
                     process_gif_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
-                            board_owner_id=instance.board_owner_id)
+                                                  board_owner_id=instance.board_owner_id)
                     content_video = True
                 else:  # es una imagen normal
                     try:
@@ -177,18 +177,18 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                         publication.save()  # Creamos publicacion
                         form.save_m2m()  # Saving tags
                         content_video = _optimize_publication_media(publication,
-                            request.FILES.getlist('image'))
+                                                                    request.FILES.getlist('image'))
                 except Exception as e:
                     raise ValidationError(e)
 
                 publication.send_notification(request, is_edited=False)
-                
+
                 if not content_video:
                     return self.form_valid(form=form)
                 else:
                     return self.form_valid(form=form,
-                        msg=u"Estamos procesando tus videos, te avisamos "
-                        u"cuando la publicación esté lista,")
+                                           msg=u"Estamos procesando tus videos, te avisamos "
+                                               u"cuando la publicación esté lista,")
 
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
@@ -211,7 +211,7 @@ def publication_detail(request, publication_id):
 
     try:
         request_pub = Publication.objects \
-                .select_related('author').get(id=publication_id, deleted=False)
+            .select_related('author').get(id=publication_id, deleted=False)
     except ObjectDoesNotExist:
         raise Http404
 
@@ -228,21 +228,21 @@ def publication_detail(request, publication_id):
 
     try:
         publication = request_pub.get_descendants(include_self=True) \
-                .filter(deleted=False) \
-                .prefetch_related('extra_content', 'images',
-                                'videos', 'shared_publication__images',
-                                'shared_publication__videos',
-                                'shared_publication__extra_content',
-                                'tags',
-                                'shared_publication__author',
-                                'shared_photo_publication__p_author',
-                                'shared_photo_publication__images',
-                                'shared_photo_publication__videos',
-                                'shared_photo_publication__publication_photo_extra_content',
-                                'user_give_me_like', 'user_give_me_hate') \
-                                        .select_related('author',
-                                                'board_owner', 'shared_publication',
-                                                'parent', 'shared_photo_publication')
+            .filter(deleted=False) \
+            .prefetch_related('extra_content', 'images',
+                              'videos', 'shared_publication__images',
+                              'shared_publication__videos',
+                              'shared_publication__extra_content',
+                              'tags',
+                              'shared_publication__author',
+                              'shared_photo_publication__p_author',
+                              'shared_photo_publication__images',
+                              'shared_photo_publication__videos',
+                              'shared_photo_publication__publication_photo_extra_content',
+                              'user_give_me_like', 'user_give_me_hate') \
+            .select_related('author',
+                            'board_owner', 'shared_publication',
+                            'parent', 'shared_photo_publication')
     except Exception as e:
         logger.info(e)
         raise Exception('Error al cargar descendientes para la publicacion: {}'.format(request_pub))
@@ -258,11 +258,13 @@ def publication_detail(request, publication_id):
 
     try:
         shared_id = publication.object_list.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values('shared_publication__id')\
-                .order_by('shared_publication__id')\
-                .annotate(total=Count('shared_publication__id'))
-        shared_pubs = {item['shared_publication__id']:item.get('total', 0) for item in pubs_shared}
-        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id, deleted=False) \
+        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values(
+            'shared_publication__id') \
+            .order_by('shared_publication__id') \
+            .annotate(total=Count('shared_publication__id'))
+        shared_pubs = {item['shared_publication__id']: item.get('total', 0) for item in pubs_shared}
+        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id,
+                                                         deleted=False) \
             .values_list('shared_publication__id', flat=True)
     except Exception as e:
         logger.info('No se pudo obtener las publicaciones compartidas para la publicacion: {}'.format(request_pub))
@@ -296,7 +298,8 @@ def delete_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = Publication.objects.prefetch_related('extra_content').select_related('shared_publication').defer('content').get(id=publication_id)
+            publication = Publication.objects.prefetch_related('extra_content').select_related(
+                'shared_publication').defer('content').get(id=publication_id)
         except ObjectDoesNotExist:
             return HttpResponse(json.dumps(data),
                                 content_type='application/json'
@@ -530,6 +533,7 @@ def edit_publication(request):
     if request.method == 'POST':
         user = request.user
         publication = get_object_or_404(Publication, id=request.POST['id'])
+        content = request.POST.get('content', None)
 
         if publication.author.id != user.id:
             return JsonResponse({'data': "No tienes permisos para editar este comentario"})
@@ -537,13 +541,8 @@ def edit_publication(request):
         if publication.event_type != 1 and publication.event_type != 3:
             return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
-        publication.content = Emoji.replace(request.POST.get('content', None))
-        publication.add_hashtag()  # add hashtags
-        publication.parse_content()  # parse publication content
-        publication.parse_mentions()
-
         is_correct_content = False
-        soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
+        soup = BeautifulSoup(content)  # Buscamos si entre los tags hay contenido
         for tag in soup.find_all(recursive=True):
             if tag.text and not tag.text.isspace():
                 is_correct_content = True
@@ -556,10 +555,17 @@ def edit_publication(request):
         if publication.content.isspace():  # Comprobamos si el comentario esta vacio
             raise IntegrityError('El comentario esta vacio')
 
-        publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
-        publication.send_notification(request, is_edited=True)
+        try:
+            publication.add_hashtag()  # add hashtags
+            publication.parse_content()  # parse publication content
+            publication.parse_mentions()
+            publication.content = Emoji.replace(content)
+            publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
+            publication.send_notification(request, is_edited=True)
+            return JsonResponse({'data': True})
+        except IntegrityError:
+            return JsonResponse({'data': False})
 
-        return JsonResponse({'data': True})
     return JsonResponse({'data': "No puedes acceder a esta URL."})
 
 
@@ -592,24 +598,24 @@ def load_more_comments(request):
 
         if not publication.parent:
             publications = publication.get_descendants() \
-            .filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
-                & Q(level__lte=1) & Q(deleted=False))
+                .filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+                        & Q(level__lte=1) & Q(deleted=False))
 
         else:
             publications = publication.get_descendants() \
                 .filter(
-                    ~Q(author__profile__from_blocked__to_blocked=user.profile)
-                    & Q(deleted=False))
+                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                & Q(deleted=False))
 
         paginator = Paginator(publications, 10)
 
         publications = publications.prefetch_related('extra_content', 'images',
-            'videos',
-            'tags',
-            'user_give_me_like', 'user_give_me_hate') \
-        .select_related('author',
-            'board_owner',
-            'parent')
+                                                     'videos',
+                                                     'tags',
+                                                     'user_give_me_like', 'user_give_me_hate') \
+            .select_related('author',
+                            'board_owner',
+                            'parent')
 
         try:
             publications = paginator.page(page)
@@ -622,12 +628,12 @@ def load_more_comments(request):
 
         pubs_shared = Publication.objects.filter(
             shared_publication__id__in=pubs_id).values('shared_publication__id') \
-        .order_by('shared_publication__id') \
-        .annotate(total=Count('shared_publication__id'))
+            .order_by('shared_publication__id') \
+            .annotate(total=Count('shared_publication__id'))
 
-        shared_pubs = {item['shared_publication__id']:item.get('total', 0) for item in pubs_shared}
+        shared_pubs = {item['shared_publication__id']: item.get('total', 0) for item in pubs_shared}
         pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=pubs_id, author_id=user.id) \
-                .values_list('shared_publication__id', flat=True)
+            .values_list('shared_publication__id', flat=True)
 
         context = {
             'pub_id': pub_id,
@@ -729,7 +735,6 @@ def share_publication(request):
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-
 def publication_filter_by_time(request):
     response = False
     publications = None
@@ -740,7 +745,8 @@ def publication_filter_by_time(request):
             try:
                 board_owner_id = int(json_data['board_owner'])
             except ValueError:
-                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"),
+                                    content_type='application/json')
         except KeyError:
             return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
 
@@ -755,7 +761,9 @@ def publication_filter_by_time(request):
         if privacity and privacity != 'all':
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
-        root_nodes = cache_tree_children(Publication.objects.filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).select_related('author')[:5])
+        root_nodes = cache_tree_children(
+            Publication.objects.filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).select_related(
+                'author')[:5])
         dicts = []
         """
         for n in root_nodes:
@@ -767,9 +775,10 @@ def publication_filter_by_time(request):
             'author__username': c.author.username,
             'created': naturaltime(c.created),
             'author__avatar': avatar_url(c.author)
-            }) for c in root_nodes]
+        }) for c in root_nodes]
         return HttpResponse(json.dumps(dicts), content_type='application/json')
     return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
+
 
 def publication_filter_by_like(request):
     response = False
@@ -781,7 +790,8 @@ def publication_filter_by_like(request):
             try:
                 board_owner_id = int(json_data['board_owner'])
             except ValueError:
-                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"),
+                                    content_type='application/json')
         except KeyError:
             return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
 
@@ -797,7 +807,8 @@ def publication_filter_by_like(request):
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
-            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by('-likes').select_related('author')[:5])
+                                         .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by(
+            '-likes').select_related('author')[:5])
 
         dicts = []
         [dicts.append({
@@ -807,7 +818,7 @@ def publication_filter_by_like(request):
             'created': naturaltime(c.created),
             'author__avatar': avatar_url(c.author),
             'likes': intword(c.likes)
-            }) for c in root_nodes]
+        }) for c in root_nodes]
         """
         for n in root_nodes:
             dicts.append(recursive_node_to_dict(n))
@@ -826,7 +837,8 @@ def publication_filter_by_relevance(request):
             try:
                 board_owner_id = int(json_data['board_owner'])
             except ValueError:
-                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"),
+                                    content_type='application/json')
         except KeyError:
             return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
 
@@ -842,7 +854,8 @@ def publication_filter_by_relevance(request):
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
-            .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by('-likes', '-created').select_related('author')[:5])
+                                         .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by(
+            '-likes', '-created').select_related('author')[:5])
 
         dicts = []
         [dicts.append({
@@ -852,11 +865,10 @@ def publication_filter_by_relevance(request):
             'created': naturaltime(c.created),
             'author__avatar': avatar_url(c.author),
             'likes': intword(c.likes)
-            }) for c in root_nodes]
+        }) for c in root_nodes]
         """
         for n in root_nodes:
             dicts.append(recursive_node_to_dict(n))
         """
         return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
     return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
-

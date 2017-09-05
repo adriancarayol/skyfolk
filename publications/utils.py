@@ -103,6 +103,7 @@ def validate_video(value):
         1] not in settings.VIDEO_EXTENTIONS:
         raise ValueError('Please upload a valid video file')
 
+
 def recursive_node_to_dict(node):
     """
         Obtiene los descendientes de nivel 1

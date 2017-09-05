@@ -1,5 +1,6 @@
 $(function () {
     var _group_profile = $('#group-profile');
+    var $tab_commentarios = $('#tab-comentarios');
 
     $("#li-tab-amigos").click(function () {
         $('#tab-amigos').css({
@@ -85,7 +86,7 @@ $(function () {
         });
     });
     /* Borrar publicacion */
-    $('#tab-comentarios').on('click', '.options_comentarios .trash-comment', function () {
+    $tab_commentarios.on('click', '.options_comentarios .trash-comment', function () {
         var id = $(this).closest('.options_comentarios').data('id');
         var board_group = $(this).closest('.options_comentarios').data('board');
         swal({
@@ -108,12 +109,12 @@ $(function () {
 
     /* Responder comentario */
     /* Abrir respuesta a comentario */
-    $('#tab-comentarios').on('click', '.reply-comment', function () {
+    $tab_commentarios.on('click', '.reply-comment', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
     /* Submit reply publication */
-    $('#tab-comentarios').on('click', '.group_reply', function (event) {
+    $tab_commentarios.on('click', '.group_reply', function (event) {
         event.preventDefault();
         var form = $(this).closest('form');
         var parent_pk = $(this).attr('id').split('-')[1];
@@ -121,7 +122,7 @@ $(function () {
     });
 
     /* ADD LIKE */
-    $('#tab-comentarios').on('click', '.like-comment', function () {
+    $tab_commentarios.on('click', '.like-comment', function () {
         var pub_box = $(this).closest('.wrapper').closest('.row');
         AJAX_add_like_group_publication(pub_box, $(this), "publication");
     });
@@ -129,6 +130,19 @@ $(function () {
     $('#tab-comentarios').on('click', '.hate-comment', function () {
         var pub_box = $(this).closest('.wrapper').closest('.row');
         AJAX_add_hate_group_publication(pub_box, $(this), "publication");
+    });
+    /* EDIT COMMENT */
+
+    $tab_commentarios.on('click', '.edit-comment', function () {
+        var id = $(this).attr('data-id');
+        $("#author-controls-" + id).slideToggle("fast");
+    });
+
+    $tab_commentarios.on('click', '.edit-comment-btn', function (event) {
+        event.preventDefault();
+        var id = $(this).attr('data-id');
+        var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
+        AJAX_edit_group_publication(id, content);
     });
 
 });// end document ready
@@ -555,6 +569,38 @@ function AJAX_add_hate_group_publication(caja_publicacion, heart, type) {
         },
         error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + e);
+        }
+    });
+}
+
+function AJAX_edit_group_publication(pub, content) {
+    var data = {
+        'id': pub,
+        'content': content,
+        'csrfmiddlewaretoken': csrftoken
+    };
+    $.ajax({
+        url: '/publication/group/edit/',
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+
+        success: function (data) {
+            var response = data.response;
+            console.log(data);
+            // borrar caja publicacion
+            if (response === true) {
+                $('#author-controls-' + pub).fadeToggle("fast");
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to edit publish.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (rs, e) {
         }
     });
 }

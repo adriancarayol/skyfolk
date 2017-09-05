@@ -513,20 +513,16 @@ def edit_publication(request):
     if request.method == 'POST':
         user = request.user
         publication = get_object_or_404(PublicationPhoto, id=request.POST['id'])
+        content = request.POST.get('content', None)
 
         if publication.p_author_id != user.id:
             return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
         if publication.event_type != 1 and publication.event_type != 3:
             return JsonResponse({'data': "No puedes editar este tipo de comentario"})
-
-        publication.content = Emoji.replace(request.POST.get('content', None))
-        publication.add_hashtag()  # add hashtags
-        publication.parse_content()
-        publication.parse_mentions()
         
         is_correct_content = False
-        soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
+        soup = BeautifulSoup(content)  # Buscamos si entre los tags hay contenido
         for tag in soup.find_all(recursive=True):
             if tag.text and not tag.text.isspace():
                 is_correct_content = True
@@ -538,6 +534,12 @@ def edit_publication(request):
 
         if publication.content.isspace():  # Comprobamos si el comentario esta vacio
             raise IntegrityError('El comentario esta vacio')
+
+
+        publication.add_hashtag()  # add hashtags
+        publication.parse_content()
+        publication.parse_mentions()
+        publication.content = Emoji.replace(content)
 
         publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
         publication.send_notification(request, is_edited=True)

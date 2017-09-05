@@ -13,13 +13,11 @@
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><i class="material-icons md-18">open_in_new</i></span>
                         {% if user.id == node.author.id %}
-                            {% if node.event_type == 1 or node.event_type == 3 %}
                                <span data-id="{{ node.pk }}"
                                       class="top-options edit-comment tooltipped"
                                       data-position="bottom"
                                       data-delay="50"
                                       data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
-                            {% endif %}
                         {% endif %}
                         <div class="row">
                             <div class="articulo col s12">
@@ -133,7 +131,6 @@
                         </div>
                     </div>
                     {% if user.id == node.author.id %}
-                        {% if node.event_type == 1  or node.event_type == 3 %}
                             <div data-user-id="{{ node.author.pk }}" id="author-controls-{{ node.pk }}"
                                  class="author-controls">
                                 <div class="row">
@@ -146,7 +143,7 @@
                                                               placeholder="Escribe el contenido del nuevo mensaje"
                                                               id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
                                                               name="content" rows="10" required="required"
-                                                              style="height: 10.9969px;"></textarea>
+                                                              style="height: 11px;"></textarea>
                                                     <label for="id_caption-{{ node.pk }}">Editar comentario</label>
                                                 </div>
                                                 <div class="row">
@@ -161,7 +158,6 @@
                                     </div>
                                 </div>
                             </div>
-                        {% endif %}
                     {% endif %}
                     <div class="wrapper-reply">
                         {% include "groups/new_reply.html" %}

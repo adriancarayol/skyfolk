@@ -9,29 +9,28 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
 
-import publications_gallery
+import publications_groups
 from notifications.models import Notification
 from publications.utils import convert_avi_to_mp4
 from skyfolk.celery import app
-from user_profile.utils import notification_channel
-from .models import PublicationPhotoVideo, PublicationPhoto
+from .models import PublicationGroupVideo, PublicationGroup
 
 logger = get_task_logger(__name__)
 
 
-@app.task(name='tasks.process_photo_pub_video')
+@app.task(name='tasks.process_group_pub_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
     try:
-        publication = PublicationPhoto.objects.get(id=publication_id)
-        photo = publication.board_photo
+        publication = PublicationGroup.objects.get(id=publication_id)
+        group = publication.board_group
     except ObjectDoesNotExist:
         return
 
-    video_file, media_path = publications_gallery.utils.generate_path_video()
+    video_file, media_path = publications_groups.utils.generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
     convert_avi_to_mp4(file, video_file)
-    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationGroupVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('VIDEO CONVERTED')
     if user_id:
@@ -52,9 +51,11 @@ def process_video_publication(file, publication_id, filename, user_id=None):
         if newnotify.timestamp:
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
 
+        """
         Channel_group(notification_channel(user.id)).send({
             "text": json.dumps(data)
         }, immediately=True)
+        """
 
         data.clear()
         data = {
@@ -62,24 +63,26 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             'video': media_path,
             'id': publication_id
         }
-        Channel_group(photo.group_name).send({
+        """
+        Channel_group(group.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)
+        """
 
 
-@app.task(name='tasks.process_photo_pub_gif')
+@app.task(name='tasks.process_group_pub_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None):
     try:
-        publication = PublicationPhoto.objects.get(id=publication_id)
-        photo = publication.board_photo
+        publication = PublicationGroup.objects.get(id=publication_id)
+        group = publication.board_group
     except ObjectDoesNotExist:
         return
     clip = mp.VideoFileClip(file)
-    video_file, media_path = publications_gallery.utils.generate_path_video()
+    video_file, media_path = publications_groups.utils.generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
     clip.write_videofile(video_file, threads=2)
-    PublicationPhotoVideo.objects.create(publication_id=publication_id, video=media_path)
+    PublicationGroupVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('GIF CONVERTED')
     if user_id:
@@ -102,9 +105,11 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         if newnotify.timestamp:
             data['timestamp'] = str(naturaltime(newnotify.timestamp))
 
+        """
         Channel_group(notification_channel(user.id)).send({
             "text": json.dumps(data)
         }, immediately=True)
+        """
 
         data.clear()
         data = {
@@ -112,6 +117,8 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
             'video': media_path,
             'id': publication_id
         }
-        Channel_group(photo.group_name).send({
+        """
+        Channel_group(group.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)
+        """

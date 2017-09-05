@@ -6,7 +6,7 @@ from django.db import transaction
 from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
@@ -18,6 +18,7 @@ from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from .utils import optimize_publication_media
 
 
 class PublicationGroupView(AjaxableResponseMixin, CreateView):
@@ -77,9 +78,16 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
-
                 publication.save()  # Creamos publicacion
-                return self.form_valid(form=form)
+
+                content_video = optimize_publication_media(publication,
+                                                           request.FILES.getlist('image'))
+                if not content_video:
+                    return self.form_valid(form=form)
+                else:
+                    return self.form_valid(form=form,
+                                           msg=u"Estamos procesando tus videos, te avisamos "
+                                               u"cuando la publicación esté lista,")
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
                 return self.form_invalid(form=form, errors=e)
@@ -290,4 +298,49 @@ class AddPublicationHate(View):
                 status_like = 0
 
         data = {'response': response, 'statuslike': status_like}
+        return JsonResponse(data)
+
+
+class EditGroupPublication(UpdateView):
+    model = PublicationGroup
+    fields = ['content', ]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        data = {'response': False}
+        content = request.POST.get('content', None)
+        pub_id = request.POST.get('id', None)
+
+        try:
+            publication = PublicationGroup.objects.get(id=pub_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        if publication.author.id != user.id:
+            return HttpResponseForbidden()
+
+        is_correct_content = False
+        soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
+        for tag in soup.find_all(recursive=True):
+            if tag.text and not tag.text.isspace():
+                is_correct_content = True
+                break
+
+        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+            logger.info('Publicacion contiene espacios o no tiene texto')
+            raise IntegrityError('El comentario esta vacio')
+
+        if publication.content.isspace():  # Comprobamos si el comentario esta vacio
+            raise IntegrityError('El comentario esta vacio')
+
+        try:
+            publication.add_hashtag()
+            publication.parse_content()
+            publication.parse_mentions()
+            publication.content = Emoji.replace(content)
+            publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
+            data['response'] = True
+        except IntegrityError:
+            pass
+
         return JsonResponse(data)

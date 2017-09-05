@@ -1,10 +1,46 @@
 import re
+import uuid
+import os
 from django.contrib.auth.models import User
 from django.db import models
 from embed_video.fields import EmbedVideoField
 
 from publications.models import PublicationBase
 from user_groups.models import UserGroups
+
+from publications.utils import validate_video
+
+
+def upload_image_group_publication(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('group_publications/images', filename)
+
+
+def upload_video_group_publication(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('group_publications/videos', filename)
+
+
+class PublicationGroupVideo(models.Model):
+    publication = models.ForeignKey('PublicationGroup', related_name='videos')
+    video = models.FileField(upload_to=upload_video_group_publication, validators=[validate_video])
+
+
+class PublicationGroupImage(models.Model):
+    publication = models.ForeignKey('PublicationGroup', related_name='images')
+    image = models.ImageField(upload_to=upload_image_group_publication)
 
 
 class ExtraGroupContent(models.Model):
@@ -54,5 +90,3 @@ class PublicationGroup(PublicationBase):
             for u in list(set(link_url)):  # Convertimos URL a hipervinculo
                 self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
             """
-
-

@@ -23,7 +23,6 @@ class PublicationPhotoForm(forms.ModelForm):
         self.fields['parent'].widget = forms.HiddenInput()
 
 
-
 class SharedPhotoPublicationForm(forms.ModelForm):
     """
     Formulario para compartir una publicacion existente
