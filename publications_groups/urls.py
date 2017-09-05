@@ -14,4 +14,6 @@ urlpatterns = [
         name='add_hate_group_publication'),
     url(r'^publication/group/edit/$', views.EditGroupPublication.as_view(),
         name='edit_group_publication'),
+    url(r'^publication/group/detail/(?P<pk>\d+)/$', views.PublicationGroupDetail.as_view(),
+        name='detail_group_publication'),
 ]

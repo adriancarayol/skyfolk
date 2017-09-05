@@ -6,3 +6,4 @@ class PublicationGalleryAppConfig(AppConfig):
 
     def ready(self):
         super(PublicationGalleryAppConfig, self).ready()
+        from publications_gallery import signals

@@ -137,12 +137,12 @@ def publication_detail(request, publication_id):
 
     try:
         publication = request_pub.get_descendants(include_self=True) \
-                .filter(deleted=False) \
-                .prefetch_related('publication_photo_extra_content', 'images',
-                                'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
-                                        .select_related('p_author',
-                                                'board_photo',
-                                                'parent')
+            .filter(deleted=False) \
+            .prefetch_related('publication_photo_extra_content', 'images',
+                              'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
+            .select_related('p_author',
+                            'board_photo',
+                            'parent')
     except Exception as e:
         raise Exception('No se pudo cargar los descendientes de: {}'.format(request_pub))
 

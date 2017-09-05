@@ -6,3 +6,4 @@ class UserProfileAppConfiguration(AppConfig):
 
     def ready(self):
         super(UserProfileAppConfiguration, self).ready()
+        from user_groups import signals

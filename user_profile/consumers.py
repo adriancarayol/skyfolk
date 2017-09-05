@@ -46,6 +46,7 @@ class BlogConsumer(WebsocketConsumer):
     def disconnect(self, message, **kwargs):
         pass
 
+
 class NotificationConsumer(WebsocketConsumer):
     """
     Consumidor para conectarse al perfil

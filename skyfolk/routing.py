@@ -6,6 +6,7 @@ from photologue.consumers import PhotoConsumer
 from publications.consumers import PublicationConsumer
 from publications_gallery.consumers import PublicationPhotoConsumer
 from user_profile.consumers import BlogConsumer, NotificationConsumer
+from user_groups.consumers import GroupConsumer
 
 # The channel routing defines what channels get handled by what consumers,
 # including optional matching on message attributes. WebSocket messages of all
@@ -26,6 +27,8 @@ channel_routing = [
     PublicationConsumer.as_route(path=r'^/publication/(?P<pubid>\d+)/stream/$'),
     # channels para conectarse a publication_photo_detail
     PublicationPhotoConsumer.as_route(path=r'^/publication_pdetail/(?P<pubid>\d+)/stream/$'),
+    # channels para conectarse a group
+    GroupConsumer.as_route(path=r'^/group/(?P<groupname>[\w-]+)/stream/$'),
     # A default "http.request" route is always inserted by Django at the end of the routing list
     # that routes all unmatched HTTP requests to the Django view system. If you want lower-level
     # HTTP handling - e.g. long-polling - you can do it here and route by path, and let the rest

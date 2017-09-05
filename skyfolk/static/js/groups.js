@@ -145,6 +145,9 @@ $(function () {
         AJAX_edit_group_publication(id, content);
     });
 
+    $tab_commentarios.on('click', '.wrapper .zoom-pub', function () {
+        window.location.href = $(this).data('url');
+    });
 });// end document ready
 
 

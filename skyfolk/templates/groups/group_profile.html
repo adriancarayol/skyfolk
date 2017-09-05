@@ -116,5 +116,10 @@
             updateHash: false
         });
 </script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/socket_group.js"></script>
+    <script>
+        UTILS.init([{{ group_profile.group_ptr_id }}]);
+        UTILS.conn_socket();
+    </script>
 {% endblock %}

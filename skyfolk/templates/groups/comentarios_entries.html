@@ -11,7 +11,8 @@
                     <div class="box">
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
-                  data-tooltip="Ver conversación completa"><i class="material-icons md-18">open_in_new</i></span>
+                  data-tooltip="Ver conversación completa" data-url="{% url "publications_groups:detail_group_publication" pk=node.id %}">
+                <i class="material-icons md-18">open_in_new</i></span>
                         {% if user.id == node.author.id %}
                                <span data-id="{{ node.pk }}"
                                       class="top-options edit-comment tooltipped"

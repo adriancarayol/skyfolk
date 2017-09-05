@@ -18,6 +18,7 @@ REQUEST_STATUSES = (
     (REQUEST_BLOCKED, 'Blocked'),
 )
 
+
 def upload_small_group_image(instance, filename):
     return '%s/small_group_image/%s' % (instance.name, filename)
 
@@ -38,6 +39,7 @@ class NodeGroup(DjangoNode):
 
 def group_avatar_path(instance, filename):
     return 'group_{0}_avatar/{1}'.format(instance.id, filename)
+
 
 def group_back_image_path(instance, filename):
     return 'group_{0}_back_image/{1}'.format(instance.id, filename)
@@ -69,6 +71,11 @@ class UserGroups(Group):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(UserGroups, self).save(*args, **kwargs)
+
+    @property
+    def group_channel(self):
+        return "group-%d" % self.group_ptr_id
+
 
 class LikeGroupQuerySet(models.QuerySet):
     def has_like(self, group_id, user_id):
@@ -111,6 +118,7 @@ class LikeGroup(models.Model):
     def __str__(self):
         return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.username, self.to_like.name,
                                                                 self.created)
+
 
 class RequestGroupManager(models.Manager):
     def get_follow_request(self, from_profile, to_group):

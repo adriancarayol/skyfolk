@@ -1,5 +1,5 @@
 from channels.generic.websockets import WebsocketConsumer
-
+from django.http import Http404
 from user_profile.models import NodeProfile
 from .models import PublicationPhoto
 from .utils import get_channel_name
@@ -20,7 +20,7 @@ class PublicationPhotoConsumer(WebsocketConsumer):
 
         try:
             publication_board_owner = PublicationPhoto.objects.values_list('board_photo__owner_id', flat=True).get(id=pubid)
-        except Publication.DoesNotExist:
+        except PublicationPhoto.DoesNotExist:
             raise Http404
 
         try:

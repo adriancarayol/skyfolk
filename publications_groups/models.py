@@ -1,14 +1,17 @@
 import re
 import uuid
 import os
+import json
 from django.contrib.auth.models import User
 from django.db import models
+from channels import Group as channel_group
 from embed_video.fields import EmbedVideoField
-
+from user_profile.tasks import send_email
 from publications.models import PublicationBase
 from user_groups.models import UserGroups
-
+from django.template.loader import render_to_string
 from publications.utils import validate_video
+from notifications.signals import notify
 
 
 def upload_image_group_publication(instance, filename):
@@ -90,3 +93,53 @@ class PublicationGroup(PublicationBase):
             for u in list(set(link_url)):  # Convertimos URL a hipervinculo
                 self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
             """
+
+    def send_notification(self, request, type="pub", is_edited=False):
+        """
+         Enviamos a través del socket a todos aquellos usuarios
+         que esten visitando el perfil donde se publica el comentario.
+        """
+        data = {
+            'type': 'pub',
+            'id': self.id,
+            'parent_id': self.parent_id,
+            'level': self.level,
+            'content': render_to_string(request=request, template_name='channels/new_group_publication.html',
+                                        context={'node': self, 'group_profile': self.board_group})
+        }
+
+        # Enviamos a todos los usuarios que visitan el perfil
+        channel_group(self.board_group.group_channel).send({
+            "text": json.dumps(data)
+        })
+
+        # TODO: Mezclar templates para ahorrar el render
+
+        # data['content'] = render_to_string(request=request, template_name='channels/new_publication_detail.html',
+        #                                   context={'node': self, 'user_profile': self.board_owner})
+
+        # Enviamos por el socket de la publicacion
+        # if is_edited:
+        #     channel_group(get_channel_name(self.id)).send({
+        #         'text': json.dumps(data)
+        #     })
+        #
+        # # Enviamos al blog de la publicacion
+        # [channel_group(get_channel_name(x)).send({
+        #     "text": json.dumps(data)
+        # }) for x in self.get_ancestors().values_list('id', flat=True)]
+
+        # Notificamos al board_owner de la publicacion
+        if self.author_id != self.board_group.owner_id:
+            notify.send(self.author, actor=self.author.username,
+                        recipient=self.board_group.owner,
+                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en el grupo %s.' %
+                             (self.author.username, self.author.username, self.board_group.name),
+                        level='notification_board_group')
+
+            # Enviamos email al board_owner
+            send_email.delay(
+                "Skyfolk - %s ha comentado en el grupo %s." % (self.author.username, self.board_group.name),
+                [self.board_group.owner.email],
+                {'to_user': self.board_group.owner.username, 'from_user': self.author.username},
+                'emails/new_publication.html')

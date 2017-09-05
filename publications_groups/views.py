@@ -7,7 +7,9 @@ from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import CreateView, UpdateView
+from django.views.generic.list import ListView
 
+from django.utils.decorators import method_decorator
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from emoji.models import Emoji
@@ -15,7 +17,7 @@ from publications.exceptions import EmptyContent
 from publications.views import logger
 from publications_groups.forms import PublicationGroupForm
 from publications_groups.models import PublicationGroup
-from user_groups.models import UserGroups
+from user_groups.models import UserGroups, NodeGroup
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media
@@ -39,11 +41,15 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
         form = self.get_form()
         group = get_object_or_404(UserGroups, id=request.POST.get('board_group', None))
         emitter = User.objects.get(id=self.request.user.id)
-        print(request.POST)
+
+        try:
+            emitter_node = NodeProfile.nodes.get(user_id=emitter.id)
+            group_node = NodeGroup.nodes.get(group_id=group.group_ptr_id)
+        except (NodeProfile.DoesNotExist, NodeGroup.DoesNotExist) as e:
+            raise Http404
 
         if group.owner.id != emitter.id:
-            can_publish = emitter.has_perm('can_publish', group)
-            if not can_publish:
+            if not group.is_public and not group_node.members.is_connected(emitter_node):
                 return self.form_invalid(form=form)
 
         is_correct_content = False
@@ -56,7 +62,7 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 parent = publication.parent
                 if parent:
                     author = NodeProfile.nodes.get(user_id=parent.author_id)
-                    emitter_node = NodeProfile.nodes.get(user_id=emitter.id)
+
                     if author.bloq.is_connected(emitter_node):
                         raise PermissionDenied('El autor de la publicación te ha bloqueado')
 
@@ -79,6 +85,8 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
                 publication.save()  # Creamos publicacion
+
+                publication.send_notification(request)
 
                 content_video = optimize_publication_media(publication,
                                                            request.FILES.getlist('image'))
@@ -339,8 +347,47 @@ class EditGroupPublication(UpdateView):
             publication.parse_mentions()
             publication.content = Emoji.replace(content)
             publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
+            publication.send_notification(request, is_edited=True)
             data['response'] = True
         except IntegrityError:
             pass
 
         return JsonResponse(data)
+
+
+class PublicationGroupDetail(ListView):
+    model = PublicationGroup
+    template_name = 'groups/publication_detail.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PublicationGroupDetail, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        pub_id = self.kwargs.get('pk', None)
+        try:
+            publication = PublicationGroup.objects.select_related('board_group').get(id=pub_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        try:
+            n = NodeProfile.nodes.get(user_id=self.request.user.id)
+            g = NodeGroup.nodes.get(group_id=publication.board_group.group_ptr_id)
+        except (NodeProfile.DoesNotExist, NodeGroup.DoesNotExist) as e:
+            raise Http404
+
+        if not publication.board_group.is_public and not g.members.is_connected(n):
+            return HttpResponseForbidden()
+
+        return publication.get_descendants(include_self=True) \
+            .filter(deleted=False) \
+            .prefetch_related('group_extra_content', 'images',
+                              'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
+            .select_related('author',
+                            'board_group',
+                            'parent')
+
+    def get_context_data(self, **kwargs):
+        context = super(PublicationGroupDetail, self).get_context_data(**kwargs)
+        context['publication_id'] = self.kwargs.get('pk', None)
+        return context

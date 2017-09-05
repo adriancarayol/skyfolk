@@ -11,6 +11,7 @@ from .models import UserGroups, RequestGroup
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @receiver(post_save, sender=UserGroups)
 def handle_new_group(sender, instance, created, **kwargs):
     if created:  # Primera vez que se crea el usuario, creamos Perfil y Nodo
@@ -27,5 +28,4 @@ def handle_new_group(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=RequestGroup)
 def handle_delete_request(sender, instance, *args, **kwargs):
     Notification.objects.filter(action_object_object_id=instance.id,
-            action_object_content_type=ContentType.objects.get_for_model(instance)).delete()
-
+                                action_object_content_type=ContentType.objects.get_for_model(instance)).delete()
