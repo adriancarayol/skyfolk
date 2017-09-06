@@ -12,7 +12,6 @@ from django.template.loader import render_to_string
 from notifications.models import Notification
 
 import publications_groups
-from notifications.signals import notify
 from publications.utils import convert_avi_to_mp4
 from skyfolk.celery import app
 from user_profile.utils import notification_channel
@@ -66,6 +65,10 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             "text": json.dumps({'content': content})
         }, immediately=True)
 
+        [Channel_group(publications_groups.utils.get_channel_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+
         Channel_group(group.group_channel).send({
             "text": json.dumps(data)
         }, immediately=True)
@@ -116,6 +119,10 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         Channel_group(notification_channel(user.id)).send({
             "text": json.dumps({'content': content})
         }, immediately=True)
+
+        [Channel_group(publications_groups.utils.get_channel_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
 
         Channel_group(group.group_channel).send({
             "text": json.dumps(data)

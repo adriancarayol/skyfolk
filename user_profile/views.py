@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import Case, When
 from django.db.models import Count
 from django.db.models import Q
@@ -48,20 +48,21 @@ def load_profile_publications(request, page, profile):
     user = request.user
     try:
         paginator = Paginator(Publication.objects.filter(~Q(author__profile__from_blocked__to_blocked=user.profile) &
-                Q(board_owner_id=profile.id) & Q(level__lte=0) & Q(deleted=False)) \
-                           .prefetch_related('extra_content', 'images',
-                                             'videos', 'shared_publication__images',
-                                             'tags',
-                                             'shared_photo_publication__images',
-                                             'shared_publication__author',
-                                             'shared_photo_publication__p_author',
-                                             'shared_photo_publication__videos',
-                                             'shared_photo_publication__publication_photo_extra_content',
-                                             'shared_publication__videos', 'shared_publication__extra_content',
-                                             'user_give_me_like', 'user_give_me_hate') \
-                           .select_related('author',
-                                        'board_owner', 'shared_publication',
-                                        'parent', 'shared_photo_publication'), 25)
+                                                         Q(board_owner_id=profile.id) & Q(level__lte=0) & Q(
+            deleted=False)) \
+                              .prefetch_related('extra_content', 'images',
+                                                'videos', 'shared_publication__images',
+                                                'tags',
+                                                'shared_photo_publication__images',
+                                                'shared_publication__author',
+                                                'shared_photo_publication__p_author',
+                                                'shared_photo_publication__videos',
+                                                'shared_photo_publication__publication_photo_extra_content',
+                                                'shared_publication__videos', 'shared_publication__extra_content',
+                                                'user_give_me_like', 'user_give_me_hate') \
+                              .select_related('author',
+                                              'board_owner', 'shared_publication',
+                                              'parent', 'shared_photo_publication'), 25)
         try:
             publications = paginator.page(page)
         except PageNotAnInteger:
@@ -76,7 +77,7 @@ def load_profile_publications(request, page, profile):
             'shared_publication__id') \
             .order_by('shared_publication__id') \
             .annotate(total=Count('shared_publication__id'))
-        shared_pubs = {item['shared_publication__id']:item.get('total', 0) for item in pubs_shared}
+        shared_pubs = {item['shared_publication__id']: item.get('total', 0) for item in pubs_shared}
 
         pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id,
                                                          deleted=False).values_list('shared_publication__id', flat=True)
@@ -101,7 +102,7 @@ def profile_view_ajax(request, user_profile, node_profile=None):
 
     if qs == 'publications':
         page = request.GET.get('page', 1)
-        template='account/profile_comments.html'
+        template = 'account/profile_comments.html'
         pubs_shared_with_me, pubs_shared, publications = load_profile_publications(request, page, user_profile)
         context = {
             'user_profile': user_profile,
@@ -111,7 +112,7 @@ def profile_view_ajax(request, user_profile, node_profile=None):
         }
     elif qs == 'following':
         page = int(request.GET.get('pagefollowing', 1))
-        template='account/follow_entries.html'
+        template = 'account/follow_entries.html'
         limit = 25 * page
         offset = limit - 25
         total_users = node_profile.count_follows()
@@ -130,7 +131,6 @@ def profile_view_ajax(request, user_profile, node_profile=None):
         raise ValueError('No existe el querystring %s' % qs[:25])
 
     return render(request, template_name=template, context=context)
-
 
 
 @login_required(login_url='/')
@@ -163,7 +163,6 @@ def profile_view(request, username,
             pass
         else:
             return profile_view_ajax(request, user_profile, node_profile=n)
-
 
     context['user_profile'] = user_profile
     context['privacity'] = privacity
@@ -240,7 +239,6 @@ def profile_view(request, username,
             multimedia_count = user_profile.profile.get_num_multimedia()
     except ObjectDoesNotExist:
         multimedia_count = 0
-
 
     context['liked'] = liked
     context['n_likes'] = n.count_likes()
@@ -617,7 +615,7 @@ def add_friend_by_username_or_pin(request):
                             sql_friend = User.objects.select_related('profile').get(id=friend.user_id)
                             emitter = Profile.objects.get(user_id=user_request.id)
                             RelationShipProfile.objects.create(to_profile=sql_friend.profile,
-                                    from_profile=emitter, type=FOLLOWING)
+                                                               from_profile=emitter, type=FOLLOWING)
                             data['response'] = 'added_friend'
                 except Exception as e:
                     logging.info(e)
@@ -629,7 +627,7 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # enviamos peticion de amistad
-            #TODO: Hacer transaction atomic
+            # TODO: Hacer transaction atomic
             try:
                 friend_request = Request.objects.get_follow_request(from_profile=user.user_id,
                                                                     to_profile=friend.user_id)
@@ -699,7 +697,7 @@ def add_friend_by_username_or_pin(request):
                             sql_friend = User.objects.select_related('profile').get(id=friend.user_id)
                             emitter = Profile.objects.get(user_id=user_request.id)
                             RelationShipProfile.objects.create(to_profile=sql_friend.profile,
-                                    from_profile=emitter, type=FOLLOWING)
+                                                               from_profile=emitter, type=FOLLOWING)
                             data['response'] = 'added_friend'
                 except Exception as e:
                     logging.info(e)
@@ -832,17 +830,17 @@ def request_friend(request):
                             recipient = User.objects.select_related('profile').get(id=m.user_id)
                             emitter = Profile.objects.get(user_id=user.id)
                             RelationShipProfile.objects.create(to_profile=recipient.profile,
-                                    from_profile=emitter, type=FOLLOWING)
+                                                               from_profile=emitter, type=FOLLOWING)
                             # enviamos notificacion informando del evento
                             notify.send(user, actor=n.title,
-                                recipient=recipient,
-                                verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (n.title, n.title),
-                                level='new_follow')
+                                        recipient=recipient,
+                                        verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (n.title, n.title),
+                                        level='new_follow')
                     response = "added_friend"
                     # enviamos mail
                     send_email.delay('Skyfolk - %s ahora te sigue.' % user.username, [recipient.email],
-                                 {'to_user': recipient.username, 'from_user': user.username}
-                                 , 'emails/new_follow.html')
+                                     {'to_user': recipient.username, 'from_user': user.username}
+                                     , 'emails/new_follow.html')
                 except Exception as e:
                     logging.info(e)
                     response = "no_added_friend"
@@ -907,21 +905,22 @@ def respond_friend_request(request):
                 with transaction.atomic(using="default"):
                     with db.transaction:
                         RelationShipProfile.objects.create(to_profile=emitter,
-                                    from_profile=recipient.profile, type=FOLLOWING)
+                                                           from_profile=recipient.profile, type=FOLLOWING)
                         notify.send(user, actor=user.username,
-                                recipient=recipient,
-                                verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (user.username, user.username),
-                                level='new_follow')
+                                    recipient=recipient,
+                                    verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (
+                                    user.username, user.username),
+                                    level='new_follow')
 
                         Request.objects.remove_received_follow_request(from_profile=recipient.id,
-                                to_profile=user.id)
+                                                                       to_profile=user.id)
 
                 response = "added_friend"
                 logging.info('user.profile: {} emitter_profile: {}'.format(user.username, recipient.id))
                 # enviamos notificacion informando del evento
                 send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [recipient.email],
-                             {'to_user': recipient.username, 'from_user': user.username},
-                             'emails/new_follow_added.html')
+                                 {'to_user': recipient.username, 'from_user': user.username},
+                                 'emails/new_follow_added.html')
             except Exception as e:
                 logging.info(e)
                 response = 'rejected'
@@ -930,13 +929,12 @@ def respond_friend_request(request):
             try:
                 with transaction.atomic(using="default"):
                     Request.objects.remove_received_follow_request(from_profile=recipient.id,
-                        to_profile=user.id)
+                                                                   to_profile=user.id)
                 response = "rejected"
             except Exception as e:
                 response = "null"
         else:
             response = "rejected"
-
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -958,7 +956,6 @@ def remove_relationship(request):
         except NodeProfile.DoesNotExist:
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-
         if me.follow.is_connected(profile_user):
             try:
                 with transaction.atomic(using="default"):
@@ -966,7 +963,7 @@ def remove_relationship(request):
                         emitter = Profile.objects.get(user_id=user.id)
                         recipient = Profile.objects.get(user_id=slug)
                         RelationShipProfile.objects.filter(to_profile=recipient,
-                                from_profile=emitter, type=FOLLOWING).delete()
+                                                           from_profile=emitter, type=FOLLOWING).delete()
                 response = True
             except Exception as e:
                 logging.info(e)
@@ -1047,7 +1044,7 @@ class FollowersListView(ListView):
         self.pagination = None
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
         offset = limit - 25
 
@@ -1090,7 +1087,7 @@ class FollowingListView(ListView):
         self.pagination = None
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
         offset = limit - 25
 
@@ -1277,9 +1274,9 @@ def bloq_user(request):
                 with transaction.atomic(using="default"):
                     with db.transaction:
                         RelationShipProfile.objects.filter(to_profile=recipient,
-                                from_profile=emitter, type=FOLLOWING).delete()
+                                                           from_profile=emitter, type=FOLLOWING).delete()
                         RelationShipProfile.objects.filter(to_profile=emitter,
-                                from_profile=recipient, type=FOLLOWING).delete()
+                                                           from_profile=recipient, type=FOLLOWING).delete()
                 status = "isfollow"
             except Exception as e:
                 logging.info(e)
@@ -1303,9 +1300,9 @@ def bloq_user(request):
                 with transaction.atomic(using="default"):
                     with db.transaction:
                         RelationShipProfile.objects.filter(to_profile=emitter,
-                                from_profile=recipient, type=FOLLOWING).delete()
+                                                           from_profile=recipient, type=FOLLOWING).delete()
                         RelationShipProfile.objects.filter(to_profile=recipient,
-                                from_profile=emitter, type=FOLLOWING).delete()
+                                                           from_profile=emitter, type=FOLLOWING).delete()
             except Exception as e:
                 logging.info(e)
                 response = False
@@ -1420,7 +1417,7 @@ class RecommendationUsers(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
         offset = limit - 25
 
@@ -1466,10 +1463,9 @@ class LikeListUsers(AjaxListView):
 
     def get_queryset(self):
         username = self.kwargs['username']
-        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
         offset = limit - 25
-
 
         n = NodeProfile.nodes.get(title=username)
         id_users = [u.user_id for u in n.get_like_to_me(offset=offset, limit=25)]
@@ -1517,32 +1513,51 @@ class SearchUsuarioView(SearchView):
         profile = Profile.objects.get(user_id=self.request.user.id)
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(board_owner_id=self.request.user.id)
-                    | SQ(author_id=self.request.user.id)) | ((~SQ(board_owner__profile__from_blocked__to_blocked=profile) &
-                SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N') & ~SQ(author__profile__from_blocked__to_blocked=profile)) &
-                ((SQ(board_owner__profile__privacity='A') | ((SQ(board_owner__profile__privacity='OF') &
-                            SQ(board_owner__profile__to_profile__from_profile=profile)) | (SQ(board_owner__profile__privacity='OFAF') &
-                            (SQ(board_owner__profile__to_profile__from_profile=profile) | SQ(board_owner__profile__from_profile__to_profile=profile))
-                            )) & ((SQ(author__profile__privacity='OF') &
-                            SQ(author__profile__to_profile__from_profile=profile)) | (SQ(author__profile__privacity='OFAF') &
-                            (SQ(author__profile__to_profile__from_profile=profile) | SQ(author__profile__from_profile__to_profile=profile))
-                            ) | SQ(author__profile__privacity='A'))) | (SQ(author__profile__privacity='A') | ((SQ(author__profile__privacity='OF') &
-                            SQ(author__profile__to_profile__from_profile=profile)) | (SQ(author__profile__privacity='OFAF') &
-                            (SQ(author__profile__to_profile__from_profile=profile) | SQ(author__profile__from_profile__to_profile=profile))
-                            )) & ((SQ(board_owner__profile__privacity='OF') &
-                            SQ(board_owner__profile__to_profile__from_profile=profile)) | (SQ(board_owner__profile__privacity='OFAF') &
-                            (SQ(board_owner__profile__to_profile__from_profile=profile) | SQ(board_owner__profile__from_profile__to_profile=profile))
-                            ) | SQ(board_owner__profile__privacity='A')))))) \
-            .select_related('author').prefetch_related('images')
-            ).load_all_queryset(
-                    Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
-                        ((~SQ(owner__profile__privacity='N') & ~SQ(owner__profile__from_blocked__to_blocked=profile))
-                        & ((SQ(owner__profile__privacity='OF') &
-                            SQ(owner__profile__to_profile__from_profile=profile)
-                            & SQ(is_public=True))
-                            | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (SQ(owner__profile__privacity='OFAF') & (SQ(owner__profile__from_profile__to_profile=profile) | SQ(owner__profile__to_profile__from_profile=profile)))))) \
-                    .select_related('owner').prefetch_related('tags')
-            ).load_all_queryset(
-                    Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))
+                                                     | SQ(author_id=self.request.user.id)) | (
+                                                    (~SQ(board_owner__profile__from_blocked__to_blocked=profile) &
+                                                     SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N') & ~SQ(
+                                                        author__profile__from_blocked__to_blocked=profile)) &
+                                                    ((SQ(board_owner__profile__privacity='A') | (
+                                                    (SQ(board_owner__profile__privacity='OF') &
+                                                     SQ(board_owner__profile__to_profile__from_profile=profile)) | (
+                                                    SQ(board_owner__profile__privacity='OFAF') &
+                                                    (SQ(board_owner__profile__to_profile__from_profile=profile) | SQ(
+                                                        board_owner__profile__from_profile__to_profile=profile))
+                                                    )) & ((SQ(author__profile__privacity='OF') &
+                                                           SQ(author__profile__to_profile__from_profile=profile)) | (
+                                                          SQ(author__profile__privacity='OFAF') &
+                                                          (SQ(author__profile__to_profile__from_profile=profile) | SQ(
+                                                              author__profile__from_profile__to_profile=profile))
+                                                          ) | SQ(author__profile__privacity='A'))) | (
+                                                     SQ(author__profile__privacity='A') | (
+                                                     (SQ(author__profile__privacity='OF') &
+                                                      SQ(author__profile__to_profile__from_profile=profile)) | (
+                                                     SQ(author__profile__privacity='OFAF') &
+                                                     (SQ(author__profile__to_profile__from_profile=profile) | SQ(
+                                                         author__profile__from_profile__to_profile=profile))
+                                                     )) & ((SQ(board_owner__profile__privacity='OF') &
+                                                            SQ(
+                                                                board_owner__profile__to_profile__from_profile=profile)) | (
+                                                           SQ(board_owner__profile__privacity='OFAF') &
+                                                           (SQ(
+                                                               board_owner__profile__to_profile__from_profile=profile) | SQ(
+                                                               board_owner__profile__from_profile__to_profile=profile))
+                                                           ) | SQ(board_owner__profile__privacity='A')))))) \
+                .select_related('author').prefetch_related('images')
+        ).load_all_queryset(
+            Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
+                                        ((~SQ(owner__profile__privacity='N') & ~SQ(
+                                            owner__profile__from_blocked__to_blocked=profile))
+                                         & ((SQ(owner__profile__privacity='OF') &
+                                             SQ(owner__profile__to_profile__from_profile=profile)
+                                             & SQ(is_public=True))
+                                            | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (
+                                            SQ(owner__profile__privacity='OFAF') & (
+                                            SQ(owner__profile__from_profile__to_profile=profile) | SQ(
+                                                owner__profile__to_profile__from_profile=profile)))))) \
+                .select_related('owner').prefetch_related('tags')
+        ).load_all_queryset(
+            Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))
         models = []
 
         try:
@@ -1628,7 +1643,7 @@ def recommendation_real_time(request):
 
 class FollowingByAffinityList(generics.ListAPIView):
     serializer_class = UserSerializer
-    renderer_classes = (JSONRenderer, )
+    renderer_classes = (JSONRenderer,)
 
     def get_queryset(self):
         user_id = self.request.user.id
@@ -1640,7 +1655,7 @@ class FollowingByAffinityList(generics.ListAPIView):
 
 class FollowersByAffinityList(generics.ListAPIView):
     serializer_class = UserSerializer
-    renderer_classes = (JSONRenderer, )
+    renderer_classes = (JSONRenderer,)
 
     def get_queryset(self):
         user_id = self.request.user.id

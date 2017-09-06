@@ -59,6 +59,10 @@ def process_video_publication(file, publication_id, filename, user_id=None):
             "text": json.dumps({'content': content})
         }, immediately=True)
 
+        [Channel_group(publications_gallery.utils.get_channel_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+
         Channel_group(photo.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)
@@ -103,6 +107,10 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         Channel_group(notification_channel(user.id)).send({
             "text": json.dumps({'content': content})
         }, immediately=True)
+
+        [Channel_group(publications_gallery.utils.get_channel_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
 
         Channel_group(photo.group_name).send({
             "text": json.dumps(data)

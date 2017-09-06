@@ -12,7 +12,7 @@ from publications_gallery.models import PublicationPhoto
 from skyfolk.celery import app
 from user_profile.utils import group_name, notification_channel
 from .models import PublicationVideo
-from .utils import generate_path_video, convert_avi_to_mp4
+from .utils import generate_path_video, convert_avi_to_mp4, get_channel_name
 from notifications.models import Notification
 from django.db import IntegrityError
 
@@ -137,6 +137,16 @@ def process_video_publication(file, publication_id, filename, user_id=None,
             "text": json.dumps({'content': content})
         }, immediately=True)
 
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return
+
+        # Enviamos al blog de la publicacion
+        [Channel_group(get_channel_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+
         if board_owner_id:
             Channel_group(group_name(board_owner_id)).send({
                 "text": json.dumps(data)
@@ -181,6 +191,16 @@ def process_gif_publication(file, publication_id, filename, user_id=None,
         Channel_group(notification_channel(user.id)).send({
             "text": json.dumps({'content': content})
         }, immediately=True)
+
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return
+
+        # Enviamos al blog de la publicacion
+        [Channel_group(get_channel_name(x)).send({
+            "text": json.dumps(data)
+        }) for x in publication.get_ancestors().values_list('id', flat=True)]
 
         if board_owner_id:
             Channel_group(group_name(board_owner_id)).send({

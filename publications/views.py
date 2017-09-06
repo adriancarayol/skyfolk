@@ -32,6 +32,7 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
 from .tasks import process_video_publication, process_gif_publication
 from .utils import parse_string
+from latest_news.tasks import send_to_stream
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -183,6 +184,9 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                         transaction.on_commit(
                             lambda: _optimize_publication_media(publication, media))
                         transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
+                        # enviamos a los seguidores
+                        if publication.author_id == publication.board_owner_id:
+                            send_to_stream.apply_async(args=[publication.author_id, publication.id], queue='low')
                 except Exception as e:
                     raise ValidationError(e)
 
@@ -435,7 +439,6 @@ def add_like(request):
 def add_hate(request):
     response = False
     statuslike = 0
-    data = []
     if request.POST:
         user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
@@ -610,8 +613,6 @@ def load_more_comments(request):
                 ~Q(author__profile__from_blocked__to_blocked=user.profile)
                 & Q(deleted=False))
 
-        paginator = Paginator(publications, 10)
-
         publications = publications.prefetch_related('extra_content', 'images',
                                                      'videos',
                                                      'tags',
@@ -619,6 +620,8 @@ def load_more_comments(request):
             .select_related('author',
                             'board_owner',
                             'parent')
+
+        paginator = Paginator(publications, 10)
 
         try:
             publications = paginator.page(page)
@@ -739,8 +742,6 @@ def share_publication(request):
 
 
 def publication_filter_by_time(request):
-    response = False
-    publications = None
     user = request.user
     if request.method == "POST":
         json_data = json.loads(request.body.decode('utf-8'))
@@ -784,8 +785,6 @@ def publication_filter_by_time(request):
 
 
 def publication_filter_by_like(request):
-    response = False
-    publications = None
     user = request.user
     if request.method == "POST":
         json_data = json.loads(request.body.decode('utf-8'))
@@ -831,8 +830,6 @@ def publication_filter_by_like(request):
 
 
 def publication_filter_by_relevance(request):
-    response = False
-    publications = None
     user = request.user
     if request.method == "POST":
         json_data = json.loads(request.body.decode('utf-8'))

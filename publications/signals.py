@@ -11,7 +11,6 @@ from embed_video.backends import detect_backend, EmbedVideoException
 
 from notifications.signals import notify
 from user_profile.models import NodeProfile
-from user_profile.tasks import send_to_stream
 from .models import Publication, ExtraContent
 
 logging.basicConfig(level=logging.INFO)
@@ -130,9 +129,6 @@ def notify_mentions(instance):
                     recipient=recipientprofile,
                     verb=u'¡te ha mencionado!',
                     description='<a href="%s">Ver</a>' % ('/publication/' + str(instance.id)))
-    # enviamos a los seguidores
-    if instance.author_id == instance.board_owner_id:
-        send_to_stream.apply_async(args=[instance.author_id, instance.id], queue='low')
 
 
 def increase_affinity(instance):

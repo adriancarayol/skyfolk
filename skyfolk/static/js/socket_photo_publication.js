@@ -34,7 +34,7 @@ var UTILS = UTILS || (function () {
                 } else if (data.type === "video") {
                     var existing_pub = $('#pub-' + data.id);
                     if (existing_pub.length) {
-                        var card_content = $(existing_pub).find('.publication-content');
+                        var card_content = $(existing_pub).find('.comment').next();
                         var videos = $(existing_pub).find('.videos');
                         if (videos.length) {
                             $(videos).append('<div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div>');
