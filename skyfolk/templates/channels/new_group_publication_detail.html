@@ -1,4 +1,3 @@
-{% extends "account/base_interface.html" %}
 {% load photo_publications_tags %}
 {% load avatar_tags %}
 {% load app_filters %}
@@ -6,53 +5,8 @@
 {% load mptt_tags %}
 {% load embed_video_tags %}
 {% load compress %}
-{% block extra-css %}
 
-    {% compress css%}
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
-    {% endcompress %}
-{% endblock %}
 
-{% block title %} <title> Skyfolk - Publicacion #{{ publication_id }}</title> {% endblock %}
-{% block content %}
-    <div class="container" id="publication-thread">
-        {% comment %}
-            Formulario para citar un comentario
-        {% endcomment %}
-        <div class="row">
-            <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper"
-                 data-id="" hidden>
-                <div class="row">
-                    <div id="status" class="col s12 title-page-wrapper">
-                        <h4><i class="material-icons" aria-hidden="true"></i> Citar publicacion</h4>
-                        <h6>Comparte esta publicación con tus seguidores</h6>
-                    </div>
-                </div>
-                <form id="share_publication_form" action="" method="post">{% csrf_token %}
-                    <div class="row">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                {{ publication_shared.content }}
-                                <label for="shared_comment_content">Escribe un comentario adicional</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col s12">
-                            <button type="submit" id="share_publication"
-                                    class="waves-effect waves-light btn right blue">
-                                Citar<i class="material-icons right">send</i></button>
-                            <button type="button" id="close_share_publication"
-                                    class="waves-effect waves-light btn right transparent black-text">Cancelar<i
-                                    class="material-icons right">close</i></button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="infinite-container">
-        {% for node in object_list %}
             <div class="row row-pub infinite-item" id="pub-{{ node.id }}" data-id="{{ user.pk }}">
                 <div class="col s12">
                     <div class="row">
@@ -154,7 +108,7 @@
                                         {% endif %}
                                             {% comment %} Si el usuario esta logueado {% endcomment %}
                                         {% with node.user_give_me_hate.all as hates %}
-                                            <li title="No me gusta" class="hate-comment" 
+                                            <li title="No me gusta" class="hate-comment"
                                                 {% if user in hates %}style="color: rgb(186, 104, 200);"{% endif %}>
                                                 <i class="material-icons md-18">keyboard_arrow_down</i>
                                                 <i class="hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
@@ -166,7 +120,7 @@
                                                 <i class="material-icons md-18">keyboard_arrow_up</i>
                                                 <i class="like-value">{% if likes|length > 0 %} {{ likes|length|intword }}{% endif %}</i>
                                             </li>
-                                        {% endwith %} 
+                                        {% endwith %}
                                         <li title="Añadir a mi skyline" id="share-{{node.id}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i class="material-icons md-18">format_quote</i><i class="share-values"> </i></li>
                                         <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
                                         </li>
@@ -209,16 +163,3 @@
                     </div>
                 </div>
             </div>
-        {% endfor %}
-        </div>
-        {% if publication.has_next %}
-        <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center" href="?page={{ publication.next_page_number }}">More</a>
-        {% endif %}
-        <div class="progress loading_skyline" style="display: none">
-            <div class="indeterminate blue darken-1"></div>
-        </div>
-    </div>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/publication_group_detail.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/socket_group_publication.js"></script>
-{% endblock %}

@@ -78,6 +78,10 @@ class PublicationGroup(PublicationBase):
     def __str__(self):
         return self.content
 
+    @property
+    def blog_channel(self):
+        return "group-publication-%d" % self.id
+
     def has_extra_content(self):
         return hasattr(self, 'group_extra_content')
 
@@ -115,19 +119,19 @@ class PublicationGroup(PublicationBase):
 
         # TODO: Mezclar templates para ahorrar el render
 
-        # data['content'] = render_to_string(request=request, template_name='channels/new_publication_detail.html',
-        #                                   context={'node': self, 'user_profile': self.board_owner})
+        data['content'] = render_to_string(request=request, template_name='channels/new_group_publication_detail.html',
+                                           context={'node': self, 'group_profile': self.board_group})
 
         # Enviamos por el socket de la publicacion
-        # if is_edited:
-        #     channel_group(get_channel_name(self.id)).send({
-        #         'text': json.dumps(data)
-        #     })
-        #
-        # # Enviamos al blog de la publicacion
-        # [channel_group(get_channel_name(x)).send({
-        #     "text": json.dumps(data)
-        # }) for x in self.get_ancestors().values_list('id', flat=True)]
+        if is_edited:
+            channel_group(self.blog_channel).send({
+                'text': json.dumps(data)
+            })
+
+        # Enviamos al blog de la publicacion
+        [channel_group("group-publication-%d" % x).send({
+            "text": json.dumps(data)
+        }) for x in self.get_ancestors().values_list('id', flat=True)]
 
         # Notificamos al board_owner de la publicacion
         if self.author_id != self.board_group.owner_id:

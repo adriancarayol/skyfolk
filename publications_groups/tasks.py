@@ -56,7 +56,6 @@ def process_video_publication(file, publication_id, filename, user_id=None):
         content = render_to_string(template_name='channels/new_notification.html',
                                    context={'notification': notification})
 
-
         data = {
             'type': "video",
             'video': media_path,

@@ -8,11 +8,14 @@ from PIL import Image
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from publications_groups.models import PublicationGroup, PublicationGroupImage, PublicationGroupVideo
+from publications_groups.models import PublicationGroupImage, PublicationGroupVideo
 from publications.exceptions import CantOpenMedia, SizeIncorrect, MaxFilesReached, MediaNotSupported
 
-
 from .tasks import process_gif_publication, process_video_publication
+
+
+def get_channel_name(pubid):
+    return "group-publication-%d" % int(pubid)
 
 
 def check_image_property(image):
