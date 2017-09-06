@@ -16,6 +16,7 @@ except ImportError:
 
 cached_funcs = set()
 
+
 def handle_uploaded_file(f, file_id):
     filename, file_extension = os.path.splitext(f.name)
     dir_path = settings.MEDIA_ROOT + '/back_images/'
@@ -38,9 +39,11 @@ def get_cache_key(user_or_username, size, prefix):
     return six.u('%s_%s') % (slugify(key)[:100],
                              hashlib.md5(force_bytes(key)).hexdigest())
 
+
 def cache_set(key, value):
     cache.set(key, value, settings.BACK_IMAGE_CACHE_TIMEOUT)
     return value
+
 
 def cache_result(default_size=settings.BACK_IMAGE_DEFAULT_SIZE):
     def decorator(func):
@@ -57,6 +60,7 @@ def cache_result(default_size=settings.BACK_IMAGE_DEFAULT_SIZE):
         return cached_func
 
     return decorator
+
 
 def invalidate_cache(user, size=None):
     """
@@ -76,11 +80,13 @@ def group_name(id):
     """
     return "users-%s" % id
 
+
 def notification_channel(id):
     """
     Devuelve el nombre del canal notification para cada usuario
     """
     return "notification-%s" % id
+
 
 def news_channel(id):
     """
@@ -88,6 +94,7 @@ def news_channel(id):
     al tablon de inicio
     """
     return "news-%s" % id
+
 
 def crop_image(image, filename, request):
     """
@@ -113,7 +120,7 @@ def crop_image(image, filename, request):
             rotate = str_value.get('rotate')
 
     if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
-            raise ValueError("Backimage > 5MB!")
+        raise ValueError("Backimage > 5MB!")
 
     im = Image.open(image)
     fill_color = (255, 255, 255, 0)
@@ -134,7 +141,7 @@ def crop_image(image, filename, request):
         im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
         image_file = InMemoryUploadedFile(tempfile_io, None, filename, 'image/jpeg', tempfile_io.tell(), None)
-        
+
     return image_file
 
 
@@ -142,14 +149,16 @@ def make_pagination_html(current_page, total_pages, full_path=''):
     pagination_string = ''
 
     if current_page > 1:
-        pagination_string += '<li><a href="%s?page=%s"><i class="material-icons">chevron_left</i></a></li>' % (full_path, current_page - 1)
+        pagination_string += '<li><a href="%s?page=%s"><i class="material-icons">chevron_left</i></a></li>' % (
+        full_path, current_page - 1)
 
     pagination_string += '<li class="active blue darken-1 white-text"><span> %d </span></li>' % current_page
     count_limit = 1
     value = current_page - 1
 
     while value > 0 and count_limit < 5:
-        pagination_string = '<li class="waves-effect"><a href="%s?page=%s">%s</a></li>' % (full_path, value, value) + pagination_string
+        pagination_string = '<li class="waves-effect"><a href="%s?page=%s">%s</a></li>' % (
+        full_path, value, value) + pagination_string
         value -= 1
         count_limit += 1
 
@@ -158,10 +167,11 @@ def make_pagination_html(current_page, total_pages, full_path=''):
     while value < total_pages and count_limit < 10:
         pagination_string = pagination_string + "<li><a href='%s?page=%s'>%s</a></li>" % (full_path, value, value)
         value += 1
-        count_limit +=1
+        count_limit += 1
 
     if current_page < total_pages:
-        pagination_string += '<li><a href="%s?page=%s"><i class="material-icons">chevron_right</i></a></li>' % (full_path, current_page + 1)
+        pagination_string += '<li><a href="%s?page=%s"><i class="material-icons">chevron_right</i></a></li>' % (
+        full_path, current_page + 1)
 
     pagination_string = '<ul class="center pagination">' + pagination_string + '</ul>'
     return pagination_string

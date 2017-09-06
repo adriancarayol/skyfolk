@@ -86,7 +86,7 @@ $(function () {
         });
     });
     /* Borrar publicacion */
-    $tab_commentarios.on('click', '.options_comentarios .trash-comment', function () {
+    $tab_commentarios.on('click', '.trash-comment', function () {
         var id = $(this).closest('.options_comentarios').data('id');
         var board_group = $(this).closest('.options_comentarios').data('board');
         swal({
@@ -145,7 +145,7 @@ $(function () {
         AJAX_edit_group_publication(id, content);
     });
 
-    $tab_commentarios.on('click', '.wrapper .zoom-pub', function () {
+    $tab_commentarios.on('click', '.zoom-pub', function () {
         window.location.href = $(this).data('url');
     });
 });// end document ready
@@ -401,7 +401,9 @@ function AJAX_delete_group_publication(id, board_group) {
         success: function (data) {
             // borrar caja publicacion
             if (data.response === true) {
-                $('#pub-' + id).fadeToggle("fast");
+                $('#pub-' + id).fadeToggle("fast", function () {
+                    $(this).remove();
+                });
                 /*
                 if (data.shared_pub_id) {
                     var shared_btn = $('#share-' + data.shared_pub_id);

@@ -13,7 +13,7 @@ from .models import NodeProfile
 logger = get_task_logger(__name__)
 
 
-@app.task()
+@app.task(ignore_result=True)
 def send_to_stream(author_id, pub_id):
     logger.info("AUTHOR: {}".format(author_id))
     author_id = int(author_id)
@@ -26,7 +26,7 @@ def send_to_stream(author_id, pub_id):
 
     try:
         publication = publications.models.Publication.objects.get(id=pub_id)
-    except Publication.DoesNotExist:
+    except publications.models.Publication.DoesNotExist:
         raise ValueError("Publication not exist %d" % pub_id)
 
     logger.info("Sent to followers stream")
@@ -42,7 +42,7 @@ def send_to_stream(author_id, pub_id):
         profile.get_followers()]
 
 
-@app.task()
+@app.task(ignore_result=True)
 def send_email(subject, recipient_list, context, html):
     #TODO: Crear una queue para emails
     """

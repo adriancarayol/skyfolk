@@ -15,6 +15,7 @@ from skyfolk.celery import app
 from user_profile.utils import notification_channel, group_name
 from .models import PublicationVideo
 from .utils import generate_path_video, convert_avi_to_mp4
+from notifications.signals import notify
 
 logger = get_task_logger(__name__)
 
@@ -58,6 +59,7 @@ def clean_deleted_publications():
             publication.extra_content.delete()
         publication.delete()
 
+
 @app.task(name='tasks.clean_deleted_photo_publications')
 def clean_deleted_photo_publications():
     logger.info('Finding deleted publications...')
@@ -66,7 +68,8 @@ def clean_deleted_photo_publications():
     pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=publications_contains_shared)
 
     for publication in publications:
-        pub, created = PublicationDeleted.objects.get_or_create(author=publication.p_author, content=publication.content,
+        pub, created = PublicationDeleted.objects.get_or_create(author=publication.p_author,
+                                                                content=publication.content,
                                                                 created=publication.created, type_publication=2)
         extra_content = publication.has_extra_content()
         if extra_content:
@@ -89,7 +92,8 @@ def clean_deleted_photo_publications():
         logger.info("Publication safe deleted {}".format(pub.id))
 
     for publication in pubs_shared:
-        pub, created = PublicationDeleted.objects.get_or_create(author=publication.p_author, content=publication.content,
+        pub, created = PublicationDeleted.objects.get_or_create(author=publication.p_author,
+                                                                content=publication.content,
                                                                 created=publication.created, type_publication=2)
         extra_content = publication.has_extra_content()
         if extra_content:
@@ -97,9 +101,10 @@ def clean_deleted_photo_publications():
         publication.delete()
 
 
-@app.task(name='tasks.process_video')
+@app.task(ignore_result=True, name='tasks.process_video')
 def process_video_publication(file, publication_id, filename, user_id=None,
-        board_owner_id=None):
+                              board_owner_id=None):
+    logger.info('ENTERING PROCESS VIDEO')
     video_file, media_path = generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
@@ -141,9 +146,10 @@ def process_video_publication(file, publication_id, filename, user_id=None,
             }, immediately=True)
 
 
-@app.task(name='tasks.process_gif')
+@app.task(ignore_result=True, name='tasks.process_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None,
-        board_owner_id=None):
+                            board_owner_id=None):
+    logger.info('ENTERING PROCESS GIF')
     clip = mp.VideoFileClip(file)
     video_file, media_path = generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
@@ -152,31 +158,15 @@ def process_gif_publication(file, publication_id, filename, user_id=None,
     PublicationVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('GIF CONVERTED')
+    logger.info('USER ID %d' % user_id)
     if user_id:
         user = User.objects.get(id=user_id)
-        newnotify = Notification.objects.create(actor=user, recipient=user,
-                                                verb=u'¡Ya esta tu video %s!' % filename,
-                                                description='<a href="%s">Ver</a>' % (
-                                                    '/publication/' + str(publication_id)))
-        data = model_to_dict(newnotify)
-        if newnotify.actor:
-            data['actor'] = str(newnotify.actor)
-        if newnotify.target:
-            data['target'] = str(newnotify.target)
-        if newnotify.action_object:
-            data['action_object'] = str(newnotify.action_object)
-        if newnotify.slug:
-            data['slug'] = str(newnotify.slug)
-        if newnotify.timestamp:
-            data['timestamp'] = str(naturaltime(newnotify.timestamp))
-        if newnotify.timestamp:
-            data['timestamp'] = str(naturaltime(newnotify.timestamp))
+        notify.send(user, actor=user.username, recipient=user,
+                    verb=u'¡Ya esta tu video %s!' % filename,
+                    immediately=True,
+                    description='<a href="%s">Ver</a>' % (
+                        '/publication/' + str(publication_id)))
 
-        Channel_group(notification_channel(user.id)).send({
-            "text": json.dumps(data)
-        }, immediately=True)
-
-        data.clear()
         data = {
             'type': "video",
             'video': media_path,

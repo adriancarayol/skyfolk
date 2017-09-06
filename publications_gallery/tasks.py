@@ -19,7 +19,7 @@ from .models import PublicationPhotoVideo, PublicationPhoto
 logger = get_task_logger(__name__)
 
 
-@app.task(name='tasks.process_photo_pub_video')
+@app.task(ignore_result=True, name='tasks.process_photo_pub_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
     try:
         publication = PublicationPhoto.objects.get(id=publication_id)
@@ -67,7 +67,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
         }, immediately=True)
 
 
-@app.task(name='tasks.process_photo_pub_gif')
+@app.task(ignore_result=True, name='tasks.process_photo_pub_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None):
     try:
         publication = PublicationPhoto.objects.get(id=publication_id)

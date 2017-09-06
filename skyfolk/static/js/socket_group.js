@@ -16,7 +16,6 @@ var UTILS = UTILS || (function () {
             socket.onmessage = function (message) {
                 // Decode the JSON
                 var data = JSON.parse(message.data);
-                console.log(data);
                 // Create the inner content of the post div
                 if (data.type === "pub") {
                     // See if there's a div to replace it in, or if we should add a new one

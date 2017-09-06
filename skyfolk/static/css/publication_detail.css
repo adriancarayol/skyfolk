@@ -58,10 +58,8 @@ a, a:visited {
 
 .articulo {
     float: right;
-    margin-right: 5.5%;
     position: relative;
     width: 70%;
-    margin-top: 20px;
     height: 100%;
 }
 

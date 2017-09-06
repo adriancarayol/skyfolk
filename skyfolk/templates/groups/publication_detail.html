@@ -53,13 +53,11 @@
         </div>
         <div class="infinite-container">
         {% for node in object_list %}
-            <div class="row row-pub infinite-item">
+            <div class="row row-pub infinite-item" id="pub-{{ node.id }}" data-id="{{ user.pk }}">
                 <div class="col s12">
                     <div class="row">
                         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" {% if node.level > 0 %}
-                             style="border-right: 2px solid #1e88e5;"{% endif %}
-                             id="pub-{{ node.id }}"
-                             data-id="{{ user.pk }}">
+                             style="border-right: 2px solid #1e88e5;"{% endif %}>
                         <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><a class="material-icons" href="{% url 'publications_groups:detail_group_publication' pk=node.id %}">open_in_new</a></span>
@@ -147,9 +145,9 @@
                             </div>
                             <div class="row">
                                 <div class="divider"></div>
-                                <div class="options_comentarios col s12">
+                                <div class="options_comentarios col s12" data-id="{{ node.id }}" data-board="{{ node.board_group.id }}">
                                     <ul class="opciones">
-                                        {% if user.id == node.author.username or user.id == node.author.id %}
+                                        {% if user.id == node.author.id %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="material-icons">delete_forever</i>
                                             </li>
@@ -220,4 +218,6 @@
             <div class="indeterminate blue darken-1"></div>
         </div>
     </div>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/publication_group_detail.js"></script>
 {% endblock %}

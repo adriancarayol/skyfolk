@@ -23,6 +23,7 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media
 
 
+@method_decorator(login_required, name='dispatch')
 class PublicationGroupView(AjaxableResponseMixin, CreateView):
     """
     Crear una publicación para una imagen de
@@ -84,12 +85,13 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
-                publication.save()  # Creamos publicacion
 
-                publication.send_notification(request)
-
-                content_video = optimize_publication_media(publication,
+                with transaction.atomic(using='default'):
+                    publication.save()  # Creamos publicacion
+                    content_video = optimize_publication_media(publication,
                                                            request.FILES.getlist('image'))
+
+                    publication.send_notification(request)
                 if not content_video:
                     return self.form_valid(form=form)
                 else:
@@ -102,11 +104,15 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
         return self.form_invalid(form=form)
 
 
-publication_group_view = transaction.atomic(login_required(PublicationGroupView.as_view(), login_url='/'))
+publication_group_view = login_required(PublicationGroupView.as_view(), login_url='/')
 
 
 class DeletePublication(View):
     http_method_names = ['post', ]
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeletePublication, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, **kwargs):
         user = request.user
@@ -144,6 +150,10 @@ class AddPublicationLike(View):
     Clase para dar me gusta a un comentario
     """
     model = PublicationGroup
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AddPublicationLike, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -230,6 +240,10 @@ class AddPublicationHate(View):
     """
     model = PublicationGroup
 
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AddPublicationHate, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         user = request.user
         pub_id = request.POST.get('pk', None)
@@ -313,6 +327,10 @@ class EditGroupPublication(UpdateView):
     model = PublicationGroup
     fields = ['content', ]
 
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(EditGroupPublication, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
         user = request.user
         data = {'response': False}
@@ -359,27 +377,32 @@ class PublicationGroupDetail(ListView):
     model = PublicationGroup
     template_name = 'groups/publication_detail.html'
 
+    def __init__(self, **kwargs):
+        super(PublicationGroupDetail).__init__(**kwargs)
+        self.publication = None
+
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(PublicationGroupDetail, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         pub_id = self.kwargs.get('pk', None)
+
         try:
-            publication = PublicationGroup.objects.select_related('board_group').get(id=pub_id)
+            self.publication = PublicationGroup.objects.select_related('board_group').get(id=pub_id, deleted=False)
         except ObjectDoesNotExist:
             raise Http404
 
         try:
             n = NodeProfile.nodes.get(user_id=self.request.user.id)
-            g = NodeGroup.nodes.get(group_id=publication.board_group.group_ptr_id)
+            g = NodeGroup.nodes.get(group_id=self.publication.board_group.group_ptr_id)
         except (NodeProfile.DoesNotExist, NodeGroup.DoesNotExist) as e:
             raise Http404
 
-        if not publication.board_group.is_public and not g.members.is_connected(n):
+        if not self.publication.board_group.is_public and not g.members.is_connected(n):
             return HttpResponseForbidden()
 
-        return publication.get_descendants(include_self=True) \
+        return self.publication.get_descendants(include_self=True) \
             .filter(deleted=False) \
             .prefetch_related('group_extra_content', 'images',
                               'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
@@ -390,4 +413,5 @@ class PublicationGroupDetail(ListView):
     def get_context_data(self, **kwargs):
         context = super(PublicationGroupDetail, self).get_context_data(**kwargs)
         context['publication_id'] = self.kwargs.get('pk', None)
+        context['group_profile'] = self.publication.board_group
         return context

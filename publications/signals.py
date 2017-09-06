@@ -132,7 +132,7 @@ def notify_mentions(instance):
                     description='<a href="%s">Ver</a>' % ('/publication/' + str(instance.id)))
     # enviamos a los seguidores
     if instance.author_id == instance.board_owner_id:
-        send_to_stream.delay(instance.author_id, instance.id)
+        send_to_stream.apply_async(args=[instance.author_id, instance.id], queue='low')
 
 
 def increase_affinity(instance):

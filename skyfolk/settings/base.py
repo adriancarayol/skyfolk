@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = (
     'tellme',
     'haystack',
     'badgify',
+    'django_celery_beat',
 )
 
 FIRST_PARTY_APPS = (
@@ -262,9 +263,6 @@ TEMPLATES = [
 rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
 rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F?heartbeat=15' % rabbitmq_host
 
-# celery
-CELERY_CONFIG = 'skyfolk.celeryconf'
-CELERY_RESULT_BACKEND = 'django-db'
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
 CHANNEL_LAYERS = {

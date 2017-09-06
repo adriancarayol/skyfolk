@@ -538,6 +538,7 @@ class ProfileGroups(APIView):
             results, meta = db.cypher_query(
                 "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN COUNT(n) as groups" % user_id)
         except Exception as e:
+            results = []
             logging.info(e)
 
         total_groups = [item for sublist in results for item in sublist][0]

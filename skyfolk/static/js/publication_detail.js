@@ -6,7 +6,7 @@ $(document).ready(function () {
     var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Abrir respuesta a comentario */
-    $(thread).on('click', '.options_comentarios .reply-comment', function () {
+    $(thread).on('click', '.reply-comment', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
@@ -21,7 +21,7 @@ $(document).ready(function () {
     });
 
     /* Agregar skyline */
-    $(this).on('click', '.options_comentarios .add-timeline', function () {
+    $(this).on('click', '.add-timeline', function () {
         var tag = this;
         $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
         $(wrapper_shared_pub).show();
@@ -42,28 +42,28 @@ $(document).ready(function () {
     });
 
     /* Eliminar skyline */
-    $(this).on('click', '.options_comentarios .remove-timeline', function () {
+    $(this).on('click', '.remove-timeline', function () {
         var caja_publicacion = $(this).closest('.row-pub');
         var tag = this;
         AJAX_add_timeline_detail($(caja_publicacion).attr('id').split('-')[1], tag, null);
     });
 
     /* Añadir me gusta a comentario */
-    $(thread).on('click', '.options_comentarios .like-comment', function () {
+    $(thread).on('click', '.like-comment', function () {
         var caja_publicacion = $(this).closest('.row-pub');
         var heart = this;
         AJAX_add_like_detail(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
-    $(thread).on('click', '.options_comentarios .hate-comment', function () {
+    $(thread).on('click', '.hate-comment', function () {
         var caja_publicacion = $(this).closest('.row-pub');
         var heart = this;
         AJAX_add_hate_detail(caja_publicacion, heart, "publication");
     });
 
     /* Borrar publicacion */
-    $(thread).on('click', '.options_comentarios .fa-trash', function () {
+    $(thread).on('click', '.trash-comment', function () {
         var caja_publicacion = $(this).closest('.row-pub');
         swal({
             title: "Are you sure?",

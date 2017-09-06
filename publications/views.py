@@ -176,10 +176,11 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     with transaction.atomic(using="default"):
                         publication.save()  # Creamos publicacion
                         form.save_m2m()  # Saving tags
-                        content_video = _optimize_publication_media(publication,
-                                                                    request.FILES.getlist('image'))
                 except Exception as e:
                     raise ValidationError(e)
+
+                content_video = _optimize_publication_media(publication,
+                                                            request.FILES.getlist('image'))
 
                 publication.send_notification(request, is_edited=False)
 

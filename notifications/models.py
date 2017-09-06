@@ -46,7 +46,6 @@ def assert_soft_delete():
 
 
 class NotificationQuerySet(models.query.QuerySet):
-
     def unsent(self):
         return self.filter(emailed=False)
 
@@ -209,7 +208,7 @@ class Notification(models.Model):
     objects = NotificationQuerySet.as_manager()
 
     class Meta:
-        ordering = ('-timestamp', )
+        ordering = ('-timestamp',)
         app_label = 'notifications'
 
     def __unicode__(self):
@@ -253,6 +252,7 @@ class Notification(models.Model):
             self.unread = True
             self.save()
 
+
 # 'NOTIFY_USE_JSONFIELD' is for backward compatibility
 # As app name is 'notifications', let's use 'NOTIFICATIONS' consistently from now
 EXTRA_DATA = getattr(settings, 'NOTIFY_USE_JSONFIELD', None)
@@ -271,12 +271,13 @@ def notify_handler(verb, **kwargs):
     optional_objs = [
         (kwargs.pop(opt, None), opt)
         for opt in ('target', 'action_object')
-        ]
+    ]
     public = bool(kwargs.pop('public', True))
     description = kwargs.pop('description', None)
     timestamp = kwargs.pop('timestamp', timezone.now())
     level = kwargs.pop('level', Notification.LEVELS.info)
     send_channel = kwargs.pop('send_to_channel', True)
+    immediately = kwargs.pop('immediately', False)
     # Check if User or Group
     if isinstance(recipient, Group):
         recipients = recipient.user_set.all()
@@ -310,18 +311,20 @@ def notify_handler(verb, **kwargs):
         newnotify.save()
 
         content = render_to_string(template_name='channels/new_notification.html',
-            context={'notification': newnotify})
+                                   context={'notification': newnotify})
 
         data = {
             'content': content,
             'id': newnotify.id
         }
         # Enviamos notificacion al canal del receptor
+
         if send_channel:
             group_channel(notification_channel(recipient.id)).send({
                 "text": json.dumps(data)
-            })
-        return newnotify  # add by adrian
+            }, immediately=immediately)
+
+        return newnotify
 
 
 # connect the signal
