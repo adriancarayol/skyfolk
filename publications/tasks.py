@@ -5,17 +5,16 @@ import moviepy.editor as mp
 from celery.utils.log import get_task_logger
 from channels import Group as Channel_group
 from django.contrib.auth.models import User
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.forms import model_to_dict
+from django.template.loader import render_to_string
 
-from notifications.models import Notification
 from publications.models import Publication, PublicationDeleted
 from publications_gallery.models import PublicationPhoto
 from skyfolk.celery import app
-from user_profile.utils import notification_channel, group_name
+from user_profile.utils import group_name, notification_channel
 from .models import PublicationVideo
 from .utils import generate_path_video, convert_avi_to_mp4
-from notifications.signals import notify
+from notifications.models import Notification
+from django.db import IntegrityError
 
 logger = get_task_logger(__name__)
 
@@ -114,34 +113,32 @@ def process_video_publication(file, publication_id, filename, user_id=None,
     logger.info('VIDEO CONVERTED')
     if user_id:
         user = User.objects.get(id=user_id)
-        newnotify = Notification.objects.create(actor=user, recipient=user,
-                                                verb=u'¡Ya esta tu video %s!' % filename,
-                                                description='<a href="%s">Ver</a>' % (
-                                                    '/publication/' + str(publication_id)))
-        data = model_to_dict(newnotify)
-        if newnotify.actor:
-            data['actor'] = str(newnotify.actor)
-        if newnotify.target:
-            data['target'] = str(newnotify.target)
-        if newnotify.action_object:
-            data['action_object'] = str(newnotify.action_object)
-        if newnotify.slug:
-            data['slug'] = str(newnotify.slug)
-        if newnotify.timestamp:
-            data['timestamp'] = str(naturaltime(newnotify.timestamp))
 
-        Channel_group(notification_channel(user.id)).send({
-            "text": json.dumps(data)
-        }, immediately=True)
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
+                                                   verb=u'¡Ya esta tu video %s!' % filename,
+                                                   description='<a href="%s">Ver</a>' % (
+                                                       '/publication/' + str(publication_id)))
+        except IntegrityError as e:
+            logger.info(e)
+            #TODO: Enviar mensaje al user con el error
+            return
 
-        data.clear()
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': notification})
+
         data = {
             'type': "video",
             'video': media_path,
             'id': publication_id
         }
+
+        Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps({'content': content})
+        }, immediately=True)
+
         if board_owner_id:
-            Channel_group(group_name(user.id)).send({
+            Channel_group(group_name(board_owner_id)).send({
                 "text": json.dumps(data)
             }, immediately=True)
 
@@ -158,20 +155,32 @@ def process_gif_publication(file, publication_id, filename, user_id=None,
     PublicationVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('GIF CONVERTED')
-    logger.info('USER ID %d' % user_id)
+
     if user_id:
         user = User.objects.get(id=user_id)
-        notify.send(user, actor=user.username, recipient=user,
-                    verb=u'¡Ya esta tu video %s!' % filename,
-                    immediately=True,
-                    description='<a href="%s">Ver</a>' % (
-                        '/publication/' + str(publication_id)))
+
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
+                                                   verb=u'¡Ya esta tu video %s!' % filename,
+                                                   description='<a href="%s">Ver</a>' % (
+                                                       '/publication/' + str(publication_id)))
+        except IntegrityError as e:
+            logger.info(e)
+            #TODO: Enviar mensaje al user con el error
+            return
+
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': notification})
 
         data = {
             'type': "video",
             'video': media_path,
             'id': publication_id
         }
+
+        Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps({'content': content})
+        }, immediately=True)
 
         if board_owner_id:
             Channel_group(group_name(board_owner_id)).send({

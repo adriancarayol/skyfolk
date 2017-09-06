@@ -173,8 +173,8 @@ class PublicationBase(MPTTModel):
         Añadimos los hashtags encontramos a la
         lista de tags => atributo "tags"
         """
-        hashtags = [tag.strip() for tag in self.content.split() if tag.startswith("#")]
-        hashtags = set(hashtags)
+        hashtags = set([tag.strip() for tag in self.content.split() if tag.startswith("#")])
+
         for tag in hashtags:
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
@@ -199,8 +199,11 @@ class PublicationBase(MPTTModel):
         tags html no permitidos y los eliminamos
         """
         self.content = self.content.replace('\n', '').replace('\r', '')
+        """
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+        """
+        self.content = bleach.clean(self.content, tags=[])
         self.parse_extra_content()
 
         """

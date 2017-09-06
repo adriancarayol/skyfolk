@@ -2,7 +2,7 @@ import json
 
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db import transaction
@@ -87,21 +87,24 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 publication.parse_content()  # parse publication content
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
+                media = request.FILES.getlist('image')
+
                 try:
                     with transaction.atomic(using="default"):
                         publication.save()  # Creamos publicacion
                         form.save_m2m()  # Saving tags
-                        content_video = optimize_publication_media(publication, request.FILES.getlist('image'))
+                        transaction.on_commit(
+                            lambda: optimize_publication_media(publication, media))
+                        transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
                 except Exception as e:
-                    raise IntegrityError(e)
+                    raise ValidationError(e)
 
-                publication.send_notification(request, is_edited=False)
-                if not content_video:
+                if not media:
                     return self.form_valid(form=form)
                 else:
                     return self.form_valid(form=form,
                                            msg=u"Estamos procesando tus videos, te avisamos "
-                                               u"cuando la publicación esté lista,")
+                                               u"cuando la publicación esté lista.")
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
                 return self.form_invalid(form=form, errors=e)
@@ -158,12 +161,13 @@ def publication_detail(request, publication_id):
     try:
         pubs_id = publication.object_list.values_list('id', flat=True)
         pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, deleted=False) \
-                .values('shared_photo_publication__id')\
-                .order_by('shared_photo_publication__id')\
-                .annotate(total=Count('shared_photo_publication__id'))
-        shared_pubs = {item['shared_photo_publication__id']:item.get('total', 0) for item in pubs_shared}
-        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author__id=user.id, deleted=False) \
-        .values_list('shared_photo_publication__id', flat=True)
+            .values('shared_photo_publication__id') \
+            .order_by('shared_photo_publication__id') \
+            .annotate(total=Count('shared_photo_publication__id'))
+        shared_pubs = {item['shared_photo_publication__id']: item.get('total', 0) for item in pubs_shared}
+        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author__id=user.id,
+                                                         deleted=False) \
+            .values_list('shared_photo_publication__id', flat=True)
 
     except Exception as e:
         logger.info('No se pudo obtener las publicaciones compartidas para la publicacion: {}'.format(request_pub))
@@ -520,7 +524,7 @@ def edit_publication(request):
 
         if publication.event_type != 1 and publication.event_type != 3:
             return JsonResponse({'data': "No puedes editar este tipo de comentario"})
-        
+
         is_correct_content = False
         soup = BeautifulSoup(content)  # Buscamos si entre los tags hay contenido
         for tag in soup.find_all(recursive=True):
@@ -534,7 +538,6 @@ def edit_publication(request):
 
         if publication.content.isspace():  # Comprobamos si el comentario esta vacio
             raise IntegrityError('El comentario esta vacio')
-
 
         publication.add_hashtag()  # add hashtags
         publication.parse_content()
@@ -563,7 +566,7 @@ def load_more_descendants(request):
         try:
             publication = PublicationPhoto.objects.get(id=pub_id)
         except PublicationPhoto.DoesNotExist:
-            return JsonResponse(data)
+            return Http404
 
         try:
             board_owner = NodeProfile.nodes.get(user_id=publication.board_photo.owner_id)
@@ -577,21 +580,20 @@ def load_more_descendants(request):
             return HttpResponseForbidden()
 
         if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) 
-                & Q(level__lte=1) 
-                & Q(deleted=False))
+            pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                                                        & Q(level__lte=1)
+                                                        & Q(deleted=False))
         else:
-            pubs =  publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile) 
-                & Q(deleted=False))
-
+            pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                                                        & Q(deleted=False))
 
         pubs = pubs.prefetch_related('publication_photo_extra_content', 'images',
-                                'videos',
-                                'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
-                            .select_related('p_author',
+                                     'videos',
+                                     'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
+            .select_related('p_author',
                             'board_photo', 'parent') \
-                            .annotate(likes_count=Count('user_give_me_like')) \
-                            .annotate(hates_count=Count('user_give_me_hate'))
+            .annotate(likes_count=Count('user_give_me_like')) \
+            .annotate(hates_count=Count('user_give_me_hate'))
 
         paginator = Paginator(pubs, 10)
 
@@ -603,12 +605,13 @@ def load_more_descendants(request):
             publications = paginator.page(paginator.num_pages)
 
         pubs_id = publications.object_list.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id).values('shared_photo_publication__id')\
-                .order_by('shared_photo_publication')\
-                .annotate(total=Count('shared_photo_publication'))
+        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id).values(
+            'shared_photo_publication__id') \
+            .order_by('shared_photo_publication') \
+            .annotate(total=Count('shared_photo_publication'))
         pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author_id=user.id) \
-                .values_list('shared_photo_publication__id', flat=True)
-        shared_pubs = {item['shared_photo_publication__id']:item.get('total', 0) for item in pubs_shared}
+            .values_list('shared_photo_publication__id', flat=True)
+        shared_pubs = {item['shared_photo_publication__id']: item.get('total', 0) for item in pubs_shared}
 
         context = {
             'pub_id': pub_id,

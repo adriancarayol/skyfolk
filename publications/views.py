@@ -62,7 +62,7 @@ def check_num_images(image_collection):
 
 def _optimize_publication_media(instance, image_upload):
     check_num_images(image_upload)
-    content_video = False
+
     if image_upload:
         for index, media in enumerate(image_upload):
             check_image_property(media)
@@ -78,14 +78,14 @@ def _optimize_publication_media(instance, image_upload):
                             tmp.write(block)
                         process_video_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
                                                         board_owner_id=instance.board_owner_id)
-                    content_video = True
+
                 elif file_type[0] == "image" and file_type[1] == "gif":  # es un gif
                     tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
                     process_gif_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
                                                   board_owner_id=instance.board_owner_id)
-                    content_video = True
+
                 else:  # es una imagen normal
                     try:
                         image = Image.open(media)
@@ -106,7 +106,6 @@ def _optimize_publication_media(instance, image_upload):
                     PublicationImage.objects.create(publication=instance, image=photo)
             except IndexError:
                 raise MediaNotSupported(u'No podemos procesar este tipo de archivo {file}.'.format(file=media.name))
-    return content_video
 
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
@@ -146,13 +145,16 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
             try:
                 publication = form.save(commit=False)
                 parent = publication.parent
+
                 if parent:
                     parent_owner = parent.author_id
                     parent_node = NodeProfile.nodes.get(user_id=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
                         raise IntegrityError('No have permissions')
+
                 publication.author_id = emitter.user_id
                 publication.board_owner_id = board_owner.user_id
+
                 soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
                 for tag in soup.find_all(recursive=True):
                     if tag.text and not tag.text.isspace():
@@ -172,24 +174,24 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
+                media = request.FILES.getlist('image')
+
                 try:
                     with transaction.atomic(using="default"):
                         publication.save()  # Creamos publicacion
                         form.save_m2m()  # Saving tags
+                        transaction.on_commit(
+                            lambda: _optimize_publication_media(publication, media))
+                        transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
                 except Exception as e:
                     raise ValidationError(e)
 
-                content_video = _optimize_publication_media(publication,
-                                                            request.FILES.getlist('image'))
-
-                publication.send_notification(request, is_edited=False)
-
-                if not content_video:
+                if not media:
                     return self.form_valid(form=form)
                 else:
                     return self.form_valid(form=form,
                                            msg=u"Estamos procesando tus videos, te avisamos "
-                                               u"cuando la publicación esté lista,")
+                                               u"cuando la publicación esté lista.")
 
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))

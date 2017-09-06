@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
@@ -86,18 +86,24 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
-                with transaction.atomic(using='default'):
-                    publication.save()  # Creamos publicacion
-                    content_video = optimize_publication_media(publication,
-                                                           request.FILES.getlist('image'))
+                media = request.FILES.getlist('image')
 
-                    publication.send_notification(request)
-                if not content_video:
+                try:
+                    with transaction.atomic(using="default"):
+                        publication.save()  # Creamos publicacion
+                        form.save_m2m()  # Saving tags
+                        transaction.on_commit(
+                            lambda: optimize_publication_media(publication, media))
+                        transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
+                except Exception as e:
+                    raise ValidationError(e)
+
+                if not media:
                     return self.form_valid(form=form)
                 else:
                     return self.form_valid(form=form,
                                            msg=u"Estamos procesando tus videos, te avisamos "
-                                               u"cuando la publicación esté lista,")
+                                               u"cuando la publicación esté lista.")
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
                 return self.form_invalid(form=form, errors=e)

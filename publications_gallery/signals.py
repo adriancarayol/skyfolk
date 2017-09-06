@@ -42,12 +42,12 @@ def photo_publication_handler(sender, instance, created, **kwargs):
 
 
 def add_hashtags(instance):
-    hashtags = [tag.strip() for tag in instance.content.split() if tag.startswith("#")]
-    hashtags = set(hashtags)
+    soup = BeautifulSoup(instance.content)
+    hashtags = set([x.string for x in soup.find_all('a')])
     for tag in hashtags:
         if tag.endswith((',', '.')):
             tag = tag[:-1]
-            instance.tags.add(tag)
+        instance.tags.add(tag)
 
 
 def add_extra_content(instance):

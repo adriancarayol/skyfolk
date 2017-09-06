@@ -16,7 +16,6 @@ var UTILS_N = UTILS_N || (function () {
             socket.onmessage = function (message) {
                 // Decode the JSON
                 var data = JSON.parse(message.data);
-                console.log(data);
                 // See if there's a div to replace it in, or if we should add a new one
                 var list_notifications = $('#list-notify');
                 var existing = $(list_notifications).find("[data-id='" + data.id + "']");

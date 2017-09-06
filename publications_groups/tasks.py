@@ -6,11 +6,16 @@ from celery.utils.log import get_task_logger
 from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
+from django.template.loader import render_to_string
+
+from notifications.models import Notification
 
 import publications_groups
 from notifications.signals import notify
 from publications.utils import convert_avi_to_mp4
 from skyfolk.celery import app
+from user_profile.utils import notification_channel
 from .models import PublicationGroupVideo, PublicationGroup
 
 logger = get_task_logger(__name__)
@@ -38,16 +43,29 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 
     if user_id:
         user = User.objects.get(id=user_id)
-        notify.send(user, actor=user.username, recipient=user,
-                    verb=u'¡Ya esta tu video %s!' % filename,
-                    immediately=True,
-                    description='<a href="%s/%d/">Ver</a>' % ('/publication/group/detail', publication_id))
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
+                                                   verb=u'¡Ya esta tu video %s!' % filename,
+                                                   description='<a href="%s">Ver</a>' % (
+                                                       '/publication/group/detail/' + str(publication_id)))
+        except IntegrityError as e:
+            logger.info(e)
+            #TODO: Enviar mensaje al user con el error
+            return
+
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': notification})
+
 
         data = {
             'type': "video",
             'video': media_path,
             'id': publication_id
         }
+
+        Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps({'content': content})
+        }, immediately=True)
 
         Channel_group(group.group_channel).send({
             "text": json.dumps(data)
@@ -77,16 +95,28 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
 
     if user_id:
         user = User.objects.get(id=user_id)
-        notify.send(user, actor=user.username, recipient=user,
-                    verb=u'¡Ya esta tu video %s!' % filename,
-                    immediately=True,
-                    description='<a href="%s/%d/">Ver</a>' % ('/publication/group/detail', publication_id))
+        try:
+            notification = Notification.objects.create(actor=user, recipient=user,
+                                                       verb=u'¡Ya esta tu video %s!' % filename,
+                                                       description='<a href="%s">Ver</a>' % (
+                                                           '/publication/group/detail/' + str(publication_id)))
+        except IntegrityError as e:
+            logger.info(e)
+            # TODO: Enviar mensaje al user con el error
+            return
+
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': notification})
 
         data = {
             'type': "video",
             'video': media_path,
             'id': publication_id
         }
+
+        Channel_group(notification_channel(user.id)).send({
+            "text": json.dumps({'content': content})
+        }, immediately=True)
 
         Channel_group(group.group_channel).send({
             "text": json.dumps(data)
