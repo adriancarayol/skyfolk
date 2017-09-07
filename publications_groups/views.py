@@ -21,6 +21,9 @@ from user_groups.models import UserGroups, NodeGroup
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media
+from django.template.loader import render_to_string
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count, Q
 
 
 @method_decorator(login_required, name='dispatch')
@@ -421,3 +424,82 @@ class PublicationGroupDetail(ListView):
         context['publication_id'] = self.kwargs.get('pk', None)
         context['group_profile'] = self.publication.board_group
         return context
+
+
+class LoadRepliesForPublicationGroup(View):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LoadRepliesForPublicationGroup, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if not request.is_ajax():
+            return JsonResponse({'error': 'error'})
+
+        user = request.user
+        pub_id = request.GET.get('pubid', None)
+        page = request.GET.get('page', 1)
+
+        try:
+            publication = PublicationGroup.objects.select_related('board_group').get(id=pub_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        try:
+            group = UserGroups.objects.get(group_ptr_id=publication.board_group.group_ptr_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        if group.is_public:
+            pass
+        else:
+            try:
+                g = NodeGroup.nodes.get(group_id=publication.board_group.group_ptr_id)
+            except NodeGroup.DoesNotExist:
+                raise Http404
+            try:
+                n = NodeProfile.nodes.get(user_id=user.id)
+            except NodeProfile.DoesNotExist:
+                raise Http404
+            if not g.members.is_connected(n):
+                return HttpResponseForbidden()
+
+        if not publication.parent:
+            pubs = publication.get_descendants() \
+                .filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+                        & Q(level__lte=1) & Q(deleted=False))
+
+        else:
+            pubs = publication.get_descendants() \
+                .filter(
+                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                & Q(deleted=False))
+
+        pubs = pubs.prefetch_related('group_extra_content', 'images',
+                                     'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
+            .select_related('author',
+                            'board_group',
+                            'parent')
+
+        paginator = Paginator(pubs, 10)
+
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
+
+        try:
+            page = publications.next_page_number()
+        except EmptyPage:
+            page = None
+
+        data = {
+            'content': render_to_string(request=request, template_name='groups/ajax_load_group_replies.html',
+                                        context={'publications': publications, 'group_profile': group}),
+            'page': page,
+            'childs': len(publications),
+
+        }
+
+        return JsonResponse(data)

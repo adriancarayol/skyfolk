@@ -148,8 +148,17 @@ $(function () {
     $tab_commentarios.on('click', '.zoom-pub', function () {
         window.location.href = $(this).data('url');
     });
+
+    $tab_commentarios.on('click', '.load_more_publications', function (e) {
+        e.preventDefault();
+        var loader = $(this).next().find('.load_publications_descendants');
+        var pub_id = $(this).data('id');
+        var page = $(this).attr('href');
+        AJAX_load_descendants_group(pub_id, loader, page, $(this));
+    });
 });// end document ready
 
+var loadDescendantsRunning = false;
 
 function AJAX_follow_group(_id) {
     $.ajax({
@@ -606,6 +615,45 @@ function AJAX_edit_group_publication(pub, content) {
             }
         },
         error: function (rs, e) {
+        }
+    });
+}
+
+
+function AJAX_load_descendants_group(pub, loader, page, btn) {
+    if (loadDescendantsRunning) {
+        return;
+    }
+
+    $.ajax({
+        url: page,
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function() {
+            $(loader).fadeIn();
+            loadDescendantsRunning = true;
+        },
+        success: function (data) {
+            var $existing = $('#pub-' + pub);
+            var $children_list = $existing.find('.children').first();
+            if (!$children_list.length) {
+                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
+            }
+            $children_list.append(data.content);
+            btn.attr('href', '/publication/group/load/replies/?page=' + data.page + '&pubid=' + pub);
+            var $child_count = btn.find('.child_count');
+            var $result_child_count = parseInt($child_count.html(), 10) - data.childs;
+            if ($result_child_count > 0)
+                $($child_count).html($result_child_count);
+            else
+                btn.remove();
+        },
+        complete: function () {
+            $(loader).fadeOut();
+            loadDescendantsRunning = false;
+        },
+        error: function (rs, e) {
+            console.log(e);
         }
     });
 }

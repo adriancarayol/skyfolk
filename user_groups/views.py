@@ -34,6 +34,7 @@ from user_profile.utils import make_pagination_html
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup, NodeGroup, RequestGroup
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -143,10 +144,41 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     except NodeGroup.DoesNotExist:
         raise Http404
 
-    group_initial = {'owner': user.pk}
+    publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
+                                                   Q(deleted=False) & Q(level__lte=0) & ~Q(
+        author__profile__from_blocked__to_blocked=user.profile)) \
+        .prefetch_related('user_give_me_like', 'user_give_me_hate').select_related('group_extra_content')
+
+    is_ajax = False
+    if request.is_ajax():
+        page = request.GET.get('page', 1)
+        is_ajax = True
+    else:
+        page = 1
+
+    paginator = Paginator(publications, 20)
+
+    try:
+        publications = paginator.page(page)
+    except PageNotAnInteger:
+        publications = paginator.page(1)
+    except EmptyPage:
+        publications = paginator.page(paginator.num_pages)
+
+    if is_ajax:
+        template = 'groups/comentarios_entries.html'
+        context = {
+            'publications': publications,
+            'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
+            'group_profile': group_profile
+        }
+        return render(request, template, context)
+
     likes = LikeGroup.objects.filter(to_like=group_profile).count()
     user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
     users_in_group = len(node_group.members.all())
+
+    group_initial = {'owner': user.pk}
 
     members = node_group.members.all()
     list_user_id = [x.user_id for x in members]
@@ -157,11 +189,6 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
             from_profile=user.id, to_group=group_profile)
     except ObjectDoesNotExist:
         friend_request = None
-
-    publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
-                                                   Q(deleted=False) & Q(level__lte=0) & ~Q(
-        author__profile__from_blocked__to_blocked=user.profile)) \
-        .prefetch_related('user_give_me_like', 'user_give_me_hate').select_related('group_extra_content')
 
     context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
@@ -430,7 +457,7 @@ class RespondGroupRequest(View):
                             notify.send(user, actor=user.username,
                                         recipient=request_group.emitter,
                                         verb=u'¡ahora eres miembro de <a href="/group/%s">%s</a>!.' % (
-                                        group.name, group.name),
+                                            group.name, group.name),
                                         level='new_member_group')
                 except Exception as e:
                     return JsonResponse({'response': 'error'})
@@ -551,7 +578,7 @@ class ProfileGroups(APIView):
         try:
             results, meta = db.cypher_query(
                 "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id ORDER BY n.group_id DESC SKIP %d LIMIT 12" % (
-                user_id, offset))
+                    user_id, offset))
         except Exception as e:
             logging.info(e)
 

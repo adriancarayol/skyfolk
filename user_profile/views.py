@@ -909,7 +909,7 @@ def respond_friend_request(request):
                         notify.send(user, actor=user.username,
                                     recipient=recipient,
                                     verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (
-                                    user.username, user.username),
+                                        user.username, user.username),
                                     level='new_follow')
 
                         Request.objects.remove_received_follow_request(from_profile=recipient.id,
@@ -1514,35 +1514,42 @@ class SearchUsuarioView(SearchView):
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(board_owner_id=self.request.user.id)
                                                      | SQ(author_id=self.request.user.id)) | (
-                                                    (~SQ(board_owner__profile__from_blocked__to_blocked=profile) &
-                                                     SQ(deleted=False) & ~SQ(board_owner__profile__privacity='N') & ~SQ(
-                                                        author__profile__from_blocked__to_blocked=profile)) &
-                                                    ((SQ(board_owner__profile__privacity='A') | (
-                                                    (SQ(board_owner__profile__privacity='OF') &
-                                                     SQ(board_owner__profile__to_profile__from_profile=profile)) | (
-                                                    SQ(board_owner__profile__privacity='OFAF') &
-                                                    (SQ(board_owner__profile__to_profile__from_profile=profile) | SQ(
-                                                        board_owner__profile__from_profile__to_profile=profile))
-                                                    )) & ((SQ(author__profile__privacity='OF') &
-                                                           SQ(author__profile__to_profile__from_profile=profile)) | (
-                                                          SQ(author__profile__privacity='OFAF') &
-                                                          (SQ(author__profile__to_profile__from_profile=profile) | SQ(
-                                                              author__profile__from_profile__to_profile=profile))
-                                                          ) | SQ(author__profile__privacity='A'))) | (
-                                                     SQ(author__profile__privacity='A') | (
-                                                     (SQ(author__profile__privacity='OF') &
-                                                      SQ(author__profile__to_profile__from_profile=profile)) | (
-                                                     SQ(author__profile__privacity='OFAF') &
-                                                     (SQ(author__profile__to_profile__from_profile=profile) | SQ(
-                                                         author__profile__from_profile__to_profile=profile))
-                                                     )) & ((SQ(board_owner__profile__privacity='OF') &
-                                                            SQ(
-                                                                board_owner__profile__to_profile__from_profile=profile)) | (
-                                                           SQ(board_owner__profile__privacity='OFAF') &
-                                                           (SQ(
-                                                               board_owner__profile__to_profile__from_profile=profile) | SQ(
-                                                               board_owner__profile__from_profile__to_profile=profile))
-                                                           ) | SQ(board_owner__profile__privacity='A')))))) \
+                                                        (~SQ(board_owner__profile__from_blocked__to_blocked=profile) &
+                                                         SQ(deleted=False) & ~SQ(
+                                                            board_owner__profile__privacity='N') & ~SQ(
+                                                            author__profile__from_blocked__to_blocked=profile)) &
+                                                        ((SQ(board_owner__profile__privacity='A') | (
+                                                            (SQ(board_owner__profile__privacity='OF') &
+                                                             SQ(
+                                                                 board_owner__profile__to_profile__from_profile=profile)) | (
+                                                                SQ(board_owner__profile__privacity='OFAF') &
+                                                                (SQ(
+                                                                    board_owner__profile__to_profile__from_profile=profile) | SQ(
+                                                                    board_owner__profile__from_profile__to_profile=profile))
+                                                            )) & ((SQ(author__profile__privacity='OF') &
+                                                                   SQ(
+                                                                       author__profile__to_profile__from_profile=profile)) | (
+                                                                      SQ(author__profile__privacity='OFAF') &
+                                                                      (SQ(
+                                                                          author__profile__to_profile__from_profile=profile) | SQ(
+                                                                          author__profile__from_profile__to_profile=profile))
+                                                                  ) | SQ(author__profile__privacity='A'))) | (
+                                                             SQ(author__profile__privacity='A') | (
+                                                                 (SQ(author__profile__privacity='OF') &
+                                                                  SQ(
+                                                                      author__profile__to_profile__from_profile=profile)) | (
+                                                                     SQ(author__profile__privacity='OFAF') &
+                                                                     (SQ(
+                                                                         author__profile__to_profile__from_profile=profile) | SQ(
+                                                                         author__profile__from_profile__to_profile=profile))
+                                                                 )) & ((SQ(board_owner__profile__privacity='OF') &
+                                                                        SQ(
+                                                                            board_owner__profile__to_profile__from_profile=profile)) | (
+                                                                           SQ(board_owner__profile__privacity='OFAF') &
+                                                                           (SQ(
+                                                                               board_owner__profile__to_profile__from_profile=profile) | SQ(
+                                                                               board_owner__profile__from_profile__to_profile=profile))
+                                                                       ) | SQ(board_owner__profile__privacity='A')))))) \
                 .select_related('author').prefetch_related('images')
         ).load_all_queryset(
             Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
@@ -1552,9 +1559,9 @@ class SearchUsuarioView(SearchView):
                                              SQ(owner__profile__to_profile__from_profile=profile)
                                              & SQ(is_public=True))
                                             | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (
-                                            SQ(owner__profile__privacity='OFAF') & (
-                                            SQ(owner__profile__from_profile__to_profile=profile) | SQ(
-                                                owner__profile__to_profile__from_profile=profile)))))) \
+                                                SQ(owner__profile__privacity='OFAF') & (
+                                                    SQ(owner__profile__from_profile__to_profile=profile) | SQ(
+                                                        owner__profile__to_profile__from_profile=profile)))))) \
                 .select_related('owner').prefetch_related('tags')
         ).load_all_queryset(
             Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))

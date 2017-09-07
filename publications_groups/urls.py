@@ -16,4 +16,6 @@ urlpatterns = [
         name='edit_group_publication'),
     url(r'^publication/group/detail/(?P<pk>\d+)/$', views.PublicationGroupDetail.as_view(),
         name='detail_group_publication'),
+    url(r'^publication/group/load/replies/$', views.LoadRepliesForPublicationGroup.as_view(),
+        name='load_replies_group_publication'),
 ]

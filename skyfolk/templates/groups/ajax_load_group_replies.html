@@ -2,7 +2,7 @@
 {% load humanize %}
 {% load embed_video_tags %}
 {% load app_filters %}
-<div id="list-publications" class="infinite-container">
+
     {% for node in publications %}
         <div class="row infinite-item" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
             <div class="col s12">
@@ -184,16 +184,18 @@
                         </ul>
                         <div class="row">
                             <div class="col s12">
-                                {% with node.get_children_count as descendants %}
+                            {% if node.level < 2 %}
+                                {% with node.get_descendants_not_deleted as descendants %}
                                     {% if descendants > 0 %}
                                         <a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_publications"
-                                           href="/publication/group/load/replies/?page=1&pubid={{ node.id }}"
+                                           href="/publication/group/load/replies/?page={{ page }}&pubid={{ node.id }}"
                                            data-id="{{ node.id }}" data-created="{{ node.created|date:"U" }}"><i
                                                 class=" material-icons left">expand_more</i>Cargar
                                             comentarios (<span
                                                     class="child_count">{{ descendants }}</span>)</a>
                                     {% endif %}
                                 {% endwith %}
+                                {% endif %}
                                 <div>
                                     <div class="progress load_publications_descendants" style="display: none">
                                         <div class="indeterminate blue darken-1"></div>
@@ -206,11 +208,3 @@
             </div>
         </div>
     {% endfor %}
-</div>
-{% if publications.has_next %}
-    <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center"
-       href="?page={{ publications.next_page_number }}&qs=publications">More</a>
-{% endif %}
-<div class="progress loading_skyline" style="display: none">
-    <div class="indeterminate blue darken-1"></div>
-</div>
