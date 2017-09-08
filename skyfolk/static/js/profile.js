@@ -200,35 +200,6 @@ $(document).ready(function () {
         AJAX_add_hate(caja_publicacion, heart, "publication");
     });
 
-    /* FUNCIONES AJAX PARA TABS DE PERFIL */
-
-    /*$(tab_amigos).bind('scroll', function () {
-      if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-      countFriendList++;
-      $.ajax({
-      type: "POST",
-      url: "/load_friends/",
-      data: {
-      'slug': countFriendList,
-      'csrfmiddlewaretoken': csrftoken
-      },
-      dataType: "json",
-      success: function (response) {
-
-    //load friends
-    for (var i = 0; i < response.length; i++) {
-    addFriendToHtmlList(response[i]);
-    }
-    },
-    error: function (rs, e) {
-
-    }
-    });
-    }
-    });*/
-
-
-    /**/
     $("#li-tab-amigos").click(function () {
         $(tab_amigos).css({
             "overflow": "auto"

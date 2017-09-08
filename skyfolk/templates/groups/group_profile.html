@@ -56,6 +56,37 @@
             </form>
         </div>
     </div>
+    <div class="row">
+        <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper">
+            <div class="row">
+                <div class="col s12 title-page-wrapper">
+                    <h4><i class="material-icons">format_quote</i> Citar publicacion</h4>
+                    <h6>Comparte esta publicación con tus seguidores</h6>
+                </div>
+            </div>
+            <form id="share_publication_form" action="" method="post">{% csrf_token %}
+                {{ share_publication.pk }}
+                <div class="row">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {{ share_publication.content }}
+                            <label for="share_publication_content">Escribe un comentario adicional</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <button type="submit" id="share_publication"
+                            class="waves-effect waves-light btn right blue">
+                            Citar<i class="material-icons right">send</i></button>
+                        <button type="button" id="close_share_publication"
+                            class="waves-effect waves-light btn right transparent black-text">Cancelar<i
+                                class="material-icons right">close</i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col s12">

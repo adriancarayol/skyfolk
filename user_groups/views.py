@@ -26,7 +26,7 @@ from rest_framework.views import APIView
 
 from notifications.models import Notification
 from notifications.signals import notify
-from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
+from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit, SharedGroupPublicationForm
 from publications_groups.models import PublicationGroup
 from user_profile.models import NodeProfile, TagProfile
 from user_profile.tasks import send_email
@@ -204,6 +204,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'friend_request': friend_request,
                'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
                'interests': node_group.interest.match(),
+               'share_publication': SharedGroupPublicationForm(),
                'user_list': user_list}
 
     return render(request, template, context)

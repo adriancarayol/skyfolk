@@ -14,8 +14,9 @@ from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from emoji.models import Emoji
 from publications.exceptions import EmptyContent
+from publications.models import Publication
 from publications.views import logger
-from publications_groups.forms import PublicationGroupForm
+from publications_groups.forms import PublicationGroupForm, SharedGroupPublicationForm
 from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups, NodeGroup
 from user_profile.models import NodeProfile
@@ -503,3 +504,56 @@ class LoadRepliesForPublicationGroup(View):
         }
 
         return JsonResponse(data)
+
+
+xstr = lambda s: s or ""
+
+
+class ShareGroupPublication(View):
+    def post(self, request, *args, **kwargs):
+        form = SharedGroupPublicationForm(request.POST or None)
+
+        if form.is_valid():
+            user = request.user
+            pub_id = form.cleaned_data['pk']
+            try:
+                pub_to_add = PublicationGroup.objects.get(id=pub_id)
+            except ObjectDoesNotExist:
+                raise Http404
+
+            try:
+                author = NodeProfile.nodes.get(user_id=pub_to_add.author_id)
+                m = NodeProfile.nodes.get(user_id=user.id)
+            except NodeProfile.DoesNotExist:
+                raise Http404
+
+            privacity = author.is_visible(m)
+
+            if privacity and privacity != 'all':
+                return HttpResponseForbidden()
+
+            shared = Publication.objects.filter(shared_group_publication=pub_id, author_id=user.id,
+                                                deleted=False).exists()
+
+            if not shared:
+                content = form.cleaned_data.get('content', None)
+                pub = Publication.objects.create(
+                    content='<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a '
+                            'href="/profile/%s">@%s</a><br>%s' % (
+                                pub_to_add.author.username, pub_to_add.author.username, content),
+                    shared_group_publication=pub_to_add,
+                    author=user,
+                    board_owner=user, event_type=6)
+                pub.send_notification(request)
+                data = {
+                    'response': True,
+                    'status': 1,
+                }
+            else:
+                Publication.objects.filter(shared_group_publication=pub_to_add, author_id=user.id).delete()
+                data = {
+                    'response': True,
+                    'status': 2,
+                }
+
+            return JsonResponse(data)

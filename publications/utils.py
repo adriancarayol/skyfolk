@@ -52,12 +52,11 @@ def parse_string(content):
         if tag.endswith((',', '.')):
             tag = tag[:-1]
         content = content.replace(tag,
-                                            '<a href="/search/">{0}</a>'.format(tag))
+                                  '<a href="/search/">{0}</a>'.format(tag))
 
     # CLEAN CONTENT
     content = content.replace('\n', '').replace('\r', '')
-    content = bleach.clean(content, tags=ALLOWED_TAGS,
-                                attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
+    content = bleach.clean(content, tags=[])
     """
     bold = re.findall('\*[^\*]+\*', content)
     ''' Bold para comentario '''
@@ -92,7 +91,9 @@ def generate_path_video(ext='mp4'):
 
 
 def convert_avi_to_mp4(avi_file_path, output_name):
-    process = subprocess.call("ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(input = avi_file_path, output = output_name), shell=True)
+    process = subprocess.call(
+        "ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(
+            input=avi_file_path, output=output_name), shell=True)
 
 
 def validate_video(value):

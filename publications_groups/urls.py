@@ -18,4 +18,6 @@ urlpatterns = [
         name='detail_group_publication'),
     url(r'^publication/group/load/replies/$', views.LoadRepliesForPublicationGroup.as_view(),
         name='load_replies_group_publication'),
+    url(r'^publication/group/share/$', views.ShareGroupPublication.as_view(),
+        name='share_group_publication'),
 ]

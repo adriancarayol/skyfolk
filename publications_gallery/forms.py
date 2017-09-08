@@ -1,5 +1,6 @@
 from django import forms
 
+from publications.models import Publication
 from publications_gallery.models import PublicationPhoto
 
 
@@ -38,5 +39,5 @@ class SharedPhotoPublicationForm(forms.ModelForm):
         self.fields['content'].required = False
 
     class Meta:
-        model = PublicationPhoto
+        model = Publication
         fields = ['content', ]
