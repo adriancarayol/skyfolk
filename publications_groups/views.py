@@ -7,6 +7,7 @@ from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import CreateView, UpdateView
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import ListView
 
 from django.utils.decorators import method_decorator
@@ -490,6 +491,17 @@ class LoadRepliesForPublicationGroup(View):
         except EmptyPage:
             publications = paginator.page(paginator.num_pages)
 
+        shared_id = publications.object_list.values_list('id', flat=True)
+        pubs_shared = Publication.objects.filter(shared_group_publication__id__in=shared_id, deleted=False).values(
+            'shared_group_publication__id') \
+            .order_by('shared_group_publication__id') \
+            .annotate(total=Count('shared_group_publication__id'))
+        shared_pubs = {item['shared_group_publication__id']: item.get('total', 0) for item in pubs_shared}
+
+        pubs_shared_with_me = Publication.objects.filter(shared_group_publication__id__in=shared_id, author__id=user.id,
+                                                         deleted=False).values_list('shared_group_publication__id',
+                                                                                    flat=True)
+
         try:
             page = publications.next_page_number()
         except EmptyPage:
@@ -497,7 +509,9 @@ class LoadRepliesForPublicationGroup(View):
 
         data = {
             'content': render_to_string(request=request, template_name='groups/ajax_load_group_replies.html',
-                                        context={'publications': publications, 'group_profile': group}),
+                                        context={'publications': publications, 'group_profile': group,
+                                                 'pubs_shared': shared_pubs,
+                                                 'pubs_shared_with_me': pubs_shared_with_me}),
             'page': page,
             'childs': len(publications),
 
@@ -557,3 +571,24 @@ class ShareGroupPublication(View):
                 }
 
             return JsonResponse(data)
+
+
+class RemoveSharedGroupPublication(View):
+    model = Publication
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(RemoveSharedGroupPublication, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        pk = request.POST.get('pk', None)
+        user = request.user
+        try:
+            Publication.objects.filter(shared_group_publication_id=pk, author_id=user.id).delete()
+        except ObjectDoesNotExist:
+            raise Http404
+        data = {
+            'response': True,
+            'status': 2,
+        }
+        return JsonResponse(data)

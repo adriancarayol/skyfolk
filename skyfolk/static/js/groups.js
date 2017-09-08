@@ -181,9 +181,8 @@ $(function () {
 
     /* Eliminar skyline */
     $(this).on('click', '.remove-timeline', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
-        var tag = this;
-        AJAX_add_publication_to_skyline($(caja_publicacion).attr('id').split('-')[1], tag, null);
+        var tag = $(this);
+        AJAX_remove_publication_from_skyline(tag.data('id'), tag);
     });
 });// end document ready
 
@@ -736,7 +735,63 @@ function AJAX_add_publication_to_skyline(pub_id, tag, data_pub) {
             }
         },
         error: function (rs, e) {
-            // alert('ERROR: ' + rs.responseText + e);
+
+        }
+    });
+}
+
+function AJAX_remove_publication_from_skyline(pub_id, tag) {
+
+    var shared_tag = $(tag).find('.share-values');
+    var count_shared = $(shared_tag).text();
+    count_shared = count_shared.replace(/ /g, '');
+
+    $.ajax({
+        url: '/publication/group/delete/share/',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            'pk': pub_id
+        },
+        success: function (data) {
+            var response = data.response;
+            if (response === true) {
+                var status = data.status;
+                if (status === 1) {
+                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                        count_shared++;
+                        if (count_shared > 0) {
+                            $(shared_tag).text(" " + count_shared)
+                        } else {
+                            $(shared_tag).text(" ");
+                        }
+                    }
+                    $(tag).attr("class", "remove-timeline");
+                    $(tag).css('color', '#bbdefb');
+                    $('#share-publication-wrapper').hide();
+                } else if (status === 2) {
+                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                        count_shared--;
+                        if (count_shared > 0) {
+                            $(shared_tag).text(" " + count_shared)
+                        } else {
+                            $(shared_tag).text(" ");
+                        }
+                    }
+                    $(tag).attr("class", "add-timeline");
+                    $(tag).css('color', '#555');
+                }
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to add to timeline.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            // console.log(jqXHR.status);
         }
     });
 }

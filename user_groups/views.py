@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import IntegrityError
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponseForbidden
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
@@ -26,7 +26,8 @@ from rest_framework.views import APIView
 
 from notifications.models import Notification
 from notifications.signals import notify
-from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit, SharedGroupPublicationForm
+from publications.models import Publication
+from publications_groups.forms import PublicationGroupForm, SharedGroupPublicationForm
 from publications_groups.models import PublicationGroup
 from user_profile.models import NodeProfile, TagProfile
 from user_profile.tasks import send_email
@@ -165,12 +166,24 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     except EmptyPage:
         publications = paginator.page(paginator.num_pages)
 
+    shared_id = publications.object_list.values_list('id', flat=True)
+    pubs_shared = Publication.objects.filter(shared_group_publication__id__in=shared_id, deleted=False).values(
+        'shared_group_publication__id') \
+        .order_by('shared_group_publication__id') \
+        .annotate(total=Count('shared_group_publication__id'))
+    shared_pubs = {item['shared_group_publication__id']: item.get('total', 0) for item in pubs_shared}
+
+    pubs_shared_with_me = Publication.objects.filter(shared_group_publication__id__in=shared_id, author__id=user.id,
+                                                     deleted=False).values_list('shared_group_publication__id', flat=True)
+
     if is_ajax:
         template = 'groups/comentarios_entries.html'
         context = {
             'publications': publications,
             'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
-            'group_profile': group_profile
+            'group_profile': group_profile,
+            'pubs_shared_with_me': pubs_shared_with_me,
+            'pubs_shared': shared_pubs,
         }
         return render(request, template, context)
 
@@ -204,6 +217,8 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'friend_request': friend_request,
                'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
                'interests': node_group.interest.match(),
+               'pubs_shared_with_me': pubs_shared_with_me,
+               'pubs_shared': shared_pubs,
                'share_publication': SharedGroupPublicationForm(),
                'user_list': user_list}
 

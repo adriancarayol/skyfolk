@@ -20,4 +20,6 @@ urlpatterns = [
         name='load_replies_group_publication'),
     url(r'^publication/group/share/$', views.ShareGroupPublication.as_view(),
         name='share_group_publication'),
+    url(r'^publication/group/delete/share/$', views.RemoveSharedGroupPublication.as_view(),
+        name='delete_share_group_publication'),
 ]

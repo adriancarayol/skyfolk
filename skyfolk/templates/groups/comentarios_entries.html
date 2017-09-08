@@ -132,11 +132,9 @@
                                     {% endwith %}
                                     <li id="share-{{ node.pk }}" data-id="{{ node.pk }}"
                                         class={% if node.id in pubs_shared_with_me %}"remove-timeline"
-                                        title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi
-                                            skyline" {% endif %}
-                                    >
+                                        title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi skyline" {% endif %}>
                                     <i class="material-icons md-18">format_quote</i>
-                                    <i class="share-values"> </i>
+                                    <i class="share-values"> {{ pubs_shared|lookup:node.id|intword }}</i>
                                     </li>
                                     <li title="Responder" class="reply-comment"
                                         id="reply-caja-comentario-{{ node.pk }}">
