@@ -9,7 +9,7 @@ if (retrievedEmojis === null) {
 
 var emojis = JSON.parse(retrievedEmojis);
 
-$('#message2, .message-reply, #message3').textcomplete([
+$('textarea').textcomplete([
         { // emoji strategy
             match: /\B:([\-+\w]*)$/,
             search: function (term, callback) {

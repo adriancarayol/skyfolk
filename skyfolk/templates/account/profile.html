@@ -10,204 +10,227 @@ Template para el perfil de cada usuario
 {% endblock %}
 
 {% block extra-css %}
-{% compress css %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css">
-<style>
-    .card-content img {
-        max-width: 100%;
-        max-height: 100%;
-        box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
-    }
-</style>
-{% endcompress %}
-{% if liked == True %}
-<style type="text/css">
-    #ilike_profile {
-        color: #ec407a;
-    }
-</style>
-{% endif %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css">
+        <style>
+            .card-content img {
+                max-width: 100%;
+                max-height: 100%;
+                box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);
+            }
+        </style>
+    {% endcompress %}
+    {% if liked == True %}
+        <style type="text/css">
+            #ilike_profile {
+                color: #ec407a;
+            }
+        </style>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-{% compress js %}
-<script src="{{ STATIC_URL }}js/profile.js" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}js/jquery.easytabs.js" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}js/jquery.hashchange.min.js" type="text/javascript"></script>
-{% endcompress %}
-<div class="container">
-    {% if user_profile.is_active %}
-    {% comment %}
+    {% compress js %}
+        <script src="{{ STATIC_URL }}js/profile.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/jquery.easytabs.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/jquery.hashchange.min.js" type="text/javascript"></script>
+    {% endcompress %}
+    <div class="container">
+        {% if user_profile.is_active %}
+            {% comment %}
     Formulario para citar un comentario
     {% endcomment %}
-    <div class="row">
-        <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper"
-            data-id="">
             <div class="row">
-                <div class="col s12 title-page-wrapper">
-                    <h4><i class="material-icons">format_quote</i> Citar publicacion</h4>
-                    <h6>Comparte esta publicación con tus seguidores</h6>
+                <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper"
+                     data-id="">
+                    <div class="row">
+                        <div class="col s12 title-page-wrapper">
+                            <h4><i class="material-icons">format_quote</i> Citar publicacion</h4>
+                            <h6>Comparte esta publicación con tus seguidores</h6>
+                        </div>
+                    </div>
+                    <form id="share_publication_form" action="" method="post">{% csrf_token %}
+                        <div class="row">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    {{ publication_shared.content }}
+                                    <label for="shared_comment_content">Escribe un comentario adicional</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12">
+                                <button type="submit" id="share_publication"
+                                        class="waves-effect waves-light btn right blue">
+                                    Citar<i class="material-icons right">send</i></button>
+                                <button type="button" id="close_share_publication"
+                                        class="waves-effect waves-light btn right transparent black-text">Cancelar<i
+                                        class="material-icons right">close</i></button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <form id="share_publication_form" action="" method="post">{% csrf_token %}
-                <div class="row">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            {{ publication_shared.content }}
-                            <label for="shared_comment_content">Escribe un comentario adicional</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
+            <div class="row">
+                {% include "account/card-user.html" %}
+            </div>
+            <div class="row clearfix">
+                <div class="col l8 m12 s12">
                     <div class="col s12">
-                        <button type="submit" id="share_publication"
-                            class="waves-effect waves-light btn right blue">
-                            Citar<i class="material-icons right">send</i></button>
-                        <button type="button" id="close_share_publication"
-                            class="waves-effect waves-light btn right transparent black-text">Cancelar<i
-                                class="material-icons right">close</i></button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="row">
-        {% include "account/card-user.html" %}
-    </div>
-    <div class="row clearfix">
-        <div class="col l8 m12 s12">
-            <div class="col s12">
-                <div id="div-separator">
-                    <div class="sidebar card" id="tab-container">
-                        <div class="ventana-pin">
-                            <a><i class="material-icons">remove</i></a>
-                            <a><i class="material-icons">flip_to_front</i></a>
-                        </div>
-                        <ul class="unstyled table fullwidth links">
-                            {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}
-                            <li class="tab" id="li-tab-comentarios"><a
-                                    href="#tab-comentarios">skyline</a></li>
-                            <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
-                        </ul>
-                        <div class="unstyled content" id="hood-tabs">
-                            {% comment %}
+                        <div id="div-separator">
+                            <div class="sidebar card" id="tab-container">
+                                <div class="ventana-pin">
+                                    <a><i class="material-icons">remove</i></a>
+                                    <a><i class="material-icons">flip_to_front</i></a>
+                                </div>
+                                <ul class="unstyled table fullwidth links">
+                                    {% comment %}<li class="tab" id="li-tab-timeline"><a href="#tab-timeline">skyline</a></li>{% endcomment %}
+                                    <li class="tab" id="li-tab-comentarios"><a
+                                            href="#tab-comentarios">skyline</a></li>
+                                    <li class="tab" id="li-tab-amigos"><a href="#tab-amigos">Seguidos</a></li>
+                                </ul>
+                                <div class="unstyled content" id="hood-tabs">
+                                    {% comment %}
                             Incluimos el tab timeline
                             {% include "account/tab-timeline.html" %}
                             {% endcomment %}
-                            {% comment %}
+                                    {% comment %}
                             Incluimos el tab comentarios
                             {% endcomment %}
-                            <div id="tab-comentarios">
-                                <div class="btn-filters row">
-                                    <div id="react">
+                                    <div id="tab-comentarios">
+                                        <div class="btn-filters row">
+                                            <div id="react">
+                                            </div>
+                                            <script>
+                                                window.board_owner = {{ user_profile.id }};
+                                            </script>
+                                            <script src="{{ STATIC_URL }}js/{{ component }}"></script>
+                                        </div>
+                                        {% if publications|length == 0 %}
+                                            <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                                            <div class="no-comments" id="without-comments">
+                                                <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+                                                <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
+                                                   class="no-comments-new-comment">
+                                                    <i class="material-icons">send</i>
+                                                </a>
+                                            </div>
+                                        {% else %}
+                                            {% include "account/profile_comments.html" %}
+                                        {% endif %}
                                     </div>
-                                    <script>
-                                        window.board_owner = {{ user_profile.id }};
-                                    </script>
-                                    <script src="{{ STATIC_URL }}js/{{ component }}"></script>
-                                </div>
-                                {% if publications|length == 0 %}
-                                <!-- Si el usuario no tiene comentarios, proponemos uno -->
-                                <div class="no-comments" id="without-comments">
-                                    <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
-                                    <a id="{% if user_profile.id != request.user.id %}compose-new-no-comments{% else %}compose-self-new-no-comments{% endif %}"
-                                        class="no-comments-new-comment">
-                                        <i class="material-icons">send</i>
-                                    </a>
-                                </div>
-                                {% else %}
-                                {% include "account/profile_comments.html" %}
-                                {% endif %}
-                            </div>
-                            {% comment %}
+                                    {% comment %}
                             Incluimos el tab amigos
                             {% endcomment %}
-                            {% include "account/tab-amigos.html" %}
+                                    {% include "account/tab-amigos.html" %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col l4 m12 s12">
-            <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
-            <div class="row">
-                <!-- Para el diseño de la rama develop, se cambia col-md-6 por col-md-12 -->
-                {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
+                <div class="col l4 m12 s12">
+                    <!-- Contenedor principal, engloba el tablon, widgets... [IMPORTANTE]-->
+                    <div class="row">
+                        <!-- Para el diseño de la rama develop, se cambia col-md-6 por col-md-12 -->
+                        {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
 
-                {% comment %}
+                        {% comment %}
                 PIN ARRIBA IZQUIERDA
                 {% endcomment %}
-                {% include "account/pin-left-top.html" %}
-                <!-- PIN PEQUEÑO - 2 -->
-                {% comment %}
+                        {% include "account/pin-left-top.html" %}
+                        <!-- PIN PEQUEÑO - 2 -->
+                        {% comment %}
                 PIN ARRIBA DERECHA
                 {% endcomment %}
-                {% include "account/pin-right-top.html" %}
+                        {% include "account/pin-right-top.html" %}
 
-            </div>
-            {% comment %}
+                    </div>
+                    {% comment %}
             PIN ABAJO
             {% endcomment %}
-            {% include "account/pin-bottom.html" %}
+                    {% include "account/pin-bottom.html" %}
 
-        </div>
-    </div>
-</div>
-{% compress js inline %}
-<script type="text/javascript">
-    $('#tab-container').easytabs({
-        defaultTab: "#li-tab-comentarios",
-        animate: true,
-        animationSpeed: "fast",
-        updateHash: false
-    });
+                </div>
+            </div>
+            </div>
+            {% compress js inline %}
+                <script type="text/javascript">
+                    $('#tab-container').easytabs({
+                        defaultTab: "#li-tab-comentarios",
+                        animate: true,
+                        animationSpeed: "fast",
+                        updateHash: false
+                    });
 
-var infinite = new Waypoint.Infinite({
-    element: $('#list-publications'),
-    offset: 'bottom-in-view',
-    onBeforePageLoad: function() {
-        $('.loading_skyline').show();
-    },
-    onAfterPageLoad: function() {
-        $('.loading_skyline').hide();
-    }
-});
+                    var infinite = new Waypoint.Infinite({
+                        element: $('#list-publications'),
+                        offset: 'bottom-in-view',
+                        onBeforePageLoad: function () {
+                            $('.loading_skyline').show();
+                        },
+                        onAfterPageLoad: function () {
+                            $('.loading_skyline').hide();
+                        }
+                    });
 
-$('#tab-container')
-    .bind('easytabs:after', function(evt, tab, panel, data) {
-        if (tab[0].text.toLowerCase() === 'seguidos') {
-            $.get("?pagefollowing=1&qs=following", function(data, status) {
-                $('#load_following').show();
-                $('#list-following').replaceWith(data);
-                $('#load_following').hide();
-            });
-        }
-    });
-</script>
+                    $('#tab-container')
+                        .bind('easytabs:after', function (evt, tab, panel, data) {
+                            if (tab[0].text.toLowerCase() === 'seguidos') {
+                                infinite.destroy();
+                                infinite = new Waypoint.Infinite({
+                                    element: $('#list-following'),
+                                    offset: 'bottom-in-view',
+                                    onBeforePageLoad: function () {
+                                        $('.loading_skyline').show();
+                                    },
+                                    onAfterPageLoad: function () {
+                                        $('.loading_skyline').hide();
+                                    }
+                                });
+                                $.get("?pagefollowing=1&qs=following", function (data, status) {
+                                    $('#load_following').show();
+                                    $('#list-following').replaceWith(data);
+                                    $('#load_following').hide();
+                                });
+                            } else if (tab[0].text.toLowerCase() === 'skyline') {
+                                infinite.destroy();
+                                infinite = new Waypoint.Infinite({
+                                    element: $('#list-publications'),
+                                    offset: 'bottom-in-view',
+                                    onBeforePageLoad: function () {
+                                        $('.loading_skyline').show();
+                                    },
+                                    onAfterPageLoad: function () {
+                                        $('.loading_skyline').hide();
+                                    }
+                                });
+                            }
+                        });
+                </script>
 
-{% if user_profile == user %}
-<script>
-    $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
-</script>
-{% endif %}
-<script src="{{ STATIC_URL }}js/socket.js"></script>
-<script>
-    UTILS.init([{{ user.pk }}]);
-UTILS.conn_socket();
-</script>
-{% comment "Add follow to tab %}
+                {% if user_profile == user %}
+                    <script>
+                        $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
+                    </script>
+                {% endif %}
+                <script src="{{ STATIC_URL }}js/socket.js"></script>
+                <script>
+                    UTILS.init([{{ user.pk }}]);
+                    UTILS.conn_socket();
+                </script>
+                {% comment "Add follow to tab %}
 Add follow to profile tab
 {% endcomment %}
-{% if user_profile.id == user.id %}
-<script>
-    function addItemToFriendList(name, lastname, username, avatar_url) {
-        $("#tab-amigos").find("ul").append('<li>'+ avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
-    }
-</script>
-{% endif %}
-{% endcompress %}
-{% else %}
-<h1 class="account-disabled">Cuenta desactivada.</h1>
-{% endif %}
+                {% if user_profile.id == user.id %}
+                    <script>
+                        function addItemToFriendList(name, lastname, username, avatar_url) {
+                            $("#tab-amigos").find("ul").append('<li>' + avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
+                        }
+                    </script>
+                {% endif %}
+            {% endcompress %}
+        {% else %}
+            <h1 class="account-disabled">Cuenta desactivada.</h1>
+        {% endif %}
 {% endblock %}

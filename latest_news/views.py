@@ -37,7 +37,7 @@ class News(ListView):
         return users
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1')) # page or 1
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
         offset = limit - 25
 
@@ -52,24 +52,44 @@ class News(ListView):
         # Publicaciones de seguidos + favoritos + recomendados
         try:
             publications = Publication.objects.filter(
-                    ((Q(board_owner__profile__to_profile__from_profile=profile) |
-                Q(board_owner__in=pk_list)) & (~Q(board_owner__profile__privacity='N') & ~Q(author__profile__privacity='N')
-                    & ~Q(board_owner__profile__from_blocked__to_blocked=profile) &
-                    ~Q(author__profile__from_blocked__to_blocked=profile)
-                    & ~Q(author_id=self.request.user.id))) & Q(deleted=False) &
-                Q(parent=None)).select_related('author', 'shared_publication',
-                        'shared_photo_publication', 'parent').prefetch_related('extra_content', 'images', 'videos', 'shared_photo_publication__publication_photo_extra_content', 'shared_publication__extra_content', 'shared_publication__images', 'shared_publication__videos', 'shared_photo_publication__videos', 'shared_photo_publication__images', 'shared_publication__author', 'shared_photo_publication__p_author').distinct()[offset:limit]
+                ((Q(board_owner__profile__to_profile__from_profile=profile) |
+                  Q(board_owner__in=pk_list)) & (
+                     ~Q(board_owner__profile__privacity='N') & ~Q(author__profile__privacity='N')
+                     & ~Q(board_owner__profile__from_blocked__to_blocked=profile) &
+                     ~Q(author__profile__from_blocked__to_blocked=profile)
+                     & ~Q(author_id=self.request.user.id))) & Q(deleted=False) &
+                Q(parent=None)) \
+                               .select_related('author', 'shared_publication',
+                                               'shared_photo_publication', 'parent', 'shared_group_publication') \
+                               .prefetch_related('extra_content',
+                                                 'images',
+                                                 'videos',
+                                                 'shared_photo_publication__publication_photo_extra_content',
+                                                 'shared_publication__extra_content',
+                                                 'shared_publication__images',
+                                                 'shared_publication__videos',
+                                                 'shared_photo_publication__videos',
+                                                 'shared_photo_publication__images',
+                                                 'shared_group_publication__images',
+                                                 'shared_group_publication__author',
+                                                 'shared_group_publication__videos',
+                                                 'shared_group_publication__group_extra_content',
+                                                 'shared_publication__author',
+                                                 'shared_photo_publication__p_author').distinct()[
+                           offset:limit]
         except ObjectDoesNotExist:
             publications = Publication.objects.filter(
-                    Q(board_owner__profile__privacity='A') & Q(author__profile__privacity='A'))[offset:limit]
+                Q(board_owner__profile__privacity='A') & Q(author__profile__privacity='A'))[offset:limit]
 
         # Photos de seguidos + favoritos + recomendados
         try:
             photos = Photo.objects.filter(((Q(owner__profile__to_profile__from_profile=profile)
-                | Q(owner_id__in=pk_list)) & ~Q(owner__profile__from_blocked__to_blocked=profile)) & Q(is_public=True)).select_related('owner').prefetch_related('tags').order_by('-date_added').distinct()[offset:limit]
+                                            | Q(owner_id__in=pk_list)) & ~Q(
+                owner__profile__from_blocked__to_blocked=profile)) & Q(is_public=True)).select_related(
+                'owner').prefetch_related('tags').order_by('-date_added').distinct()[offset:limit]
         except Photo.DoesNotExist:
             photos = Photo.objects.filter(
-                    Q(owner__profile__privacity='A') & Q(is_public=True)).order_by('-date_added')[offset:limit]
+                Q(owner__profile__privacity='A') & Q(is_public=True)).order_by('-date_added')[offset:limit]
 
         if len(photos) <= 0 or len(publications) <= 0:
             extended_list = [u.user_id for u in self.get_recommendation_users(offset, limit)]
@@ -92,7 +112,7 @@ class News(ListView):
 
         return result_list
 
-    def get_context_data(self,  **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(News, self).get_context_data(**kwargs)
         page = self.request.GET.get('page', None)
         if not page:

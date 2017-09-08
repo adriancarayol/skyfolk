@@ -15,6 +15,7 @@ from .models import NodeProfile, Profile, BlockedProfile, \
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @receiver(post_save, sender=RelationShipProfile)
 def handle_new_relationship(sender, instance, created, **kwargs):
     emitter = instance.from_profile.user
@@ -31,22 +32,26 @@ def handle_new_relationship(sender, instance, created, **kwargs):
     if created:
         try:
             Publication.objects.update_or_create(author_id=recipient.id,
-                                                  board_owner_id=recipient.id,
-                                                  content='<i class="material-icons blue1e88e5">person_add</i> ¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, <a href="/profile/%s">%s</a>!' % (
-                                                      recipient.username,
-                                                      recipient.username,
-                                                      emitter.username,
-                                                      emitter.username),
-                                                  event_type=2)
+                                                 board_owner_id=recipient.id,
+                                                 content='<i class="material-icons blue1e88e5 left">person_add</i> '
+                                                         '¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, '
+                                                         '<a href="/profile/%s">%s</a>!' % (
+                                                     recipient.username,
+                                                     recipient.username,
+                                                     emitter.username,
+                                                     emitter.username),
+                                                 event_type=2)
 
             Publication.objects.update_or_create(author_id=emitter.id,
-                                                  board_owner_id=emitter.id,
-                                                  content='<i class="material-icons blue1e88e5">person_add</i> ¡<a href="/profile/%s">%s</a> ahora sigue a <a href="/profile/%s">%s</a>!' % (
-                                                      emitter.username,
-                                                      emitter.username,
-                                                      recipient.username,
-                                                      recipient.username),
-                                                  event_type=2)
+                                                 board_owner_id=emitter.id,
+                                                 content='<i class="material-icons blue1e88e5 left">person_add</i> '
+                                                         '¡<a href="/profile/%s">%s</a> ahora sigue a <a '
+                                                         'href="/profile/%s">%s</a>!' % (
+                                                     emitter.username,
+                                                     emitter.username,
+                                                     recipient.username,
+                                                     recipient.username),
+                                                 event_type=2)
         except Exception as e:
             raise Exception("Publication relationship not created: {}".format(e))
 
@@ -63,6 +68,7 @@ def handle_delete_relationship(sender, instance, *args, **kwargs):
         raise Exception("No se encuentran los nodos en neo4j")
 
     n.follow.disconnect(m)
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -148,6 +154,7 @@ def handle_login(sender, user, request, **kwargs):
 def handle_logout(sender, user, request, **kwargs):
     cache.delete('seen_%s' % user.username)
     logger.info('User {} is_offlne'.format(user.username))
+
 
 user_logged_in.connect(handle_login)
 user_logged_out.connect(handle_logout)

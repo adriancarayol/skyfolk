@@ -245,11 +245,15 @@ def publication_detail(request, publication_id):
                               'shared_photo_publication__p_author',
                               'shared_photo_publication__images',
                               'shared_photo_publication__videos',
+                              'shared_group_publication__images',
+                              'shared_group_publication__author',
+                              'shared_group_publication__videos',
+                              'shared_group_publication__group_extra_content',
                               'shared_photo_publication__publication_photo_extra_content',
                               'user_give_me_like', 'user_give_me_hate') \
             .select_related('author',
                             'board_owner', 'shared_publication',
-                            'parent', 'shared_photo_publication')
+                            'parent', 'shared_photo_publication', 'shared_group_publication')
     except Exception as e:
         logger.info(e)
         raise Exception('Error al cargar descendientes para la publicacion: {}'.format(request_pub))
@@ -710,14 +714,14 @@ def share_publication(request):
                         raise IntegrityError('El comentario esta vacio')
 
                     pub = Publication.objects.create(
-                        content='<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
+                        content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
                             pub_to_add.author.username, pub_to_add.author.username, pub_content),
                         shared_publication_id=pub_to_add.id,
                         author=user,
                         board_owner=user, event_type=6)
                 else:
                     pub = Publication.objects.create(
-                        content='<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
+                        content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
                             pub_to_add.author.username, pub_to_add.author.username),
                         shared_publication_id=pub_to_add.id,
                         author=user,

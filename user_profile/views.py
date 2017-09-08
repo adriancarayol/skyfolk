@@ -53,16 +53,20 @@ def load_profile_publications(request, page, profile):
                               .prefetch_related('extra_content', 'images',
                                                 'videos', 'shared_publication__images',
                                                 'tags',
-                                                'shared_photo_publication__images',
                                                 'shared_publication__author',
+                                                'shared_photo_publication__images',
                                                 'shared_photo_publication__p_author',
                                                 'shared_photo_publication__videos',
                                                 'shared_photo_publication__publication_photo_extra_content',
+                                                'shared_group_publication__images',
+                                                'shared_group_publication__author',
+                                                'shared_group_publication__videos',
+                                                'shared_group_publication__group_extra_content',
                                                 'shared_publication__videos', 'shared_publication__extra_content',
                                                 'user_give_me_like', 'user_give_me_hate') \
                               .select_related('author',
                                               'board_owner', 'shared_publication',
-                                              'parent', 'shared_photo_publication'), 25)
+                                              'parent', 'shared_photo_publication', 'shared_group_publication'), 25)
         try:
             publications = paginator.page(page)
         except PageNotAnInteger:
@@ -84,7 +88,7 @@ def load_profile_publications(request, page, profile):
     except Exception as e:
         publications = []
         pubs_shared_with_me = []
-        pubs_shared = []
+        shared_pubs = {}
         logging.info(e)
 
     return pubs_shared_with_me, shared_pubs, publications
@@ -116,8 +120,8 @@ def profile_view_ajax(request, user_profile, node_profile=None):
         limit = 25 * page
         offset = limit - 25
         total_users = node_profile.count_follows()
-        total_pages = total_users / 25
-        print(total_pages)
+        total_pages = int(total_users / 25)
+
         if total_users % 25 != 0:
             total_pages += 1
             if page < total_pages:

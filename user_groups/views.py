@@ -148,7 +148,11 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
                                                    Q(deleted=False) & Q(level__lte=0) & ~Q(
         author__profile__from_blocked__to_blocked=user.profile)) \
-        .prefetch_related('user_give_me_like', 'user_give_me_hate').select_related('group_extra_content')
+        .prefetch_related('group_extra_content', 'images',
+                          'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
+        .select_related('author',
+                        'board_group',
+                        'parent')
 
     is_ajax = False
     if request.is_ajax():
@@ -174,7 +178,8 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     shared_pubs = {item['shared_group_publication__id']: item.get('total', 0) for item in pubs_shared}
 
     pubs_shared_with_me = Publication.objects.filter(shared_group_publication__id__in=shared_id, author__id=user.id,
-                                                     deleted=False).values_list('shared_group_publication__id', flat=True)
+                                                     deleted=False).values_list('shared_group_publication__id',
+                                                                                flat=True)
 
     if is_ajax:
         template = 'groups/comentarios_entries.html'

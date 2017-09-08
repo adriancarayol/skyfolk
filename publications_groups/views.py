@@ -7,7 +7,6 @@ from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import CreateView, UpdateView
-from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import ListView
 
 from django.utils.decorators import method_decorator
@@ -391,6 +390,8 @@ class PublicationGroupDetail(ListView):
     def __init__(self, **kwargs):
         super(PublicationGroupDetail).__init__(**kwargs)
         self.publication = None
+        self.shared_pubs = {}
+        self.pubs_shared_with_me = []
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -398,6 +399,8 @@ class PublicationGroupDetail(ListView):
 
     def get_queryset(self):
         pub_id = self.kwargs.get('pk', None)
+        page = self.request.GET.get('page', 1)
+        user = self.request.user
 
         try:
             self.publication = PublicationGroup.objects.select_related('board_group').get(id=pub_id, deleted=False)
@@ -413,7 +416,7 @@ class PublicationGroupDetail(ListView):
         if not self.publication.board_group.is_public and not g.members.is_connected(n):
             return HttpResponseForbidden()
 
-        return self.publication.get_descendants(include_self=True) \
+        publications = self.publication.get_descendants(include_self=True) \
             .filter(deleted=False) \
             .prefetch_related('group_extra_content', 'images',
                               'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
@@ -421,10 +424,37 @@ class PublicationGroupDetail(ListView):
                             'board_group',
                             'parent')
 
+        paginator = Paginator(publications, 10)
+
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
+
+        self.shared_pubs = {item['shared_group_publication__id']: item.get('total', 0) for item in
+                            (Publication.objects.filter(shared_group_publication__id__in=(
+                                publications.object_list.values_list('id', flat=True)), deleted=False).values(
+                                'shared_group_publication__id') \
+                             .order_by('shared_group_publication__id') \
+                             .annotate(total=Count('shared_group_publication__id')))}
+
+        self.pubs_shared_with_me = Publication.objects.filter(shared_group_publication__id__in=(
+            publications.object_list.values_list('id', flat=True)),
+            author__id=user.id,
+            deleted=False).values_list('shared_group_publication__id',
+                                       flat=True)
+        return publications
+
     def get_context_data(self, **kwargs):
         context = super(PublicationGroupDetail, self).get_context_data(**kwargs)
-        context['publication_id'] = self.kwargs.get('pk', None)
+        if not self.request.is_ajax():
+            context['publication_id'] = self.kwargs.get('pk', None)
+            context['share_publication'] = SharedGroupPublicationForm()
         context['group_profile'] = self.publication.board_group
+        context['pubs_shared'] = self.shared_pubs
+        context['pubs_shared_with_me'] = self.pubs_shared_with_me
         return context
 
 
@@ -552,7 +582,7 @@ class ShareGroupPublication(View):
             if not shared:
                 content = form.cleaned_data.get('content', None)
                 pub = Publication.objects.create(
-                    content='<i class="material-icons blue1e88e5">format_quote</i> Ha compartido de <a '
+                    content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a '
                             'href="/profile/%s">@%s</a><br>%s' % (
                                 pub_to_add.author.username, pub_to_add.author.username, content),
                     shared_group_publication=pub_to_add,
