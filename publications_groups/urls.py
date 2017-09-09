@@ -22,4 +22,5 @@ urlpatterns = [
         name='share_group_publication'),
     url(r'^publication/group/delete/share/$', views.RemoveSharedGroupPublication.as_view(),
         name='delete_share_group_publication'),
+
 ]

@@ -45,29 +45,29 @@ $(document).ready(function () {
 
     $(tab_messages).on('click', '.options_comentarios .add-timeline', function () {
         var tag = $(this);
-        $(wrapper_shared_pub).attr('data-id', tag.attr('data-id'));
-        $(wrapper_shared_pub).show();
+        wrapper_shared_pub.find('#id_pk').val($(tag).data('id'));
+        wrapper_shared_pub.show();
     });
 
     /* Compartir a skyline */
     $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
         event.preventDefault();
-        var content = $(wrapper_shared_pub).find('#shared_comment_content').val();
-        var pub_id = $(wrapper_shared_pub).attr('data-id');
+        var content = $(this).serialize();
+        var pub_id = wrapper_shared_pub.find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
         AJAX_add_timeline_gallery(pub_id, tag, content);
     });
 
     /* Cerrar div de compartir publicacion */
     $('#close_share_publication').click(function () {
-        $(wrapper_shared_pub).hide();
+        wrapper_shared_pub.hide();
+        $wrapper_shared_pub.find('#id_pk').val('');
     });
 
     /* Eliminar skyline */
     $(tab_messages).on('click', '.options_comentarios .remove-timeline', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
         var tag = $(this);
-        AJAX_add_timeline_gallery($(caja_publicacion).attr('id').split('-')[1], tag, null);
+        AJAX_remove_timeline_gallery(tag.data('id'), tag);
     });
 
 
@@ -422,13 +422,6 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
 }
 
 function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
-
-    var data = {
-        'publication_id': pub_id,
-        'content': data_pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-
     var shared_tag = tag.find('.share-values');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
@@ -437,35 +430,21 @@ function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
         url: '/publication_p/share/publication/',
         type: 'POST',
         dataType: 'json',
-        data: data,
-        success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                var status = data.status;
-                if (status == 1) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared++;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
+        data: data_pub,
+        success: function (response) {
+            if (response === true) {
+                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                    count_shared++;
+                    if (count_shared > 0) {
+                        $(shared_tag).text(" " + count_shared);
+                    } else {
+                        $(shared_tag).text(" ");
                     }
-                    tag.attr("class", "remove-timeline");
-                    tag.css('color', '#bbdefb');
-                    $('#share-publication-wrapper').hide();
-                } else if (status == 2) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared--;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
-                    }
-                    tag.attr("class", "add-timeline");
-                    tag.css('color', '#555');
                 }
+                $(tag).attr("class", "remove-timeline");
+                $(tag).css('color', '#bbdefb');
+                $('#share-publication-wrapper').hide();
+
             } else {
                 swal({
                     title: "Fail",
@@ -481,6 +460,45 @@ function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
     });
 }
 
+function AJAX_remove_timeline_gallery(pub_id, tag) {
+    var shared_tag = $(tag).find('.share-values');
+    var count_shared = $(shared_tag).text();
+    count_shared = count_shared.replace(/ /g, '');
+
+    $.ajax({
+        url: '/publication_p/delete/share/publication/',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            'pk': pub_id
+        },
+        success: function (data) {
+            var response = data.response;
+            if (response === true) {
+                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                    count_shared--;
+                    if (count_shared > 0) {
+                        $(shared_tag).text(" " + count_shared);
+                    } else {
+                        $(shared_tag).text(" ");
+                    }
+                }
+                $(tag).attr("class", "add-timeline");
+                $(tag).css('color', '#555');
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to add to timeline.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            // console.log(jqXHR.status);
+        }
+    });
+}
 
 /* EDIT PUBLICATION */
 function AJAX_edit_publication_gallery(pub, content) {

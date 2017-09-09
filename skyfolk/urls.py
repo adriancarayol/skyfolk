@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^', include('publications.urls', namespace="publications"), name="publications"),
     url(r'^', include('publications_groups.urls', namespace="publications_groups"),
         name="publications_groups"),
+    # Publicaciones en imagenes de la galeria
+    url(r'^', include('publications_gallery.urls', namespace="publications_gallery"), name="publications_gallery"),
     # url novedades e inicio
     url(r'^', include('latest_news.urls', namespace="latest_news"), name="news"),
     # url mensajes privados
@@ -71,9 +73,9 @@ urlpatterns = [
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+                      url(r'^__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns

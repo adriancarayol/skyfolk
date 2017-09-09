@@ -23,7 +23,7 @@ from el_pagination.views import AjaxListView
 
 from publications.models import Publication
 from publications_gallery.forms import PublicationPhotoForm
-from publications_gallery.forms import SharedPhotoPublicationForm
+from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
 from user_profile.models import NodeProfile
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
@@ -92,8 +92,11 @@ class PhotoListView(AjaxListView):
 
     def get_queryset(self):
         if self.request.user.username == self.username:
-            return Photo.objects.filter(owner__username=self.username).select_related('owner', 'effect').prefetch_related('tags')
-        return Photo.objects.filter(owner__username=self.username, is_public=True).select_related('owner', 'effect').prefetch_related('tags')
+            return Photo.objects.filter(owner__username=self.username).select_related('owner',
+                                                                                      'effect').prefetch_related('tags')
+        return Photo.objects.filter(owner__username=self.username, is_public=True).select_related('owner',
+                                                                                                  'effect').prefetch_related(
+            'tags')
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)
@@ -212,7 +215,7 @@ def crop_image(obj, request):
         im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
         tempfile_io.seek(0)
         image_file = InMemoryUploadedFile(tempfile_io, None, 'rotate.jpeg', 'image/jpeg', tempfile_io.tell(), None)
-        
+
     obj.image = image_file
 
 
@@ -307,9 +310,9 @@ class PhotoDetailView(DetailView):
         super(PhotoDetailView, self).__init__()
 
     def dispatch(self, request, *args, **kwargs):
-        self.photo = self.get_object(Photo.objects.filter(slug=self.kwargs['slug'])\
-                .select_related('owner', 'effect') \
-                .prefetch_related('tags'))
+        self.photo = self.get_object(Photo.objects.filter(slug=self.kwargs['slug']) \
+                                     .select_related('owner', 'effect') \
+                                     .prefetch_related('tags'))
         self.username = self.photo.owner.username
 
         if self.user_pass_test():
@@ -321,30 +324,29 @@ class PhotoDetailView(DetailView):
     @staticmethod
     def get_count_shared(shared_id):
         pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=shared_id, deleted=False) \
-                .values('shared_photo_publication__id')\
-                .order_by('shared_photo_publication__id')\
-                .annotate(total=Count('shared_photo_publication__id'))
-        return {item['shared_photo_publication__id']:item.get('total', 0) for item in pubs_shared}
-
+            .values('shared_photo_publication__id') \
+            .order_by('shared_photo_publication__id') \
+            .annotate(total=Count('shared_photo_publication__id'))
+        return {item['shared_photo_publication__id']: item.get('total', 0) for item in pubs_shared}
 
     def get_publications_shared_with_me(self, shared_id):
         return Publication.objects.filter(shared_photo_publication__id__in=shared_id,
-            author__id=self.request.user.id, deleted=False) \
+                                          author__id=self.request.user.id, deleted=False) \
             .values_list('shared_photo_publication__id', flat=True)
-
 
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
-        paginator = Paginator(PublicationPhoto.objects.filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
-                & Q(board_photo_id=self.photo.id),
-                Q(level__lte=0) & Q(deleted=False)) \
-                        .prefetch_related('publication_photo_extra_content', 'images', 'videos',
-                                'user_give_me_like', 'user_give_me_hate') \
-                                        .select_related('p_author',
-                                                'board_photo', 'parent'), 10)
+        paginator = Paginator(
+            PublicationPhoto.objects.filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                                            & Q(board_photo_id=self.photo.id),
+                                            Q(level__lte=0) & Q(deleted=False)) \
+            .prefetch_related('publication_photo_extra_content', 'images', 'videos',
+                              'user_give_me_like', 'user_give_me_hate') \
+            .select_related('p_author',
+                            'board_photo', 'parent'), 10)
 
         try:
             publications = paginator.page(page)
@@ -352,7 +354,6 @@ class PhotoDetailView(DetailView):
             publications = paginator.page(1)
         except EmptyPage:
             publications = paginator.page(paginator.num_pages)
-
 
         shared_id = publications.object_list.values_list('id', flat=True)
         context['publications'] = publications
@@ -367,7 +368,7 @@ class PhotoDetailView(DetailView):
 
         context['form'] = EditFormPhoto(instance=self.photo)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
-        context['publication_shared'] = SharedPhotoPublicationForm()
+        context['publication_shared'] = SharedPublicationForm()
 
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         if self.photo.is_public:
@@ -482,9 +483,9 @@ class GalleryDateDetailOldView(DeprecatedMonthMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         super(GalleryDateDetailOldView, self).get_redirect_url(*args, **kwargs)
         return reverse('photologue:publications_gallery-detail', kwargs={'year': kwargs['year'],
-                                                            'month': self.month_names[kwargs['month']],
-                                                            'day': kwargs['day'],
-                                                            'slug': kwargs['slug']})
+                                                                         'month': self.month_names[kwargs['month']],
+                                                                         'day': kwargs['day'],
+                                                                         'slug': kwargs['slug']})
 
 
 class GalleryDayArchiveOldView(DeprecatedMonthMixin, RedirectView):
@@ -493,8 +494,9 @@ class GalleryDayArchiveOldView(DeprecatedMonthMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         super(GalleryDayArchiveOldView, self).get_redirect_url(*args, **kwargs)
         return reverse('photologue:publications_gallery-archive-day', kwargs={'year': kwargs['year'],
-                                                                 'month': self.month_names[kwargs['month']],
-                                                                 'day': kwargs['day']})
+                                                                              'month': self.month_names[
+                                                                                  kwargs['month']],
+                                                                              'day': kwargs['day']})
 
 
 class GalleryMonthArchiveOldView(DeprecatedMonthMixin, RedirectView):
@@ -503,7 +505,8 @@ class GalleryMonthArchiveOldView(DeprecatedMonthMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         super(GalleryMonthArchiveOldView, self).get_redirect_url(*args, **kwargs)
         return reverse('photologue:publications_gallery-archive-month', kwargs={'year': kwargs['year'],
-                                                                   'month': self.month_names[kwargs['month']]})
+                                                                                'month': self.month_names[
+                                                                                    kwargs['month']]})
 
 
 class PhotoDateDetailOldView(DeprecatedMonthMixin, RedirectView):

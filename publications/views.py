@@ -20,6 +20,8 @@ from django.db.models import Count, Q
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.middleware import csrf
 from django.shortcuts import get_object_or_404, render, redirect, Http404
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic.edit import CreateView
 from mptt.templatetags.mptt_tags import cache_tree_children
 
@@ -668,11 +670,11 @@ def share_publication(request):
     status = 0
     print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
     if request.POST:
-        obj_pub = request.POST.get('publication_id', None)
         user = request.user
         form = SharedPublicationForm(request.POST or None)
-
+        print(request.POST)
         if form.is_valid():
+            obj_pub = form.cleaned_data['pk']
             try:
                 pub_to_add = Publication.objects.get(pk=obj_pub)
             except ObjectDoesNotExist:
@@ -694,55 +696,55 @@ def share_publication(request):
                                                 deleted=False).exists()
 
             if not shared:
-                content = request.POST.get('content', None)
+                pub_content = form.cleaned_data['content']
 
-                if content:
-
-                    is_correct_content = False
-                    pub_content = parse_string(content)  # Comprobamos que el comentario sea correcto
-                    soup = BeautifulSoup(pub_content)  # Buscamos si entre los tags hay contenido
-                    for tag in soup.find_all(recursive=True):
-                        if tag.text and not tag.text.isspace():
-                            is_correct_content = True
-                            break
-
-                    if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-                        logger.info('Publicacion contiene espacios o no tiene texto')
-                        raise IntegrityError('El comentario esta vacio')
-
-                    if pub_content.isspace():  # Comprobamos si el comentario esta vacio
-                        raise IntegrityError('El comentario esta vacio')
-
-                    pub = Publication.objects.create(
-                        content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
-                            pub_to_add.author.username, pub_to_add.author.username, pub_content),
-                        shared_publication_id=pub_to_add.id,
-                        author=user,
-                        board_owner=user, event_type=6)
-                else:
-                    pub = Publication.objects.create(
-                        content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
-                            pub_to_add.author.username, pub_to_add.author.username),
-                        shared_publication_id=pub_to_add.id,
-                        author=user,
-                        board_owner=user, event_type=6)
+                pub = Publication.objects.create(
+                    content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a '
+                            'href="/profile/%s">@%s</a><br>%s' % (
+                                pub_to_add.author.username, pub_to_add.author.username, pub_content),
+                    shared_publication_id=pub_to_add.id,
+                    author=user,
+                    board_owner=user, event_type=6)
 
                 pub.send_notification(request)
                 response = True
-                status = 1  # Representa la comparticion de la publicacion
                 logger.info('Compartido el comentario %d' % (pub_to_add.id))
-                return HttpResponse(json.dumps({'response': response, 'status': status}),
-                                    content_type='application/json')
 
-            if shared:
-                Publication.objects.filter(shared_publication_id=pub_to_add.id, author_id=user.id).delete()
-                response = True
-                status = 2  # Representa la eliminacion de la comparticion
-                logger.info('Compartido el comentario %d' % (pub_to_add.id))
-                return HttpResponse(json.dumps({'response': response, 'status': status}),
-                                    content_type='application/json')
+        return HttpResponse(json.dumps(response), content_type='application/json')
 
-    return HttpResponse(json.dumps(response), content_type='application/json')
+
+class RemoveSharedPublication(View):
+    model = Publication
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(RemoveSharedPublication, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        pk = request.POST.get('pk', None)
+        user = request.user
+
+        try:
+            pub_to_delete = Publication.objects.get(shared_publication_id=pk, author_id=user.id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        id_to_delete = pub_to_delete.id
+
+        try:
+            pub_to_delete.delete()
+        except IntegrityError:
+            data = {
+                'response': False
+            }
+            return JsonResponse(data)
+
+        data = {
+            'response': True,
+            'id_to_delete': id_to_delete
+        }
+
+        return JsonResponse(data)
 
 
 def publication_filter_by_time(request):

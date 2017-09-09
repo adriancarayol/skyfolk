@@ -42,8 +42,7 @@ Template para el perfil de cada usuario
     Formulario para citar un comentario
     {% endcomment %}
             <div class="row">
-                <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper"
-                     data-id="">
+                <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper">
                     <div class="row">
                         <div class="col s12 title-page-wrapper">
                             <h4><i class="material-icons">format_quote</i> Citar publicacion</h4>
@@ -51,6 +50,7 @@ Template para el perfil de cada usuario
                         </div>
                     </div>
                     <form id="share_publication_form" action="" method="post">{% csrf_token %}
+                        {{ publication_shared.pk }}
                         <div class="row">
                             <div class="row">
                                 <div class="input-field col s12">
@@ -177,34 +177,12 @@ Template para el perfil de cada usuario
                     $('#tab-container')
                         .bind('easytabs:after', function (evt, tab, panel, data) {
                             if (tab[0].text.toLowerCase() === 'seguidos') {
-                                infinite.destroy();
-                                infinite = new Waypoint.Infinite({
-                                    element: $('#list-following'),
-                                    offset: 'bottom-in-view',
-                                    onBeforePageLoad: function () {
-                                        $('.loading_skyline').show();
-                                    },
-                                    onAfterPageLoad: function () {
-                                        $('.loading_skyline').hide();
-                                    }
-                                });
                                 $.get("?pagefollowing=1&qs=following", function (data, status) {
                                     $('#load_following').show();
                                     $('#list-following').replaceWith(data);
                                     $('#load_following').hide();
                                 });
                             } else if (tab[0].text.toLowerCase() === 'skyline') {
-                                infinite.destroy();
-                                infinite = new Waypoint.Infinite({
-                                    element: $('#list-publications'),
-                                    offset: 'bottom-in-view',
-                                    onBeforePageLoad: function () {
-                                        $('.loading_skyline').show();
-                                    },
-                                    onAfterPageLoad: function () {
-                                        $('.loading_skyline').hide();
-                                    }
-                                });
                             }
                         });
                 </script>

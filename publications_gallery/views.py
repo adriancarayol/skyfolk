@@ -10,6 +10,8 @@ from django.db.models import Count
 from django.db.models import Q
 from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
@@ -19,7 +21,7 @@ from publications.models import Publication
 from publications.utils import parse_string
 from publications.views import logger
 from publications_gallery.forms import PublicationPhotoForm
-from publications_gallery.forms import SharedPhotoPublicationForm
+from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -172,7 +174,8 @@ def publication_detail(request, publication_id):
     except Exception as e:
         logger.info('No se pudo obtener las publicaciones compartidas para la publicacion: {}'.format(request_pub))
         pubs_shared = None
-        pubs_shared_with_me = None
+        pubs_shared_with_me = []
+        shared_pubs = {}
 
     context = {
         'publication': publication,
@@ -180,7 +183,7 @@ def publication_detail(request, publication_id):
         'pubs_shared': shared_pubs,
         'pubs_shared_with_me': pubs_shared_with_me,
         'photo': request_pub.board_photo,
-        'publication_shared': SharedPhotoPublicationForm()
+        'publication_shared': SharedPublicationForm()
     }
 
     return render(request, "photologue/publication_detail.html", context)
@@ -427,14 +430,13 @@ def share_publication(request):
     y se comparte en el tuyo
     """
     response = False
-    status = 0
     print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
     if request.POST:
-        obj_pub = request.POST.get('publication_id', None)
         user = request.user
-        form = SharedPhotoPublicationForm(request.POST or None)
+        form = SharedPublicationForm(request.POST or None)
 
         if form.is_valid():
+            obj_pub = form.cleaned_data['pk']
             try:
                 pub_to_add = PublicationPhoto.objects.get(pk=obj_pub)
 
@@ -457,55 +459,41 @@ def share_publication(request):
                                                 deleted=False).exists()
 
             if not shared:
-                content = request.POST.get('content', None)
+                pub_content = form.cleaned_data['content']
 
-                if content:
-
-                    is_correct_content = False
-                    pub_content = parse_string(content)  # Comprobamos que el comentario sea correcto
-                    soup = BeautifulSoup(pub_content)  # Buscamos si entre los tags hay contenido
-                    for tag in soup.find_all(recursive=True):
-                        if tag.text and not tag.text.isspace():
-                            is_correct_content = True
-                            break
-
-                    if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-                        logger.info('Publicacion contiene espacios o no tiene texto')
-                        raise IntegrityError('El comentario esta vacio')
-
-                    if pub_content.isspace():  # Comprobamos si el comentario esta vacio
-                        raise IntegrityError('El comentario esta vacio')
-
-                    pub = Publication.objects.create(
-                        content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
-                            pub_to_add.p_author.username, pub_to_add.p_author.username, pub_content),
-                        shared_photo_publication_id=pub_to_add.id,
-                        author=user,
-                        board_owner=user, event_type=7)
-                else:
-                    pub = Publication.objects.create(
-                        content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
-                            pub_to_add.p_author.username, pub_to_add.p_author.username),
-                        shared_photo_publication_id=pub_to_add.id,
-                        author=user,
-                        board_owner=user, event_type=7)
+                pub = Publication.objects.create(
+                    content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a '
+                            'href="/profile/%s">@%s</a><br>%s' % (
+                                pub_to_add.p_author.username, pub_to_add.p_author.username, pub_content),
+                    shared_photo_publication_id=pub_to_add.id,
+                    author=user,
+                    board_owner=user, event_type=7)
 
                 pub.send_notification(request)
                 response = True
-                status = 1  # Representa la comparticion de la publicacion
                 logger.info('Compartido el comentario %d' % (pub_to_add.id))
-                return HttpResponse(json.dumps({'response': response, 'status': status}),
-                                    content_type='application/json')
 
-            if shared:
-                Publication.objects.filter(shared_photo_publication_id=pub_to_add.id, author_id=user.id).delete()
-                response = True
-                status = 2  # Representa la eliminacion de la comparticion
-                logger.info('Eliminando el comentario %d' % (pub_to_add.id))
-                return HttpResponse(json.dumps({'response': response, 'status': status}),
-                                    content_type='application/json')
+            return HttpResponse(json.dumps(response), content_type='application/json')
 
-    return HttpResponse(json.dumps(response), content_type='application/json')
+
+class RemoveSharedPhotoPublication(View):
+    model = Publication
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(RemoveSharedPhotoPublication, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        pk = request.POST.get('pk', None)
+        user = request.user
+        try:
+            Publication.objects.filter(shared_photo_publication_id=pk, author_id=user.id).delete()
+        except ObjectDoesNotExist:
+            raise Http404
+        data = {
+            'response': True,
+        }
+        return JsonResponse(data)
 
 
 @transaction.atomic

@@ -177,6 +177,7 @@ $(function () {
     /* Cerrar div de compartir publicacion */
     $('#close_share_publication').click(function () {
         $wrapper_shared_pub.hide();
+        $wrapper_shared_pub.find('#id_pk').val('');
     });
 
     /* Eliminar skyline */
@@ -441,11 +442,11 @@ function AJAX_delete_group_publication(id, board_group) {
                 $('#pub-' + id).fadeToggle("fast", function () {
                     $(this).remove();
                 });
-                /*
+
                 if (data.shared_pub_id) {
                     var shared_btn = $('#share-' + data.shared_pub_id);
-                    var shared_btn_child = shared_btn.children();
-                    var countShares = shared_btn_child.text();
+                    var shared_btn_child = shared_btn.find('.share-values');
+                    var countShares = $(shared_btn_child).text();
                     if (!countShares || (Math.floor(countShares) == countShares && $.isNumeric(countShares))) {
                         countShares--;
                         countShares > 0 ? shared_btn_child(countShares) : shared_btn_child.text('');
@@ -453,7 +454,7 @@ function AJAX_delete_group_publication(id, board_group) {
                     shared_btn.attr('class', 'add-timeline');
                     shared_btn.css('color', '#555');
                 }
-                */
+
             } else {
                 swal({
                     title: "Fail",
@@ -657,7 +658,7 @@ function AJAX_load_descendants_group(pub, loader, page, btn) {
         url: page,
         type: 'GET',
         dataType: 'json',
-        beforeSend: function() {
+        beforeSend: function () {
             $(loader).fadeIn();
             loadDescendantsRunning = true;
         },
@@ -700,31 +701,18 @@ function AJAX_add_publication_to_skyline(pub_id, tag, data_pub) {
         success: function (data) {
             var response = data.response;
             if (response === true) {
-                var status = data.status;
-                if (status === 1) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared++;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
+                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                    count_shared++;
+                    if (count_shared > 0) {
+                        $(shared_tag).text(" " + count_shared)
+                    } else {
+                        $(shared_tag).text(" ");
                     }
-                    $(tag).attr("class", "remove-timeline");
-                    $(tag).css('color', '#bbdefb');
-                    $('#share-publication-wrapper').hide();
-                } else if (status === 2) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared--;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
-                    }
-                    $(tag).attr("class", "add-timeline");
-                    $(tag).css('color', '#555');
                 }
+                $(tag).attr("class", "remove-timeline");
+                $(tag).css('color', '#bbdefb');
+                $('#share-publication-wrapper').hide();
+
             } else {
                 swal({
                     title: "Fail",
@@ -756,31 +744,16 @@ function AJAX_remove_publication_from_skyline(pub_id, tag) {
         success: function (data) {
             var response = data.response;
             if (response === true) {
-                var status = data.status;
-                if (status === 1) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared++;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
+                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                    count_shared--;
+                    if (count_shared > 0) {
+                        $(shared_tag).text(" " + count_shared)
+                    } else {
+                        $(shared_tag).text(" ");
                     }
-                    $(tag).attr("class", "remove-timeline");
-                    $(tag).css('color', '#bbdefb');
-                    $('#share-publication-wrapper').hide();
-                } else if (status === 2) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared--;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
-                    }
-                    $(tag).attr("class", "add-timeline");
-                    $(tag).css('color', '#555');
                 }
+                $(tag).attr("class", "add-timeline");
+                $(tag).css('color', '#555');
             } else {
                 swal({
                     title: "Fail",

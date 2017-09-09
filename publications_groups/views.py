@@ -16,7 +16,8 @@ from emoji.models import Emoji
 from publications.exceptions import EmptyContent
 from publications.models import Publication
 from publications.views import logger
-from publications_groups.forms import PublicationGroupForm, SharedGroupPublicationForm
+from publications_groups.forms import PublicationGroupForm
+from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups, NodeGroup
 from user_profile.models import NodeProfile
@@ -451,7 +452,7 @@ class PublicationGroupDetail(ListView):
         context = super(PublicationGroupDetail, self).get_context_data(**kwargs)
         if not self.request.is_ajax():
             context['publication_id'] = self.kwargs.get('pk', None)
-            context['share_publication'] = SharedGroupPublicationForm()
+            context['share_publication'] = SharedPublicationForm()
         context['group_profile'] = self.publication.board_group
         context['pubs_shared'] = self.shared_pubs
         context['pubs_shared_with_me'] = self.pubs_shared_with_me
@@ -555,9 +556,10 @@ xstr = lambda s: s or ""
 
 class ShareGroupPublication(View):
     def post(self, request, *args, **kwargs):
-        form = SharedGroupPublicationForm(request.POST or None)
+        form = SharedPublicationForm(request.POST or None)
 
         if form.is_valid():
+            data = {}
             user = request.user
             pub_id = form.cleaned_data['pk']
             try:
@@ -581,24 +583,18 @@ class ShareGroupPublication(View):
 
             if not shared:
                 content = form.cleaned_data.get('content', None)
-                pub = Publication.objects.create(
-                    content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a '
-                            'href="/profile/%s">@%s</a><br>%s' % (
-                                pub_to_add.author.username, pub_to_add.author.username, content),
-                    shared_group_publication=pub_to_add,
-                    author=user,
-                    board_owner=user, event_type=6)
-                pub.send_notification(request)
-                data = {
-                    'response': True,
-                    'status': 1,
-                }
-            else:
-                Publication.objects.filter(shared_group_publication=pub_to_add, author_id=user.id).delete()
-                data = {
-                    'response': True,
-                    'status': 2,
-                }
+                try:
+                    pub = Publication.objects.create(
+                        content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a '
+                                'href="/profile/%s">@%s</a><br>%s' % (
+                                    pub_to_add.author.username, pub_to_add.author.username, content),
+                        shared_group_publication=pub_to_add,
+                        author=user,
+                        board_owner=user, event_type=6)
+                    pub.send_notification(request)
+                    data['response'] = True
+                except IntegrityError:
+                    pass
 
             return JsonResponse(data)
 
@@ -619,6 +615,5 @@ class RemoveSharedGroupPublication(View):
             raise Http404
         data = {
             'response': True,
-            'status': 2,
         }
         return JsonResponse(data)

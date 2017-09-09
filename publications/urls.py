@@ -21,9 +21,8 @@ urlpatterns = [
         name='publication_load_more'),
     url(r'^publication/share/publication/', publications_views.share_publication,
         name='publication_share_pub'),
-
-    # Publicaciones en imagenes de la galeria
-    url(r'^', include('publications_gallery.urls')),
+    url(r'^publication/delete/share/publication/', publications_views.RemoveSharedPublication.as_view(),
+        name='publication_delete_share_pub'),
 
     # Filtros para skyline
     url(r'^publications/filter/time/$', publications_views.publication_filter_by_time,

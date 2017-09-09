@@ -26,8 +26,7 @@
             Formulario para citar un comentario
         {% endcomment %}
         <div class="row">
-            <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper"
-                 data-id="" hidden>
+            <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper" style="display: none;">
                 <div class="row">
                     <div class="col s12 title-page-wrapper">
                         <h4><i class="material-icons" aria-hidden="true">format_quote</i> Citar publicacion</h4>
@@ -35,6 +34,7 @@
                     </div>
                 </div>
                 <form id="share_publication_form" action="" method="post">{% csrf_token %}
+                    {{ publication_shared.pk }}
                     <div class="row">
                         <div class="row">
                             <div class="input-field col s12">
@@ -219,7 +219,7 @@
                                                 </div>
                                                 <div class="card-action">
                                                     <a class="blue-text text-darken-2"
-                                                       href="/publication/{{ node.shared_publication.publication.pk }}">Ver</a>
+                                                       href="{% url "publications_gallery:publication_photo_detail" publication_id=node.shared_photo_publication.pk %}">Ver</a>
                                                 </div>
                                             </div>
                                         {% endif %}

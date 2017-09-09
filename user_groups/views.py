@@ -27,7 +27,8 @@ from rest_framework.views import APIView
 from notifications.models import Notification
 from notifications.signals import notify
 from publications.models import Publication
-from publications_groups.forms import PublicationGroupForm, SharedGroupPublicationForm
+from publications_groups.forms import PublicationGroupForm
+from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
 from user_profile.models import NodeProfile, TagProfile
 from user_profile.tasks import send_email
@@ -224,7 +225,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'interests': node_group.interest.match(),
                'pubs_shared_with_me': pubs_shared_with_me,
                'pubs_shared': shared_pubs,
-               'share_publication': SharedGroupPublicationForm(),
+               'share_publication': SharedPublicationForm(),
                'user_list': user_list}
 
     return render(request, template, context)
