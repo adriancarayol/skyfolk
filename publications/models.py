@@ -203,7 +203,7 @@ class PublicationBase(MPTTModel):
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
         """
-        self.content = bleach.clean(self.content, tags=[])
+        self.content = bleach.clean(self.content, tags=['a'])
         self.parse_extra_content()
 
         """
@@ -252,7 +252,8 @@ class Publication(PublicationBase):
         (4, _("relevant")),
         (5, _("image")),
         (6, _("shared")),
-        (7, _("shared_photo_pub"))
+        (7, _("shared_photo_pub")),
+        (8, _("shared_group_pub")),
     )
     # TODO: Eliminar null=True de author...
     author = models.ForeignKey(User, null=True)

@@ -117,7 +117,7 @@ def notify_mentions(instance):
         notify.send(instance.author, actor=instance.author.username,
                     recipient=recipientprofile,
                     verb=u'¡te ha mencionado!',
-                    description='<a href="%s">Ver</a>' % ('/publication/' + str(instance.id)))
+                    description='<a href="%s">Ver</a>' % ('/publication/group/detail/' + str(instance.id)))
 
 
 def increase_affinity(instance):

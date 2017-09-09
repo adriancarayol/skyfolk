@@ -86,8 +86,8 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise EmptyContent('¡Comprueba el texto del comentario!')
 
-                publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
+                publication.parse_mentions()  # add mentions
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
@@ -582,19 +582,25 @@ class ShareGroupPublication(View):
                                                 deleted=False).exists()
 
             if not shared:
-                content = form.cleaned_data.get('content', None)
+                pub = form.save(commit=False)
+                pub.parse_content()  # parse publication content
+                pub.add_hashtag()
+                pub.parse_mentions()  # add mentions
+                pub.content = Emoji.replace(pub.content)
+                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
+                              'href="/profile/%s">@%s</a><br>%s' % (
+                                  pub_to_add.author.username, pub_to_add.author.username, xstr(pub.content))
+                pub.shared_group_publication_id = pub_to_add.id
+                pub.author = user
+                pub.board_owner = user
+                pub.event_type = 8
                 try:
-                    pub = Publication.objects.create(
-                        content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a '
-                                'href="/profile/%s">@%s</a><br>%s' % (
-                                    pub_to_add.author.username, pub_to_add.author.username, content),
-                        shared_group_publication=pub_to_add,
-                        author=user,
-                        board_owner=user, event_type=6)
-                    pub.send_notification(request)
+                    with transaction.atomic(using="default"):
+                        pub.save()
+                        transaction.on_commit(lambda: pub.send_notification(request))
                     data['response'] = True
-                except IntegrityError:
-                    pass
+                except IntegrityError as e:
+                    logger.info(e)
 
             return JsonResponse(data)
 
@@ -610,7 +616,8 @@ class RemoveSharedGroupPublication(View):
         pk = request.POST.get('pk', None)
         user = request.user
         try:
-            Publication.objects.filter(shared_group_publication_id=pk, author_id=user.id).delete()
+            Publication.objects.filter(shared_group_publication_id=pk, author_id=user.id, deleted=False).update(
+                deleted=True)
         except ObjectDoesNotExist:
             raise Http404
         data = {

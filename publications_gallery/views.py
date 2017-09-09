@@ -84,9 +84,9 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise EmptyContent('¡Comprueba el texto del comentario!')
 
-                publication.add_hashtag()  # add hashtags
-                publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
+                publication.parse_mentions()  # add mentions
+                publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
                 media = request.FILES.getlist('image')
@@ -459,19 +459,26 @@ def share_publication(request):
                                                 deleted=False).exists()
 
             if not shared:
-                pub_content = form.cleaned_data['content']
-
-                pub = Publication.objects.create(
-                    content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a '
-                            'href="/profile/%s">@%s</a><br>%s' % (
-                                pub_to_add.p_author.username, pub_to_add.p_author.username, pub_content),
-                    shared_photo_publication_id=pub_to_add.id,
-                    author=user,
-                    board_owner=user, event_type=7)
-
-                pub.send_notification(request)
-                response = True
-                logger.info('Compartido el comentario %d' % (pub_to_add.id))
+                pub = form.save(commit=False)
+                pub.parse_content()  # parse publication content
+                pub.add_hashtag()
+                pub.parse_mentions()  # add mentions
+                pub.content = Emoji.replace(pub.content)
+                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
+                              'href="/profile/%s">@%s</a><br>%s' % (
+                                  pub_to_add.p_author.username, pub_to_add.p_author.username, pub.content)
+                pub.shared_photo_publication_id = pub_to_add.id
+                pub.author = user
+                pub.board_owner = user
+                pub.event_type = 7
+                try:
+                    with transaction.atomic(using="default"):
+                        pub.save()
+                        transaction.on_commit(lambda: pub.send_notification(request))
+                    response = True
+                except IntegrityError as e:
+                    logger.info(e)
+                logger.info('Compartido el comentario %d' % pub_to_add.id)
 
             return HttpResponse(json.dumps(response), content_type='application/json')
 
@@ -487,7 +494,8 @@ class RemoveSharedPhotoPublication(View):
         pk = request.POST.get('pk', None)
         user = request.user
         try:
-            Publication.objects.filter(shared_photo_publication_id=pk, author_id=user.id).delete()
+            Publication.objects.filter(shared_photo_publication_id=pk, author_id=user.id, deleted=False).update(
+                deleted=True)
         except ObjectDoesNotExist:
             raise Http404
         data = {

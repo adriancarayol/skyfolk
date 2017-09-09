@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from django import forms
 
-from emoji import Emoji
 from publications.models import Publication
 from publications.utils import parse_string
 
@@ -108,5 +107,4 @@ class SharedPublicationForm(forms.ModelForm):
         if pub_content.isspace():  # Comprobamos si el comentario esta vacio
             raise forms.ValidationError('El comentario esta vacio')
 
-        content = Emoji.replace(pub_content)
         return content

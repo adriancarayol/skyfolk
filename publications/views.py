@@ -172,8 +172,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 if publication.content.isspace():  # Comprobamos si el comentario esta vacio
                     raise EmptyContent('¡Comprueba el texto del comentario!')
 
-                publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
+                publication.parse_mentions()  # add mentions
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
@@ -568,12 +568,13 @@ def edit_publication(request):
             raise IntegrityError('El comentario esta vacio')
 
         try:
-            publication.add_hashtag()  # add hashtags
             publication.parse_content()  # parse publication content
+            publication.add_hashtag()  # add hashtags
             publication.parse_mentions()
             publication.content = Emoji.replace(content)
-            publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
-            publication.send_notification(request, is_edited=True)
+            with transaction.atomic(using="default"):
+                publication.save()  # Guardamos la publicacion si no hay errores
+                transaction.on_commit(lambda: publication.send_notification(request, is_edited=True))
             return JsonResponse({'data': True})
         except IntegrityError:
             return JsonResponse({'data': False})
@@ -696,21 +697,30 @@ def share_publication(request):
                                                 deleted=False).exists()
 
             if not shared:
-                pub_content = form.cleaned_data['content']
+                pub = form.save(commit=False)
+                pub.parse_content()  # parse publication content
+                pub.add_hashtag()
+                pub.parse_mentions()  # add mentions
+                pub.content = Emoji.replace(pub.content)
 
-                pub = Publication.objects.create(
-                    content='<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a '
-                            'href="/profile/%s">@%s</a><br>%s' % (
-                                pub_to_add.author.username, pub_to_add.author.username, pub_content),
-                    shared_publication_id=pub_to_add.id,
-                    author=user,
-                    board_owner=user, event_type=6)
+                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
+                              'href="/profile/%s">@%s</a><br>%s' % (
+                                  pub_to_add.author.username, pub_to_add.author.username, pub.content)
 
-                pub.send_notification(request)
-                response = True
-                logger.info('Compartido el comentario %d' % (pub_to_add.id))
+                pub.shared_publication_id = pub_to_add.id
+                pub.author = user
+                pub.board_owner = user
+                pub.event_type = 6
+                try:
+                    with transaction.atomic(using="default"):
+                        pub.save()
+                        transaction.on_commit(lambda: pub.send_notification(request))
+                    response = True
+                except IntegrityError as e:
+                    logger.info(e)
+                logger.info('Compartido el comentario %d' % pub_to_add.id)
 
-        return HttpResponse(json.dumps(response), content_type='application/json')
+    return HttpResponse(json.dumps(response), content_type='application/json')
 
 
 class RemoveSharedPublication(View):
@@ -725,14 +735,15 @@ class RemoveSharedPublication(View):
         user = request.user
 
         try:
-            pub_to_delete = Publication.objects.get(shared_publication_id=pk, author_id=user.id)
+            pub_to_delete = Publication.objects.get(shared_publication_id=pk, author_id=user.id, deleted=False)
         except ObjectDoesNotExist:
             raise Http404
 
         id_to_delete = pub_to_delete.id
 
         try:
-            pub_to_delete.delete()
+            pub_to_delete.deleted = True
+            pub_to_delete.save(update_fields=['deleted'])
         except IntegrityError:
             data = {
                 'response': False
