@@ -371,6 +371,7 @@ class EditGroupPublication(UpdateView):
             publication.add_hashtag()
             publication.parse_mentions()
             publication.content = Emoji.replace(publication.content)
+            publication._edited = True
             with transaction.atomic(using="default"):
                 publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
                 transaction.on_commit(lambda: publication.send_notification(self.request, is_edited=True))

@@ -37,12 +37,12 @@ def upload_video_group_publication(instance, filename):
 
 
 class PublicationGroupVideo(models.Model):
-    publication = models.ForeignKey('PublicationGroup', related_name='videos')
+    publication = models.ForeignKey('PublicationGroup', related_name='videos', on_delete=models.CASCADE)
     video = models.FileField(upload_to=upload_video_group_publication, validators=[validate_video])
 
 
 class PublicationGroupImage(models.Model):
-    publication = models.ForeignKey('PublicationGroup', related_name='images')
+    publication = models.ForeignKey('PublicationGroup', related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=upload_image_group_publication)
 
 
@@ -56,7 +56,7 @@ class ExtraGroupContent(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('PublicationGroup', related_name='group_extra_content')
+    publication = models.OneToOneField('PublicationGroup', related_name='group_extra_content', on_delete=models.CASCADE)
 
 
 class PublicationGroup(PublicationBase):

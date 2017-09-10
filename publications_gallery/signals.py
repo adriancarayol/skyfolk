@@ -18,6 +18,11 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=PublicationPhoto, dispatch_uid='photo_publication_save')
 def photo_publication_handler(sender, instance, created, **kwargs):
+    is_edited = getattr(instance, '_edited', False)
+
+    if not created and not is_edited:
+        return
+
     if not instance.deleted:
         logger.info('New comment by: {} with content: {}'.format(instance.p_author, instance.content))
         # Parse extra content
@@ -52,20 +57,24 @@ def add_hashtags(instance):
         instance.tags.add(tag)
 
 
+xstr = lambda s: s or ""
+
+
 def add_extra_content(instance):
     link_url = re.findall(
         r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
         instance.content)
 
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
-    if not link_url and len(link_url) <= 0 and instance.has_extra_content():
+    if (not link_url or len(link_url) <= 0) and instance.has_extra_content():
         instance.publication_photo_extra_content.delete()  # Borramos el extra content de esta
-        return
+        instance.publication_photo_extra_content = None
     elif link_url and len(link_url) > 0:  # Eliminamos contenido extra para añadir el nuevo
         if instance.has_extra_content():
             publication_photo_extra_content = instance.publication_photo_extra_content
             if publication_photo_extra_content.url != link_url[-1]:
                 publication_photo_extra_content.delete()
+                instance.publication_photo_extra_content = None
 
     try:
         backend = detect_backend(link_url[-1])  # youtube o soundcloud
@@ -73,7 +82,7 @@ def add_extra_content(instance):
         backend = None
 
     if link_url and len(link_url) > 0 and backend:
-        ExtraContentPubPhoto.objects.get_or_create(publication=instance, video=link_url[-1])
+        ExtraContentPubPhoto.objects.create(publication=instance, video=link_url[-1])
 
     elif link_url and len(link_url) > 0:
         url = link_url[-1]  # Get last url
@@ -87,15 +96,16 @@ def add_extra_content(instance):
         image = soup.find('meta', attrs={'name': 'og:image'}) or soup.find('meta', attrs={
             'property': 'og:image'}) or soup.find('meta', attrs={'name': 'image'})
 
-        extra_c, created = ExtraContentPubPhoto.objects.get_or_create(url=url, publication=instance)
-
         if description:
-            extra_c.description = description.get('content', None)[:265]
+            description = description.get('content', None)[:265]
         if title:
-            extra_c.title = title.get('content', None)[:63]
+            title = title.get('content', None)[:63]
         if image:
-            extra_c.image = image.get('content', None)
-        extra_c.save()
+            image = image.get('content', None)
+
+        ExtraContentPubPhoto.objects.create(url=url, publication=instance, description=xstr(description),
+                                            title=xstr(title),
+                                            image=xstr(image))
 
 
 def decrease_affinity(instance):

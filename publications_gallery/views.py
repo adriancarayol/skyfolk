@@ -531,6 +531,7 @@ def edit_publication(request):
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()
                 publication.content = Emoji.replace(publication.content)
+                publication._edited = True
                 with transaction.atomic(using="default"):
                     publication.save()  # Guardamos la publicacion si no hay errores
                     transaction.on_commit(lambda: publication.send_notification(request, is_edited=True))

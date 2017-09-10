@@ -6,4 +6,4 @@ class PublicationAppConfig(AppConfig):
 
     def ready(self):
         super(PublicationAppConfig, self).ready()
-        from publications import signals
+        import publications.signals

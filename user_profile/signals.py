@@ -35,7 +35,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                  board_owner_id=recipient.id,
                                                  content='<i class="material-icons blue1e88e5 left">person_add</i> '
                                                          '¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, '
-                                                         '<a href="/profile/%s">%s</a>!' % (
+                                                         '<a href="/profile/%s">@%s</a>!' % (
                                                      recipient.username,
                                                      recipient.username,
                                                      emitter.username,
@@ -46,7 +46,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                  board_owner_id=emitter.id,
                                                  content='<i class="material-icons blue1e88e5 left">person_add</i> '
                                                          '¡<a href="/profile/%s">%s</a> ahora sigue a <a '
-                                                         'href="/profile/%s">%s</a>!' % (
+                                                         'href="/profile/%s">@%s</a>!' % (
                                                      emitter.username,
                                                      emitter.username,
                                                      recipient.username,

@@ -23,9 +23,6 @@ UTILS_N.conn_socket();
             <div class="circle">
                 {% avatar notification.actor %}
             </div>
-            {% if notification.level != "new_follow" %}
-            De: <a class="title" href="/profile/{{ notification.actor }}">{{ notification.actor }}</a>
-            {% endif %}
             <span class="title">{{ notification.verb|safe }} {% if notification.description %}
                 {{ notification.description|safe }} {% endif %}</span>
             <p><i>{{ notification.timestamp|naturaltime }}</i></p>

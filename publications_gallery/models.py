@@ -34,7 +34,8 @@ class ExtraContentPubPhoto(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('PublicationPhoto', related_name='publication_photo_extra_content')
+    publication = models.OneToOneField('PublicationPhoto', related_name='publication_photo_extra_content',
+                                       on_delete=models.CASCADE)
 
 
 def upload_image_photo_publication(instance, filename):
@@ -60,12 +61,12 @@ def upload_video_photo_publication(instance, filename):
 
 
 class PublicationPhotoVideo(models.Model):
-    publication = models.ForeignKey('PublicationPhoto', related_name='videos')
+    publication = models.ForeignKey('PublicationPhoto', related_name='videos', on_delete=models.CASCADE)
     video = models.FileField(upload_to=upload_video_photo_publication, validators=[validate_video])
 
 
 class PublicationPhotoImage(models.Model):
-    publication = models.ForeignKey('PublicationPhoto', related_name='images')
+    publication = models.ForeignKey('PublicationPhoto', related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=upload_image_photo_publication)
 
 

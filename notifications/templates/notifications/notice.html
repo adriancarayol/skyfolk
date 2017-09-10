@@ -1,18 +1,21 @@
 {% load humanize %}
 <div class="alert alert-block alert-{{ notice.level }}">
-    <a title="Borrar notificación" class="close pull-right" href="{% url 'notifications:delete' notice.slug %}">
-        <i class="material-icons md-18">delete_forever</i>
-    </a>
-    <a title="Marcar como no leido" class="close pull-right"
-       href="{% url 'notifications:mark_as_unread' notice.slug %}">
-        <i class="material-icons md-18">undo</i>
-    </a>
-    <a title="Marcar como leido" class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
-        <i class="material-icons md-18">done</i>
-    </a>
+    <div class="row right">
+        <a title="Borrar notificación" class="close pull-right" href="{% url 'notifications:delete' notice.slug %}">
+            <i class="material-icons md-18">delete_forever</i>
+        </a>
+        <a title="Marcar como no leido" class="close pull-right"
+           href="{% url 'notifications:mark_as_unread' notice.slug %}">
+            <i class="material-icons md-18">undo</i>
+        </a>
+        <a title="Marcar como leido" class="close pull-right" href="{% url 'notifications:mark_as_read' notice.slug %}">
+            <i class="material-icons md-18">done</i>
+        </a>
+    </div>
     <h5>
         {% if notice.unread %}<i class="material-icons" title="Sin leer">notifications</i>{% endif %}
-        {% if not notice.level == "new_follow" %}<a href="/profile/{{ notice.actor }}">@{{ notice.actor }}</a>{% endif %}
+        {% if not notice.level == "new_follow" %}
+            <a href="/profile/{{ notice.actor }}">@{{ notice.actor }}</a>{% endif %}
         <b>{{ notice.verb|safe }}</b>
         {% if notice.target %}
             of {{ notice.target }}
@@ -33,19 +36,19 @@
                     class="rejected-response">Aceptar
             </button>
         </div>
-        {% elif notice.level == "grouprequest" %}
-            <div class="notification-buttons">
-                <button data-notification="{{ notice.slug }}"
+    {% elif notice.level == "grouprequest" %}
+        <div class="notification-buttons">
+            <button data-notification="{{ notice.slug }}"
                     class="accept-response waves-effect waves-light btn white-text green"
                     onclick="AJAX_respondGroupRequest({{ notice.action_object_object_id }}, 'accept', {{ notice.id }})">
-                    <i class="material-icons">done</i>
-                </button>
-                <button data-notification="{{ notice.slug }}"
+                <i class="material-icons">done</i>
+            </button>
+            <button data-notification="{{ notice.slug }}"
                     class="rejected-response waves-effect waves-light btn white-text red"
                     onclick="AJAX_respondGroupRequest({{ notice.action_object_object_id }}, 'rejected', {{ notice.id }})">
-                    <i class="material-icons">cancel</i>
-                </button>
-            </div>
+                <i class="material-icons">cancel</i>
+            </button>
+        </div>
     {% endif %}
     <div class="notice-actions">
         {% for action in notice.data.actions %}

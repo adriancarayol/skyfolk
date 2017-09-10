@@ -238,7 +238,7 @@ class ExtraContent(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('Publication', related_name='extra_content')
+    publication = models.OneToOneField('Publication', related_name='extra_content', on_delete=models.CASCADE)
 
 
 class Publication(PublicationBase):
@@ -310,11 +310,12 @@ class Publication(PublicationBase):
                 self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
             """
 
-    def send_notification(self, request, type="pub", is_edited=False):
+    def send_notification(self, request, is_edited=False):
         """
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
+
         data = {
             'type': 'pub',
             'id': self.id,
@@ -359,12 +360,12 @@ class Publication(PublicationBase):
 
 
 class PublicationVideo(models.Model):
-    publication = models.ForeignKey(Publication, related_name='videos')
+    publication = models.ForeignKey(Publication, related_name='videos', on_delete=models.CASCADE)
     video = models.FileField(upload_to=upload_video_publication, validators=[validate_video])
 
 
 class PublicationImage(models.Model):
-    publication = models.ForeignKey(Publication, related_name='images')
+    publication = models.ForeignKey(Publication, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=upload_image_publication)
 
 

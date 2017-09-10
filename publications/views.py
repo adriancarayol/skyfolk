@@ -27,8 +27,8 @@ from mptt.templatetags.mptt_tags import cache_tree_children
 
 from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
-from publications.forms import PublicationForm, SharedPublicationForm, PublicationEdit
-from publications.models import Publication, PublicationImage, PublicationVideo
+from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
+from .models import Publication, PublicationImage, PublicationVideo, ExtraContent
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
@@ -136,7 +136,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         privacity = board_owner.is_visible(emitter)
 
         if privacity and privacity != 'all':
-            raise IntegrityError("No have permissions")
+            return HttpResponseForbidden()
 
         is_correct_content = False
         logger.info('POST DATA: {} \n FILES: {}'.format(request.POST, request.FILES))
@@ -187,7 +187,9 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                         transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
                         # enviamos a los seguidores
                         if publication.author_id == publication.board_owner_id:
-                            send_to_stream.apply_async(args=[publication.author_id, publication.id], queue='low')
+                            transaction.on_commit(
+                                lambda: send_to_stream.apply_async(args=[publication.author_id, publication.id],
+                                                                   queue='low'))
                 except Exception as e:
                     raise ValidationError(e)
 
@@ -535,7 +537,6 @@ def add_hate(request):
     return HttpResponse(data, content_type='application/json')
 
 
-@transaction.atomic
 def edit_publication(request):
     """
     Permite al creador de la publicacion
@@ -563,6 +564,7 @@ def edit_publication(request):
                 publication.add_hashtag()  # add hashtags
                 publication.parse_mentions()
                 publication.content = Emoji.replace(publication.content)
+                publication._edited = True
                 with transaction.atomic(using="default"):
                     publication.save()  # Guardamos la publicacion si no hay errores
                     transaction.on_commit(lambda: publication.send_notification(request, is_edited=True))
