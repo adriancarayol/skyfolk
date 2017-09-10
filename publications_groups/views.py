@@ -16,7 +16,7 @@ from emoji.models import Emoji
 from publications.exceptions import EmptyContent
 from publications.models import Publication
 from publications.views import logger
-from publications_groups.forms import PublicationGroupForm
+from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups, NodeGroup
@@ -336,52 +336,53 @@ class AddPublicationHate(View):
 
 class EditGroupPublication(UpdateView):
     model = PublicationGroup
-    fields = ['content', ]
+    form_class = GroupPublicationEdit
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(EditGroupPublication, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        user = request.user
+        form = self.get_form()
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        user = self.request.user
         data = {'response': False}
-        content = request.POST.get('content', None)
-        pub_id = request.POST.get('id', None)
+
+        content = form.cleaned_data['content']
+        pk = form.cleaned_data['pk']
 
         try:
-            publication = PublicationGroup.objects.get(id=pub_id)
+            publication = PublicationGroup.objects.get(id=pk)
         except ObjectDoesNotExist:
             raise Http404
 
         if publication.author.id != user.id:
             return HttpResponseForbidden()
 
-        is_correct_content = False
-        soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
-        for tag in soup.find_all(recursive=True):
-            if tag.text and not tag.text.isspace():
-                is_correct_content = True
-                break
-
-        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-            logger.info('Publicacion contiene espacios o no tiene texto')
-            raise IntegrityError('El comentario esta vacio')
-
-        if publication.content.isspace():  # Comprobamos si el comentario esta vacio
-            raise IntegrityError('El comentario esta vacio')
-
         try:
-            publication.add_hashtag()
+            publication.content = content
             publication.parse_content()
+            publication.add_hashtag()
             publication.parse_mentions()
-            publication.content = Emoji.replace(content)
-            publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
-            publication.send_notification(request, is_edited=True)
+            publication.content = Emoji.replace(publication.content)
+            with transaction.atomic(using="default"):
+                publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
+                transaction.on_commit(lambda: publication.send_notification(self.request, is_edited=True))
+
             data['response'] = True
         except IntegrityError:
             pass
 
         return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'response': False})
 
 
 class PublicationGroupDetail(ListView):

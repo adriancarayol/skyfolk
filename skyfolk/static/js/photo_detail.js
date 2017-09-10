@@ -129,9 +129,8 @@ $(document).ready(function () {
 
     $(tab_messages).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
-        var id = $(this).attr('data-id');
-        var content = $(this).closest('#p_author-controls-' + id).find('#id_caption-' + id).val();
-        AJAX_edit_publication_gallery(id, content);
+        var edit = $(this).closest('form').serialize();
+        AJAX_edit_publication_gallery(edit);
     });
 
     $(tab_messages).on('click', '.load_more_descendants', function (e) {
@@ -501,12 +500,7 @@ function AJAX_remove_timeline_gallery(pub_id, tag) {
 }
 
 /* EDIT PUBLICATION */
-function AJAX_edit_publication_gallery(pub, content) {
-    var data = {
-        'id': pub,
-        'content': content,
-        'csrfmiddlewaretoken': csrftoken
-    };
+function AJAX_edit_publication_gallery(data) {
     $.ajax({
         url: '/publication_p/edit/',
         type: 'POST',
@@ -515,11 +509,8 @@ function AJAX_edit_publication_gallery(pub, content) {
 
         success: function (data) {
             var response = data.data;
-            console.log(data.data);
             // borrar caja publicacion
-            if (response == true) {
-                $('#p_author-controls-' + pub).fadeToggle("fast");
-            } else {
+            if (response === false) {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',

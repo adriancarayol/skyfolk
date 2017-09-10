@@ -22,7 +22,7 @@ from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
 from publications.models import Publication
-from publications_gallery.forms import PublicationPhotoForm
+from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
 from user_profile.models import NodeProfile
@@ -319,7 +319,6 @@ class PhotoDetailView(DetailView):
             return super(PhotoDetailView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('user_profile:profile', username=self.username)
-        return super().dispatch(request, *args, **kwargs)
 
     @staticmethod
     def get_count_shared(shared_id):
@@ -369,6 +368,7 @@ class PhotoDetailView(DetailView):
         context['form'] = EditFormPhoto(instance=self.photo)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
         context['publication_shared'] = SharedPublicationForm()
+        context['publication_edit'] = PublicationPhotoEdit()
 
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
         if self.photo.is_public:

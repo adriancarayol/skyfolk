@@ -91,9 +91,8 @@ $(document).ready(function () {
 
     $(thread).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
-        var id = $(this).attr('data-id');
-        var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
-        AJAX_edit_publication_detail(id, content);
+        var edit = $(this).closest('form').serialize();
+        AJAX_edit_publication_detail(edit);
     });
 }); // END DOCUMENT
 
@@ -375,12 +374,7 @@ function AJAX_remove_timeline_detail(pub_id, tag) {
 }
 
 /* EDIT PUBLICATION */
-function AJAX_edit_publication_detail(pub, content) {
-    var data = {
-        'id': pub,
-        'content': content,
-        'csrfmiddlewaretoken': csrftoken
-    };
+function AJAX_edit_publication_detail(data) {
     $.ajax({
         url: '/publication/edit/',
         type: 'POST',
@@ -390,9 +384,7 @@ function AJAX_edit_publication_detail(pub, content) {
         success: function (data) {
             var response = data.data;
             // borrar caja publicacion
-            if (response == true) {
-                $('#author-controls-' + pub).fadeToggle("fast");
-            } else {
+            if (response === false) {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',

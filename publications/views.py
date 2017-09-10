@@ -27,13 +27,12 @@ from mptt.templatetags.mptt_tags import cache_tree_children
 
 from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
-from publications.forms import PublicationForm, SharedPublicationForm
+from publications.forms import PublicationForm, SharedPublicationForm, PublicationEdit
 from publications.models import Publication, PublicationImage, PublicationVideo
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
 from .tasks import process_video_publication, process_gif_publication
-from .utils import parse_string
 from latest_news.tasks import send_to_stream
 
 logging.basicConfig(level=logging.INFO)
@@ -543,40 +542,34 @@ def edit_publication(request):
     editar el contenido de la publicacion
     """
     if request.method == 'POST':
-        user = request.user
-        publication = get_object_or_404(Publication, id=request.POST['id'])
-        content = request.POST.get('content', None)
+        form = PublicationEdit(request.POST or None)
 
-        if publication.author.id != user.id:
-            return JsonResponse({'data': "No tienes permisos para editar este comentario"})
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            pk = form.cleaned_data['pk']
+            user = request.user
 
-        if publication.event_type != 1 and publication.event_type != 3:
-            return JsonResponse({'data': "No puedes editar este tipo de comentario"})
+            publication = get_object_or_404(Publication, id=pk)
 
-        is_correct_content = False
-        soup = BeautifulSoup(content)  # Buscamos si entre los tags hay contenido
-        for tag in soup.find_all(recursive=True):
-            if tag.text and not tag.text.isspace():
-                is_correct_content = True
-                break
+            if publication.author.id != user.id:
+                return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
-        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-            logger.info('Publicacion contiene espacios o no tiene texto')
-            raise IntegrityError('El comentario esta vacio')
+            if publication.event_type != 1 and publication.event_type != 3:
+                return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
-        if publication.content.isspace():  # Comprobamos si el comentario esta vacio
-            raise IntegrityError('El comentario esta vacio')
-
-        try:
-            publication.parse_content()  # parse publication content
-            publication.add_hashtag()  # add hashtags
-            publication.parse_mentions()
-            publication.content = Emoji.replace(content)
-            with transaction.atomic(using="default"):
-                publication.save()  # Guardamos la publicacion si no hay errores
-                transaction.on_commit(lambda: publication.send_notification(request, is_edited=True))
-            return JsonResponse({'data': True})
-        except IntegrityError:
+            try:
+                publication.content = content
+                publication.parse_content()  # parse publication content
+                publication.add_hashtag()  # add hashtags
+                publication.parse_mentions()
+                publication.content = Emoji.replace(publication.content)
+                with transaction.atomic(using="default"):
+                    publication.save()  # Guardamos la publicacion si no hay errores
+                    transaction.on_commit(lambda: publication.send_notification(request, is_edited=True))
+                return JsonResponse({'data': True})
+            except IntegrityError:
+                return JsonResponse({'data': False})
+        else:
             return JsonResponse({'data': False})
 
     return JsonResponse({'data': "No puedes acceder a esta URL."})

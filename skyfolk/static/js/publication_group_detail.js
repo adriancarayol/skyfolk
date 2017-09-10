@@ -58,9 +58,8 @@ $(document).ready(function () {
 
     $thread.on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
-        var id = $(this).attr('data-id');
-        var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
-        AJAX_edit_group_publication(id, content);
+        var edit = $(this).closest('form').serialize();
+        AJAX_edit_group_publication(edit);
     });
 
     $thread.on('click', '.wrapper .zoom-pub', function () {

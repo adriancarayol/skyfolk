@@ -203,7 +203,7 @@ class PublicationBase(MPTTModel):
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
         """
-        self.content = bleach.clean(self.content, tags=['a'])
+        self.content = bleach.clean(self.content, tags=[])
         self.parse_extra_content()
 
         """

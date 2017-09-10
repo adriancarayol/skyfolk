@@ -45,9 +45,10 @@
                             <div class="row">
                                 <div class="col s12">
                                     <div class="name-friend">
-                                        {% if not group.is_public %}<i title="Este grupo es privado" class="material-icons md-18">lock</i>{% endif %}
                                         <a class="truncate"
-                                            href="{% url "user_groups:group-profile" groupname=group.slug %}">{{ group.name }}</a><br><br>
+                                            href="{% url "user_groups:group-profile" groupname=group.slug %}">
+                                            {% if not group.is_public %}<i title="Este grupo es privado" class="material-icons md-18">lock</i>{% endif %}
+                                            {{ group.name }}</a>
                                         <p class="truncate">{{ group.description|truncatechars:100 }}</p>
                                     </div>
                                 </div>

@@ -45,6 +45,8 @@ def add_hashtags(instance):
     soup = BeautifulSoup(instance.content)
     hashtags = set([x.string for x in soup.find_all('a')])
     for tag in hashtags:
+        if tag.startswith('@'):
+            continue
         if tag.endswith((',', '.')):
             tag = tag[:-1]
         instance.tags.add(tag)
