@@ -2,21 +2,23 @@
 {% comment %}
 Template para los seguidores de un perfil
 {% endcomment %}
-{% block title %}<title>{% if url_name == "followers" %}Seguidores {% else %}
-    Seguidos {% endif %}{{ request.user.username }}</title> {% endblock %}
+{% block title %}<title>{% if url_name == "followers" %}Seguidores de{% else %}
+    Seguidos{% endif %} {{ username }}</title> {% endblock %}
 {% block extra-css %}
-<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css" onload="if(media!='all')media='all'">
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css">
 {% endblock %}
 {% block content %}
 <div class="container"> 
     <div class="row"> 
         <div class="col l12 m10 s12 container-responsive">
+            {% if user.username == username %}
             <div class="row">
                 <div id="by_affinity">
                     
                 </div>
                 <div class="divider"></div>
             </div>
+            {% endif %}
             <div class="row">
                 {% include "account/relations_page.html" %}
             </div>

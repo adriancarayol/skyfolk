@@ -20,6 +20,11 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Publication, dispatch_uid='publication_save')
 def publication_handler(sender, instance, created, **kwargs):
+
+    # foo is following faa
+    if instance.event_type == 2:
+        return
+
     is_edited = getattr(instance, '_edited', False)
 
     if not created and not is_edited:

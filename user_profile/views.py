@@ -14,6 +14,7 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -31,6 +32,7 @@ from notifications.signals import notify
 from photologue.models import Photo
 from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
 from publications.models import Publication, PublicationVideo
+from user_profile.decorators import user_can_view_profile_info
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
@@ -139,13 +141,12 @@ def profile_view_ajax(request, user_profile, node_profile=None):
 
 @login_required(login_url='/')
 def profile_view(request, username,
-                 template="account/profile.html",
-                 extra_context=None):
+                 template="account/profile.html"):
     """
     Vista principal del perfil de usuario.
+    :param username:
+    :param template: Template por defecto que muestra el perfil
     :param request:
-    :param username => Username del perfil:
-    :param template => Template por defecto que muestra el perfil:
     """
     user = request.user
     user_profile = get_object_or_404(User.objects.select_related('profile'),
@@ -274,104 +275,6 @@ def profile_view(request, username,
     context['friend_page'] = 1
 
     return render(request, template, context)
-
-
-@login_required(login_url='accounts/login')
-def search(request, option=None):
-    """
-    View principal para realizar una busqueda en la web.
-    :param request:
-    :param option:
-    :return resultados de la busqueda:
-
-    Se añade una variable 'option' inicializada a None, para que por defecto
-    busque las palabras en usuarios y publicaciones, pero que si tiene algún
-    valor, haga la búsqueda únicamente por ese campo.
-    """
-    # para mostarar tambien el cuadro de busqueda en la pagina
-    user = request.user
-    searchForm = SearchForm(request.POST)
-    info = request.method
-
-    if request.method == 'GET' and option is None:
-        '''
-        if 'searchText' in request.session:
-            request.POST = request.session['searchText']
-            request.method = 'POST'
-        '''
-        # NOTE Modificado por adrian:
-        # Si hay peticion GET => Se busca si antes hubo
-        # un request.POST
-        # Si hay peticion POST se actúa con normalidad
-        return render(request, 'account/search.html',
-                      {'showPerfilButtons': True,
-                       'searchForm': searchForm,
-                       'resultSearch': (),
-                       'message': info})
-
-    # if request.method == 'POST':
-    else:
-        if searchForm.is_valid:
-            result_search = None
-            result_messages = None
-            result_media = None
-            try:
-                texto_to_search = request.POST['searchText']
-                request.session['searchText'] = request.POST['searchText']
-            except:
-                texto_to_search = request.session['searchText']
-            # hacer busqueda si hay texto para buscar, mediante consulta a la
-            # base de datos y pasar el resultado
-            searchForm = SearchForm(initial={'searchText': texto_to_search})
-            if texto_to_search:
-                words = texto_to_search.split()
-
-                # Búsqueda predeterminada o de cuentas.
-                if option is None or option == 'accounts':
-                    if len(words) == 1:
-                        result_search = User.objects.filter(Q(first_name__icontains=texto_to_search) |
-                                                            Q(last_name__icontains=texto_to_search) |
-                                                            Q(username__icontains=texto_to_search),
-                                                            Q(is_active=True),
-                                                            ~Q(username=request.user.username))
-
-                    elif len(words) == 2:
-                        result_search = User.objects.filter(Q(first_name__icontains=words[0]),
-                                                            Q(last_name__icontains=words[1]),
-                                                            Q(is_active=True),
-                                                            ~Q(username=request.user.username))
-                    else:
-                        result_search = User.objects.filter(Q(first_name__icontains=words[0]),
-                                                            Q(last_name__icontains=words[1] + ' ' + words[2]),
-                                                            Q(is_active=True))
-                # usamos la expresion regular para descartar las imagenes de los comentarios.
-                # Búsqueda predeterminada o de publicaciones.
-                # IDEA Mejorar consulta a bbdd (pasando lista words)
-                # en lugar de recorrer la lista y buscar cada palabra
-                if option is None or option == 'publications':
-                    for w in words:
-                        result_messages = Publication.objects.filter(
-                            Q(content__iregex=r"\b%s\b" % w) & ~Q(content__iregex=r'<img[^>]+src="([^">]+)"') |
-                            Q(author__username__icontains=w) |
-                            Q(author__first_name__icontains=w) |
-                            Q(author__last_name__icontains=w), Q(author__is_active=True),
-                            ~Q(author__username__icontains=request.user.username)).order_by('content').order_by(
-                            'created').reverse()  # or .order_by('created').reverse()
-                # GET MEDIA BY OWNER OR TAGS...
-                if option == 'images':
-                    if len(words) == 1:
-                        result_media = Photo.objects.filter(Q(tags__name__in=words) | (
-                            Q(owner__username__icontains=texto_to_search) & ~Q(owner__username=request.user.username)))
-                    elif len(words) > 1:
-                        for w in words:
-                            pass
-                return render(request, 'account/search.html', {'showPerfilButtons': True,
-                                                               'resultSearch': result_search,
-                                                               'searchForm': searchForm,
-                                                               'resultMessages': result_messages,
-                                                               'result_media': result_media,
-                                                               'words': words,
-                                                               'message': info, })
 
 
 @login_required(login_url='/')
@@ -647,7 +550,9 @@ def add_friend_by_username_or_pin(request):
                 # Enviamos la notificacion
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
                                            recipient=sql_friend,
-                                           verb=u'quiere seguirte.', level='friendrequest')
+                                           verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
+                                               user_request.title),
+                                           level='friendrequest')
                 # Enlazamos notificacion con peticion de amistad
                 try:
                     created = Request.objects.add_follow_request(user.user_id, friend.user_id, notification[0][1])
@@ -728,10 +633,11 @@ def add_friend_by_username_or_pin(request):
                 # Enviamos nueva notificacion
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
                                            recipient=sql_friend,
-                                           verb=u'quiere seguirte.', level='friendrequest')
+                                           verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
+                                               user_request.title), level='friendrequest')
                 # Enlazamos notificacion y peticion de amistad
                 try:
-                    created = Request.objects.add_follow_request(user.user_id, friend.user_id, notification[0][1])
+                    Request.objects.add_follow_request(user.user_id, friend.user_id, notification[0][1])
                     response = 'new_petition'
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
@@ -867,7 +773,8 @@ def request_friend(request):
                 # Creamos y enviamos la nueva notificacion
                 notification = notify.send(user, actor=n.title,
                                            recipient=recipient,
-                                           verb=u'quiere seguirte.', level='friendrequest')
+                                           verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(n.title),
+                                           level='friendrequest')
 
                 # Enlazamos notificacion con peticion de amistad
                 try:
@@ -1047,6 +954,10 @@ class FollowersListView(ListView):
         super(FollowersListView, self).__init__(*args, **kwargs)
         self.pagination = None
 
+    @method_decorator(user_can_view_profile_info)
+    def dispatch(self, request, *args, **kwargs):
+        return super(FollowersListView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
@@ -1069,10 +980,10 @@ class FollowersListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
-        user = self.request.user
         context['url_name'] = "followers"
         context['pagination'] = self.pagination
         context['component'] = 'react/followers_react.js'
+        context['username'] = self.kwargs.get('username', None)
         return context
 
 
@@ -1089,6 +1000,10 @@ class FollowingListView(ListView):
     def __init__(self, *args, **kwargs):
         super(FollowingListView, self).__init__(*args, **kwargs)
         self.pagination = None
+
+    @method_decorator(user_can_view_profile_info)
+    def dispatch(self, request, *args, **kwargs):
+        return super(FollowingListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         current_page = int(self.request.GET.get('page', '1'))  # page or 1
@@ -1111,10 +1026,10 @@ class FollowingListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
-        user = self.request.user
         context['url_name'] = "following"
         context['pagination'] = self.pagination
         context['component'] = 'react/following_react.js'
+        context['username'] = self.kwargs.get('username', None)
         return context
 
 
@@ -1142,7 +1057,6 @@ class CustomPasswordChangeView(PasswordChangeView):
         ret = super(PasswordChangeView, self).get_context_data(**kwargs)
         # NOTE: For backwards compatibility
         ret['password_change_form'] = ret.get('form')
-        user = self.request.user
         ret['showPerfilButtons'] = True
         # (end NOTE)
         return ret
@@ -1426,7 +1340,8 @@ class RecommendationUsers(ListView):
         offset = limit - 25
 
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT %d" %
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d "
+            "AND NOT u2.privacity='N' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT %d" %
             (user.id, offset, 25))
 
         users = [NodeProfile.inflate(row[0]) for row in results]
@@ -1464,6 +1379,10 @@ class LikeListUsers(AjaxListView):
     def __init__(self, *args, **kwargs):
         super(LikeListUsers, self).__init__(*args, **kwargs)
         self.pagination = None
+
+    @method_decorator(user_can_view_profile_info)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LikeListUsers, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         username = self.kwargs['username']
@@ -1631,7 +1550,9 @@ def recommendation_real_time(request):
         user = request.user
 
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND NOT u2.privacity='N' AND NOT (u2.user_id IN [%s]) RETURN u2.user_id, COUNT(tag) AS score ORDER BY score DESC LIMIT 50" % (
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d "
+            "AND NOT u2.privacity='N' AND NOT (u2.user_id IN [%s]) RETURN u2.user_id, COUNT(tag) AS score ORDER BY "
+            "score DESC LIMIT 50" % (
                 user.id, exclude_ids))
         users = []
 

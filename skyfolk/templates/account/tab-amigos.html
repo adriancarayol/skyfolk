@@ -2,6 +2,13 @@
 Pestaña de amigos en el perfil
 {% endcomment %}
 <div id="tab-amigos">
+    <div class="row center"><br>
+        <div class="col s12">
+            <a class="waves-effect waves-light btn blue white-text"
+               href="{% url 'user_profile:following_profile_list' username=user_profile.username %}">Ver todos</a>
+        </div>
+    </div>
+    <div class="divider"></div>
     {% include "account/follow_entries.html" %}
     {% comment %}
     <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center" href="?page=2&qs=following">More</a>

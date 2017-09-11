@@ -36,10 +36,10 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                  content='<i class="material-icons blue1e88e5 left">person_add</i> '
                                                          '¡<a href="/profile/%s">%s</a> tiene un nuevo seguidor, '
                                                          '<a href="/profile/%s">@%s</a>!' % (
-                                                     recipient.username,
-                                                     recipient.username,
-                                                     emitter.username,
-                                                     emitter.username),
+                                                             recipient.username,
+                                                             recipient.username,
+                                                             emitter.username,
+                                                             emitter.username),
                                                  event_type=2)
 
             Publication.objects.update_or_create(author_id=emitter.id,
@@ -47,13 +47,20 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                                                  content='<i class="material-icons blue1e88e5 left">person_add</i> '
                                                          '¡<a href="/profile/%s">%s</a> ahora sigue a <a '
                                                          'href="/profile/%s">@%s</a>!' % (
-                                                     emitter.username,
-                                                     emitter.username,
-                                                     recipient.username,
-                                                     recipient.username),
+                                                             emitter.username,
+                                                             emitter.username,
+                                                             recipient.username,
+                                                             recipient.username),
                                                  event_type=2)
         except Exception as e:
             raise Exception("Publication relationship not created: {}".format(e))
+
+        # Aumentamos la fuerza de la relacion entre los usuarios
+        if n.uid != m.uid:
+            rel = n.follow.relationship(m)
+            if rel:
+                rel.weight = rel.weight + 20
+                rel.save()
 
 
 @receiver(post_delete, sender=RelationShipProfile)
@@ -68,6 +75,13 @@ def handle_delete_relationship(sender, instance, *args, **kwargs):
         raise Exception("No se encuentran los nodos en neo4j")
 
     n.follow.disconnect(m)
+
+    # Aumentamos la fuerza de la relacion entre los usuarios
+    if n.uid != m.uid:
+        rel = n.follow.relationship(m)
+        if rel:
+            rel.weight = rel.weight - 20
+            rel.save()
 
 
 @receiver(post_save, sender=User)

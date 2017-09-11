@@ -306,7 +306,7 @@ class NodeProfile(DjangoNode):
         # Recuperamos la relacion de "seguidor"
         try:
             relation_follower = user_profile.follow.is_connected(self)
-        except ObjectDoesNotExist:
+        except Exception:
             relation_follower = None
 
         # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
@@ -316,7 +316,7 @@ class NodeProfile(DjangoNode):
         # Recuperamos la relacion de "seguir"
         try:
             relation_follow = self.follow.is_connected(user_profile)
-        except ObjectDoesNotExist:
+        except Exception:
             relation_follow = None
 
         # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos

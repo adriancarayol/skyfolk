@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^config/blocked/$', user_profile_views.config_blocked),
     url(r'^like_profile/$', user_profile_views.like_profile,
         name='like_profile'),
-    url(r'^following/(?P<username>[\w-]+)/$', user_profile_views.following),
+    url(r'^following/(?P<username>[\w-]+)/$', user_profile_views.following, name='following_profile_list'),
     url(r'^followers/(?P<username>[\w-]+)/$', user_profile_views.followers),
     url(r'^respond_friend_request/$',
         user_profile_views.respond_friend_request,

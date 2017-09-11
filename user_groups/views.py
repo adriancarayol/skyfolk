@@ -15,6 +15,7 @@ from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
 from django.utils import six
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
@@ -37,6 +38,7 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
 from .models import UserGroups, LikeGroup, NodeGroup, RequestGroup
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .decorators import user_can_view_group, user_can_view_group_info
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -128,6 +130,7 @@ class UserGroupList(ListView):
 group_list = login_required(UserGroupList.as_view(), login_url='/')
 
 
+@user_can_view_group
 @login_required(login_url='/')
 def group_profile(request, groupname, template='groups/group_profile.html'):
     """
@@ -145,6 +148,16 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         node_group = NodeGroup.nodes.get(group_id=group_profile.id)
     except NodeGroup.DoesNotExist:
         raise Http404
+
+    try:
+        n = NodeProfile.nodes.get(user_id=user.id)
+    except NodeProfile.DoesNotExist:
+        raise Http404
+
+    is_member = True
+    if not group_profile.is_public and group_profile.owner_id != user.id:
+        if not node_group.members.is_connected(n):
+            is_member = False
 
     publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
                                                    Q(deleted=False) & Q(level__lte=0) & ~Q(
@@ -211,8 +224,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
 
     context = {'groupForm': FormUserGroup(initial=group_initial),
                'group_profile': group_profile,
-               'follow_group': node_group.members.is_connected(
-                   NodeProfile.nodes.get(user_id=user.id)) if group_profile.owner_id != user.id else False,
+               'follow_group': is_member,
                'likes': likes,
                'user_like_group': user_like_group,
                'users_in_group': users_in_group,
@@ -382,6 +394,10 @@ class FollowersGroup(ListView):
         self.pagination = None
         self.group = None
 
+    @method_decorator(user_can_view_group_info)
+    def dispatch(self, request, *args, **kwargs):
+        return super(FollowersGroup, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         current_page = int(self.request.GET.get('page', '1'))  # page or 1
         limit = 25 * current_page
@@ -422,6 +438,10 @@ class LikeListGroup(ListView):
         super(LikeListGroup, self).__init__(*args, **kwargs)
         self.pagination = None
         self.group = None
+
+    @method_decorator(user_can_view_group_info)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LikeListGroup, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         current_page = int(self.request.GET.get('page', '1'))  # page or 1
