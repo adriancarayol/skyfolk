@@ -1,5 +1,6 @@
 import json
 
+import magic
 from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -24,7 +25,7 @@ from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
 from user_profile.models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from .utils import optimize_publication_media
+from .utils import optimize_publication_media, check_num_images
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -89,18 +90,26 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
                 media = request.FILES.getlist('image')
+                check_num_images(media)
+
+                f = magic.Magic(mime=True, uncompress=True)
+                exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+
+                have_video = False
+                if any(word in 'gif video' for word in set([item for sublist in exts for item in sublist])):
+                    have_video = True
 
                 try:
                     with transaction.atomic(using="default"):
                         publication.save()  # Creamos publicacion
                         form.save_m2m()  # Saving tags
                         transaction.on_commit(
-                            lambda: optimize_publication_media(publication, media))
+                            lambda: optimize_publication_media(publication, media, exts))
                         transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
                 except Exception as e:
                     raise ValidationError(e)
 
-                if not media:
+                if not have_video:
                     return self.form_valid(form=form)
                 else:
                     return self.form_valid(form=form,

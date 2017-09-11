@@ -15,6 +15,7 @@ class PublicationTestCase(TestCase):
 
     def test_parse_content(self):
         pub = Publication.objects.get(author__username='example')
+        pub.parse_content()
         self.assertIsNotNone(pub, pub.content)
 
     def test_extra_content(self):
@@ -42,3 +43,9 @@ class PublicationTestCase(TestCase):
         pub.save()
         content_parse = 'Hola<a href="/profile/example_2">@example_2</a>'
         self.assertHTMLEqual(content_parse, pub.content)
+
+    def test_delete_extra_content(self):
+        pub = Publication.objects.filter(author__username="example").first()
+        ExtraContent.objects.create(publication=pub, title="Extra content example")
+        pub.delete()
+        self.assertFalse(ExtraContent.objects.filter(publication=pub).exists())

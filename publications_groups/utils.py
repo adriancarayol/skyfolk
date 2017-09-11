@@ -32,17 +32,13 @@ def check_num_images(image_collection):
         raise MaxFilesReached(u'Sólo se permiten 5 archivos por publicación.')
 
 
-def optimize_publication_media(instance, image_upload):
-    check_num_images(image_upload)
-    content_video = False
+def optimize_publication_media(instance, image_upload, exts):
     if image_upload:
         for index, media in enumerate(image_upload):
             check_image_property(media)
-            f = magic.Magic(mime=True, uncompress=True)
-            file_type = f.from_buffer(media.read(1024)).split('/')
             try:
-                if file_type[0] == "video":  # es un video
-                    if file_type[1] == 'mp4':
+                if exts[index][0] == "video":  # es un video
+                    if exts[index][1] == 'mp4':
                         PublicationGroupVideo.objects.create(publication=instance,
                                                              video=media)
                     else:
@@ -50,13 +46,11 @@ def optimize_publication_media(instance, image_upload):
                         for block in media.chunks():
                             tmp.write(block)
                         process_video_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
-                    content_video = True
-                elif file_type[0] == "image" and file_type[1] == "gif":  # es un gif
+                elif exts[index][0] == "image" and exts[index][1] == "gif":  # es un gif
                     tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
                     process_gif_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
-                    content_video = True
                 else:  # es una imagen normal
                     try:
                         image = Image.open(media)
@@ -77,7 +71,6 @@ def optimize_publication_media(instance, image_upload):
                     PublicationGroupImage.objects.create(publication=instance, image=photo)
             except IndexError:
                 raise MediaNotSupported(u'No podemos procesar este tipo de archivo {file}.'.format(file=media.name))
-    return content_video
 
 
 def generate_path_video(ext='mp4'):

@@ -49,7 +49,8 @@ class CustomLoginForm(LoginForm):
                     device.save()
                     send_mail(
                         '[Skyfolk] - Nuevo inicio de sesión.',
-                        'Hemos detectado un nuevo inicio de sesión desde la IP: %s. \n' % ip + ",".join(components).replace(",", " "),
+                        'Hemos detectado un nuevo inicio de sesión desde la IP: %s. \n' % ip + ",".join(
+                            components).replace(",", " "),
                         'noreply@skyfolk.net',
                         [self.user.email],
                         fail_silently=False,
@@ -79,9 +80,9 @@ class SearchForm(SearchForm):
     """
 
     q = forms.CharField(label="", help_text="", required=False,
-                                 widget=forms.TextInput(attrs={'placeholder': '¿Que es lo que quieres buscar?',
-                                                               'pattern': '.{1,}',
-                                                               'required title': '1 character minimum', 'autocomplete': 'off'}))
+                        widget=forms.TextInput(attrs={'placeholder': '¿Que es lo que quieres buscar?',
+                                                      'pattern': '.{1,}',
+                                                      'required title': '1 character minimum', 'autocomplete': 'off'}))
     s = forms.CharField(label="", help_text="", required=False,
                         widget=forms.HiddenInput())
 
@@ -161,8 +162,7 @@ class ProfileForm(forms.Form):
                                                            'maxlength': '20'}), required=False)
 
     backImage = forms.ImageField(label='Escoge una imagen.',
-            help_text='Elige una imagen de fondo.', required=False)
-
+                                 help_text='Elige una imagen de fondo.', required=False)
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
@@ -188,8 +188,6 @@ class ProfileForm(forms.Form):
         return back_image
 
 
-
-
 class PrivacityForm(forms.Form):
     """
     Formulario para escoger la privacidad deseada del usuario.
@@ -211,7 +209,6 @@ class PrivacityForm(forms.Form):
             return privacity
         else:
             return 'A'
-
 
 
 class DeactivateUserForm(forms.ModelForm):

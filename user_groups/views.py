@@ -578,7 +578,7 @@ class ProfileGroups(APIView):
 
         privacity = profile.is_visible(request_user)
         if privacity and privacity != 'all':
-            return HttpResponseForbidden
+            return HttpResponseForbidden()
 
         current_page = int(request.GET.get('page', '1'))  # page or 1
         limit = 12 * current_page

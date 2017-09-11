@@ -11,26 +11,28 @@ from user_profile.models import TagProfile
 register = template.Library()
 
 CHOICES = (
-        ('D', '<i class="fa fa-futbol-o" aria-hidden="true"></i>'),
-        ('M', '<i class="fa fa-globe" aria-hidden="true"></i>'),
-        ('MU', '<i class="fa fa-music" aria-hidden="true"></i>'),
-        ('C', '<i class="fa fa-flask" aria-hidden="true"></i>'),
-        ('L', '<i class="fa fa-pencil" aria-hidden="true"></i>'),
-        ('T', '<i class="fa fa-laptop" aria-hidden="true"></i>'),
-        ('CO', '<i class="fa fa-cutlery" aria-hidden="true"></i>'),
-        ('MO', '<i class="fa fa-motorcycle" aria-hidden="true"></i>'),
-        ('CON', '<i class="fa fa-users" aria-hidden="true"></i>'),
-        ('F', '<i class="fa fa-glass" aria-hidden="true"></i>'),
-        ('DM', '<i class="fa fa-hashtag" aria-hidden="true"></i>'),
-        ('VJ', '<i class="fa fa-gamepad" aria-hidden="true"></i>'),
-        ('FT', '<i class="fa fa-camera" aria-hidden="true"></i>'),
-        ('CI', '<i class="fa fa-video-camera" aria-hidden="true"></i>'),
-        ('A', '<i class="fa fa-paint-brush" aria-hidden="true"></i>'),
+    ('D', '<i class="material-icons">fitness_center</i>'),
+    ('M', '<i class="material-icons">language</i>'),
+    ('MU', '<i class="material-icons">music_note</i>'),
+    ('C', '<i class="material-icons">loupe</i>'),
+    ('L', '<i class="material-icons">edit</i>'),
+    ('T', '<i class="material-icons">laptop</i>'),
+    ('CO', '<i class="material-icons">room_service</i>'),
+    ('MO', '<i class="material-icons">motorcycle</i>'),
+    ('CON', '<i class="material-icons">people</i>'),
+    ('F', '<i class="material-icons">local_bar</i>'),
+    ('DM', '<i class="material-icons">whatshot</i>'),
+    ('VJ', '<i class="material-icons">videogame_asset</i>'),
+    ('FT', '<i class="material-icons">camera_alt</i>'),
+    ('CI', '<i class="material-icons">camera_roll</i>'),
+    ('A', '<i class="material-icons">brush</i>'),
 )
+
 
 @register.filter(name='file_exists')
 def file_exists(value):
     return default_storage.exists(value)
+
 
 @register.filter(name='url_exists')
 def url_exists(value):
@@ -97,7 +99,6 @@ def check_follow(request, author):
 
 @register.filter(name='check_blocked')
 def check_blocked(request, author):
-
     try:
         user_profile = NodeProfile.nodes.get(user_id=author)
         me = NodeProfile.nodes.get(user_id=request)
@@ -130,7 +131,6 @@ def is_follow(request, profile):
 
 @register.filter(name='exist_request')
 def exist_request(request, profile):
-
     try:
         m = NodeProfile.nodes.get(user_id=profile)
         n = NodeProfile.nodes.get(user_id=request)
@@ -184,6 +184,7 @@ def classname(obj):
 @register.filter
 def interest_to_icon(tag):
     return dict(CHOICES).get(tag)
+
 
 @register.filter
 def lookup(d, key):

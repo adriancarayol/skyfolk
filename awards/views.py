@@ -11,37 +11,35 @@ from user_profile.models import NodeProfile
 
 
 class UserAwards(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "awards/my-awards.html"
 
-	renderer_classes = [TemplateHTMLRenderer]
-	template_name  = "awards/my-awards.html"
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs.pop('user_id', None)
 
-	
-	def get(self, request, *args, **kwargs):
-		user_id = kwargs.pop('user_id', None)
-		
-		if not user_id:
-			raise Http404
+        if not user_id:
+            raise Http404
 
-		try:
-			profile = NodeProfile.nodes.get(user_id=user_id)
-			request_user = NodeProfile.nodes.get(user_id=request.user.id)
-		except User.DoesNotExist:
-			raise Http404
+        try:
+            profile = NodeProfile.nodes.get(user_id=user_id)
+            request_user = NodeProfile.nodes.get(user_id=request.user.id)
+        except User.DoesNotExist:
+            raise Http404
 
-		privacity = profile.is_visible(request_user)
-		if privacity and privacity != 'all':
-			return HttpResponseForbidden
+        privacity = profile.is_visible(request_user)
+        if privacity and privacity != 'all':
+            return HttpResponseForbidden()
 
-		queryset = Award.objects.filter(user_id=profile.user_id)
-		paginator = Paginator(queryset, 12)
+        queryset = Award.objects.filter(user_id=profile.user_id)
+        paginator = Paginator(queryset, 12)
 
-		page = request.GET.get('page', 1)
+        page = request.GET.get('page', 1)
 
-		try:
-			awards = paginator.page(page)
-		except PageNotAnInteger:
-			awards = paginator.page(1)
-		except EmptyPage:
-			awards = paginator.page(paginator.num_pages)
+        try:
+            awards = paginator.page(page)
+        except PageNotAnInteger:
+            awards = paginator.page(1)
+        except EmptyPage:
+            awards = paginator.page(paginator.num_pages)
 
-		return Response({'awards': awards, 'user_id': user_id})
+        return Response({'awards': awards, 'user_id': user_id})

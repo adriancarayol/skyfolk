@@ -62,17 +62,13 @@ def check_num_images(image_collection):
         raise MaxFilesReached(u'Sólo se permiten 5 archivos por publicación.')
 
 
-def _optimize_publication_media(instance, image_upload):
-    check_num_images(image_upload)
-
+def _optimize_publication_media(instance, image_upload, exts):
     if image_upload:
         for index, media in enumerate(image_upload):
             check_image_property(media)
-            f = magic.Magic(mime=True, uncompress=True)
-            file_type = f.from_buffer(media.read(1024)).split('/')
             try:
-                if file_type[0] == "video":  # es un video
-                    if file_type[1] == 'mp4':
+                if exts[index][0] == "video":  # es un video
+                    if exts[index][1] == 'mp4':
                         PublicationVideo.objects.create(publication=instance, video=media)
                     else:
                         tmp = tempfile.NamedTemporaryFile(delete=False)
@@ -81,7 +77,7 @@ def _optimize_publication_media(instance, image_upload):
                         process_video_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
                                                         board_owner_id=instance.board_owner_id)
 
-                elif file_type[0] == "image" and file_type[1] == "gif":  # es un gif
+                elif exts[index][0] == "image" and exts[index][1] == "gif":  # es un gif
                     tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
@@ -177,13 +173,21 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
                 media = request.FILES.getlist('image')
+                check_num_images(media)
+
+                f = magic.Magic(mime=True, uncompress=True)
+                exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+
+                have_video = False
+                if any(word in 'gif video' for word in set([item for sublist in exts for item in sublist])):
+                    have_video = True
 
                 try:
                     with transaction.atomic(using="default"):
                         publication.save()  # Creamos publicacion
                         form.save_m2m()  # Saving tags
                         transaction.on_commit(
-                            lambda: _optimize_publication_media(publication, media))
+                            lambda: _optimize_publication_media(publication, media, exts))
                         transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
                         # enviamos a los seguidores
                         if publication.author_id == publication.board_owner_id:
@@ -193,7 +197,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 except Exception as e:
                     raise ValidationError(e)
 
-                if not media:
+                if not have_video:
                     return self.form_valid(form=form)
                 else:
                     return self.form_valid(form=form,
