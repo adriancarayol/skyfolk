@@ -59,6 +59,8 @@ urlpatterns = [
         name='account_email'),
     url(r"^config/password/done/$", user_profile_views.password_done,
         name="account_done_password"),
+    url(r"^config/notifications/$", user_profile_views.NotificationSettingsView.as_view(),
+        name="account_notifications"),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', user_profile_views.welcome_view,
         name='welcome'),

@@ -18,7 +18,7 @@ else:
     from django.contrib.contenttypes.generic import GenericForeignKey
 
 from django.db import models
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.utils.six import text_type
 from .utils import id2slug
 
@@ -278,6 +278,21 @@ def notify_handler(verb, **kwargs):
     level = kwargs.pop('level', Notification.LEVELS.info)
     send_channel = kwargs.pop('send_to_channel', True)
     immediately = kwargs.pop('immediately', False)
+
+    try:
+        if recipient.notification_settings.only_confirmed_users:
+            if not actor.is_active:
+                return
+
+        if not recipient.notification_settings.followed_notifications:
+            pass
+
+        if not recipient.notification_settings.followers_notifications:
+            pass
+
+    except ObjectDoesNotExist:
+        pass
+
     # Check if User or Group
     if isinstance(recipient, Group):
         recipients = recipient.user_set.all()

@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=Publication, dispatch_uid='publication_save')
 def publication_handler(sender, instance, created, **kwargs):
-
     # foo is following faa
     if instance.event_type == 2:
         return
@@ -71,7 +70,6 @@ xstr = lambda s: s or ""
 
 
 def add_extra_content(instance):
-
     if not instance.content:
         return
 
@@ -152,7 +150,7 @@ def notify_mentions(instance):
 
         notify.send(instance.author, actor=instance.author.username,
                     recipient=recipientprofile,
-                    verb=u'¡te ha mencionado!',
+                    verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
                     description='<a href="%s">Ver</a>' % ('/publication/' + str(instance.id)))
 
 

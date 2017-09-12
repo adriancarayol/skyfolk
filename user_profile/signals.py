@@ -10,7 +10,7 @@ from neomodel import db
 
 from publications.models import Publication
 from .models import NodeProfile, Profile, BlockedProfile, \
-    RelationShipProfile
+    RelationShipProfile, NotificationSettings
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -91,6 +91,7 @@ def create_user_profile(sender, instance, created, **kwargs):
             with transaction.atomic(using="default"):
                 with db.transaction:
                     Profile.objects.create(user=instance)
+                    NotificationSettings.objects.create(user=instance)
                     NodeProfile(user_id=instance.id, title=instance.username,
                                 first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
@@ -113,6 +114,7 @@ def save_user_profile(sender, instance, created, **kwargs):
                     node = NodeProfile.nodes.get_or_none(user_id=instance.id)
                     if not node:
                         Profile.objects.create(user=instance)
+                        NotificationSettings.objects.create(user=instance)
                         NodeProfile(user_id=instance.id, title=instance.username,
                                     first_name=instance.first_name, last_name=instance.last_name).save()
                     logger.info(
@@ -162,6 +164,7 @@ def handle_login(sender, user, request, **kwargs):
         NodeProfile(user_id=user.id, title=user.username).save()
 
     profile = Profile.objects.get_or_create(user_id=user.id)
+    NotificationSettings.objects.get_or_create(user=user)
     logger.info('User {} is_online'.format(user.username))
 
 

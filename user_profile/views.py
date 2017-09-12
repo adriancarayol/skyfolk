@@ -17,7 +17,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import TemplateView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from el_pagination.views import AjaxListView
 from haystack.generic_views import SearchView
@@ -37,7 +37,8 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import NodeProfile, TagProfile, Request, Profile, \
-    RelationShipProfile, FOLLOWING, BlockedProfile
+    RelationShipProfile, FOLLOWING, BlockedProfile, NotificationSettings
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .serializers import UserSerializer
 from .tasks import send_email
 from .utils import crop_image, make_pagination_html
@@ -1595,3 +1596,23 @@ class FollowersByAffinityList(generics.ListAPIView):
         pk_list = [u.user_id for u in n.get_favs_followers_users()]
         preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pk_list)])
         return User.objects.filter(id__in=pk_list).order_by(preserved)
+
+
+class NotificationSettingsView(AjaxableResponseMixin, UpdateView):
+    model = NotificationSettings
+    template_name = 'account/cf-notifications.html'
+    fields = ['email_when_new_notification', 'email_when_recommendations', 'email_when_mp', 'followed_notifications',
+              'followers_notifications', 'only_confirmed_users']
+    success_url = '/config/notifications/'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(NotificationSettingsView, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(NotificationSettings, user_id=self.request.user.id)
+
+    def form_valid(self, form, msg=None):
+        instance = form.save(commit=False)
+        instance.user = self.request.user
+        return super(NotificationSettingsView, self).form_valid(form)

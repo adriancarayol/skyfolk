@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from haystack.forms import SearchForm
 from ipware.ip import get_real_ip, get_ip
 
-from user_profile.models import AuthDevices, NodeProfile
+from user_profile.models import AuthDevices, NodeProfile, NotificationSettings
 from .validators import validate_file_extension
 
 logging.basicConfig(level=logging.WARNING)

@@ -31,11 +31,10 @@ FOLLOWING = 1
 FOLLOWER = 2
 BLOCK = 3
 RELATIONSHIP_STATUSES = (
-        (FOLLOWING, 1),
-        (FOLLOWER, 2),
-        (BLOCK, 3)
+    (FOLLOWING, 1),
+    (FOLLOWER, 2),
+    (BLOCK, 3)
 )
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -43,6 +42,7 @@ logger = logging.getLogger(__name__)
 
 def upload_cover_path(instance, filename):
     return '%s/cover_image/%s' % (instance.user.username, filename)
+
 
 class RelationShipProfile(models.Model):
     """
@@ -89,10 +89,12 @@ class Profile(models.Model):
         (NOTHING, 'Nothing'),
     )
     privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
-    relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False, related_name="profile_relationships")
-    blockeds = models.ManyToManyField('self', through=BlockedProfile, symmetrical=False, related_name="profile_blockeds")
+    relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False,
+                                           related_name="profile_relationships")
+    blockeds = models.ManyToManyField('self', through=BlockedProfile, symmetrical=False,
+                                      related_name="profile_blockeds")
 
-    reindex_related = ('user', )
+    reindex_related = ('user',)
 
     def __str__(self):
         return "%s profile" % self.user.username
@@ -164,6 +166,7 @@ class TagProfile(DjangoNode):
     class Meta:
         app_label = 'tag_profile'
 
+
 class FollowRel(StructuredRel):
     weight = IntegerProperty(default=0)
     created = DateTimeProperty(default=lambda: datetime.datetime.now())
@@ -225,7 +228,7 @@ class NodeProfile(DjangoNode):
 
             results, columns = self.cypher(
                 "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b ORDER BY b.user_id SKIP %d LIMIT %d" % (
-                offset, limit))
+                    offset, limit))
         else:
             results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
 
@@ -240,7 +243,7 @@ class NodeProfile(DjangoNode):
         if limit and offset:
             results, columns = self.cypher(
                 "MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b ORDER BY b.user_id SKIP %d LIMIT %d" % (
-                offset, limit))
+                    offset, limit))
         else:
             results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
         return [self.inflate(row[0]) for row in results]
@@ -264,7 +267,7 @@ class NodeProfile(DjangoNode):
         if offset and limit:
             results, columns = self.cypher(
                 "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m ORDER BY m.user_id SKIP %d LIMIT %d" % (
-                offset, limit))
+                    offset, limit))
         else:
             results, columns = self.cypher(
                 "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
@@ -275,7 +278,8 @@ class NodeProfile(DjangoNode):
             results, columns = self.cypher(
                 "MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT 6")
         else:
-            results, columns = self.cypher("MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT %d" % limit)
+            results, columns = self.cypher(
+                "MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT %d" % limit)
         return [self.inflate(row[0]) for row in results]
 
     def get_favs_followers_users(self):
@@ -440,3 +444,15 @@ class AuthDevices(models.Model):
     browser_token = models.CharField(max_length=1024)
     objects = AuthDevicesManager()
 
+
+class NotificationSettings(models.Model):
+    """
+    Permite al usuario establecer que tipo de notificaciones quiere recibir
+    """
+    email_when_new_notification = models.BooleanField(default=True)
+    email_when_recommendations = models.BooleanField(default=True)
+    email_when_mp = models.BooleanField(default=True)
+    followed_notifications = models.BooleanField(default=True)
+    followers_notifications = models.BooleanField(default=True)
+    only_confirmed_users = models.BooleanField(default=True)
+    user = models.OneToOneField(User, related_name='notification_settings')

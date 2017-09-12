@@ -132,7 +132,7 @@ def notify_mentions(instance):
 
         notify.send(instance.author, actor=instance.author.username,
                     recipient=recipientprofile,
-                    verb=u'¡te ha mencionado!',
+                    verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
                     description='<a href="%s">Ver</a>' % ('/publication/group/detail/' + str(instance.id)))
 
 

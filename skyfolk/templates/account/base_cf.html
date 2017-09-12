@@ -5,11 +5,11 @@
 {% load i18n avatar_tags %}
 
 {% block include_files %}
-    <script async src="{{ STATIC_URL }}js/config.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/configuracion.css" type="text/css" media="all">
+    <script src="{{ STATIC_URL }}js/config.js"></script>
 {% endblock %}
 
-{% block title %} <title>Configuración - {{ request.user.username }}.</title> {% endblock %}
+{% block title %} <title>Skyfolk / Configuración {{ request.user.username }}.</title> {% endblock %}
 
 {% block content %}
     <div class="container">
@@ -35,6 +35,8 @@
                             class="material-icons right">security</i></li>
                     <li id="config-personal-pin" onclick="toProfile('/config/pincode')">Pin personal<i
                             class="material-icons right">person_pin</i></li>
+                    <li id="config-notifications" onclick="toProfile('{% url 'user_profile:account_notifications' %}')">Notificaciones<i
+                            class="material-icons right">notifications</i></li>
                     <li id="config-black-list" onclick="toProfile('/config/blocked')">Usuarios bloqueados<i
                             class="material-icons right">block</i></li>
                     <li id="config-delete-account" onclick="toProfile('/config/delete_account')">Eliminar cuenta<i
