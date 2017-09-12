@@ -1,6 +1,6 @@
 from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 from .models import PublicationPhoto
 from .utils import get_channel_name
 

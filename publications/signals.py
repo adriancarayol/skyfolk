@@ -5,13 +5,12 @@ import requests
 from badgify.models import Award, Badge
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
-from django.db import transaction
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from embed_video.backends import detect_backend, EmbedVideoException
 
 from notifications.signals import notify
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 from .models import Publication, ExtraContent
 
 logging.basicConfig(level=logging.INFO)
@@ -137,21 +136,10 @@ def notify_mentions(instance):
             continue
 
         if instance.author.pk != recipientprofile.pk:
-            try:
-                n = NodeProfile.nodes.get(user_id=instance.author_id)
-                m = NodeProfile.nodes.get(user_id=recipientprofile.id)
-            except Exception:
-                continue
-
-            privacity = m.is_visible(n)
-
-            if privacity and privacity != 'all':
-                continue
-
-        notify.send(instance.author, actor=instance.author.username,
-                    recipient=recipientprofile,
-                    verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
-                    description='<a href="%s">Ver</a>' % ('/publication/' + str(instance.id)))
+            notify.send(instance.author, actor=instance.author.username,
+                        recipient=recipientprofile,
+                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
+                        description='<a href="%s">Ver</a>' % ('/publication/' + str(instance.id)))
 
 
 def increase_affinity(instance):

@@ -7,7 +7,7 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 
 
 class UserAwards(APIView):

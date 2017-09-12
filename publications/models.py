@@ -9,17 +9,16 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import Q
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from embed_video.fields import EmbedVideoField
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
 
+from mailer.handler import notify_via_email
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.utils import validate_video
-from user_profile.tasks import send_email
 from user_profile.utils import group_name
 from .utils import get_channel_name
 
@@ -28,95 +27,6 @@ ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
 ALLOWED_STYLES = bleach.ALLOWED_STYLES + settings.ALLOWED_STYLES
 ALLOWED_ATTRIBUTES = dict(bleach.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES.update(settings.ALLOWED_ATTRIBUTES)
-
-
-class PublicationManager(models.Manager):
-    """
-    Despreciado
-    """
-    list_display = ['tag_list']
-
-    # Functions of publications
-    def get_publication(self, publicationid):
-        return self.objects.get(pk=publicationid)
-
-    def remove_publication(self, publicationid):
-        self.objects.get(pk=publicationid).delete()
-
-    def get_authors_publications(self, author_pk):
-        # cambiar a nombre mas claro como get_logged_user_publications
-        # filtros: from_publication__profile=self -> retorna los comentarios
-        # hechos al propietario por amigos o el mismo propietario.
-        # from_publication__replies=None -> retorna solo los comentarios padre.
-        pubs = self.filter(author=author_pk, parent=None, deleted=False)
-
-        print('>>>>pubs: {}'.format(pubs))
-
-        # Agregar replicas de los comentarios
-        # for pub in pubs:
-        #     print('pub: {}'.format(pub.id))
-        #     reply = self.filter(parent=pub.id).order_by('created')
-        #     print('REPLIES: {}'.format(reply))
-        #     pub.replies = reply
-
-        return pubs
-
-    def get_user_profile_publications(self, user_pk, board_owner_pk):
-        # cambiar a nombre mas claro como get_logged_user_publications
-        # filtros: from_publication__profile=self -> retorna los comentarios
-        # hechos al propietario por amigos o el mismo propietario.
-        # from_publication__replies=None -> retorna solo los comentarios padre.
-        # pubs = self.filter(Q(author=user_pk) & Q(board_owner=user_pk),
-        #                   author=user_pk, deleted=False)
-        pubs = self.filter(board_owner=board_owner_pk)
-
-        print('LONGITUD PUBS: {}'.format(len(pubs)))
-        print('>>>>pubs: {}'.format(pubs))
-
-        # Agregar replicas de los comentarios
-        # for pub in pubs:
-        #     print('pub: {}'.format(pub.id))
-        #     reply = self.filter(parent=pub.id, deleted=False).order_by('created')
-        #     print('REPLIES: {}'.format(reply))
-        #     pub.replies = reply
-
-        return pubs
-
-    def get_friend_profile_publications(self, user_pk, board_owner_pk):
-        # cambiar a nombre mas claro como get_logged_user_publications
-        # filtros: from_publication__profile=self -> retorna los comentarios
-        # hechos al propietario por amigos o el mismo propietario.
-        # from_publication__replies=None -> retorna solo los comentarios padre.
-        pubs = self.filter(Q(author=user_pk) | Q(board_owner=board_owner_pk),
-                           board_owner=board_owner_pk, deleted=False)
-
-        print('>>>>pubs: {}'.format(pubs))
-
-        # Agregar replicas de los comentarios
-        # for pub in pubs:
-        #     print('pub: {}'.format(pub.id))
-        #     reply = self.filter(parent=pub.id).order_by('created')
-        #     print('REPLIES: {}'.format(reply))
-        #     pub.replies = reply
-
-        return pubs
-
-    def get_publication_replies(self, user_pk, board_owner_pk, parent):
-        # cambiar a nombre mas claro como get_logged_user_publications
-        # filtros: a) user_pk -> clave del autor de la publicacion. B) board_
-        # owner_pk -> clave del propietario del perfil donde se publica. C) pa-
-        # rent -> clave del padre de la replica.
-        pubs = self.filter(Q(author=user_pk) & Q(board_owner=board_owner_pk),
-                           board_owner=board_owner_pk, parent=parent, deleted=False).order_by(
-            'created').reverse()
-
-        return pubs
-
-    def tag_list(self, obj):
-        """
-        Devuelve los tags de una publicación
-        """
-        return u", ".join(o.name for o in obj.tags.all())
 
 
 def upload_image_publication(instance, filename):
@@ -353,10 +263,9 @@ class Publication(PublicationBase):
                              (self.author.username, self.author.username), level='notification_board_owner')
 
             # Enviamos email al board_owner
-            send_email.delay("Skyfolk - %s ha comentado en tu skyline." % self.author.username,
-                             [self.board_owner.email],
-                             {'to_user': self.board_owner.username, 'from_user': self.author.username},
-                             'emails/new_publication.html')
+            notify_via_email(self.author, [self.board_owner], 'Skyfolk - {0} ha comentado en tu skyline.'.format(self.author.username),
+                             'emails/new_publication.html',
+                             {'to_user': self.board_owner.username, 'from_user': self.author.username})
 
 
 class PublicationVideo(models.Model):

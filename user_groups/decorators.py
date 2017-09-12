@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from user_groups.models import UserGroups, NodeGroup, RequestGroup, LikeGroup
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 from functools import wraps
 
 

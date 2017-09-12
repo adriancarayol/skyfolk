@@ -10,7 +10,7 @@ from embed_video.backends import detect_backend, EmbedVideoException
 
 from notifications.signals import notify
 from publications_groups.models import PublicationGroup, ExtraGroupContent
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -119,21 +119,10 @@ def notify_mentions(instance):
             continue
 
         if instance.author.pk != recipientprofile.pk:
-            try:
-                n = NodeProfile.nodes.get(user_id=instance.author_id)
-                m = NodeProfile.nodes.get(user_id=recipientprofile.id)
-            except Exception:
-                continue
-
-            privacity = m.is_visible(n)
-
-            if privacity and privacity != 'all':
-                continue
-
-        notify.send(instance.author, actor=instance.author.username,
-                    recipient=recipientprofile,
-                    verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
-                    description='<a href="%s">Ver</a>' % ('/publication/group/detail/' + str(instance.id)))
+            notify.send(instance.author, actor=instance.author.username,
+                        recipient=recipientprofile,
+                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
+                        description='<a href="%s">Ver</a>' % ('/publication/group/detail/' + str(instance.id)))
 
 
 def increase_affinity(instance):

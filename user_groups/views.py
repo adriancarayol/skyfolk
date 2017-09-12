@@ -25,14 +25,14 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from mailer.handler import notify_via_email
 from notifications.models import Notification
 from notifications.signals import notify
 from publications.models import Publication
 from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
-from user_profile.models import NodeProfile, TagProfile
-from user_profile.tasks import send_email
+from user_profile.node_models import NodeProfile, TagProfile
 from user_profile.utils import make_pagination_html
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
@@ -301,18 +301,22 @@ def follow_group(request):
 
                                 notify.send(user,
                                             actor=user.username,
-                                            recipient=group.owner, verb=u'%s solicita unirse al grupo %s'
-                                                                        % (user.username, group.name),
+                                            recipient=group.owner,
+                                            verb=u'<a href="/profile/{0}/">@{0}</a> solicita unirse al grupo {1}'.format(
+                                                user.username, group.name),
                                             level='grouprequest', action_object=request_group)
 
                         except IntegrityError:
                             return JsonResponse({
                                 'response': "no_added_group"
                             })
-                        send_email.delay('Skyfolk - %s quiere seguirte.' % user.username, [group.owner.email],
+
+                        notify_via_email(user, [group.owner],
+                                         'Skyfolk - <a href="/profile/{0}/">@{0}</a> quiere unirse a {1}.'.format(
+                                             user.username, group.name),
+                                         'emails/member_request.html',
                                          {'to_user': group.owner.username, 'from_user': user.username,
-                                          'to_group': group.name},
-                                         'emails/member_request.html')
+                                          'to_group': group.name})
 
                     return JsonResponse({
                         'response': 'in_progress'
@@ -506,10 +510,13 @@ class RespondGroupRequest(View):
                     return JsonResponse({'response': 'error'})
 
                 response = "added_friend"
-                send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username,
-                                 [request_group.emitter.email],
-                                 {'to_user': request_group.emitter.username, 'from_group': group.name},
-                                 'emails/new_member_added.html')
+                notify_via_email(user, [request_group.emitter],
+                                 'Skyfolk - <a href="/profile/{0}/">@{0}</a> ha aceptado tu solicitud, ahora eres '
+                                 'miembro de {1}.'.format(
+                                     user.username, group.name),
+                                 'emails/new_member_added.html',
+                                 {'to_user': request_group.emitter.username, 'from_group': group.name})
+
         elif request_status == 'rejected':
             if user.id == group.owner_id:
                 try:

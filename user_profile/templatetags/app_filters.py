@@ -5,8 +5,8 @@ from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
 from neomodel import db
 
-from user_profile.models import NodeProfile, Request
-from user_profile.models import TagProfile
+from user_profile.models import Request
+from user_profile.node_models import NodeProfile, TagProfile
 
 register = template.Library()
 

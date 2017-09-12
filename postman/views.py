@@ -29,7 +29,7 @@ from .fields import autocompleter_app
 from .forms import WriteForm, AnonymousWriteForm, QuickReplyForm, FullReplyForm
 from .models import OPTION_MESSAGES, Message, get_order_by
 from .utils import format_subject, format_body
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 
 login_required_m = method_decorator(login_required)
 csrf_protect_m = method_decorator(csrf_protect)

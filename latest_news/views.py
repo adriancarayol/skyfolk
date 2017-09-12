@@ -9,7 +9,8 @@ from neomodel import db
 
 from photologue.models import Photo
 from publications.models import Publication
-from user_profile.models import NodeProfile, Profile
+from user_profile.models import Profile
+from user_profile.node_models import NodeProfile
 
 
 class News(ListView):

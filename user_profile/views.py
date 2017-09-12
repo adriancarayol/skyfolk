@@ -27,6 +27,7 @@ from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 
 from avatar.templatetags.avatar_tags import avatar, avatar_url
+from mailer.handler import notify_via_email
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
@@ -36,11 +37,11 @@ from user_profile.decorators import user_can_view_profile_info
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
-from user_profile.models import NodeProfile, TagProfile, Request, Profile, \
+from user_profile.models import Request, Profile, \
     RelationShipProfile, FOLLOWING, BlockedProfile, NotificationSettings
+from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .serializers import UserSerializer
-from .tasks import send_email
 from .utils import crop_image, make_pagination_html
 
 
@@ -683,7 +684,7 @@ def like_profile(request):
                         if rel:
                             rel.weight = rel.weight + 10
                             rel.save()
-                        notify.send(user, actor=User.objects.get(pk=user.pk).username,
+                        notify.send(user, actor=user.username,
                                     recipient=actual_profile,
                                     verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
                                         user.username, user.username), level='like_profile')
@@ -692,9 +693,9 @@ def like_profile(request):
                 pass
 
             # Enviar email...
-            send_email.delay('Skyfolk - %s te ha dado un like.' % user.username, [actual_profile.email],
-                             {'to_user': actual_profile.username, 'from_user': user.username}
-                             , 'emails/like_profile.html')
+            notify_via_email(user, [actual_profile], 'Skyfolk - {0} te ha dado un like.'.format(user.username),
+                             'emails/like_profile.html',
+                             {'to_user': actual_profile.username, 'from_user': user.username})
 
         logging.info('%s da like a %s' % (user.username, actual_profile.username))
         logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
@@ -749,9 +750,9 @@ def request_friend(request):
                                         level='new_follow')
                     response = "added_friend"
                     # enviamos mail
-                    send_email.delay('Skyfolk - %s ahora te sigue.' % user.username, [recipient.email],
-                                     {'to_user': recipient.username, 'from_user': user.username}
-                                     , 'emails/new_follow.html')
+                    notify_via_email(user, [recipient], 'Skyfolk - {0} ahora te sigue.'.format(user.username),
+                                     'emails/new_follow.html',
+                                     {'to_user': recipient.username, 'from_user': user.username})
                 except Exception as e:
                     logging.info(e)
                     response = "no_added_friend"
@@ -779,12 +780,13 @@ def request_friend(request):
 
                 # Enlazamos notificacion con peticion de amistad
                 try:
-                    created = Request.objects.add_follow_request(n.user_id,
+                    Request.objects.add_follow_request(n.user_id,
                                                                  m.user_id,
                                                                  notification[0][1])
-                    send_email.delay('Skyfolk - %s quiere seguirte.' % user.username, [recipient.email],
-                                     {'to_user': recipient.username, 'from_user': user.username},
-                                     'emails/follow_request.html')
+
+                    notify_via_email(user, [recipient], 'Skyfolk - {0} quiere seguirte.'.format(user.username),
+                                     'emails/follow_request.html',
+                                     {'to_user': recipient.username, 'from_user': user.username})
 
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
@@ -830,9 +832,9 @@ def respond_friend_request(request):
                 response = "added_friend"
                 logging.info('user.profile: {} emitter_profile: {}'.format(user.username, recipient.id))
                 # enviamos notificacion informando del evento
-                send_email.delay('Skyfolk - %s ha aceptado tu solicitud.' % user.username, [recipient.email],
-                                 {'to_user': recipient.username, 'from_user': user.username},
-                                 'emails/new_follow_added.html')
+                notify_via_email(user, [recipient], 'Skyfolk - {0} ha aceptado tu solicitud.'.format(user.username),
+                                 'emails/new_follow_added.html',
+                                 {'to_user': recipient.username, 'from_user': user.username})
             except Exception as e:
                 logging.info(e)
                 response = 'rejected'

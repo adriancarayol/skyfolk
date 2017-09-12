@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 
 
 def user_can_view_profile_info(function):

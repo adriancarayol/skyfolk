@@ -23,7 +23,7 @@ from publications.views import logger
 from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media, check_num_images
 

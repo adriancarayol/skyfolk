@@ -9,8 +9,9 @@ from django.dispatch import receiver
 from neomodel import db
 
 from publications.models import Publication
-from .models import NodeProfile, Profile, BlockedProfile, \
+from .models import Profile, BlockedProfile, \
     RelationShipProfile, NotificationSettings
+from user_profile.node_models import NodeProfile
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

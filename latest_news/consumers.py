@@ -1,6 +1,6 @@
 from channels.generic.websockets import WebsocketConsumer
 
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 
 
 class MyFeedConsumer(WebsocketConsumer):

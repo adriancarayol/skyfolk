@@ -21,7 +21,7 @@ from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups, NodeGroup
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media, check_num_images
 from django.template.loader import render_to_string

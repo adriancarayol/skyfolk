@@ -3,7 +3,7 @@ from publications.models import Publication
 from channels import Group
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.loader import render_to_string
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 from celery.utils.log import get_task_logger
 from skyfolk.celery import app
 

@@ -1,7 +1,7 @@
 from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
 
-from .models import NodeProfile
+from user_profile.node_models import NodeProfile
 
 
 class BlogConsumer(WebsocketConsumer):

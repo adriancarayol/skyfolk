@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from embed_video.backends import detect_backend, EmbedVideoException
 
 from notifications.signals import notify
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 from .models import PublicationPhoto, ExtraContentPubPhoto
 
 logging.basicConfig(level=logging.INFO)
@@ -132,18 +132,7 @@ def notify_mentions(instance):
             continue
 
         if instance.p_author.pk != recipientprofile.pk:
-            try:
-                n = NodeProfile.nodes.get(user_id=instance.p_author_id)
-                m = NodeProfile.nodes.get(user_id=recipientprofile.id)
-            except Exception:
-                continue
-
-            privacity = m.is_visible(n)
-
-            if privacity and privacity != 'all':
-                continue
-
-        notify.send(instance.p_author, actor=instance.p_author.username,
+            notify.send(instance.p_author, actor=instance.p_author.username,
                     recipient=recipientprofile,
                     verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.p_author.username),
                     description='<a href="%s">Ver</a>' % ('/publication_pdetail/' + str(instance.id)))

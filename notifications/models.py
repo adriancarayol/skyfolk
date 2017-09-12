@@ -26,7 +26,7 @@ from .signals import notify
 
 from model_utils import Choices
 from jsonfield.fields import JSONField
-
+from user_profile.node_models import NodeProfile
 from django.contrib.auth.models import Group
 
 
@@ -279,20 +279,6 @@ def notify_handler(verb, **kwargs):
     send_channel = kwargs.pop('send_to_channel', True)
     immediately = kwargs.pop('immediately', False)
 
-    try:
-        if recipient.notification_settings.only_confirmed_users:
-            if not actor.is_active:
-                return
-
-        if not recipient.notification_settings.followed_notifications:
-            pass
-
-        if not recipient.notification_settings.followers_notifications:
-            pass
-
-    except ObjectDoesNotExist:
-        pass
-
     # Check if User or Group
     if isinstance(recipient, Group):
         recipients = recipient.user_set.all()
@@ -300,6 +286,31 @@ def notify_handler(verb, **kwargs):
         recipients = [recipient]
 
     for recipient in recipients:
+        try:
+            try:
+                n = NodeProfile.nodes.get(user_id=actor.id)
+                m = NodeProfile.nodes.get(user_id=recipient.id)
+            except NodeProfile.DoesNotExist:
+                return
+
+            if n.bloq.is_connected(m) or m.bloq.is_connected(n):
+                return
+
+            if recipient.notification_settings.only_confirmed_users:
+                if not actor.is_active:
+                    return
+
+            if not recipient.notification_settings.followed_notifications:
+                if not m.follow.is_connected(n):
+                    return
+
+            if not recipient.notification_settings.followers_notifications:
+                if not n.follow.is_connected(m):
+                    return
+
+        except ObjectDoesNotExist:
+            pass
+
         actor_avatar = avatar(actor)
         newnotify, created = Notification.objects.get_or_create(
             recipient=recipient,

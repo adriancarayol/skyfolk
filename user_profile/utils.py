@@ -32,7 +32,7 @@ def handle_uploaded_file(f, file_id):
 
 
 def get_cache_key(user_or_username, size, prefix):
-    if isinstance(user_or_username, 'user_profile.models.NodeProfile'):
+    if isinstance(user_or_username, 'user_profile.node_models.NodeProfile'):
         user_or_username = user_or_username.title
 
     key = six.u('%s_%s_%s') % (prefix, user_or_username, size)
