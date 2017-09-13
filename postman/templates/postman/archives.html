@@ -4,5 +4,8 @@
 {% block pm_archive_button %}{% endblock %}
 {% block pm_undelete_button %}{% endblock %}
 {% block pm_footer_info %}<br>
-<p class="center flow-text">{% trans "Messages in this folder will never be removed. You can use this folder for long term storage." %}</p>
+    <p class="center flow-text">{% trans "Messages in this folder will never be removed. You can use this folder for long term storage." %}</p>
+    <script>
+        $('#postman_menu').find('li:nth-child(5)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
 {% endblock %}

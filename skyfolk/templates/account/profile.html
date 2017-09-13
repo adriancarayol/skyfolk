@@ -174,17 +174,38 @@ Template para el perfil de cada usuario
                         }
                     });
 
+                    var followed = new Waypoint.Infinite({
+                        element: $('#list-following'),
+                        items: '.following-item',
+                        offset: 'bottom-in-view',
+                        more: '.infinite-more-followed',
+                        onBeforePageLoad: function () {
+                            $('.load_following').show();
+                        },
+                        onAfterPageLoad: function () {
+                            $('.load_following').hide();
+                        },
+                        enabled: false
+                    });
+
                     $('#tab-container')
                         .bind('easytabs:after', function (evt, tab, panel, data) {
                             if (tab[0].text.toLowerCase() === 'seguidos') {
-                                $.get("?pagefollowing=1&qs=following", function (data, status) {
-                                    $('#load_following').show();
-                                    $('#list-following').replaceWith(data);
-                                    $('#load_following').hide();
-                                });
+                                if (typeof infinite['waypoint'] !== 'undefined')
+                                    infinite['waypoint'].disable();
+                                    followed['waypoint'].enable();
+                                    $.get("?pagefollowing=1&qs=following", function (data, status) {
+                                        $('#load_following').show();
+                                        $('#list-following').replaceWith(data);
+                                        $('#load_following').hide();
+                                    });
                             } else if (tab[0].text.toLowerCase() === 'skyline') {
+                                if (typeof followed['waypoint'] !== 'undefined')
+                                    followed['waypoint'].destroy();
+                                infinite['waypoint'].enable();
                             }
                         });
+
                 </script>
 
                 {% if user_profile == user %}

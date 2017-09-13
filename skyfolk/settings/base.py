@@ -325,6 +325,9 @@ TELLME_FEEDBACK_EMAIL = 'adriancarayol@gmail.com'
 
 MANAGERS = ADMINS
 POSTMAN_AUTO_MODERATE_AS = True
+# Manejamos los envios de emails nosotros
+# con el modulo notifications
+POSTMAN_DISABLE_USER_EMAILING = True
 
 # HAYSTACK_CONNECTIONS = {
 #     'default': {

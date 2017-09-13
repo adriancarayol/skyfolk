@@ -4,8 +4,12 @@
 {% block pm_delete_button %}{% endblock %}
 {% block pm_archive_button %}{% endblock %}
 {% block pm_subject %}{# no link #}
-     {% include "postman/inc_subject_ex.html" %}
+    {% include "postman/inc_subject_ex.html" %}
 {% endblock %}
 {% block pm_footer_info %}<br>
-<p class="center flow-text">{% trans "Messages in this folder can be removed from time to time. For long term storage, use instead the archive folder." %}</p>
+    <p class="center flow-text">{% trans "Messages in this folder can be removed from time to time. For long term storage, use instead the archive folder." %}</p>
+
+    <script>
+        $('#postman_menu').find('li:nth-child(4)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
 {% endblock %}

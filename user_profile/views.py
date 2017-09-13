@@ -536,7 +536,6 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # enviamos peticion de amistad
-            # TODO: Hacer transaction atomic
             try:
                 friend_request = Request.objects.get_follow_request(from_profile=user.user_id,
                                                                     to_profile=friend.user_id)
@@ -612,6 +611,8 @@ def add_friend_by_username_or_pin(request):
                             data['response'] = 'added_friend'
                 except Exception as e:
                     logging.info(e)
+                    return HttpResponse(json.dumps(data), content_type='application/javascript')
+
                 data['friend_username'] = friend.title
                 data['friend_avatar'] = avatar(sql_friend)
                 data['friend_first_name'] = sql_friend.first_name

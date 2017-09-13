@@ -30,7 +30,6 @@ in the INSTALLED_APPS setting.
                         class="material-icons right">account_circle</i>({{ item.title }})
                 </li>
             {% endfor %}
-            <li class="blue lighten-5"><i class="material-icons right">group</i>Equipo desarrolladores</li>
         </ul>
     </div>
     {% endblock %}
@@ -114,8 +113,10 @@ in the INSTALLED_APPS setting.
                                     <div class="row">
                                         <div class="col s12">
                                             {% avatar message.sender %}
+                                            {% with message.obfuscated_sender|or_me:user.id as sender %}
                                             <span class="blue-text sender"><a
-                                                    href="/profile/{{ message.obfuscated_sender|or_me:user.id }}">{{ message.obfuscated_sender|or_me:user.id }}</a></span>
+                                                    href="{% url 'user_profile:profile' username=sender %}">@{{ sender }}</a></span>
+                                            {% endwith %}
                                             <span>
                                                 <i class="time right">{{ message.sent_at|date:_("DATETIME_FORMAT") }}</i>
                                             </span>

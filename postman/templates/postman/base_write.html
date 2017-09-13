@@ -15,24 +15,29 @@
         <div class="row">
             {% block postman_menu %}
                 <div id="postman_menu" class="col l2 m12 s12 wrapper-config-menu">{% postman_unread as unread_count %}
-        <ul class="menu-config">
-            <li onclick="window.location.href='{% url 'postman:inbox' %}'">{% trans "Inbox" %}{% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}<i
-                    class="material-icons right">inbox</i></li>
-            <li onclick="window.location.href='{% url 'postman:write' %}'">{% trans "Write" %}<i
-                    class="material-icons right">create</i></li>
-            <li onclick="window.location.href='{% url 'postman:sent' %}'">{% trans "Sent Messages" %}<i class="material-icons right">forward</i>
-            </li>
-            <li onclick="window.location.href='{% url 'postman:trash' %}'">{% trans "Trash" %}<i class="material-icons right">delete</i></li>
-            <li onclick="window.location.href='{% url 'postman:archives' %}'">{% trans "Archives" %} <i class="material-icons right">folder_special</i></li>
-            <li class="blue lighten-5">Contactos ({{ friends_top12|length }})</li>
-            {% for item in friends_top12 %}
-                <li class="blue lighten-5" onclick="window.location.href='/messages/write/{{ item.title }}'"><i
-                        class="material-icons right">account_circle</i>({{ item.title }})
-                </li>
-            {% endfor %}
-            <li class="blue lighten-5"><i class="material-icons right">group</i>Equipo desarrolladores</li>
-        </ul>
-    </div>
+                    <ul class="menu-config">
+                        <li onclick="window.location.href='{% url 'postman:inbox' %}'">
+                            {% trans "Inbox" %}{% if unread_count %} <strong>({{ unread_count }})</strong>{% endif %}<i
+                                class="material-icons right">inbox</i></li>
+                        <li onclick="window.location.href='{% url 'postman:write' %}'">{% trans "Write" %}<i
+                                class="material-icons right">create</i></li>
+                        <li onclick="window.location.href='{% url 'postman:sent' %}'">{% trans "Sent Messages" %}<i
+                                class="material-icons right">forward</i>
+                        </li>
+                        <li onclick="window.location.href='{% url 'postman:trash' %}'">{% trans "Trash" %}<i
+                                class="material-icons right">delete</i></li>
+                        <li onclick="window.location.href='{% url 'postman:archives' %}'">{% trans "Archives" %} <i
+                                class="material-icons right">folder_special</i></li>
+                        <li class="blue lighten-5">Contactos ({{ friends_top12|length }})</li>
+                        {% for item in friends_top12 %}
+                            <li class="blue lighten-5"
+                                onclick="window.location.href='/messages/write/{{ item.title }}'"><i
+                                    class="material-icons right">account_circle</i>({{ item.title }})
+                            </li>
+                        {% endfor %}
+                        <li class="blue lighten-5"><i class="material-icons right">group</i>Equipo desarrolladores</li>
+                    </ul>
+                </div>
             {% endblock %}
             <div id="postman" class="col offset-l1 l8 m12 s12 body-wrapper">
                 <div class="row">
@@ -69,4 +74,7 @@
             </div>
         </div>
     </div>
+    <script>
+        $('#postman_menu').find('li:nth-child(2)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
 {% endblock %}
