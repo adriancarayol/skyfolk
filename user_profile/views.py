@@ -686,16 +686,12 @@ def like_profile(request):
                             rel.save()
                         notify.send(user, actor=user.username,
                                     recipient=actual_profile,
+                                    description="@{0} ha dado like a tu perfil.".format(user.username),
                                     verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
                                         user.username, user.username), level='like_profile')
                 response = "like"
             except Exception as e:
                 pass
-
-            # Enviar email...
-            notify_via_email(user, [actual_profile], 'Skyfolk - {0} te ha dado un like.'.format(user.username),
-                             'emails/like_profile.html',
-                             {'to_user': actual_profile.username, 'from_user': user.username})
 
         logging.info('%s da like a %s' % (user.username, actual_profile.username))
         logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
@@ -746,13 +742,10 @@ def request_friend(request):
                             # enviamos notificacion informando del evento
                             notify.send(user, actor=n.title,
                                         recipient=recipient,
+                                        description="@{0} ahora es tu seguidor.".format(user.username),
                                         verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (n.title, n.title),
                                         level='new_follow')
                     response = "added_friend"
-                    # enviamos mail
-                    notify_via_email(user, [recipient], 'Skyfolk - {0} ahora te sigue.'.format(user.username),
-                                     'emails/new_follow.html',
-                                     {'to_user': recipient.username, 'from_user': user.username})
                 except Exception as e:
                     logging.info(e)
                     response = "no_added_friend"
@@ -775,18 +768,15 @@ def request_friend(request):
                 # Creamos y enviamos la nueva notificacion
                 notification = notify.send(user, actor=n.title,
                                            recipient=recipient,
+                                           description="@{0} quiere seguirte.".format(n.title),
                                            verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(n.title),
                                            level='friendrequest')
 
                 # Enlazamos notificacion con peticion de amistad
                 try:
                     Request.objects.add_follow_request(n.user_id,
-                                                                 m.user_id,
-                                                                 notification[0][1])
-
-                    notify_via_email(user, [recipient], 'Skyfolk - {0} quiere seguirte.'.format(user.username),
-                                     'emails/follow_request.html',
-                                     {'to_user': recipient.username, 'from_user': user.username})
+                                                       m.user_id,
+                                                       notification[0][1])
 
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
@@ -822,6 +812,7 @@ def respond_friend_request(request):
                                                            from_profile=recipient.profile, type=FOLLOWING)
                         notify.send(user, actor=user.username,
                                     recipient=recipient,
+                                    description="@{0} ha aceptado tu solicitud de seguimiento.".format(user.username),
                                     verb=u'¡ahora sigues a <a href="/profile/%s">%s</a>!.' % (
                                         user.username, user.username),
                                     level='new_follow')
@@ -832,9 +823,6 @@ def respond_friend_request(request):
                 response = "added_friend"
                 logging.info('user.profile: {} emitter_profile: {}'.format(user.username, recipient.id))
                 # enviamos notificacion informando del evento
-                notify_via_email(user, [recipient], 'Skyfolk - {0} ha aceptado tu solicitud.'.format(user.username),
-                                 'emails/new_follow_added.html',
-                                 {'to_user': recipient.username, 'from_user': user.username})
             except Exception as e:
                 logging.info(e)
                 response = 'rejected'

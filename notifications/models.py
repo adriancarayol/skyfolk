@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.utils.timesince import timesince as timesince_
 from avatar.models import Avatar
 from avatar.templatetags.avatar_tags import avatar
+from mailer.handler import notify_via_email
 from user_profile.utils import notification_channel
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
@@ -312,6 +313,7 @@ def notify_handler(verb, **kwargs):
             pass
 
         actor_avatar = avatar(actor)
+
         newnotify, created = Notification.objects.get_or_create(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),
@@ -335,6 +337,15 @@ def notify_handler(verb, **kwargs):
             newnotify.data = kwargs
 
         newnotify.save()
+
+        # Si el usuario desea recibir notificaciones de skyfolk a su correo
+        try:
+            if recipient.notification_settings.email_when_new_notification:
+                notify_via_email(actor, [recipient],
+                                 "Skyfolk - {0}, tienes nuevas notificaciones.".format(recipient.username),
+                                 'emails/new_notification.html', {'to_user': recipient.username, 'description': description})
+        except ObjectDoesNotExist:
+            pass
 
         content = render_to_string(template_name='channels/new_notification.html',
                                    context={'notification': newnotify})

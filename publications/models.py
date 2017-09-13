@@ -259,13 +259,9 @@ class Publication(PublicationBase):
         if self.author_id != self.board_owner_id:
             notify.send(self.author, actor=self.author.username,
                         recipient=self.board_owner,
+                        description="Te avisamos de que @{0} ha publicado en tu skyline.".format(self.author.username),
                         verb=u'<a href="/profile/%s">@%s</a> ha publicado en tu tablón.' %
                              (self.author.username, self.author.username), level='notification_board_owner')
-
-            # Enviamos email al board_owner
-            notify_via_email(self.author, [self.board_owner], 'Skyfolk - {0} ha comentado en tu skyline.'.format(self.author.username),
-                             'emails/new_publication.html',
-                             {'to_user': self.board_owner.username, 'from_user': self.author.username})
 
 
 class PublicationVideo(models.Model):

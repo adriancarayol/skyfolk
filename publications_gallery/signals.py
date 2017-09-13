@@ -61,7 +61,6 @@ xstr = lambda s: s or ""
 
 
 def add_extra_content(instance):
-
     if not instance.content:
         return
 
@@ -133,9 +132,11 @@ def notify_mentions(instance):
 
         if instance.p_author.pk != recipientprofile.pk:
             notify.send(instance.p_author, actor=instance.p_author.username,
-                    recipient=recipientprofile,
-                    verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.p_author.username),
-                    description='<a href="%s">Ver</a>' % ('/publication_pdetail/' + str(instance.id)))
+                        recipient=recipientprofile,
+                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.p_author.username),
+                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.p_author.username,
+                                                                                           '/publication_pdetail/' + str(
+                                                                                               instance.id)))
 
 
 def increase_affinity(instance):

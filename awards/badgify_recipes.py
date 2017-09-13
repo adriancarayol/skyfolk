@@ -19,7 +19,7 @@ class FirstLoginRecipe(BaseRecipe):
 
     @property
     def user_ids(self):
-        return User.objects.filter(love_python=True).values_list('id', flat=True)
+        return User.objects.filter(is_active=True).values_list('id', flat=True)
 
 
 class TenPubsReachedRecipe(BaseRecipe):
@@ -36,7 +36,7 @@ class TenPubsReachedRecipe(BaseRecipe):
 
     @property
     def user_ids(self):
-        return User.objects.filter(love_js=True).values_list('id', flat=True)
+        return User.objects.filter(is_active=True).values_list('id', flat=True)
 
 
 badgify.register(FirstLoginRecipe)

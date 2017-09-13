@@ -7,7 +7,6 @@ from django.db import models
 from channels import Group as channel_group
 from embed_video.fields import EmbedVideoField
 
-from mailer.handler import notify_via_email
 from publications.models import PublicationBase
 from user_groups.models import UserGroups
 from django.template.loader import render_to_string
@@ -135,16 +134,10 @@ class PublicationGroup(PublicationBase):
         }) for x in self.get_ancestors().values_list('id', flat=True)]
 
         # Notificamos al board_owner de la publicacion
-        if self.author_id != self.board_group.owner_id:
-            notify.send(self.author, actor=self.author.username,
-                        recipient=self.board_group.owner,
-                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en el grupo %s.' %
-                             (self.author.username, self.author.username, self.board_group.name),
-                        level='notification_board_group')
-
-            # Enviamos email al board_owner
-            notify_via_email(self.author, [self.board_group.owner],
-                             'Skyfolk - {0} ha comentado en el grupo {1}.'.format(self.author.username,
-                                                                                  self.board_group.name),
-                             'emails/new_publication.html',
-                             {'to_user': self.board_group.owner.username, 'from_user': self.author.username})
+        notify.send(self.author, actor=self.author.username,
+                    recipient=self.board_group.owner,
+                    description="Te avisamos de que @{0} ha publicado en el skyline del grupo {1}.".format(
+                        self.author.username, self.board_group.name),
+                    verb=u'<a href="/profile/%s">@%s</a> ha publicado en el grupo %s.' %
+                         (self.author.username, self.author.username, self.board_group.name),
+                    level='notification_board_group')

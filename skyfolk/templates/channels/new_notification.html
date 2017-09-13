@@ -8,7 +8,7 @@
         {% avatar notification.actor %}
     </div>
     <span class="title">{{ notification.verb|safe }} {% if notification.description %}
-        {{ notification.description|safe }} {% endif %}</span>
+        <br><br><small>{{ notification.description|safe }}</small> {% endif %}</span>
         <p><i>{{ notification.timestamp|naturaltime }}</i></p>
         {% if notification.level == "friendrequest" %}
         <div class="notification-buttons">

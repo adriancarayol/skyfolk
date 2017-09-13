@@ -302,6 +302,7 @@ def follow_group(request):
                                 notify.send(user,
                                             actor=user.username,
                                             recipient=group.owner,
+                                            description="@{0} solicita unirse al grupo {1}.".format(user.username, group.name),
                                             verb=u'<a href="/profile/{0}/">@{0}</a> solicita unirse al grupo {1}'.format(
                                                 user.username, group.name),
                                             level='grouprequest', action_object=request_group)
@@ -310,13 +311,6 @@ def follow_group(request):
                             return JsonResponse({
                                 'response': "no_added_group"
                             })
-
-                        notify_via_email(user, [group.owner],
-                                         'Skyfolk - <a href="/profile/{0}/">@{0}</a> quiere unirse a {1}.'.format(
-                                             user.username, group.name),
-                                         'emails/member_request.html',
-                                         {'to_user': group.owner.username, 'from_user': user.username,
-                                          'to_group': group.name})
 
                     return JsonResponse({
                         'response': 'in_progress'
@@ -503,6 +497,9 @@ class RespondGroupRequest(View):
                             g.members.connect(n)
                             notify.send(user, actor=user.username,
                                         recipient=request_group.emitter,
+                                        description="@{0} ha aceptado tu solicitud, ahora eres miembro de {1}.".format(
+                                            user.username, group.name
+                                        ),
                                         verb=u'¡ahora eres miembro de <a href="/group/%s">%s</a>!.' % (
                                             group.name, group.name),
                                         level='new_member_group')
@@ -510,12 +507,6 @@ class RespondGroupRequest(View):
                     return JsonResponse({'response': 'error'})
 
                 response = "added_friend"
-                notify_via_email(user, [request_group.emitter],
-                                 'Skyfolk - <a href="/profile/{0}/">@{0}</a> ha aceptado tu solicitud, ahora eres '
-                                 'miembro de {1}.'.format(
-                                     user.username, group.name),
-                                 'emails/new_member_added.html',
-                                 {'to_user': request_group.emitter.username, 'from_group': group.name})
 
         elif request_status == 'rejected':
             if user.id == group.owner_id:

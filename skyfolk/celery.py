@@ -37,6 +37,11 @@ app.conf.beat_schedule = {
         'task': 'tasks.clean_deleted_photo_publications',
         'schedule': crontab(minute=0, hour=2),
         'options': {'queue': 'clean'}
+    },
+    'recommendations-via-email': {
+        'task': 'tasks.send_recommendation_via_email',
+        'schedule': crontab(minute='*/1'),
+        'options': {'queue': 'background'}
     }
 }
 

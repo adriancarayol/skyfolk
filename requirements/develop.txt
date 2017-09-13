@@ -107,3 +107,4 @@ urllib3==1.22
 Whoosh==2.7.4
 Twisted[tls,http2]
 django_celery_beat>=1.0.1
+django-badgify
