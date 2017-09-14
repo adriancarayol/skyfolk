@@ -9,9 +9,7 @@ Pestaña de amigos en el perfil
         </div>
     </div>
     <div class="divider"></div>
-    {% include "account/follow_entries.html" %}
-    <a class="infinite-more-followed waves-effect waves-light btn-large blue darken-1 white-text center" href="?page=2&qs=following">More</a>
-    <div class="progress load_following" style="display: none">
-        <div class="indeterminate blue darken-1"></div>
+    <div class="row followed-container">
+        {% include "account/follow_entries.html" %}
     </div>
 </div>

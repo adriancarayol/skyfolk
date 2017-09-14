@@ -92,6 +92,7 @@ class News(ListView):
             photos = Photo.objects.filter(
                 Q(owner__profile__privacity='A') & Q(is_public=True)).order_by('-date_added')[offset:limit]
 
+        extended_list = []
         if len(photos) <= 0 or len(publications) <= 0:
             extended_list = [u.user_id for u in self.get_recommendation_users(offset, limit)]
 

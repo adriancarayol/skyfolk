@@ -258,9 +258,25 @@ $(document).ready(function () {
         var loader = $(this).next().find('.load_publications_descendants');
         var pub_id = $(this).data('id');
         var page = $('.page_for_' + pub_id).last().val();
-        if (typeof page === 'undefined')
+        if (typeof page === 'undefined') {
             page = 1;
+        }
         AJAX_load_publications(pub_id, loader, page, this);
+    });
+
+    $(tab_amigos).on('click', '.infinite-more-followed', function (e) {
+        e.preventDefault();
+        var _next = $(this).attr('href');
+        $.get(_next, function (data, status) {
+            var $load_following = $('.load_following');
+            $load_following.show();
+            var _items = $(data).find('.item-followed');
+            $('.infinite-following').append(_items);
+            $('.infinite-more-followed').replaceWith($(data).find('.infinite-more-followed'));
+            $load_following.hide();
+        }).always(function () {
+
+        });
     });
 }); // END DOCUMENT READY */
 

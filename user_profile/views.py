@@ -119,17 +119,22 @@ def profile_view_ajax(request, user_profile, node_profile=None):
             'pubs_shared_with_me': pubs_shared_with_me
         }
     elif qs == 'following':
-        page = int(request.GET.get('pagefollowing', 1))
+        page = int(request.GET.get('page', 1))
         template = 'account/follow_entries.html'
         limit = 25 * page
         offset = limit - 25
         total_users = node_profile.count_follows()
         total_pages = int(total_users / 25)
 
-        if total_users % 25 != 0:
+        if total_users % 1 != 0:
             total_pages += 1
-            if page < total_pages:
-                page = page + 1
+
+        if page == total_pages:
+            page = None
+
+        elif page < total_pages:
+            page = page + 1
+
         context = {
             'user_profile': user_profile,
             'friends_top12': node_profile.get_follows(offset, 25),

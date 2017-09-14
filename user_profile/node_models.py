@@ -73,7 +73,7 @@ class NodeProfile(DjangoNode):
         app_label = 'node_profile'
 
     def get_followers(self, offset=None, limit=None):
-        if limit and offset:
+        if limit is not None and offset is not None:
 
             results, columns = self.cypher(
                 "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b ORDER BY b.user_id SKIP %d LIMIT %d" % (
@@ -89,7 +89,7 @@ class NodeProfile(DjangoNode):
         return results[0][0]
 
     def get_follows(self, offset=None, limit=None):
-        if limit and offset:
+        if limit is not None and offset is not None:
             results, columns = self.cypher(
                 "MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b ORDER BY b.user_id SKIP %d LIMIT %d" % (
                     offset, limit))
