@@ -82,6 +82,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                             g = NodeGroup(group_id=group.group_ptr_id,
                                           title=group.name).save()
                             n = NodeProfile.nodes.get(user_id=user.id)
+                            g.user_set.add(user)
                             g.members.connect(n)
                             if tags:
                                 for tag in tags:
@@ -154,10 +155,10 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     except NodeProfile.DoesNotExist:
         raise Http404
 
-    is_member = True
-    if not group_profile.is_public and group_profile.owner_id != user.id:
-        if not node_group.members.is_connected(n):
-            is_member = False
+    is_member = False
+    if group_profile.owner_id != user.id:
+        if node_group.members.is_connected(n):
+            is_member = True
 
     publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
                                                    Q(deleted=False) & Q(level__lte=0) & ~Q(
@@ -275,6 +276,7 @@ def follow_group(request):
                         with transaction.atomic(using="default"):
                             with db.transaction:
                                 g.members.connect(n)
+                                group.user_set.add(user)
                                 assign_perm('can_publish', user, group)
                                 return JsonResponse({
                                     'response': "user_add"
@@ -347,6 +349,7 @@ def unfollow_group(request):
                     with transaction.atomic(using="default"):
                         with db.transaction:
                             node_group.members.disconnect(n)
+                            group.user_set.remove(user)
                             remove_perm('can_publish', user, group)
                     return HttpResponse(json.dumps("user_unfollow"), content_type='application/javascript')
                 except (ObjectDoesNotExist, Exception) as e:
@@ -494,6 +497,7 @@ class RespondGroupRequest(View):
                     with transaction.atomic(using="default"):
                         with db.transaction:
                             request_group.delete()
+                            group.user_set.add(user)
                             g.members.connect(n)
                             notify.send(user, actor=user.username,
                                         recipient=request_group.emitter,
@@ -569,7 +573,11 @@ class KickMemberGroup(View):
             except ObjectDoesNotExist:
                 return JsonResponse({'response': response})
 
-            g.members.disconnect(n)
+            with transaction.atomic(using="default"):
+                with db.transaction():
+                    group.user_set.add(user)
+                    g.members.disconnect(n)
+
             response = 'kicked'
 
         return JsonResponse({'response': response})

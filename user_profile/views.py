@@ -5,7 +5,6 @@ from allauth.account.views import PasswordChangeView, EmailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
 from django.db import transaction, IntegrityError
 from django.db.models import Case, When
@@ -43,6 +42,7 @@ from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .serializers import UserSerializer
 from .utils import crop_image, make_pagination_html
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def load_profile_publications(request, page, profile):
@@ -121,23 +121,23 @@ def profile_view_ajax(request, user_profile, node_profile=None):
     elif qs == 'following':
         page = int(request.GET.get('page', 1))
         template = 'account/follow_entries.html'
-        limit = 25 * page
-        offset = limit - 25
-        total_users = node_profile.count_follows()
-        total_pages = int(total_users / 25)
+        profile = Profile.objects.values_list('id', flat=True).get(user=request.user)
 
-        if total_users % 1 != 0:
-            total_pages += 1
+        users = User.objects.filter(profile__to_profile__from_profile_id=profile)
+        paginator = Paginator(users, 25)  # Show 25 contacts per page
 
-        if page == total_pages:
-            page = None
-
-        elif page < total_pages:
-            page = page + 1
+        try:
+            followed = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            followed = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            followed = paginator.page(paginator.num_pages)
 
         context = {
             'user_profile': user_profile,
-            'friends_top12': node_profile.get_follows(offset, 25),
+            'friends_top12': followed,
             'friend_page': page,
         }
     else:
