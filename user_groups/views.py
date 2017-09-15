@@ -25,7 +25,6 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from mailer.handler import notify_via_email
 from notifications.models import Notification
 from notifications.signals import notify
 from publications.models import Publication
@@ -33,10 +32,10 @@ from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
 from user_profile.node_models import NodeProfile, TagProfile
-from user_profile.utils import make_pagination_html
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup
-from .models import UserGroups, LikeGroup, NodeGroup, RequestGroup
+from .models import UserGroups, LikeGroup, RequestGroup
+from user_groups.node_models import NodeGroup
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .decorators import user_can_view_group, user_can_view_group_info
 
@@ -82,7 +81,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                             g = NodeGroup(group_id=group.group_ptr_id,
                                           title=group.name).save()
                             n = NodeProfile.nodes.get(user_id=user.id)
-                            g.user_set.add(user)
+                            group.user_set.add(user)
                             g.members.connect(n)
                             if tags:
                                 for tag in tags:
@@ -261,7 +260,7 @@ def follow_group(request):
                 try:
                     g = NodeGroup.nodes.get(group_id=group_id)
                     n = NodeProfile.nodes.get(user_id=user.id)
-                except ObjectDoesNotExist:
+                except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
                     raise Http404
 
                 created = g.members.is_connected(n)
@@ -275,7 +274,6 @@ def follow_group(request):
                     try:
                         with transaction.atomic(using="default"):
                             with db.transaction:
-                                g.members.connect(n)
                                 group.user_set.add(user)
                                 assign_perm('can_publish', user, group)
                                 return JsonResponse({
@@ -304,7 +302,8 @@ def follow_group(request):
                                 notify.send(user,
                                             actor=user.username,
                                             recipient=group.owner,
-                                            description="@{0} solicita unirse al grupo {1}.".format(user.username, group.name),
+                                            description="@{0} solicita unirse al grupo {1}.".format(user.username,
+                                                                                                    group.name),
                                             verb=u'<a href="/profile/{0}/">@{0}</a> solicita unirse al grupo {1}'.format(
                                                 user.username, group.name),
                                             level='grouprequest', action_object=request_group)
@@ -340,19 +339,12 @@ def unfollow_group(request):
             group = get_object_or_404(UserGroups, group_ptr_id=group_id)
             if user.pk != group.owner.pk:
                 try:
-                    node_group = NodeGroup.nodes.get(group_id=group_id)
-                    n = NodeProfile.nodes.get(user_id=user.id)
-                except ObjectDoesNotExist:
-                    raise Http404
-
-                try:
                     with transaction.atomic(using="default"):
                         with db.transaction:
-                            node_group.members.disconnect(n)
                             group.user_set.remove(user)
                             remove_perm('can_publish', user, group)
                     return HttpResponse(json.dumps("user_unfollow"), content_type='application/javascript')
-                except (ObjectDoesNotExist, Exception) as e:
+                except (ObjectDoesNotExist, IntegrityError) as e:
                     return HttpResponse(json.dumps("error"), content_type='application/javascript')
             else:
                 return HttpResponse(json.dumps("error"), content_type='application/javascript')
@@ -370,15 +362,26 @@ def like_group(request):
             group_id = request.POST.get('id', None)
             group = get_object_or_404(UserGroups,
                                       group_ptr_id=group_id)
+            try:
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        like, created = LikeGroup.objects.get_or_create(
+                            from_like=user, to_like=group)
+            except (IntegrityError, ObjectDoesNotExist) as e:
+                logging.info(e)
+                return JsonResponse({'response': 'error'})
 
-            like, created = LikeGroup.objects.get_or_create(
-                from_like=user, to_like=group)
-            print('Like: {}'.format(like))
             if not created:
-                like.delete()
+                try:
+                    like.delete()
+                    NodeGroup.nodes.get(group_id=group.group_ptr_id).likes.disconnect(
+                        NodeProfile.nodes.get(user_id=user.id))
+                except IntegrityError as e:
+                    return JsonResponse({'response': 'error'})
                 return JsonResponse({'response': 'no_like'})
             else:
                 return JsonResponse({'response': 'like'})
+
     return JsonResponse(
         {'response': 'error'})
 
@@ -389,10 +392,10 @@ class FollowersGroup(ListView):
     """
     context_object_name = 'user_list'
     template_name = 'groups/followers.html'
+    paginate_by = 25
 
     def __init__(self, *args, **kwargs):
         super(FollowersGroup, self).__init__(*args, **kwargs)
-        self.pagination = None
         self.group = None
 
     @method_decorator(user_can_view_group_info)
@@ -400,26 +403,11 @@ class FollowersGroup(ListView):
         return super(FollowersGroup, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1'))  # page or 1
-        limit = 25 * current_page
-        offset = limit - 25
-
-        self.group = UserGroups.objects.get(slug__exact=self.kwargs['groupname'])
-        node_group = NodeGroup.nodes.get(group_id=self.group.group_ptr_id)
-        user_ids = [x.user_id for x in node_group.members.all()[offset:25]]
-
-        total_users = len(node_group.members.all())
-        total_pages = int(total_users / 25)
-        if total_users % 25 != 0:
-            total_pages += 1
-        self.pagination = make_pagination_html(current_page, total_pages)
-
-        return User.objects.filter(id__in=user_ids).select_related('profile')
+        return UserGroups.objects.get(slug__exact=self.kwargs['groupname']).user_set.all()
 
     def get_context_data(self, **kwargs):
         context = super(FollowersGroup, self).get_context_data(**kwargs)
         user = self.request.user
-        context['pagination'] = self.pagination
         context['group'] = self.group
         context['enable_kick_btn'] = user.has_perm('kick_member', self.group)
         return context
@@ -434,10 +422,10 @@ class LikeListGroup(ListView):
     """
     context_object_name = 'like_list'
     template_name = 'groups/user_likes.html'
+    paginate_by = 25
 
     def __init__(self, *args, **kwargs):
         super(LikeListGroup, self).__init__(*args, **kwargs)
-        self.pagination = None
         self.group = None
 
     @method_decorator(user_can_view_group_info)
@@ -445,27 +433,16 @@ class LikeListGroup(ListView):
         return super(LikeListGroup, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1'))  # page or 1
-        limit = 25 * current_page
-        offset = limit - 25
-
-        self.group = UserGroups.objects.values('id', 'name').get(slug__exact=self.kwargs['groupname'])
-
-        total_users = LikeGroup.objects.filter(to_like_id=self.group['id']).count()
-        total_pages = int(total_users / 25)
-        if total_users % 25 != 0:
-            total_pages += 1
-        self.pagination = make_pagination_html(current_page, total_pages)
-        return LikeGroup.objects.filter(to_like_id=self.group['id']).values('from_like__username',
-                                                                            'from_like__first_name',
-                                                                            'from_like__last_name',
-                                                                            'from_like__profile__back_image'
-                                                                            )
+        self.group = UserGroups.objects.get(slug=self.kwargs.pop('groupname', None))
+        return LikeGroup.objects.filter(to_like_id=self.group.group_ptr_id).values('from_like__username',
+                                                                                   'from_like__first_name',
+                                                                                   'from_like__last_name',
+                                                                                   'from_like__profile__back_image'
+                                                                                   )
 
     def get_context_data(self, **kwargs):
         context = super(LikeListGroup, self).get_context_data(**kwargs)
         context['group'] = self.group
-        context['pagination'] = self.pagination
         return context
 
 
@@ -491,7 +468,7 @@ class RespondGroupRequest(View):
                 try:
                     g = NodeGroup.nodes.get(group_id=group.group_ptr_id)
                     n = NodeProfile.nodes.get(user_id=request_group.emitter_id)
-                except ObjectDoesNotExist:
+                except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
                     return JsonResponse({'response': response})
                 try:
                     with transaction.atomic(using="default"):
@@ -560,6 +537,7 @@ class KickMemberGroup(View):
 
         try:
             group = UserGroups.objects.get(group_ptr_id=group_id)
+            user_to_kick = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
             return JsonResponse({'response': 'error'})
 
@@ -567,16 +545,9 @@ class KickMemberGroup(View):
             return JsonResponse({'response': 'is_owner'})
 
         if user.has_perm('kick_member', group):
-            try:
-                n = NodeProfile.nodes.get(user_id=user_id)
-                g = NodeGroup.nodes.get(group_id=group.group_ptr_id)
-            except ObjectDoesNotExist:
-                return JsonResponse({'response': response})
-
             with transaction.atomic(using="default"):
-                with db.transaction():
-                    group.user_set.add(user)
-                    g.members.disconnect(n)
+                with db.transaction:
+                    group.user_set.remove(user_to_kick)
 
             response = 'kicked'
 
@@ -589,15 +560,13 @@ kick_member = login_required(KickMemberGroup.as_view(), login_url='/')
 class ProfileGroups(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = "groups/list_group_profile.html"
+    pagination_class = 'rest_framework.pagination.CursorPagination'
 
     def get(self, request, *args, **kwargs):
-        user_id = kwargs.pop('user_id', None)
-
-        if not user_id:
-            raise Http404
+        user = User.objects.get(id=kwargs.pop('user_id'))
 
         try:
-            profile = NodeProfile.nodes.get(user_id=user_id)
+            profile = NodeProfile.nodes.get(user_id=user.id)
             request_user = NodeProfile.nodes.get(user_id=request.user.id)
         except User.DoesNotExist:
             raise Http404
@@ -606,44 +575,21 @@ class ProfileGroups(APIView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-        current_page = int(request.GET.get('page', '1'))  # page or 1
-        limit = 12 * current_page
-        offset = limit - 12
+        queryset = UserGroups.objects.filter(group_ptr__in=user.groups.all()).annotate(members=Count('group_ptr__user'))
 
+        paginator = Paginator(queryset, 12)  # Show 25 contacts per page
+
+        page = request.GET.get('page', 1)
         try:
-            results, meta = db.cypher_query(
-                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN COUNT(n) as groups" % user_id)
-        except Exception as e:
-            results = []
-            logging.info(e)
+            groups = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            groups = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            groups = paginator.page(paginator.num_pages)
 
-        total_groups = [item for sublist in results for item in sublist][0]
-        total_pages = int(total_groups / 12)
-
-        if total_groups % 12 != 0:
-            total_pages += 1
-        pagination = make_pagination_html(current_page, total_pages, full_path='/groups/profile/%s/' % user_id)
-
-        try:
-            results, meta = db.cypher_query(
-                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE m.user_id=%s RETURN n.group_id ORDER BY n.group_id DESC SKIP %d LIMIT 12" % (
-                    user_id, offset))
-        except Exception as e:
-            logging.info(e)
-
-        groups_ids = [y for x in results for y in x]
-        queryset = UserGroups.objects.filter(group_ptr_id__in=groups_ids)
-
-        try:
-            id_list = ', '.join(str(x) for x in groups_ids)
-            results, meta = db.cypher_query(
-                "MATCH (n:NodeGroup)-[:MEMBER]-(m:NodeProfile) WHERE n.group_id IN [%s] RETURN n.group_id, COUNT(m) as members" % id_list)
-            members_in_groups = dict((item[0], (item[1])) for item in results)
-        except Exception as e:
-            logging.info(e)
-            members_in_groups = []
-
-        return Response({'groups': queryset, 'members': members_in_groups, 'pagination': pagination})
+        return Response({'groups': groups, 'profile_id': user.id})
 
 
 list_group_profile = login_required(ProfileGroups.as_view(), login_url='/')

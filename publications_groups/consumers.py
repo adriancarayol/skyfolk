@@ -4,7 +4,8 @@ from user_profile.node_models import NodeProfile
 from .models import PublicationGroup
 from django.http import Http404
 from .utils import get_channel_name
-from user_groups.models import UserGroups, NodeGroup
+from user_groups.models import UserGroups
+from user_groups.node_models import NodeGroup
 
 
 class GroupPublicationConsumer(WebsocketConsumer):

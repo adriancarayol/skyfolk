@@ -3,7 +3,8 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from user_groups.models import UserGroups, NodeGroup, RequestGroup, LikeGroup
+from user_groups.models import UserGroups, RequestGroup, LikeGroup
+from user_groups.node_models import NodeGroup
 from user_profile.node_models import NodeProfile
 from functools import wraps
 

@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.text import slugify
-from django_neomodel import DjangoNode
-from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty
 
 from notifications.models import Notification
 
@@ -25,16 +23,6 @@ def upload_small_group_image(instance, filename):
 
 def upload_large_group_image(instance, filename):
     return '%s/large_group_image/%s' % (instance.name, filename)
-
-
-class NodeGroup(DjangoNode):
-    title = StringProperty(unique_index=True)
-    group_id = IntegerProperty(unique_index=True)
-    members = RelationshipFrom('user_profile.node_models.NodeProfile', 'MEMBER')
-    interest = RelationshipTo('user_profile.node_models.TagProfile', 'INTEREST_GROUP')
-
-    class Meta:
-        app_label = 'group_node'
 
 
 def group_avatar_path(instance, filename):

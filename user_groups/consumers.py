@@ -2,7 +2,8 @@ from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
 
 from user_profile.node_models import NodeProfile
-from .models import UserGroups, NodeGroup
+from .models import UserGroups
+from user_groups.node_models import NodeGroup
 
 
 class GroupConsumer(WebsocketConsumer):

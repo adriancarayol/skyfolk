@@ -89,13 +89,13 @@ FIRST_PARTY_APPS = (
     'landing',  # página de inicio
     'user_profile',  # perfil de usuario
     'publications',  # publicaciones en el perfil
-    'publications_gallery', # publicaciones en galeria
-    'publications_groups', # publicaciones en grupos
+    'publications_gallery',  # publicaciones en galeria
+    'publications_groups',  # publicaciones en grupos
     'about',  # sobre los autores
     'latest_news',
     'user_groups',  # Para grupos de usuarios
     'support',  # modulo para ofrecer soporte al usuario
-    'awards', # logros
+    'awards',  # logros
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
@@ -153,13 +153,11 @@ SESSION_UPDATE_SECONDS = 10 * 60
 #                   http://www.django-rest-framework.org/
 REST_FRAMEWORK = {
     # hace la api solo accesible para admins
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated', ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
-    # paginado de la api
-    'PAGINATE_BY': 10
 }
 # /REST FRAMEWORK
 
@@ -312,7 +310,7 @@ STATICFILES_FINDERS = (
     en vez de eliminarlas de la base de datos.'''
 NOTIFICATIONS_SOFT_DELETE = True
 ''' Permite enviar datos arbitrarios en las notificaciones '''
-NOTIFICATIONS_USE_JSONFIELD=True
+NOTIFICATIONS_USE_JSONFIELD = True
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),
@@ -339,10 +337,10 @@ POSTMAN_DISABLE_USER_EMAILING = True
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-      'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-      'PATH': os.path.join(BASE_DIR, 'whoosh_index')
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index')
     },
-  }
+}
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 100
