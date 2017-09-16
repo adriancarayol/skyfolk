@@ -1,0 +1,18 @@
+{% for theme in themes %}
+    <div class="col s12">
+        <div class="card horizontal">
+            <div class="card-image">
+                <img src="{% if theme.image %}{{ theme.image.url }}{% else %}{{ STATIC_URL }}img/nuevo_back.png{% endif %}" style="width: 120px; height: 120px;">
+            </div>
+            <div class="card-stacked">
+                <div class="card-content">
+                    <h4>{{ theme.title|safe }}.</h4>
+                    <p>{{ theme.description|safe }}</p>
+                </div>
+                <div class="card-action">
+                    <a href="#">Ver tema</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

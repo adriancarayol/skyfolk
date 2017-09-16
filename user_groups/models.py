@@ -34,7 +34,7 @@ def group_back_image_path(instance, filename):
 
 
 def group_themes_images(instance, filename):
-    return 'group_{0}/theme_{1}/{2}'.format(instance.board_group, instance.id, filename)
+    return 'group_{0}/themes/{1}'.format(instance.board_group, filename)
 
 
 class UserGroups(Group):
@@ -77,14 +77,17 @@ class GroupTheme(models.Model):
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to=group_themes_images, blank=True, null=True)
 
+    class Meta:
+        ordering = ('-created', )
+
 
 class LikeGroupTheme(models.Model):
-    theme = models.ForeignKey(GroupTheme)
+    theme = models.ForeignKey(GroupTheme, related_name='like_theme')
     by_user = models.ForeignKey(User)
 
 
 class HateGroupTheme(models.Model):
-    theme = models.ForeignKey(GroupTheme)
+    theme = models.ForeignKey(GroupTheme, related_name='hate_theme')
     by_user = models.ForeignKey(User)
 
 

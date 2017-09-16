@@ -164,15 +164,11 @@
                 if (tab[0].text.toLowerCase() === 'temas') {
                     if (submitFollowed) return;
                     submitFollowed = true;
-                    $.get("?page=1&qs=following", function (data, status) {
-                        var $load_following = $('.load_following');
-                        $load_following.show();
-                        $('.followed-container').html($(data));
-                        $load_following.hide();
+                    $.get("?page=1&qs=themes", function (data, status) {
+                        $('.theme-list').append($(data));
                     }).always(function () {
                         submitFollowed = true;
                     });
-                } else if (tab[0].text.toLowerCase() === 'skyline') {
                 }
             });
     </script>

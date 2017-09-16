@@ -161,6 +161,34 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         if node_group.members.is_connected(n):
             is_member = True
 
+
+
+    is_ajax = False
+
+    if request.is_ajax():
+        page = request.GET.get('page', 1)
+        qs = request.GET.get('qs', None)
+        is_ajax = True
+    else:
+        page = 1
+        qs = None
+
+    if is_ajax and qs == 'themes':
+        template = 'groups/group_themes.html'
+        paginator = Paginator(GroupTheme.objects.filter(board_group=group_profile), 20)
+
+        try:
+            themes = paginator.page(page)
+        except PageNotAnInteger:
+            themes = paginator.page(1)
+        except EmptyPage:
+            themes = paginator.page(paginator.num_pages)
+
+        context = {
+           'themes': themes
+        }
+        return render(request, template, context)
+
     publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
                                                    Q(deleted=False) & Q(level__lte=0) & ~Q(
         author__profile__from_blocked__to_blocked=user.profile)) \
@@ -169,13 +197,6 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         .select_related('author',
                         'board_group',
                         'parent')
-
-    is_ajax = False
-    if request.is_ajax():
-        page = request.GET.get('page', 1)
-        is_ajax = True
-    else:
-        page = 1
 
     paginator = Paginator(publications, 20)
 
@@ -197,7 +218,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                                                      deleted=False).values_list('shared_group_publication__id',
                                                                                 flat=True)
 
-    if is_ajax:
+    if is_ajax and qs == 'publications':
         template = 'groups/comentarios_entries.html'
         context = {
             'publications': publications,

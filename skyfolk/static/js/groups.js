@@ -189,13 +189,18 @@ $(function () {
     $(this).on('submit', '#new_group_theme', function (e) {
         e.preventDefault();
         var form = $(this);
+        var data = new FormData(form[0]);
         $.ajax({
             url: form.attr('action'),
             type: 'POST',
-            data: form.serialize(),
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
             success: function (data, textStatus, jqXHR) {
                 Materialize.toast('¡Tema creado con éxito!', 4000); // 4000 is the duration of the toast
-                form.trigger("reset");
+                form.trigger('reset');
+                form.closest('.container_group_theme').hide();
             },
             error: function (data, textStatus, jqXHR) {
                 swal({

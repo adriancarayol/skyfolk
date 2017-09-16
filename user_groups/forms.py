@@ -2,6 +2,7 @@
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from emoji import Emoji
 from user_groups.models import GroupTheme
@@ -100,7 +101,7 @@ class GroupThemeForm(forms.ModelForm):
         model = GroupTheme
         fields = ['description', 'title', 'image', 'board_group', ]
         widgets = {
-            'board_group': forms.HiddenInput()
+            'board_group': forms.HiddenInput(),
         }
 
     def clean_title(self):
@@ -110,3 +111,10 @@ class GroupThemeForm(forms.ModelForm):
     def clean_description(self):
         description = self.cleaned_data['description']
         return Emoji.replace(description)
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+                raise forms.ValidationError('La imagen no puede ser superior a 5MB')
+        return image
