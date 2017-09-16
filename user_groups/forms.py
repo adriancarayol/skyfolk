@@ -3,11 +3,14 @@ from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 
+from emoji import Emoji
+from user_groups.models import GroupTheme
 from .models import UserGroups
 
 
 class MinLengthValidator(validators.MinLengthValidator):
     message = 'Ensure this value has at least %(limit_value)d elements (it has %(show_value)d).'
+
 
 class MaxLengthValidator(validators.MaxLengthValidator):
     message = 'Ensure this value has at most %(limit_value)d elements (it has %(show_value)d).'
@@ -71,6 +74,7 @@ class CommaSeparatedIntegerField(forms.Field):
         self.run_validators(value)
         return value
 
+
 class FormUserGroup(forms.ModelForm):
     # users_in_group = forms.ModelMultipleChoiceField(queryset=User.objects.all())
     tags = CommaSeparatedCharField(max_length=120)
@@ -78,8 +82,8 @@ class FormUserGroup(forms.ModelForm):
     class Meta:
         model = UserGroups
         fields = ['name', 'description',
-                'avatar', 'back_image',
-                'is_public']
+                  'avatar', 'back_image',
+                  'is_public']
 
     def __init__(self, *args, **kwargs):
         super(FormUserGroup, self).__init__(*args, **kwargs)
@@ -89,3 +93,20 @@ class FormUserGroup(forms.ModelForm):
     def clean_is_public(self):
         is_public = self.cleaned_data['is_public']
         return not is_public
+
+
+class GroupThemeForm(forms.ModelForm):
+    class Meta:
+        model = GroupTheme
+        fields = ['description', 'title', 'image', 'board_group', ]
+        widgets = {
+            'board_group': forms.HiddenInput()
+        }
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        return Emoji.replace(title)
+
+    def clean_description(self):
+        description = self.cleaned_data['description']
+        return Emoji.replace(description)

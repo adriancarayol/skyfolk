@@ -184,6 +184,34 @@ $(function () {
         var tag = $(this);
         AJAX_remove_publication_from_skyline(tag.data('id'), tag);
     });
+
+    /* Create theme */
+    $(this).on('submit', '#new_group_theme', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function (data, textStatus, jqXHR) {
+                Materialize.toast('¡Tema creado con éxito!', 4000); // 4000 is the duration of the toast
+                form.trigger("reset");
+            },
+            error: function (data, textStatus, jqXHR) {
+                swal({
+                    title: "Tenemos un problema...",
+                    customClass: 'default-div',
+                    text: "Hubo un problema con su petición.",
+                    timer: 4000,
+                    showConfirmButton: true
+                });
+            }
+        });
+    });
+
+    $(this).on('click', '.open_theme_form', function () {
+        $('.container_group_theme').toggle();
+    });
 });// end document ready
 
 var loadDescendantsRunning = false;

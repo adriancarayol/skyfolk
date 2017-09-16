@@ -33,6 +33,10 @@ def group_back_image_path(instance, filename):
     return 'group_{0}_back_image/{1}'.format(instance.id, filename)
 
 
+def group_themes_images(instance, filename):
+    return 'group_{0}/theme_{1}/{2}'.format(instance.board_group, instance.id, filename)
+
+
 class UserGroups(Group):
     """
         Proxy para grupos.
@@ -63,6 +67,25 @@ class UserGroups(Group):
     @property
     def group_channel(self):
         return "group-%d" % self.group_ptr_id
+
+
+class GroupTheme(models.Model):
+    board_group = models.ForeignKey(Group)
+    created = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User)
+    description = models.CharField(max_length=2048)
+    title = models.CharField(max_length=256)
+    image = models.ImageField(upload_to=group_themes_images, blank=True, null=True)
+
+
+class LikeGroupTheme(models.Model):
+    theme = models.ForeignKey(GroupTheme)
+    by_user = models.ForeignKey(User)
+
+
+class HateGroupTheme(models.Model):
+    theme = models.ForeignKey(GroupTheme)
+    by_user = models.ForeignKey(User)
 
 
 class LikeGroupQuerySet(models.QuerySet):

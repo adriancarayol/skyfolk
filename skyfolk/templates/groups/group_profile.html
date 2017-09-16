@@ -77,10 +77,10 @@
                 <div class="row">
                     <div class="col s12">
                         <button type="submit" id="share_publication"
-                            class="waves-effect waves-light btn right blue">
+                                class="waves-effect waves-light btn right blue">
                             Citar<i class="material-icons right">send</i></button>
                         <button type="button" id="close_share_publication"
-                            class="waves-effect waves-light btn right transparent black-text">Cancelar<i
+                                class="waves-effect waves-light btn right transparent black-text">Cancelar<i
                                 class="material-icons right">close</i></button>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                                     {% comment %}
                                 Incluimos el tab amigos
                                 {% endcomment %}
-                                    {% include "groups/tab-usuarios.html" %}
+                                    {% include "groups/tab-themes.html" %}
                                 </div>
                             </div>
                         </div>
@@ -156,6 +156,25 @@
                 $('.loading_skyline').hide();
             }
         });
+
+        var submitFollowed = false;
+
+        $('#tab-container')
+            .bind('easytabs:after', function (evt, tab, panel, data) {
+                if (tab[0].text.toLowerCase() === 'temas') {
+                    if (submitFollowed) return;
+                    submitFollowed = true;
+                    $.get("?page=1&qs=following", function (data, status) {
+                        var $load_following = $('.load_following');
+                        $load_following.show();
+                        $('.followed-container').html($(data));
+                        $load_following.hide();
+                    }).always(function () {
+                        submitFollowed = true;
+                    });
+                } else if (tab[0].text.toLowerCase() === 'skyline') {
+                }
+            });
     </script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/socket_group.js"></script>

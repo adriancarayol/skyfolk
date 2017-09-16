@@ -14,6 +14,7 @@ from django.http import HttpResponseForbidden
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.utils import six
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -31,9 +32,10 @@ from publications.models import Publication
 from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
+from user_groups.models import GroupTheme
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from .forms import FormUserGroup
+from .forms import FormUserGroup, GroupThemeForm
 from .models import UserGroups, LikeGroup, RequestGroup
 from user_groups.node_models import NodeGroup
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -113,6 +115,10 @@ class UserGroupList(ListView):
     template_name = "groups/list_group.html"
     paginate_by = 20
 
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserGroupList, self).dispatch(request, *args, **kwargs)
+
     def get_in_groups(self):
         """
         Obtenemos los grupos
@@ -123,11 +129,7 @@ class UserGroupList(ListView):
         return [y for x in results for y in x]
 
     def get_queryset(self):
-        groups = self.get_in_groups()
-        return UserGroups.objects.filter(group_ptr_id__in=groups)
-
-
-group_list = login_required(UserGroupList.as_view(), login_url='/')
+        return UserGroups.objects.filter(group_ptr__in=self.request.user.groups.all())
 
 
 @user_can_view_group
@@ -239,6 +241,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'pubs_shared': shared_pubs,
                'share_publication': SharedPublicationForm(),
                'publication_edit': GroupPublicationEdit(),
+               'theme_form': GroupThemeForm(initial={'owner': request.user, 'board_group': group_profile}),
                'user_list': user_list}
 
     return render(request, template, context)
@@ -275,7 +278,6 @@ def follow_group(request):
                         with transaction.atomic(using="default"):
                             with db.transaction:
                                 group.user_set.add(user)
-                                assign_perm('can_publish', user, group)
                                 return JsonResponse({
                                     'response': "user_add"
                                 })
@@ -403,7 +405,8 @@ class FollowersGroup(ListView):
         return super(FollowersGroup, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return UserGroups.objects.get(slug__exact=self.kwargs['groupname']).user_set.all()
+        self.group = UserGroups.objects.get(slug=self.kwargs['groupname'])
+        return self.group.user_set.all()
 
     def get_context_data(self, **kwargs):
         context = super(FollowersGroup, self).get_context_data(**kwargs)
@@ -411,9 +414,6 @@ class FollowersGroup(ListView):
         context['group'] = self.group
         context['enable_kick_btn'] = user.has_perm('kick_member', self.group)
         return context
-
-
-followers_group = login_required(FollowersGroup.as_view(), login_url='/')
 
 
 class LikeListGroup(ListView):
@@ -593,3 +593,23 @@ class ProfileGroups(APIView):
 
 
 list_group_profile = login_required(ProfileGroups.as_view(), login_url='/')
+
+
+class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
+    form_class = GroupThemeForm
+    success_url = reverse_lazy('user_groups:create_group_theme')
+    http_method_names = [u'post']
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(CreateGroupThemeView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form, msg=None):
+        instance = form.save(commit=False)
+        instance.owner = self.request.user
+        board_group = form.cleaned_data['board_group']
+        is_member = self.request.user.groups.filter(id=board_group.id).exists()
+        if is_member:
+            return super(CreateGroupThemeView, self).form_valid(form)
+        else:
+            return super(CreateGroupThemeView, self).form_invalid(form)

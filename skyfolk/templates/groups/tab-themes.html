@@ -1,0 +1,46 @@
+{% comment %}
+  Pestaña de amigos en el perfil
+{% endcomment %}
+<div id="tab-amigos">
+    <div class="row center"><br>
+        <button type="submit" class="waves-effect waves-light btn blue open_theme_form">Nuevo tema</button>
+    </div>
+    <div class="row container_group_theme" style="display: none;">
+        <div class="col s10 z-depth-1 offset-s1" style="padding: 10px">
+            <form id="new_group_theme" method="POST" action="{% url 'user_groups:create_group_theme' %}"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ theme_form.board_group }}
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">mode_edit</i>
+                        {{ theme_form.title }}
+                        <label for="id_title">Titulo del tema</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">mode_edit</i>
+                        {{ theme_form.description }}
+                        <label for="id_description">Descripción del tema</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="file-field input-field">
+                        <div class="btn waves-effect waves-light btn left blue">
+                            <span>Imágen del tema</span>
+                            {{ theme_form.image }}
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="waves-effect waves-light btn right blue">Crear tema</button>
+            </form>
+        </div>
+    </div>
+    <ul class="theme-list">
+
+    </ul>
+</div>

@@ -946,39 +946,22 @@ class FollowersListView(ListView):
     """
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
+    paginate_by = 25
 
     def __init__(self, *args, **kwargs):
         super(FollowersListView, self).__init__(*args, **kwargs)
-        self.pagination = None
 
     @method_decorator(user_can_view_profile_info)
     def dispatch(self, request, *args, **kwargs):
         return super(FollowersListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1'))  # page or 1
-        limit = 25 * current_page
-        offset = limit - 25
-
-        try:
-            n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
-        except NodeProfile.DoesNotExist:
-            raise Http404
-
-        total_users = n.count_followers()
-        total_pages = int(total_users / 25)
-
-        if total_users % 25 != 0:
-            total_pages += 1
-        self.pagination = make_pagination_html(current_page, total_pages)
-
-        id_users = [u.user_id for u in n.get_followers(offset=offset, limit=25)]
-        return User.objects.filter(id__in=id_users).select_related('profile')
+        return User.objects.filter(profile__from_profile__to_profile=self.request.user.profile).select_related(
+            'profile')
 
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         context['url_name'] = "followers"
-        context['pagination'] = self.pagination
         context['component'] = 'react/followers_react.js'
         context['username'] = self.kwargs.get('username', None)
         return context
@@ -993,38 +976,22 @@ class FollowingListView(ListView):
     """
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
+    paginate_by = 25
 
     def __init__(self, *args, **kwargs):
         super(FollowingListView, self).__init__(*args, **kwargs)
-        self.pagination = None
 
     @method_decorator(user_can_view_profile_info)
     def dispatch(self, request, *args, **kwargs):
         return super(FollowingListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        current_page = int(self.request.GET.get('page', '1'))  # page or 1
-        limit = 25 * current_page
-        offset = limit - 25
-
-        try:
-            n = NodeProfile.nodes.get(title__iexact=self.kwargs['username'])
-        except NodeProfile.DoesNotExist:
-            raise Http404
-
-        total_users = n.count_follows()
-        total_pages = int(total_users / 25)
-        if total_users % 25 != 0:
-            total_pages += 1
-        self.pagination = make_pagination_html(current_page, total_pages)
-
-        id_users = [u.user_id for u in n.get_follows(offset=offset, limit=25)]
-        return User.objects.filter(id__in=id_users).select_related('profile')
+        return User.objects.filter(profile__to_profile__from_profile=self.request.user.profile).select_related(
+            'profile')
 
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         context['url_name'] = "following"
-        context['pagination'] = self.pagination
         context['component'] = 'react/following_react.js'
         context['username'] = self.kwargs.get('username', None)
         return context
