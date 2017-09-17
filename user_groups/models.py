@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.text import slugify
+from uuslug import uuslug
 
 from notifications.models import Notification
 
@@ -76,10 +77,14 @@ class GroupTheme(models.Model):
     description = models.CharField(max_length=2048)
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to=group_themes_images, blank=True, null=True)
+    slug = models.SlugField(unique=True)
 
     class Meta:
         ordering = ('-created', )
 
+    def save(self, *args, **kwargs):
+        self.slug = uuslug(self.title, instance=self)
+        super(GroupTheme, self).save(*args, **kwargs)
 
 class LikeGroupTheme(models.Model):
     theme = models.ForeignKey(GroupTheme, related_name='like_theme')
@@ -95,6 +100,7 @@ class HateGroupTheme(models.Model):
 
     class Meta:
         unique_together = ('theme', 'by_user')
+
 
 
 class LikeGroupQuerySet(models.QuerySet):

@@ -14,7 +14,7 @@
                     <p>{{ theme.description|safe }}</p>
                 </div>
                 <div class="card-action">
-                    <a href="#">Ver tema</a>
+                    <a href="{% url 'user_groups:group_theme' slug=theme.slug %}" class="blue-text">Ver tema</a>
                     <p class="right">
                         <span><i class="material-icons">comment</i></span>
                         <span class="like-theme" {% if theme.have_like == 1 %}style="color: rgb(240, 98, 146);"{% endif %}><i class="material-icons">keyboard_arrow_up</i><i

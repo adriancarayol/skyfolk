@@ -1,25 +1,11 @@
 from bs4 import BeautifulSoup
 from django import forms
-
-from emoji import Emoji
-from publications.models import Publication
-from publications.utils import parse_string
-from publications_groups.models import PublicationGroup
+from publications_groups.models import PublicationGroup, PublicationTheme
 
 
 class PublicationGroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PublicationGroupForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = PublicationGroup
-        # Excluir atributos en el formulario.
-        fields = ['content', 'parent']
-
-
-class ReplyPublicationGroupForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(ReplyPublicationGroupForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = PublicationGroup
@@ -70,3 +56,11 @@ class GroupPublicationEdit(forms.ModelForm):
             raise forms.ValidationError('No existe la publicación solicitada.')
         return pk
 
+class PublicationThemeForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PublicationThemeForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = PublicationTheme
+        # Excluir atributos en el formulario.
+        fields = ['content', 'parent']

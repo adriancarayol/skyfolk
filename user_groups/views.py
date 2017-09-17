@@ -19,6 +19,7 @@ from django.urls import reverse_lazy
 from django.utils import six
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from guardian.shortcuts import assign_perm, remove_perm
@@ -30,9 +31,9 @@ from rest_framework.views import APIView
 from notifications.models import Notification
 from notifications.signals import notify
 from publications.models import Publication
-from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
+from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit, PublicationThemeForm
 from publications.forms import SharedPublicationForm
-from publications_groups.models import PublicationGroup
+from publications_groups.models import PublicationGroup, PublicationTheme
 from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -639,8 +640,12 @@ class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
         instance = form.save(commit=False)
         instance.owner = self.request.user
         board_group = form.cleaned_data['board_group']
+        try:
+            group = UserGroups.objects.get(group_ptr=board_group)
+        except ObjectDoesNotExist:
+            raise Http404
 
-        if not board_group.is_public:
+        if not group.is_public:
             is_member = self.request.user.groups.filter(id=board_group.id).exists()
             if not is_member:
                 return super(CreateGroupThemeView, self).form_invalid(form)
@@ -657,7 +662,8 @@ class AddLikeTheme(View):
         user = self.request.user
         data = {
             'response': False,
-            'status': None
+            'status': None,
+            'in_hate': False
         }
         try:
             theme = GroupTheme.objects.select_related('board_group').get(id=request.POST['pk'])
@@ -672,8 +678,11 @@ class AddLikeTheme(View):
                 return HttpResponseForbidden()
 
         try:
-            obj, created = LikeGroupTheme.objects.get_or_create(theme=theme, by_user=user)
-            HateGroupTheme.objects.filter(theme=theme, by_user=user).delete()
+            with transaction.atomic(using='default'):
+                count, row = HateGroupTheme.objects.filter(theme=theme, by_user=user).delete()
+                obj, created = LikeGroupTheme.objects.get_or_create(theme=theme, by_user=user)
+            if count > 0:
+                data['in_hate'] = True
         except IntegrityError:
             return JsonResponse(data)
 
@@ -689,6 +698,7 @@ class AddLikeTheme(View):
         data['response'] = True
 
         return JsonResponse(data)
+
 
 class AddHateTheme(View):
     @method_decorator(login_required)
@@ -699,7 +709,8 @@ class AddHateTheme(View):
         user = self.request.user
         data = {
             'response': False,
-            'status': None
+            'status': None,
+            'in_like': False
         }
         try:
             theme = GroupTheme.objects.select_related('board_group').get(id=request.POST['pk'])
@@ -714,8 +725,11 @@ class AddHateTheme(View):
                 return HttpResponseForbidden()
 
         try:
-            obj, created = HateGroupTheme.objects.get_or_create(theme=theme, by_user=user)
-            LikeGroupTheme.objects.filter(theme=theme, by_user=user).delete()
+            with transaction.atomic(using='default'):
+                count, row = LikeGroupTheme.objects.filter(theme=theme, by_user=user).delete()
+                obj, created = HateGroupTheme.objects.get_or_create(theme=theme, by_user=user)
+            if count > 0:
+                data['in_like'] = True
         except IntegrityError:
             return JsonResponse(data)
 
@@ -731,3 +745,27 @@ class AddHateTheme(View):
         data['response'] = True
 
         return JsonResponse(data)
+
+
+class GroupThemeView(DetailView):
+    template_name = 'groups/board_theme.html'
+
+    def get_queryset(self):
+        user = self.request.user
+
+        return GroupTheme.objects.annotate(likes=Count('like_theme'),
+                                           hates=Count('hate_theme'), have_like=Case(
+                When(like_theme__by_user=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(hate_theme__by_user=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ))
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupThemeView, self).get_context_data(**kwargs)
+        context['publications'] = PublicationTheme.objects.filter(board_theme=self.object)
+        context['form'] = PublicationThemeForm()
+        return context

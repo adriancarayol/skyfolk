@@ -234,7 +234,16 @@ $(function () {
             success: function (data) {
                 var _response = data.response;
                 var _status = data.status;
+                var _in_hate = data.in_hate;
                 if (_response === true) {
+                    if (_in_hate === true) {
+                        var $hate_btn = $parent_btn.next();
+                        var $hate_val = $hate_btn.find('.hate-theme-value');
+                        var countHates = parseInt($hate_val.text()) || 0;
+                        countHates--;
+                        $hate_val.text(countHates > 0 ? countHates : '');
+                        $hate_btn.css('color', '#555');
+                    }
                     if (_status === 2) {
                         $parent_btn.css('color', 'rgb(240, 98, 146)');
                         countLikes++;
@@ -271,7 +280,7 @@ $(function () {
         var pk = $(this).closest('.theme').data('id');
         var $parent_btn = $(this);
         var $hate_btn = $(this).find('.hate-theme-value');
-        var countLikes = parseInt($hate_btn.text()) || 0;
+        var countHates = parseInt($hate_btn.text()) || 0;
         $.ajax({
             type: 'POST',
             url: '/groups/hate/theme/',
@@ -283,18 +292,27 @@ $(function () {
             success: function (data) {
                 var _response = data.response;
                 var _status = data.status;
+                var _in_like = data.in_like;
                 if (_response === true) {
+                    if (_in_like === true) {
+                        var $like_btn = $parent_btn.prev();
+                        var $like_val = $like_btn.find('.like-theme-value');
+                        var countLikes = parseInt($like_val.text()) || 0;
+                        countLikes--;
+                        $like_val.text(countLikes > 0 ? countLikes : '');
+                        $like_btn.css('color', '#555');
+                    }
                     if (_status === 2) {
                         $parent_btn.css('color', 'rgb(186, 104, 200)');
-                        countLikes++;
+                        countHates++;
                     } else if (_status === 1) {
                         $parent_btn.css('color', '#555');
-                        countLikes--;
+                        countHates--;
                     }
-                    if (countLikes <= 0) {
+                    if (countHates <= 0) {
                         $hate_btn.text('');
                     } else {
-                        $hate_btn.text(countLikes);
+                        $hate_btn.text(countHates);
                     }
                 } else {
                     swal({
