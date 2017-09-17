@@ -36,5 +36,8 @@ urlpatterns = [
         name='list_group_profile'),
     url(r'^groups/create/theme/$', user_groups_views.CreateGroupThemeView.as_view(),
         name='create_group_theme'),
-
+    url(r'^groups/like/theme/$', user_groups_views.AddLikeTheme.as_view(),
+        name='like_group_theme'),
+    url(r'^groups/hate/theme/$', user_groups_views.AddHateTheme.as_view(),
+        name='hate_group_theme'),
 ]

@@ -60,6 +60,14 @@ var UTILS = UTILS || (function () {
                             $(card_content).after('<div class="row videos"><div class="col s4"><video class="responsive-video" controls loop><source src="/media/'+data.video+'" type="video/mp4"></video></div></div>');
                         }
                     }
+                } else if (data.type === "theme") {
+                    var $theme_list = $(".theme-list");
+                    var existing_theme = $theme_list.find(`[data-id='${data.id}']`);
+                    if (existing_theme.length) {
+                        existing_theme.replaceWith(data.theme);
+                    } else {
+                        $theme_list.prepend(data.theme);
+                    }
                 }
             };
 

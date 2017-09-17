@@ -1,16 +1,19 @@
 import logging
-
+import json
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
 from django.http import Http404
+from django.template.loader import render_to_string
 from guardian.shortcuts import assign_perm
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from notifications.models import Notification
 from user_groups.node_models import NodeGroup
 from user_profile.node_models import NodeProfile
-from .models import UserGroups, RequestGroup, LikeGroup
+from .models import UserGroups, RequestGroup, LikeGroup, GroupTheme
+from channels import Group as GroupChannel
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -82,3 +85,17 @@ def handle_delete_like(sender, instance, *args, **kwargs):
         raise ObjectDoesNotExist
 
     g.likes.disconnect(n)
+
+@receiver(post_save, sender=GroupTheme)
+def handle_new_theme(sender, instance, created, *args, **kwargs):
+    if created:
+        theme = render_to_string('groups/group_themes.html', {'themes': [instance, ]})
+        group = UserGroups.objects.get(group_ptr_id=instance.board_group.id)
+        data = {
+            'theme': theme,
+            'type': 'theme',
+            'id': instance.id
+        }
+        GroupChannel(group.group_channel).send({
+            "text": json.dumps(data)
+        })

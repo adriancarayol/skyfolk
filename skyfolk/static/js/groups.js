@@ -3,8 +3,8 @@ $(function () {
     var $tab_commentarios = $('#tab-comentarios');
     var $wrapper_shared_pub = $('#share-publication-wrapper');
 
-    $("#li-tab-amigos").click(function () {
-        $('#tab-amigos').css({
+    $("#li-tab-themes").click(function () {
+        $('#tab-themes').css({
             "overflow": "auto"
         });
     });
@@ -216,6 +216,105 @@ $(function () {
 
     $(this).on('click', '.open_theme_form', function () {
         $('.container_group_theme').toggle();
+    });
+
+    $(this).on('click', '.like-theme', function () {
+        var pk = $(this).closest('.theme').data('id');
+        var $parent_btn = $(this);
+        var $like_btn = $(this).find('.like-theme-value');
+        var countLikes = parseInt($like_btn.text()) || 0;
+        $.ajax({
+            type: 'POST',
+            url: '/groups/like/theme/',
+            data: {
+                'pk': pk,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            dataType: 'json',
+            success: function (data) {
+                var _response = data.response;
+                var _status = data.status;
+                if (_response === true) {
+                    if (_status === 2) {
+                        $parent_btn.css('color', 'rgb(240, 98, 146)');
+                        countLikes++;
+                    } else if (_status === 1) {
+                        $parent_btn.css('color', '#555');
+                        countLikes--;
+                    }
+                    if (countLikes <= 0) {
+                        $like_btn.text('');
+                    } else {
+                        $like_btn.text(countLikes);
+                    }
+                } else {
+                    swal({
+                        title: "Tenemos un problema...",
+                        customClass: 'default-div',
+                        text: "Hubo un problema con su petición.",
+                        timer: 4000,
+                        showConfirmButton: true
+                    });
+                }
+            }, error: function (data, textStatus, jqXHR) {
+                swal({
+                    title: "Tenemos un problema...",
+                    customClass: 'default-div',
+                    text: "Hubo un problema con su petición.",
+                    timer: 4000,
+                    showConfirmButton: true
+                });
+            }
+        });
+    });
+    $(this).on('click', '.hate-theme', function () {
+        var pk = $(this).closest('.theme').data('id');
+        var $parent_btn = $(this);
+        var $hate_btn = $(this).find('.hate-theme-value');
+        var countLikes = parseInt($hate_btn.text()) || 0;
+        $.ajax({
+            type: 'POST',
+            url: '/groups/hate/theme/',
+            data: {
+                'pk': pk,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            dataType: 'json',
+            success: function (data) {
+                var _response = data.response;
+                var _status = data.status;
+                if (_response === true) {
+                    if (_status === 2) {
+                        $parent_btn.css('color', 'rgb(186, 104, 200)');
+                        countLikes++;
+                    } else if (_status === 1) {
+                        $parent_btn.css('color', '#555');
+                        countLikes--;
+                    }
+                    if (countLikes <= 0) {
+                        $hate_btn.text('');
+                    } else {
+                        $hate_btn.text(countLikes);
+                    }
+                } else {
+                    swal({
+                        title: "Tenemos un problema...",
+                        customClass: 'default-div',
+                        text: "Hubo un problema con su petición.",
+                        timer: 4000,
+                        showConfirmButton: true
+                    });
+                }
+            }, error: function (data, textStatus, jqXHR) {
+                swal({
+                    title: "Tenemos un problema...",
+                    customClass: 'default-div',
+                    text: "Hubo un problema con su petición.",
+                    timer: 4000,
+                    showConfirmButton: true
+                });
+            }
+        });
     });
 });// end document ready
 

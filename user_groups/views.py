@@ -9,7 +9,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import IntegrityError
 from django.db import transaction
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Case, When, Value, IntegerField
+
 from django.http import HttpResponseForbidden
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
@@ -32,7 +33,7 @@ from publications.models import Publication
 from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
-from user_groups.models import GroupTheme
+from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup, GroupThemeForm
@@ -161,8 +162,6 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         if node_group.members.is_connected(n):
             is_member = True
 
-
-
     is_ajax = False
 
     if request.is_ajax():
@@ -175,7 +174,18 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
 
     if is_ajax and qs == 'themes':
         template = 'groups/group_themes.html'
-        paginator = Paginator(GroupTheme.objects.filter(board_group=group_profile), 20)
+        themes = GroupTheme.objects.annotate(likes=Count('like_theme'),
+                                             hates=Count('hate_theme'), have_like=Case(
+                When(like_theme__by_user=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(hate_theme__by_user=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )).filter(board_group=group_profile)
+
+        paginator = Paginator(themes, 20)
 
         try:
             themes = paginator.page(page)
@@ -185,7 +195,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
             themes = paginator.page(paginator.num_pages)
 
         context = {
-           'themes': themes
+            'themes': themes
         }
         return render(request, template, context)
 
@@ -629,8 +639,95 @@ class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
         instance = form.save(commit=False)
         instance.owner = self.request.user
         board_group = form.cleaned_data['board_group']
-        is_member = self.request.user.groups.filter(id=board_group.id).exists()
-        if is_member:
-            return super(CreateGroupThemeView, self).form_valid(form)
+
+        if not board_group.is_public:
+            is_member = self.request.user.groups.filter(id=board_group.id).exists()
+            if not is_member:
+                return super(CreateGroupThemeView, self).form_invalid(form)
         else:
-            return super(CreateGroupThemeView, self).form_invalid(form)
+            return super(CreateGroupThemeView, self).form_valid(form)
+
+
+class AddLikeTheme(View):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AddLikeTheme, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        data = {
+            'response': False,
+            'status': None
+        }
+        try:
+            theme = GroupTheme.objects.select_related('board_group').get(id=request.POST['pk'])
+        except ObjectDoesNotExist:
+            raise Http404
+
+        group = UserGroups.objects.get(id=theme.board_group_id)
+
+        if not group.is_public:
+            is_member = user.groups.filter(id=theme.board_group_id).exists()
+            if not is_member:
+                return HttpResponseForbidden()
+
+        try:
+            obj, created = LikeGroupTheme.objects.get_or_create(theme=theme, by_user=user)
+            HateGroupTheme.objects.filter(theme=theme, by_user=user).delete()
+        except IntegrityError:
+            return JsonResponse(data)
+
+        if not created:
+            try:
+                obj.delete()
+            except IntegrityError:
+                return JsonResponse(data)
+            data['status'] = 1
+        else:
+            data['status'] = 2
+
+        data['response'] = True
+
+        return JsonResponse(data)
+
+class AddHateTheme(View):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AddHateTheme, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        data = {
+            'response': False,
+            'status': None
+        }
+        try:
+            theme = GroupTheme.objects.select_related('board_group').get(id=request.POST['pk'])
+        except ObjectDoesNotExist:
+            raise Http404
+
+        group = UserGroups.objects.get(id=theme.board_group_id)
+
+        if not group.is_public:
+            is_member = user.groups.filter(id=theme.board_group_id).exists()
+            if not is_member:
+                return HttpResponseForbidden()
+
+        try:
+            obj, created = HateGroupTheme.objects.get_or_create(theme=theme, by_user=user)
+            LikeGroupTheme.objects.filter(theme=theme, by_user=user).delete()
+        except IntegrityError:
+            return JsonResponse(data)
+
+        if not created:
+            try:
+                obj.delete()
+            except IntegrityError:
+                return JsonResponse(data)
+            data['status'] = 1
+        else:
+            data['status'] = 2
+
+        data['response'] = True
+
+        return JsonResponse(data)

@@ -85,10 +85,16 @@ class LikeGroupTheme(models.Model):
     theme = models.ForeignKey(GroupTheme, related_name='like_theme')
     by_user = models.ForeignKey(User)
 
+    class Meta:
+        unique_together = ('theme', 'by_user')
+
 
 class HateGroupTheme(models.Model):
     theme = models.ForeignKey(GroupTheme, related_name='hate_theme')
     by_user = models.ForeignKey(User)
+
+    class Meta:
+        unique_together = ('theme', 'by_user')
 
 
 class LikeGroupQuerySet(models.QuerySet):

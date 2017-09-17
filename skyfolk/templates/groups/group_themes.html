@@ -1,16 +1,27 @@
+{% load static from staticfiles %}
+{% load group_utils %}
 {% for theme in themes %}
-    <div class="col s12">
+    <div class="col s12 theme" data-id="{{ theme.id }}">
         <div class="card horizontal">
             <div class="card-image">
-                <img src="{% if theme.image %}{{ theme.image.url }}{% else %}{{ STATIC_URL }}img/nuevo_back.png{% endif %}" style="width: 120px; height: 120px;">
+                <img class="lazyload" data-src="
+                        {% if theme.image %}{{ theme.image.url }}{% else %}{% static "img/nuevo_back.png" %}{% endif %}"
+                     style="width: 120px; height: 120px;">
             </div>
             <div class="card-stacked">
                 <div class="card-content">
-                    <h4>{{ theme.title|safe }}.</h4>
+                    <h4>{{ theme.title|safe }}</h4>
                     <p>{{ theme.description|safe }}</p>
                 </div>
                 <div class="card-action">
                     <a href="#">Ver tema</a>
+                    <p class="right">
+                        <span><i class="material-icons">comment</i></span>
+                        <span class="like-theme" {% if theme.have_like == 1 %}style="color: rgb(240, 98, 146);"{% endif %}><i class="material-icons">keyboard_arrow_up</i><i
+                                class="like-theme-value">{{ theme.likes|zero_to_empty }}</i></span>
+                        <span class="hate-theme" {% if theme.have_hate == 1 %}style="color: rgb(186, 104, 200);"{% endif %}><i class="material-icons">keyboard_arrow_down</i><i
+                                class="hate-theme-value">{{ theme.hates|zero_to_empty }}</i></span>
+                    </p>
                 </div>
             </div>
         </div>
