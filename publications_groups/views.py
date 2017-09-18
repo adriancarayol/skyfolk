@@ -9,7 +9,7 @@ from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 
 from django.utils.decorators import method_decorator
@@ -689,3 +689,132 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
 
         print(connection.queries)
         return super(PublicationThemeView, self).form_valid(form)
+
+
+class AddLikePublicationTheme(View):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AddLikePublicationTheme, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        data = {
+            'response': False,
+            'status': None,
+            'in_hate': False
+        }
+        try:
+            publication = PublicationTheme.objects.get(id=request.POST['pk'])
+        except ObjectDoesNotExist:
+            raise Http404
+
+        in_hate = in_like = False
+        try:
+            with transaction.atomic(using='default'):
+                if publication.user_give_me_hate.filter(id=user.id).exists():
+                    publication.user_give_me_hate.remove(user)
+                    in_hate = True
+
+                if publication.user_give_me_like.filter(id=user.id).exists():
+                    in_like = True
+                else:
+                    publication.user_give_me_like.add(user)
+
+                if in_like:
+                    try:
+                        publication.user_give_me_like.remove(user)
+                    except IntegrityError:
+                        return JsonResponse(data)
+                    data['status'] = 1
+                else:
+                    data['status'] = 2
+
+            if in_hate:
+                data['in_hate'] = True
+
+        except IntegrityError:
+            return JsonResponse(data)
+
+        data['response'] = True
+
+        return JsonResponse(data)
+
+
+class AddHatePublicationTheme(View):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AddHatePublicationTheme, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        data = {
+            'response': False,
+            'status': None,
+            'in_like': False
+        }
+        try:
+            publication = PublicationTheme.objects.get(id=request.POST['pk'])
+        except ObjectDoesNotExist:
+            raise Http404
+
+        in_hate = in_like = False
+        try:
+            with transaction.atomic(using='default'):
+                if publication.user_give_me_like.filter(id=user.id).exists():
+                    publication.user_give_me_like.remove(user)
+                    in_like = True
+
+                if publication.user_give_me_hate.filter(id=user.id).exists():
+                    in_hate = True
+                else:
+                    publication.user_give_me_hate.add(user)
+
+                if in_hate:
+                    try:
+                        publication.user_give_me_hate.remove(user)
+                    except IntegrityError:
+                        return JsonResponse(data)
+                    data['status'] = 1
+                else:
+                    data['status'] = 2
+
+            if in_like:
+                data['in_like'] = True
+
+        except IntegrityError:
+            return JsonResponse(data)
+
+        data['response'] = True
+
+        return JsonResponse(data)
+
+class DeletePublicationTheme(UpdateView):
+    model = PublicationTheme
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeletePublicationTheme, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        try:
+            return self.model.objects.get(pk=self.request.POST.get('pk'))
+        except ObjectDoesNotExist:
+            return None
+
+    def post(self, request, *args, **kwargs):
+        response = False
+        self.object = self.get_object()
+        if not self.object:
+            return JsonResponse({'response': False})
+
+        user = request.user
+        if self.object.author_id != user.id:
+            return HttpResponseForbidden()
+
+        self.object.deleted = True
+        try:
+            self.object.save(update_fields=['deleted'])
+            response = True
+        except IntegrityError:
+            pass
+
+        return JsonResponse({'response': response})

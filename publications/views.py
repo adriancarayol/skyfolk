@@ -206,7 +206,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
-                return self.form_invalid(form=form, errors=e)
+                return self.form_invalid(form=form)
 
         return self.form_invalid(form=form)
 

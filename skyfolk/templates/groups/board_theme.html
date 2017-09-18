@@ -48,10 +48,10 @@
         </div>
         <div class="row">
             {% for pub in publications %}
-                <div class="col s12">
+                <div class="col s12 infinite-item">
                     <div class="row">
                         <div class="col wrapper{% if pub.level == 0 %} col push-l1 l9 s12 {% else %}  push-l2 l9 m10 s11{% endif %}"
-                             data-id="{{ user.pk }}"
+                             data-id="{{ pub.pk }}"
                              {% if pub.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}>
                              <span id="check-{{ pub.pk }}" class="top-options zoom-pub tooltipped"
                                    data-position="bottom"
@@ -359,29 +359,15 @@
                                             </li>
                                         {% endif %}
                                         {% comment %} Si el usuario esta logueado {% endcomment %}
-                                        {% with pub.user_give_me_hate.all as hates %}
-                                            <li title="No me gusta" class="hate-comment" {% if user in hates %}
+                                        <li title="No me gusta" class="hate-comment" {% if pub.have_hate %}
                                                 style="color: rgb(186, 104, 200);"{% endif %}>
-                                                <i class="material-icons md-18">keyboard_arrow_down</i>
-                                                <i class="hate-value">{% if hates|length > 0 %}
-                                                    {{ hates|length|intword }}{% endif %}</i>
-                                            </li>
-                                        {% endwith %}
-                                        {% with pub.user_give_me_like.all as likes %}
-                                            <li title="¡Me gusta!" class="like-comment"
-                                                {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                                <i class="material-icons md-18">keyboard_arrow_up</i>
-                                                <i class="like-value">{% if likes|length > 0 %}
-                                                    {{ likes|length|intword }}{% endif %}</i>
-                                            </li>
-                                        {% endwith %}
-                                        <li id="share-{{ pub.pk }}" data-id="{{ pub.pk }}"
-                                            class={% if pub.id in pubs_shared_with_me %}"remove-timeline"
-                                            title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi
-                                                skyline" {% endif %}
-                                        >
-                                        <i class="material-icons md-18">format_quote</i>
-                                        <i class="share-values"> </i>
+                                            <i class="material-icons md-18">keyboard_arrow_down</i>
+                                            <i class="hate-value">{{ pub.hates|zero_to_empty }}</i>
+                                        </li>
+                                        <li title="¡Me gusta!" class="like-comment"
+                                            {% if pub.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
+                                            <i class="material-icons md-18">keyboard_arrow_up</i>
+                                            <i class="like-value">{{ pub.likes|zero_to_empty }}</i>
                                         </li>
                                         <li title="Responder" class="reply-comment"
                                             id="reply-caja-comentario-{{ pub.pk }}">

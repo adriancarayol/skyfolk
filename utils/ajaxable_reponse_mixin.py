@@ -13,7 +13,7 @@ class AjaxableResponseMixin(object):
         else:
             return response
 
-    def form_valid(self, form):
+    def form_valid(self, form, msg=None):
         # We make sure to call the parent's form_valid() method because
         # it might do some processing (in the case of CreateView, it will
         # call form.save() for example).
@@ -21,6 +21,7 @@ class AjaxableResponseMixin(object):
         if self.request.is_ajax():
             data = {
                 'pk': self.object.pk,
+                'msg': msg
             }
             return JsonResponse(data)
         else:

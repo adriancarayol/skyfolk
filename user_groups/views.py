@@ -762,10 +762,22 @@ class GroupThemeView(DetailView):
                 When(hate_theme__by_user=user, then=Value(1)),
                 default=Value(0),
                 output_field=IntegerField()
-            ))
+            )).filter(slug=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
         context = super(GroupThemeView, self).get_context_data(**kwargs)
-        context['publications'] = PublicationTheme.objects.filter(board_theme=self.object)
+        context['publications'] = PublicationTheme.objects.annotate(likes=Count('user_give_me_like'),
+                                                                     hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )).filter(board_theme=self.object,
+                      deleted=False).select_related('author', 'board_theme')
+
         context['form'] = PublicationThemeForm()
         return context

@@ -350,6 +350,161 @@ $(function () {
         var form = new FormData($(this).closest('form').get(0));
         AJAX_submit_theme_publication(form);
     });
+
+    $('.wrapper').on('click', '.like-comment', function () {
+        var pub_box = $(this).closest('.wrapper');
+        var $parent_btn = $(this);
+        var $like_btn = $(this).find('.like-value');
+        var countLikes = parseInt($like_btn.text()) || 0;
+        $.ajax({
+            url: '/publication/group/theme/like/',
+            type: 'POST',
+            data: {
+                'pk': pub_box.data('id')
+            },
+            async: true,
+            dataType: "json",
+            success: function (data) {
+                var _response = data.response;
+                var _status = data.status;
+                var _in_hate = data.in_hate;
+                if (_response === true) {
+                    if (_in_hate === true) {
+                        var $hate_btn = $parent_btn.prev();
+                        var $hate_val = $hate_btn.find('.hate-value');
+                        var countHates = parseInt($hate_val.text()) || 0;
+                        countHates--;
+                        $hate_val.text(countHates > 0 ? countHates : '');
+                        $hate_btn.css('color', '#555');
+                    }
+                    if (_status === 2) {
+                        $parent_btn.css('color', 'rgb(240, 98, 146)');
+                        countLikes++;
+                    } else if (_status === 1) {
+                        $parent_btn.css('color', '#555');
+                        countLikes--;
+                    }
+                    if (countLikes <= 0) {
+                        $like_btn.text(' ');
+                    } else {
+                        $like_btn.text(countLikes);
+                    }
+                }
+            }, error: function (data, textStatus, jqXHR) {
+                var errors = [];
+                $.each(data.responseJSON, function (i, val) {
+                    errors.push(val);
+                });
+                swal({
+                    title: "Tenemos un problema...",
+                    customClass: 'default-div',
+                    text: errors.join(),
+                    timer: 4000,
+                    showConfirmButton: true
+                });
+            }
+        });
+    });
+
+    $('.wrapper').on('click', '.hate-comment', function () {
+        var pub_box = $(this).closest('.wrapper');
+        var $parent_btn = $(this);
+        var $hate_btn = $(this).find('.hate-value');
+        var countHates = parseInt($hate_btn.text()) || 0;
+        $.ajax({
+            url: '/publication/group/theme/hate/',
+            type: 'POST',
+            data: {
+                'pk': pub_box.data('id')
+            },
+            async: true,
+            dataType: "json",
+            success: function (data) {
+                var _response = data.response;
+                var _status = data.status;
+                var _in_like = data.in_like;
+                if (_response === true) {
+                    if (_in_like === true) {
+                        var $like_btn = $parent_btn.next();
+                        var $like_val = $like_btn.find('.like-value');
+                        var countLikes = parseInt($like_val.text()) || 0;
+                        countLikes--;
+                        $like_val.text(countLikes > 0 ? countLikes : '');
+                        $like_btn.css('color', '#555');
+                    }
+                    if (_status === 2) {
+                        $parent_btn.css('color', 'rgb(186, 104, 200)');
+                        countHates++;
+                    } else if (_status === 1) {
+                        $parent_btn.css('color', '#555');
+                        countHates--;
+                    }
+                    if (countHates <= 0) {
+                        $hate_btn.text(' ');
+                    } else {
+                        $hate_btn.text(countHates);
+                    }
+                }
+            }, error: function (data, textStatus, jqXHR) {
+                var errors = [];
+                $.each(data.responseJSON, function (i, val) {
+                    errors.push(val);
+                });
+                swal({
+                    title: "Tenemos un problema...",
+                    customClass: 'default-div',
+                    text: errors.join(),
+                    timer: 4000,
+                    showConfirmButton: true
+                });
+            }
+        });
+    });
+
+    $('.wrapper').on('click', '.trash-comment', function () {
+        var pub_box = $(this).closest('.wrapper');
+        var pub_id = pub_box.data('id');
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this publication!",
+            type: "warning",
+            animation: "slide-from-top",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No God, please no!",
+            closeOnConfirm: true
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: '/publication/group/theme/delete/',
+                    type: 'POST',
+                    data: {
+                        'pk': pub_id
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.response === true) {
+                           pub_box.closest('.infinite-item').remove();
+                        }
+                    }, error: function (data, textStatus, jqXHR) {
+                        var errors = [];
+                        $.each(data.responseJSON, function (i, val) {
+                            errors.push(val);
+                        });
+                        swal({
+                            title: "Tenemos un problema...",
+                            customClass: 'default-div',
+                            text: errors.join(),
+                            timer: 4000,
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            }
+        });
+    });
 });// end document ready
 
 var loadDescendantsRunning = false;
@@ -839,7 +994,7 @@ function AJAX_load_descendants_group(pub, loader, page, btn) {
             loadDescendantsRunning = false;
         },
         error: function (rs, e) {
-            console.log(e);
+            // console.log(e);
         }
     });
 }

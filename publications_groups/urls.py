@@ -25,5 +25,11 @@ urlpatterns = [
     # Theme publications
     url(r'^publication/group/theme/reply/$', views.PublicationThemeView.as_view(),
         name='reply_theme_publication'),
+    url(r'^publication/group/theme/like/$', views.AddLikePublicationTheme.as_view(),
+        name='like_theme_publication'),
+    url(r'^publication/group/theme/hate/$', views.AddHatePublicationTheme.as_view(),
+        name='hate_theme_publication'),
+    url(r'^publication/group/theme/delete/$', views.DeletePublicationTheme.as_view(),
+        name='delete_theme_publication'),
 
 ]
