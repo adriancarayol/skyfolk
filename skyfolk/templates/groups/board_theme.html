@@ -1,7 +1,9 @@
 {% extends "groups/base_group.html" %}
 {% load static from staticfiles %}
 {% load group_utils %}
-
+{% block extra-css %}
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/group_profile.css">
+{% endblock %}
 {% block title %} <title> Skyfolk / Tema {{ object.board_group }}-{{ object.title }} </title> {% endblock %}
 {% block content %}
     <div class="container">
@@ -10,17 +12,21 @@
                 <div class="card horizontal">
                     <div class="card-image">
                         <img class="lazyload" data-src="
-                        {% if object.image %}{{ object.image.url }}{% else %}{% static "img/nuevo_back.png" %}{% endif %}"
+
+
+
+                                {% if object.image %}{{ object.image.url }}{% else %}{% static "img/nuevo_back.png" %}{% endif %}"
                              style="width: 120px; height: 120px;">
                     </div>
                     <div class="card-stacked">
                         <div class="card-content">
+                            <a href="{% url "user_profile:profile" username=object.owner %}">@{{ object.owner }}</a>
                             <h4>{{ object.title|safe }}</h4>
                             <p>{{ object.description|safe }}</p>
                         </div>
                         <div class="card-action">
                             <p class="right">
-                                <span><i class="material-icons">comment</i></span>
+                                <span class="reply_theme"><i class="material-icons">comment</i></span>
                                 <span class="like-theme"
                                       {% if object.have_like == 1 %}style="color: rgb(240, 98, 146);"{% endif %}><i
                                         class="material-icons">keyboard_arrow_up</i><i
@@ -33,8 +39,16 @@
                         </div>
                     </div>
                 </div>
+                {% include "groups/new_reply_theme.html" %}
             </div>
         </div>
-    {{ form }}
+        <div class="row">
+            {% for pub in publications %}
+                <div class="col offset-l2 l8 s12">
+                    {{ pub.content }}
+                </div>
+            {% endfor %}
+        </div>
     </div>
+    <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
 {% endblock %}

@@ -184,7 +184,7 @@ $(function () {
         var tag = $(this);
         AJAX_remove_publication_from_skyline(tag.data('id'), tag);
     });
-
+    /* THEMES */
     /* Create theme */
     $(this).on('submit', '#new_group_theme', function (e) {
         e.preventDefault();
@@ -328,6 +328,41 @@ $(function () {
                     title: "Tenemos un problema...",
                     customClass: 'default-div',
                     text: "Hubo un problema con su petición.",
+                    timer: 4000,
+                    showConfirmButton: true
+                });
+            }
+        });
+    });
+    $('.theme').on('click', '.reply_theme', function () {
+        var id_ = $(this).closest('.theme').data('id');
+        $("#caja-comentario-" + id_).toggle();
+    });
+
+    /* Submit reply publication */
+    $('.theme').on('submit', '#form-reply-theme', function (event) {
+        event.preventDefault();
+        var form = new FormData($(this).get(0));
+        $.ajax({
+            url: '/publication/group/theme/reply/',
+            type: 'POST',
+            data: form,
+            async: true,
+            dataType: "json",
+            contentType: false,
+            enctype: 'multipart/form-data',
+            processData: false,
+            success: function (data) {
+
+            }, error: function (data, textStatus, jqXHR) {
+                var errors = [];
+                 $.each(data.responseJSON, function (i, val) {
+                    errors.push(val);
+                 });
+                swal({
+                    title: "Tenemos un problema...",
+                    customClass: 'default-div',
+                    text: errors.join(),
                     timer: 4000,
                     showConfirmButton: true
                 });

@@ -1,0 +1,35 @@
+{% comment %}
+Nueva respuesta a una publicacion
+{% endcomment %}
+<div class="hidden" id="caja-comentario-{{ object.pk }}" style="display: none;">
+    <form id="form-reply-theme" class="reply-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <input name="author" type="hidden" value="{{ request.user.id }}">
+        <input name="board_theme" type="hidden" value="{{ object.id }}">
+        <div class="row">
+            <div class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea class="materialize-textarea message-reply" id="message-reply-{{ object.pk }}" cols="40"
+                                  maxlength="500" name="content"
+                                  placeholder="Responder a @{{ object.owner }}" rows="10" required=""></textarea>
+                        <label for="message-reply-{{ object.owner }}">Escribe tu mensaje aqui...</label>
+                    </div>
+                    <div class="file-field input-field col s12">
+                        <div class="btn">
+                            <span>Imágenes</span>
+                            <input name="image" type="file" multiple>
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <button type="submit" id="reply-{{ object.pk }}" class="waves-effect waves-light btn right blue send_reply_theme">
+                Enviar<i
+                    class="material-icons right">send</i></button>
+        </div>
+    </form>
+</div>

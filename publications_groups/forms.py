@@ -63,4 +63,4 @@ class PublicationThemeForm(forms.ModelForm):
     class Meta:
         model = PublicationTheme
         # Excluir atributos en el formulario.
-        fields = ['content', 'parent']
+        fields = ['content', 'parent', 'board_theme']

@@ -10,6 +10,7 @@
             </div>
             <div class="card-stacked">
                 <div class="card-content">
+                    <a href="{% url "user_profile:profile" username=theme.owner %}">@{{ theme.owner }}</a>
                     <h4>{{ theme.title|safe }}</h4>
                     <p>{{ theme.description|safe }}</p>
                 </div>

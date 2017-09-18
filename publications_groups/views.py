@@ -1,11 +1,13 @@
 import magic
 from bs4 import BeautifulSoup
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, UpdateView
 from django.views.generic.list import ListView
@@ -17,10 +19,10 @@ from emoji.models import Emoji
 from publications.exceptions import EmptyContent
 from publications.models import Publication
 from publications.views import logger
-from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
+from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit, PublicationThemeForm
 from publications.forms import SharedPublicationForm
-from publications_groups.models import PublicationGroup
-from user_groups.models import UserGroups
+from publications_groups.models import PublicationGroup, PublicationTheme
+from user_groups.models import UserGroups, GroupTheme
 from user_groups.node_models import NodeGroup
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -30,7 +32,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Q
 
 
-@method_decorator(login_required, name='dispatch')
 class PublicationGroupView(AjaxableResponseMixin, CreateView):
     """
     Crear una publicación para una imagen de
@@ -636,3 +637,42 @@ class RemoveSharedGroupPublication(View):
             'response': True,
         }
         return JsonResponse(data)
+
+
+class PublicationThemeView(AjaxableResponseMixin, CreateView):
+    """
+    Crear una publicación para una imagen de
+    la galeria de un usuario.
+    """
+    form_class = PublicationThemeForm
+    model = PublicationTheme
+
+    def __init__(self):
+        self.object = None
+        super(PublicationThemeView, self).__init__()
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PublicationThemeView, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('user_profile:profile', kwargs={'username': self.request.user.username})
+
+    def form_valid(self, form):
+        user = self.request.user
+        form.instance.author = user
+
+        try:
+            group_id = GroupTheme.objects.values_list('board_group_id', flat=True).get(id=form.instance.board_theme.id)
+            group = UserGroups.objects.get(group_ptr_id=group_id)
+        except ObjectDoesNotExist:
+            form.add_error('board_theme', 'El tema especificado no existe.')
+            return super(PublicationThemeView, self).form_invalid(form)
+
+        if not group.is_public and not user.groups.filter(id=group_id).exists():
+            print('ok')
+            form.add_error('board_theme',
+                           'Para comentar en este tema debes ser miembro del grupo {0}.'.format(group.name))
+            return super(PublicationThemeView, self).form_invalid(form)
+
+        return super(PublicationThemeView, self).form_valid(form)

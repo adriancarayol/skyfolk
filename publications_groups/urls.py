@@ -22,5 +22,8 @@ urlpatterns = [
         name='share_group_publication'),
     url(r'^publication/group/delete/share/$', views.RemoveSharedGroupPublication.as_view(),
         name='delete_share_group_publication'),
+    # Theme publications
+    url(r'^publication/group/theme/reply/$', views.PublicationThemeView.as_view(),
+        name='reply_theme_publication'),
 
 ]
