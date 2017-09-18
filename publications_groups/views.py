@@ -659,6 +659,7 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
         return reverse_lazy('user_profile:profile', kwargs={'username': self.request.user.username})
 
     def form_valid(self, form):
+        from django.db import connection
         user = self.request.user
         form.instance.author = user
 
@@ -670,9 +671,21 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
             return super(PublicationThemeView, self).form_invalid(form)
 
         if not group.is_public and not user.groups.filter(id=group_id).exists():
-            print('ok')
             form.add_error('board_theme',
                            'Para comentar en este tema debes ser miembro del grupo {0}.'.format(group.name))
             return super(PublicationThemeView, self).form_invalid(form)
 
+        if form.instance.parent:
+            try:
+                author = NodeProfile.nodes.get(user_id=form.instance.parent.author_id)
+                emitter_node = NodeProfile.nodes.get(user_id=user.id)
+            except NodeProfile.DoesNotExist:
+                raise Http404
+
+            if author.bloq.is_connected(emitter_node):
+                form.add_error('parent',
+                                'El autor de la publicación te ha bloqueado.'.format(group.name))
+                return super(PublicationThemeView, self).form_invalid(form)
+
+        print(connection.queries)
         return super(PublicationThemeView, self).form_valid(form)

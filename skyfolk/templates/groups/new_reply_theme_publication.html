@@ -1,18 +1,19 @@
 {% comment %}
 Nueva respuesta a una publicacion
 {% endcomment %}
-<div class="hidden" id="caja-comentario-{{ object.pk }}" style="display: none;">
+<div class="hidden" id="caja-comentario-{{ pub.pk }}" style="display: none;">
     <form class="reply-form" method="post" enctype="multipart/form-data">{% csrf_token %}
         <input name="author" type="hidden" value="{{ request.user.id }}">
         <input name="board_theme" type="hidden" value="{{ object.id }}">
+        <input name="parent" type="hidden" value="{{ pub.id }}">
         <div class="row">
             <div class="col s12">
                 <div class="row">
                     <div class="input-field col s12">
-                        <textarea class="materialize-textarea message-reply" id="message-reply-{{ object.pk }}" cols="40"
+                        <textarea class="materialize-textarea message-reply" id="message-reply-{{ pub.pk }}" cols="40"
                                   maxlength="500" name="content"
-                                  placeholder="Responder a @{{ object.owner }}" rows="10" required=""></textarea>
-                        <label for="message-reply-{{ object.owner }}">Escribe tu mensaje aqui...</label>
+                                  placeholder="Responder a @{{ pub.owner }}" rows="10" required=""></textarea>
+                        <label for="message-reply-{{ pub.owner }}">Escribe tu mensaje aqui...</label>
                     </div>
                     <div class="file-field input-field col s12">
                         <div class="btn">
@@ -27,7 +28,7 @@ Nueva respuesta a una publicacion
             </div>
         </div>
         <div class="row">
-            <button type="submit" id="reply-{{ object.pk }}" class="waves-effect waves-light btn right blue send_reply_theme">
+            <button type="submit" id="reply-{{ pub.pk }}" class="waves-effect waves-light btn right blue send_reply_theme">
                 Enviar<i
                     class="material-icons right">send</i></button>
         </div>

@@ -339,35 +339,16 @@ $(function () {
         $("#caja-comentario-" + id_).toggle();
     });
 
-    /* Submit reply publication */
-    $('.theme').on('submit', '#form-reply-theme', function (event) {
-        event.preventDefault();
-        var form = new FormData($(this).get(0));
-        $.ajax({
-            url: '/publication/group/theme/reply/',
-            type: 'POST',
-            data: form,
-            async: true,
-            dataType: "json",
-            contentType: false,
-            enctype: 'multipart/form-data',
-            processData: false,
-            success: function (data) {
+    $('.wrapper').on('click', '.reply-comment', function () {
+        var id_ = $(this).attr('id').split('-')[3];
+        $("#caja-comentario-" + id_).toggle();
+    });
 
-            }, error: function (data, textStatus, jqXHR) {
-                var errors = [];
-                 $.each(data.responseJSON, function (i, val) {
-                    errors.push(val);
-                 });
-                swal({
-                    title: "Tenemos un problema...",
-                    customClass: 'default-div',
-                    text: errors.join(),
-                    timer: 4000,
-                    showConfirmButton: true
-                });
-            }
-        });
+    /* Submit reply publication */
+    $('.theme, .wrapper').on('click', '.send_reply_theme', function (event) {
+        event.preventDefault();
+        var form = new FormData($(this).closest('form').get(0));
+        AJAX_submit_theme_publication(form);
     });
 });// end document ready
 
@@ -941,6 +922,34 @@ function AJAX_remove_publication_from_skyline(pub_id, tag) {
         },
         error: function (jqXHR, textStatus, errorThrown) {
             // console.log(jqXHR.status);
+        }
+    });
+}
+
+function AJAX_submit_theme_publication(form) {
+    $.ajax({
+        url: '/publication/group/theme/reply/',
+        type: 'POST',
+        data: form,
+        async: true,
+        dataType: "json",
+        contentType: false,
+        enctype: 'multipart/form-data',
+        processData: false,
+        success: function (data) {
+
+        }, error: function (data, textStatus, jqXHR) {
+            var errors = [];
+            $.each(data.responseJSON, function (i, val) {
+                errors.push(val);
+            });
+            swal({
+                title: "Tenemos un problema...",
+                customClass: 'default-div',
+                text: errors.join(),
+                timer: 4000,
+                showConfirmButton: true
+            });
         }
     });
 }
