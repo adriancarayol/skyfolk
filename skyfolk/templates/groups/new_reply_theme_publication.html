@@ -12,8 +12,8 @@ Nueva respuesta a una publicacion
                     <div class="input-field col s12">
                         <textarea class="materialize-textarea message-reply" id="message-reply-{{ pub.pk }}" cols="40"
                                   maxlength="500" name="content"
-                                  placeholder="Responder a @{{ pub.owner }}" rows="10" required=""></textarea>
-                        <label for="message-reply-{{ pub.owner }}">Escribe tu mensaje aqui...</label>
+                                  placeholder="Responder a @{{ pub.author }}" rows="10" required=""></textarea>
+                        <label for="message-reply-{{ pub.author }}">Escribe tu mensaje aqui...</label>
                     </div>
                     <div class="file-field input-field col s12">
                         <div class="btn">

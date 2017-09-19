@@ -86,6 +86,10 @@ class GroupTheme(models.Model):
         self.slug = uuslug(self.title, instance=self)
         super(GroupTheme, self).save(*args, **kwargs)
 
+    @property
+    def theme_channel(self):
+        return "{}-theme".format(self.id)
+
 class LikeGroupTheme(models.Model):
     theme = models.ForeignKey(GroupTheme, related_name='like_theme')
     by_user = models.ForeignKey(User)

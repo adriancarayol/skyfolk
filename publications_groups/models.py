@@ -189,36 +189,21 @@ class PublicationTheme(PublicationBase):
             'id': self.id,
             'parent_id': self.parent_id,
             'level': self.level,
-            'content': render_to_string(request=request, template_name='channels/new_group_publication.html',
-                                        context={'node': self, 'group_profile': self.board_group})
+            'content': render_to_string(request=request, template_name='groups/board_theme_publications.html',
+                                        context={'publications': [self, ], 'object': self.board_theme})
         }
 
         # Enviamos a todos los usuarios que visitan el perfil
-        channel_group(self.board_group.group_channel).send({
+        channel_group(self.board_theme.theme_channel).send({
             "text": json.dumps(data)
         })
 
-        # TODO: Mezclar templates para ahorrar el render
-
-        data['content'] = render_to_string(request=request, template_name='channels/new_group_publication_detail.html',
-                                           context={'node': self, 'group_profile': self.board_group})
-
-        # Enviamos por el socket de la publicacion
-        if is_edited:
-            channel_group(self.blog_channel).send({
-                'text': json.dumps(data)
-            })
-
-        # Enviamos al blog de la publicacion
-        [channel_group("group-publication-%d" % x).send({
-            "text": json.dumps(data)
-        }) for x in self.get_ancestors().values_list('id', flat=True)]
-
         # Notificamos al board_owner de la publicacion
+        #TODO: Arreglar notificacion
         notify.send(self.author, actor=self.author.username,
-                    recipient=self.board_group.owner,
-                    description="Te avisamos de que @{0} ha publicado en el skyline del grupo {1}.".format(
-                        self.author.username, self.board_group.name),
-                    verb=u'<a href="/profile/%s">@%s</a> ha publicado en el grupo %s.' %
-                         (self.author.username, self.author.username, self.board_group.name),
-                    level='notification_board_group')
+                    recipient=self.board_theme.owner,
+                    description="Te avisamos de que @{0} ha publicado en el tema {1}.".format(
+                        self.author.username, self.board_theme.title),
+                    verb=u'<a href="/profile/%s">@%s</a> ha publicado en el tema %s.' %
+                         (self.author.username, self.author.username, self.board_theme.title),
+                    level='notification_board_theme')

@@ -279,10 +279,7 @@ def profile_view(request, username,
     context['publication_shared'] = SharedPublicationForm()
 
     # Cargamos las publicaciones del perfil
-    import time
-    start_time = time.time()
     pubs_shared_with_me, pubs_shared, publications = load_profile_publications(request, 1, user_profile)
-    print('total: %s' % (time.time() - start_time))
 
     # Contenido de las tres tabs
     context['pubs_shared_with_me'] = pubs_shared_with_me

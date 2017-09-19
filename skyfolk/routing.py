@@ -6,7 +6,7 @@ from photologue.consumers import PhotoConsumer
 from publications.consumers import PublicationConsumer
 from publications_gallery.consumers import PublicationPhotoConsumer
 from user_profile.consumers import BlogConsumer, NotificationConsumer
-from user_groups.consumers import GroupConsumer
+from user_groups.consumers import GroupConsumer, ThemeConsumer
 from publications_groups.consumers import GroupPublicationConsumer
 
 # The channel routing defines what channels get handled by what consumers,
@@ -32,6 +32,9 @@ channel_routing = [
     GroupConsumer.as_route(path=r'^/group/(?P<groupname>[\w-]+)/stream/$'),
     # channels para conectarse a publication group detail
     GroupPublicationConsumer.as_route(path=r'^/publication/group/detail/(?P<pk>\d+)/stream/$'),
+    # channels para theme
+    ThemeConsumer.as_route(path=r'^/groups/theme/(?P<slug>[\w-]+)/stream/$'),
+
     # A default "http.request" route is always inserted by Django at the end of the routing list
     # that routes all unmatched HTTP requests to the Django view system. If you want lower-level
     # HTTP handling - e.g. long-polling - you can do it here and route by path, and let the rest

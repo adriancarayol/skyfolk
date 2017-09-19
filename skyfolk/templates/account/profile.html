@@ -126,7 +126,9 @@ Template para el perfil de cada usuario
                                             <script>
                                                 window.board_owner = {{ user_profile.id }};
                                             </script>
-                                            <script src="{% static "js/{{ component }}" %}"></script>
+                                            {% with 'js/'|add:component as component %}
+                                                <script src="{% static component %}"></script>
+                                            {% endwith %}
                                         </div>
                                         {% if publications|length == 0 %}
                                             <div class="no-comments" id="without-comments">

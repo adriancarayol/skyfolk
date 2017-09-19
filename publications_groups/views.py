@@ -676,7 +676,7 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('user_profile:profile', kwargs={'username': self.request.user.username})
 
-    def form_valid(self, form):
+    def form_valid(self, form, msg=None):
         user = self.request.user
         form.instance.author = user
 
@@ -703,7 +703,15 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
                 form.add_error('parent',
                                'El autor de la publicación te ha bloqueado.'.format(group.name))
                 return super(PublicationThemeView, self).form_invalid(form)
-        return super(PublicationThemeView, self).form_valid(form)
+
+        try:
+            with transaction.atomic(using="default"):
+                saved = super(PublicationThemeView, self).form_valid(form)
+                transaction.on_commit(lambda: form.instance.send_notification(self.request))
+        except IntegrityError:
+            raise Exception('Error al guardar la publicacion')
+
+        return saved
 
 
 class AddLikePublicationTheme(View):

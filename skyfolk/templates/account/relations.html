@@ -61,5 +61,8 @@ Template para los seguidores de un perfil
             $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
         </script>
     {% endif %}
-    <script src="{% static "js/{{ component }}" %}"></script>
+
+    {% with 'js/'|add:component as component %}
+        <script src="{% static component %}"></script>
+    {% endwith %}
 {% endblock %}

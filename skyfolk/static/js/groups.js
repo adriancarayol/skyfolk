@@ -347,8 +347,7 @@ $(function () {
     /* Submit reply publication */
     $('.theme, .theme-publications').on('click', '.send_reply_theme', function (event) {
         event.preventDefault();
-        var form = new FormData($(this).closest('form').get(0));
-        AJAX_submit_theme_publication(form);
+        AJAX_submit_theme_publication($(this).closest('form'));
     });
 
     $('.theme-publications').on('click', '.like-comment', function () {
@@ -1065,17 +1064,25 @@ function AJAX_remove_publication_from_skyline(pub_id, tag) {
 }
 
 function AJAX_submit_theme_publication(form) {
+    var form_data = new FormData(form.get(0));
     $.ajax({
         url: '/publication/group/theme/reply/',
         type: 'POST',
-        data: form,
+        data: form_data,
         async: true,
         dataType: "json",
         contentType: false,
         enctype: 'multipart/form-data',
         processData: false,
-        success: function (data) {
-
+        success: function (response) {
+            var parent = form_data.get('parent');
+            var board_theme = form_data.get('board_theme');
+            if (parent === null) {
+                $('#caja-comentario-' + board_theme).toggle();
+            } else {
+                $('#caja-comentario-' + parent).toggle();
+            }
+            form.trigger("reset");
         }, error: function (data, textStatus, jqXHR) {
             var errors = [];
             $.each(data.responseJSON, function (i, val) {
