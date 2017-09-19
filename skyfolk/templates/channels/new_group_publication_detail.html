@@ -5,9 +5,7 @@
 {% load mptt_tags %}
 {% load embed_video_tags %}
 {% load compress %}
-
-
-            <div class="row row-pub infinite-item" id="pub-{{ node.id }}" data-id="{{ user.pk }}">
+            <div class="row row-pub infinite-item" id="pub-{{ node.id }}" data-id="{{ user.pk }}" {% if node.parent %}data-parent="{{ node.parent.id }}"{% endif %}>
                 <div class="col s12">
                     <div class="row">
                         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" {% if node.level > 0 %}

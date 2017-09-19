@@ -339,19 +339,19 @@ $(function () {
         $("#caja-comentario-" + id_).toggle();
     });
 
-    $('.wrapper').on('click', '.reply-comment', function () {
+    $('.theme-publications').on('click', '.reply-comment', function () {
         var id_ = $(this).attr('id').split('-')[3];
         $("#caja-comentario-" + id_).toggle();
     });
 
     /* Submit reply publication */
-    $('.theme, .wrapper').on('click', '.send_reply_theme', function (event) {
+    $('.theme, .theme-publications').on('click', '.send_reply_theme', function (event) {
         event.preventDefault();
         var form = new FormData($(this).closest('form').get(0));
         AJAX_submit_theme_publication(form);
     });
 
-    $('.wrapper').on('click', '.like-comment', function () {
+    $('.theme-publications').on('click', '.like-comment', function () {
         var pub_box = $(this).closest('.wrapper');
         var $parent_btn = $(this);
         var $like_btn = $(this).find('.like-value');
@@ -406,7 +406,7 @@ $(function () {
         });
     });
 
-    $('.wrapper').on('click', '.hate-comment', function () {
+    $('.theme-publications').on('click', '.hate-comment', function () {
         var pub_box = $(this).closest('.wrapper');
         var $parent_btn = $(this);
         var $hate_btn = $(this).find('.hate-value');
@@ -461,7 +461,7 @@ $(function () {
         });
     });
 
-    $('.wrapper').on('click', '.trash-comment', function () {
+    $('.theme-publications').on('click', '.trash-comment', function () {
         var pub_box = $(this).closest('.wrapper');
         var pub_id = pub_box.data('id');
         swal({
@@ -487,6 +487,7 @@ $(function () {
                     success: function (data) {
                         if (data.response === true) {
                            pub_box.closest('.infinite-item').remove();
+                           $(".infinite-item").find(`[data-parent='${pub_id}']`).closest('.infinite-item').remove();
                         }
                     }, error: function (data, textStatus, jqXHR) {
                         var errors = [];
@@ -629,22 +630,12 @@ function AJAX_submit_group_publication(obj_form, type, pks) {
         success: function (data) {
             var response = data.response;
             var msg = data.msg;
-
-            if (response === true && (typeof(msg) !== 'undefined' && msg !== null)) {
+            if (typeof(msg) !== 'undefined' && msg !== null) {
                 swal({
                     title: "",
                     text: msg,
                     customClass: 'default-div',
                     type: "success"
-                });
-            } else if (response === true) {
-
-            } else {
-                swal({
-                    title: "",
-                    text: "Failed to publish",
-                    customClass: 'default-div',
-                    type: "error"
                 });
             }
             if (type === "reply") {
@@ -762,6 +753,7 @@ function AJAX_delete_group_publication(id, board_group) {
                 $('#pub-' + id).fadeToggle("fast", function () {
                     $(this).remove();
                 });
+                $(".infinite-container").find(`[data-parent='${id}']`).remove();
 
                 if (data.shared_pub_id) {
                     var shared_btn = $('#share-' + data.shared_pub_id);

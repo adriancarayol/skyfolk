@@ -127,7 +127,8 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
             emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
             board_owner = NodeProfile.nodes.get(user_id=request.POST['board_owner'])
         except NodeProfile.DoesNotExist as e:
-            return self.form_invalid(form=form, errors=e)
+            form.add_error({'board_owner': 'El perfil donde quieres publicar no existe.'})
+            return self.form_invalid(form=form)
 
         privacity = board_owner.is_visible(emitter)
 

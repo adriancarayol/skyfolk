@@ -122,7 +122,7 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                                                u"cuando la publicación esté lista.")
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
-                return self.form_invalid(form=form, errors=e)
+                return self.form_invalid(form=form)
         return self.form_invalid(form=form)
 
 
@@ -659,7 +659,6 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
         return reverse_lazy('user_profile:profile', kwargs={'username': self.request.user.username})
 
     def form_valid(self, form):
-        from django.db import connection
         user = self.request.user
         form.instance.author = user
 
@@ -686,8 +685,6 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
                 form.add_error('parent',
                                 'El autor de la publicación te ha bloqueado.'.format(group.name))
                 return super(PublicationThemeView, self).form_invalid(form)
-
-        print(connection.queries)
         return super(PublicationThemeView, self).form_valid(form)
 
 

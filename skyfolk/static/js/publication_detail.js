@@ -113,8 +113,9 @@ function AJAX_delete_publication_detail(caja_publicacion) {
         data: data,
         success: function (data) {
             // borrar caja publicacion
-            if (data.response == true) {
-                $(caja_publicacion).fadeToggle("fast");
+            if (data.response === true) {
+                $(caja_publicacion).remove();
+                $(".infinite-container").find(`[data-parent='${id_pub}']`).remove();
             } else {
                 swal({
                     title: "Fail",

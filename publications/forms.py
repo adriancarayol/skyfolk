@@ -16,43 +16,6 @@ class PublicationForm(forms.ModelForm):
                    'user_give_me_hate', 'shared_publication', 'tags', 'deleted',
                    'event_type', 'liked', 'hated', 'shared', 'extra_content', 'shared_photo_publication']
 
-        """
-        if self.initial:
-            if self.initial['author'] == self.initial['board_owner']: # Publico en mi perfil
-                self.fields['content'].widget.attrs.update({
-                'class': 'materialize-textarea',
-                'id': 'message2',
-                'data-length': '500',
-                'placeholder': 'Escribe tu mensaje aqui...',
-                'required': 'required',
-                })
-            else: # Publico en perfil ajeno
-                self.fields['content'].widget.attrs.update({
-                'class': 'materialize-textarea',
-                'id': 'message3',
-                'data-length': '500',
-                'placeholder': 'Escribe tu mensaje aqui...',
-                'required': 'required',
-                })
-
-        self.fields['content'].label = ''
-        self.fields['author'].widget = forms.HiddenInput()
-        self.fields['board_owner'].widget = forms.HiddenInput()
-        self.fields['parent'].widget = forms.HiddenInput()
-        """
-
-
-class ReplyPublicationForm(forms.ModelForm):
-    class Meta:
-        model = Publication
-        # Excluir atributos en el formulario.
-        exclude = ['image', 'created', 'likes', 'user_give_me_like', 'hates',
-                   'user_give_me_hate', 'shared_publication', 'tags', 'deleted',
-                   'event_type', 'liked', 'hated', 'shared', 'extra_content', 'shared_photo_publication']
-
-    def __init__(self, *args, **kwargs):
-        super(ReplyPublicationForm, self).__init__(*args, **kwargs)
-
 
 class PublicationEdit(forms.ModelForm):
     """

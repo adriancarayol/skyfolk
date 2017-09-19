@@ -30,7 +30,7 @@ from mailer.handler import notify_via_email
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
-from publications.forms import PublicationForm, ReplyPublicationForm, PublicationEdit, SharedPublicationForm
+from publications.forms import PublicationForm, PublicationEdit, SharedPublicationForm
 from publications.models import Publication, PublicationVideo
 from user_profile.decorators import user_can_view_profile_info
 from user_profile.forms import AdvancedSearchForm
@@ -266,7 +266,6 @@ def profile_view(request, username,
         template = "account/privacity/need_confirmation_profile.html"
         return render(request, template, context)
 
-    context['reply_publication_form'] = ReplyPublicationForm()
     context['publicationForm'] = PublicationForm()
     context['publication_edit'] = PublicationEdit()
     context['publication_shared'] = SharedPublicationForm()

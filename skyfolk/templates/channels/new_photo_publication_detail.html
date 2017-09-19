@@ -4,7 +4,7 @@
 {% load humanize %}
 {% load embed_video_tags %}
 
-<div class="row row-pub">
+<div class="row row-pub infinite-item" {% if node.parent %}data-parent="{{ node.parent.id }}"{% endif %}>
     <div class="col s12">
         <div class="row">
         <div class="col wrapper{% if node.level == 0 %} col offset-l1 l10 m11 s12 {% else %} offset-l2 l9 m10 s11{% endif %}" id="pub-{{ node.pk }}" data-id="{{ user.pk }}" {% if node.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}>

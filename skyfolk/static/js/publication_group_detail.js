@@ -3,7 +3,6 @@ $(document).ready(function () {
 
    /* Borrar publicacion */
     $thread.on('click', '.trash-comment', function () {
-        alert('clicked');
         var id = $(this).closest('.options_comentarios').data('id');
         var board_group = $(this).closest('.options_comentarios').data('board');
         swal({

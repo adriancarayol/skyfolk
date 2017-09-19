@@ -175,22 +175,12 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
         success: function (data) {
             var response = data.response;
             var msg = data.msg;
-
-            if (response === true && (typeof(msg) !== 'undefined' && msg !== null)) {
+            if (typeof(msg) !== 'undefined' && msg !== null) {
                 swal({
                     title: "",
                     text: msg,
                     customClass: 'default-div',
                     type: "success"
-                });
-            } else if (response === true) {
-
-            } else {
-                swal({
-                    title: "",
-                    text: "Failed to publish",
-                    customClass: 'default-div',
-                    type: "error"
                 });
             }
             if (type === "reply") {
@@ -243,8 +233,10 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
         data: data,
         success: function (data) {
             // borrar caja publicacion
-            if (data == true) {
-                $(caja_publicacion).fadeToggle("fast");
+            if (data === true) {
+                $(caja_publicacion).closest('.infinite-item').remove();
+                $(".infinite-container").find(`[data-parent='${id_pub}']`).closest('.infinite-item').remove();
+
             } else {
                 swal({
                     title: "Fail",
