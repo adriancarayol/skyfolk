@@ -3,7 +3,7 @@
 {% load app_filters %}
 {% load humanize %}
 {% load embed_video_tags %}
-
+{% load static %}
 <div class="row row-pub infinite-item" id="pub-{{ node.pk }}" {% if node.parent %}data-parent="{{ node.parent.id }}"{% endif %}>
     <div class="col s12">
         <div class="row">
@@ -19,7 +19,7 @@
                                       data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
                {% endif %}
                <div class="row">
-                <div class="image col l2 m2 s2">
+                <div class="image col l1 m2 s2">
                     <div class="usr-img img-responsive">{% avatar node.author %}</div>
                 </div>
                 <div class="articulo col s9">
@@ -87,7 +87,7 @@
                                    <div class="card small">
                                     <div class="card-image">
                                         <img class="lazyload" data-src="
-                                        {% if node.shared_publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                        {% if node.shared_publication.extra_content.image %}{{ node.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                         <span class="card-title white-text">{{ node.shared_publication.extra_content.title }}</span>
                                     </div>
                                     <div class="card-content">
@@ -148,7 +148,7 @@
                                        {% else %}
                                        <div class="card small">
                                         <div class="card-image">
-                                            <img class="lazyload" data-src="{% if node.shared_photo_publication.extra_content.image %}{{ node.shared_photo_publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                            <img class="lazyload" data-src="{% if node.shared_photo_publication.extra_content.image %}{{ node.shared_photo_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                             <span class="card-title white-text">{{ node.shared_photo_publication.extra_content.title }}</span>
                                         </div>
                                         <div class="card-content">
@@ -201,7 +201,7 @@
                             <div class="card small">
                                 <div class="card-image">
                                     <img class="lazyload" data-src="
-                                    {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                    {% if node.extra_content.image %}{{ node.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                     <span class="card-title white-text">{{ node.extra_content.title }}</span>
                                 </div>
                                 <div class="card-content">

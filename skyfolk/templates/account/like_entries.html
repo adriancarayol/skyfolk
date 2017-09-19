@@ -1,5 +1,6 @@
 {% load app_filters %}
 {% load avatar_tags %}
+{% load static %}
 {% for item in object_list %}
     <div class="col l3 m10 s12">
         <div class="personal-card">
@@ -9,7 +10,7 @@
                         {% if item.profile.back_image %}
                             <img class="back-profile-user" src="{{ item.profile.back_image.url }}">
                         {% else %}
-                            <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                            <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
                         {% endif %}
                         <i class="material-icons like-him">favorite</i>
                         <div class="bg-user">

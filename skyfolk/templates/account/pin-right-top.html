@@ -1,6 +1,7 @@
 {% comment %}
   Pin derecha arriba
 {% endcomment %}
+{% load static %}
 <div class="col s12">
     <div class="stock card">
         <div class="ventana-pin">
@@ -11,7 +12,7 @@
         <div class="wrapper">
             <div class="widget-wr">
                 <div class="widget-wr-ans">
-                    <img src="{{ STATIC_URL }}img/1.jpg">
+                    <img src="{% static "img/1.jpg" %}">
                     <span class="wr-tittle">¿Debería viajar aquí?</span>
                 </div>
                 <div class="widget-options">

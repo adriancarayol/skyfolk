@@ -2,10 +2,11 @@
 {% comment %}
 Template para los seguidores de un perfil
 {% endcomment %}
+{% load static %}
 {% block title %}<title>{% if url_name == "followers" %}Seguidores de{% else %}
     Seguidos{% endif %} {{ username }}</title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css">
+    <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}">
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -54,11 +55,11 @@ Template para los seguidores de un perfil
             {% endif %}
         </div>
     </div>
-    <script src="{{ STATIC_URL }}js/friends.js"></script>
+    <script src="{% static "js/friends.js" %}"></script>
     {% if url_name == "following" %}
         <script>
             $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
         </script>
     {% endif %}
-    <script src="{{ STATIC_URL }}js/{{ component }}"></script>
+    <script src="{% static "js/{{ component }}" %}"></script>
 {% endblock %}

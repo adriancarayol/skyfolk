@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 <!-- codigo del modulo allauth -->
@@ -6,13 +7,13 @@
     <title>{% block head_title %}{% endblock %}</title>
     {% block extra_head %}
     {% endblock %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/setup.css">
+    <link rel="stylesheet" type="text/css" href="{% static "css/setup.css" %}">
 
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/materialize.min.css" media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="{% static "css/materialize.min.css" %}" media="screen,projection"/>
     <meta name="viewport" content="width=device-width, maximum-scale=3, minimum-scale=0.5">
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-3.1.0.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/materialize.min.js"></script>
-    <link rel="icon" type="image/ico" href="{{ STATIC_URL }}img/favicon.ico"/>
+    <script type="text/javascript" src="{% static "js/jquery-3.1.0.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/materialize.min.js" %}"></script>
+    <link rel="icon" type="image/ico" href="{% stati "img/favicon.ico" %}"/>
 </head>
 <body>
 {% block body %}

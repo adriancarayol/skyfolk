@@ -646,27 +646,18 @@ function AJAX_submit_group_publication(obj_form, type, pks) {
                 $('#group_form_wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
                 $('#group_publication_form').val('');
             }
-        },
-        error: function (data, textStatus) {
-            var response = $.parseJSON(data.responseText);
-            var error_msg = response.error[0];
-            var type_error = response.type_error;
-
-            if (type_error === 'incorrent_data') {
-                swal({
-                    title: '¡Ups!',
-                    text: error_msg, // rs.responseText,
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            } else {
-                swal({
-                    title: '¡Ups!',
-                    text: 'Revisa el contenido de tu mensaje', // rs.responseText,
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            }
+        }, error: function (data, textStatus, jqXHR) {
+            var errors = [];
+            $.each(data.responseJSON, function (i, val) {
+                errors.push(val);
+            });
+            swal({
+                title: "Tenemos un problema...",
+                customClass: 'default-div',
+                text: errors.join(),
+                timer: 4000,
+                showConfirmButton: true
+            });
         }
     }).done(function () {
 

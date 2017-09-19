@@ -1,10 +1,11 @@
 {% extends "groups/base_group.html" %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load static %}
 {% block title %} <title>Skyfolk - Grupos</title> {% endblock %}
 
 {% block extra-css %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/groups.css" onload="if(media!='all')media='all'">
+<link rel="stylesheet" type="text/css" href="{% static "css/groups.css" %}" onload="if(media!='all')media='all'">
 {% endblock %}
 
 {% block content %}
@@ -22,7 +23,7 @@
                                     <img class="back-profile-user"
                                     src="{{ MEDIA_URL }}{{ group.back_image }}">
                                     {% else %}
-                                    <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                                    <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
                                     {% endif %}
                                     <i class="material-icons md-24 group-icon"
                                         title="{{ group.users.all|length }}">group</i>
@@ -33,7 +34,7 @@
                                             <img src="{{ MEDIA_URL }}{{ group.avatar }}"
                                             alt="avatar_group">
                                             {% else %}
-                                            <img src="{{ STATIC_URL }}img/nuevo.png"
+                                            <img src="{% static "img/nuevo.png" %}"
                                             alt="avatar_group">
                                             {% endif %}
                                         </div>

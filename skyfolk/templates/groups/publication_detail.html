@@ -6,11 +6,12 @@
 {% load mptt_tags %}
 {% load embed_video_tags %}
 {% load compress %}
+{% load group_utils %}
+{% load static %}
 {% block extra-css %}
-
     {% compress css %}
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
+        <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "css/publication_detail.css" %}">
     {% endcompress %}
 {% endblock %}
 
@@ -54,7 +55,7 @@
         <div class="row">
             <div class="col l3 offset-l5 offset-s3 s6 z-depth-2 board-photo">
                 <div class="col l3 s6 board-photo-container">
-                    <img src="{% if group_profile.avatar %}{{ group_profile.avatar.url }}{% else %}{{ STATIC_URL }}img/nuevo.png{% endif %}">
+                    <img src="{% if group_profile.avatar %}{{ group_profile.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}">
                 </div>
                 <div class="col l9 s6 board-photo-link">
                     <a href="{% url 'user_groups:group-profile' groupname=group_profile.slug %}">Ver grupo</a>
@@ -143,7 +144,7 @@
                                                     <div class="card-image">
                                                         <img class="lazyload" data-src="
 
-                                                                {% if node.group_extra_content.image %}{{ node.group_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                {% if node.group_extra_content.image %}{{ node.group_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                         <span class="card-title white-text">{{ node.group_extra_content.title }}</span>
                                                     </div>
                                                     <div class="card-content">
@@ -168,22 +169,16 @@
                                                 </li>
                                             {% endif %}
                                             {% comment %} Si el usuario esta logueado {% endcomment %}
-                                            {% with node.user_give_me_hate.all as hates %}
-                                                <li title="No me gusta" class="hate-comment"
-                                                    {% if user in hates %}style="color: rgb(186, 104, 200);"{% endif %}>
-                                                    <i class="material-icons md-18">keyboard_arrow_down</i>
-                                                    <i class="hate-value">{% if hates|length > 0 %}
-                                                        {{ hates|length|intword }}{% endif %}</i>
-                                                </li>
-                                            {% endwith %}
-                                            {% with node.user_give_me_like.all as likes %}
-                                                <li title="¡Me gusta!" class="like-comment"
-                                                    {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                                    <i class="material-icons md-18">keyboard_arrow_up</i>
-                                                    <i class="like-value">{% if likes|length > 0 %}
-                                                        {{ likes|length|intword }}{% endif %}</i>
-                                                </li>
-                                            {% endwith %}
+                                            <li title="No me gusta" class="hate-comment" {% if node.have_hate %}
+                                            style="color: rgb(186, 104, 200);"{% endif %}>
+                                                <i class="material-icons md-18">keyboard_arrow_down</i>
+                                                <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
+                                            </li>
+                                            <li title="¡Me gusta!" class="like-comment"
+                                                    {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
+                                                <i class="material-icons md-18">keyboard_arrow_up</i>
+                                                <i class="like-value">{{ node.likes|zero_to_empty }}</i>
+                                            </li>
                                             <li title="Añadir a mi skyline" id="share-{{ node.id }}"
                                                 data-id="{{ node.pk }}"
                                                 class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}
@@ -242,9 +237,9 @@
             <div class="indeterminate blue darken-1"></div>
         </div>
     </div>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/publication_group_detail.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/socket_group_publication.js"></script>
+    <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/publication_group_detail.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/socket_group_publication.js" %}"></script>
     <script>
         var infinite = new Waypoint.Infinite({
             element: $('.infinite-container')[0],

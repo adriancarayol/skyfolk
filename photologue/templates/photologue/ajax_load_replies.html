@@ -4,14 +4,14 @@
 {% load avatar_tags %}
 {% load mptt_tags %}
 {% load embed_video_tags %}
-
+{% load group_utils %}
 <input type="hidden" value="{{ publications|length }}" class="childs_for_{{ pub_id }}">
 {% if publications.has_next %}
     <input type="hidden" value="{{ publications.next_page_number }}" class="page_for_{{ pub_id }}">
 {% endif %}
 
 {% for node in publications %}
-<div class="row">
+<div class="row infinite-item">
     <div class="col s12">
         <div class="col s12 wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}"
         {% if node.level > 0 and node.level < 3 %}style="min-width: 98% !important;"{% endif %}>
@@ -113,18 +113,14 @@
                     </li>
                     {% endif %}
                     {% comment %} Si el usuario esta logueado {% endcomment %}
-                    {% with node.user_give_me_hate.all as hates %}
-                    <li title="No me gusta" class="hate-comment"{% if user in hates %} style="color: rgb(186, 104, 200);"{% endif %}>
+                    <li title="No me gusta" class="hate-comment"{% if node.have_hate %} style="color: rgb(186, 104, 200);"{% endif %}>
                         <i class="material-icons md-18">keyboard_arrow_down</i>
-                        <i class="hate-value">{% if hates|length > 0 %} {{ hates|length|intword }}{% endif %}</i>
+                        <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
                     </li>
-                    {% endwith %}
-                    {% with node.user_give_me_like.all as likes %}
-                    <li title="¡Me gusta!" class="like-comment" {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
+                    <li title="¡Me gusta!" class="like-comment" {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
                         <i class="material-icons md-18">keyboard_arrow_up</i>
-                        <i class="like-value">{% with node.total_likes as likes %}{% if likes > 0 %}{{ likes|intword }}{% endif %}{% endwith %}</i>
+                        <i class="like-value">{{ node.likes|zero_to_empty }}</i>
                     </li>
-                    {% endwith %}
                     <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.id in pubs_shared_with_me %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i class="material-icons md-18">format_quote</i>
                                         <i class="share-values"> {{ pubs_shared|lookup:node.id|intword }}</i></li>
                         <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>

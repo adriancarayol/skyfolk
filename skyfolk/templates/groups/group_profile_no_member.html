@@ -1,8 +1,9 @@
 {% extends "groups/base_group.html" %}
+{% load static %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/group_profile.css">
+    <link rel="stylesheet" type="text/css" href="{% static "css/profile.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/group_profile.css" %}">
     <style type="text/css">
         .title-wrapper {
             display: block;
@@ -38,5 +39,5 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
+    <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
 {% endblock %}

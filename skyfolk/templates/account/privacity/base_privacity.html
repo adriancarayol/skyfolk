@@ -2,10 +2,11 @@
 {% comment %}
   Template para un perfil privado.
 {% endcomment %}
+{% load static %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css"
+    <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}"
           onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/profile.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{% static "css/profile.css" %}" onload="if(media!='all')media='all'">
     <style type="text/css">
         .title-wrapper {
             display: block;

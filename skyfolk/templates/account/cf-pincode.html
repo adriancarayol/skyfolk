@@ -1,4 +1,5 @@
 {% extends "account/base_cf.html" %}
+{% load static %}
 {% comment %}
 	Template para la configuracion del perfil de usuario
 {% endcomment %}
@@ -6,7 +7,7 @@
     {% load i18n avatar_tags %}
 {% endblock %}
 {% block extra-css %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/pincode.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{% static "css/pincode.css" %}" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block cf-title %}
     <div class="hgroup">

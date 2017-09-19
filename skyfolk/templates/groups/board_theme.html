@@ -5,7 +5,7 @@
 {% load app_filters %}
 {% load embed_video_tags %}
 {% load humanize %}
-
+{% load static %}
 {% block extra-css %}
     <link rel="stylesheet" type="text/css" href="{% static "css/group_profile.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
@@ -138,7 +138,7 @@
                                                     {% else %}
                                                         <div class="card small">
                                                             <div class="card-image">
-                                                                <img class="lazyload" data-src="{% if pub.shared_publication.extra_content.image %}{{ pub.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                <img class="lazyload" data-src="{% if pub.shared_publication.extra_content.image %}{{ pub.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                                 <span class="card-title white-text">{{ pub.shared_publication.extra_content.title }}</span>
                                                             </div>
                                                             <div class="card-content">
@@ -203,7 +203,7 @@
                                                     {% else %}
                                                         <div class="card small">
                                                             <div class="card-image">
-                                                                <img class="lazyload" data-src="{% if pub.shared_photo_publication.publication_photo_extra_content.image %}{{ pub.shared_photo_publication.publication_photo_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                <img class="lazyload" data-src="{% if pub.shared_photo_publication.publication_photo_extra_content.image %}{{ pub.shared_photo_publication.publication_photo_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                                 <span class="card-title white-text">{{ pub.shared_photo_publication.publication_photo_extra_content.title }}</span>
                                                             </div>
                                                             <div class="card-content">
@@ -278,7 +278,7 @@
                                                         {% else %}
                                                             <div class="card small">
                                                                 <div class="card-image">
-                                                                    <img class="lazyload" data-src="{% if pub.shared_group_publication.extra_content.image %}{{ pub.shared_group_publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                    <img class="lazyload" data-src="{% if pub.shared_group_publication.extra_content.image %}{{ pub.shared_group_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                                     <span class="card-title white-text">{{ pub.shared_group_publication.extra_content.title }}</span>
                                                                 </div>
                                                                 <div class="card-content">
@@ -334,7 +334,7 @@
                                         {% else %}
                                             <div class="card small">
                                                 <div class="card-image">
-                                                    <img class="lazyload" data-src="{% if pub.extra_content.image %}{{ pub.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                    <img class="lazyload" data-src="{% if pub.extra_content.image %}{{ pub.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                     <span class="card-title white-text">{{ pub.extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">

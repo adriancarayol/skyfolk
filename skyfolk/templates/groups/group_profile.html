@@ -1,8 +1,9 @@
 {% extends "groups/base_group.html" %}
+{% load static %}
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/profile.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/comentarios.css">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/group_profile.css">
+    <link rel="stylesheet" type="text/css" href="{% static "css/profile.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/group_profile.css" %}">
 {% endblock %}
 {% block title %} <title> Skyfolk / Grupo {{ group_profile.name }}</title> {% endblock %}
 {% block content %}
@@ -137,8 +138,8 @@
             </div>
         </div>
     </div>
-    <script src="{{ STATIC_URL }}js/jquery.easytabs.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.hashchange.min.js" type="text/javascript"></script>
+    <script src="{% static "js/jquery.easytabs.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/jquery.hashchange.min.js" %}" type="text/javascript"></script>
     <script type="text/javascript">
         $('#tab-container').easytabs({
             defaultTab: "#li-tab-comentarios",
@@ -172,8 +173,8 @@
                 }
             });
     </script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/groups.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/socket_group.js"></script>
+    <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/socket_group.js" %}"></script>
     <script>
         UTILS.init([{{ group_profile.group_ptr_id }}]);
         UTILS.conn_socket();

@@ -698,8 +698,7 @@ function AJAX_submit_publication(obj_form, type, pks) {
             } else if (type === "publication") {
                 $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
             }
-        },
-        error: function (data, textStatus, jqXHR) {
+        }, error: function (data, textStatus, jqXHR) {
             var errors = [];
             $.each(data.responseJSON, function (i, val) {
                 errors.push(val);

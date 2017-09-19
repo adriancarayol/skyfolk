@@ -16,7 +16,7 @@ from django.utils.decorators import method_decorator
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from emoji.models import Emoji
-from publications.exceptions import EmptyContent
+from publications.exceptions import EmptyContent, MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
 from publications.views import logger
 from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit, PublicationThemeForm
@@ -29,7 +29,7 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media, check_num_images
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Case, When, Value, IntegerField
 
 
 class PublicationGroupView(AjaxableResponseMixin, CreateView):
@@ -61,8 +61,6 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
             if not group.is_public and not group_node.members.is_connected(emitter_node):
                 return self.form_invalid(form=form)
 
-        is_correct_content = False
-
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
@@ -75,30 +73,25 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                     if author.bloq.is_connected(emitter_node):
                         raise PermissionDenied('El autor de la publicación te ha bloqueado')
 
-                soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
-                for tag in soup.find_all(recursive=True):
-                    if tag.text and not tag.text.isspace():
-                        is_correct_content = True
-                        break
-
-                if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-
-                    logger.info('Publicacion contiene espacios o no tiene texto')
-                    raise EmptyContent('¡Comprueba el texto del comentario!')
-
-                if publication.content.isspace():  # Comprobamos si el comentario esta vacio
-                    raise EmptyContent('¡Comprueba el texto del comentario!')
-
                 publication.parse_content()  # parse publication content
                 publication.parse_mentions()  # add mentions
                 publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
                 media = request.FILES.getlist('image')
-                check_num_images(media)
 
-                f = magic.Magic(mime=True, uncompress=True)
-                exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                try:
+                    check_num_images(media)
+                except MaxFilesReached:
+                    form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
+                    return self.form_invalid(form=form)
+
+                try:
+                    f = magic.Magic(mime=True, uncompress=True)
+                    exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                except magic.MagicException as e:
+                    form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
+                    return self.form_invalid(form=form)
 
                 have_video = False
                 if any(word in 'gif video' for word in set([item for sublist in exts for item in sublist])):
@@ -111,6 +104,12 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                         transaction.on_commit(
                             lambda: optimize_publication_media(publication, media, exts))
                         transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
+
+                except (SizeIncorrect, MediaNotSupported, CantOpenMedia) as ex:
+                    form.add_error('content', str(ex))
+                    publication.delete()
+                    return self.form_invalid(form=form)
+
                 except Exception as e:
                     raise ValidationError(e)
 
@@ -431,9 +430,19 @@ class PublicationGroupDetail(ListView):
             return HttpResponseForbidden()
 
         publications = self.publication.get_descendants(include_self=True) \
+            .annotate(likes=Count('user_give_me_like'),
+                      hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )) \
             .filter(deleted=False) \
             .prefetch_related('group_extra_content', 'images',
-                              'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
+                              'videos', 'tags') \
             .select_related('author',
                             'board_group',
                             'parent')
@@ -520,8 +529,17 @@ class LoadRepliesForPublicationGroup(View):
                 ~Q(author__profile__from_blocked__to_blocked=user.profile)
                 & Q(deleted=False))
 
-        pubs = pubs.prefetch_related('group_extra_content', 'images',
-                                     'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
+        pubs = pubs.annotate(likes=Count('user_give_me_like'),
+                             hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )).prefetch_related('group_extra_content', 'images',
+                                'videos', 'tags') \
             .select_related('author',
                             'board_group',
                             'parent')
@@ -683,7 +701,7 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
 
             if author.bloq.is_connected(emitter_node):
                 form.add_error('parent',
-                                'El autor de la publicación te ha bloqueado.'.format(group.name))
+                               'El autor de la publicación te ha bloqueado.'.format(group.name))
                 return super(PublicationThemeView, self).form_invalid(form)
         return super(PublicationThemeView, self).form_valid(form)
 
@@ -784,6 +802,7 @@ class AddHatePublicationTheme(View):
         data['response'] = True
 
         return JsonResponse(data)
+
 
 class DeletePublicationTheme(UpdateView):
     model = PublicationTheme

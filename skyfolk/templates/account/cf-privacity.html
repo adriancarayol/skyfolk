@@ -2,11 +2,10 @@
 {% comment %}
 	Template para cambiar la privacidad
 {% endcomment %}
-{% block additional_files %}
 {% load i18n avatar_tags %}
-{% endblock %}
+{% load static %}
 {% block extra-css %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/privacidad.css">
+    <link rel="stylesheet" href="{% static "css/privacidad.css" %}">
 {% endblock %}
 {% block cf-title %}
     <div class="hgroup">

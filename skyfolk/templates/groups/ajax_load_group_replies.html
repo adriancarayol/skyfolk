@@ -2,7 +2,8 @@
 {% load humanize %}
 {% load embed_video_tags %}
 {% load app_filters %}
-
+{% load group_utils %}
+{% load static %}
     {% for node in publications %}
         <div class="row infinite-item" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
             <div class="col s12">
@@ -85,7 +86,7 @@
                                                 <div class="card small">
                                                     <div class="card-image">
                                                         <img class="lazyload" data-src="
-                                                                {% if node.group_extra_content.image %}{{ node.group_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                                {% if node.group_extra_content.image %}{{ node.group_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                         <span class="card-title white-text">{{ node.group_extra_content.title }}</span>
                                                     </div>
                                                     <div class="card-content">
@@ -114,22 +115,16 @@
                                         </li>
                                     {% endif %}
                                     {% comment %} Si el usuario esta logueado {% endcomment %}
-                                    {% with node.user_give_me_hate.all as hates %}
-                                        <li title="No me gusta" class="hate-comment" {% if user in hates %}
+                                    <li title="No me gusta" class="hate-comment" {% if node.have_hate %}
                                             style="color: rgb(186, 104, 200);"{% endif %}>
-                                            <i class="material-icons md-18">keyboard_arrow_down</i>
-                                            <i class="hate-value">{% if hates|length > 0 %}
-                                                {{ hates|length|intword }}{% endif %}</i>
-                                        </li>
-                                    {% endwith %}
-                                    {% with node.user_give_me_like.all as likes %}
-                                        <li title="¡Me gusta!" class="like-comment"
-                                            {% if user in likes %}style="color: rgb(240, 98, 146);"{% endif %}>
-                                            <i class="material-icons md-18">keyboard_arrow_up</i>
-                                            <i class="like-value">{% if likes|length > 0 %}
-                                                {{ likes|length|intword }}{% endif %}</i>
-                                        </li>
-                                    {% endwith %}
+                                        <i class="material-icons md-18">keyboard_arrow_down</i>
+                                        <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
+                                    </li>
+                                    <li title="¡Me gusta!" class="like-comment"
+                                            {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
+                                        <i class="material-icons md-18">keyboard_arrow_up</i>
+                                        <i class="like-value">{{ node.likes|zero_to_empty }}</i>
+                                    </li>
                                     <li id="share-{{ node.pk }}" data-id="{{ node.pk }}"
                                         class={% if node.id in pubs_shared_with_me %}"remove-timeline"
                                         title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi

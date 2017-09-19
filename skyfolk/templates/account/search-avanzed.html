@@ -4,6 +4,7 @@
 {% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load static %}
 {% block title %} <title>Búsqueda en Skyfolk.</title> {% endblock %}
 
 
@@ -78,6 +79,5 @@
             </div>
         </div>
     </div>
-    <script async src="{{ STATIC_URL }}js/search.js"></script>
+    <script async src="{% static "js/search.js" %}"></script>
 {% endblock %}
-</div>

@@ -2,7 +2,7 @@
 
 {% load i18n %}
 {% load account %}
-
+{% load static %}
 {% block title %} <title>Configuración - {% trans "Confirm E-mail Address" %}</title> {% endblock %}
 
 {% block extra-css %}
@@ -47,7 +47,7 @@
             </div>
         </nav>
     </div>
-    <script src="{{ STATIC_URL }}js/materialize.min.js" type="text/javascript"></script>
+    <script src="{% static "js/materialize.min.js" %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block content %}

@@ -1,12 +1,12 @@
 {% extends "account/base_cf.html" %}
 
 {% load i18n %}
-{% load url from future %}
+{% load static %}
 
 {% block title %} <title>Configuración - Email.</title> {% endblock %}
 
 {% block extra-css %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/cf-email.css" type="text/css" media="all">
+    <link rel="stylesheet" href="{% static "css/cf-email.css" %}" type="text/css" media="all">
 {% endblock %}
 
 {% block cf-title %}

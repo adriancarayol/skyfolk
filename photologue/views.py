@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Case, When, Value, IntegerField
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
@@ -339,13 +339,21 @@ class PhotoDetailView(DetailView):
         page = self.request.GET.get('page', 1)
 
         paginator = Paginator(
-            PublicationPhoto.objects.filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
-                                            & Q(board_photo_id=self.photo.id),
-                                            Q(level__lte=0) & Q(deleted=False)) \
-            .prefetch_related('publication_photo_extra_content', 'images', 'videos',
-                              'user_give_me_like', 'user_give_me_hate') \
-            .select_related('p_author',
-                            'board_photo', 'parent'), 10)
+            PublicationPhoto.objects.annotate(likes=Count('user_give_me_like'),
+                                               hates=Count('user_give_me_hate'), have_like=Case(
+                    When(user_give_me_like=user, then=Value(1)),
+                    default=Value(0),
+                    output_field=IntegerField()
+                ), have_hate=Case(
+                    When(user_give_me_hate=user, then=Value(1)),
+                    default=Value(0),
+                    output_field=IntegerField()
+                )).filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                          & Q(board_photo_id=self.photo.id),
+                          Q(level__lte=0) & Q(deleted=False)) \
+                .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
+                .select_related('p_author',
+                                'board_photo', 'parent'), 10)
 
         try:
             publications = paginator.page(page)

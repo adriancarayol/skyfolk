@@ -16,7 +16,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Count, Q, When, Value, IntegerField, Case
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
 from django.middleware import csrf
 from django.shortcuts import get_object_or_404, render, redirect, Http404
@@ -127,7 +127,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
             emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
             board_owner = NodeProfile.nodes.get(user_id=request.POST['board_owner'])
         except NodeProfile.DoesNotExist as e:
-            form.add_error({'board_owner': 'El perfil donde quieres publicar no existe.'})
+            form.add_error('board_owner', 'El perfil donde quieres publicar no existe.')
             return self.form_invalid(form=form)
 
         privacity = board_owner.is_visible(emitter)
@@ -135,7 +135,6 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-        is_correct_content = False
         logger.info('POST DATA: {} \n FILES: {}'.format(request.POST, request.FILES))
         logger.info('tipo emitter: {}'.format(type(emitter.title)))
         logger.info('tipo board_owner: {}'.format(type(board_owner.title)))
@@ -149,24 +148,11 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     parent_owner = parent.author_id
                     parent_node = NodeProfile.nodes.get(user_id=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
-                        raise IntegrityError('No have permissions')
+                        form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
+                        return self.form_invalid(form=form)
 
                 publication.author_id = emitter.user_id
                 publication.board_owner_id = board_owner.user_id
-
-                soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
-                for tag in soup.find_all(recursive=True):
-                    if tag.text and not tag.text.isspace():
-                        is_correct_content = True
-                        break
-
-                if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-
-                    logger.info('Publicacion contiene espacios o no tiene texto')
-                    raise EmptyContent('¡Comprueba el texto del comentario!')
-
-                if publication.content.isspace():  # Comprobamos si el comentario esta vacio
-                    raise EmptyContent('¡Comprueba el texto del comentario!')
 
                 publication.parse_content()  # parse publication content
                 publication.parse_mentions()  # add mentions
@@ -174,10 +160,19 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
                 media = request.FILES.getlist('image')
-                check_num_images(media)
 
-                f = magic.Magic(mime=True, uncompress=True)
-                exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                try:
+                    check_num_images(media)
+                except MaxFilesReached:
+                    form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
+                    return self.form_invalid(form=form)
+
+                try:
+                    f = magic.Magic(mime=True, uncompress=True)
+                    exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                except magic.MagicException as e:
+                    form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
+                    return self.form_invalid(form=form)
 
                 have_video = False
                 if any(word in 'gif video' for word in set([item for sublist in exts for item in sublist])):
@@ -195,6 +190,12 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                             transaction.on_commit(
                                 lambda: send_to_stream.apply_async(args=[publication.author_id, publication.id],
                                                                    queue='low'))
+
+                except (SizeIncorrect, MediaNotSupported, CantOpenMedia) as ex:
+                    form.add_error('content', str(ex))
+                    publication.delete()
+                    return self.form_invalid(form=form)
+
                 except Exception as e:
                     raise ValidationError(e)
 
@@ -243,6 +244,16 @@ def publication_detail(request, publication_id):
 
     try:
         publication = request_pub.get_descendants(include_self=True) \
+            .annotate(likes=Count('user_give_me_like'),
+                      hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )) \
             .filter(deleted=False) \
             .prefetch_related('extra_content', 'images',
                               'videos', 'shared_publication__images',
@@ -257,8 +268,7 @@ def publication_detail(request, publication_id):
                               'shared_group_publication__author',
                               'shared_group_publication__videos',
                               'shared_group_publication__group_extra_content',
-                              'shared_photo_publication__publication_photo_extra_content',
-                              'user_give_me_like', 'user_give_me_hate') \
+                              'shared_photo_publication__publication_photo_extra_content') \
             .select_related('author',
                             'board_owner', 'shared_publication',
                             'parent', 'shared_photo_publication', 'shared_group_publication')
@@ -620,10 +630,18 @@ def load_more_comments(request):
                 ~Q(author__profile__from_blocked__to_blocked=user.profile)
                 & Q(deleted=False))
 
-        publications = publications.prefetch_related('extra_content', 'images',
-                                                     'videos',
-                                                     'tags',
-                                                     'user_give_me_like', 'user_give_me_hate') \
+        publications = publications.annotate(likes=Count('user_give_me_like'),
+                                             hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )).prefetch_related('extra_content', 'images',
+                                'videos',
+                                'tags') \
             .select_related('author',
                             'board_owner',
                             'parent')

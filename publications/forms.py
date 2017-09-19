@@ -1,9 +1,11 @@
+import logging
 from bs4 import BeautifulSoup
 from django import forms
 
 from publications.models import Publication
-from publications.utils import parse_string
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class PublicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -15,6 +17,27 @@ class PublicationForm(forms.ModelForm):
         exclude = ['created', 'likes', 'user_give_me_like', 'hates',
                    'user_give_me_hate', 'shared_publication', 'tags', 'deleted',
                    'event_type', 'liked', 'hated', 'shared', 'extra_content', 'shared_photo_publication']
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+
+        is_correct_content = False
+
+        soup = BeautifulSoup(content)  # Buscamos si entre los tags hay contenido
+        for tag in soup.find_all(recursive=True):
+            if tag.text and not tag.text.isspace():
+                is_correct_content = True
+                break
+
+        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+
+            logger.info('Publicacion contiene espacios o no tiene texto')
+            raise forms.ValidationError('¡Comprueba el texto del comentario!')
+
+        if content.isspace():  # Comprobamos si el comentario esta vacio
+            raise forms.ValidationError('¡Comprueba el texto del comentario!')
+
+        return content
 
 
 class PublicationEdit(forms.ModelForm):

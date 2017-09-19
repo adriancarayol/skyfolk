@@ -1,6 +1,10 @@
+import logging
 from bs4 import BeautifulSoup
 from django import forms
 from publications_groups.models import PublicationGroup, PublicationTheme
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class PublicationGroupForm(forms.ModelForm):
@@ -11,6 +15,27 @@ class PublicationGroupForm(forms.ModelForm):
         model = PublicationGroup
         # Excluir atributos en el formulario.
         fields = ['content', 'parent']
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+
+        is_correct_content = False
+
+        soup = BeautifulSoup(content)  # Buscamos si entre los tags hay contenido
+        for tag in soup.find_all(recursive=True):
+            if tag.text and not tag.text.isspace():
+                is_correct_content = True
+                break
+
+        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+
+            logger.info('Publicacion contiene espacios o no tiene texto')
+            raise forms.ValidationError('¡Comprueba el texto del comentario!')
+
+        if content.isspace():  # Comprobamos si el comentario esta vacio
+            raise forms.ValidationError('¡Comprueba el texto del comentario!')
+
+        return content
 
 
 class GroupPublicationEdit(forms.ModelForm):
@@ -55,6 +80,7 @@ class GroupPublicationEdit(forms.ModelForm):
         if not pk:
             raise forms.ValidationError('No existe la publicación solicitada.')
         return pk
+
 
 class PublicationThemeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

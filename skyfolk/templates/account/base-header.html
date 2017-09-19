@@ -3,6 +3,7 @@ Base para el head de la pagina (menu horizontal con busqueda etc...)
 {% endcomment %}
 {% load notification_tags %}
 {% load compress %}
+{% load static %}
 <div class="navbar-fixed">
     <nav>
         <div class="nav-wrapper white z-depth-1">
@@ -24,10 +25,10 @@ Base para el head de la pagina (menu horizontal con busqueda etc...)
 </div>
 <li id="loader"></li>
 {% compress js %}
-<script src="{{ STATIC_URL }}js/materialize.min.js" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}js/core.js" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}js/jquery.textcomplete.min.js" type="text/javascript"></script>
-<script src="{{ STATIC_URL }}dist/sweetalert.min.js" type="text/javascript"></script> 
+<script src="{% static "js/materialize.min.js" %}" type="text/javascript"></script>
+<script src="{% static "js/core.js" %}" type="text/javascript"></script>
+<script src="{% static "js/jquery.textcomplete.min.js" %}" type="text/javascript"></script>
+<script src="{% static "dist/sweetalert.min.js" %}" type="text/javascript"></script>
 {% endcompress %}
 
 <!-- <script async src="{{STATIC_URL}}js/jquery.textcomplete.js"></script> -->
@@ -38,7 +39,7 @@ Base para el head de la pagina (menu horizontal con busqueda etc...)
 -->
 <!-- Sweet Alert -->
 {% compress css %}
-<link rel="stylesheet" href="{{ STATIC_URL }}dist/sweetalert.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}emoji/css/textarea_find_emoji.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}themes/google/google.css">
+<link rel="stylesheet" href="{% static "dist/sweetalert.css" %}">
+<link rel="stylesheet" href="{% static "emoji/css/textarea_find_emoji.css" %}">
+<link rel="stylesheet" href="{% static "themes/google/google.css" %}">
 {% endcompress %}

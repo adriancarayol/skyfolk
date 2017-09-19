@@ -1,9 +1,11 @@
+import logging
 from bs4 import BeautifulSoup
 from django import forms
 
-from publications.utils import parse_string
 from publications_gallery.models import PublicationPhoto
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class PublicationPhotoForm(forms.ModelForm):
     class Meta:
@@ -23,6 +25,27 @@ class PublicationPhotoForm(forms.ModelForm):
         self.fields['p_author'].widget = forms.HiddenInput()
         self.fields['board_photo'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+
+        is_correct_content = False
+
+        soup = BeautifulSoup(content)  # Buscamos si entre los tags hay contenido
+        for tag in soup.find_all(recursive=True):
+            if tag.text and not tag.text.isspace():
+                is_correct_content = True
+                break
+
+        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+
+            logger.info('Publicacion contiene espacios o no tiene texto')
+            raise forms.ValidationError('¡Comprueba el texto del comentario!')
+
+        if content.isspace():  # Comprobamos si el comentario esta vacio
+            raise forms.ValidationError('¡Comprueba el texto del comentario!')
+
+        return content
 
 
 class PublicationPhotoEdit(forms.ModelForm):

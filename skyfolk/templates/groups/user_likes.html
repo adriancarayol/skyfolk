@@ -2,9 +2,10 @@
 {% comment %}
 Template para los seguidores de un perfil
 {% endcomment %}
+{% load static %}
 {% block title %} <title>Usuarios de {{ group.name }}</title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css" onload="if(media!='all')media='all'">
+    <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block content %}
     <div class="container">

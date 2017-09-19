@@ -4,6 +4,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
 {% load app_filters %}
 {% load avatar_tags %}
 {% load humanize %}
+{% load static %}
 <div class="row">
     <div class="col l12 m12 s12">
         <div class="user-card card">
@@ -15,7 +16,7 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                 <div class="user-avatar" style="background: {% if user_profile.profile.back_image %}
                     url({{ user_profile.profile.back_image.url }})
                     {% else %}
-                    url({{ STATIC_URL }}dist/img/nuevo_back.png)
+                    url({% static "dist/img/nuevo_back.png" %})
                     {% endif %} no-repeat center center; background-size: cover;">
             </div>
         </div>

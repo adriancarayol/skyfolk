@@ -1,6 +1,7 @@
 {% extends "account/base_cf.html" %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load static %}
 {% comment %}
 	Template para la configuracion del perfil de usuario
 {% endcomment %}
@@ -8,7 +9,7 @@
     {% load i18n avatar_tags %}
 {% endblock %}
 {% block extra-css %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/blocked.css" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{% static "css/blocked.css" %}" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block cf-title %}
     <div class="hgroup">
@@ -26,7 +27,7 @@
                             {% if item.profile.back_image %}
                                 <img class="back-profile-user lazyload" data-src="{{ item.profile.back_image.url }}">
                             {% else %}
-                                <img class="back-profile-user lazyload" data-src="{{ STATIC_URL }}img/nuevo_back.png">
+                                <img class="back-profile-user lazyload" data-src="{% static "img/nuevo_back.png" %}">
                             {% endif %}
                             <div class="bg-user">
                                 <div onclick="location.href='/profile/{{ item.username }}'"

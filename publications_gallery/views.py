@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, When, Value, Case, IntegerField
 from django.db.models import Q
 from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
@@ -17,7 +17,7 @@ from django.views.generic import CreateView
 
 from emoji.models import Emoji
 from photologue.models import Photo
-from publications.exceptions import EmptyContent
+from publications.exceptions import EmptyContent, MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
 from publications.views import logger
 from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
@@ -54,35 +54,23 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
 
-        is_correct_content = False
-
         logger.debug('POST DATA: {}'.format(request.POST))
         logger.debug('tipo emitter: {}'.format(type(emitter)))
+
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
+
                 parent = publication.parent
                 if parent:
                     parent_owner = parent.p_author_id
                     parent_node = NodeProfile.nodes.get(user_id=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
-                        raise IntegrityError('No have permissions')
+                        form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
+                        return self.form_invalid(form=form)
+
                 publication.author_id = emitter.user_id
                 publication.board_photo_id = photo.id
-
-                soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
-                for tag in soup.find_all(recursive=True):
-                    if tag.text and not tag.text.isspace():
-                        is_correct_content = True
-                        break
-
-                if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-
-                    logger.info('Publicacion contiene espacios o no tiene texto')
-                    raise EmptyContent('¡Comprueba el texto del comentario!')
-
-                if publication.content.isspace():  # Comprobamos si el comentario esta vacio
-                    raise EmptyContent('¡Comprueba el texto del comentario!')
 
                 publication.parse_content()  # parse publication content
                 publication.parse_mentions()  # add mentions
@@ -90,10 +78,19 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
 
                 media = request.FILES.getlist('image')
-                check_num_images(media)
 
-                f = magic.Magic(mime=True, uncompress=True)
-                exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                try:
+                    check_num_images(media)
+                except MaxFilesReached:
+                    form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
+                    return self.form_invalid(form=form)
+
+                try:
+                    f = magic.Magic(mime=True, uncompress=True)
+                    exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                except magic.MagicException as e:
+                    form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
+                    return self.form_invalid(form=form)
 
                 have_video = False
                 if any(word in 'gif video' for word in set([item for sublist in exts for item in sublist])):
@@ -106,6 +103,12 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                         transaction.on_commit(
                             lambda: optimize_publication_media(publication, media, exts))
                         transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
+
+                except (SizeIncorrect, MediaNotSupported, CantOpenMedia) as ex:
+                    form.add_error('content', str(ex))
+                    publication.delete()
+                    return self.form_invalid(form=form)
+
                 except Exception as e:
                     raise ValidationError(e)
 
@@ -117,7 +120,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                                                u"cuando la publicación esté lista.")
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
-                return self.form_invalid(form=form)
+
         return self.form_invalid(form=form)
 
 
@@ -150,9 +153,19 @@ def publication_detail(request, publication_id):
 
     try:
         publication = request_pub.get_descendants(include_self=True) \
+            .annotate(likes=Count('user_give_me_like'),
+                      hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )) \
             .filter(deleted=False) \
             .prefetch_related('publication_photo_extra_content', 'images',
-                              'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
+                              'videos', 'tags') \
             .select_related('p_author',
                             'board_photo',
                             'parent')
@@ -589,13 +602,19 @@ def load_more_descendants(request):
             pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(deleted=False))
 
-        pubs = pubs.prefetch_related('publication_photo_extra_content', 'images',
-                                     'videos',
-                                     'user_give_me_like', 'user_give_me_hate', 'parent__p_author') \
+        pubs = pubs.annotate(likes=Count('user_give_me_like'),
+                             hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )).prefetch_related('publication_photo_extra_content', 'images',
+                                'videos', 'parent__p_author') \
             .select_related('p_author',
-                            'board_photo', 'parent') \
-            .annotate(likes_count=Count('user_give_me_like')) \
-            .annotate(hates_count=Count('user_give_me_hate'))
+                            'board_photo', 'parent')
 
         paginator = Paginator(pubs, 10)
 

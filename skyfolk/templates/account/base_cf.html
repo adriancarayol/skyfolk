@@ -3,10 +3,10 @@
   Template base para templates de configuracion.
 {% endcomment %}
 {% load i18n avatar_tags %}
-
+{% load static %}
 {% block include_files %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/configuracion.css" type="text/css" media="all">
-    <script src="{{ STATIC_URL }}js/config.js"></script>
+    <link rel="stylesheet" href="{% static "css/configuracion.css" %}" type="text/css" media="all">
+    <script src="{% static "js/config.js" %}"></script>
 {% endblock %}
 
 {% block title %} <title>Skyfolk / Configuración {{ request.user.username }}.</title> {% endblock %}

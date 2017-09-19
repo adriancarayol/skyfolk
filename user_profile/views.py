@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db import transaction, IntegrityError
-from django.db.models import Case, When
+from django.db.models import Case, When, Value, IntegerField
 from django.db.models import Count
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -51,8 +51,17 @@ def load_profile_publications(request, page, profile):
     """
     user = request.user
     try:
-        paginator = Paginator(Publication.objects.filter(~Q(author__profile__from_blocked__to_blocked=user.profile) &
-                                                         Q(board_owner_id=profile.id) & Q(level__lte=0) & Q(
+        paginator = Paginator(Publication.objects.annotate(likes=Count('user_give_me_like'),
+                                                           hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            ), have_hate=Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField()
+            )).filter(~Q(author__profile__from_blocked__to_blocked=user.profile) &
+                      Q(board_owner_id=profile.id) & Q(level__lte=0) & Q(
             deleted=False)) \
                               .prefetch_related('extra_content', 'images',
                                                 'videos', 'shared_publication__images',
@@ -66,8 +75,7 @@ def load_profile_publications(request, page, profile):
                                                 'shared_group_publication__author',
                                                 'shared_group_publication__videos',
                                                 'shared_group_publication__group_extra_content',
-                                                'shared_publication__videos', 'shared_publication__extra_content',
-                                                'user_give_me_like', 'user_give_me_hate') \
+                                                'shared_publication__videos', 'shared_publication__extra_content') \
                               .select_related('author',
                                               'board_owner', 'shared_publication',
                                               'parent', 'shared_photo_publication', 'shared_group_publication'), 25)
@@ -271,7 +279,10 @@ def profile_view(request, username,
     context['publication_shared'] = SharedPublicationForm()
 
     # Cargamos las publicaciones del perfil
+    import time
+    start_time = time.time()
     pubs_shared_with_me, pubs_shared, publications = load_profile_publications(request, 1, user_profile)
+    print('total: %s' % (time.time() - start_time))
 
     # Contenido de las tres tabs
     context['pubs_shared_with_me'] = pubs_shared_with_me

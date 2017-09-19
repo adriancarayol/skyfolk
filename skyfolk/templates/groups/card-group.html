@@ -3,6 +3,7 @@
 {% endcomment %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load static %}
 <div class="row">
     <div class="col l12 m12 s12">
         <div id="group-profile" data-id="{{ group_profile.group_ptr_id }}" class="user-card card">
@@ -14,7 +15,7 @@
                 {% if group_profile.back_image %}
                     <img src="{{ group_profile.back_image.url }}" class="user-bg">
                 {% else %}
-                    <img src="{{ STATIC_URL }}img/nuevo_back.png" class="user-bg">
+                    <img src="{% static "img/nuevo_back.png" %}" class="user-bg">
                 {% endif %}
                 <div class="group-tool">
                     <div class="item">
@@ -22,7 +23,7 @@
                             {% if group_profile.avatar %}
                                 <img src="{{ group_profile.avatar.url }}" height="120" width="120">
                             {% else %}
-                                <img src="{{ STATIC_URL }}img/nuevo.png" height="120" width="120">
+                                <img src="{% static "img/nuevo.png" %}" height="120" width="120">
                             {% endif %}
                         </div>
                         <span class="informacion">

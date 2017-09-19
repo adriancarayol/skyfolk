@@ -200,8 +200,17 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         }
         return render(request, template, context)
 
-    publications = PublicationGroup.objects.filter(Q(board_group=group_profile) &
-                                                   Q(deleted=False) & Q(level__lte=0) & ~Q(
+    publications = PublicationGroup.objects.annotate(likes=Count('user_give_me_like'),
+                                                     hates=Count('user_give_me_hate'), have_like=Case(
+            When(user_give_me_like=user, then=Value(1)),
+            default=Value(0),
+            output_field=IntegerField()
+        ), have_hate=Case(
+            When(user_give_me_hate=user, then=Value(1)),
+            default=Value(0),
+            output_field=IntegerField()
+        )).filter(Q(board_group=group_profile) &
+                  Q(deleted=False) & Q(level__lte=0) & ~Q(
         author__profile__from_blocked__to_blocked=user.profile)) \
         .prefetch_related('group_extra_content', 'images',
                           'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
@@ -768,7 +777,7 @@ class GroupThemeView(DetailView):
         user = self.request.user
         context = super(GroupThemeView, self).get_context_data(**kwargs)
         context['publications'] = PublicationTheme.objects.annotate(likes=Count('user_give_me_like'),
-                                                                     hates=Count('user_give_me_hate'), have_like=Case(
+                                                                    hates=Count('user_give_me_hate'), have_like=Case(
                 When(user_give_me_like=user, then=Value(1)),
                 default=Value(0),
                 output_field=IntegerField()

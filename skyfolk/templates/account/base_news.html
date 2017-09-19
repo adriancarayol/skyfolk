@@ -3,11 +3,11 @@
 {% load humanize %}
 {% load embed_video_tags %}
 {% load app_filters %}
-
+{% load static %}
 {% block title %} <title>Skyfolk / Novedades</title> {% endblock %}
 
 {% block extra-css %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/news.css"/>
+<link rel="stylesheet" type="text/css" href="{% static "css/news.css" %}"/>
 <style>
     .grid {
         margin: 0 auto;
@@ -130,7 +130,7 @@
                                             {% else %}
                                             <div class="card small">
                                                 <div class="card-image">
-                                                    <img class="lazyload" data-src="{% if item.shared_publication.extra_content.image %}{{ item.shared_publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                    <img class="lazyload" data-src="{% if item.shared_publication.extra_content.image %}{{ item.shared_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                     <span class="card-title white-text">{{ item.shared_publication.extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">
@@ -201,7 +201,7 @@
                                             {% else %}
                                             <div class="card small">
                                                 <div class="card-image">
-                                                    <img class="lazyload" data-src="{% if item.shared_photo_publication.extra_content.image %}{{ item.shared_photo_publication.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                                    <img class="lazyload" data-src="{% if item.shared_photo_publication.extra_content.image %}{{ item.shared_photo_publication.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                                     <span class="card-title white-text">{{ item.shared_photo_publication.extra_content.title }}</span>
                                                 </div>
                                                 <div class="card-content">
@@ -327,7 +327,7 @@
                                     {% comment %} Para publicaciones con URL {% endcomment %}
                                     <div class="card small">
                                         <div class="card-image">
-                                            <img class="lazyload" data-src="{% if item.extra_content.image %}{{ item.extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                            <img class="lazyload" data-src="{% if item.extra_content.image %}{{ item.extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
                                             <span class="card-title white-text">{{ item.extra_content.title }}</span>
                                         </div>
                                         <div class="card-content">

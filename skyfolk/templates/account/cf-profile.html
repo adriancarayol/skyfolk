@@ -2,9 +2,10 @@
 {% comment %}
 Template para la configuracion del perfil de usuario
 {% endcomment %}
+{% load static %}
 {% block extra-css %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}css/cropper.min.css">
+<link rel="stylesheet" href="{% static "css/main.css" %}">
+<link rel="stylesheet" href="{% static "css/cropper.min.css" %}">
 {% endblock %}
 {% block additional_files %}
 {% load i18n avatar_tags %}
@@ -23,7 +24,7 @@ Template para la configuracion del perfil de usuario
                 style="background: url('{{ user_profile.back_image.url }}') no-repeat center center; background-size: cover;">
                 {% else %}
                 <div class="col l12 m12 s12 profilex"
-                    style="background: url('{{ STATIC_URL }}dist/img/nuevo_back.png') no-repeat center center; background-size: cover;">
+                    style="background: url('{% static "dist/img/nuevo_back.png" %}') no-repeat center center; background-size: cover;">
                     {% endif %}
                     <!-- Si el usuario tiene imagen, lo redireccionamos a change -->
                     <div id="avatar-profile" title="Imágen de perfil" class="img-profile"
@@ -139,8 +140,8 @@ Para evitar cadenas de texto muy largas (a la hora de mostrar el nombre del fich
 <script>
 
 </script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/cropper.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/cropper_backimage.js"></script>
+<script type="text/javascript" src="{% static "js/cropper.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/cropper_backimage.js" %}"></script>
 <script>
     $('.menu-config').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
 </script>
