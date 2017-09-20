@@ -9,18 +9,18 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import IntegrityError
 from django.db import transaction
-from django.db.models import Q, Count, Case, When, Value, IntegerField
+from django.db.models import Q, Count, Case, When, Value, IntegerField, OuterRef, Subquery
 
 from django.http import HttpResponseForbidden
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import six
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 from guardian.shortcuts import assign_perm, remove_perm
 from neomodel import db
@@ -175,16 +175,19 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
 
     if is_ajax and qs == 'themes':
         template = 'groups/group_themes.html'
-        themes = GroupTheme.objects.annotate(likes=Count('like_theme'),
-                                             hates=Count('hate_theme'), have_like=Case(
-                When(like_theme__by_user=user, then=Value(1)),
+        themes = GroupTheme.objects.filter(board_group_id=group_profile.group_ptr_id).annotate(
+            total_pubs=Count('publication_board_theme', distinct=True),
+            likes=Count('like_theme', distinct=True),
+            hates=Count('hate_theme', distinct=True)).annotate(
+            have_like=Case(
+                When(like_theme__by_user_id=user.id, then=Value(1)),
                 default=Value(0),
                 output_field=IntegerField()
-            ), have_hate=Case(
-                When(hate_theme__by_user=user, then=Value(1)),
-                default=Value(0),
-                output_field=IntegerField()
-            )).filter(board_group=group_profile)
+            )).annotate(have_hate=Case(
+            When(hate_theme__by_user_id=user.id, then=Value(1)),
+            default=Value(0),
+            output_field=IntegerField()
+        )).select_related('owner')
 
         paginator = Paginator(themes, 20)
 
@@ -762,31 +765,84 @@ class GroupThemeView(DetailView):
     def get_queryset(self):
         user = self.request.user
 
-        return GroupTheme.objects.annotate(likes=Count('like_theme'),
-                                           hates=Count('hate_theme'), have_like=Case(
-                When(like_theme__by_user=user, then=Value(1)),
+        if self.request.is_ajax():
+            return GroupTheme.objects.filter(slug=self.kwargs['slug'])
+
+        return GroupTheme.objects.filter(slug=self.kwargs['slug']).annotate(
+            likes=Count('like_theme', distinct=True),
+            hates=Count('hate_theme', distinct=True)).annotate(
+            have_like=Case(
+                When(like_theme__by_user_id=user.id, then=Value(1)),
                 default=Value(0),
                 output_field=IntegerField()
-            ), have_hate=Case(
-                When(hate_theme__by_user=user, then=Value(1)),
-                default=Value(0),
-                output_field=IntegerField()
-            )).filter(slug=self.kwargs['slug'])
+            )).annotate(have_hate=Case(
+            When(hate_theme__by_user_id=user.id, then=Value(1)),
+            default=Value(0),
+            output_field=IntegerField()
+        )).annotate(total_pubs=Subquery(
+            PublicationTheme.objects.filter(deleted=False, board_theme=OuterRef('pk')).values('board_theme'),
+            output_field=IntegerField())).select_related('owner')
 
     def get_context_data(self, **kwargs):
         user = self.request.user
         context = super(GroupThemeView, self).get_context_data(**kwargs)
-        context['publications'] = PublicationTheme.objects.annotate(likes=Count('user_give_me_like'),
-                                                                    hates=Count('user_give_me_hate'), have_like=Case(
-                When(user_give_me_like=user, then=Value(1)),
+        page = self.request.GET.get('page', 1)
+
+        publications = PublicationTheme.objects.annotate(likes=Count('user_give_me_like'),
+                                                         hates=Count('user_give_me_hate'), have_like=Case(
+                When(user_give_me_like=user.id, then=Value(1)),
                 default=Value(0),
                 output_field=IntegerField()
             ), have_hate=Case(
-                When(user_give_me_hate=user, then=Value(1)),
+                When(user_give_me_hate=user.id, then=Value(1)),
                 default=Value(0),
                 output_field=IntegerField()
             )).filter(board_theme=self.object,
-                      deleted=False).select_related('author', 'board_theme')
+                      deleted=False).select_related('author', 'board_theme', 'parent', 'parent__author')
 
+        paginator = Paginator(publications, 25)
+
+        try:
+            pubs = paginator.page(page)
+        except PageNotAnInteger:
+            pubs = paginator.page(1)
+        except EmptyPage:
+            pubs = paginator.page(paginator.num_pages)
+
+        context['publications'] = pubs
         context['form'] = PublicationThemeForm()
         return context
+
+
+class DeleteGroupTheme(DeleteView):
+    http_method_names = ['post']
+
+    def get_object(self, queryset=None):
+        return GroupTheme.objects.get(id=self.request.POST.get('pk'))
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+
+        data = {
+            'response': False,
+            'redirect_url': None
+        }
+
+        self.object = self.get_object()
+
+        group = UserGroups.objects.get(id=self.object.board_group_id)
+
+        if self.object.owner_id != user.id and (
+                        user != group.owner_id and not user.has_perm('delete_publication', group)):
+            return JsonResponse(data)
+
+        data['redirect_url'] = reverse('user_groups:group-profile', kwargs={'groupname': group.slug})
+
+        try:
+            self.object.delete()
+        except IntegrityError:
+            pass
+
+        data['response'] = True
+
+        return JsonResponse(data)

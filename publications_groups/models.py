@@ -145,7 +145,8 @@ class PublicationGroup(PublicationBase):
 
 class PublicationTheme(PublicationBase):
     author = models.ForeignKey(User)
-    board_theme = models.ForeignKey(GroupTheme, db_index=True)
+    board_theme = models.ForeignKey(GroupTheme, db_index=True, related_name='publication_board_theme',
+                                    on_delete=models.CASCADE)
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply_theme')
     user_give_me_like = models.ManyToManyField(User, blank=True,
@@ -199,7 +200,7 @@ class PublicationTheme(PublicationBase):
         })
 
         # Notificamos al board_owner de la publicacion
-        #TODO: Arreglar notificacion
+        # TODO: Arreglar notificacion
         notify.send(self.author, actor=self.author.username,
                     recipient=self.board_theme.owner,
                     description="Te avisamos de que @{0} ha publicado en el tema {1}.".format(

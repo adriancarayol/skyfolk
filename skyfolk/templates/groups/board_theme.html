@@ -1,6 +1,7 @@
 {% extends "groups/base_group.html" %}
 {% load group_utils %}
 {% load static %}
+{% load humanize %}
 {% block extra-css %}
     <link rel="stylesheet" type="text/css" href="{% static "css/group_profile.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "css/comentarios.css" %}">
@@ -20,12 +21,14 @@
                     <div class="card-stacked">
                         <div class="card-content">
                             <a href="{% url "user_profile:profile" username=object.owner %}">@{{ object.owner }}</a>
+                            <i>{{ theme.created|naturaltime }}</i>
                             <h4>{{ object.title|safe }}</h4>
                             <p>{{ object.description|safe }}</p>
                         </div>
                         <div class="card-action">
                             <p class="right">
-                                <span class="reply_theme"><i class="material-icons">comment</i></span>
+                                <span class="reply_theme"><i class="material-icons">comment</i><i
+                                        class="pubs-theme-value">{{ object.total_pubs|zero_to_empty }}</i></span>
                                 <span class="like-theme"
                                       {% if object.have_like == 1 %}style="color: rgb(240, 98, 146);"{% endif %}><i
                                         class="material-icons">keyboard_arrow_up</i><i
@@ -34,6 +37,9 @@
                                       {% if object.have_hate == 1 %}style="color: rgb(186, 104, 200);"{% endif %}><i
                                         class="material-icons">keyboard_arrow_down</i><i
                                         class="hate-theme-value">{{ object.hates|zero_to_empty }}</i></span>
+                                <span class="delete-theme">
+                                    <i class="material-icons">delete_forever</i>
+                                </span>
                             </p>
                         </div>
                     </div>
@@ -41,10 +47,29 @@
                 {% include "groups/new_reply_theme.html" %}
             </div>
         </div>
-        <div class="row theme-publications">
+        <div class="row theme-publications infinite-container">
             {% include "groups/board_theme_publications.html" %}
+        </div>
+        {% if publications.has_next %}
+            <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center"
+               href="?page={{ publications.next_page_number }}">More</a>
+        {% endif %}
+        <div class="progress loading_board_theme" style="display: none">
+            <div class="indeterminate blue darken-1"></div>
         </div>
     </div>
     <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
     <script src="{% static "js/socket_theme.js" %}"></script>
+    <script>
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            offset: 'bottom-in-view',
+            onBeforePageLoad: function () {
+                $('.loading_board_theme').show();
+            },
+            onAfterPageLoad: function () {
+                $('.loading_board_theme').hide();
+            }
+        });
+    </script>
 {% endblock %}

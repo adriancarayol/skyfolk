@@ -1,6 +1,4 @@
 import magic
-from bs4 import BeautifulSoup
-from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, ValidationError
@@ -9,7 +7,7 @@ from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView
 from django.views.generic.list import ListView
 
 from django.utils.decorators import method_decorator
@@ -459,8 +457,8 @@ class PublicationGroupDetail(ListView):
         self.shared_pubs = {item['shared_group_publication__id']: item.get('total', 0) for item in
                             (Publication.objects.filter(shared_group_publication__id__in=(
                                 publications.object_list.values_list('id', flat=True)), deleted=False).values(
-                                'shared_group_publication__id') \
-                             .order_by('shared_group_publication__id') \
+                                'shared_group_publication__id')
+                             .order_by('shared_group_publication__id')
                              .annotate(total=Count('shared_group_publication__id')))}
 
         self.pubs_shared_with_me = Publication.objects.filter(shared_group_publication__id__in=(

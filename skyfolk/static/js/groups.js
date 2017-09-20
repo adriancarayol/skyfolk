@@ -505,6 +505,57 @@ $(function () {
             }
         });
     });
+    $('.theme').on('click', '.delete-theme', function () {
+        var theme_id = $(this).closest('.theme').data('id');
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this theme!",
+            type: "warning",
+            animation: "slide-from-top",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No God, please no!",
+            closeOnConfirm: true
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    url: '/groups/delete/theme/',
+                    type: 'POST',
+                    data: {
+                        'pk': theme_id
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.response === true) {
+                            location.href = data.redirect_url;
+                        } else {
+                            swal({
+                                title: "Tenemos un problema...",
+                                customClass: 'default-div',
+                                text: "No puedes eliminar este tema.",
+                                timer: 4000,
+                                showConfirmButton: true
+                            });
+                        }
+                    }, error: function (data, textStatus, jqXHR) {
+                        var errors = [];
+                        $.each(data.responseJSON, function (i, val) {
+                            errors.push(val);
+                        });
+                        swal({
+                            title: "Tenemos un problema...",
+                            customClass: 'default-div',
+                            text: errors.join(),
+                            timer: 4000,
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            }
+        });
+    });
 });// end document ready
 
 var loadDescendantsRunning = false;

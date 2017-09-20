@@ -1,5 +1,6 @@
 {% load static from staticfiles %}
 {% load group_utils %}
+{% load humanize %}
 {% for theme in themes %}
     <div class="col s12 theme" data-id="{{ theme.id }}">
         <div class="card horizontal">
@@ -11,13 +12,14 @@
             <div class="card-stacked">
                 <div class="card-content">
                     <a href="{% url "user_profile:profile" username=theme.owner %}">@{{ theme.owner }}</a>
+                    <i>{{ theme.created|naturaltime }}</i>
                     <h4>{{ theme.title|safe }}</h4>
                     <p>{{ theme.description|safe }}</p>
                 </div>
                 <div class="card-action">
                     <a href="{% url 'user_groups:group_theme' slug=theme.slug %}" class="blue-text">Ver tema</a>
                     <p class="right">
-                        <span><i class="material-icons">comment</i></span>
+                        <span><i class="material-icons">comment</i><i class="pubs-theme-value">{{ theme.total_pubs|zero_to_empty }}</i></span>
                         <span class="like-theme" {% if theme.have_like == 1 %}style="color: rgb(240, 98, 146);"{% endif %}><i class="material-icons">keyboard_arrow_up</i><i
                                 class="like-theme-value">{{ theme.likes|zero_to_empty }}</i></span>
                         <span class="hate-theme" {% if theme.have_hate == 1 %}style="color: rgb(186, 104, 200);"{% endif %}><i class="material-icons">keyboard_arrow_down</i><i

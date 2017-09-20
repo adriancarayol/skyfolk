@@ -42,4 +42,6 @@ urlpatterns = [
         name='hate_group_theme'),
     url(r'^groups/theme/(?P<slug>[\w-]+)/$', user_groups_views.GroupThemeView.as_view(),
         name='group_theme'),
+    url(r'^groups/delete/theme/$', user_groups_views.DeleteGroupTheme.as_view(),
+        name='delete_group_theme'),
 ]

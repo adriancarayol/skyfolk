@@ -33,8 +33,7 @@
                                         {% if pub.parent %}
                                             <span class="chip">
                                                 {% avatar pub.parent.author %}
-                                                <a
-                                                        href="/publication/{{ pub.parent.id }}">@{{ pub.parent.author }}: {{ pub.parent.content|truncatewords_html:10|safe }}</a>
+                                                <a href="/publication/{{ pub.parent.id }}">@{{ pub.parent.author }}: {{ pub.parent.content|truncatewords_html:10|safe }}</a>
                                             </span>
                                         {% endif %}
                                     </h2>
