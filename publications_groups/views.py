@@ -27,7 +27,7 @@ from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media, check_num_images
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Count, Q, Case, When, Value, IntegerField
+from django.db.models import Count, Q, Case, When, Value, IntegerField, Subquery, OuterRef
 
 
 class PublicationGroupView(AjaxableResponseMixin, CreateView):
@@ -401,8 +401,6 @@ class PublicationGroupDetail(ListView):
     def __init__(self, **kwargs):
         super(PublicationGroupDetail).__init__(**kwargs)
         self.publication = None
-        self.shared_pubs = {}
-        self.pubs_shared_with_me = []
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -427,17 +425,26 @@ class PublicationGroupDetail(ListView):
         if not self.publication.board_group.is_public and not g.members.is_connected(n):
             return HttpResponseForbidden()
 
+        shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
+                                                         deleted=False).order_by().values(
+            'shared_group_publication__id')
+
+        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+            When(author_id=user.id, then=Value(1))
+        ))).values('have_shared')
+
         publications = self.publication.get_descendants(include_self=True) \
             .annotate(likes=Count('user_give_me_like'),
-                      hates=Count('user_give_me_hate'), have_like=Case(
+                      hates=Count('user_give_me_hate'), have_like=Count(Case(
                 When(user_give_me_like=user, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            ), have_hate=Case(
+            )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            )) \
+            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+            have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
             .filter(deleted=False) \
             .prefetch_related('group_extra_content', 'images',
                               'videos', 'tags') \
@@ -453,19 +460,6 @@ class PublicationGroupDetail(ListView):
             publications = paginator.page(1)
         except EmptyPage:
             publications = paginator.page(paginator.num_pages)
-
-        self.shared_pubs = {item['shared_group_publication__id']: item.get('total', 0) for item in
-                            (Publication.objects.filter(shared_group_publication__id__in=(
-                                publications.object_list.values_list('id', flat=True)), deleted=False).values(
-                                'shared_group_publication__id')
-                             .order_by('shared_group_publication__id')
-                             .annotate(total=Count('shared_group_publication__id')))}
-
-        self.pubs_shared_with_me = Publication.objects.filter(shared_group_publication__id__in=(
-            publications.object_list.values_list('id', flat=True)),
-            author__id=user.id,
-            deleted=False).values_list('shared_group_publication__id',
-                                       flat=True)
         return publications
 
     def get_context_data(self, **kwargs):
@@ -474,8 +468,6 @@ class PublicationGroupDetail(ListView):
             context['publication_id'] = self.kwargs.get('pk', None)
             context['share_publication'] = SharedPublicationForm()
         context['group_profile'] = self.publication.board_group
-        context['pubs_shared'] = self.shared_pubs
-        context['pubs_shared_with_me'] = self.pubs_shared_with_me
         return context
 
 
@@ -527,17 +519,27 @@ class LoadRepliesForPublicationGroup(View):
                 ~Q(author__profile__from_blocked__to_blocked=user.profile)
                 & Q(deleted=False))
 
+        shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
+                                                         deleted=False).order_by().values(
+            'shared_group_publication__id')
+
+        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+            When(author_id=user.id, then=Value(1))
+        ))).values('have_shared')
+
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
-                             hates=Count('user_give_me_hate'), have_like=Case(
+                             hates=Count('user_give_me_hate'), have_like=Count(Case(
                 When(user_give_me_like=user, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            ), have_hate=Case(
+            )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            )).prefetch_related('group_extra_content', 'images',
-                                'videos', 'tags') \
+            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related('group_extra_content',
+                                                                                               'images',
+                                                                                               'videos', 'tags') \
             .select_related('author',
                             'board_group',
                             'parent')
@@ -551,17 +553,6 @@ class LoadRepliesForPublicationGroup(View):
         except EmptyPage:
             publications = paginator.page(paginator.num_pages)
 
-        shared_id = publications.object_list.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_group_publication__id__in=shared_id, deleted=False).values(
-            'shared_group_publication__id') \
-            .order_by('shared_group_publication__id') \
-            .annotate(total=Count('shared_group_publication__id'))
-        shared_pubs = {item['shared_group_publication__id']: item.get('total', 0) for item in pubs_shared}
-
-        pubs_shared_with_me = Publication.objects.filter(shared_group_publication__id__in=shared_id, author__id=user.id,
-                                                         deleted=False).values_list('shared_group_publication__id',
-                                                                                    flat=True)
-
         try:
             page = publications.next_page_number()
         except EmptyPage:
@@ -569,9 +560,7 @@ class LoadRepliesForPublicationGroup(View):
 
         data = {
             'content': render_to_string(request=request, template_name='groups/ajax_load_group_replies.html',
-                                        context={'publications': publications, 'group_profile': group,
-                                                 'pubs_shared': shared_pubs,
-                                                 'pubs_shared_with_me': pubs_shared_with_me}),
+                                        context={'publications': publications, 'group_profile': group}),
             'page': page,
             'childs': len(publications),
 

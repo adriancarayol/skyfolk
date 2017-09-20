@@ -28,7 +28,7 @@
                         <div class="card-action">
                             <p class="right">
                                 <span class="reply_theme"><i class="material-icons">comment</i><i
-                                        class="pubs-theme-value">{{ object.total_pubs|zero_to_empty }}</i></span>
+                                        class="pubs-theme-value">{{ publications.paginator.count|zero_to_empty }}</i></span>
                                 <span class="like-theme"
                                       {% if object.have_like == 1 %}style="color: rgb(240, 98, 146);"{% endif %}><i
                                         class="material-icons">keyboard_arrow_up</i><i

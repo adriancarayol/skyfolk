@@ -556,6 +556,21 @@ $(function () {
             }
         });
     });
+
+    $('#tab-themes').on('click', '.infinite-more-themes', function (e) {
+        e.preventDefault();
+        var _next = $(this).attr('href');
+        $.get(_next, function (data, status) {
+            var $load_themes = $('.load_themes');
+            $load_themes.show();
+            var _items = $(data).filter('.theme');
+            $('.theme-list .infinite-more-themes').closest('.row').before(_items);
+            $('.infinite-more-themes').replaceWith($(data).find('.infinite-more-themes'));
+            $load_themes.hide();
+        }).always(function () {
+
+        });
+    });
 });// end document ready
 
 var loadDescendantsRunning = false;

@@ -117,8 +117,6 @@ class PublicationGroup(PublicationBase):
             "text": json.dumps(data)
         })
 
-        # TODO: Mezclar templates para ahorrar el render
-
         data['content'] = render_to_string(request=request, template_name='channels/new_group_publication_detail.html',
                                            context={'node': self, 'group_profile': self.board_group})
 
@@ -205,6 +203,6 @@ class PublicationTheme(PublicationBase):
                     recipient=self.board_theme.owner,
                     description="Te avisamos de que @{0} ha publicado en el tema {1}.".format(
                         self.author.username, self.board_theme.title),
-                    verb=u'<a href="/profile/%s">@%s</a> ha publicado en el tema %s.' %
-                         (self.author.username, self.author.username, self.board_theme.title),
+                    verb=u'<a href="/profile/{0}">@{0}</a> ha publicado en el tema {1}.'.format(self.author.username,
+                                                                                                self.board_theme.title),
                     level='notification_board_theme')

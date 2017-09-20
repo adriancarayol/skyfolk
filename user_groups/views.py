@@ -22,7 +22,7 @@ from django.views import View
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
-from guardian.shortcuts import assign_perm, remove_perm
+from guardian.shortcuts import remove_perm
 from neomodel import db
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
@@ -175,19 +175,23 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
 
     if is_ajax and qs == 'themes':
         template = 'groups/group_themes.html'
+
+        theme_publications = PublicationTheme.objects.filter(board_theme=OuterRef('pk'),
+                                                             deleted=False).order_by().values(
+            'board_theme')
+
+        total_theme_publications = theme_publications.annotate(c=Count('*')).values('c')
+
         themes = GroupTheme.objects.filter(board_group_id=group_profile.group_ptr_id).annotate(
-            total_pubs=Count('publication_board_theme', distinct=True),
-            likes=Count('like_theme', distinct=True),
-            hates=Count('hate_theme', distinct=True)).annotate(
-            have_like=Case(
+            likes=Count('like_theme'),
+            hates=Count('hate_theme')).annotate(
+            have_like=Count(Case(
                 When(like_theme__by_user_id=user.id, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            )).annotate(have_hate=Case(
+            ))).annotate(have_hate=Count(Case(
             When(hate_theme__by_user_id=user.id, then=Value(1)),
-            default=Value(0),
             output_field=IntegerField()
-        )).select_related('owner')
+        ))).annotate(total_pubs=Subquery(total_theme_publications, output_field=IntegerField())).select_related('owner')
 
         paginator = Paginator(themes, 20)
 
@@ -203,17 +207,27 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         }
         return render(request, template, context)
 
+    shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
+                                                     deleted=False).order_by().values(
+        'shared_group_publication__id')
+
+    total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+    shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+        When(author_id=user.id, then=Value(1))
+    ))).values('have_shared')
+
     publications = PublicationGroup.objects.annotate(likes=Count('user_give_me_like'),
-                                                     hates=Count('user_give_me_hate'), have_like=Case(
-            When(user_give_me_like=user, then=Value(1)),
-            default=Value(0),
+                                                     hates=Count('user_give_me_hate'), have_like=Count(Case(
+            When(user_give_me_like__id=user.id, then=Value(1)),
             output_field=IntegerField()
-        ), have_hate=Case(
-            When(user_give_me_hate=user, then=Value(1)),
-            default=Value(0),
+        )), have_hate=Count(Case(
+            When(user_give_me_hate__id=user.id, then=Value(1)),
             output_field=IntegerField()
-        )).filter(Q(board_group=group_profile) &
-                  Q(deleted=False) & Q(level__lte=0) & ~Q(
+        ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+        have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(Q(board_group=group_profile) &
+                                                                                 Q(deleted=False) & Q(
+        level__lte=0) & ~Q(
         author__profile__from_blocked__to_blocked=user.profile)) \
         .prefetch_related('group_extra_content', 'images',
                           'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
@@ -230,25 +244,12 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     except EmptyPage:
         publications = paginator.page(paginator.num_pages)
 
-    shared_id = publications.object_list.values_list('id', flat=True)
-    pubs_shared = Publication.objects.filter(shared_group_publication__id__in=shared_id, deleted=False).values(
-        'shared_group_publication__id') \
-        .order_by('shared_group_publication__id') \
-        .annotate(total=Count('shared_group_publication__id'))
-    shared_pubs = {item['shared_group_publication__id']: item.get('total', 0) for item in pubs_shared}
-
-    pubs_shared_with_me = Publication.objects.filter(shared_group_publication__id__in=shared_id, author__id=user.id,
-                                                     deleted=False).values_list('shared_group_publication__id',
-                                                                                flat=True)
-
     if is_ajax and qs == 'publications':
         template = 'groups/comentarios_entries.html'
         context = {
             'publications': publications,
             'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
-            'group_profile': group_profile,
-            'pubs_shared_with_me': pubs_shared_with_me,
-            'pubs_shared': shared_pubs,
+            'group_profile': group_profile
         }
         return render(request, template, context)
 
@@ -281,8 +282,6 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'friend_request': friend_request,
                'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
                'interests': node_group.interest.match(),
-               'pubs_shared_with_me': pubs_shared_with_me,
-               'pubs_shared': shared_pubs,
                'share_publication': SharedPublicationForm(),
                'publication_edit': GroupPublicationEdit(),
                'theme_form': GroupThemeForm(initial={'owner': request.user, 'board_group': group_profile}),
@@ -771,17 +770,13 @@ class GroupThemeView(DetailView):
         return GroupTheme.objects.filter(slug=self.kwargs['slug']).annotate(
             likes=Count('like_theme', distinct=True),
             hates=Count('hate_theme', distinct=True)).annotate(
-            have_like=Case(
+            have_like=Count(Case(
                 When(like_theme__by_user_id=user.id, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            )).annotate(have_hate=Case(
+            ))).annotate(have_hate=Count(Case(
             When(hate_theme__by_user_id=user.id, then=Value(1)),
-            default=Value(0),
             output_field=IntegerField()
-        )).annotate(total_pubs=Subquery(
-            PublicationTheme.objects.filter(deleted=False, board_theme=OuterRef('pk')).values('board_theme'),
-            output_field=IntegerField())).select_related('owner')
+        ))).select_related('owner')
 
     def get_context_data(self, **kwargs):
         user = self.request.user
@@ -789,16 +784,14 @@ class GroupThemeView(DetailView):
         page = self.request.GET.get('page', 1)
 
         publications = PublicationTheme.objects.annotate(likes=Count('user_give_me_like'),
-                                                         hates=Count('user_give_me_hate'), have_like=Case(
-                When(user_give_me_like=user.id, then=Value(1)),
-                default=Value(0),
+                                                         hates=Count('user_give_me_hate'), have_like=Count(Case(
+                When(user_give_me_like__id=user.id, then=Value(1)),
                 output_field=IntegerField()
-            ), have_hate=Case(
-                When(user_give_me_hate=user.id, then=Value(1)),
-                default=Value(0),
+            )), have_hate=Count(Case(
+                When(user_give_me_hate__id=user.id, then=Value(1)),
                 output_field=IntegerField()
-            )).filter(board_theme=self.object,
-                      deleted=False).select_related('author', 'board_theme', 'parent', 'parent__author')
+            ))).filter(board_theme=self.object,
+                       deleted=False).select_related('author', 'board_theme', 'parent', 'parent__author')
 
         paginator = Paginator(publications, 25)
 

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db.models import Count, Q, Case, When, Value, IntegerField
+from django.db.models import Count, Q, Case, When, Value, IntegerField, OuterRef, Subquery
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
@@ -320,37 +320,34 @@ class PhotoDetailView(DetailView):
         else:
             return redirect('user_profile:profile', username=self.username)
 
-    @staticmethod
-    def get_count_shared(shared_id):
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=shared_id, deleted=False) \
-            .values('shared_photo_publication__id') \
-            .order_by('shared_photo_publication__id') \
-            .annotate(total=Count('shared_photo_publication__id'))
-        return {item['shared_photo_publication__id']: item.get('total', 0) for item in pubs_shared}
-
-    def get_publications_shared_with_me(self, shared_id):
-        return Publication.objects.filter(shared_photo_publication__id__in=shared_id,
-                                          author__id=self.request.user.id, deleted=False) \
-            .values_list('shared_photo_publication__id', flat=True)
-
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
+        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
+                                                         deleted=False).order_by().values(
+            'shared_photo_publication__id')
+
+        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+            When(author_id=user.id, then=Value(1))
+        ))).values('have_shared')
+
         paginator = Paginator(
             PublicationPhoto.objects.annotate(likes=Count('user_give_me_like'),
-                                               hates=Count('user_give_me_hate'), have_like=Case(
+                                              hates=Count('user_give_me_hate'), have_like=Count(Case(
                     When(user_give_me_like=user, then=Value(1)),
-                    default=Value(0),
                     output_field=IntegerField()
-                ), have_hate=Case(
+                )), have_hate=Count(Case(
                     When(user_give_me_hate=user, then=Value(1)),
-                    default=Value(0),
                     output_field=IntegerField()
-                )).filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
-                          & Q(board_photo_id=self.photo.id),
-                          Q(level__lte=0) & Q(deleted=False)) \
+                ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+                have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(
+                ~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                & Q(board_photo_id=self.photo.id),
+                Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
                 .select_related('p_author',
                                 'board_photo', 'parent'), 10)
@@ -362,10 +359,7 @@ class PhotoDetailView(DetailView):
         except EmptyPage:
             publications = paginator.page(paginator.num_pages)
 
-        shared_id = publications.object_list.values_list('id', flat=True)
         context['publications'] = publications
-        context['pubs_shared'] = PhotoDetailView.get_count_shared(shared_id)
-        context['pubs_shared_with_me'] = self.get_publications_shared_with_me(shared_id)
 
         if self.request.is_ajax():
             self.template_name = 'photologue/publications_entries.html'

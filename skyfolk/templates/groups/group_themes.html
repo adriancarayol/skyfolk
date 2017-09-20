@@ -30,3 +30,12 @@
         </div>
     </div>
 {% endfor %}
+{% if themes.has_next %}
+    <div class="row center">
+        <a class="infinite-more-themes waves-effect waves-light btn-large blue darken-1 white-text center"
+           href="?page={{ themes.next_page_number }}&qs=themes"><i class="material-icons">add</i></a>
+        <div class="progress load_themes" style="display: none">
+            <div class="indeterminate blue darken-1"></div>
+        </div>
+    </div>
+{% endif %}

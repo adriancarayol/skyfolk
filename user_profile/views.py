@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db import transaction, IntegrityError
-from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Case, When, Value, IntegerField, BooleanField, OuterRef, Subquery
 from django.db.models import Count
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -50,35 +50,48 @@ def load_profile_publications(request, page, profile):
     Devuelve los comentarios de un perfil
     """
     user = request.user
+
+    shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),
+                                                     deleted=False).order_by().values(
+        'shared_publication__id')
+
+    total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+    shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+        When(author_id=user.id, then=Value(1))
+    ))).values('have_shared')
+
+    pubs = Publication.objects.filter(
+        ~Q(author__profile__from_blocked__to_blocked=user.profile) &
+        Q(board_owner_id=profile.id) & Q(level__lte=0) & Q(
+            deleted=False)).prefetch_related('extra_content', 'images',
+                                             'videos', 'shared_publication__images',
+                                             'tags',
+                                             'shared_publication__author',
+                                             'shared_photo_publication__images',
+                                             'shared_photo_publication__p_author',
+                                             'shared_photo_publication__videos',
+                                             'shared_photo_publication__publication_photo_extra_content',
+                                             'shared_group_publication__images',
+                                             'shared_group_publication__author',
+                                             'shared_group_publication__videos',
+                                             'shared_group_publication__group_extra_content',
+                                             'shared_publication__videos', 'shared_publication__extra_content') \
+        .select_related('author',
+                        'board_owner', 'shared_publication',
+                        'parent', 'shared_photo_publication', 'shared_group_publication').annotate(
+        likes=Count('user_give_me_like'),
+        hates=Count('user_give_me_hate')).annotate(have_like=Count(Case(
+        When(user_give_me_like__id=user.id, then=Value(1)),
+        output_field=IntegerField()
+    )), have_hate=Count(Case(
+        When(user_give_me_hate__id=user.id, then=Value(1)),
+        output_field=IntegerField()
+    ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+        have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+
     try:
-        paginator = Paginator(Publication.objects.annotate(likes=Count('user_give_me_like'),
-                                                           hates=Count('user_give_me_hate'), have_like=Case(
-                When(user_give_me_like=user, then=Value(1)),
-                default=Value(0),
-                output_field=IntegerField()
-            ), have_hate=Case(
-                When(user_give_me_hate=user, then=Value(1)),
-                default=Value(0),
-                output_field=IntegerField()
-            )).filter(~Q(author__profile__from_blocked__to_blocked=user.profile) &
-                      Q(board_owner_id=profile.id) & Q(level__lte=0) & Q(
-            deleted=False)) \
-                              .prefetch_related('extra_content', 'images',
-                                                'videos', 'shared_publication__images',
-                                                'tags',
-                                                'shared_publication__author',
-                                                'shared_photo_publication__images',
-                                                'shared_photo_publication__p_author',
-                                                'shared_photo_publication__videos',
-                                                'shared_photo_publication__publication_photo_extra_content',
-                                                'shared_group_publication__images',
-                                                'shared_group_publication__author',
-                                                'shared_group_publication__videos',
-                                                'shared_group_publication__group_extra_content',
-                                                'shared_publication__videos', 'shared_publication__extra_content') \
-                              .select_related('author',
-                                              'board_owner', 'shared_publication',
-                                              'parent', 'shared_photo_publication', 'shared_group_publication'), 25)
+        paginator = Paginator(pubs, 25)
         try:
             publications = paginator.page(page)
         except PageNotAnInteger:
@@ -86,24 +99,11 @@ def load_profile_publications(request, page, profile):
         except EmptyPage:
             publications = paginator.page(paginator.num_pages)
 
-        # Obtenemos los ids de las publicaciones del skyline
-        # Despues recuperamos aquellas publicaciones que han sido compartidas
-        shared_id = publications.object_list.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_publication__id__in=shared_id, deleted=False).values(
-            'shared_publication__id') \
-            .order_by('shared_publication__id') \
-            .annotate(total=Count('shared_publication__id'))
-        shared_pubs = {item['shared_publication__id']: item.get('total', 0) for item in pubs_shared}
-
-        pubs_shared_with_me = Publication.objects.filter(shared_publication__id__in=shared_id, author__id=user.id,
-                                                         deleted=False).values_list('shared_publication__id', flat=True)
     except Exception as e:
         publications = []
-        pubs_shared_with_me = []
-        shared_pubs = {}
         logging.info(e)
 
-    return pubs_shared_with_me, shared_pubs, publications
+    return publications
 
 
 def profile_view_ajax(request, user_profile, node_profile=None):
@@ -119,12 +119,10 @@ def profile_view_ajax(request, user_profile, node_profile=None):
     if qs == 'publications':
         page = request.GET.get('page', 1)
         template = 'account/profile_comments.html'
-        pubs_shared_with_me, pubs_shared, publications = load_profile_publications(request, page, user_profile)
+        publications = load_profile_publications(request, page, user_profile)
         context = {
             'user_profile': user_profile,
-            'publications': publications,
-            'pubs_shared': pubs_shared,
-            'pubs_shared_with_me': pubs_shared_with_me
+            'publications': publications
         }
     elif qs == 'following':
         page = int(request.GET.get('page', 1))
@@ -279,11 +277,9 @@ def profile_view(request, username,
     context['publication_shared'] = SharedPublicationForm()
 
     # Cargamos las publicaciones del perfil
-    pubs_shared_with_me, pubs_shared, publications = load_profile_publications(request, 1, user_profile)
+    publications = load_profile_publications(request, 1, user_profile)
 
     # Contenido de las tres tabs
-    context['pubs_shared_with_me'] = pubs_shared_with_me
-    context['pubs_shared'] = pubs_shared
     context['publications'] = publications
     context['component'] = 'react/publications.js'
     context['friend_page'] = 1

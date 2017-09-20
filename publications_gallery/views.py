@@ -1,13 +1,12 @@
 import json
 
 import magic
-from bs4 import BeautifulSoup
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.db import transaction
-from django.db.models import Count, When, Value, Case, IntegerField
+from django.db.models import Count, When, Value, Case, IntegerField, OuterRef, Subquery
 from django.db.models import Q
 from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
@@ -17,7 +16,7 @@ from django.views.generic import CreateView
 
 from emoji.models import Emoji
 from photologue.models import Photo
-from publications.exceptions import EmptyContent, MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
+from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
 from publications.views import logger
 from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
@@ -151,18 +150,27 @@ def publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_photo.owner.username)
 
+    shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
+                                                     deleted=False).order_by().values(
+        'shared_photo_publication__id')
+
+    total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+    shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+        When(author_id=user.id, then=Value(1))
+    ))).values('have_shared')
+
     try:
         publication = request_pub.get_descendants(include_self=True) \
             .annotate(likes=Count('user_give_me_like'),
-                      hates=Count('user_give_me_hate'), have_like=Case(
+                      hates=Count('user_give_me_hate'), have_like=Count(Case(
                 When(user_give_me_like=user, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            ), have_hate=Case(
+            )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            )) \
+            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+            have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
             .filter(deleted=False) \
             .prefetch_related('publication_photo_extra_content', 'images',
                               'videos', 'tags') \
@@ -181,28 +189,9 @@ def publication_detail(request, publication_id):
     except EmptyPage:
         publication = paginator.page(paginator.num_pages)
 
-    try:
-        pubs_id = publication.object_list.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, deleted=False) \
-            .values('shared_photo_publication__id') \
-            .order_by('shared_photo_publication__id') \
-            .annotate(total=Count('shared_photo_publication__id'))
-        shared_pubs = {item['shared_photo_publication__id']: item.get('total', 0) for item in pubs_shared}
-        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author__id=user.id,
-                                                         deleted=False) \
-            .values_list('shared_photo_publication__id', flat=True)
-
-    except Exception as e:
-        logger.info('No se pudo obtener las publicaciones compartidas para la publicacion: {}'.format(request_pub))
-        pubs_shared = None
-        pubs_shared_with_me = []
-        shared_pubs = {}
-
     context = {
         'publication': publication,
         'publication_id': publication_id,
-        'pubs_shared': shared_pubs,
-        'pubs_shared_with_me': pubs_shared_with_me,
         'photo': request_pub.board_photo,
         'publication_shared': SharedPublicationForm()
     }
@@ -602,17 +591,27 @@ def load_more_descendants(request):
             pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(deleted=False))
 
+        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
+                                                         deleted=False).order_by().values(
+            'shared_photo_publication__id')
+
+        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+            When(author_id=user.id, then=Value(1))
+        ))).values('have_shared')
+
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
-                             hates=Count('user_give_me_hate'), have_like=Case(
+                             hates=Count('user_give_me_hate'), have_like=Count(Case(
                 When(user_give_me_like=user, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            ), have_hate=Case(
+            )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
-                default=Value(0),
                 output_field=IntegerField()
-            )).prefetch_related('publication_photo_extra_content', 'images',
-                                'videos', 'parent__p_author') \
+            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related(
+            'publication_photo_extra_content', 'images',
+            'videos', 'parent__p_author') \
             .select_related('p_author',
                             'board_photo', 'parent')
 
@@ -625,20 +624,9 @@ def load_more_descendants(request):
         except EmptyPage:
             publications = paginator.page(paginator.num_pages)
 
-        pubs_id = publications.object_list.values_list('id', flat=True)
-        pubs_shared = Publication.objects.filter(shared_photo_publication__id__in=pubs_id).values(
-            'shared_photo_publication__id') \
-            .order_by('shared_photo_publication') \
-            .annotate(total=Count('shared_photo_publication'))
-        pubs_shared_with_me = Publication.objects.filter(shared_photo_publication__id__in=pubs_id, author_id=user.id) \
-            .values_list('shared_photo_publication__id', flat=True)
-        shared_pubs = {item['shared_photo_publication__id']: item.get('total', 0) for item in pubs_shared}
-
         context = {
             'pub_id': pub_id,
             'publications': publications,
-            'pubs_shared': shared_pubs,
-            'pubs_shared_with_me': pubs_shared_with_me,
             'photo': publication.board_photo
         }
         return render(request, 'photologue/ajax_load_replies.html', context=context)
