@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+import publications_groups.themes.views
 from . import views
 
 urlpatterns = [
@@ -23,13 +24,13 @@ urlpatterns = [
     url(r'^publication/group/delete/share/$', views.RemoveSharedGroupPublication.as_view(),
         name='delete_share_group_publication'),
     # Theme publications
-    url(r'^publication/group/theme/reply/$', views.PublicationThemeView.as_view(),
+    url(r'^publication/group/theme/reply/$', publications_groups.themes.views.PublicationThemeView.as_view(),
         name='reply_theme_publication'),
-    url(r'^publication/group/theme/like/$', views.AddLikePublicationTheme.as_view(),
+    url(r'^publication/group/theme/like/$', publications_groups.themes.views.AddLikePublicationTheme.as_view(),
         name='like_theme_publication'),
-    url(r'^publication/group/theme/hate/$', views.AddHatePublicationTheme.as_view(),
+    url(r'^publication/group/theme/hate/$', publications_groups.themes.views.AddHatePublicationTheme.as_view(),
         name='hate_theme_publication'),
-    url(r'^publication/group/theme/delete/$', views.DeletePublicationTheme.as_view(),
+    url(r'^publication/group/theme/delete/$', publications_groups.themes.views.DeletePublicationTheme.as_view(),
         name='delete_theme_publication'),
 
 ]

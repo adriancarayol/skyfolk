@@ -91,6 +91,7 @@ FIRST_PARTY_APPS = (
     'publications',  # publicaciones en el perfil
     'publications_gallery',  # publicaciones en galeria
     'publications_groups',  # publicaciones en grupos
+    'publications_groups.themes', # publicaciones para temas
     'about',  # sobre los autores
     'latest_news',
     'user_groups',  # Para grupos de usuarios

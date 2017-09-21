@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.db import transaction, IntegrityError
-from django.db.models import Case, When, Value, IntegerField, BooleanField, OuterRef, Subquery
+from django.db.models import Case, When, Value, IntegerField, OuterRef, Subquery
 from django.db.models import Count
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -26,7 +26,6 @@ from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
 
 from avatar.templatetags.avatar_tags import avatar, avatar_url
-from mailer.handler import notify_via_email
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo
@@ -951,9 +950,6 @@ class FollowersListView(ListView):
     template_name = "account/relations.html"
     paginate_by = 25
 
-    def __init__(self, *args, **kwargs):
-        super(FollowersListView, self).__init__(*args, **kwargs)
-
     @method_decorator(user_can_view_profile_info)
     def dispatch(self, request, *args, **kwargs):
         return super(FollowersListView, self).dispatch(request, *args, **kwargs)
@@ -980,9 +976,6 @@ class FollowingListView(ListView):
     context_object_name = "friends_top4"
     template_name = "account/relations.html"
     paginate_by = 25
-
-    def __init__(self, *args, **kwargs):
-        super(FollowingListView, self).__init__(*args, **kwargs)
 
     @method_decorator(user_can_view_profile_info)
     def dispatch(self, request, *args, **kwargs):

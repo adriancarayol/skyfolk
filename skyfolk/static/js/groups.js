@@ -1148,6 +1148,10 @@ function AJAX_submit_theme_publication(form) {
             } else {
                 $('#caja-comentario-' + parent).toggle();
             }
+            var btnPubs = $('#theme-' + board_theme).find('.reply_theme .pubs-theme-value');
+            var countPubs = parseInt(btnPubs.text()) || 0;
+            countPubs++;
+            btnPubs.text(countPubs);
             form.trigger("reset");
         }, error: function (data, textStatus, jqXHR) {
             var errors = [];

@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 from django import forms
 
 from emoji import Emoji
-from publications_groups.models import PublicationGroup, PublicationTheme
+from publications_groups.models import PublicationGroup
+from publications_groups.themes.models import PublicationTheme
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

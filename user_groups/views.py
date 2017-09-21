@@ -33,7 +33,8 @@ from notifications.signals import notify
 from publications.models import Publication
 from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit, PublicationThemeForm
 from publications.forms import SharedPublicationForm
-from publications_groups.models import PublicationGroup, PublicationTheme
+from publications_groups.models import PublicationGroup
+from publications_groups.themes.models import PublicationTheme
 from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
