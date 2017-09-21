@@ -1,5 +1,7 @@
 from django.conf.urls import url
 
+import user_groups.views
+from publications_groups.themes import views as themes_views
 from user_groups import views as user_groups_views
 
 urlpatterns = [
@@ -44,4 +46,6 @@ urlpatterns = [
         name='group_theme'),
     url(r'^groups/delete/theme/$', user_groups_views.DeleteGroupTheme.as_view(),
         name='delete_group_theme'),
+    url(r'^groups/edit/theme/$', user_groups.views.EditPublicationTheme.as_view(),
+        name='edit_group_theme'),
 ]

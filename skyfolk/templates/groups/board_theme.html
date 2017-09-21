@@ -20,6 +20,14 @@
                     </div>
                     <div class="card-stacked">
                         <div class="card-content">
+                            {% if user.id == object.owner.id %}
+                                <span data-id="{{ object.pk }}"
+                                      class="right tooltipped"
+                                      data-position="bottom"
+                                      data-delay="50"
+                                      data-tooltip="Editar comentario"><i
+                                        class="material-icons md-18">mode_edit</i></span>
+                            {% endif %}
                             <a href="{% url "user_profile:profile" username=object.owner %}">@{{ object.owner }}</a>
                             <i>{{ theme.created|naturaltime }}</i>
                             <h4>{{ object.title|safe }}</h4>
@@ -45,6 +53,10 @@
                     </div>
                 </div>
                 {% include "groups/new_reply_theme.html" %}
+                <form class="edit-theme-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {{ edit_form.as_p }}
+                    <input type="submit" value="editar">
+                </form>
             </div>
         </div>
         <div class="row theme-publications infinite-container">

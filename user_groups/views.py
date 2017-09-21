@@ -7,11 +7,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.db import transaction
 from django.db.models import Q, Count, Case, When, Value, IntegerField, OuterRef, Subquery
 
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404, JsonResponse
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
@@ -19,7 +19,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils import six
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView
 from django.views.generic.edit import CreateView, DeleteView
 from django.views.generic.list import ListView
 from guardian.shortcuts import remove_perm
@@ -35,6 +35,7 @@ from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
 from publications_groups.themes.models import PublicationTheme
+from user_groups.forms import GroupThemeForm, EditGroupThemeForm
 from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -805,6 +806,7 @@ class GroupThemeView(DetailView):
 
         context['publications'] = pubs
         context['form'] = PublicationThemeForm()
+        context['edit_form'] = EditGroupThemeForm(instance=self.object, initial={'pk': self.object.pk})
         return context
 
 
@@ -840,3 +842,41 @@ class DeleteGroupTheme(DeleteView):
         data['response'] = True
 
         return JsonResponse(data)
+
+
+class EditPublicationTheme(UpdateView):
+    form_class = EditGroupThemeForm
+    model = GroupTheme
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(EditPublicationTheme, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form, msg=None):
+        user = self.request.user
+
+        theme = GroupTheme.objects.get(id=form.cleaned_data['pk'])
+
+        if theme.owner_id != user.id:
+            return HttpResponseForbidden()
+
+        theme.title = form.cleaned_data['title']
+        theme.description = form.cleaned_data['description']
+        theme.image = form.cleaned_data['image']
+
+        theme.save()
+
+        return JsonResponse({'response': True})
+
+    def form_invalid(self, form):
+
+        super(EditPublicationTheme, self).form_invalid(form)
+        return JsonResponse({'response': False})

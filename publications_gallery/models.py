@@ -74,12 +74,6 @@ class PublicationPhoto(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    EVENT_CHOICES = (
-        (1, _("publication")),
-        (3, _("link")),
-        (4, _("relevant")),
-    )
-
     p_author = models.ForeignKey(User, null=True)
     board_photo = models.ForeignKey(Photo, related_name='board_photo')
     user_give_me_like = models.ManyToManyField(User, blank=True,
@@ -90,7 +84,6 @@ class PublicationPhoto(PublicationBase):
                                            related_name='share_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply_photo')
-    event_type = models.PositiveIntegerField(choices=EVENT_CHOICES, default=1, blank=True)
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -117,14 +110,6 @@ class PublicationPhoto(PublicationBase):
 
     def has_extra_content(self):
         return hasattr(self, 'publication_photo_extra_content')
-
-    def parse_extra_content(self):
-        # Buscamos en el contenido del mensaje una URL y mostramos un breve resumen de ella
-        link_url = re.findall(
-            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
-            self.content)
-        if link_url and len(link_url) > 0:
-            self.event_type = 3
 
     def send_notification(self, request, type="pub", is_edited=False):
         """

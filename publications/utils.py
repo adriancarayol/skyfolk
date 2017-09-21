@@ -120,3 +120,4 @@ def recursive_node_to_dict(node):
     if children:
         result['children'] = children
     return result
+

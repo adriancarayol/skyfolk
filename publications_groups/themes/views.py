@@ -175,6 +175,7 @@ class AddHatePublicationTheme(View):
 class DeletePublicationTheme(UpdateView):
     model = PublicationTheme
 
+    @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super(DeletePublicationTheme, self).dispatch(request, *args, **kwargs)
 

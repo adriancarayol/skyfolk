@@ -7,7 +7,9 @@ from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.urls import reverse_lazy
 from embed_video.backends import detect_backend, EmbedVideoException
+from requests.exceptions import MissingSchema
 
 from notifications.signals import notify
 from user_profile.node_models import NodeProfile
@@ -56,12 +58,9 @@ def publication_handler(sender, instance, created, **kwargs):
 
 def add_hashtags(instance):
     soup = BeautifulSoup(instance.content)
-    hashtags = set([x.string for x in soup.find_all('a')])
+    hashtags = set([x.string for x in soup.find_all('a', {'class': 'hashtag'})])
     for tag in hashtags:
-        if tag.startswith('@'):
-            continue
-        if tag.endswith((',', '.')):
-            tag = tag[:-1]
+        tag = tag[1:]
         instance.tags.add(tag)
 
 
@@ -72,9 +71,8 @@ def add_extra_content(instance):
     if not instance.content:
         return
 
-    link_url = re.findall(
-        r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
-        instance.content)
+    soup = BeautifulSoup(instance.content)
+    link_url = [a.get('href') for a in soup.find_all('a', {'class': 'external-link'})]
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
     if (not link_url or len(link_url) <= 0) and instance.has_extra_content():
         ExtraContent.objects.filter(publication=instance).delete()  # Borramos el extra content de esta
@@ -99,7 +97,10 @@ def add_extra_content(instance):
     # Si no existe el backend
     elif link_url and len(link_url) > 0:
         url = link_url[-1]  # Get last url
-        response = requests.get(url)
+        try:
+            response = requests.get(url)
+        except MissingSchema:
+            return
         soup = BeautifulSoup(response.text)
 
         description = soup.find('meta', attrs={'name': 'og:description'}) or soup.find('meta', attrs={
@@ -127,19 +128,21 @@ def extra_content_handler(sender, instance, **kwargs):
 
 
 def notify_mentions(instance):
-    menciones = re.findall('\\@[a-zA-Z0-9_]+', instance.content)
-    menciones = set(menciones)
-    for mencion in menciones:
-        try:
-            recipientprofile = User.objects.get(username=mencion[1:])
-        except User.DoesNotExist:
-            continue
+    soup = BeautifulSoup(instance.content)
+    menciones = set([a.string[1:] for a in soup.find_all('a', {'class': 'mention'})])
 
-        if instance.author.pk != recipientprofile.pk:
+    users = User.objects.only('username', 'id').filter(username__in=menciones)
+
+    for user in users:
+        if instance.author.pk != user.id:
             notify.send(instance.author, actor=instance.author.username,
-                        recipient=recipientprofile,
+                        recipient=user,
                         verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
-                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.author.username, '/publication/' + str(instance.id)))
+                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.author.username,
+                                                                                            reverse_lazy(
+                                                                                                'publications:publication_detail',
+                                                                                                kwargs={
+                                                                                                    'publication_id': instance.id})))
 
 
 def increase_affinity(instance):

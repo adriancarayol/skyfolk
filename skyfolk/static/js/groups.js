@@ -485,8 +485,8 @@ $(function () {
                     dataType: "json",
                     success: function (data) {
                         if (data.response === true) {
-                           pub_box.closest('.infinite-item').remove();
-                           $(".infinite-item").find(`[data-parent='${pub_id}']`).closest('.infinite-item').remove();
+                            pub_box.closest('.infinite-item').remove();
+                            $(".infinite-item").find(`[data-parent='${pub_id}']`).closest('.infinite-item').remove();
                         }
                     }, error: function (data, textStatus, jqXHR) {
                         var errors = [];
@@ -569,6 +569,37 @@ $(function () {
             $load_themes.hide();
         }).always(function () {
 
+        });
+    });
+    $('.theme').on('submit', '.edit-theme-form', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        var data = new FormData(form[0]);
+
+
+        console.log(data);
+        $.ajax({
+            url: '/groups/edit/theme/',
+            type: 'POST',
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            data: data,
+
+            success: function (data) {
+                var response = data.data;
+                // borrar caja publicacion
+                if (response === false) {
+                    swal({
+                        title: "Fail",
+                        customClass: 'default-div',
+                        text: "Failed to edit publish.",
+                        type: "error"
+                    });
+                }
+            },
+            error: function (rs, e) {
+            }
         });
     });
 });// end document ready

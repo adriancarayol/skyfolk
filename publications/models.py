@@ -52,10 +52,22 @@ def upload_video_publication(instance, filename):
 
 
 class PublicationBase(MPTTModel):
+    EVENT_CHOICES = (
+        (1, _("publication")),
+        (2, _("new_relation")),
+        (3, _("link")),
+        (4, _("relevant")),
+        (5, _("image")),
+        (6, _("shared")),
+        (7, _("shared_photo_pub")),
+        (8, _("shared_group_pub")),
+    )
+
     content = models.TextField(blank=False, null=True, max_length=500)
     created = models.DateTimeField(auto_now_add=True, null=True)
     tags = TaggableManager(blank=True)
     deleted = models.BooleanField(default=False, blank=True)
+    event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
 
     class Meta:
         abstract = True
@@ -89,7 +101,7 @@ class PublicationBase(MPTTModel):
             if tag.endswith((',', '.')):
                 tag = tag[:-1]
             self.content = self.content.replace(tag,
-                                                '<a href="/user-search/?q={0}">{1}</a>'.format(tag[1:], tag))
+                                                '<a class="hashtag" href="/user-search/?q={0}">{1}</a>'.format(tag[1:], tag))
 
     def parse_mentions(self):
         """
@@ -97,11 +109,13 @@ class PublicationBase(MPTTModel):
         y enviamos un mensaje al usuario
         """
         menciones = re.findall('\\@[a-zA-Z0-9_]+', self.content)
-        menciones = set(menciones)
-        for mencion in menciones:
-            self.content = self.content.replace(mencion,
-                                                '<a href="/profile/%s">%s</a>' %
-                                                (mencion[1:], mencion))
+        menciones = set([x[1:] for x in menciones])
+
+        users = User.objects.values_list('username', flat=True).filter(username__in=menciones)
+
+        for user in users:
+            self.content = self.content.replace('@' + user,
+                                                '<a class="mention" href="/profile/{0}/">@{0}</a>'.format(user))
 
     def parse_content(self):
         """
@@ -135,7 +149,14 @@ class PublicationBase(MPTTModel):
         """
 
     def parse_extra_content(self):
-        pass
+        link_url = re.findall(
+            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
+            self.content)
+
+        if link_url and len(link_url) > 0:
+            self.event_type = 3
+            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
+                self.content = self.content.replace(u, '<a class="external-link" href="%s">%s</a>' % (u, u))
 
 
 class ExtraContent(models.Model):
@@ -155,16 +176,7 @@ class Publication(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
-    EVENT_CHOICES = (
-        (1, _("publication")),
-        (2, _("new_relation")),
-        (3, _("link")),
-        (4, _("relevant")),
-        (5, _("image")),
-        (6, _("shared")),
-        (7, _("shared_photo_pub")),
-        (8, _("shared_group_pub")),
-    )
+
     # TODO: Eliminar null=True de author...
     author = models.ForeignKey(User, null=True)
     board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True)
@@ -177,7 +189,6 @@ class Publication(PublicationBase):
     shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True)
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
-    event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
 
     # objects = PublicationManager()
 
@@ -206,19 +217,6 @@ class Publication(PublicationBase):
 
     def has_extra_content(self):
         return hasattr(self, 'extra_content')
-
-    def parse_extra_content(self):
-        # Buscamos en el contenido del mensaje una URL y mostramos un breve resumen de ella
-        link_url = re.findall(
-            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
-            self.content)
-
-        if link_url and len(link_url) > 0:
-            self.event_type = 3
-            """
-            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
-                self.content = self.content.replace(u, '<a href="%s">%s</a>' % (u, u))
-            """
 
     def send_notification(self, request, is_edited=False):
         """

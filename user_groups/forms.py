@@ -118,3 +118,41 @@ class GroupThemeForm(forms.ModelForm):
             if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
                 raise forms.ValidationError('La imagen no puede ser superior a 5MB')
         return image
+
+
+class EditGroupThemeForm(forms.ModelForm):
+    pk = forms.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+        super(EditGroupThemeForm, self).__init__(*args, **kwargs)
+        self.fields['pk'].widget.attrs.update({
+            'required': 'required', 'hidden': True
+        })
+
+    class Meta:
+        model = GroupTheme
+        fields = ['description', 'title', 'image', 'board_group', ]
+        widgets = {
+            'board_group': forms.HiddenInput(),
+        }
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        return Emoji.replace(title)
+
+    def clean_description(self):
+        description = self.cleaned_data['description']
+        return Emoji.replace(description)
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+                raise forms.ValidationError('La imagen no puede ser superior a 5MB')
+        return image
+
+    def clean_pk(self):
+        pk = self.cleaned_data.get('pk', None)
+        if not pk:
+            raise forms.ValidationError('No existe la publicación solicitada.')
+        return pk
