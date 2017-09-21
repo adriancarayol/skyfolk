@@ -71,7 +71,7 @@ Template para las busquedas
     {% endif %}
     {% if s == 'all' %}
     <div class="grid row">
-        {% for item in object_list %}
+        {% for item in page_obj.object_list %}
         {% if item.model_name == 'profile' %}
         <div class="grid-item">
             <div class="personal-card">
@@ -103,7 +103,7 @@ Template para las busquedas
                 </div>
                 <div class="col l9 m9 s8 author">
                     <div class="row">
-                        <span><a href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i><span>
+                        <span><a href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i></span>
                                     <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="material-icons md-18 right" aria-hidden="true">open_in_new</i></a></span>
                                     <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
                         </div>
@@ -190,7 +190,7 @@ Template para las busquedas
                 </div>
                 <div class="col l9 m9 s8 author">
                     <div class="row">
-                        <span><a href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i><span>
+                        <span><a href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i></span>
                                     <span><a href="/publication/{{item.object.id}}" title="Ver publicación"><i class="material-icons md-18 right">open_in_new</i></a></span>
                                     <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
                         </div>
@@ -269,24 +269,11 @@ Template para las busquedas
     <ul class="pagination center">
         {% if page_obj.has_previous %}
         <li><a href="?page={{ page_obj.previous_page_number }}&q={{ q }}"><i class="material-icons">chevron_left</i></a></li>
-        {% else %}
-        <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
         {% endif %}
-        {% for i in paginator.page_range %}
-        {% if page_obj.number == i %}
-        <li class="active blue darken-1 white-text"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-        {% else %}
-        <li class="waves-effect"><a href="?page={{ i }}&q={{ q }}">{{ i }}</a></li>
-        {% endif %}
-        {% endfor %}
         {% if page_obj.has_next %}
         <li><a href="?page={{ page_obj.next_page_number }}&q={{ q }}">
                 <i class="material-icons">chevron_right</i>
         </a></li>
-        {% else %}
-        <li class="disabled"><span>
-                <i class="material-icons">chevron_right</i>
-        </span></li>
         {% endif %}
     </ul>
     {% endif %}

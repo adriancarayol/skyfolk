@@ -15,6 +15,10 @@
                 <div class="card horizontal">
                     <div class="card-image">
                         <img class="lazyload" data-src="
+
+
+
+
                                 {% if object.image %}{{ object.image.url }}{% else %}{% static "img/nuevo_back.png" %}{% endif %}"
                              style="width: 120px; height: 120px;">
                     </div>
@@ -22,7 +26,7 @@
                         <div class="card-content">
                             {% if user.id == object.owner.id %}
                                 <span data-id="{{ object.pk }}"
-                                      class="right tooltipped"
+                                      class="right tooltipped edit-theme-btn"
                                       data-position="bottom"
                                       data-delay="50"
                                       data-tooltip="Editar comentario"><i
@@ -53,10 +57,38 @@
                     </div>
                 </div>
                 {% include "groups/new_reply_theme.html" %}
-                <form class="edit-theme-form" method="post" enctype="multipart/form-data">{% csrf_token %}
-                    {{ edit_form.as_p }}
-                    <input type="submit" value="editar">
-                </form>
+                <div class="edit-theme-wrapper" style="display: none;">
+                    <form class="edit-theme-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+                        {{ edit_form.pk }}
+                        {{ edit_form.board_group }}
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">title</i>
+                                {{ edit_form.title }}
+                                <label for="id_title">Título</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">closed_caption</i>
+                                {{ edit_form.description }}
+                                <label for="id_description">Descripción</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="file-field input-field">
+                                <div class="btn">
+                                    <span>Imágen</span>
+                                    {{ edit_form.image }}
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="waves-effect waves-light btn right blue">Editar</button>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="row theme-publications infinite-container">

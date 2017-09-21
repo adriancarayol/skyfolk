@@ -1391,6 +1391,11 @@ def autocomplete(request):
 class SearchUsuarioView(SearchView):
     template_name = 'search/search.html'
     form_class = SearchForm
+    paginate_by = 20
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SearchUsuarioView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         profile = Profile.objects.get(user_id=self.request.user.id)
@@ -1448,6 +1453,7 @@ class SearchUsuarioView(SearchView):
                 .select_related('owner').prefetch_related('tags')
         ).load_all_queryset(
             Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))
+
         models = []
 
         try:
@@ -1480,14 +1486,15 @@ class SearchUsuarioView(SearchView):
 
     def get_context_data(self, **kwargs):
         ctx = super(SearchUsuarioView, self).get_context_data(**kwargs)
+
         try:
             ctx['tab'] = self.kwargs['option']
         except KeyError:
             ctx['tab'] = 'all'
-        ctx['object_list'] = self.queryset
         ctx['searchForm'] = self.form_class(self.initial)
         ctx['q'] = self.initial['q']
         ctx['s'] = self.initial['s']
+
         return ctx
 
 

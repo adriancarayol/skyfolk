@@ -571,6 +571,11 @@ $(function () {
 
         });
     });
+
+    $('.theme').on('click', '.edit-theme-btn', function () {
+        $('.edit-theme-wrapper').toggle();
+    });
+
     $('.theme').on('submit', '.edit-theme-form', function (e) {
         e.preventDefault();
         var form = $(this);
@@ -596,6 +601,8 @@ $(function () {
                         text: "Failed to edit publish.",
                         type: "error"
                     });
+                } else {
+                    location.href = data.url;
                 }
             },
             error: function (rs, e) {

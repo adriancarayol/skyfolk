@@ -862,7 +862,10 @@ class EditPublicationTheme(UpdateView):
 
     def form_valid(self, form, msg=None):
         user = self.request.user
-
+        data = {
+            'response': False,
+            'url': None
+        }
         theme = GroupTheme.objects.get(id=form.cleaned_data['pk'])
 
         if theme.owner_id != user.id:
@@ -874,7 +877,8 @@ class EditPublicationTheme(UpdateView):
 
         theme.save()
 
-        return JsonResponse({'response': True})
+        data['url'] = reverse_lazy('user_groups:group_theme', kwargs={'slug': theme.slug})
+        return JsonResponse(data)
 
     def form_invalid(self, form):
 

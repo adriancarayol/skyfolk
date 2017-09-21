@@ -121,7 +121,7 @@ class GroupThemeForm(forms.ModelForm):
 
 
 class EditGroupThemeForm(forms.ModelForm):
-    pk = forms.IntegerField()
+    pk = forms.IntegerField(label='')
 
     def __init__(self, *args, **kwargs):
         super(EditGroupThemeForm, self).__init__(*args, **kwargs)
@@ -134,6 +134,7 @@ class EditGroupThemeForm(forms.ModelForm):
         fields = ['description', 'title', 'image', 'board_group', ]
         widgets = {
             'board_group': forms.HiddenInput(),
+            'image': forms.FileInput()
         }
 
     def clean_title(self):

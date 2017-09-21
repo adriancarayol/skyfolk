@@ -7,19 +7,19 @@ urlpatterns = [
     url(r'^profile/(?P<username>[\w-]+)/$', user_profile_views.profile_view,
         name='profile'),
     # url(r'^user-search/$', user_profile_views.search),
-    url(r'^user-search/$', login_required(
-            user_profile_views.SearchUsuarioView.as_view()),
-            name='general-search'),
+    url(r'^user-search/$',
+        user_profile_views.SearchUsuarioView.as_view(),
+        name='general-search'),
     url(r'^follow/by_affinity/$', login_required(
-            user_profile_views.FollowingByAffinityList.as_view()),
-            name='follow-by-affinity'),
+        user_profile_views.FollowingByAffinityList.as_view()),
+        name='follow-by-affinity'),
     url(r'^followers/by_affinity/$', login_required(
-            user_profile_views.FollowersByAffinityList.as_view()),
-            name='followers-by-affinity'),
+        user_profile_views.FollowersByAffinityList.as_view()),
+        name='followers-by-affinity'),
     # url(r'^user-search/(?P<option>[\w]*)/$', user_profile_views.search),
-    url(r'^user-search/(?P<option>[\w]*)/$', login_required(
-            user_profile_views.SearchUsuarioView.as_view()),
-            name='category-search'),
+    url(r'^user-search/(?P<option>[\w]*)/$',
+        user_profile_views.SearchUsuarioView.as_view(),
+        name='category-search'),
     url(r'^user-search-advanced/$', user_profile_views.advanced_view,
         name='advanced_view'),
     # URL CONFIG PROFILE USER
@@ -76,10 +76,10 @@ urlpatterns = [
     # Lista de usuarios que han dado like al perfil <<username>>
     url(r'^likes/(?P<username>[\w-]+)/$', user_profile_views.like_list,
         name='like_list'),
-     url(r'^recommendations/users/$', user_profile_views.recommendation_real_time,
-             name='recommendation_users'),
-     url(r'^search/autocomplete/$', user_profile_views.autocomplete,
-             name='autocomplete'),
+    url(r'^recommendations/users/$', user_profile_views.recommendation_real_time,
+        name='recommendation_users'),
+    url(r'^search/autocomplete/$', user_profile_views.autocomplete,
+        name='autocomplete'),
 
     # url(r'^prueba-search/$', login_required(
     #     user_profile_views.SearchUsuarioView.as_view()),
