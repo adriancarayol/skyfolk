@@ -91,6 +91,9 @@ class Profile(models.Model):
 
     reindex_related = ('user',)
 
+    class Meta:
+        ordering = ['-user__date_joined']
+
     def __str__(self):
         return "%s profile" % self.user.username
 

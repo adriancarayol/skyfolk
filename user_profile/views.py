@@ -1391,7 +1391,6 @@ def autocomplete(request):
 class SearchUsuarioView(SearchView):
     template_name = 'search/search.html'
     form_class = SearchForm
-    paginate_by = 20
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -1465,7 +1464,6 @@ class SearchUsuarioView(SearchView):
             models.append(Profile)
             models.append(Publication)
             models.append(Photo)
-            models.append(PublicationVideo)
         if criteria == 'accounts':
             models.append(Profile)
         if criteria == 'publications':
