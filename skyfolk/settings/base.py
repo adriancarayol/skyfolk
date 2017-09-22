@@ -338,13 +338,14 @@ POSTMAN_DISABLE_USER_EMAILING = True
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(BASE_DIR, 'whoosh_index')
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
     },
 }
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
-HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 30
 
 # LOGROS
 BADGIFY_BATCH_SIZE = None

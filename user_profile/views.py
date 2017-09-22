@@ -1401,8 +1401,7 @@ class SearchUsuarioView(SearchView):
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(board_owner_id=self.request.user.id)
                                                      | SQ(author_id=self.request.user.id)) | (
-                                                        (~SQ(board_owner__profile__from_blocked__to_blocked=profile) &
-                                                         SQ(deleted=False) & ~SQ(
+                                                        (~SQ(board_owner__profile__from_blocked__to_blocked=profile) & ~SQ(
                                                             board_owner__profile__privacity='N') & ~SQ(
                                                             author__profile__from_blocked__to_blocked=profile)) &
                                                         ((SQ(board_owner__profile__privacity='A') | (

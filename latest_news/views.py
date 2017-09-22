@@ -29,9 +29,10 @@ class News(ListView):
         pk_list = [u.user_id for u in n.get_favs_users()]
         return User.objects.filter(id__in=pk_list)
 
-    def get_recommendation_users(self, offset, limit):
+    def get_recommendation_users(self, offset=0, limit=25):
         results, meta = db.cypher_query(
-            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d AND u2.privacity='A' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT 25" %
+            "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile)<-[:INTEREST]-(u2:NodeProfile) WHERE u1.user_id=%d "
+            "AND u2.privacity='A' RETURN u2, COUNT(tag) AS score ORDER BY score DESC SKIP %d LIMIT 25" %
             (self.request.user.id, offset))
 
         users = [NodeProfile.inflate(row[0]) for row in results]
@@ -48,7 +49,7 @@ class News(ListView):
         pk_list = [x.user_id for x in n.get_favs_users(offset=0, limit=20)]
 
         # ids de usuarios recomendados
-        pk_list.extend([u.user_id for u in self.get_recommendation_users(0, 20)])
+        pk_list.extend([u.user_id for u in self.get_recommendation_users()])
 
         # Publicaciones de seguidos + favoritos + recomendados
         try:
@@ -93,6 +94,7 @@ class News(ListView):
                 Q(owner__profile__privacity='A') & Q(is_public=True)).order_by('-date_added')[offset:limit]
 
         extended_list = []
+
         if len(photos) <= 0 or len(publications) <= 0:
             extended_list = [u.user_id for u in self.get_recommendation_users(offset, limit)]
 
