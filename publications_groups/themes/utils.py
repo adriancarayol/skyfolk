@@ -1,34 +1,14 @@
+import tempfile
 import io
 import os
-import tempfile
-import uuid
 
 from PIL import Image
-from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from publications_groups.models import PublicationGroupImage, PublicationGroupVideo
-from publications.exceptions import CantOpenMedia, SizeIncorrect, MaxFilesReached, MediaNotSupported
-
+from publications.exceptions import CantOpenMedia, MediaNotSupported
+from publications_groups.themes.models import PublicationThemeVideo, PublicationThemeImage
+from publications_groups.utils import check_image_property
 from .tasks import process_gif_publication, process_video_publication
-
-
-def get_channel_name(pubid):
-    return "group-publication-%d" % int(pubid)
-
-
-def check_image_property(image):
-    if not image:
-        raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=image.name))
-    if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
-        raise SizeIncorrect(
-            u"Sólo se permiten archivos de hasta 5MB. ({image} tiene {size}B)".format(image=image.name,
-                                                                                      size=image._size))
-
-
-def check_num_images(image_collection):
-    if len(image_collection) > 5:
-        raise MaxFilesReached(u'Sólo se permiten 5 archivos por publicación.')
 
 
 def optimize_publication_media(instance, image_upload, exts):
@@ -38,7 +18,7 @@ def optimize_publication_media(instance, image_upload, exts):
             try:
                 if exts[index][0] == "video":  # es un video
                     if exts[index][1] == 'mp4':
-                        PublicationGroupVideo.objects.create(publication=instance,
+                        PublicationThemeVideo.objects.create(publication=instance,
                                                              video=media)
                     else:
                         tmp = tempfile.NamedTemporaryFile(delete=False)
@@ -67,17 +47,6 @@ def optimize_publication_media(instance, image_upload, exts):
                     output.seek(0)
                     photo = InMemoryUploadedFile(output, None, "%s.jpeg" % os.path.splitext(media.name)[0],
                                                  'image/jpeg', output.tell(), None)
-                    PublicationGroupImage.objects.create(publication=instance, image=photo)
+                    PublicationThemeImage.objects.create(publication=instance, image=photo)
             except IndexError:
                 raise MediaNotSupported(u'No podemos procesar este tipo de archivo {file}.'.format(file=media.name))
-
-
-def generate_path_video(ext='mp4'):
-    """
-    Funcion para calcular la ruta
-    donde se almacenaran las imagenes
-    de una publicacion
-    """
-    filename = "%s.%s" % (uuid.uuid4(), ext)
-    return [os.path.join('skyfolk/media/group_publications/videos', filename),
-            os.path.join('group_publications/videos', filename)]

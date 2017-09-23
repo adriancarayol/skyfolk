@@ -32,5 +32,7 @@ urlpatterns = [
         name='hate_theme_publication'),
     url(r'^publication/group/theme/delete/$', publications_groups.themes.views.DeletePublicationTheme.as_view(),
         name='delete_theme_publication'),
+    url(r'^publication/group/theme/edit/$', publications_groups.themes.views.EditThemePublication.as_view(),
+        name='edit_theme_publication'),
 
 ]

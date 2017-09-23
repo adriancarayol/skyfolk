@@ -38,42 +38,6 @@ def get_author_avatar(authorpk):
     else:
         return Profile.objects.get(user_id=authorpk).gravatar
 
-
-def parse_string(content):
-    """
-    Busca hashtags, menciones y comprueba que el formato
-    de un string es correcto (se acepta como contenido en la web)
-    """
-
-    # FIND HASHTAGS
-    hashtags = [tag.strip() for tag in content.split() if tag.startswith("#")]
-    hashtags = set(hashtags)
-    for tag in hashtags:
-        if tag.endswith((',', '.')):
-            tag = tag[:-1]
-        content = content.replace(tag,
-                                  '<a href="/search/">{0}</a>'.format(tag))
-
-    # CLEAN CONTENT
-    content = content.replace('\n', '').replace('\r', '')
-    content = bleach.clean(content, tags=[])
-    """
-    bold = re.findall('\*[^\*]+\*', content)
-    ''' Bold para comentario '''
-    for b in bold:
-        content = content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
-    ''' Italic para comentario '''
-    italic = re.findall('~[^~]+~', content)
-    for i in italic:
-        content = content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
-    ''' Tachado para comentario '''
-    tachado = re.findall('\^[^\^]+\^', content)
-    for i in tachado:
-        content = content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
-    """
-    return content
-
-
 def remove_duplicates_in_list(seq):
     seen = set()
     seen_add = seen.add
@@ -121,3 +85,7 @@ def recursive_node_to_dict(node):
         result['children'] = children
     return result
 
+
+def set_link_class(attrs, new=False):
+    attrs[(None, u'class')] = u'external-link'
+    return attrs

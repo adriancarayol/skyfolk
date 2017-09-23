@@ -10,11 +10,6 @@
                         <div class="col wrapper{% if pub.level == 0 %} col push-l1 l9 s12 {% else %}  push-l2 l9 m10 s11{% endif %}"
                              data-id="{{ pub.pk }}" {% if pub.parent %}data-parent="{{ pub.parent.id }}"{% endif %}
                              {% if pub.level > 0 %}style="border-right: 2px solid #1e88e5;"{% endif %}>
-                             <span id="check-{{ pub.pk }}" class="top-options zoom-pub tooltipped"
-                                   data-position="bottom"
-                                   data-delay="50"
-                                   data-tooltip="Ver conversación completa"><a class="material-icons md-18"
-                                                                               href="/publication/{{ pub.id }}/">open_in_new</a></span>
                             {% if user.id == pub.author.id %}
                                 <span data-id="{{ pub.pk }}"
                                       class="top-options edit-comment tooltipped"

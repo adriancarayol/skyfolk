@@ -15,10 +15,10 @@ from embed_video.fields import EmbedVideoField
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
 
-from mailer.handler import notify_via_email
+from bleach.linkifier import Linker
 from notifications.signals import notify
 from photologue.models import Photo
-from publications.utils import validate_video
+from publications.utils import validate_video, set_link_class
 from user_profile.utils import group_name
 from .utils import get_channel_name
 
@@ -127,36 +127,9 @@ class PublicationBase(MPTTModel):
         self.content = bleach.clean(self.content, tags=ALLOWED_TAGS,
                                     attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES)
         """
-        self.content = bleach.clean(self.content, tags=[])
-        self.parse_extra_content()
-
-        """
-        bold = re.findall('\*[^\*]+\*', self.content)
-        bold = list(set(bold))
-
-        for b in bold:
-            self.content = self.content.replace(b, '<b>%s</b>' % (b[1:len(b) - 1]))
-
-        italic = re.findall('~[^~]+~', self.content)
-        italic = list(set(italic))
-        for i in italic:
-            self.content = self.content.replace(i, '<i>%s</i>' % (i[1:len(i) - 1]))
-
-        tachado = re.findall('\^[^\^]+\^', self.content)
-        tachado = list(set(tachado))
-        for i in tachado:
-            self.content = self.content.replace(i, '<strike>%s</strike>' % (i[1:len(i) - 1]))
-        """
-
-    def parse_extra_content(self):
-        link_url = re.findall(
-            r'(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:/\S*)?',
-            self.content)
-
-        if link_url and len(link_url) > 0:
-            self.event_type = 3
-            for u in list(set(link_url)):  # Convertimos URL a hipervinculo
-                self.content = self.content.replace(u, '<a class="external-link" href="%s">%s</a>' % (u, u))
+        linker = Linker(callbacks=[set_link_class])
+        self.content = bleach.clean(self.content, tags=[''])
+        self.content = linker.linkify(self.content)
 
 
 class ExtraContent(models.Model):

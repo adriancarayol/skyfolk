@@ -1,4 +1,5 @@
 # encoding:utf-8
+import bleach
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -106,10 +107,15 @@ class GroupThemeForm(forms.ModelForm):
 
     def clean_title(self):
         title = self.cleaned_data['title']
+        title = title.replace('\n', '').replace('\r', '')
+        title = bleach.clean(title, tags=[''])
         return Emoji.replace(title)
 
     def clean_description(self):
         description = self.cleaned_data['description']
+        description = description.replace('\n', '').replace('\r', '')
+        description = bleach.clean(description, tags=[''])
+        description = bleach.linkify(description)
         return Emoji.replace(description)
 
     def clean_image(self):
@@ -139,10 +145,15 @@ class EditGroupThemeForm(forms.ModelForm):
 
     def clean_title(self):
         title = self.cleaned_data['title']
+        title = title.replace('\n', '').replace('\r', '')
+        title = bleach.clean(title, tags=[''])
         return Emoji.replace(title)
 
     def clean_description(self):
         description = self.cleaned_data['description']
+        description = description.replace('\n', '').replace('\r', '')
+        description = bleach.clean(description, tags=[''])
+        description = bleach.linkify(description)
         return Emoji.replace(description)
 
     def clean_image(self):

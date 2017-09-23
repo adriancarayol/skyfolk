@@ -1,3 +1,4 @@
+import magic
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction, IntegrityError
@@ -7,8 +8,12 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, UpdateView
 
-from publications_groups.forms import PublicationThemeForm
+from emoji import Emoji
+from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
+from publications_groups.forms import PublicationThemeForm, ThemePublicationEdit
 from publications_groups.themes.models import PublicationTheme
+from publications_groups.themes.utils import optimize_publication_media
+from publications_groups.utils import check_num_images
 from user_groups.models import GroupTheme, UserGroups
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
@@ -61,15 +66,47 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
                                'El autor de la publicación te ha bloqueado.'.format(group.name))
                 return super(PublicationThemeView, self).form_invalid(form)
 
+        media = self.request.FILES.getlist('image')
+
+        try:
+            check_num_images(media)
+        except MaxFilesReached:
+            form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
+            return self.form_invalid(form=form)
+
+        try:
+            f = magic.Magic(mime=True, uncompress=True)
+            exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+        except magic.MagicException as e:
+            form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
+            return self.form_invalid(form=form)
+
+        have_video = False
+        if any(word in 'gif video' for word in set([item for sublist in exts for item in sublist])):
+            have_video = True
+
         try:
             with transaction.atomic(using="default"):
                 form.instance.parse_content()
                 form.instance.parse_mentions()
                 form.instance.add_hashtag()
-                saved = super(PublicationThemeView, self).form_valid(form)
+                if not have_video:
+                    saved = super(PublicationThemeView, self).form_valid(form)
+                else:
+                    saved = super(PublicationThemeView, self).form_valid(form,
+                                                                        msg=u"Estamos procesando tus videos, te avisamos "
+                                                                            u"cuando la publicación esté lista.")
+                transaction.on_commit(
+                    lambda: optimize_publication_media(form.instance, media, exts))
                 transaction.on_commit(lambda: form.instance.send_notification(self.request))
+
+        except (SizeIncorrect, MediaNotSupported, CantOpenMedia) as ex:
+            form.add_error('content', str(ex))
+            form.instance.delete()
+            return self.form_invalid(form=form)
+
         except IntegrityError:
-            raise Exception('Error al guardar la publicacion')
+            return self.form_invalid(form=form)
 
         return saved
 
@@ -203,3 +240,54 @@ class DeletePublicationTheme(UpdateView):
             pass
 
         return JsonResponse({'response': response})
+
+
+class EditThemePublication(UpdateView):
+    model = PublicationTheme
+    form_class = ThemePublicationEdit
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(EditThemePublication, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        user = self.request.user
+        data = {'response': False}
+
+        content = form.cleaned_data['content']
+        pk = form.cleaned_data['pk']
+
+        try:
+            publication = PublicationTheme.objects.get(id=pk)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        if publication.author.id != user.id:
+            return HttpResponseForbidden()
+
+        try:
+            publication.content = content
+            publication.parse_content()
+            publication.add_hashtag()
+            publication.parse_mentions()
+            publication.content = Emoji.replace(publication.content)
+            publication._edited = True
+            with transaction.atomic(using="default"):
+                publication.save(update_fields=['content'])  # Guardamos la publicacion si no hay errores
+                transaction.on_commit(lambda: publication.send_notification(self.request, is_edited=True))
+            data['response'] = True
+        except IntegrityError:
+            pass
+
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'response': False})
