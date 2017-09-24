@@ -618,6 +618,10 @@ $(function () {
         AJAX_edit_theme_publication(edit);
     });
 
+    $('#compose-new-no-comments').click(function () {
+        $('#group_form_wrapper').toggle();
+    });
+
     /* Config */
     $('#configurationOnProfile').click(function () {
         location.href = $(this).data('url');

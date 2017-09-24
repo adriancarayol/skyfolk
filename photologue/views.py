@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
+from django.db import IntegrityError
 from django.db.models import Count, Q, Case, When, Value, IntegerField, OuterRef, Subquery
 from django.http import Http404
 from django.http import JsonResponse
@@ -26,7 +27,7 @@ from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdi
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
 from user_profile.node_models import NodeProfile
-from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm
+from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo
 from .models import Photo
 
 
@@ -103,6 +104,7 @@ class PhotoListView(AjaxListView):
         user = self.request.user
         initial = {'author': user.pk, 'board_owner': user.pk}
         context['form'] = UploadFormPhoto()
+        context['form_video'] = UploadFormVideo()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
         context['user_gallery'] = self.kwargs['username']
         return context
@@ -140,11 +142,8 @@ def upload_photo(request):
             if 'image' in request.FILES:
                 crop_image(obj, request)
             obj.is_public = not form.cleaned_data['is_public']
-            try:
-                obj.save()
-            except ValueError:
-                obj.image = None
-                obj.save()
+
+            obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
             data = {
                 'result': True,
@@ -168,6 +167,44 @@ def upload_photo(request):
         }
         return JsonResponse({'data': data})
 
+
+def upload_video(request):
+    """
+    Función para subir un nuevo video a la galeria del usuario
+    """
+    user = request.user
+
+    if request.method == 'POST':
+        form = UploadFormVideo(request.POST, request.FILES or None)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.owner = user
+            obj.is_public = not form.cleaned_data['is_public']
+
+            obj.save()
+            form.save_m2m()  # Para guardar los tags de la foto
+
+            data = {
+                'result': True,
+                'state': 200,
+                'message': 'Success',
+                'gallery': '/multimedia/' + user.username
+            }
+            return JsonResponse({'data': data})
+        else:
+            data = {
+                'result': True,
+                'state': 415,
+                'message': 'Success',
+            }
+            return JsonResponse({'data': data})
+    else:
+        data = {
+            'result': True,
+            'state': 405,
+            'message': 'Success',
+        }
+        return JsonResponse({'data': data})
 
 def crop_image(obj, request):
     """

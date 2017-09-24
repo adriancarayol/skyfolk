@@ -112,7 +112,10 @@ def add(request, extra_context=None, next_override=None,
                 tmp.write(block)
             try:
                 im = Image.open(tmp)
-                im.verify()
+                im.load()
+                im.thumbnail((800, 600), Image.ANTIALIAS)
+                im.save(tmp, format='JPEG', optimize=True, quality=90)
+                tmp.seek(0)
             except IOError:
                 raise ValueError('Cant get image')
 

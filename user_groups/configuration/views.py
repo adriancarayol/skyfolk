@@ -1,11 +1,11 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseForbidden, Http404
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DeleteView
 from neomodel import db
 
 from user_groups.configuration.forms import ConfigurationGroupForm
@@ -20,10 +20,16 @@ class ConfigurationGroupProfile(UpdateView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        try:
+            group = UserGroups.objects.get(pk=self.kwargs.get('pk'))
+        except UserGroups.DoesNotExist:
+            raise Http404
+        if group.owner_id != request.user.id:
+            return HttpResponseForbidden()
         return super(ConfigurationGroupProfile, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
-        return UserGroups.objects.get(group_ptr_id=self.kwargs.pop('pk', None))
+        return get_object_or_404(UserGroups, pk=self.kwargs.get('pk'))
 
     def get_initial(self):
         return {'tags': ','.join(
@@ -77,3 +83,37 @@ class ConfigurationGroupProfile(UpdateView):
             return HttpResponseBadRequest(json.dumps(form.errors),
                                           mimetype="application/json")
         return super(ConfigurationGroupProfile, self).form_invalid(form)
+
+
+class DeleteGroup(DeleteView):
+    http_method_names = ['post', 'get', ]
+    template_name = 'groups/configuration/group_delete.html'
+    model = UserGroups
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            group = UserGroups.objects.get(pk=self.kwargs.get('pk'))
+        except UserGroups.DoesNotExist:
+            raise Http404
+        if group.owner_id != request.user.id:
+            return HttpResponseForbidden()
+        return super(DeleteGroup, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(UserGroups, pk=self.kwargs.pop('pk'))
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+
+        self.object = self.get_object()
+
+        if self.object.owner_id != user.id:
+            return HttpResponseForbidden()
+
+        try:
+            self.object.delete()
+        except IntegrityError:
+            return redirect('user_groups:configuration:configuration_delete_group', pk=self.object.pk)
+
+        return redirect('user_groups:list-group')

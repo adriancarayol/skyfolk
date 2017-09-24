@@ -1,6 +1,5 @@
 import json
 import os
-import re
 import uuid
 
 from channels import Group as channel_group
@@ -120,10 +119,11 @@ class PublicationGroup(PublicationBase):
         }) for x in self.get_ancestors().values_list('id', flat=True)]
 
         # Notificamos al board_owner de la publicacion
-        notify.send(self.author, actor=self.author.username,
-                    recipient=self.board_group.owner,
-                    description="Te avisamos de que @{0} ha publicado en el skyline del grupo {1}.".format(
-                        self.author.username, self.board_group.name),
-                    verb=u'<a href="/profile/%s">@%s</a> ha publicado en el grupo %s.' %
-                         (self.author.username, self.author.username, self.board_group.name),
-                    level='notification_board_group')
+        if self.author_id != self.board_group.owner_id:
+            notify.send(self.author, actor=self.author.username,
+                        recipient=self.board_group.owner,
+                        description="Te avisamos de que @{0} ha publicado en el skyline del grupo {1}.".format(
+                            self.author.username, self.board_group.name),
+                        verb=u'<a href="/profile/%s">@%s</a> ha publicado en el grupo %s.' %
+                             (self.author.username, self.author.username, self.board_group.name),
+                        level='notification_board_group')

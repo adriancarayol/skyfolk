@@ -1,4 +1,4 @@
-{% extends "account/base_cf.html" %}
+{% extends "groups/configuration/base_cf_group.html" %}
 {% load static %}
 {% load static %}
 {% load avatar_tags %}
@@ -20,7 +20,7 @@
 
                 <!-- Si el usuario tiene imagen, lo redireccionamos a change -->
                 <div id="avatar-profile" title="Imágen de perfil" class="img-profile"
-                     style="{% if object.avatar %}background: url('{{ object.avatar.url }}'){% else %}background: url('{% static "dist/img/nuevo_back.png" %}'){% endif %}; background-repeat: no-repeat; background-position: center;
+                     style="{% if object.avatar %}background: url('{{ object.avatar.url }}'){% else %}background: url('{% static "dist/img/nuevo.png" %}'){% endif %}; background-repeat: no-repeat; background-position: center;
                              background-size: 100% 100%">
                 </div>
             </div>
@@ -71,6 +71,6 @@
     </form>
     <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
     <script>
-        $('.menu-config').find('li:nth-child(7)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+        $('.menu-config').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
     </script>
 {% endblock %}

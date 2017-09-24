@@ -100,6 +100,7 @@ class FormUserGroup(forms.ModelForm):
         tags = self.cleaned_data['tags']
         if len(tags) > 240:
             raise forms.ValidationError('Prueba a introducir menos de 240 caracteres en el campo de intereses.')
+        return set(tags)
 
 
 class GroupThemeForm(forms.ModelForm):

@@ -218,6 +218,12 @@
             </div>
         </div>
         <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
+        <form class="xxx-form" action="{% url "photologue:upload-video" %}" method="post"
+              accept-charset="utf-8"
+              enctype="multipart/form-data">{% csrf_token %}
+            {{ form_video }}
+            <input type="submit" value="ok">
+        </form>
     </div> <!-- end wrapper -->
     {% block js-gallery %}
         {{ block.super }}

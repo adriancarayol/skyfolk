@@ -20,10 +20,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.conf import settings
-from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from taggit.forms import TagField
-from .models import Photo
+from .models import Photo, Video
 
 logger = logging.getLogger('photologue.forms')
 
@@ -36,17 +35,17 @@ class UploadZipForm(forms.Form):
     zip_file = forms.FileField(help_text=_('Selecciona un zip'))
 
     title_collection = forms.CharField(
-                            max_length=250,
-                            required=False,
-                            help_text=_('Añade un titulo a las imágenes'))
+        max_length=250,
+        required=False,
+        help_text=_('Añade un titulo a las imágenes'))
 
     caption_collection = forms.CharField(
-                              required=False,
-                              help_text=_('Añade una descripcion a las imágenes'))
+        required=False,
+        help_text=_('Añade una descripcion a las imágenes'))
     is_public_collection = forms.BooleanField(
-                                   initial=False,
-                                   required=False,
-                                   help_text=_('Activa esta casilla para marcar todas las imágenes como privadas'))
+        initial=False,
+        required=False,
+        help_text=_('Activa esta casilla para marcar todas las imágenes como privadas'))
 
     tags_collection = TagField(help_text=_('Añade etiquetas a tu imágen'), required=False)
 
@@ -116,23 +115,11 @@ class UploadZipForm(forms.Form):
 
             photo_title_root = self.cleaned_data['title_collection'] if self.cleaned_data['title_collection'] else None
 
-            # A photo might already exist with the same slug. So it's somewhat inefficient,
-            # but we loop until we find a slug that's available.
-            user = self.request.user
-            while True:
-                photo_title = ' '.join([photo_title_root, str(count)])
-                slug = slugify(photo_title + 'by' + str(user.username) + str(uuid.uuid1()))
-                if Photo.objects.filter(slug=slug).exists():
-                    count += 1
-                    continue
-                break
-
             tags = self.cleaned_data['tags_collection']
-            photo = Photo.objects.create(title=photo_title,
-                                         slug=slug,
-                                         caption=self.cleaned_data['caption_collection'],
-                                         is_public=not self.cleaned_data['is_public_collection'],
-                                         owner=self.request.user)
+            photo = Photo.objects.create(title=photo_title_root,
+                          caption=self.cleaned_data['caption_collection'],
+                          is_public=not self.cleaned_data['is_public_collection'],
+                          owner=self.request.user)
             # first add title tag.
             photo.tags.add(self.cleaned_data['title_collection'])
             for tag in tags:
@@ -208,3 +195,26 @@ class EditFormPhoto(forms.ModelForm):
         exclude = ('owner', 'date_added', 'sites',
                    'date_taken', 'slug', 'is_public', 'image',
                    'crop_from')
+
+
+class UploadFormVideo(forms.ModelForm):
+    """
+    Permite al usuario subir un nuevo video
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(UploadFormVideo, self).__init__(*args, **kwargs)
+        self.fields['video'].required = False
+        self.fields['video'].widget.attrs.update({'class': 'avatar-input', 'name': 'avatar_file'})
+        self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
+        self.fields['is_public'].initial = False
+
+    class Meta:
+        model = Video
+        fields = ('name', 'caption', 'is_public', 'tags', 'video')
+        help_texts = {
+            'name': 'Añade un título al vídeo',
+            'caption': 'Añade una descripcion al vídeo',
+            'tags': 'Añade etiquetas a tu vídeo',
+            'is_public': 'Activa esta casilla para marcar el vídeo como privada',
+        }

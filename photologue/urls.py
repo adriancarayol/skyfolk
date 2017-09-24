@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 
 from .views import PhotoDetailView, \
     photo_list, delete_photo, edit_photo, \
-    upload_zip_form, upload_photo, collection_list
+    upload_zip_form, upload_photo, collection_list, upload_video
 
 """NOTE: the url names are changing. In the long term, I want to remove the 'pl-'
 prefix on all urls, and instead rely on an application namespace 'photologue'.
@@ -17,7 +17,7 @@ The new style will coexist with the existing 'pl-' prefix for a couple of releas
 """
 
 urlpatterns = [
-    #TODO: Permitir filtrar por año, mes... (descomentar y mejorar views)
+    # TODO: Permitir filtrar por año, mes... (descomentar y mejorar views)
     # url(r'^multimedia/(?P<year>\d{4})/(?P<month>[0-9]{2})/(?P<day>\w{1,2})/(?P<slug>[\-\d\w]+)/$',
     #     PhotoDateDetailView.as_view(month_format='%m'),
     #     name='photo-detail'),
@@ -48,6 +48,9 @@ urlpatterns = [
 
     url(r'^submit_photo/$',
         require_POST(login_required(upload_photo)), name='upload-photo'),
+
+    url(r'^submit_video/$',
+        require_POST(login_required(upload_video)), name='upload-video'),
 
     url(r'^multimedia/collection/by(?P<username>[\w-]+)/(?P<tagname>[^,]+)/$',
         collection_list, name='collection-list'),

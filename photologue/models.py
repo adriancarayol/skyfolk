@@ -10,6 +10,7 @@ from io import BytesIO
 from os.path import splitext
 from urllib.parse import urlparse
 
+
 import exifread
 import requests
 from django.conf import settings
@@ -22,13 +23,12 @@ from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
-from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text, smart_str, filepath_to_uri
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
-
+from uuslug import uuslug
 from user_groups.models import UserGroups
 from .tasks import generate_thumbnails
 from .validators import validate_file_extension, validate_video, validate_extension
@@ -488,7 +488,7 @@ class PhotoGroup(ImageModel):
 
     def save(self, created=True, *args, **kwargs):
         if created and not self.slug:
-            self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(uuid.uuid1()))
+            self.slug = uuslug(self.title, instance=self)
             self.get_remote_image()
         super(PhotoGroup, self).save(*args, **kwargs)
 
@@ -661,8 +661,8 @@ class Photo(ImageModel):
         return "photos-%s" % self.pk
 
     def save(self, created=True, *args, **kwargs):
-        if created and not self.slug:
-            self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(uuid.uuid1()))
+        if created:
+            self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
             self.get_remote_image()
         super(Photo, self).save(*args, **kwargs)
 
@@ -672,7 +672,7 @@ class Photo(ImageModel):
         """
 
         if not self.url_image and not self.image:
-            raise ValueError('Select image')
+            return
 
         if self.url_image and not self.image:
             if len(self.url_image) > 255:
@@ -707,14 +707,14 @@ class Photo(ImageModel):
                 # Comprobamos que se trata de una imagen
                 try:
                     im = Image.open(tmp)
+                    im.load()
                     im.thumbnail((800, 600), Image.ANTIALIAS)
                     im.save(tmp, format='JPEG', optimize=True, quality=90)
                     tmp.seek(0)
-                    tmp.close()
                 except IOError:
                     raise ValueError('Cant get image')
 
-                self.image.save(self.slug + ext, File(tmp))
+                self.image.save(self.title + ext, File(tmp))
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])
@@ -815,6 +815,7 @@ class Video(models.Model):
                                       default=now)
     tags = TaggableManager(blank=True)
     owner = models.ForeignKey(User, null=True, blank=True, related_name='user_videos')
+
     video = models.FileField(_('video'), upload_to=upload_video, 
         max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
 
@@ -824,7 +825,10 @@ class Video(models.Model):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
-
+    def save(self, created=True, *args, **kwargs):
+        if created:
+            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
+        super(Video, self).save(*args, **kwargs)
 
 @python_2_unicode_compatible
 class BaseEffect(models.Model):

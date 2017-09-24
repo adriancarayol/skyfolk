@@ -11,14 +11,9 @@
         <div id="group_form_wrapper" class="col l5 m12 s12 default-div compose-div" style="display:none;">
             <div class="row">
                 <div class="col s12 title-page-wrapper">
-                    {% if user == user_profile %}
-                        <h4><i class="material-icons left">send</i>Publicar comentario</h4>
-                        <h6>Publica un comentario para que el mundo lo vea.</h6>
-                    {% else %}
-                        <h4><i class="material-icons left">send</i> Escribe algo a: {{ user_profile.username }}
-                        </h4>
-                        <h6>Escribe un mensaje en el tablón de {{ user_profile.username }}.</h6>
-                    {% endif %}
+                    <h4><i class="material-icons left">send</i> Escribe algo en el grupo.
+                    </h4>
+                    <h6>Escribe un mensaje en el tablón del grupo <b>{{ group_profile.name|truncatechars:"20" }}</b>.</h6>
                 </div>
             </div>
             <form id="group_publication" method="post" enctype="multiple/form-data">{% csrf_token %}

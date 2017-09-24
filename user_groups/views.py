@@ -816,6 +816,10 @@ class GroupThemeView(DetailView):
 class DeleteGroupTheme(DeleteView):
     http_method_names = ['post']
 
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeleteGroupTheme, self).dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
         return GroupTheme.objects.get(id=self.request.POST.get('pk'))
 
