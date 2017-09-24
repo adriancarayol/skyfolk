@@ -100,8 +100,11 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                     print(e)
                     return self.form_invalid(form=form)
             except IntegrityError as e:
-                print("views.py line 30 -> {}".format(e))
-            return self.form_valid(form=form)
+                return self.form_invalid(form=form)
+
+            return self.form_valid(form=form,
+                                   msg='¡Tu grupo ha sido creado, haz click <a href="{0}">aquí</a> para visitarlo.'.format(
+                                       reverse_lazy('user_groups:group-profile', kwargs={'groupname': group.slug})))
 
         print(form.errors)
         return self.form_invalid(form=form)
@@ -642,7 +645,7 @@ list_group_profile = login_required(ProfileGroups.as_view(), login_url='/')
 
 class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
     form_class = GroupThemeForm
-    success_url = reverse_lazy('user_groups:create_group_theme')
+    # success_url = reverse_lazy('user_groups:create_group_theme')
     http_method_names = [u'post']
 
     @method_decorator(login_required)

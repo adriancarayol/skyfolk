@@ -79,7 +79,7 @@ class CommaSeparatedIntegerField(forms.Field):
 
 class FormUserGroup(forms.ModelForm):
     # users_in_group = forms.ModelMultipleChoiceField(queryset=User.objects.all())
-    tags = CommaSeparatedCharField(max_length=120)
+    tags = CommaSeparatedCharField(max_length=240)
 
     class Meta:
         model = UserGroups
@@ -95,6 +95,11 @@ class FormUserGroup(forms.ModelForm):
     def clean_is_public(self):
         is_public = self.cleaned_data['is_public']
         return not is_public
+
+    def clean_tags(self):
+        tags = self.cleaned_data['tags']
+        if len(tags) > 240:
+            raise forms.ValidationError('Prueba a introducir menos de 240 caracteres en el campo de intereses.')
 
 
 class GroupThemeForm(forms.ModelForm):

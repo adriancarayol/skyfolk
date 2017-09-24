@@ -718,7 +718,8 @@ function AJAX_submit_publication(obj_form, type, pks) {
 
 
 function AJAX_submit_group() {
-    var form = new FormData($('#from_new_group').get(0));
+    var f = $('#from_new_group');
+    var form = new FormData(f.get(0));
     form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     $.ajax({
         url: '/create_group/',
@@ -730,18 +731,13 @@ function AJAX_submit_group() {
         enctype: 'multipart/form-data',
         data: form,
         success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                var create_group = $('#create_group');
-                create_group.hide();
-                create_group.find('input').val('');
-            } else {
-                swal({
-                    title: "¡Ups!",
-                    text: "Fallo al crear el grupo.",
-                    customClass: 'default-div',
-                    type: "error"
-                });
+            var msg = data.msg;
+            if (typeof(msg) !== 'undefined' && msg !== null) {
+                Materialize.toast(msg, 4000);
+            }
+            if (typeof data.pk !== 'undefined' && data.pk !== null) {
+                f.trigger("reset");
+                $('#create_group').hide();
             }
         },
         error: function (rs, e) {

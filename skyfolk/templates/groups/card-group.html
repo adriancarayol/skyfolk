@@ -28,7 +28,7 @@
                         </div>
                         <span class="informacion">
                         {% if group_owner %}
-                            <span id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</span>
+                            <span data-url="{% url "user_groups:configuration_group:configuration_group" pk=group_profile.group_ptr_id %}" id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</span>
                         {% elif follow_group %}
                             <span id="unfollow-group" class="material-icons group-follow" title="Dejar de seguir"
                                   style="color: #29b203;">remove</span>

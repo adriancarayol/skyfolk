@@ -580,9 +580,6 @@ $(function () {
         e.preventDefault();
         var form = $(this);
         var data = new FormData(form[0]);
-
-
-        console.log(data);
         $.ajax({
             url: '/groups/edit/theme/',
             type: 'POST',
@@ -619,6 +616,43 @@ $(function () {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
         AJAX_edit_theme_publication(edit);
+    });
+
+    /* Config */
+    $('#configurationOnProfile').click(function () {
+        location.href = $(this).data('url');
+    });
+
+    $('#form-config-group').submit(function (e) {
+        e.preventDefault();
+        var url = $(this).attr('action');
+        var data = new FormData($(this).get(0));
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            data: data,
+
+            success: function (data) {
+                var response = data.data;
+
+                if (response === false) {
+                    swal({
+                        title: "Fail",
+                        customClass: 'default-div',
+                        text: "Failed to edit publish.",
+                        type: "error"
+                    });
+                } else {
+                    Materialize.toast('La información de tu grupo se ha guardado correctamente.', 4000);
+                }
+            },
+            error: function (rs, e) {
+            }
+        });
     });
 });// end document ready
 
