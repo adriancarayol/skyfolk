@@ -206,8 +206,11 @@ class UploadFormVideo(forms.ModelForm):
         super(UploadFormVideo, self).__init__(*args, **kwargs)
         self.fields['video'].required = False
         self.fields['video'].widget.attrs.update({'class': 'avatar-input', 'name': 'avatar_file'})
-        self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
+        self.fields['caption'].widget.attrs.update({'class': 'materialize-textarea', 'id': 'id_caption_video'})
         self.fields['is_public'].initial = False
+        self.fields['is_public'].widget.attrs.update({'id': 'id_is_public_video'})
+        self.fields['tags'].widget.attrs.update({'id': 'id_tags_video'})
+        self.fields['name'].widget.attrs.update({'id': 'id_name_video'})
 
     class Meta:
         model = Video
@@ -217,4 +220,5 @@ class UploadFormVideo(forms.ModelForm):
             'caption': 'Añade una descripcion al vídeo',
             'tags': 'Añade etiquetas a tu vídeo',
             'is_public': 'Activa esta casilla para marcar el vídeo como privada',
+            'video': 'Selecciona un vídeo'
         }

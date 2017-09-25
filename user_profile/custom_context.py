@@ -10,7 +10,7 @@ def user_processor(request):
         return {}
     return {
             'user_notifications': user.notifications.unread_limit(),
-            'total_notifications': user.notifications.count(),
+            'total_notifications': user.notifications.unread_limit().count(),
             'searchForm': SearchForm(),
             'groupForm': FormUserGroup(initial={'owner': user.pk})
             }

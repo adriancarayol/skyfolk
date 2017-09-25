@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
 from django.utils.six import BytesIO
 from django.views.generic.base import RedirectView
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
@@ -149,23 +150,22 @@ def upload_photo(request):
                 'result': True,
                 'state': 200,
                 'message': 'Success',
-                'gallery': '/multimedia/' + user.username
+                'content': render_to_string(request=request, template_name='channels/new_photo_gallery.html',
+                                            context={'photo': obj})
             }
-            return JsonResponse({'data': data})
         else:
             data = {
-                'result': True,
+                'result': False,
                 'state': 415,
-                'message': 'Success',
+                'message': ', '.join(form.errors),
             }
-            return JsonResponse({'data': data})
     else:
         data = {
-            'result': True,
+            'result': False,
             'state': 405,
-            'message': 'Success',
+            'message': 'Método no permitido',
         }
-        return JsonResponse({'data': data})
+    return JsonResponse(data)
 
 
 def upload_video(request):
@@ -188,7 +188,7 @@ def upload_video(request):
                 'result': True,
                 'state': 200,
                 'message': 'Success',
-                'gallery': '/multimedia/' + user.username
+                'content': '/multimedia/' + user.username
             }
             return JsonResponse({'data': data})
         else:

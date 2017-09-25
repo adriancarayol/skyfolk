@@ -14,9 +14,9 @@
     'use strict';
 
     var console = window.console || {
-            log: function () {
-            }
-        };
+        log: function () {
+        }
+    };
 
     function CropAvatar($element) {
         this.$container = $element;
@@ -266,23 +266,25 @@
         },
 
         submitDone: function (data) {
-            var _response = data.data;
-            if ($.isPlainObject(_response) && _response.state == 200) {
+            if ($.isPlainObject(data) && data.state === 200) {
                 if (data.result) {
                     this.url = data.result;
 
                     if (this.support.datauri || this.uploaded) {
                         this.uploaded = false;
-                        this.cropDone();
+                        //this.cropDone();
                     } else {
                         this.uploaded = true;
                         this.$avatarSrc.val(this.url);
                         this.startCropper();
                     }
 
-                    this.$avatarInput.val('');
-                } else if (_response.message) {
-                    window.location.replace(_response.gallery); // Redirect to user publications_gallery.
+                    this.$avatarForm.trigger("reset");
+                    if (data.content) {
+                        $('.container-gallery .row').prepend(data.content);
+                    }
+                } else {
+                    swal('Failed to response');
                 }
             } else {
                 swal('Failed to response');
@@ -308,10 +310,10 @@
 
     $(function () {
         var crop_avatar = new CropAvatar($('#crop-avatar'));
-        $('#crop-image').on('click', function(e) {
+        $('#crop-image').on('click', function (e) {
             e.preventDefault();
             $('#crop-image-preview').show();
-            $('.avatar-form .is-cutted').val('true'); 
+            $('.avatar-form .is-cutted').val('true');
             crop_avatar.startCropper();
         });
     });
