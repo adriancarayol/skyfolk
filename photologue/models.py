@@ -1,4 +1,5 @@
 import logging
+import mimetypes
 import os
 import tempfile
 import unicodedata
@@ -12,6 +13,7 @@ from urllib.parse import urlparse
 
 
 import exifread
+import magic
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -29,9 +31,12 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from uuslug import uuslug
+
+from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 from user_groups.models import UserGroups
 from .tasks import generate_thumbnails
-from .validators import validate_file_extension, validate_video, validate_extension
+from .validators import validate_file_extension, validate_video, validate_extension, image_exists, valid_image_mimetype, \
+    valid_image_size
 
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
@@ -504,43 +509,27 @@ class PhotoGroup(ImageModel):
             if len(self.url_image) > 255:
                 raise ValueError('URL is very long.')
 
-            parsed = urlparse(self.url_image)
-            name, ext = splitext(parsed.path)
-
-            validate_extension(ext)
-
-            response = requests.head(self.url_image)
-            length = response.headers.get('content-length', None)
-
-            if length and int(length) > settings.BACK_IMAGE_DEFAULT_SIZE:
-                raise ValueError("La imagen no puede exceder de 5MB")
-
             else:
-                request = requests.get(self.url_image, stream=True)
+                domain, path = split_url(self.url_image)
+                filename = get_url_tail(path)
 
-                if request.status_code != requests.codes.ok:
-                    raise ValueError('Cant get image')
+                if not image_exists(self.url_image):
+                    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
 
-                tmp = tempfile.NamedTemporaryFile()
-                read = 0
-                for block in request.iter_content(1024 * 8):
-                    if not block:
-                        break
-                    read += len(block)
-                    if read > settings.BACK_IMAGE_DEFAULT_SIZE:
-                        raise ValueError("La imagen no puede exceder de 5MB")
-                    tmp.write(block)
-                # Comprobamos que se trata de una imagen
-                try:
-                    im = Image.open(tmp)
-                    im.thumbnail((800, 600), Image.ANTIALIAS)
-                    im.save(tmp, format='JPEG', optimize=True, quality=90)
-                    tmp.seek(0)
-                    tmp.close()
-                except IOError:
-                    raise ValueError('Cant get image')
+                fobject = retrieve_image(self.url_image)
 
-                self.image.save(self.slug + ext, File(tmp))
+                if not valid_image_mimetype(fobject):
+                    raise ValidationError(_("Downloaded file was not a valid image"))
+
+                pil_image = Image.open(fobject)
+                pil_image.thumbnail((800, 600), Image.ANTIALIAS)
+
+                if not valid_image_size(pil_image)[0]:
+                    raise ValidationError(_("Image is too large (> 5mb)"))
+
+                django_file = pil_to_django(pil_image)
+
+                self.image.save(filename, django_file)
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])
@@ -672,49 +661,34 @@ class Photo(ImageModel):
         """
 
         if not self.url_image and not self.image:
-            return
+            raise ValueError('Select image')
 
         if self.url_image and not self.image:
             if len(self.url_image) > 255:
                 raise ValueError('URL is very long.')
 
-            parsed = urlparse(self.url_image)
-            name, ext = splitext(parsed.path)
-
-            validate_extension(ext)
-
-            response = requests.head(self.url_image)
-            length = response.headers.get('content-length', None)
-
-            if length and int(length) > settings.BACK_IMAGE_DEFAULT_SIZE:
-                raise ValueError("La imagen no puede exceder de 5MB")
-
             else:
-                request = requests.get(self.url_image, stream=True)
+                domain, path = split_url(self.url_image)
+                filename = get_url_tail(path)
 
-                if request.status_code != requests.codes.ok:
-                    raise ValueError('Cant get image')
+                if not image_exists(self.url_image):
+                    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
 
-                tmp = tempfile.NamedTemporaryFile()
-                read = 0
-                for block in request.iter_content(1024 * 8):
-                    if not block:
-                        break
-                    read += len(block)
-                    if read > settings.BACK_IMAGE_DEFAULT_SIZE:
-                        raise ValueError("La imagen no puede exceder de 5MB")
-                    tmp.write(block)
-                # Comprobamos que se trata de una imagen
-                try:
-                    im = Image.open(tmp)
-                    im.load()
-                    im.thumbnail((800, 600), Image.ANTIALIAS)
-                    im.save(tmp, format='JPEG', optimize=True, quality=90)
-                    tmp.seek(0)
-                except IOError:
-                    raise ValueError('Cant get image')
+                fobject = retrieve_image(self.url_image)
 
-                self.image.save(self.title + ext, File(tmp))
+                if not valid_image_mimetype(fobject):
+                    raise ValidationError(_("Downloaded file was not a valid image"))
+
+                pil_image = Image.open(fobject)
+                pil_image.thumbnail((800, 600), Image.ANTIALIAS)
+
+                if not valid_image_size(pil_image)[0]:
+                    raise ValidationError(_("Image is too large (> 5mb)"))
+
+                django_file = pil_to_django(pil_image)
+
+
+                self.image.save(filename, django_file)
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])

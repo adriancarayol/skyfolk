@@ -17,6 +17,10 @@ from avatar.models import Avatar
 from avatar.signals import avatar_updated
 from avatar.utils import (get_primary_avatar, get_default_avatar_url,
                           invalidate_cache)
+from photologue.validators import validate_file_extension, validate_video, validate_extension, image_exists, \
+    valid_image_mimetype, \
+    valid_image_size
+from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 
 
 def _get_next(request):
@@ -68,62 +72,61 @@ def add(request, extra_context=None, next_override=None,
 
     if extra_context is None:
         extra_context = {}
+
     avatar, avatars = _get_avatars(user)
 
-    upload_avatar_form = upload_form(request.POST or None,
-                                     request.FILES or None,
-                                     user=request.user)
+    if request.method == "POST":
+        upload_avatar_form = upload_form(request.POST, request.FILES, user=request.user)
+    else:
+        upload_avatar_form = upload_form(user=request.user)
 
     # Si el formulario contiene un archivo
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
-            avatar = Avatar(user=user, primary=True)
-            image_file = request.FILES['avatar']
+            avatar = upload_avatar_form.save(commit=False)
+            avatar.user = user
+            avatar.primary = True
+            image_file = upload_avatar_form.cleaned_data['avatar']
             avatar.avatar.save(image_file.name, image_file)
             avatar.save()
             messages.success(request, _("Successfully uploaded a new avatar."))
             avatar_updated.send(sender=Avatar, user=user, avatar=avatar)
             return redirect(next_override or _get_next(request))
 
-    url_image = request.POST.get('url_image', None)
-
     if request.method == "POST" and 'avatar' not in request.FILES \
-            and url_image:
+            and 'url_image' in request.POST:
         if upload_avatar_form.is_valid():
+            url_image = upload_avatar_form.cleaned_data['url_image']
 
-            parsed = urlparse(url_image)
-            name, ext = splitext(parsed.path)
-
-            avatar = Avatar(user=user, primary=True, url_image=url_image)
-
-            request_img = requests.get(url_image, stream=True)
-
-            if request_img.status_code != requests.codes.ok:
-                raise ValueError('Cant get image')
-
-            tmp = tempfile.NamedTemporaryFile()
-            read = 0
-            for block in request_img.iter_content(1024 * 8):
-                if not block:
-                    break
-                read += len(block)
-                if read > settings.BACK_IMAGE_DEFAULT_SIZE:
-                    raise ValueError("La imagen no puede exceder de 1MB")
-                tmp.write(block)
-            try:
-                im = Image.open(tmp)
-                im.load()
-                im.thumbnail((800, 600), Image.ANTIALIAS)
-                im.save(tmp, format='JPEG', optimize=True, quality=90)
-                tmp.seek(0)
-            except IOError:
-                raise ValueError('Cant get image')
-
-            avatar.avatar.save(name + ext, File(tmp))
+            avatar = upload_avatar_form.save(commit=False)
+            avatar.user = user
+            avatar.primary = True
             avatar.url_image = url_image
+
+            domain, path = split_url(url_image)
+            filename = get_url_tail(path)
+
+            if not image_exists(url_image):
+                raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+
+            fobject = retrieve_image(url_image)
+
+            if not valid_image_mimetype(fobject):
+                raise ValidationError(_("Downloaded file was not a valid image"))
+
+            pil_image = Image.open(fobject)
+            pil_image.thumbnail((120, 120), Image.ANTIALIAS)
+
+            if not valid_image_size(pil_image)[0]:
+                raise ValidationError(_("Image is too large (> 5mb)"))
+
+            django_file = pil_to_django(pil_image)
+
+            avatar.avatar.save(filename, django_file)
             avatar.save()
             messages.success(request, _("Successfully uploaded a new avatar."))
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
+
             return redirect(next_override or _get_next(request))
 
     context = {
@@ -133,8 +136,8 @@ def add(request, extra_context=None, next_override=None,
         'next': next_override or _get_next(request),
         'showPerfilButtons': True,
     }
+
     context.update(extra_context)
-    # return render(request, 'avatar/add.html',{'publicationForm': publicationForm, 'searchForm': searchForm},context)
     return render(request, 'avatar/add.html', context)
 
 
@@ -145,12 +148,12 @@ def change(request, extra_context=None, next_override=None,
     user = request.user
     if extra_context is None:
         extra_context = {}
-    avatar, avatars = _get_avatars(request.user)
+    avatar, avatars = _get_avatars(user)
     if avatar:
         kwargs = {'initial': {'choice': avatar.id}}
     else:
         kwargs = {}
-    upload_avatar_form = upload_form(user=request.user, **kwargs)
+    upload_avatar_form = upload_form(request.POST, request.FILES, user=request.user, **kwargs)
     primary_avatar_form = primary_form(request.POST or None,
                                        user=request.user,
                                        avatars=avatars, **kwargs)

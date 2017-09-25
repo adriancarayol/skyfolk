@@ -28,6 +28,7 @@ from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdi
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
 from user_profile.node_models import NodeProfile
+from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo
 from .models import Photo
 
@@ -157,7 +158,7 @@ def upload_photo(request):
             data = {
                 'result': False,
                 'state': 415,
-                'message': ', '.join(form.errors),
+                'message': get_form_errors(form),
             }
     else:
         data = {

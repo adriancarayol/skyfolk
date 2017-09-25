@@ -284,10 +284,24 @@
                         $('.container-gallery .row').prepend(data.content);
                     }
                 } else {
-                    swal('Failed to response');
+                    console.log(data.message);
+                    swal({
+                        title: "Tenemos un problema...",
+                        customClass: 'default-div',
+                        text: data.message,
+                        timer: 4000,
+                        showConfirmButton: true
+                    });
                 }
             } else {
-                swal('Failed to response');
+                console.log(data.message);
+                swal({
+                    title: "Tenemos un problema...",
+                    customClass: 'default-div',
+                    text: data.message,
+                    timer: 4000,
+                    showConfirmButton: true
+                });
             }
         },
 
