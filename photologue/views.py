@@ -23,6 +23,7 @@ from django.views.generic.detail import DetailView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
+from itertools import chain
 from publications.models import Publication
 from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications.forms import SharedPublicationForm
@@ -30,7 +31,7 @@ from publications_gallery.models import PublicationPhoto
 from user_profile.node_models import NodeProfile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo
-from .models import Photo
+from .models import Photo, Video
 
 
 # Collection views
@@ -95,16 +96,28 @@ class PhotoListView(AjaxListView):
 
     def get_queryset(self):
         if self.request.user.username == self.username:
-            return Photo.objects.filter(owner__username=self.username).select_related('owner',
-                                                                                      'effect').prefetch_related('tags')
-        return Photo.objects.filter(owner__username=self.username, is_public=True).select_related('owner',
-                                                                                                  'effect').prefetch_related(
-            'tags')
+            photos = Photo.objects.filter(owner__username=self.username).select_related('owner',
+                                                                                        'effect').prefetch_related(
+                'tags')
+            videos = Video.objects.filter(owner__username=self.username).select_related('owner')
+        else:
+            photos = Photo.objects.filter(owner__username=self.username, is_public=True).select_related('owner',
+                                                                                                        'effect').prefetch_related(
+                'tags')
+            videos = Video.objects.filter(owner__username=self.username, is_public=True).select_related('owner')
+
+        items = list(
+            sorted(
+                chain(videos, photos),
+                key=lambda objects: objects.date_added,
+                reverse=True
+            ))
+
+        return items
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)
         user = self.request.user
-        initial = {'author': user.pk, 'board_owner': user.pk}
         context['form'] = UploadFormPhoto()
         context['form_video'] = UploadFormVideo()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
@@ -191,21 +204,20 @@ def upload_video(request):
                 'message': 'Success',
                 'content': '/multimedia/' + user.username
             }
-            return JsonResponse({'data': data})
         else:
             data = {
-                'result': True,
+                'result': False,
                 'state': 415,
-                'message': 'Success',
+                'message': get_form_errors(form),
             }
-            return JsonResponse({'data': data})
     else:
         data = {
-            'result': True,
+            'result': False,
             'state': 405,
-            'message': 'Success',
+            'message': 'Método GET no permitido.',
         }
-        return JsonResponse({'data': data})
+    return JsonResponse(data)
+
 
 def crop_image(obj, request):
     """

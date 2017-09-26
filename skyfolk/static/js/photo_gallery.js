@@ -55,38 +55,6 @@ $(document).ready(function () {
         AJAX_submit_photo_publication(form, 'publication');
     });
 
-    $('#collection-form').submit(function (e) {
-        e.preventDefault();
-        var url = $(this).attr('action');
-        var data = new FormData($(this).get(0));
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            dataType: 'json',
-            async: true,
-            contentType: false,
-            enctype: 'multipart/form-data',
-            processData: false,
-            success: function (data) {
-                console.log(data);
-                if (data.result === true) {
-
-                } else {
-                    swal({
-                        title: "¡Ups!.",
-                        type: 'error',
-                        text: data.message,
-                        timer: 4000,
-                        showConfirmButton: true
-                    });
-                }
-            }, error: function (rs, e) {
-                swal(rs.responseText + " " + e);
-            }
-        });
-    });
-
     $('#form-video').submit(function (e) {
         e.preventDefault();
         var url = $(this).attr('action');

@@ -76,22 +76,20 @@ class UploadAvatarForm(forms.ModelForm):
     def clean_url_image(self):
         url_image = self.cleaned_data['url_image']
 
-        if not url_image:
-            return
+        if url_image:
+            domain, path = split_url(url_image)
+            if not valid_url_extension(url_image) or not valid_url_mimetype(url_image):
+                raise forms.ValidationError(
+                    _("Not a valid Image. The URL must have an image extensions (.jpg/.jpeg/.png)"))
 
-        domain, path = split_url(url_image)
-        if not valid_url_extension(url_image) or not valid_url_mimetype(url_image):
-            raise forms.ValidationError(
-                _("Not a valid Image. The URL must have an image extensions (.jpg/.jpeg/.png)"))
-
-        count = Avatar.objects.filter(user=self.user).count()
-        if 1 < settings.AVATAR_MAX_AVATARS_PER_USER <= count:
-            error = _("You already have %(nb_avatars)d avatars, "
-                      "and the maximum allowed is %(nb_max_avatars)d.")
-            raise forms.ValidationError(error % {
-                'nb_avatars': count,
-                'nb_max_avatars': settings.AVATAR_MAX_AVATARS_PER_USER,
-            })
+            count = Avatar.objects.filter(user=self.user).count()
+            if 1 < settings.AVATAR_MAX_AVATARS_PER_USER <= count:
+                error = _("You already have %(nb_avatars)d avatars, "
+                          "and the maximum allowed is %(nb_max_avatars)d.")
+                raise forms.ValidationError(error % {
+                    'nb_avatars': count,
+                    'nb_max_avatars': settings.AVATAR_MAX_AVATARS_PER_USER,
+                })
 
         return url_image
 

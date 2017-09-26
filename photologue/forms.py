@@ -1,5 +1,4 @@
 import zipfile
-import photologue
 from photologue.validators import valid_url_extension, valid_url_mimetype
 
 try:
@@ -9,6 +8,7 @@ except ImportError:
     from zipfile import BadZipfile as BadZipFile
 import logging
 import os
+import magic
 from io import BytesIO
 
 try:
@@ -183,9 +183,12 @@ class UploadFormPhoto(forms.ModelForm):
 
     def clean_url_image(self):
         url_image = self.cleaned_data['url_image'].lower()
-        domain, path = split_url(url_image)
-        if not valid_url_extension(url_image) or not valid_url_mimetype(url_image):
-            raise forms.ValidationError(_("No es una imágen válida. Sólo se aceptan: (.jpg/.jpeg/.png)"))
+
+        if url_image:
+            domain, path = split_url(url_image)
+            if not valid_url_extension(url_image) or not valid_url_mimetype(url_image):
+                raise forms.ValidationError(_("No es una imágen válida. Sólo se aceptan: (.jpg/.jpeg/.png)"))
+
         return url_image
 
     class Meta:
@@ -230,6 +233,20 @@ class UploadFormVideo(forms.ModelForm):
         self.fields['is_public'].widget.attrs.update({'id': 'id_is_public_video'})
         self.fields['tags'].widget.attrs.update({'id': 'id_tags_video'})
         self.fields['name'].widget.attrs.update({'id': 'id_name_video'})
+
+    def clean_video(self):
+        video = self.cleaned_data.get('video', None)
+
+        if not video:
+            raise forms.ValidationError('Debes seleccionar un vídeo.')
+
+        f = magic.Magic(mime=True, uncompress=True)
+        type = f.from_buffer(video.read(1024))
+
+        if type != 'video/mp4':
+            raise forms.ValidationError('El formato del vídeo debe ser MP4.')
+
+        return video
 
     class Meta:
         model = Video

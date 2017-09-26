@@ -11,7 +11,6 @@ from io import BytesIO
 from os.path import splitext
 from urllib.parse import urlparse
 
-
 import exifread
 import magic
 import requests
@@ -292,6 +291,7 @@ class ImageModel(models.Model):
         else:
             raise AttributeError
     """
+
     def size_exists(self, photosize):
         func = getattr(self, "get_%s_filename" % photosize.name, None)
         if func is not None:
@@ -452,7 +452,6 @@ class ImageModel(models.Model):
             self.image.storage.delete(self.image.name)
 
 
-
 @python_2_unicode_compatible
 class PhotoGroup(ImageModel):
     title = models.CharField(_('title'),
@@ -502,8 +501,8 @@ class PhotoGroup(ImageModel):
         Obtiene la url introducida por el usuario
         """
 
-        if not self.url_image and not self.image:
-            raise ValueError('Select image')
+        if not self.image:
+            return
 
         if self.url_image and not self.image:
             if len(self.url_image) > 255:
@@ -602,6 +601,7 @@ class PhotoGroup(ImageModel):
                 matched = True
         return None
 
+
 @python_2_unicode_compatible
 class Photo(ImageModel):
     title = models.CharField(_('title'),
@@ -660,8 +660,8 @@ class Photo(ImageModel):
         Obtiene la url introducida por el usuario
         """
 
-        if not self.url_image and not self.image:
-            raise ValueError('Select image')
+        if not self.url_image:
+            return
 
         if self.url_image and not self.image:
             if len(self.url_image) > 255:
@@ -686,7 +686,6 @@ class Photo(ImageModel):
                     raise ValidationError(_("Image is too large (> 5mb)"))
 
                 django_file = pil_to_django(pil_image)
-
 
                 self.image.save(filename, django_file)
 
@@ -790,8 +789,16 @@ class Video(models.Model):
     tags = TaggableManager(blank=True)
     owner = models.ForeignKey(User, null=True, blank=True, related_name='user_videos')
 
-    video = models.FileField(_('video'), upload_to=upload_video, 
-        max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
+    video = models.FileField(_('video'), upload_to=upload_video,
+                             max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
+
+    def __str__(self):
+        return self.name
+
+    def save(self, created=True, *args, **kwargs):
+        if created:
+            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
+        super(Video, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-date_added']
@@ -799,10 +806,6 @@ class Video(models.Model):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
-    def save(self, created=True, *args, **kwargs):
-        if created:
-            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
-        super(Video, self).save(*args, **kwargs)
 
 @python_2_unicode_compatible
 class BaseEffect(models.Model):
