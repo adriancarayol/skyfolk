@@ -55,7 +55,7 @@ $(document).ready(function () {
         var content = $(this).serialize();
         var pub_id = wrapper_shared_pub.find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
-        AJAX_add_timeline_gallery(pub_id, tag, content);
+        AJAX_add_video_to_timeline_gallery(pub_id, tag, content);
     });
 
     /* Cerrar div de compartir publicacion */
@@ -67,7 +67,7 @@ $(document).ready(function () {
     /* Eliminar skyline */
     $(tab_messages).on('click', '.options_comentarios .remove-timeline', function () {
         var tag = $(this);
-        AJAX_remove_timeline_gallery(tag.data('id'), tag);
+        AJAX_remove_timeline_video_gallery(tag.data('id'), tag);
     });
 
     $("#tab-messages").find('#message-photo-form').on('submit', function (event) {
@@ -95,14 +95,14 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.options_comentarios .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = $(this);
-        AJAX_add_like_gallery(caja_publicacion, heart, "publication");
+        AJAX_add_like_video_gallery(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
     $(tab_messages).on('click', '.options_comentarios .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = $(this);
-        AJAX_add_hate_gallery(caja_publicacion, heart, "publication");
+        AJAX_add_hate_video_gallery(caja_publicacion, heart, "publication");
     });
 
     /* Borrar publicacion */
@@ -121,7 +121,7 @@ $(document).ready(function () {
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
-                AJAX_delete_publication_gallery(caja_publicacion);
+                AJAX_delete_video_publication_gallery(caja_publicacion);
             }
         });
     });
@@ -135,7 +135,7 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
-        AJAX_edit_publication_gallery(edit);
+        AJAX_edit_publication_video_gallery(edit);
     });
 
     $(tab_messages).on('click', '.load_more_descendants', function (e) {
@@ -212,7 +212,7 @@ function AJAX_submit_video_publication(obj_form, type, pks) {
     })
 }
 
-function AJAX_delete_publication_gallery(caja_publicacion) {
+function AJAX_delete_video_publication_gallery(caja_publicacion) {
     var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
     var id_user = $(caja_publicacion).data('id'); // obtengo id
     var data = {
@@ -222,7 +222,7 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
     };
 
     $.ajax({
-        url: '/publication_p/delete/',
+        url: '/video/publication/delete/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -251,7 +251,7 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
 /********** AJAX para añadir me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_like_gallery(caja_publicacion, heart, type) {
+function AJAX_add_like_video_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
@@ -266,7 +266,7 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
     };
 
     $.ajax({
-        url: '/publication_p/add_like/',
+        url: '/video/publication/add_like/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -329,7 +329,7 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
 /******* AJAX para añadir no me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
+function AJAX_add_hate_video_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
@@ -344,7 +344,7 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
     };
     //event.preventDefault(); //stop submit
     $.ajax({
-        url: '/publication_p/add_hate/',
+        url: '/video/publication/add_hate/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -407,13 +407,13 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
     });
 }
 
-function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
+function AJAX_add_video_to_timeline_gallery(pub_id, tag, data_pub) {
     var shared_tag = tag.find('.share-values');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
 
     $.ajax({
-        url: '/publication_p/share/publication/',
+        url: '/video/publication/share/',
         type: 'POST',
         dataType: 'json',
         data: data_pub,
@@ -446,13 +446,13 @@ function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
     });
 }
 
-function AJAX_remove_timeline_gallery(pub_id, tag) {
+function AJAX_remove_timeline_video_gallery(pub_id, tag) {
     var shared_tag = $(tag).find('.share-values');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
 
     $.ajax({
-        url: '/publication_p/delete/share/publication/',
+        url: '/video/publication/remove/share/',
         type: 'POST',
         dataType: 'json',
         data: {
@@ -487,9 +487,9 @@ function AJAX_remove_timeline_gallery(pub_id, tag) {
 }
 
 /* EDIT PUBLICATION */
-function AJAX_edit_publication_gallery(data) {
+function AJAX_edit_publication_video_gallery(data) {
     $.ajax({
-        url: '/publication_p/edit/',
+        url: '/video/publication/edit/',
         type: 'POST',
         dataType: 'json',
         data: data,

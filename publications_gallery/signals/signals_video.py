@@ -12,21 +12,22 @@ from requests.exceptions import MissingSchema
 
 from notifications.signals import notify
 from user_profile.node_models import NodeProfile
-from .models import PublicationPhoto, ExtraContentPubPhoto
+from publications_gallery.models import PublicationVideo, ExtraContentPubVideo
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender=PublicationPhoto, dispatch_uid='photo_publication_save')
-def photo_publication_handler(sender, instance, created, **kwargs):
+@receiver(post_save, sender=PublicationVideo, dispatch_uid='video_publication_save')
+def video_publication_handler(sender, instance, created, **kwargs):
+
     is_edited = getattr(instance, '_edited', False)
 
     if not created and not is_edited:
         return
 
     if not instance.deleted:
-        logger.info('New comment by: {} with content: {}'.format(instance.p_author, instance.content))
+        logger.info('New comment by: {} with content: {}'.format(instance.author, instance.content))
         # Parse extra content
         add_extra_content(instance)
         # add hashtags
@@ -42,10 +43,10 @@ def photo_publication_handler(sender, instance, created, **kwargs):
         decrease_affinity(instance)
 
         if instance.has_extra_content():  # Para publicaciones editadas
-            ExtraContentPubPhoto.objects.filter(publication=instance.id).exclude(
-                url=instance.publication_photo_extra_content.url).delete()
+            ExtraContentPubVideo.objects.filter(publication=instance.id).exclude(
+                url=instance.publication_video_extra_content.url).delete()
         else:
-            ExtraContentPubPhoto.objects.filter(publication=instance.id).delete()
+            ExtraContentPubVideo.objects.filter(publication=instance.id).delete()
 
 
 def add_hashtags(instance):
@@ -68,14 +69,14 @@ def add_extra_content(instance):
 
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
     if (not link_url or len(link_url) <= 0) and instance.has_extra_content():
-        instance.publication_photo_extra_content.delete()  # Borramos el extra content de esta
-        instance.publication_photo_extra_content = None
+        instance.publication_video_extra_content.delete()  # Borramos el extra content de esta
+        instance.publication_video_extra_content = None
     elif link_url and len(link_url) > 0:  # Eliminamos contenido extra para añadir el nuevo
         if instance.has_extra_content():
-            publication_photo_extra_content = instance.publication_photo_extra_content
-            if publication_photo_extra_content.url != link_url[-1]:
-                publication_photo_extra_content.delete()
-                instance.publication_photo_extra_content = None
+            publication_video_extra_content = instance.publication_video_extra_content
+            if publication_video_extra_content.url != link_url[-1]:
+                publication_video_extra_content.delete()
+                instance.publication_video_extra_content = None
 
     try:
         backend = detect_backend(link_url[-1])  # youtube o soundcloud
@@ -83,7 +84,7 @@ def add_extra_content(instance):
         backend = None
 
     if link_url and len(link_url) > 0 and backend:
-        ExtraContentPubPhoto.objects.create(publication=instance, video=link_url[-1])
+        ExtraContentPubVideo.objects.create(publication=instance, video=link_url[-1])
 
     elif link_url and len(link_url) > 0:
         url = link_url[-1]  # Get last url
@@ -107,14 +108,14 @@ def add_extra_content(instance):
         if image:
             image = image.get('content', None)
 
-        ExtraContentPubPhoto.objects.create(url=url, publication=instance, description=xstr(description),
+        ExtraContentPubVideo.objects.create(url=url, publication=instance, description=xstr(description),
                                             title=xstr(title),
                                             image=xstr(image))
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.p_author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
+    n = NodeProfile.nodes.get(user_id=instance.author.id)
+    m = NodeProfile.nodes.get(user_id=instance.board_video.owner.id)
     if n.uid != m.uid:
         rel = n.follow.relationship(m)
         if rel:
@@ -129,21 +130,21 @@ def notify_mentions(instance):
     users = User.objects.only('username', 'id').filter(username__in=menciones)
     for user in users:
 
-        if instance.p_author.pk != user.id:
-            notify.send(instance.p_author, actor=instance.p_author.username,
+        if instance.author.pk != user.id:
+            notify.send(instance.p_author, actor=instance.author.username,
                         recipient=user,
-                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.p_author.username),
-                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.p_author.username,
+                        verb=u'¡<a href="/profile/{0}/">{0}</a> te ha mencionado!'.format(instance.author.username),
+                        description='@{0} te ha mencionado en <a href="{1}">Ver</a>'.format(instance.author.username,
                                                                                             reverse_lazy(
-                                                                                                'publications_gallery:publication_photo_detail',
+                                                                                                'publications_gallery:publication_video_detail',
                                                                                                 kwargs={
                                                                                                     'publication_id': instance.id})
                                                                                             ))
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.p_author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_photo.owner.id)
+    n = NodeProfile.nodes.get(user_id=instance.author.id)
+    m = NodeProfile.nodes.get(user_id=instance.board_video.owner.id)
     # Aumentamos la fuerza de la relacion entre los usuarios
     if n.uid != m.uid:
         rel = n.follow.relationship(m)

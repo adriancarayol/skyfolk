@@ -70,23 +70,23 @@
                         </div>
                         {% endif %}
                         {% endwith %}
-                        {% if node.publication_photo_extra_content %}
-                        {% if node.publication_photo_extra_content.video %}
-                        {% video node.publication_photo_extra_content.video as my_video %}
+                        {% if node.publication_video_extra_content %}
+                        {% if node.publication_video_extra_content.video %}
+                        {% video node.publication_video_extra_content.video as my_video %}
                         {% video my_video "medium" %}
                         {% endvideo %}
                         {% else %}
                         {% comment %} Para publicaciones con URL {% endcomment %}
                         <div class="card small">
                             <div class="card-image">
-                                <img class="lazyload" data-src="{% if node.publication_photo_extra_content.image %}{{ node.publication_photo_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
-                                <span class="card-title white-text">{{ node.publication_photo_extra_content.title }}</span>
+                                <img class="lazyload" data-src="{% if node.publication_video_extra_content.image %}{{ node.publication_video_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                <span class="card-title white-text">{{ node.publication_video_extra_content.title }}</span>
                             </div>
                             <div class="card-content">
-                                <p>{{ node.publication_photo_extra_content.description }}</p>
+                                <p>{{ node.publication_video_extra_content.description }}</p>
                             </div>
                             <div class="card-action">
-                                <a href="{{ node.publication_photo_extra_content.url }}">Ver</a>
+                                <a href="{{ node.publication_video_extra_content.url }}">Ver</a>
                             </div>
                         </div>
                         {% endif %}

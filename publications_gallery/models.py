@@ -212,6 +212,9 @@ class PublicationVideo(PublicationBase):
     def __str__(self):
         return self.content
 
+    def has_extra_content(self):
+        return hasattr(self, 'publication_video_extra_content')
+
     @property
     def total_likes(self):
         return self.user_give_me_like.count()

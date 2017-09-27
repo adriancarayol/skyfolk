@@ -536,7 +536,7 @@ class VideoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
-        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
+        shared_publications = Publication.objects.filter(shared_video_publication__id=OuterRef('pk'),
                                                          deleted=False).order_by().values(
             'shared_photo_publication__id')
 

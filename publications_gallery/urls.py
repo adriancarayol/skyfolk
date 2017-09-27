@@ -27,5 +27,20 @@ urlpatterns = [
     url(r'^video/publication/$', views.publication_video_view,
         name='new_video_publication'),
     url(r'^video/publication/detail/(?P<publication_id>\d+)/$', views.video_publication_detail,
-        name='publication_video_detail')
+        name='publication_video_detail'),
+    url(r'^video/publication/delete/$', views.delete_video_publication,
+        name='delete_video_publication'),
+    url(r'^video/publication/add_like/$', views.add_video_like,
+        name='add_like_video_publication'),
+    url(r'^video/publication/add_hate/$', views.add_video_hate,
+        name='add_hate_video_publication'),
+    url(r'^video/publication/share/$', views.share_video_publication,
+        name='publication_share_video_pub'),
+    url(r'^video/publication/remove/share/$', views.RemoveSharedVideoPublication.as_view(),
+        name='publication_remove_share_video_pub'),
+    url(r'^video/publication/edit/$', views.edit_video_publication,
+        name='publication_video_edit'),
+
+
+
 ]

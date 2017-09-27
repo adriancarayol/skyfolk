@@ -43,10 +43,10 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        photo = get_object_or_404(Video, id=request.POST.get('board_video', None))
+        video = get_object_or_404(Video, id=request.POST.get('board_video', None))
 
         emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_video_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
+        board_video_owner = NodeProfile.nodes.get(user_id=video.owner_id)
 
         privacity = board_video_owner.is_visible(emitter)
 
@@ -65,11 +65,11 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
                     parent_owner = parent.author_id
                     parent_node = NodeProfile.nodes.get(user_id=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
-                        form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
+                        form.add_error('board_video', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 
                 publication.author_id = emitter.user_id
-                publication.board_photo_id = photo.id
+                publication.board_video_id = video.id
 
                 publication.parse_content()  # parse publication content
                 publication.parse_mentions()  # add mentions
@@ -217,11 +217,11 @@ def delete_video_publication(request):
             return HttpResponse(json.dumps(response),
                                 content_type='application/json'
                                 )
-        logger.info('publication_author: {} publication_board_photo: {} request.user: {}'.format(
+        logger.info('publication_author: {} publication_board_video: {} request.user: {}'.format(
             publication.author.username, publication.board_video, user.username))
 
         # Borramos publicacion
-        if user.id == publication.author.id or user.id == publication.board_photo.owner_id:
+        if user.id == publication.author.id or user.id == publication.board_video.owner_id:
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
@@ -245,13 +245,13 @@ def add_video_like(request):
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
 
         try:
-            publication = PublicationPhoto.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        except PublicationPhoto.DoesNotExist:
+            publication = PublicationVideo.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        except PublicationVideo.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.p_author_id)
+            author = NodeProfile.nodes.get(user_id=publication.author_id)
             m = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
@@ -267,7 +267,7 @@ def add_video_like(request):
         logger.info("USUARIO DA LIKE")
         logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
         logger.info(
-            "(PERFIL DE USUARIO): " + publication.p_author.username + " PK_ID -> " + str(publication.p_author_id))
+            "(PERFIL DE USUARIO): " + publication.author.username + " PK_ID -> " + str(publication.author_id))
 
         in_like = False
         in_hate = False
@@ -345,13 +345,13 @@ def add_video_hate(request):
         user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
         try:
-            publication = PublicationPhoto.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        except PublicationPhoto.DoesNotExist:
+            publication = PublicationVideo.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        except PublicationVideo.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.p_author_id)
+            author = NodeProfile.nodes.get(user_id=publication.author_id)
             m = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
@@ -366,7 +366,7 @@ def add_video_hate(request):
         # Mostrar los usuarios que han dado un me gusta a ese comentario
         logger.info("USUARIO DA HATE")
         logger.info("(USUARIO PETICIÓN): " + user.username)
-        logger.info("(PERFIL DE USUARIO): " + publication.p_author.username)
+        logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
         in_like = False
         in_hate = False
@@ -448,14 +448,14 @@ def share_video_publication(request):
         if form.is_valid():
             obj_pub = form.cleaned_data['pk']
             try:
-                pub_to_add = PublicationPhoto.objects.get(pk=obj_pub)
+                pub_to_add = PublicationVideo.objects.get(pk=obj_pub)
 
-            except PublicationPhoto.DoesNotExist:
+            except PublicationVideo.DoesNotExist:
                 response = False
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
             try:
-                author = NodeProfile.nodes.get(user_id=pub_to_add.p_author_id)
+                author = NodeProfile.nodes.get(user_id=pub_to_add.author_id)
                 m = NodeProfile.nodes.get(user_id=user.id)
             except NodeProfile.DoesNotExist:
                 return HttpResponse(json.dumps(response), content_type='application/json')
@@ -465,7 +465,7 @@ def share_video_publication(request):
             if privacity and privacity != 'all':
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
-            shared = Publication.objects.filter(shared_photo_publication_id=obj_pub, author_id=user.id,
+            shared = Publication.objects.filter(shared_video_publication_id=obj_pub, author_id=user.id,
                                                 deleted=False).exists()
 
             if not shared:
@@ -476,8 +476,8 @@ def share_video_publication(request):
                 pub.content = Emoji.replace(pub.content)
                 pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
                               'href="/profile/%s">@%s</a><br>%s' % (
-                                  pub_to_add.p_author.username, pub_to_add.p_author.username, pub.content)
-                pub.shared_photo_publication_id = pub_to_add.id
+                                  pub_to_add.author.username, pub_to_add.author.username, pub.content)
+                pub.shared_video_publication_id = pub_to_add.id
                 pub.author = user
                 pub.board_owner = user
                 pub.event_type = 7
@@ -498,13 +498,13 @@ class RemoveSharedVideoPublication(View):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        return super(RemoveSharedPhotoPublication, self).dispatch(request, *args, **kwargs)
+        return super(RemoveSharedVideoPublication, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         pk = request.POST.get('pk', None)
         user = request.user
         try:
-            Publication.objects.filter(shared_photo_publication_id=pk, author_id=user.id, deleted=False).update(
+            Publication.objects.filter(shared_video_publication_id=pk, author_id=user.id, deleted=False).update(
                 deleted=True)
         except ObjectDoesNotExist:
             raise Http404
@@ -521,16 +521,16 @@ def edit_video_publication(request):
     editar el contenido de la publicacion
     """
     if request.method == 'POST':
-        form = PublicationPhotoEdit(request.POST or None)
+        form = PublicationVideoEdit(request.POST or None)
 
         if form.is_valid():
             content = form.cleaned_data['content']
             pk = form.cleaned_data['pk']
             user = request.user
 
-            publication = get_object_or_404(PublicationPhoto, id=pk)
+            publication = get_object_or_404(PublicationVideo, id=pk)
 
-            if publication.p_author_id != user.id:
+            if publication.author_id != user.id:
                 return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
             if publication.event_type != 1 and publication.event_type != 3:

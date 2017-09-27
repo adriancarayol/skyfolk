@@ -68,7 +68,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                         form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 
-                publication.author_id = emitter.user_id
+                publication.p_author_id = emitter.user_id
                 publication.board_photo_id = photo.id
 
                 publication.parse_content()  # parse publication content
