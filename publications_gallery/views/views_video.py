@@ -24,7 +24,7 @@ from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationVideo
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from publications_gallery.utils import optimize_publication_media, check_num_images
+from publications_gallery.media_processor import optimize_publication_media, check_num_images
 
 
 class PublicationVideoView(AjaxableResponseMixin, CreateView):
@@ -172,10 +172,10 @@ def video_publication_detail(request, publication_id):
             ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
             have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
             .filter(deleted=False) \
-            .prefetch_related('publication_photo_extra_content', 'images',
+            .prefetch_related('publication_video_extra_content', 'images',
                               'videos', 'tags') \
-            .select_related('p_author',
-                            'board_photo',
+            .select_related('author',
+                            'board_video',
                             'parent')
     except Exception as e:
         raise Exception('No se pudo cargar los descendientes de: {}'.format(request_pub))
@@ -192,11 +192,11 @@ def video_publication_detail(request, publication_id):
     context = {
         'publication': publication,
         'publication_id': publication_id,
-        'photo': request_pub.board_photo,
+        'photo': request_pub.board_video,
         'publication_shared': SharedPublicationForm()
     }
 
-    return render(request, "photologue/publication_detail.html", context)
+    return render(request, "photologue/videos/publication_detail.html", context)
 
 
 @login_required(login_url='/')

@@ -11,7 +11,7 @@ from django.db import transaction
 from django.utils.http import urlencode
 
 from notifications.models import Notification
-from photologue.models import Photo
+from photologue.models import Photo, Video
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
@@ -146,13 +146,14 @@ class Profile(models.Model):
         """
         Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
         """
-        return Photo.objects.filter(owner=self.user_id, is_public=True).count()
+        return Photo.objects.filter(owner=self.user_id, is_public=True).count() + Video.objects.filter(
+            owner=self.user_id, is_public=True).count()
 
     def get_total_num_multimedia(self):
         """
         Devuelve el numero de contenido multimedia de un perfil.
         """
-        return Photo.objects.filter(owner=self.user_id).count()
+        return Photo.objects.filter(owner=self.user_id).count() + Video.objects.filter(owner=self.user_id).count()
 
 
 class RequestManager(models.Manager):

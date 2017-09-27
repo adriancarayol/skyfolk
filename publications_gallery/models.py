@@ -253,8 +253,6 @@ class PublicationVideo(PublicationBase):
             "text": json.dumps(data)
         })
 
-        print('sending to: {}'.format(self.board_video.group_name))
-
         data['content'] = render_to_string(request=request, template_name='channels/new_photo_publication_detail.html',
                                            context={'node': self, 'photo': self.board_video })
 

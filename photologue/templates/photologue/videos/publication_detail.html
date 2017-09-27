@@ -58,7 +58,7 @@
                     <img src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}">
                 </div>
                 <div class="col l9 s6 board-photo-link">
-                    <a href="/photo/{{ photo.slug }}">Ver imagen</a>
+                    <a href="{% url "photologue:pl-video" slug=photo.slug %}">Ver vídeo</a>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                         <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
                   data-tooltip="Ver conversación completa"><a class="material-icons" href="/publication_pdetail/{{ node.id }}/">open_in_new</a></span>
-                    {% if user.id == node.p_author.id %}
+                    {% if user.id == node.author.id %}
                             {% if node.event_type == 1 or node.event_type == 3 %}
                                 <span data-id="{{ node.pk }}"
                                       class="top-options edit-comment tooltipped"
@@ -85,16 +85,16 @@
                         {% endif %}
                             <div class="row">
                                 <div class="image col l1 m2 s2">
-                                    <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
+                                    <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                 </div>
                                 <div class="articulo col s9">
                                     <h2 class="author-header"><a
-                                            href="/profile/{{ node.p_author.username }}">@{{ node.p_author.username }}</a>
+                                            href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         {% if node.parent %}
                                             <span class="chip">
-                                                        {% avatar node.parent.p_author %}
+                                                        {% avatar node.parent.author %}
                                                         <a
-                                                    href="/publication_pdetail/{{ node.parent.id }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                                                    href="/publication_pdetail/{{ node.parent.id }}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                                                 </span>
                                         {% endif %}
                                     </h2>
@@ -113,7 +113,7 @@
                                             <div class="row">
                                             {% for image in images %}
                                                 <div class="col s4 z-depth-2">
-                                                    <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.p_author }}" title="Imagen de: {{ node.p_author }}">
+                                                    <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                                 </div>
                                             {% endfor %}
                                             </div>
@@ -160,7 +160,7 @@
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12">
                                     <ul class="opciones">
-                                        {% if user.id == node.p_author.username or user.id == node.p_author.id %}
+                                        {% if user.id == node.author.username or user.id == node.author.id %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="material-icons">delete_forever</i>
                                             </li>
@@ -180,7 +180,7 @@
                                     </ul>
                                 </div>
                             </div>
-                        {% if user.id == node.p_author.id %}
+                        {% if user.id == node.author.id %}
                             <div id="p_author-controls-{{ node.pk }}"
                                  class="p_author-controls">
                                 <div class="row">

@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from .models import PublicationPhoto, ExtraContentPubPhoto, PublicationPhotoVideo, \
-    PublicationPhotoImage
+    PublicationPhotoImage, PublicationVideo
 
 
 class PublicationBaseAdmin(admin.ModelAdmin):
@@ -25,8 +25,13 @@ class PublicationImageAdmin(admin.ModelAdmin):
     list_display = ('publication', )
     list_filter = ('publication', )
 
+class PublicationVideoVideoAdmin(admin.ModelAdmin):
+    list_display = ('author', 'content', 'board_video')
+    list_filter = ('author', )
+
 
 admin.site.register(ExtraContentPubPhoto, ExtraContentAdmin)
 admin.site.register(PublicationPhotoVideo, PublicationVideoAdmin)
 admin.site.register(PublicationPhotoImage, PublicationImageAdmin)
 admin.site.register(PublicationPhoto, PublicationBaseAdmin)
+admin.site.register(PublicationVideo, PublicationVideoVideoAdmin)

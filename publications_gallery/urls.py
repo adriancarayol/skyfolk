@@ -26,4 +26,6 @@ urlpatterns = [
     # videos
     url(r'^video/publication/$', views.publication_video_view,
         name='new_video_publication'),
+    url(r'^video/publication/detail/(?P<publication_id>\d+)/$', views.video_publication_detail,
+        name='publication_video_detail')
 ]
