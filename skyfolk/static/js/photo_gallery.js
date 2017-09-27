@@ -14,6 +14,17 @@ $(document).ready(function () {
 
     $('#del-photo').click(AJAX_delete_photo);
 
+    $('#del-video').click(AJAX_delete_video);
+
+    $("#edit-video").click(function () {
+        $(this).text(function (i, text) {
+            return text === "Editar" ? "No editar" : "Editar";
+        });
+
+        $('#wrapper-edit-form').toggle();
+
+        return false;
+    });
 
     $("#edit-photo").click(function () {
         $(this).text(function (i, text) {
@@ -49,11 +60,6 @@ $(document).ready(function () {
         }
     });
 
-    $('#tab-messages').find('#message-photo-form').on('submit', function (event) {
-        event.preventDefault();
-        var form = $('#messages-wrapper').find('#message-photo-form');
-        AJAX_submit_photo_publication(form, 'publication');
-    });
 
     $('#form-video').submit(function (e) {
         e.preventDefault();
@@ -93,6 +99,32 @@ function AJAX_delete_photo() {
     var _id = $('.photo-body').attr('data-id');
     $.ajax({
         url: '/delete/photo/',
+        type: 'DELETE',
+        data: {
+            'id': _id,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: 'json',
+        success: function (json) {
+            swal({
+                title: "Photo was deleted.",
+                text: json.msg,
+                timer: 2500,
+                showConfirmButton: true
+            }, function () {
+                window.location.replace('/multimedia/' + json.author + '/');
+            });
+        }, error: function (rs, e) {
+            swal(rs.responseText + " " + e);
+        }
+    });
+}
+
+/* DELETE VIDEO */
+function AJAX_delete_video() {
+    var _id = $('.photo-body').attr('data-id');
+    $.ajax({
+        url: '/delete/video/',
         type: 'DELETE',
         data: {
             'id': _id,

@@ -48,7 +48,7 @@ def upload_video_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('skyfolk/media/publications/videos', filename)
+    return os.path.join('publications/videos', filename)
 
 
 class PublicationBase(MPTTModel):

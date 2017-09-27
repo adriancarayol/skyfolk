@@ -12,7 +12,7 @@ from publications_gallery.models import PublicationPhoto
 from skyfolk.celery import app
 from user_profile.utils import group_name, notification_channel
 from .models import PublicationVideo
-from .utils import generate_path_video, convert_avi_to_mp4, get_channel_name
+from .utils import generate_path_video, convert_video_to_mp4, get_channel_name
 from notifications.models import Notification
 from django.db import IntegrityError
 
@@ -107,7 +107,7 @@ def process_video_publication(file, publication_id, filename, user_id=None,
     video_file, media_path = generate_path_video()
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
-    convert_avi_to_mp4(file, video_file)
+    convert_video_to_mp4(file, video_file)
     PublicationVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('VIDEO CONVERTED')

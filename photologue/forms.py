@@ -1,5 +1,7 @@
+import tempfile
 import zipfile
 from photologue.validators import valid_url_extension, valid_url_mimetype
+from publications.utils import convert_video_to_mp4
 
 try:
     from zipfile import BadZipFile
@@ -24,7 +26,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from taggit.forms import TagField
 from .models import Photo, Video
-from .utils.utils import split_url
+from .utils.utils import split_url, generate_path_video
 
 logger = logging.getLogger('photologue.forms')
 
@@ -240,11 +242,25 @@ class UploadFormVideo(forms.ModelForm):
         if not video:
             raise forms.ValidationError('Debes seleccionar un vídeo.')
 
+        if video._size > settings.BACK_IMAGE_DEFAULT_SIZE:
+            raise forms.ValidationError('El video seleccionado ocupa más de 5MB.')
+
         f = magic.Magic(mime=True, uncompress=True)
         type = f.from_buffer(video.read(1024))
 
         if type != 'video/mp4':
-            raise forms.ValidationError('El formato del vídeo debe ser MP4.')
+            tmp = tempfile.NamedTemporaryFile(delete=False)
+            for block in video.chunks():
+                tmp.write(block)
+
+            absolut_path, media_path = generate_path_video()
+            if not os.path.exists(os.path.dirname(absolut_path)):
+                os.makedirs(os.path.dirname(absolut_path))
+
+            convert_video_to_mp4(tmp.name, absolut_path)
+            os.remove(tmp.name)
+
+            return media_path
 
         return video
 
@@ -258,3 +274,17 @@ class UploadFormVideo(forms.ModelForm):
             'is_public': 'Activa esta casilla para marcar el vídeo como privada',
             'video': 'Selecciona un vídeo'
         }
+
+
+class EditFormVideo(forms.ModelForm):
+    """
+    Permite al usuario editar un video ya existente
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(EditFormVideo, self).__init__(*args, **kwargs)
+        self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
+
+    class Meta:
+        model = Video
+        exclude = ('owner', 'date_added', 'slug', 'is_public', 'video')

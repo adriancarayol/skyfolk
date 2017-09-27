@@ -33,7 +33,6 @@ $(document).ready(function () {
         return false;
     });
 
-
     $(tab_messages).on('click', '.wrapper .zoom-pub', function () {
         var caja_pub = $(this).closest('.wrapper');
         expandComment(caja_pub);
@@ -71,6 +70,11 @@ $(document).ready(function () {
         AJAX_remove_timeline_gallery(tag.data('id'), tag);
     });
 
+    $("#tab-messages").find('#message-photo-form').on('submit', function (event) {
+        event.preventDefault();
+        var form = $('#messages-wrapper').find('#message-photo-form');
+        AJAX_submit_video_publication(form, 'publication');
+    });
 
     /* Abrir respuesta a comentario */
     $(tab_messages).on('click', '.options_comentarios .reply-comment', function () {
@@ -83,7 +87,7 @@ $(document).ready(function () {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
-        AJAX_submit_photo_publication(form, 'reply', parent_pk);
+        AJAX_submit_video_publication(form, 'reply', parent_pk);
     });
 
 
@@ -122,13 +126,6 @@ $(document).ready(function () {
         });
     });
 
-
-    $("#tab-messages").find('#message-photo-form').on('submit', function (event) {
-        event.preventDefault();
-        var form = $('#messages-wrapper').find('#message-photo-form');
-        AJAX_submit_photo_publication(form, 'publication');
-    });
-
     /* Editar comentario */
     $(tab_messages).on('click', '.edit-comment', function () {
         var id = $(this).attr('data-id');
@@ -153,9 +150,9 @@ $(document).ready(function () {
 
     $('#messages-wrapper').on('click', '#load-comments', function(e) {
         e.preventDefault();
-        $.ajax({
+        $.ajax({ 
             type: "GET",
-            url: $(this).attr('href'),
+            url: $(this).attr('href'),   
             success : function(data)
             {
                 $('#load-comments').remove();
@@ -167,12 +164,12 @@ $(document).ready(function () {
 });
 
 
-function AJAX_submit_photo_publication(obj_form, type, pks) {
+function AJAX_submit_video_publication(obj_form, type, pks) {
     var form = new FormData($(obj_form).get(0));
     form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     type = typeof type !== 'undefined' ? type : "reply"; //default para type
     $.ajax({
-        url: '/publication_p/',
+        url: '/video/publication/',
         type: 'POST',
         data: form,
         async: true,
@@ -529,7 +526,7 @@ function AJAX_load_descendants_gallery(pub, loader, page, btn) {
                 $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
                 $children_list = $existing.find('.children').first();
             }
-
+            
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();

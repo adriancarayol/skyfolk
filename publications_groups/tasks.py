@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from notifications.models import Notification
 
 import publications_groups
-from publications.utils import convert_avi_to_mp4
+from publications.utils import convert_video_to_mp4
 from skyfolk.celery import app
 from user_profile.utils import notification_channel
 from .models import PublicationGroupVideo, PublicationGroup
@@ -34,7 +34,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
 
-    convert_avi_to_mp4(file, video_file)
+    convert_video_to_mp4(file, video_file)
     PublicationGroupVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
 

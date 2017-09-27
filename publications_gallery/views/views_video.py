@@ -15,40 +15,40 @@ from django.views import View
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
-from photologue.models import Photo
+from photologue.models import Photo, Video
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
 from publications.views import logger
-from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
+from publications_gallery.forms import PublicationVideoForm, PublicationPhotoEdit
 from publications.forms import SharedPublicationForm
-from publications_gallery.models import PublicationPhoto
+from publications_gallery.models import PublicationVideo
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from .utils import optimize_publication_media, check_num_images
+from publications_gallery.utils import optimize_publication_media, check_num_images
 
 
-class PublicationPhotoView(AjaxableResponseMixin, CreateView):
+class PublicationVideoView(AjaxableResponseMixin, CreateView):
     """
-    Crear una publicación para una imagen de
+    Crear una publicación para un video de
     la galeria de un usuario.
     """
-    form_class = PublicationPhotoForm
-    model = PublicationPhoto
+    form_class = PublicationVideoForm
+    model = PublicationVideo
     http_method_names = [u'post']
     success_url = '/thanks/'
 
     def __init__(self):
         self.object = None
-        super(PublicationPhotoView, self).__init__()
+        super(PublicationVideoView, self).__init__()
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        photo = get_object_or_404(Photo, id=request.POST.get('board_photo', None))
+        photo = get_object_or_404(Video, id=request.POST.get('board_video', None))
 
         emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_photo_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
+        board_video_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
 
-        privacity = board_photo_owner.is_visible(emitter)
+        privacity = board_video_owner.is_visible(emitter)
 
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
@@ -62,7 +62,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.p_author_id
+                    parent_owner = parent.author_id
                     parent_node = NodeProfile.nodes.get(user_id=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
                         form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
@@ -123,32 +123,32 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         return self.form_invalid(form=form)
 
 
-publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
+publication_video_view = login_required(PublicationVideoView.as_view(), login_url='/')
 
 
-def publication_detail(request, publication_id):
+def video_publication_detail(request, publication_id):
     """
     Muestra el thread de una conversacion
     """
     user = request.user
     page = request.GET.get('page', 1)
     try:
-        request_pub = PublicationPhoto.objects.select_related('board_photo', ).get(id=publication_id, deleted=False)
-        if not request_pub.board_photo.is_public and user.id != request_pub.board_photo.owner.id:
-            return redirect('photologue:photo-list', username=request_pub.board_photo.owner.username)
+        request_pub = PublicationVideo.objects.select_related('board_video').get(id=publication_id, deleted=False)
+        if not request_pub.board_video.is_public and user.id != request_pub.board_video.owner.id:
+            return redirect('photologue:photo-list', username=request_pub.board_video.owner.username)
     except ObjectDoesNotExist:
         raise Http404
 
     try:
-        author = NodeProfile.nodes.get(user_id=request_pub.p_author_id)
+        author = NodeProfile.nodes.get(user_id=request_pub.author_id)
         m = NodeProfile.nodes.get(user_id=user.id)
     except NodeProfile.DoesNotExist:
-        return redirect('photologue:photo-list', username=request_pub.board_photo.owner.username)
+        return redirect('photologue:photo-list', username=request_pub.board_video.owner.username)
 
     privacity = author.is_visible(m)
 
     if privacity and privacity != 'all':
-        return redirect('user_profile:profile', username=request_pub.board_photo.owner.username)
+        return redirect('user_profile:profile', username=request_pub.board_video.owner.username)
 
     shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
                                                      deleted=False).order_by().values(
@@ -201,7 +201,7 @@ def publication_detail(request, publication_id):
 
 @login_required(login_url='/')
 @transaction.atomic
-def delete_publication(request):
+def delete_video_publication(request):
     logger.debug('>>>>>>>> PETICION AJAX BORRAR PUBLICACION')
     response = False
     if request.POST:
@@ -237,7 +237,7 @@ def delete_publication(request):
 
 @login_required(login_url='/')
 @transaction.atomic
-def add_like(request):
+def add_video_like(request):
     response = False
     statuslike = 0
     if request.POST:
@@ -337,7 +337,7 @@ def add_like(request):
 
 @login_required(login_url='/')
 @transaction.atomic
-def add_hate(request):
+def add_video_hate(request):
     response = False
     statuslike = 0
     data = []
@@ -434,7 +434,7 @@ def add_hate(request):
 
 @login_required(login_url='/')
 @transaction.atomic
-def share_publication(request):
+def share_video_publication(request):
     """
     Copia la publicacion de otro skyline
     y se comparte en el tuyo
@@ -493,7 +493,7 @@ def share_publication(request):
             return HttpResponse(json.dumps(response), content_type='application/json')
 
 
-class RemoveSharedPhotoPublication(View):
+class RemoveSharedVideoPublication(View):
     model = Publication
 
     @method_decorator(login_required)
@@ -515,7 +515,7 @@ class RemoveSharedPhotoPublication(View):
 
 
 @transaction.atomic
-def edit_publication(request):
+def edit_video_publication(request):
     """
     Permite al creador de la publicacion
     editar el contenido de la publicacion
@@ -556,7 +556,7 @@ def edit_publication(request):
 
 
 @login_required(login_url='/')
-def load_more_descendants(request):
+def load_more_video_descendants(request):
     """
     Carga respuestas de un comentario padre (carga comentarios hijos (nivel 1) de un comentario padre (nivel 0))
     o carga comentarios a respuestas (cargar comentarios descendientes (nivel > 1) de un comentario hijo (nivel 1))

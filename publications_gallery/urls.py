@@ -23,5 +23,7 @@ urlpatterns = [
         name='load_more_descenants_photo_pub'),
     url(r'^publication_p/delete/share/publication/$', views.RemoveSharedPhotoPublication.as_view(),
         name='publication_delete_share_photo_pub'),
-
+    # videos
+    url(r'^video/publication/$', views.publication_video_view,
+        name='new_video_publication'),
 ]

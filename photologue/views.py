@@ -1,13 +1,13 @@
 import json
 import warnings
 
+import os
 from PIL import Image
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db import IntegrityError
 from django.db.models import Count, Q, Case, When, Value, IntegerField, OuterRef, Subquery
 from django.http import Http404
 from django.http import JsonResponse
@@ -24,13 +24,15 @@ from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
 from itertools import chain
+
 from publications.models import Publication
-from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
+from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit, PublicationVideoEdit, \
+    PublicationVideoForm
 from publications.forms import SharedPublicationForm
-from publications_gallery.models import PublicationPhoto
+from publications_gallery.models import PublicationPhoto, PublicationVideo
 from user_profile.node_models import NodeProfile
 from utils.forms import get_form_errors
-from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo
+from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
 from .models import Photo, Video
 
 
@@ -99,12 +101,15 @@ class PhotoListView(AjaxListView):
             photos = Photo.objects.filter(owner__username=self.username).select_related('owner',
                                                                                         'effect').prefetch_related(
                 'tags')
-            videos = Video.objects.filter(owner__username=self.username).select_related('owner')
+            videos = Video.objects.filter(owner__username=self.username).select_related('owner').prefetch_related(
+                'tags')
         else:
             photos = Photo.objects.filter(owner__username=self.username, is_public=True).select_related('owner',
                                                                                                         'effect').prefetch_related(
                 'tags')
-            videos = Video.objects.filter(owner__username=self.username, is_public=True).select_related('owner')
+            videos = Video.objects.filter(owner__username=self.username, is_public=True).select_related(
+                'owner').prefetch_related(
+                'tags')
 
         items = list(
             sorted(
@@ -301,7 +306,7 @@ def delete_photo(request):
         if user.pk == photo_to_delete.owner_id:
             photo_to_delete.delete()
             response_data = {}
-            response_data['msg'] = 'Photo was deleted.'
+            response_data['msg'] = '¡Imagen eliminada!.'
             response_data['author'] = user.username
 
             return HttpResponse(
@@ -345,6 +350,32 @@ def edit_photo(request, photo_id):
             json.dumps({'Nothing to see': 'This isnt happening'}),
             content_type='application/json'
         )
+
+
+@login_required()
+def edit_video(request, video_id):
+    """
+    Permite al creador de la imagen
+    editar los atributos title, caption y tags.
+    """
+    photo = get_object_or_404(Video, id=video_id)
+    form = EditFormVideo(request.POST or None, instance=photo)
+    user = request.user
+    if form.is_valid():
+        if photo.owner.pk == user.pk:
+            response_data = {'msg': '¡Video editado con éxito!'}
+            form.save()
+        else:
+            response_data = {'msg': 'No puedes editar este vídeo.'}
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
+        return redirect('/multimedia/' + user.username + '/')
+    else:
+        return HttpResponse(
+            json.dumps({'Nothing to see': 'This isnt happening'}),
+            content_type='application/json')
 
 
 class PhotoDetailView(DetailView):
@@ -472,6 +503,169 @@ class PhotoDetailView(DetailView):
         if visibility and visibility != 'all':
             return False
         return True
+
+
+# Video Views
+
+class VideoDetailView(DetailView):
+    """
+    Cogemos el parametro de la url (para mostrar los detalles de la foto)
+    """
+    template_name = 'photologue/videos/video_detail.html'
+    model = Video
+
+    def __init__(self):
+        self.username = None
+        super(VideoDetailView, self).__init__()
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Video.objects.select_related('owner').prefetch_related('tags'),
+                                 slug=self.kwargs['slug'])
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        self.username = self.object.owner.username
+
+        if self.user_pass_test():
+            return super(VideoDetailView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('user_profile:profile', username=self.username)
+
+    def get_context_data(self, **kwargs):
+        context = super(VideoDetailView, self).get_context_data(**kwargs)
+        user = self.request.user
+        page = self.request.GET.get('page', 1)
+
+        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
+                                                         deleted=False).order_by().values(
+            'shared_photo_publication__id')
+
+        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+            When(author_id=user.id, then=Value(1))
+        ))).values('have_shared')
+
+        paginator = Paginator(
+            PublicationVideo.objects.annotate(likes=Count('user_give_me_like'),
+                                              hates=Count('user_give_me_hate'), have_like=Count(Case(
+                    When(user_give_me_like=user, then=Value(1)),
+                    output_field=IntegerField()
+                )), have_hate=Count(Case(
+                    When(user_give_me_hate=user, then=Value(1)),
+                    output_field=IntegerField()
+                ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+                have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(
+                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                & Q(board_video_id=self.object.id),
+                Q(level__lte=0) & Q(deleted=False)) \
+                .prefetch_related('publication_video_extra_content', 'images', 'videos') \
+                .select_related('author',
+                                'board_video', 'parent'), 10)
+
+        try:
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
+
+        context['publications'] = publications
+
+        if self.request.is_ajax():
+            self.template_name = 'photologue/publications_entries.html'
+            return context
+
+        initial_video = {'author': user.pk, 'board_video': self.object}
+        context['form'] = EditFormVideo(instance=self.object)
+        context['publication_video'] = PublicationVideoForm(initial=initial_video)
+        context['publication_shared'] = SharedPublicationForm()
+        context['publication_edit'] = PublicationVideoEdit()
+
+        # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
+        if self.object.is_public:
+            try:
+                next = self.object.get_next_in_gallery()
+                context['next'] = next
+            except Photo.DoesNotExist:
+                pass
+            # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
+            try:
+                previous = self.object.get_previous_in_gallery()
+                context['previous'] = previous
+            except Photo.DoesNotExist:
+                pass
+        elif not self.object.is_public and self.object.owner.id == user.id:
+            try:
+                next = self.object.get_next_in_own_gallery()
+
+                context['next'] = next
+            except Photo.DoesNotExist:
+                pass
+            # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
+            try:
+                previous = self.object.get_previous_in_own_gallery()
+                context['previous'] = previous
+            except Photo.DoesNotExist:
+                pass
+        return context
+
+    def user_pass_test(self):
+        """
+        Comprueba si un usuario tiene permisos
+        para ver la galeria solicitada.
+        """
+        user = self.request.user
+        if not self.object.is_public and user.id != self.object.owner.id:
+            return False
+        elif user.id == self.object.owner.id:
+            return True
+
+        try:
+            user_profile = NodeProfile.nodes.get(title=self.username)
+            n = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            raise Http404
+
+        visibility = user_profile.is_visible(n)
+
+        if visibility and visibility != 'all':
+            return False
+        return True
+
+
+@login_required()
+def delete_video(request):
+    """
+    Eliminamos una video, comprobamos si el solicitante
+    es el autor de la foto, si es asi, procedemos.
+    """
+    if request.method == 'DELETE':
+        user = request.user
+        _id = int(QueryDict(request.body).get('id'))
+        video_to_delete = get_object_or_404(Video, id=_id)
+
+        if user.pk == video_to_delete.owner_id:
+            video_to_delete.delete()
+            response_data = {}
+            response_data['msg'] = '¡Video eliminado!.'
+            response_data['author'] = user.username
+
+            return HttpResponse(
+                json.dumps(response_data),
+                content_type="application/json"
+            )
+        else:
+            return HttpResponse(
+                json.dumps({"nothing to see": "this isn't happening"}),
+                content_type="application/json"
+            )
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
 
 
 class PhotoDateView(object):

@@ -1,4 +1,6 @@
 import os
+import uuid
+
 import requests
 from io import BytesIO
 
@@ -28,3 +30,18 @@ def pil_to_django(image, format="JPEG"):
 def retrieve_image(url):
     response = requests.get(url)
     return BytesIO(response.content)
+
+def generate_path_video(ext='mp4'):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return [os.path.join('skyfolk/media/photologue/videos', filename),
+            os.path.join('photologue/videos', filename)]
+
+def generate_thumbnail_path_video(ext='jpg'):
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return [os.path.join('skyfolk/media/photologue/videos/thumbnails', filename),
+            os.path.join('photologue/videos/thumbnails', filename)]

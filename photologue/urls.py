@@ -4,7 +4,8 @@ from django.views.decorators.http import require_POST
 
 from .views import PhotoDetailView, \
     photo_list, delete_photo, edit_photo, \
-    upload_zip_form, upload_photo, collection_list, upload_video
+    upload_zip_form, upload_photo, collection_list, upload_video, VideoDetailView, \
+    delete_video, edit_video
 
 """NOTE: the url names are changing. In the long term, I want to remove the 'pl-'
 prefix on all urls, and instead rely on an application namespace 'photologue'.
@@ -38,10 +39,19 @@ urlpatterns = [
         login_required(PhotoDetailView.as_view()),
         name='pl-photo'),
 
-    url(r'^delete/photo/$', login_required(delete_photo), name='delete-photo'),
+    url(r'^video/(?P<slug>[\-\d\w]+)/$',
+        login_required(VideoDetailView.as_view()),
+        name='pl-video'),
+
+    url(r'^delete/photo/$', delete_photo, name='delete-photo'),
+
+    url(r'^delete/video/$', delete_video, name='delete-video'),
 
     url(r'^edit/photo/(?P<photo_id>\d+)/$',
         require_POST(login_required(edit_photo)), name='edit-photo'),
+
+    url(r'^edit/video/(?P<video_id>\d+)/$',
+        require_POST(edit_video), name='edit-video'),
 
     url(r'^submit_zip/$',
         require_POST(login_required(upload_zip_form)), name='upload-zip'),

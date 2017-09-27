@@ -38,6 +38,7 @@ def get_author_avatar(authorpk):
     else:
         return Profile.objects.get(user_id=authorpk).gravatar
 
+
 def remove_duplicates_in_list(seq):
     seen = set()
     seen_add = seen.add
@@ -54,10 +55,10 @@ def generate_path_video(ext='mp4'):
     return [os.path.join('skyfolk/media/publications/videos', filename), os.path.join('publications/videos', filename)]
 
 
-def convert_avi_to_mp4(avi_file_path, output_name):
-    process = subprocess.call(
+def convert_video_to_mp4(avi_file_path, output_name):
+    process = subprocess.run(
         "ffmpeg -i '{input}' -ac 2 -b:v 2000k -c:a aac -c:v libx264 -b:a 160k -vprofile high -bf 0 -strict experimental -f mp4 '{output}'".format(
-            input=avi_file_path, output=output_name), shell=True)
+            input=avi_file_path, output=output_name), shell=True).returncode
 
 
 def validate_video(value):

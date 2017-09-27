@@ -33,7 +33,7 @@ from uuslug import uuslug
 
 from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 from user_groups.models import UserGroups
-from .tasks import generate_thumbnails
+from .tasks import generate_thumbnails, generate_video_thumbnail
 from .validators import validate_file_extension, validate_video, validate_extension, image_exists, valid_image_mimetype, \
     valid_image_size
 
@@ -769,7 +769,18 @@ def upload_video(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('skyfolk/media/photologue/videos', filename)
+    return os.path.join('photologue/videos', filename)
+
+
+def upload_thumbnail_video(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('photologue/videos/thumbnails', filename)
 
 
 class Video(models.Model):
@@ -792,19 +803,88 @@ class Video(models.Model):
     video = models.FileField(_('video'), upload_to=upload_video,
                              max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
 
-    def __str__(self):
-        return self.name
-
-    def save(self, created=True, *args, **kwargs):
-        if created:
-            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
-        super(Video, self).save(*args, **kwargs)
+    thumbnail = models.ImageField(_('thumbnail'), upload_to=upload_thumbnail_video, blank=True)
 
     class Meta:
         ordering = ['-date_added']
         get_latest_by = 'date_added'
         verbose_name = _("video")
         verbose_name_plural = _("videos")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('photologue:pl-video', args=[self.slug])
+
+    def save(self, created=True, *args, **kwargs):
+        if created:
+            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
+        super(Video, self).save(*args, **kwargs)
+
+    def get_previous_in_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        if not self.is_public:
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+            return None
+        photos = Video.objects.filter(owner=self.owner, is_public=True)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        previous = None
+        for photo in photos:
+            if photo == self:
+                return previous
+            previous = photo
+        return None
+
+    def get_next_in_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        if not self.is_public:
+            return None
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+        photos = Video.objects.filter(owner=self.owner, is_public=True)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        matched = False
+        for photo in photos:
+            if matched:
+                return photo
+            if photo == self:
+                matched = True
+        return None
+
+    def get_previous_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        photos = Video.objects.filter(owner=self.owner)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        previous = None
+        for photo in photos:
+            if photo == self:
+                return previous
+            previous = photo
+        return None
+
+    def get_next_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        photos = Video.objects.filter(owner=self.owner)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        matched = False
+        for photo in photos:
+            if matched:
+                return photo
+            if photo == self:
+                matched = True
+        return None
 
 
 @python_2_unicode_compatible
@@ -1130,5 +1210,18 @@ def generate_thumb(instance, created, **kwargs):
         generate_thumbnails.delay(instance=instance.pk)
 
 
+def generate_video_thumb(instance, created, **kwargs):
+    """
+    Generamos thumbnail para video
+    :param instance: Video
+    :param created: Si es creado o actualizado
+    :param kwargs:
+    :return:
+    """
+    if created:
+        generate_video_thumbnail.delay(instance=instance.pk)
+
+
 post_save.connect(add_default_site, sender=Photo)
 post_save.connect(generate_thumb, sender=Photo)
+post_save.connect(generate_video_thumb, sender=Video)
