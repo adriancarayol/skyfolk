@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from embed_video.fields import EmbedVideoField
 
-from photologue.models import Photo
+from photologue.models import Photo, Video
 from publications.models import Publication
 from publications.models import PublicationBase
 from publications.utils import validate_video
@@ -196,7 +196,7 @@ class PublicationVideo(PublicationBase):
     Modelo para las publicaciones en las fotos
     """
     author = models.ForeignKey(User, null=True)
-    board_video = models.ForeignKey(Photo, related_name='board_video')
+    board_video = models.ForeignKey(Video, related_name='board_video')
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_video_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
@@ -237,14 +237,15 @@ class PublicationVideo(PublicationBase):
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
+
         data = {
             'type': type,
             'id': self.id,
             'parent_id': self.parent_id,
             'level': self.level,
             'content': render_to_string(request=request,
-                                        template_name='channels/new_photo_publication.html',
-                                        context={'node': self, 'photo': self.board_video})
+                                        template_name='channels/new_video_publication.html',
+                                        context={'node': self, 'photo': self.board_video })
         }
 
         # Enviamos a todos los usuarios que visitan la foto
@@ -252,8 +253,10 @@ class PublicationVideo(PublicationBase):
             "text": json.dumps(data)
         })
 
+        print('sending to: {}'.format(self.board_video.group_name))
+
         data['content'] = render_to_string(request=request, template_name='channels/new_photo_publication_detail.html',
-                                           context={'node': self, 'photo': self.board_video})
+                                           context={'node': self, 'photo': self.board_video })
 
         if is_edited:
             channel_group(self.get_channel_name).send({

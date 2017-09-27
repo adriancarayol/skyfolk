@@ -811,6 +811,13 @@ class Video(models.Model):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
+    @property
+    def group_name(self):
+        """
+        Devuelve el nombre del canal para enviar notificaciones
+        """
+        return "videos-%s" % self.pk
+
     def __str__(self):
         return self.name
 

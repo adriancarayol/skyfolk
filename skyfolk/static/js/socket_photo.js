@@ -18,11 +18,12 @@ var UTILS = UTILS || (function () {
             socket.onmessage = function (message) {
                 // Decode the JSON
                 var data = JSON.parse(message.data);
+
                 // Create the inner content of the post div
                 if (data.type === "pub") {
                     var existing = $('#pub-' + data.id);
                     var no_comments = $('#without-comments');
-
+                    no_comments.remove();
                     /* Comprobamos si el elemento existe, si es asi lo modificamos */
                     if (existing.length) {
                         existing.closest('.row').replaceWith(data.content);

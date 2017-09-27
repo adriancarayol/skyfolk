@@ -15,11 +15,11 @@ from django.views import View
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
-from photologue.models import Photo, Video
+from photologue.models import Video
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
 from publications.views import logger
-from publications_gallery.forms import PublicationVideoForm, PublicationPhotoEdit
+from publications_gallery.forms import PublicationVideoForm, PublicationVideoEdit
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationVideo
 from user_profile.node_models import NodeProfile
@@ -211,22 +211,22 @@ def delete_video_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = PublicationPhoto.objects.get(id=publication_id)
-        except PublicationPhoto.DoesNotExist:
+            publication = PublicationVideo.objects.get(id=publication_id)
+        except PublicationVideo.DoesNotExist:
             response = False
             return HttpResponse(json.dumps(response),
                                 content_type='application/json'
                                 )
         logger.info('publication_author: {} publication_board_photo: {} request.user: {}'.format(
-            publication.p_author.username, publication.board_photo, user.username))
+            publication.author.username, publication.board_video, user.username))
 
         # Borramos publicacion
-        if user.id == publication.p_author.id or user.id == publication.board_photo.owner_id:
+        if user.id == publication.author.id or user.id == publication.board_photo.owner_id:
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
             if publication.has_extra_content():
-                publication.publication_photo_extra_content.delete()
+                publication.publication_video_extra_content.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
 
         response = True

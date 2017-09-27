@@ -2,7 +2,7 @@ from channels.routing import route
 from channels.staticfiles import StaticFilesConsumer
 
 from latest_news.consumers import MyFeedConsumer
-from photologue.consumers import PhotoConsumer
+from photologue.consumers import PhotoConsumer, VideoConsumer
 from publications.consumers import PublicationConsumer
 from publications_gallery.consumers import PublicationPhotoConsumer
 from user_profile.consumers import BlogConsumer, NotificationConsumer
@@ -20,6 +20,7 @@ channel_routing = [
     BlogConsumer.as_route(path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
     # channels en fotos
     PhotoConsumer.as_route(path=r'^/photo/(?P<slug>[\-\d\w]+)/stream/$'),
+    VideoConsumer.as_route(path=r'^/video/(?P<slug>[\-\d\w]+)/stream/$'),
     # channels para notificaciones
     NotificationConsumer.as_route(path=r'^.*/notification/$'),
     # channels para inicio
