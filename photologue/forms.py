@@ -248,6 +248,9 @@ class UploadFormVideo(forms.ModelForm):
         f = magic.Magic(mime=True, uncompress=True)
         type = f.from_buffer(video.read(1024))
 
+        if type.split('/')[0] != 'video':
+            raise forms.ValidationError('Selecciona un formato de vídeo válido.')
+
         if type != 'video/mp4':
             tmp = tempfile.NamedTemporaryFile(delete=False)
             for block in video.chunks():
@@ -257,7 +260,11 @@ class UploadFormVideo(forms.ModelForm):
             if not os.path.exists(os.path.dirname(absolut_path)):
                 os.makedirs(os.path.dirname(absolut_path))
 
-            convert_video_to_mp4(tmp.name, absolut_path)
+            return_code = convert_video_to_mp4(tmp.name, absolut_path)
+            
+            if return_code:
+                raise forms.ValidationError('Hubo un error al procesar tu vídeo, intentalo de nuevo.')
+
             os.remove(tmp.name)
 
             return media_path
