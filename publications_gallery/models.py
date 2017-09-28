@@ -232,8 +232,6 @@ class PublicationVideo(PublicationBase):
     def get_channel_name(self):
         return "video-pub-%s" % self.id
 
-    def has_extra_content(self):
-        return hasattr(self, 'publication_photo_extra_content')
 
     def send_notification(self, request, type="pub", is_edited=False):
         """
@@ -248,7 +246,7 @@ class PublicationVideo(PublicationBase):
             'level': self.level,
             'content': render_to_string(request=request,
                                         template_name='channels/new_video_publication.html',
-                                        context={'node': self, 'photo': self.board_video })
+                                        context={'node': self, 'object': self.board_video })
         }
 
         # Enviamos a todos los usuarios que visitan la foto
@@ -256,14 +254,15 @@ class PublicationVideo(PublicationBase):
             "text": json.dumps(data)
         })
 
-        data['content'] = render_to_string(request=request, template_name='channels/new_photo_publication_detail.html',
-                                           context={'node': self, 'photo': self.board_video })
+        data['content'] = render_to_string(request=request, template_name='channels/new_video_publication_detail.html',
+                                           context={'node': self, 'object': self.board_video })
 
         if is_edited:
             channel_group(self.get_channel_name).send({
                 'text': json.dumps(data)
             })
+
         # Enviamos al blog de la publicacion
         [channel_group(x.get_channel_name).send({
             "text": json.dumps(data)
-        }) for x in self.get_ancestors().only('id')]
+        }) for x in self.get_ancestors().defer()]

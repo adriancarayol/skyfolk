@@ -145,7 +145,7 @@ $(document).ready(function () {
         var page = $('.page_for_' + pub_id).last().val();
         if (typeof page === 'undefined')
             page = 1;
-        AJAX_load_descendants_gallery(pub_id, loader, page, this);
+        AJAX_load_descendants_video_gallery(pub_id, loader, page, this);
     });
 
     $('#messages-wrapper').on('click', '#load-comments', function(e) {
@@ -511,9 +511,9 @@ function AJAX_edit_publication_video_gallery(data) {
     });
 }
 
-function AJAX_load_descendants_gallery(pub, loader, page, btn) {
+function AJAX_load_descendants_video_gallery(pub, loader, page, btn) {
     $.ajax({
-        url: '/publication_p/load_descendants/?pubid=' + pub + '&page=' + page,
+        url: '/video/publication/load/?pubid=' + pub + '&page=' + page,
         type: 'GET',
         dataType: 'html',
         beforeSend: function() {

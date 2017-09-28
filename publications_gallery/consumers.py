@@ -1,7 +1,7 @@
 from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
 from user_profile.node_models import NodeProfile
-from .models import PublicationPhoto
+from .models import PublicationPhoto, PublicationVideo
 from .utils import get_channel_name
 
 
@@ -64,13 +64,15 @@ class PublicationVideoConsumer(WebsocketConsumer):
     strict_ordering = False
 
     def __init__(self, message, **kwargs):
+        print('xdxdxdxdxdxd')
+
         pubid = kwargs.get('pubid', None)
         if not pubid:
             raise Http404
 
         try:
-            publication_board_owner = PublicationPhoto.objects.values_list('board_video__owner_id', flat=True).get(id=pubid)
-        except PublicationPhoto.DoesNotExist:
+            publication_board_owner = PublicationVideo.objects.values_list('board_video__owner_id', flat=True).get(id=pubid)
+        except PublicationVideo.DoesNotExist:
             raise Http404
 
         try:
@@ -82,7 +84,7 @@ class PublicationVideoConsumer(WebsocketConsumer):
 
     def connection_groups(self, **kwargs):
         pubid = kwargs.get('pubid', None)
-        return [get_channel_name(pubid)]
+        return ["video-pub-{}".format(pubid)]
 
     def connect(self, message, **kwargs):
         user = message.user
@@ -99,6 +101,7 @@ class PublicationVideoConsumer(WebsocketConsumer):
         self.message.reply_channel.send({'accept': True})
 
     def receive(self, content, **kwargs):
+        print(content)
         self.send(content)
 
     def disconnect(self, message, **kwargs):

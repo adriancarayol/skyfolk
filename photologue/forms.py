@@ -278,7 +278,7 @@ class UploadFormVideo(forms.ModelForm):
             'name': 'Añade un título al vídeo',
             'caption': 'Añade una descripcion al vídeo',
             'tags': 'Añade etiquetas a tu vídeo',
-            'is_public': 'Activa esta casilla para marcar el vídeo como privada',
+            'is_public': 'Activa esta casilla para marcar el vídeo como privado',
             'video': 'Selecciona un vídeo'
         }
 

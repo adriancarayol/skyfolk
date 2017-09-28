@@ -573,7 +573,7 @@ class VideoDetailView(DetailView):
         context['publications'] = publications
 
         if self.request.is_ajax():
-            self.template_name = 'photologue/publications_entries.html'
+            self.template_name = 'photologue/videos/publications_entries.html'
             return context
 
         initial_video = {'author': user.pk, 'board_video': self.object}

@@ -192,7 +192,7 @@ def video_publication_detail(request, publication_id):
     context = {
         'publication': publication,
         'publication_id': publication_id,
-        'photo': request_pub.board_video,
+        'object': request_pub.board_video,
         'publication_shared': SharedPublicationForm()
     }
 
@@ -568,12 +568,12 @@ def load_more_video_descendants(request):
 
         print('PAGE: {}, PUB_ID: {}'.format(page, pub_id))
         try:
-            publication = PublicationPhoto.objects.get(id=pub_id)
-        except PublicationPhoto.DoesNotExist:
+            publication = PublicationVideo.objects.get(id=pub_id)
+        except PublicationVideo.DoesNotExist:
             return Http404
 
         try:
-            board_owner = NodeProfile.nodes.get(user_id=publication.board_photo.owner_id)
+            board_owner = NodeProfile.nodes.get(user_id=publication.board_video.owner_id)
             m = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
             raise Http404
@@ -584,11 +584,11 @@ def load_more_video_descendants(request):
             return HttpResponseForbidden()
 
         if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+            pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(level__lte=1)
                                                         & Q(deleted=False))
         else:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+            pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(deleted=False))
 
         shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
@@ -610,10 +610,10 @@ def load_more_video_descendants(request):
                 output_field=IntegerField()
             ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
             have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related(
-            'publication_photo_extra_content', 'images',
-            'videos', 'parent__p_author') \
-            .select_related('p_author',
-                            'board_photo', 'parent')
+            'publication_video_extra_content', 'images',
+            'videos', 'parent__author') \
+            .select_related('author',
+                            'board_video', 'parent')
 
         paginator = Paginator(pubs, 10)
 
@@ -627,7 +627,7 @@ def load_more_video_descendants(request):
         context = {
             'pub_id': pub_id,
             'publications': publications,
-            'photo': publication.board_photo
+            'video': publication.board_video
         }
-        return render(request, 'photologue/ajax_load_replies.html', context=context)
+        return render(request, 'photologue/videos/ajax_load_replies.html', context=context)
     return HttpResponseForbidden()

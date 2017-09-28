@@ -40,6 +40,8 @@ urlpatterns = [
         name='publication_remove_share_video_pub'),
     url(r'^video/publication/edit/$', views.edit_video_publication,
         name='publication_video_edit'),
+    url(r'^video/publication/load/$', views.load_more_video_descendants,
+        name='load_more_descenants_video_pub'),
 
 
 

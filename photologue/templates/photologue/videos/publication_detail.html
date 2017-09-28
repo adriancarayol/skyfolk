@@ -55,10 +55,10 @@
         <div class="row">
             <div class="col l3 offset-l5 offset-s3 s6 z-depth-2 board-photo">
                 <div class="col l3 s6 board-photo-container">
-                    <img src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}">
+                    <img src="{% if object.thumbnail %}{{ object.thumbnail.url }}{% endif %}" title="{{ object.name }}" alt="{{ object.name }}">
                 </div>
                 <div class="col l9 s6 board-photo-link">
-                    <a href="{% url "photologue:pl-video" slug=photo.slug %}">Ver vídeo</a>
+                    <a href="{% url "photologue:pl-video" slug=object.slug %}">Ver vídeo</a>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                              data-id="{{ user.pk }}">
                         <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
-                  data-tooltip="Ver conversación completa"><a class="material-icons" href="/publication_pdetail/{{ node.id }}/">open_in_new</a></span>
+                  data-tooltip="Ver conversación completa"><a class="material-icons" href="{% url "publications_gallery:publication_video_detail" publication_id=node.id %}">open_in_new</a></span>
                     {% if user.id == node.author.id %}
                             {% if node.event_type == 1 or node.event_type == 3 %}
                                 <span data-id="{{ node.pk }}"
@@ -94,7 +94,7 @@
                                             <span class="chip">
                                                         {% avatar node.parent.author %}
                                                         <a
-                                                    href="/publication_pdetail/{{ node.parent.id }}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                                                    href="{% url "publications_gallery:publication_video_detail" publication_id=node.parent.id %}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                                                 </span>
                                         {% endif %}
                                     </h2>
@@ -210,7 +210,7 @@
                                 </div>
                             </div>
                     {% endif %}
-                            {% include "photologue/new_reply.html" %}
+                            {% include "photologue/videos/new_reply.html" %}
                         </div>
                     </div>
                 </div>
@@ -224,7 +224,7 @@
             <div class="indeterminate blue darken-1"></div>
         </div>
     </div>
-    <script src="{{ STATIC_URL }}js/photo_detail.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/video_detail.js" type="text/javascript"></script>
      <script src="{{ STATIC_URL }}js/socket_photo_publication.js"></script>
     <script>
     UTILS.init([{{ user.pk }}]);

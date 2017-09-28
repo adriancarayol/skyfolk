@@ -4,7 +4,7 @@ from channels.staticfiles import StaticFilesConsumer
 from latest_news.consumers import MyFeedConsumer
 from photologue.consumers import PhotoConsumer, VideoConsumer
 from publications.consumers import PublicationConsumer
-from publications_gallery.consumers import PublicationPhotoConsumer
+from publications_gallery.consumers import PublicationPhotoConsumer, PublicationVideoConsumer
 from user_profile.consumers import BlogConsumer, NotificationConsumer
 from user_groups.consumers import GroupConsumer, ThemeConsumer
 from publications_groups.consumers import GroupPublicationConsumer
@@ -29,6 +29,7 @@ channel_routing = [
     PublicationConsumer.as_route(path=r'^/publication/(?P<pubid>\d+)/stream/$'),
     # channels para conectarse a publication_photo_detail
     PublicationPhotoConsumer.as_route(path=r'^/publication_pdetail/(?P<pubid>\d+)/stream/$'),
+    PublicationVideoConsumer.as_route(path=r'^/video/publication/detail/(?P<pubid>\d+)/stream/$'),
     # channels para conectarse a group
     GroupConsumer.as_route(path=r'^/group/(?P<groupname>[\w-]+)/stream/$'),
     # channels para conectarse a publication group detail

@@ -7,6 +7,7 @@ from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
+from django.urls import reverse_lazy
 
 import publications_gallery
 from notifications.models import Notification
@@ -18,11 +19,12 @@ from django.db import IntegrityError
 
 logger = get_task_logger(__name__)
 
-
-generate_path_video = lambda filename, ext: ([os.path.join('skyfolk/media/photo_publications/videos', str(filename) + ext),
-                                              os.path.join('photo_publications/videos', str(filename) + ext)])
+generate_path_video = lambda filename, ext: (
+[os.path.join('skyfolk/media/photo_publications/videos', str(filename) + ext),
+ os.path.join('photo_publications/videos', str(filename) + ext)])
 
 get_channel_video_name = lambda id: "video-pub-{}".format(id)
+
 
 @app.task(ignore_result=True, name='tasks.process_photo_pub_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
@@ -144,8 +146,9 @@ def process_video_video_publication(file, publication_id, filename, user_id=None
         try:
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
-                                                       description='<a href="%s">Ver</a>' % (
-                                                           '/publication_pdetail/' + str(publication_id)))
+                                                       description='<a href="{}">Ver</a>'.format(reverse_lazy(
+                                                           "publications_gallery:publication_video_detail",
+                                                           kwargs={'publication_id': publication_id})))
         except IntegrityError as e:
             logger.info(e)
             # TODO: Enviar mensaje al user con el error
@@ -193,8 +196,9 @@ def process_gif_video_publication(file, publication_id, filename, user_id=None):
         try:
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
-                                                       description='<a href="%s">Ver</a>' % (
-                                                           '/publication_pdetail/' + str(publication_id)))
+                                                       description='<a href="{}">Ver</a>'.format(reverse_lazy(
+                                                           "publications_gallery:publication_video_detail",
+                                                           kwargs={'publication_id': publication_id})))
         except IntegrityError as e:
             logger.info(e)
             # TODO: Enviar mensaje al user con el error
