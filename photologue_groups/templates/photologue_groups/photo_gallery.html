@@ -32,9 +32,10 @@
                 </ul>
             </div>
             <div id="foto">
-                <form id="submit-photo" class="avatar-form" action="{% url "photologue:upload-photo" %}" method="post"
+                <form id="submit-photo" class="avatar-form" action="{% url "photologue_groups:upload-photo" %}" method="post"
                       accept-charset="utf-8"
                       enctype="multipart/form-data">{% csrf_token %}
+                     
                     <div class="row">
                         <div class="file-field input-field avatar-upload">
                             {{ form.image.errors }}
@@ -49,7 +50,7 @@
                             <input type="hidden" class="avatar-data" name="avatar_data">
                             <input type="hidden" class="is-cutted" name="avatar_cut" value="false">
                         </div>
-                    </div>
+                    </div> {{ form.group }}
                     <div class="row">
                         <a id="crop-image" class="waves-effect waves-light btn blue darken-1 right">Recortar
                             <i class="material-icons right">crop</i>

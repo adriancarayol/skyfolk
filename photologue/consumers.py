@@ -65,7 +65,7 @@ class VideoConsumer(WebsocketConsumer):
 
         try:
             self.video = Video.objects.only('owner').get(slug__exact=slug)
-        except Photo.DoesNotExist:
+        except Video.DoesNotExist:
             raise Http404
 
         super(VideoConsumer, self).__init__(message, **kwargs)

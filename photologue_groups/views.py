@@ -32,7 +32,8 @@ from publications_gallery.models import PublicationPhoto, PublicationVideo
 from user_profile.node_models import NodeProfile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
-from .models import Photo, Video
+from .models import PhotoGroup, VideoGroup
+from user_groups.models import UserGroups
 
 
 # Collection views
@@ -65,10 +66,10 @@ def collection_list(request, username,
 
     print('>>>>>>> TAGNAME {}'.format(tagname))
     if user.username == username:
-        object_list = Photo.objects.filter(owner__username=username,
+        object_list = PhotoGroup.objects.filter(owner__username=username,
                                            tags__name__exact=tagname)
     else:
-        object_list = Photo.objects.filter(owner__username=username,
+        object_list = PhotoGroup.objects.filter(owner__username=username,
                                            tags__name__exact=tagname, is_public=True)
     context = {'object_list': object_list, 'form': form,
                'form_zip': form_zip, }
@@ -81,32 +82,38 @@ def collection_list(request, username,
 
 class PhotoListView(AjaxListView):
     context_object_name = "object_list"
-    template_name = "photologue/photo_gallery.html"
-    page_template = "photologue/photo_gallery_page.html"
+    template_name = "photologue_groups/photo_gallery.html"
+    page_template = "photologue_groups/photo_gallery_page.html"
 
     def __init__(self):
-        self.username = None
+        self.object = None
         super(PhotoListView, self).__init__()
 
     def dispatch(self, request, *args, **kwargs):
-        self.username = self.kwargs['username']
+        slug = self.kwargs.pop('slug')
+
+        try:
+            self.object = UserGroups.objects.get(slug=slug)
+        except UserGroups.DoesNotExist:
+            raise Http404
+
         if self.user_pass_test():
             return super(PhotoListView, self).dispatch(request, *args, **kwargs)
         else:
-            return redirect('user_profile:profile', username=self.username)
+            return redirect('user_groups:group-profile', groupname=slug)
 
     def get_queryset(self):
-        if self.request.user.username == self.username:
-            photos = Photo.objects.filter(owner__username=self.username).select_related('owner',
+        if self.request.user.id == self.object.owner_id:
+            photos = PhotoGroup.objects.filter(group=self.object).select_related('owner',
                                                                                         'effect').prefetch_related(
                 'tags')
-            videos = Video.objects.filter(owner__username=self.username).select_related('owner').prefetch_related(
+            videos = VideoGroup.objects.filter(group=self.object).select_related('owner').prefetch_related(
                 'tags')
         else:
-            photos = Photo.objects.filter(owner__username=self.username, is_public=True).select_related('owner',
+            photos = PhotoGroup.objects.filter(group=self.object, is_public=True).select_related('owner',
                                                                                                         'effect').prefetch_related(
                 'tags')
-            videos = Video.objects.filter(owner__username=self.username, is_public=True).select_related(
+            videos = VideoGroup.objects.filter(group=self.object, is_public=True).select_related(
                 'owner').prefetch_related(
                 'tags')
 
@@ -125,7 +132,7 @@ class PhotoListView(AjaxListView):
         context['form'] = UploadFormPhoto()
         context['form_video'] = UploadFormVideo()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
-        context['user_gallery'] = self.kwargs['username']
+        context['user_gallery'] = self.object
         return context
 
     def user_pass_test(self):
@@ -134,7 +141,7 @@ class PhotoListView(AjaxListView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        user_profile = NodeProfile.nodes.get(title=self.username)
+        user_profile = NodeProfile.nodes.get(user_id=self.object.owner_id)
         m = NodeProfile.nodes.get(user_id=user.id)
 
         visibility = user_profile.is_visible(m)
@@ -152,8 +159,8 @@ def upload_photo(request):
     Función para subir una nueva foto a la galeria del usuario
     """
     user = request.user
-
-    if request.method == 'POST':
+    print('holaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+    if request.method == 'GET':
         form = UploadFormPhoto(request.POST, request.FILES or None)
         if form.is_valid():
             obj = form.save(commit=False)
@@ -300,7 +307,7 @@ def delete_photo(request):
     if request.method == 'DELETE':
         user = request.user
         _id = int(QueryDict(request.body).get('id'))
-        photo_to_delete = get_object_or_404(Photo, id=_id)
+        photo_to_delete = get_object_or_404(PhotoGroup, id=_id)
 
         if user.pk == photo_to_delete.owner_id:
             photo_to_delete.delete()
@@ -357,7 +364,7 @@ def edit_video(request, video_id):
     Permite al creador de la imagen
     editar los atributos title, caption y tags.
     """
-    photo = get_object_or_404(Video, id=video_id)
+    photo = get_object_or_404(VideoGroup, id=video_id)
     form = EditFormVideo(request.POST or None, instance=photo)
     user = request.user
     if form.is_valid():
@@ -382,7 +389,7 @@ class PhotoDetailView(DetailView):
     Cogemos el parametro de la url (para mostrar los detalles de la foto)
     """
     template_name = 'photologue/photo_detail.html'
-    model = Photo
+    model = PhotoGroup
 
     def __init__(self):
         self.username = None
@@ -390,7 +397,7 @@ class PhotoDetailView(DetailView):
         super(PhotoDetailView, self).__init__()
 
     def dispatch(self, request, *args, **kwargs):
-        self.photo = self.get_object(Photo.objects.filter(slug=self.kwargs['slug']) \
+        self.photo = self.get_object(PhotoGroup.objects.filter(slug=self.kwargs['slug']) \
                                      .select_related('owner', 'effect') \
                                      .prefetch_related('tags'))
         self.username = self.photo.owner.username
@@ -457,26 +464,26 @@ class PhotoDetailView(DetailView):
             try:
                 next = self.photo.get_next_in_gallery()
                 context['next'] = next
-            except Photo.DoesNotExist:
+            except PhotoGroup.DoesNotExist:
                 pass
             # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
             try:
                 previous = self.photo.get_previous_in_gallery()
                 context['previous'] = previous
-            except Photo.DoesNotExist:
+            except PhotoGroup.DoesNotExist:
                 pass
         elif not self.photo.is_public and self.photo.owner.id == user.id:
             try:
                 next = self.photo.get_next_in_own_gallery()
 
                 context['next'] = next
-            except Photo.DoesNotExist:
+            except PhotoGroup.DoesNotExist:
                 pass
             # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
             try:
                 previous = self.photo.get_previous_in_own_gallery()
                 context['previous'] = previous
-            except Photo.DoesNotExist:
+            except PhotoGroup.DoesNotExist:
                 pass
         return context
 
@@ -511,7 +518,7 @@ class VideoDetailView(DetailView):
     Cogemos el parametro de la url (para mostrar los detalles de la foto)
     """
     template_name = 'photologue/videos/video_detail.html'
-    model = Video
+    model = VideoGroup
 
     def __init__(self):
         self.username = None
@@ -587,26 +594,26 @@ class VideoDetailView(DetailView):
             try:
                 next = self.object.get_next_in_gallery()
                 context['next'] = next
-            except Photo.DoesNotExist:
+            except PhotoGroup.DoesNotExist:
                 pass
             # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
             try:
                 previous = self.object.get_previous_in_gallery()
                 context['previous'] = previous
-            except Photo.DoesNotExist:
+            except PhotoGroup.DoesNotExist:
                 pass
         elif not self.object.is_public and self.object.owner.id == user.id:
             try:
                 next = self.object.get_next_in_own_gallery()
 
                 context['next'] = next
-            except Photo.DoesNotExist:
+            except PhotoGroup.DoesNotExist:
                 pass
             # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
             try:
                 previous = self.object.get_previous_in_own_gallery()
                 context['previous'] = previous
-            except Photo.DoesNotExist:
+            except PhotoGroup.DoesNotExist:
                 pass
         return context
 
@@ -643,7 +650,7 @@ def delete_video(request):
     if request.method == 'DELETE':
         user = request.user
         _id = int(QueryDict(request.body).get('id'))
-        video_to_delete = get_object_or_404(Video, id=_id)
+        video_to_delete = get_object_or_404(VideoGroup, id=_id)
 
         if user.pk == video_to_delete.owner_id:
             video_to_delete.delete()
@@ -665,120 +672,3 @@ def delete_video(request):
             json.dumps({"nothing to see": "this isn't happening"}),
             content_type="application/json"
         )
-
-
-class PhotoDateView(object):
-    queryset = Photo.objects.on_site().is_public()
-    date_field = 'date_added'
-    allow_empty = True
-
-
-class PhotoDateDetailView(PhotoDateView, DateDetailView):
-    pass
-
-
-class PhotoArchiveIndexView(PhotoDateView, ArchiveIndexView):
-    pass
-
-
-class PhotoDayArchiveView(PhotoDateView, DayArchiveView):
-    pass
-
-
-class PhotoMonthArchiveView(PhotoDateView, MonthArchiveView):
-    pass
-
-
-class PhotoYearArchiveView(PhotoDateView, YearArchiveView):
-    make_object_list = True
-
-
-# Deprecated views.
-
-class DeprecatedMonthMixin(object):
-    """Representation of months in urls has changed from a alpha representation ('jan' for January)
-    to a numeric representation ('01' for January).
-    Properly deprecate the previous urls."""
-
-    query_string = True
-
-    month_names = {'jan': '01',
-                   'feb': '02',
-                   'mar': '03',
-                   'apr': '04',
-                   'may': '05',
-                   'jun': '06',
-                   'jul': '07',
-                   'aug': '08',
-                   'sep': '09',
-                   'oct': '10',
-                   'nov': '11',
-                   'dec': '12', }
-
-    def get_redirect_url(self, *args, **kwargs):
-        print('a')
-        warnings.warn(
-            DeprecationWarning('Months are now represented in urls by numbers rather than by '
-                               'their first 3 letters. The old style will be removed in Photologue 3.4.'))
-
-
-class GalleryDateDetailOldView(DeprecatedMonthMixin, RedirectView):
-    permanent = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        super(GalleryDateDetailOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:publications_gallery-detail', kwargs={'year': kwargs['year'],
-                                                                         'month': self.month_names[kwargs['month']],
-                                                                         'day': kwargs['day'],
-                                                                         'slug': kwargs['slug']})
-
-
-class GalleryDayArchiveOldView(DeprecatedMonthMixin, RedirectView):
-    permanent = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        super(GalleryDayArchiveOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:publications_gallery-archive-day', kwargs={'year': kwargs['year'],
-                                                                              'month': self.month_names[
-                                                                                  kwargs['month']],
-                                                                              'day': kwargs['day']})
-
-
-class GalleryMonthArchiveOldView(DeprecatedMonthMixin, RedirectView):
-    permanent = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        super(GalleryMonthArchiveOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:publications_gallery-archive-month', kwargs={'year': kwargs['year'],
-                                                                                'month': self.month_names[
-                                                                                    kwargs['month']]})
-
-
-class PhotoDateDetailOldView(DeprecatedMonthMixin, RedirectView):
-    permanent = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        super(PhotoDateDetailOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:photo-detail', kwargs={'year': kwargs['year'],
-                                                          'month': self.month_names[kwargs['month']],
-                                                          'day': kwargs['day'],
-                                                          'slug': kwargs['slug']})
-
-
-class PhotoDayArchiveOldView(DeprecatedMonthMixin, RedirectView):
-    permanent = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        super(PhotoDayArchiveOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:photo-archive-day', kwargs={'year': kwargs['year'],
-                                                               'month': self.month_names[kwargs['month']],
-                                                               'day': kwargs['day']})
-
-
-class PhotoMonthArchiveOldView(DeprecatedMonthMixin, RedirectView):
-    permanent = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        super(PhotoMonthArchiveOldView, self).get_redirect_url(*args, **kwargs)
-        return reverse('photologue:photo-archive-month', kwargs={'year': kwargs['year'],
-                                                                 'month': self.month_names[kwargs['month']]})

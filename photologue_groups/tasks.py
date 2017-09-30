@@ -6,7 +6,7 @@ from PIL import Image
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
-import photologue
+import photologue_groups
 from photologue.utils.utils import generate_thumbnail_path_video
 from skyfolk.celery import app
 from utils.media import create_thumbnail_video
@@ -63,7 +63,7 @@ def cropped_thumbnail(img, size):
 def generate_thumbnails(instance):
     exist_photo = True
     try:
-        photo_to_crop = photologue.models.Photo.objects.get(pk=instance)
+        photo_to_crop = photologue.models.PhotoGroup.objects.get(pk=instance)
     except ObjectDoesNotExist:
         exist_photo = False
         photo_to_crop = None
@@ -82,7 +82,7 @@ def generate_thumbnails(instance):
 def generate_video_thumbnail(instance):
     exist_video = True
     try:
-        video = photologue.models.Video.objects.get(pk=instance)
+        video = photologue.models.VideoGroup.objects.get(pk=instance)
     except ObjectDoesNotExist:
         exist_video = False
         video = None

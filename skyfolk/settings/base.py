@@ -51,6 +51,7 @@ THIRD_PARTY_APPS = (
     'avatar',  # Avatares para usuarios.
     'channels',  # django-channels
     'photologue',  # photologue original
+    'photologue_groups', # photologue groups
     'sortedm2m',
     'taggit',  # para etiquetas
     'el_pagination',  # Para paginacion

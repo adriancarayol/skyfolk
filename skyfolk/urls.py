@@ -58,6 +58,7 @@ urlpatterns = [
                                          namespace='notifications')),
     # django-photologue
     url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
+    url(r'^group/', include('photologue_groups.urls', namespace='photologue_groups')),  # photologue groups
     url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
     # django-dash URLs:
     # url(r'^dashboard/', include('dash.urls')),

@@ -25,7 +25,7 @@ from django.contrib.sites.models import Site
 from django.conf import settings
 from django.core.files.base import ContentFile
 from taggit.forms import TagField
-from .models import Photo, Video
+from .models import PhotoGroup, VideoGroup
 from .utils.utils import split_url, generate_path_video
 
 logger = logging.getLogger('photologue.forms')
@@ -120,7 +120,7 @@ class UploadZipForm(forms.Form):
             photo_title_root = self.cleaned_data['title_collection'] if self.cleaned_data['title_collection'] else None
 
             tags = self.cleaned_data['tags_collection']
-            photo = Photo.objects.create(title=photo_title_root,
+            photo = PhotoGroup.objects.create(title=photo_title_root,
                                          caption=self.cleaned_data['caption_collection'],
                                          is_public=not self.cleaned_data['is_public_collection'],
                                          owner=self.request.user)
@@ -194,7 +194,7 @@ class UploadFormPhoto(forms.ModelForm):
         return url_image
 
     class Meta:
-        model = Photo
+        model = PhotoGroup
         exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug',)
         help_texts = {
             'url_image': 'Introduce una URL con una imagen',
@@ -215,7 +215,7 @@ class EditFormPhoto(forms.ModelForm):
         self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
 
     class Meta:
-        model = Photo
+        model = PhotoGroup
         exclude = ('owner', 'date_added', 'sites',
                    'date_taken', 'slug', 'is_public', 'image',
                    'crop_from')
@@ -272,7 +272,7 @@ class UploadFormVideo(forms.ModelForm):
         return video
 
     class Meta:
-        model = Video
+        model = VideoGroup
         fields = ('name', 'caption', 'is_public', 'tags', 'video')
         help_texts = {
             'name': 'Añade un título al vídeo',
@@ -293,5 +293,5 @@ class EditFormVideo(forms.ModelForm):
         self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
 
     class Meta:
-        model = Video
+        model = VideoGroup
         exclude = ('owner', 'date_added', 'slug', 'is_public', 'video')

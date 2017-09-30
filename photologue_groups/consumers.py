@@ -1,7 +1,7 @@
 from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
 from user_profile.node_models import NodeProfile
-from .models import Photo, Video
+from .models import PhotoGroup, VideoGroup
 
 
 class PhotoConsumer(WebsocketConsumer):
@@ -18,8 +18,8 @@ class PhotoConsumer(WebsocketConsumer):
             raise Http404
 
         try:
-            self.photo = Photo.objects.only('owner').get(slug__exact=slug)
-        except Photo.DoesNotExist:
+            self.photo = PhotoGroup.objects.only('owner').get(slug__exact=slug)
+        except PhotoGroup.DoesNotExist:
             raise Http404
 
         super(PhotoConsumer, self).__init__(message, **kwargs)
@@ -64,8 +64,8 @@ class VideoConsumer(WebsocketConsumer):
             raise Http404
 
         try:
-            self.video = Video.objects.only('owner').get(slug__exact=slug)
-        except Photo.DoesNotExist:
+            self.video = VideoGroup.objects.only('owner').get(slug__exact=slug)
+        except VideoGroup.DoesNotExist:
             raise Http404
 
         super(VideoConsumer, self).__init__(message, **kwargs)

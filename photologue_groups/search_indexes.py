@@ -1,7 +1,7 @@
 from haystack import indexes
 
 from avatar.templatetags.avatar_tags import avatar_url
-from .models import Photo
+from .models import PhotoGroup
 
 
 class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
@@ -21,7 +21,7 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
     description = indexes.CharField(model_attr='caption')
 
     def get_model(self):
-        return Photo
+        return PhotoGroup
 
     def prepare_tags(self, obj):
         return [tag.name for tag in obj.tags.all()]
