@@ -11,16 +11,14 @@
                 {% if photo.tags.all %}
                     <div class="tags-content">
                         {% for tag in photo.tags.all %}
-                            <blockquote
-                                    onclick="location.href='{% url 'photologue:collection-list' photo.owner.username tag.name %}'">{{ tag.name }}</blockquote>
+                            <blockquote><a
+                                    href="{% url 'photologue:collection-list' username=photo.owner.username tag_slug=tag.name %}">{{ tag.name }}</a>
+                            </blockquote>
                         {% endfor %}
                     </div>
                 {% endif %}
                 {% if photo|classname == 'Photo' %}
-                    <img class="lazyload" data-src="
-
-
-                            {% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}"
+                    <img class="lazyload" data-src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}"
                          alt="{{ photo.title }}" title="{{ photo.title }}"
                          onclick="location.href='{{ photo.get_absolute_url }}'">
                 {% else %}
@@ -42,16 +40,16 @@
                 </div>
                 <div class="col l8 m8 s8 legend-user-data">
                     <a href="{% url "user_profile:profile" username=photo.owner.username %}">@{{ photo.owner.username }}</a>
-                        {% if photo|classname == 'Photo' %}
-                            <a href="{% url "photologue:pl-photo" slug=photo.slug %}" class="photo-title truncate">
-                                <i class="material-icons md-18">camera_alt</i>{{ photo.title }}</a>
-                        {% else %}
-                            <a href="{% url "photologue:pl-video" slug=photo.slug %}" class="photo-title truncate">
-                                <i class="material-icons md-18">videocam</i>
-                                {{ photo.name }}</a>
-                        {% endif %}
-                        <i class="truncate photo-date"><i
-                                class="material-icons md-18">access_time</i> {{ photo.date_added|naturaltime }}</i>
+                    {% if photo|classname == 'Photo' %}
+                        <a href="{% url "photologue:pl-photo" slug=photo.slug %}" class="photo-title truncate">
+                            <i class="material-icons md-18">camera_alt</i>{{ photo.title }}</a>
+                    {% else %}
+                        <a href="{% url "photologue:pl-video" slug=photo.slug %}" class="photo-title truncate">
+                            <i class="material-icons md-18">videocam</i>
+                            {{ photo.name }}</a>
+                    {% endif %}
+                    <i class="truncate photo-date"><i
+                            class="material-icons md-18">access_time</i> {{ photo.date_added|naturaltime }}</i>
                 </div>
             </div>
         </div>

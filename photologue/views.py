@@ -39,13 +39,14 @@ from .models import Photo, Video
 @login_required(login_url='accounts/login')
 @page_template("photologue/photo_gallery_page.html")
 def collection_list(request, username,
-                    tagname,
+                    tag_slug,
                     template='photologue/photo_gallery.html',
                     extra_context=None):
     """
     Busca fotografias con tags muy parecidos o iguales
     :return => Devuelve una lista de fotos con un parecido:
     """
+
     user = request.user
 
     # Para comprobar si tengo permisos para ver el contenido de la coleccion
@@ -63,14 +64,24 @@ def collection_list(request, username,
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
-    print('>>>>>>> TAGNAME {}'.format(tagname))
+    print('>>>>>>> TAGNAME {}'.format(tag_slug))
     if user.username == username:
-        object_list = Photo.objects.filter(owner__username=username,
-                                           tags__name__exact=tagname)
+        photos = Photo.objects.filter(owner__username=username,
+                                           tags__name__exact=tag_slug)
+        videos = Video.objects.filter(owner__username=username, tags__slug=tag_slug)
     else:
-        object_list = Photo.objects.filter(owner__username=username,
-                                           tags__name__exact=tagname, is_public=True)
-    context = {'object_list': object_list, 'form': form,
+        photos = Photo.objects.filter(owner__username=username,
+                                           tags__name__exact=tag_slug, is_public=True)
+        videos = Video.objects.filter(owner__username=username, tags__slug=tag_slug, is_public=True)
+
+    items = list(
+        sorted(
+            chain(videos, photos),
+            key=lambda objects: objects.date_added,
+            reverse=True
+        ))
+
+    context = {'object_list': items, 'form': form,
                'form_zip': form_zip, }
 
     if extra_context is not None:

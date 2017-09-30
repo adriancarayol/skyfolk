@@ -62,7 +62,7 @@ urlpatterns = [
     url(r'^submit_video/$',
         require_POST(login_required(upload_video)), name='upload-video'),
 
-    url(r'^multimedia/collection/by(?P<username>[\w-]+)/(?P<tagname>[^,]+)/$',
+    url(r'^multimedia/collection/by(?P<username>[\w-]+)/(?P<tag_slug>[\w-]+)/$',
         collection_list, name='collection-list'),
 
     url(r'^multimedia/(?P<username>[\w-]+)/$',

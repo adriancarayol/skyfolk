@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Q, Case, When, Value, IntegerField, OuterRef, Subquery
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
 from django.shortcuts import redirect
@@ -39,14 +39,15 @@ from user_groups.models import UserGroups
 # Collection views
 @login_required(login_url='accounts/login')
 @page_template("photologue/photo_gallery_page.html")
-def collection_list(request, username,
-                    tagname,
+def collection_list(request, slug,
+                    tag_slug,
                     template='photologue/photo_gallery.html',
                     extra_context=None):
     """
     Busca fotografias con tags muy parecidos o iguales
     :return => Devuelve una lista de fotos con un parecido:
     """
+
     user = request.user
 
     # Para comprobar si tengo permisos para ver el contenido de la coleccion
@@ -64,14 +65,24 @@ def collection_list(request, username,
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
-    print('>>>>>>> TAGNAME {}'.format(tagname))
+    print('>>>>>>> TAGNAME {}'.format(tag_slug))
     if user.username == username:
-        object_list = PhotoGroup.objects.filter(owner__username=username,
-                                           tags__name__exact=tagname)
+        photos = PhotoGroup.objects.filter(owner__username=username,
+                                           tags__name__exact=tag_slug)
+        videos = VideoGroup.objects.filter(owner__username=username, tags__slug=tag_slug)
     else:
-        object_list = PhotoGroup.objects.filter(owner__username=username,
-                                           tags__name__exact=tagname, is_public=True)
-    context = {'object_list': object_list, 'form': form,
+        photos = PhotoGroup.objects.filter(owner__username=username,
+                                           tags__name__exact=tag_slug, is_public=True)
+        videos = VideoGroup.objects.filter(owner__username=username, tags__slug=tag_slug, is_public=True)
+
+    items = list(
+        sorted(
+            chain(videos, photos),
+            key=lambda objects: objects.date_added,
+            reverse=True
+        ))
+
+    context = {'object_list': items, 'form': form,
                'form_zip': form_zip, }
 
     if extra_context is not None:
@@ -105,13 +116,13 @@ class PhotoListView(AjaxListView):
     def get_queryset(self):
         if self.request.user.id == self.object.owner_id:
             photos = PhotoGroup.objects.filter(group=self.object).select_related('owner',
-                                                                                        'effect').prefetch_related(
+                                                                                 'effect').prefetch_related(
                 'tags')
             videos = VideoGroup.objects.filter(group=self.object).select_related('owner').prefetch_related(
                 'tags')
         else:
             photos = PhotoGroup.objects.filter(group=self.object, is_public=True).select_related('owner',
-                                                                                                        'effect').prefetch_related(
+                                                                                                 'effect').prefetch_related(
                 'tags')
             videos = VideoGroup.objects.filter(group=self.object, is_public=True).select_related(
                 'owner').prefetch_related(
@@ -128,11 +139,10 @@ class PhotoListView(AjaxListView):
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)
-        user = self.request.user
         context['form'] = UploadFormPhoto()
         context['form_video'] = UploadFormVideo()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
-        context['user_gallery'] = self.object
+        context['group_gallery'] = self.object
         return context
 
     def user_pass_test(self):
@@ -156,17 +166,30 @@ photo_list = login_required(PhotoListView.as_view())
 
 def upload_photo(request):
     """
-    Función para subir una nueva foto a la galeria del usuario
+    Función para subir una nueva foto a la galeria del grupo
     """
     user = request.user
-    print('holaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-    if request.method == 'GET':
+
+    if request.method == 'POST':
         form = UploadFormPhoto(request.POST, request.FILES or None)
         if form.is_valid():
+            pk = form.cleaned_data['pk']
+
+            try:
+                group = UserGroups.objects.get(pk=pk)
+            except UserGroups.DoesNotExist:
+                raise Http404
+
+            if user.id != group.owner_id and not user.groups.filter(pk=pk).exists():
+                return HttpResponseForbidden("No tienes permiso para subir una imagen al grupo {}".format(group.name))
+
             obj = form.save(commit=False)
             obj.owner = user
+            obj.group_id = pk
+
             if 'image' in request.FILES:
                 crop_image(obj, request)
+
             obj.is_public = not form.cleaned_data['is_public']
 
             obj.save()
@@ -202,8 +225,19 @@ def upload_video(request):
     if request.method == 'POST':
         form = UploadFormVideo(request.POST, request.FILES or None)
         if form.is_valid():
+            pk = form.cleaned_data['pk']
+
+            try:
+                group = UserGroups.objects.get(pk=pk)
+            except UserGroups.DoesNotExist:
+                raise Http404
+
+            if user.id != group.owner_id and not user.groups.filter(pk=pk).exists():
+                return HttpResponseForbidden("No tienes permiso para subir una imagen al grupo {}".format(group.name))
+
             obj = form.save(commit=False)
             obj.owner = user
+            obj.group_id = pk
             obj.is_public = not form.cleaned_data['is_public']
 
             obj.save()
@@ -337,7 +371,7 @@ def edit_photo(request, photo_id):
     Permite al creador de la imagen
     editar los atributos title, caption y tags.
     """
-    photo = get_object_or_404(Photo, id=photo_id)
+    photo = get_object_or_404(PhotoGroup, id=photo_id)
     form = EditFormPhoto(request.POST or None, instance=photo)
     user = request.user
     if form.is_valid():
@@ -525,7 +559,7 @@ class VideoDetailView(DetailView):
         super(VideoDetailView, self).__init__()
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Video.objects.select_related('owner').prefetch_related('tags'),
+        return get_object_or_404(VideoGroup.objects.select_related('owner').prefetch_related('tags'),
                                  slug=self.kwargs['slug'])
 
     def dispatch(self, request, *args, **kwargs):

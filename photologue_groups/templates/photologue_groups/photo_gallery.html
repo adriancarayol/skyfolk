@@ -2,7 +2,7 @@
 {% load avatar_tags %}
 {% load i18n %}
 {% load humanize %}
-{% block title %} <title>Skyfolk / Media </title> {% endblock %}
+{% block title %} <title>Skyfolk / Media de {{ group_gallery.name }} </title> {% endblock %}
 
 {% block include_files %}
     <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
@@ -18,7 +18,7 @@
                         class="material-icons">add</i></a>
                 {% if object_list %}
                     <div class="row">
-                        {% include 'photologue/photo_gallery_page.html' %}
+                        {% include 'photologue_groups/photo_gallery_page.html' %}
                     </div>
                 {% endif %}
             </div> <!-- end container-gallery -->
@@ -35,7 +35,7 @@
                 <form id="submit-photo" class="avatar-form" action="{% url "photologue_groups:upload-photo" %}" method="post"
                       accept-charset="utf-8"
                       enctype="multipart/form-data">{% csrf_token %}
-                     
+                    <input type="number" value="{{ group_gallery.group_ptr_id }}" hidden name="pk">
                     <div class="row">
                         <div class="file-field input-field avatar-upload">
                             {{ form.image.errors }}
@@ -50,7 +50,7 @@
                             <input type="hidden" class="avatar-data" name="avatar_data">
                             <input type="hidden" class="is-cutted" name="avatar_cut" value="false">
                         </div>
-                    </div> {{ form.group }}
+                    </div>
                     <div class="row">
                         <a id="crop-image" class="waves-effect waves-light btn blue darken-1 right">Recortar
                             <i class="material-icons right">crop</i>
@@ -110,7 +110,7 @@
                 </form>
             </div>
             <div id="collection">
-                <form id="collection-form" method="post" action="{% url "photologue:upload-zip" %}" accept-charset="utf-8"
+                <form id="collection-form" method="post" action="{% url "photologue_groups:upload-zip" %}" accept-charset="utf-8"
                       enctype="multipart/form-data">{% csrf_token %}
                     <div class="row">
                         <div class="file-field input-field">
@@ -166,9 +166,10 @@
                 </form>
             </div>
             <div id="video">
-                <form id="form-video" class="video-form" action="{% url "photologue:upload-video" %}" method="post"
+                <form id="form-video" class="video-form" action="{% url "photologue_groups:upload-video" %}" method="post"
                       accept-charset="utf-8"
                       enctype="multipart/form-data">{% csrf_token %}
+                    <input type="number" value="{{ group_gallery.group_ptr_id }}" hidden name="pk">
                     <div class="row">
                         <div class="file-field input-field">
                             <div class="btn blue darken-1 waves-effect waves-light">

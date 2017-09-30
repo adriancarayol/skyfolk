@@ -18,7 +18,7 @@
 
 {% block content %}
     <div class="container">
-     {% if user.is_active %}
+        {% if user.is_active %}
             {% comment %}
             Formulario para citar un comentario
             {% endcomment %}
@@ -53,18 +53,20 @@
                     </form>
                 </div>
             </div>
-    {% endif %}
+        {% endif %}
         <div class="row">
             <div class="col l12 m12 s12 container-photo">
                 <div class="photo">
                     <div class="col l8 m12 s12 photo-body" data-id="{{ object.pk }}">
                         {% if object.image %}
                             <a href="{{ object.image.url }}">
-                                <img data-src="{{ object.image.url }}" class="thumbnail lazyload" alt="{{ object.title }}">
+                                <img data-src="{{ object.image.url }}" class="thumbnail lazyload"
+                                     alt="{{ object.title }}">
                             </a>
                         {% else %}
                             <a href="{{ object.url_image }}">
-                                <img data-src="{{ object.url_image }}" class="thumbnail lazyload" alt="{{ object.title }}">
+                                <img data-src="{{ object.url_image }}" class="thumbnail lazyload"
+                                     alt="{{ object.title }}">
                             </a>
                         {% endif %}
                         <div class="col s12 photo-details">
@@ -73,14 +75,18 @@
                             </div>
                             <div class="col l8 m8 s8 legend-user-data">
                                 <a href="/profile/{{ object.owner.username }}">@{{ object.owner.username }}</a>
-                                <i class="photo-title"><i class="material-icons md-18">camera_alt</i>{{ object.title }}{% if object.caption %}
-                                    <p>{{ object.caption|safe }} </p>{% endif %}</i>
-                                <i class="photo-date"><i class="material-icons">access_time</i> {% trans "Published" %} {{ object.date_added|naturaltime }}
+                                <i class="photo-title"><i class="material-icons md-18">camera_alt</i>{{ object.title }}
+                                        {% if object.caption %}
+                                            <p>{{ object.caption|safe }} </p>{% endif %}</i>
+                                <i class="photo-date"><i
+                                        class="material-icons">access_time</i> {% trans "Published" %} {{ object.date_added|naturaltime }}
                                 </i>
                             </div>
                             <div class="col l12 m12 s12 tags-content">
                                 {% for tag in object.tags.all %}
-                                    <blockquote>{{ tag.name }}</blockquote>
+                                    <blockquote><a
+                                            href="{% url 'photologue:collection-list' photo.owner.username tag.name %}">{{ tag.name }}</a>
+                                    </blockquote>
                                 {% endfor %}
                             </div>
                         </div>
@@ -137,12 +143,14 @@
                         <div class="row">
                             {% if previous %}
                                 <a href="{{ previous.get_absolute_url }}">
-                                    <img title="{{ previous }}" class="responsive-img lazyload" data-src="{% if previous.thumbnail %}{{ previous.thumbnail.url }}{% elif previous.image %}{{ previous.image.url }}{% else %}{{ previous.url_image }}{% endif %}">
+                                    <img title="{{ previous }}" class="responsive-img lazyload" data-src="
+                                            {% if previous.thumbnail %}{{ previous.thumbnail.url }}{% elif previous.image %}{{ previous.image.url }}{% else %}{{ previous.url_image }}{% endif %}">
                                 </a>
                             {% endif %}
                             {% if next %}
                                 <a href="{{ next.get_absolute_url }}">
-                                    <img title="{{ next }}" class="responsive-img lazyload" data-src="{% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
+                                    <img title="{{ next }}" class="responsive-img lazyload" data-src="
+                                            {% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
                                 </a>
                             {% endif %}
                         </div>
@@ -156,9 +164,9 @@
                         <div id="messages-wrapper">
                             {% if publications|length > 0 %}
                                 {% include "photologue/publications_entries.html" %}
-                                    <div class="progress loading_publications" style="display: none">
-                                        <div class="indeterminate blue darken-1"></div>
-                                    </div>
+                                <div class="progress loading_publications" style="display: none">
+                                    <div class="indeterminate blue darken-1"></div>
+                                </div>
 
                             {% else %}
                                 <div class="no-comments" id="without-comments">
@@ -170,13 +178,14 @@
                                     {{ publication_photo.csrftoken }}
                                     {{ publication_photo }}
                                     <div class="file-field input-field">
-                                      <div class="btn">
-                                        <span>Imágenes</span>
-                                        <input id="id_image" name="image" type="file" multiple>
-                                      </div>
-                                      <div class="file-path-wrapper">
-                                        <input class="file-path validate" type="text" placeholder="Upload one or more files">
-                                      </div>
+                                        <div class="btn">
+                                            <span>Imágenes</span>
+                                            <input id="id_image" name="image" type="file" multiple>
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text"
+                                                   placeholder="Upload one or more files">
+                                        </div>
                                     </div>
                                     <button type="submit" id="send_form_photo_publi"
                                             class="waves-effect waves-light btn right blue">

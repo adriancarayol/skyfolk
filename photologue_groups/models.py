@@ -405,7 +405,7 @@ class VideoGroup(models.Model):
     def save(self, created=True, *args, **kwargs):
         if created:
             self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
-        super(Video, self).save(*args, **kwargs)
+        super(VideoGroup, self).save(*args, **kwargs)
 
     def get_previous_in_gallery(self):
         """Find the neighbour of this photo in the supplied publications_gallery.
@@ -414,7 +414,7 @@ class VideoGroup(models.Model):
         if not self.is_public:
             # raise ValueError('Cannot determine neighbours of a non-public photo.')
             return None
-        photos = Video.objects.filter(owner=self.owner, is_public=True)
+        photos = VideoGroup.objects.filter(owner=self.owner, is_public=True)
         if self not in photos:
             raise ValueError('Photo does not belong to publications_gallery.')
         previous = None
@@ -431,7 +431,7 @@ class VideoGroup(models.Model):
         if not self.is_public:
             return None
             # raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = Video.objects.filter(owner=self.owner, is_public=True)
+        photos = VideoGroup.objects.filter(owner=self.owner, is_public=True)
         if self not in photos:
             raise ValueError('Photo does not belong to publications_gallery.')
         matched = False
@@ -446,7 +446,7 @@ class VideoGroup(models.Model):
         """Find the neighbour of this photo in the supplied publications_gallery.
         We assume that the publications_gallery and all its photos are on the same site.
         """
-        photos = Video.objects.filter(owner=self.owner)
+        photos = VideoGroup.objects.filter(owner=self.owner)
         if self not in photos:
             raise ValueError('Photo does not belong to publications_gallery.')
         previous = None
@@ -460,7 +460,7 @@ class VideoGroup(models.Model):
         """Find the neighbour of this photo in the supplied publications_gallery.
         We assume that the publications_gallery and all its photos are on the same site.
         """
-        photos = Video.objects.filter(owner=self.owner)
+        photos = VideoGroup.objects.filter(owner=self.owner)
         if self not in photos:
             raise ValueError('Photo does not belong to publications_gallery.')
         matched = False
@@ -470,24 +470,6 @@ class VideoGroup(models.Model):
             if photo == self:
                 matched = True
         return None
-
-
-
-
-def add_default_site(instance, created, **kwargs):
-    """
-    Called via Django's signals when an instance is created.
-    In case PHOTOLOGUE_MULTISITE is False, the current site (i.e.
-    ``settings.SITE_ID``) will always be added to the site relations if none are
-    present.
-    """
-    if not created:
-        return
-    if getattr(settings, 'PHOTOLOGUE_MULTISITE', False):
-        return
-    if instance.sites.exists():
-        return
-    instance.sites.add(Site.objects.get_current())
 
 
 def generate_thumb(instance, created, **kwargs):
@@ -510,6 +492,6 @@ def generate_video_thumb(instance, created, **kwargs):
         generate_video_thumbnail.delay(instance=instance.pk)
 
 
-post_save.connect(add_default_site, sender=PhotoGroup)
+# post_save.connect(add_default_site, sender=PhotoGroup)
 post_save.connect(generate_thumb, sender=PhotoGroup)
 post_save.connect(generate_video_thumb, sender=VideoGroup)

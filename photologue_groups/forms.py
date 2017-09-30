@@ -121,9 +121,9 @@ class UploadZipForm(forms.Form):
 
             tags = self.cleaned_data['tags_collection']
             photo = PhotoGroup.objects.create(title=photo_title_root,
-                                         caption=self.cleaned_data['caption_collection'],
-                                         is_public=not self.cleaned_data['is_public_collection'],
-                                         owner=self.request.user)
+                                              caption=self.cleaned_data['caption_collection'],
+                                              is_public=not self.cleaned_data['is_public_collection'],
+                                              owner=self.request.user)
             # first add title tag.
             photo.tags.add(self.cleaned_data['title_collection'])
             for tag in tags:
@@ -165,6 +165,7 @@ class UploadFormPhoto(forms.ModelForm):
     """
     Permite al usuario subir una nueva imagen
     """
+    pk = forms.IntegerField(required=True)
 
     def __init__(self, *args, **kwargs):
         super(UploadFormPhoto, self).__init__(*args, **kwargs)
@@ -172,6 +173,7 @@ class UploadFormPhoto(forms.ModelForm):
         self.fields['image'].widget.attrs.update({'class': 'avatar-input', 'name': 'avatar_file'})
         self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
         self.fields['is_public'].initial = False
+        self.fields['pk'].hidden = True
 
     def clean(self):
         cleaned_data = super(UploadFormPhoto, self).clean()
@@ -195,7 +197,7 @@ class UploadFormPhoto(forms.ModelForm):
 
     class Meta:
         model = PhotoGroup
-        exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug',)
+        exclude = ('owner', 'date_added', 'sites', 'date_taken', 'slug', 'group')
         help_texts = {
             'url_image': 'Introduce una URL con una imagen',
             'title': 'Añade un titulo a la imágen',
@@ -226,6 +228,8 @@ class UploadFormVideo(forms.ModelForm):
     Permite al usuario subir un nuevo video
     """
 
+    pk = forms.IntegerField(required=True)
+
     def __init__(self, *args, **kwargs):
         super(UploadFormVideo, self).__init__(*args, **kwargs)
         self.fields['video'].required = False
@@ -235,6 +239,7 @@ class UploadFormVideo(forms.ModelForm):
         self.fields['is_public'].widget.attrs.update({'id': 'id_is_public_video'})
         self.fields['tags'].widget.attrs.update({'id': 'id_tags_video'})
         self.fields['name'].widget.attrs.update({'id': 'id_name_video'})
+        self.fields['pk'].hidden = True
 
     def clean_video(self):
         video = self.cleaned_data.get('video', None)
@@ -261,7 +266,7 @@ class UploadFormVideo(forms.ModelForm):
                 os.makedirs(os.path.dirname(absolut_path))
 
             return_code = convert_video_to_mp4(tmp.name, absolut_path)
-            
+
             if return_code:
                 raise forms.ValidationError('Hubo un error al procesar tu vídeo, intentalo de nuevo.')
 
@@ -294,4 +299,4 @@ class EditFormVideo(forms.ModelForm):
 
     class Meta:
         model = VideoGroup
-        exclude = ('owner', 'date_added', 'slug', 'is_public', 'video')
+        exclude = ('owner', 'date_added', 'slug', 'is_public', 'video', 'group')

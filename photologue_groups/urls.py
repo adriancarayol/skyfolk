@@ -53,16 +53,16 @@ urlpatterns = [
     url(r'^edit/video/(?P<video_id>\d+)/$',
         require_POST(edit_video), name='edit-video'),
 
-    url(r'^submit_zip/$',
+    url(r'^multimedia/submit_zip/$',
         require_POST(login_required(upload_zip_form)), name='upload-zip'),
 
-    url(r'^submit_photo/$',
+    url(r'^multimedia/submit_photo/$',
         require_POST(login_required(upload_photo)), name='upload-photo'),
 
-    url(r'^submit_video/$',
+    url(r'^multimedia/submit_video/$',
         require_POST(login_required(upload_video)), name='upload-video'),
 
-    url(r'^multimedia/collection/by(?P<slug>[\w-]+)/(?P<tagname>[^,]+)/$',
+    url(r'^multimedia/collection/by(?P<slug>[\w-]+)/(?P<tag_slug>[\w-]+)/$',
         collection_list, name='collection-list'),
 
     url(r'^multimedia/(?P<slug>[\w-]+)/$',
