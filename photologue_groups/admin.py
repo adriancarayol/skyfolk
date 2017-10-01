@@ -26,8 +26,8 @@ class PhotoAdminForm(forms.ModelForm):
 
 class PhotoAdmin(admin.ModelAdmin):
     list_display = ('title', 'date_taken', 'date_added',
-                    'is_public', 'view_count', 'admin_thumbnail')
-    list_filter = ['date_added', 'is_public']
+                    'view_count', 'admin_thumbnail')
+    list_filter = ['date_added', ]
     if MULTISITE:
         list_filter.append('sites')
     search_fields = ['title', 'slug', 'caption']

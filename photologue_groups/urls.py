@@ -35,11 +35,11 @@ urlpatterns = [
     #     PhotoArchiveIndexView.as_view(),
     #     name='pl-photo-archive'),
 
-    url(r'^photo/(?P<slug>[\-\d\w]+)/$',
+    url(r'^photo/(?P<slug>[\w-]+)/$',
         login_required(PhotoDetailView.as_view()),
         name='pl-photo'),
 
-    url(r'^video/(?P<slug>[\-\d\w]+)/$',
+    url(r'^video/(?P<slug>[\w-]+)/$',
         login_required(VideoDetailView.as_view()),
         name='pl-video'),
 

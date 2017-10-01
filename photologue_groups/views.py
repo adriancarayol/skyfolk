@@ -14,6 +14,7 @@ from django.http import QueryDict, HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
 from django.utils.six import BytesIO
 from django.views.generic.base import RedirectView
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
@@ -29,6 +30,7 @@ from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdi
     PublicationVideoForm
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto, PublicationVideo
+from user_groups.decorators import user_can_view_group_info
 from user_profile.node_models import NodeProfile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
@@ -50,30 +52,25 @@ def collection_list(request, slug,
 
     user = request.user
 
-    # Para comprobar si tengo permisos para ver el contenido de la coleccion
     try:
-        user_profile = NodeProfile.nodes.get(title=username)
-        m = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
+        group = UserGroups.objects.get(slug=slug)
+    except UserGroups.DoesNotExist:
         raise Http404
 
-    visibility = user_profile.is_visible(m)
+    # Para comprobar si tengo permisos para ver el contenido de la coleccion
 
-    if visibility and visibility != 'all':
-        return redirect('user_profile:profile', username=user_profile.title)
+
+    if not group.is_public and user.id != group.owner_id:
+        is_member = user.groups.filter(id=group.group_ptr_id).exists()
+        if not is_member:
+            return redirect('user_groups:group-profile', groupname=group.slug)
 
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
-    print('>>>>>>> TAGNAME {}'.format(tag_slug))
-    if user.username == username:
-        photos = PhotoGroup.objects.filter(owner__username=username,
-                                           tags__name__exact=tag_slug)
-        videos = VideoGroup.objects.filter(owner__username=username, tags__slug=tag_slug)
-    else:
-        photos = PhotoGroup.objects.filter(owner__username=username,
-                                           tags__name__exact=tag_slug, is_public=True)
-        videos = VideoGroup.objects.filter(owner__username=username, tags__slug=tag_slug, is_public=True)
+    photos = PhotoGroup.objects.filter(group=group,
+                                       tags__name__exact=tag_slug)
+    videos = VideoGroup.objects.filter(group=group, tags__slug=tag_slug)
 
     items = list(
         sorted(
@@ -100,6 +97,7 @@ class PhotoListView(AjaxListView):
         self.object = None
         super(PhotoListView, self).__init__()
 
+    @method_decorator(user_can_view_group_info)
     def dispatch(self, request, *args, **kwargs):
         slug = self.kwargs.pop('slug')
 
@@ -108,25 +106,15 @@ class PhotoListView(AjaxListView):
         except UserGroups.DoesNotExist:
             raise Http404
 
-        if self.user_pass_test():
-            return super(PhotoListView, self).dispatch(request, *args, **kwargs)
-        else:
-            return redirect('user_groups:group-profile', groupname=slug)
+        return super(PhotoListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        if self.request.user.id == self.object.owner_id:
-            photos = PhotoGroup.objects.filter(group=self.object).select_related('owner',
-                                                                                 'effect').prefetch_related(
-                'tags')
-            videos = VideoGroup.objects.filter(group=self.object).select_related('owner').prefetch_related(
-                'tags')
-        else:
-            photos = PhotoGroup.objects.filter(group=self.object, is_public=True).select_related('owner',
-                                                                                                 'effect').prefetch_related(
-                'tags')
-            videos = VideoGroup.objects.filter(group=self.object, is_public=True).select_related(
-                'owner').prefetch_related(
-                'tags')
+
+        photos = PhotoGroup.objects.filter(group=self.object).select_related('owner',
+                                                                             'effect').prefetch_related(
+            'tags')
+        videos = VideoGroup.objects.filter(group=self.object).select_related('owner').prefetch_related(
+            'tags')
 
         items = list(
             sorted(
@@ -145,21 +133,6 @@ class PhotoListView(AjaxListView):
         context['group_gallery'] = self.object
         return context
 
-    def user_pass_test(self):
-        """
-        Comprueba si un usuario tiene permisos
-        para ver la galeria solicitada.
-        """
-        user = self.request.user
-        user_profile = NodeProfile.nodes.get(user_id=self.object.owner_id)
-        m = NodeProfile.nodes.get(user_id=user.id)
-
-        visibility = user_profile.is_visible(m)
-
-        if visibility and visibility != 'all':
-            return False
-        return True
-
 
 photo_list = login_required(PhotoListView.as_view())
 
@@ -172,6 +145,7 @@ def upload_photo(request):
 
     if request.method == 'POST':
         form = UploadFormPhoto(request.POST, request.FILES or None)
+
         if form.is_valid():
             pk = form.cleaned_data['pk']
 
@@ -180,7 +154,7 @@ def upload_photo(request):
             except UserGroups.DoesNotExist:
                 raise Http404
 
-            if user.id != group.owner_id and not user.groups.filter(pk=pk).exists():
+            if not group.is_public and user.id != group.owner_id and not user.groups.filter(pk=pk).exists():
                 return HttpResponseForbidden("No tienes permiso para subir una imagen al grupo {}".format(group.name))
 
             obj = form.save(commit=False)
@@ -190,15 +164,14 @@ def upload_photo(request):
             if 'image' in request.FILES:
                 crop_image(obj, request)
 
-            obj.is_public = not form.cleaned_data['is_public']
-
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
+
             data = {
                 'result': True,
                 'state': 200,
                 'message': 'Success',
-                'content': render_to_string(request=request, template_name='channels/new_photo_gallery.html',
+                'content': render_to_string(request=request, template_name='channels/new_photo_group_gallery.html',
                                             context={'photo': obj})
             }
         else:
@@ -232,13 +205,12 @@ def upload_video(request):
             except UserGroups.DoesNotExist:
                 raise Http404
 
-            if user.id != group.owner_id and not user.groups.filter(pk=pk).exists():
+            if not group.is_public and user.id != group.owner_id and not user.groups.filter(pk=pk).exists():
                 return HttpResponseForbidden("No tienes permiso para subir una imagen al grupo {}".format(group.name))
 
             obj = form.save(commit=False)
             obj.owner = user
             obj.group_id = pk
-            obj.is_public = not form.cleaned_data['is_public']
 
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
@@ -322,14 +294,24 @@ def upload_zip_form(request):
     if request.method == 'POST':
         form = UploadZipForm(data=request.POST, files=request.FILES, request=request)
         if form.is_valid():
+            group_id = form.cleaned_data['group']
+
+            try:
+                group = UserGroups.objects.get(id=group_id)
+            except UserGroups.DoesNotExist:
+                raise Http404
+
+            if not group.is_public and user.id != group.owner_id and not user.groups.filter(id=group.id).exists():
+                return HttpResponseForbidden("No puedes subir una colección a este grupo.")
+
             form.save(request=request)
-            return redirect('/multimedia/' + user.username + '/')
+            return redirect(reverse('photologue_groups:photo-list', kwargs={'slug': group.id}))
         else:
             # Cambiar por JsonResponse
-            return redirect('/multimedia/' + user.username + '/')
+            return JsonResponse({'response': False})
     else:
         # Cambiar por JsonResponse
-        return redirect('/multimedia/' + user.username + '/')
+        return JsonResponse({'response': False})
 
 
 @login_required()
@@ -341,13 +323,17 @@ def delete_photo(request):
     if request.method == 'DELETE':
         user = request.user
         _id = int(QueryDict(request.body).get('id'))
-        photo_to_delete = get_object_or_404(PhotoGroup, id=_id)
+        photo_to_delete = get_object_or_404(PhotoGroup.objects.select_related('group'), id=_id)
 
-        if user.pk == photo_to_delete.owner_id:
+        if not photo_to_delete.group.is_public and user.id != photo_to_delete.group.owner_id:
+            if not user.groups.filter(id=photo_to_delete.group.id).exists():
+                return HttpResponseForbidden("No tienes permisos para eliminar esta imagen.")
+
+        if user.pk == photo_to_delete.owner_id or photo_to_delete.group.owner_id == user.pk:
             photo_to_delete.delete()
             response_data = {}
             response_data['msg'] = '¡Imagen eliminada!.'
-            response_data['author'] = user.username
+            response_data['url'] = reverse('photologue_groups:photo-list', kwargs={'slug': photo_to_delete.group.slug})
 
             return HttpResponse(
                 json.dumps(response_data),
@@ -371,11 +357,17 @@ def edit_photo(request, photo_id):
     Permite al creador de la imagen
     editar los atributos title, caption y tags.
     """
-    photo = get_object_or_404(PhotoGroup, id=photo_id)
-    form = EditFormPhoto(request.POST or None, instance=photo)
     user = request.user
+    photo = get_object_or_404(PhotoGroup.objects.select_related('group'), id=photo_id)
+
+    if not photo.group.is_public and user.id != photo.group.owner_id:
+        if not user.groups.filter(id=photo.group.id).exists():
+            return HttpResponseForbidden("No tienes permisos para eliminar esta imagen.")
+
+    form = EditFormPhoto(request.POST or None, instance=photo)
+
     if form.is_valid():
-        if photo.owner.pk == user.pk:
+        if photo.owner.pk == user.pk or photo.group.owner_id == user.pk:
             response_data = {'msg': 'Photo was edited!'}
             form.save()
         else:
@@ -384,8 +376,9 @@ def edit_photo(request, photo_id):
                 json.dumps(response_data),
                 content_type="application/json"
             )
-        return redirect('/multimedia/' + user.username + '/')
+        return redirect(reverse('photologue_groups:photo-list', kwargs={'slug': photo.group.slug}))
     else:
+        print(form.errors)
         return HttpResponse(
             json.dumps({'Nothing to see': 'This isnt happening'}),
             content_type='application/json'
@@ -398,11 +391,18 @@ def edit_video(request, video_id):
     Permite al creador de la imagen
     editar los atributos title, caption y tags.
     """
-    photo = get_object_or_404(VideoGroup, id=video_id)
-    form = EditFormVideo(request.POST or None, instance=photo)
     user = request.user
+
+    video = get_object_or_404(VideoGroup.objects.select_related('group'), id=video_id)
+
+    if not video.group.is_public and user.id != video.group.owner_id:
+        if not user.groups.filter(id=video.group.id).exists():
+            return HttpResponseForbidden("No tienes permisos para eliminar esta imagen.")
+
+    form = EditFormVideo(request.POST or None, instance=video)
+
     if form.is_valid():
-        if photo.owner.pk == user.pk:
+        if video.owner.pk == user.pk or video.group.owner_id == user.pk:
             response_data = {'msg': '¡Video editado con éxito!'}
             form.save()
         else:
@@ -411,7 +411,7 @@ def edit_video(request, video_id):
                 json.dumps(response_data),
                 content_type="application/json"
             )
-        return redirect('/multimedia/' + user.username + '/')
+        return redirect(reverse('photologue_groups:photo-list', kwargs={'slug': video.group.slug}))
     else:
         return HttpResponse(
             json.dumps({'Nothing to see': 'This isnt happening'}),
@@ -422,39 +422,23 @@ class PhotoDetailView(DetailView):
     """
     Cogemos el parametro de la url (para mostrar los detalles de la foto)
     """
-    template_name = 'photologue/photo_detail.html'
+    template_name = 'photologue_groups/photo_detail.html'
     model = PhotoGroup
 
-    def __init__(self):
-        self.username = None
-        self.photo = None
-        super(PhotoDetailView, self).__init__()
-
     def dispatch(self, request, *args, **kwargs):
-        self.photo = self.get_object(PhotoGroup.objects.filter(slug=self.kwargs['slug']) \
-                                     .select_related('owner', 'effect') \
-                                     .prefetch_related('tags'))
-        self.username = self.photo.owner.username
+        self.object = self.get_object(PhotoGroup.objects.filter(slug=self.kwargs['slug']) \
+                                      .select_related('owner', 'group') \
+                                      .prefetch_related('tags'))
 
         if self.user_pass_test():
             return super(PhotoDetailView, self).dispatch(request, *args, **kwargs)
         else:
-            return redirect('user_profile:profile', username=self.username)
+            return redirect('user_groups:group-profile', groupname=self.object.group.slug)
 
     def get_context_data(self, **kwargs):
         context = super(PhotoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         page = self.request.GET.get('page', 1)
-
-        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
-                                                         deleted=False).order_by().values(
-            'shared_photo_publication__id')
-
-        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-            When(author_id=user.id, then=Value(1))
-        ))).values('have_shared')
 
         paginator = Paginator(
             PublicationPhoto.objects.annotate(likes=Count('user_give_me_like'),
@@ -464,10 +448,9 @@ class PhotoDetailView(DetailView):
                 )), have_hate=Count(Case(
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
-                ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-                have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(
+                ))).filter(
                 ~Q(p_author__profile__from_blocked__to_blocked=user.profile)
-                & Q(board_photo_id=self.photo.id),
+                & Q(board_photo_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
                 .select_related('p_author',
@@ -483,42 +466,30 @@ class PhotoDetailView(DetailView):
         context['publications'] = publications
 
         if self.request.is_ajax():
-            self.template_name = 'photologue/publications_entries.html'
+            self.template_name = 'photologue_groups/publications_entries.html'
             return context
 
-        initial_photo = {'p_author': user.pk, 'board_photo': self.photo}
+        initial_photo = {'p_author': user.pk, 'board_photo': self.object}
 
-        context['form'] = EditFormPhoto(instance=self.photo)
+        context['form'] = EditFormPhoto(instance=self.object)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
         context['publication_shared'] = SharedPublicationForm()
         context['publication_edit'] = PublicationPhotoEdit()
 
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
-        if self.photo.is_public:
-            try:
-                next = self.photo.get_next_in_gallery()
-                context['next'] = next
-            except PhotoGroup.DoesNotExist:
-                pass
-            # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
-            try:
-                previous = self.photo.get_previous_in_gallery()
-                context['previous'] = previous
-            except PhotoGroup.DoesNotExist:
-                pass
-        elif not self.photo.is_public and self.photo.owner.id == user.id:
-            try:
-                next = self.photo.get_next_in_own_gallery()
 
-                context['next'] = next
-            except PhotoGroup.DoesNotExist:
-                pass
-            # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
-            try:
-                previous = self.photo.get_previous_in_own_gallery()
-                context['previous'] = previous
-            except PhotoGroup.DoesNotExist:
-                pass
+        try:
+            next = self.object.get_next_in_gallery()
+            context['next'] = next
+        except PhotoGroup.DoesNotExist:
+            pass
+        # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
+        try:
+            previous = self.object.get_previous_in_gallery()
+            context['previous'] = previous
+        except PhotoGroup.DoesNotExist:
+            pass
+
         return context
 
     def user_pass_test(self):
@@ -527,21 +498,12 @@ class PhotoDetailView(DetailView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        if not self.photo.is_public and user.id != self.photo.owner.id:
-            return False
-        elif user.id == self.photo.owner.id:
-            return True
 
-        try:
-            user_profile = NodeProfile.nodes.get(title=self.username)
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            raise Http404
+        if not self.object.group.is_public and self.object.group.owner_id != user.id:
+            is_member = user.groups.filter(id=self.object.group.id)
+            if not is_member:
+                return False
 
-        visibility = user_profile.is_visible(n)
-
-        if visibility and visibility != 'all':
-            return False
         return True
 
 
@@ -551,7 +513,7 @@ class VideoDetailView(DetailView):
     """
     Cogemos el parametro de la url (para mostrar los detalles de la foto)
     """
-    template_name = 'photologue/videos/video_detail.html'
+    template_name = 'photologue_groups/videos/video_detail.html'
     model = VideoGroup
 
     def __init__(self):
@@ -565,27 +527,15 @@ class VideoDetailView(DetailView):
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        self.username = self.object.owner.username
-
         if self.user_pass_test():
             return super(VideoDetailView, self).dispatch(request, *args, **kwargs)
         else:
-            return redirect('user_profile:profile', username=self.username)
+            return redirect('user_groups:group-profile', groupname=self.object.group.slug)
 
     def get_context_data(self, **kwargs):
         context = super(VideoDetailView, self).get_context_data(**kwargs)
         user = self.request.user
         page = self.request.GET.get('page', 1)
-
-        shared_publications = Publication.objects.filter(shared_video_publication__id=OuterRef('pk'),
-                                                         deleted=False).order_by().values(
-            'shared_photo_publication__id')
-
-        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-            When(author_id=user.id, then=Value(1))
-        ))).values('have_shared')
 
         paginator = Paginator(
             PublicationVideo.objects.annotate(likes=Count('user_give_me_like'),
@@ -595,14 +545,13 @@ class VideoDetailView(DetailView):
                 )), have_hate=Count(Case(
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
-                ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-                have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(
+                ))).filter(
                 ~Q(author__profile__from_blocked__to_blocked=user.profile)
                 & Q(board_video_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
-                .prefetch_related('publication_video_extra_content', 'images', 'videos') \
-                .select_related('author',
-                                'board_video', 'parent'), 10)
+                .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
+                .select_related('p_author',
+                                'board_photo', 'parent'), 10)
 
         try:
             publications = paginator.page(page)
@@ -614,7 +563,7 @@ class VideoDetailView(DetailView):
         context['publications'] = publications
 
         if self.request.is_ajax():
-            self.template_name = 'photologue/videos/publications_entries.html'
+            self.template_name = 'photologue_groups/videos/publications_entries.html'
             return context
 
         initial_video = {'author': user.pk, 'board_video': self.object}
@@ -624,31 +573,19 @@ class VideoDetailView(DetailView):
         context['publication_edit'] = PublicationVideoEdit()
 
         # Obtenemos la siguiente imagen y comprobamos si pertenece a nuestra propiedad
-        if self.object.is_public:
-            try:
-                next = self.object.get_next_in_gallery()
-                context['next'] = next
-            except PhotoGroup.DoesNotExist:
-                pass
-            # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
-            try:
-                previous = self.object.get_previous_in_gallery()
-                context['previous'] = previous
-            except PhotoGroup.DoesNotExist:
-                pass
-        elif not self.object.is_public and self.object.owner.id == user.id:
-            try:
-                next = self.object.get_next_in_own_gallery()
 
-                context['next'] = next
-            except PhotoGroup.DoesNotExist:
-                pass
-            # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
-            try:
-                previous = self.object.get_previous_in_own_gallery()
-                context['previous'] = previous
-            except PhotoGroup.DoesNotExist:
-                pass
+        try:
+            next = self.object.get_next_in_gallery()
+            context['next'] = next
+        except PhotoGroup.DoesNotExist:
+            pass
+        # Obtenemos la anterior imagen y comprobamos si pertenece a nuestra propiedad
+        try:
+            previous = self.object.get_previous_in_gallery()
+            context['previous'] = previous
+        except PhotoGroup.DoesNotExist:
+            pass
+
         return context
 
     def user_pass_test(self):
@@ -657,21 +594,12 @@ class VideoDetailView(DetailView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        if not self.object.is_public and user.id != self.object.owner.id:
-            return False
-        elif user.id == self.object.owner.id:
-            return True
 
-        try:
-            user_profile = NodeProfile.nodes.get(title=self.username)
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            raise Http404
+        if not self.object.group.is_public and self.object.group.owner_id != user.id:
+            is_member = user.groups.filter(id=self.object.group.id)
+            if not is_member:
+                return False
 
-        visibility = user_profile.is_visible(n)
-
-        if visibility and visibility != 'all':
-            return False
         return True
 
 
@@ -684,13 +612,18 @@ def delete_video(request):
     if request.method == 'DELETE':
         user = request.user
         _id = int(QueryDict(request.body).get('id'))
-        video_to_delete = get_object_or_404(VideoGroup, id=_id)
+        video_to_delete = get_object_or_404(VideoGroup.objects.select_related('group'), id=_id)
 
-        if user.pk == video_to_delete.owner_id:
+        if not video_to_delete.group.is_public and user.id != video_to_delete.group.owner_id:
+            if not user.groups.filter(id=video_to_delete.group.id).exists():
+                return HttpResponseForbidden("No tienes permisos para eliminar este video.")
+
+        if user.pk == video_to_delete.owner_id or video_to_delete.group.owner_id == user.pk:
             video_to_delete.delete()
             response_data = {}
+            response_data = {}
             response_data['msg'] = '¡Video eliminado!.'
-            response_data['author'] = user.username
+            response_data['url'] = reverse('photologue_groups:photo-list', kwargs={'slug': video_to_delete.group.slug})
 
             return HttpResponse(
                 json.dumps(response_data),

@@ -280,8 +280,10 @@
                     }
 
                     this.$avatarForm.trigger("reset");
+
                     if (data.content) {
-                        $('.container-gallery .row').prepend(data.content);
+                        console.log(data.content);
+                        $('.container-gallery > .row').prepend(data.content);
                     }
                 } else {
                     console.log(data.message);

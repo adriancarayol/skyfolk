@@ -197,10 +197,6 @@ class PhotoGroup(ImageModel):
 
     date_added = models.DateTimeField(_('date added'),
                                       default=now)
-
-    is_public = models.BooleanField(_('is public'),
-                                    default=True,
-                                    help_text=_('Public photographs will be displayed in the default views.'))
     
     tags = TaggableManager(blank=True)
 
@@ -222,13 +218,21 @@ class PhotoGroup(ImageModel):
         verbose_name = _("photo")
         verbose_name_plural = _("photos")
 
+    @property
+    def group_name(self):
+        """
+        Devuelve el nombre del canal para enviar notificaciones
+        """
+        return "photos-group-%s" % self.pk
+
     def __str__(self):
         return self.title
 
     def save(self, created=True, *args, **kwargs):
-        if created and not self.slug:
-            self.slug = uuslug(self.title, instance=self)
+        if created:
+            self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
             self.get_remote_image()
+
         super(PhotoGroup, self).save(*args, **kwargs)
 
     def get_remote_image(self):
@@ -236,10 +240,11 @@ class PhotoGroup(ImageModel):
         Obtiene la url introducida por el usuario
         """
 
-        if not self.image:
+        if not self.url_image:
             return
 
         if self.url_image and not self.image:
+
             if len(self.url_image) > 255:
                 raise ValueError('URL is very long.')
 
@@ -266,7 +271,7 @@ class PhotoGroup(ImageModel):
                 self.image.save(filename, django_file)
 
     def get_absolute_url(self):
-        return reverse('photologue:pl-photo', args=[self.slug])
+        return reverse('photologue_groups:pl-photo', args=[self.slug])
 
     def public_galleries(self):
         """Return the public galleries to which this photo belongs."""
@@ -276,10 +281,8 @@ class PhotoGroup(ImageModel):
         """Find the neighbour of this photo in the supplied publications_gallery.
         We assume that the publications_gallery and all its photos are on the same site.
         """
-        if not self.is_public:
-            # raise ValueError('Cannot determine neighbours of a non-public photo.')
-            return None
-        photos = PhotoGroup.objects.filter(owner=self.owner, is_public=True)
+
+        photos = PhotoGroup.objects.filter(group=self.group)
         if self not in photos:
             raise ValueError('Photo does not belong to publications_gallery.')
         previous = None
@@ -293,39 +296,7 @@ class PhotoGroup(ImageModel):
         """Find the neighbour of this photo in the supplied publications_gallery.
         We assume that the publications_gallery and all its photos are on the same site.
         """
-        if not self.is_public:
-            return None
-            # raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = PhotoGroup.objects.filter(owner=self.owner, is_public=True)
-        if self not in photos:
-            raise ValueError('Photo does not belong to publications_gallery.')
-        matched = False
-        for photo in photos:
-            if matched:
-                return photo
-            if photo == self:
-                matched = True
-        return None
-
-    def get_previous_in_own_gallery(self):
-        """Find the neighbour of this photo in the supplied publications_gallery.
-        We assume that the publications_gallery and all its photos are on the same site.
-        """
-        photos = PhotoGroup.objects.filter(owner=self.owner)
-        if self not in photos:
-            raise ValueError('Photo does not belong to publications_gallery.')
-        previous = None
-        for photo in photos:
-            if photo == self:
-                return previous
-            previous = photo
-        return None
-
-    def get_next_in_own_gallery(self):
-        """Find the neighbour of this photo in the supplied publications_gallery.
-        We assume that the publications_gallery and all its photos are on the same site.
-        """
-        photos = PhotoGroup.objects.filter(owner=self.owner)
+        photos = PhotoGroup.objects.filter(group=self.group)
         if self not in photos:
             raise ValueError('Photo does not belong to publications_gallery.')
         matched = False
@@ -368,9 +339,7 @@ class VideoGroup(models.Model):
                             help_text=_('A "slug" is a unique URL-friendly title for an object.'))
     caption = models.TextField(_('caption'),
                                blank=True, max_length=1000)
-    is_public = models.BooleanField(_('is public'),
-                                    default=True,
-                                    help_text=_('Public photographs will be displayed in the default views.'))
+
     date_added = models.DateTimeField(_('date added'),
                                       default=now)
     tags = TaggableManager(blank=True)
@@ -394,13 +363,13 @@ class VideoGroup(models.Model):
         """
         Devuelve el nombre del canal para enviar notificaciones
         """
-        return "videos-%s" % self.pk
+        return "videos-group-%s" % self.pk
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('photologue:pl-video', args=[self.slug])
+        return reverse('photologue_groups:pl-video', args=[self.slug])
 
     def save(self, created=True, *args, **kwargs):
         if created:
@@ -411,14 +380,12 @@ class VideoGroup(models.Model):
         """Find the neighbour of this photo in the supplied publications_gallery.
         We assume that the publications_gallery and all its photos are on the same site.
         """
-        if not self.is_public:
-            # raise ValueError('Cannot determine neighbours of a non-public photo.')
-            return None
-        photos = VideoGroup.objects.filter(owner=self.owner, is_public=True)
-        if self not in photos:
+
+        videos = VideoGroup.objects.filter(group=self.group)
+        if self not in videos:
             raise ValueError('Photo does not belong to publications_gallery.')
         previous = None
-        for photo in photos:
+        for photo in videos:
             if photo == self:
                 return previous
             previous = photo
@@ -428,43 +395,11 @@ class VideoGroup(models.Model):
         """Find the neighbour of this photo in the supplied publications_gallery.
         We assume that the publications_gallery and all its photos are on the same site.
         """
-        if not self.is_public:
-            return None
-            # raise ValueError('Cannot determine neighbours of a non-public photo.')
-        photos = VideoGroup.objects.filter(owner=self.owner, is_public=True)
-        if self not in photos:
+        videos = VideoGroup.objects.filter(group=self.group)
+        if self not in videos:
             raise ValueError('Photo does not belong to publications_gallery.')
         matched = False
-        for photo in photos:
-            if matched:
-                return photo
-            if photo == self:
-                matched = True
-        return None
-
-    def get_previous_in_own_gallery(self):
-        """Find the neighbour of this photo in the supplied publications_gallery.
-        We assume that the publications_gallery and all its photos are on the same site.
-        """
-        photos = VideoGroup.objects.filter(owner=self.owner)
-        if self not in photos:
-            raise ValueError('Photo does not belong to publications_gallery.')
-        previous = None
-        for photo in photos:
-            if photo == self:
-                return previous
-            previous = photo
-        return None
-
-    def get_next_in_own_gallery(self):
-        """Find the neighbour of this photo in the supplied publications_gallery.
-        We assume that the publications_gallery and all its photos are on the same site.
-        """
-        photos = VideoGroup.objects.filter(owner=self.owner)
-        if self not in photos:
-            raise ValueError('Photo does not belong to publications_gallery.')
-        matched = False
-        for photo in photos:
+        for photo in videos:
             if matched:
                 return photo
             if photo == self:

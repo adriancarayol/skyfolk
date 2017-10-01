@@ -56,8 +56,6 @@ THIRD_PARTY_APPS = (
     'taggit',  # para etiquetas
     'el_pagination',  # Para paginacion
     'notifications',  # notificaciones
-    'dal',  # autocompletado
-    'dal_select2',
     'django_celery_results',
     'easy_thumbnails',
     'dash',

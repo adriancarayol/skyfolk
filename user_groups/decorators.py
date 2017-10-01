@@ -77,6 +77,10 @@ def user_can_view_group_info(function):
     @wraps(function)
     def inner(request, *args, **kwargs):
         groupname = kwargs.get('groupname', None)
+
+        if not groupname:
+            groupname = kwargs.get('slug', None)
+
         user = request.user
 
         try:
@@ -84,23 +88,11 @@ def user_can_view_group_info(function):
         except UserGroups.DoesNotExist:
             raise Http404
 
-        try:
-            node_group = NodeGroup.nodes.get(group_id=group_profile.id)
-        except NodeGroup.DoesNotExist:
-            raise Http404
-
-        try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            raise Http404
-
-        is_member = True
         if not group_profile.is_public and group_profile.owner_id != user.id:
-            if not node_group.members.is_connected(n):
-                is_member = False
+            is_member = user.groups.filter(id=group_profile.group_ptr_id).exists()
+            if not is_member:
+                return redirect(reverse('user_groups:group-profile', kwargs={'groupname': groupname}))
 
-        if not is_member:
-            return redirect(reverse('user_groups:group-profile', kwargs={'groupname': groupname}))
         return function(request, *args, **kwargs)
 
     return inner

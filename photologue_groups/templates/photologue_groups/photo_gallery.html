@@ -2,6 +2,7 @@
 {% load avatar_tags %}
 {% load i18n %}
 {% load humanize %}
+{% load static %}
 {% block title %} <title>Skyfolk / Media de {{ group_gallery.name }} </title> {% endblock %}
 
 {% block include_files %}
@@ -89,15 +90,6 @@
                         </div>
                     </div>
                     <div class="row">
-                        {{ form.is_public.errors }}
-                        <div class="input-field col s12">
-                            <p>
-                                {{ form.is_public }}
-                                <label for="id_is_public">{{ form.is_public.help_text }}</label>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row">
                         <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
                             <i class="material-icons right">file_upload</i>
                         </button>
@@ -112,6 +104,7 @@
             <div id="collection">
                 <form id="collection-form" method="post" action="{% url "photologue_groups:upload-zip" %}" accept-charset="utf-8"
                       enctype="multipart/form-data">{% csrf_token %}
+                    <input type="number" value="{{ group_gallery.group_ptr_id }}" hidden name="group">
                     <div class="row">
                         <div class="file-field input-field">
                             <div class="btn blue darken-1 waves-effect waves-light">
@@ -144,15 +137,6 @@
                             <i class="material-icons prefix">label</i>
                             {{ form_zip.tags_collection }}
                             <label for="id_tags_collection">{{ form_zip.tags_collection.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ form_zip.is_public_collection.errors }}
-                        <div class="input-field col s12">
-                            <p>
-                                {{ form_zip.is_public_collection }}
-                                <label for="id_is_public_collection">{{ form_zip.is_public_collection.help_text }}</label>
-                            </p>
                         </div>
                     </div>
                     <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
@@ -201,15 +185,6 @@
                             <i class="material-icons prefix">label</i>
                             {{ form_video.tags }}
                             <label for="id_tags_video">{{ form_video.tags.help_text }}</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ form_video.is_public.errors }}
-                        <div class="input-field col s12">
-                            <p>
-                                {{ form_video.is_public }}
-                                <label for="id_is_public_video">{{ form_video.is_public.help_text }}</label>
-                            </p>
                         </div>
                     </div>
                     <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
@@ -280,10 +255,10 @@
     </div> <!-- end wrapper -->
     {% block js-gallery %}
         {{ block.super }}
-        <script src="{{ STATIC_URL }}js/photo_gallery.js" type="text/javascript"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/cropper.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}js/main.js"></script>
-        <script src="{{ STATIC_URL }}el-pagination/js/el-pagination.js"></script>
+        <script src="{% static "js/photo_group_gallery.js" %}" type="text/javascript"></script>
+        <script type="text/javascript" src="{% static "js/cropper.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/main.js" %}"></script>
+        <script src="{% static "el-pagination/js/el-pagination.js" %}"></script>
         <script>
             $.endlessPaginate({
                 paginateOnScroll: true,

@@ -46,10 +46,9 @@ class UploadZipForm(forms.Form):
     caption_collection = forms.CharField(
         required=False,
         help_text=_('Añade una descripcion a las imágenes'))
-    is_public_collection = forms.BooleanField(
-        initial=False,
-        required=False,
-        help_text=_('Activa esta casilla para marcar todas las imágenes como privadas'))
+
+    group = forms.IntegerField(required=True)
+
 
     tags_collection = TagField(help_text=_('Añade etiquetas a tu imágen'), required=False)
 
@@ -122,7 +121,6 @@ class UploadZipForm(forms.Form):
             tags = self.cleaned_data['tags_collection']
             photo = PhotoGroup.objects.create(title=photo_title_root,
                                               caption=self.cleaned_data['caption_collection'],
-                                              is_public=not self.cleaned_data['is_public_collection'],
                                               owner=self.request.user)
             # first add title tag.
             photo.tags.add(self.cleaned_data['title_collection'])
@@ -172,7 +170,6 @@ class UploadFormPhoto(forms.ModelForm):
         self.fields['image'].required = False
         self.fields['image'].widget.attrs.update({'class': 'avatar-input', 'name': 'avatar_file'})
         self.fields['caption'].widget.attrs['class'] = 'materialize-textarea'
-        self.fields['is_public'].initial = False
         self.fields['pk'].hidden = True
 
     def clean(self):
@@ -203,7 +200,6 @@ class UploadFormPhoto(forms.ModelForm):
             'title': 'Añade un titulo a la imágen',
             'caption': 'Añade una descripcion a la imágen',
             'tags': 'Añade etiquetas a tu imágen',
-            'is_public': 'Activa esta casilla para marcar la imágen como privada',
         }
 
 
@@ -219,8 +215,8 @@ class EditFormPhoto(forms.ModelForm):
     class Meta:
         model = PhotoGroup
         exclude = ('owner', 'date_added', 'sites',
-                   'date_taken', 'slug', 'is_public', 'image',
-                   'crop_from')
+                   'date_taken', 'slug', 'image',
+                   'crop_from', 'group')
 
 
 class UploadFormVideo(forms.ModelForm):
@@ -235,8 +231,6 @@ class UploadFormVideo(forms.ModelForm):
         self.fields['video'].required = False
         self.fields['video'].widget.attrs.update({'class': 'avatar-input', 'name': 'avatar_file'})
         self.fields['caption'].widget.attrs.update({'class': 'materialize-textarea', 'id': 'id_caption_video'})
-        self.fields['is_public'].initial = False
-        self.fields['is_public'].widget.attrs.update({'id': 'id_is_public_video'})
         self.fields['tags'].widget.attrs.update({'id': 'id_tags_video'})
         self.fields['name'].widget.attrs.update({'id': 'id_name_video'})
         self.fields['pk'].hidden = True
@@ -278,12 +272,11 @@ class UploadFormVideo(forms.ModelForm):
 
     class Meta:
         model = VideoGroup
-        fields = ('name', 'caption', 'is_public', 'tags', 'video')
+        fields = ('name', 'caption', 'tags', 'video')
         help_texts = {
             'name': 'Añade un título al vídeo',
             'caption': 'Añade una descripcion al vídeo',
             'tags': 'Añade etiquetas a tu vídeo',
-            'is_public': 'Activa esta casilla para marcar el vídeo como privado',
             'video': 'Selecciona un vídeo'
         }
 
@@ -299,4 +292,4 @@ class EditFormVideo(forms.ModelForm):
 
     class Meta:
         model = VideoGroup
-        exclude = ('owner', 'date_added', 'slug', 'is_public', 'video', 'group')
+        exclude = ('owner', 'date_added', 'slug', 'video', 'group')
