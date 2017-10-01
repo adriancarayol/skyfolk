@@ -1,6 +1,5 @@
 import json
 import os
-import re
 import uuid
 
 import bleach
@@ -9,10 +8,9 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.loader import render_to_string
-from django.utils.translation import gettext as _
 from embed_video.fields import EmbedVideoField
 
-from photologue.models import Photo, Video
+from photologue_groups.models import PhotoGroup, VideoGroup
 from publications.models import Publication
 from publications.models import PublicationBase
 from publications.utils import validate_video
@@ -34,7 +32,7 @@ class ExtraContentPubPhoto(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('PublicationPhoto', related_name='publication_photo_extra_content',
+    publication = models.OneToOneField('PublicationGroupMediaPhoto', related_name='publication_group_multimedia_photo_extra_content',
                                        on_delete=models.CASCADE)
 
 
@@ -46,7 +44,7 @@ def upload_image_photo_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('photo_publications/images', filename)
+    return os.path.join('photo_publications/groups/images', filename)
 
 
 def upload_video_photo_publication(instance, filename):
@@ -57,33 +55,31 @@ def upload_video_photo_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('photo_publications/videos', filename)
+    return os.path.join('photo_publications/groups/videos', filename)
 
 
 class PublicationPhotoVideo(models.Model):
-    publication = models.ForeignKey('PublicationPhoto', related_name='videos', on_delete=models.CASCADE)
+    publication = models.ForeignKey('PublicationGroupMediaPhoto', related_name='videos', on_delete=models.CASCADE)
     video = models.FileField(upload_to=upload_video_photo_publication, validators=[validate_video])
 
 
 class PublicationPhotoImage(models.Model):
-    publication = models.ForeignKey('PublicationPhoto', related_name='images', on_delete=models.CASCADE)
+    publication = models.ForeignKey('PublicationGroupMediaPhoto', related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=upload_image_photo_publication)
 
 
-class PublicationPhoto(PublicationBase):
+class PublicationGroupMediaPhoto(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    p_author = models.ForeignKey(User, null=True)
-    board_photo = models.ForeignKey(Photo, related_name='board_photo')
+    author = models.ForeignKey(User)
+    board_photo = models.ForeignKey(PhotoGroup, related_name='board_group_multimedia_photo')
     user_give_me_like = models.ManyToManyField(User, blank=True,
-                                               related_name='likes_photo_me')
+                                               related_name='likes_group_multimedia_photo_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
-                                               related_name='hate_photo_me')
-    user_share_me = models.ManyToManyField(User, blank=True,
-                                           related_name='share_photo_me')
+                                               related_name='hate_group_multimedia_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_photo')
+                               related_name='group_multimedia_reply_photo')
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -100,16 +96,11 @@ class PublicationPhoto(PublicationBase):
         return self.user_give_me_hate.count()
 
     @property
-    def total_shares(self):
-        return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.p_author_id,
-                                          deleted=False).count()
-
-    @property
     def get_channel_name(self):
-        return "photo-pub-%s" % self.id
+        return "group-photo-pub-%s" % self.id
 
     def has_extra_content(self):
-        return hasattr(self, 'publication_photo_extra_content')
+        return hasattr(self, 'publication_group_multimedia_photo_extra_content')
 
     def send_notification(self, request, type="pub", is_edited=False):
         """
@@ -138,6 +129,7 @@ class PublicationPhoto(PublicationBase):
             channel_group(self.get_channel_name).send({
                 'text': json.dumps(data)
             })
+
         # Enviamos al blog de la publicacion
         [channel_group(x.get_channel_name).send({
             "text": json.dumps(data)
@@ -155,7 +147,7 @@ class ExtraContentPubVideo(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('PublicationVideo', related_name='publication_video_extra_content',
+    publication = models.OneToOneField('PublicationGroupMediaVideo', related_name='publication_group_multimedia_video_extra_content',
                                        on_delete=models.CASCADE)
 
 
@@ -167,7 +159,7 @@ def upload_image_video_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('video_publications/images', filename)
+    return os.path.join('video_publications/groups/images', filename)
 
 
 def upload_video_video_publication(instance, filename):
@@ -178,33 +170,31 @@ def upload_video_video_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('video_publications/videos', filename)
+    return os.path.join('video_publications/groups/videos', filename)
 
 
 class PublicationVideoVideo(models.Model):
-    publication = models.ForeignKey('PublicationVideo', related_name='videos', on_delete=models.CASCADE)
+    publication = models.ForeignKey('PublicationGroupMediaVideo', related_name='videos', on_delete=models.CASCADE)
     video = models.FileField(upload_to=upload_video_photo_publication, validators=[validate_video])
 
 
 class PublicationVideoImage(models.Model):
-    publication = models.ForeignKey('PublicationVideo', related_name='images', on_delete=models.CASCADE)
+    publication = models.ForeignKey('PublicationGroupMediaVideo', related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to=upload_image_photo_publication)
 
 
-class PublicationVideo(PublicationBase):
+class PublicationGroupMediaVideo(PublicationBase):
     """
     Modelo para las publicaciones en las fotos
     """
-    author = models.ForeignKey(User, null=True)
-    board_video = models.ForeignKey(Video, related_name='board_video')
+    author = models.ForeignKey(User)
+    board_video = models.ForeignKey(VideoGroup, related_name='board_group_multimedia_video')
     user_give_me_like = models.ManyToManyField(User, blank=True,
-                                               related_name='likes_video_me')
+                                               related_name='likes_group_multimedia_video_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
-                                               related_name='hate_video_me')
-    user_share_me = models.ManyToManyField(User, blank=True,
-                                           related_name='share_video_me')
+                                               related_name='hate_group_multimedia_video_me')
     parent = models.ForeignKey('self', blank=True, null=True,
-                               related_name='reply_photo')
+                               related_name='roup_multimedia_reply_photo')
 
     class MPTTMeta:
         order_insertion_by = ['-created']
@@ -213,7 +203,7 @@ class PublicationVideo(PublicationBase):
         return self.content
 
     def has_extra_content(self):
-        return hasattr(self, 'publication_video_extra_content')
+        return hasattr(self, 'publication_group_multimedia_video_extra_content')
 
     @property
     def total_likes(self):
@@ -223,14 +213,10 @@ class PublicationVideo(PublicationBase):
     def total_hates(self):
         return self.user_give_me_hate.count()
 
-    @property
-    def total_shares(self):
-        return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.author_id,
-                                          deleted=False).count()
 
     @property
     def get_channel_name(self):
-        return "video-pub-%s" % self.id
+        return "group-video-pub-%s" % self.id
 
 
     def send_notification(self, request, type="pub", is_edited=False):

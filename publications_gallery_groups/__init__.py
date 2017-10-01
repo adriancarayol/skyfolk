@@ -1,1 +1,1 @@
-default_app_config = 'publications_gallery.apps.PublicationGalleryAppConfig'
+default_app_config = 'publications_gallery_groups.apps.PublicationGroupGalleryAppConfig'

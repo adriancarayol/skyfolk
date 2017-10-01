@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^', include('publications.urls', namespace="publications"), name="publications"),
     url(r'^', include('publications_groups.urls', namespace="publications_groups"),
         name="publications_groups"),
+    url(r'^group/multimedia/', include('publications_gallery_groups.urls', namespace="publications_gallery_groups"),
+        name="publications_gallery_groups"),
     # Publicaciones en imagenes de la galeria
     url(r'^', include('publications_gallery.urls', namespace="publications_gallery"), name="publications_gallery"),
     # url novedades e inicio

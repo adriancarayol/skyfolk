@@ -20,7 +20,7 @@ def get_channel_name(id):
     :param id: ID de la publicacion
     :return:
     """
-    return "photo-pub-%s" % id
+    return "group-photo-pub-%s" % id
 
 
 def check_image_property(image):
@@ -93,4 +93,4 @@ def get_photo_channel(photo_id):
     """
     Devuelve el nombre del canal para enviar notificaciones
     """
-    return "photos-%s" % photo_id
+    return "photos-group-%s" % photo_id

@@ -2,13 +2,13 @@
 
 from django.contrib import admin
 
-from .models import PublicationPhoto, ExtraContentPubPhoto, PublicationPhotoVideo, \
-    PublicationPhotoImage, PublicationVideo
+from .models import PublicationGroupMediaPhoto, ExtraContentPubPhoto, PublicationPhotoVideo, \
+    PublicationPhotoImage, PublicationGroupMediaVideo
 
 
 class PublicationBaseAdmin(admin.ModelAdmin):
-    list_display = ('p_author', 'content', 'created', 'board_photo')
-    list_filter = ('created', 'p_author', 'parent', 'board_photo')
+    list_display = ('author', 'content', 'created', 'board_photo')
+    list_filter = ('created', 'author', 'parent', 'board_photo')
 
 
 class ExtraContentAdmin(admin.ModelAdmin):
@@ -33,5 +33,5 @@ class PublicationVideoVideoAdmin(admin.ModelAdmin):
 admin.site.register(ExtraContentPubPhoto, ExtraContentAdmin)
 admin.site.register(PublicationPhotoVideo, PublicationVideoAdmin)
 admin.site.register(PublicationPhotoImage, PublicationImageAdmin)
-admin.site.register(PublicationPhoto, PublicationBaseAdmin)
-admin.site.register(PublicationVideo, PublicationVideoVideoAdmin)
+admin.site.register(PublicationGroupMediaPhoto, PublicationBaseAdmin)
+admin.site.register(PublicationGroupMediaVideo, PublicationVideoVideoAdmin)

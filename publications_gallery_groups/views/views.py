@@ -10,8 +10,6 @@ from django.db.models import Count, When, Value, Case, IntegerField, OuterRef, S
 from django.db.models import Q
 from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
-from django.utils.decorators import method_decorator
-from django.views import View
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
@@ -19,12 +17,12 @@ from photologue.models import Photo
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
 from publications.views import logger
-from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
+from publications_gallery_groups.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications.forms import SharedPublicationForm
-from publications_gallery.models import PublicationPhoto
+from publications_gallery_groups.models import PublicationGroupMediaPhoto
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from publications_gallery.utils import optimize_publication_media, check_num_images
+from publications_gallery_groups.utils import optimize_publication_media, check_num_images
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -33,7 +31,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
     la galeria de un usuario.
     """
     form_class = PublicationPhotoForm
-    model = PublicationPhoto
+    model = PublicationGroupMediaPhoto
     http_method_names = [u'post']
     success_url = '/thanks/'
 
@@ -62,13 +60,13 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
                 parent = publication.parent
                 if parent:
-                    parent_owner = parent.p_author_id
+                    parent_owner = parent.author_id
                     parent_node = NodeProfile.nodes.get(user_id=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
                         form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 
-                publication.p_author_id = emitter.user_id
+                publication.author_id = emitter.user_id
                 publication.board_photo_id = photo.id
 
                 publication.parse_content()  # parse publication content
@@ -120,6 +118,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
 
+
         return self.form_invalid(form=form)
 
 
@@ -133,17 +132,17 @@ def publication_detail(request, publication_id):
     user = request.user
     page = request.GET.get('page', 1)
     try:
-        request_pub = PublicationPhoto.objects.select_related('board_photo', ).get(id=publication_id, deleted=False)
+        request_pub = PublicationGroupMediaPhoto.objects.select_related('board_photo', ).get(id=publication_id, deleted=False)
         if not request_pub.board_photo.is_public and user.id != request_pub.board_photo.owner.id:
-            return redirect('photologue:photo-list', username=request_pub.board_photo.owner.username)
+            return redirect('photologue_groups:photo-list', username=request_pub.board_photo.owner.username)
     except ObjectDoesNotExist:
         raise Http404
 
     try:
-        author = NodeProfile.nodes.get(user_id=request_pub.p_author_id)
+        author = NodeProfile.nodes.get(user_id=request_pub.author_id)
         m = NodeProfile.nodes.get(user_id=user.id)
     except NodeProfile.DoesNotExist:
-        return redirect('photologue:photo-list', username=request_pub.board_photo.owner.username)
+        return redirect('photologue_groups:photo-list', username=request_pub.board_photo.owner.username)
 
     privacity = author.is_visible(m)
 
@@ -172,9 +171,9 @@ def publication_detail(request, publication_id):
             ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
             have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
             .filter(deleted=False) \
-            .prefetch_related('publication_photo_extra_content', 'images',
+            .prefetch_related('publication_group_multimedia_photo_extra_content', 'images',
                               'videos', 'tags') \
-            .select_related('p_author',
+            .select_related('author',
                             'board_photo',
                             'parent')
     except Exception as e:
@@ -196,7 +195,7 @@ def publication_detail(request, publication_id):
         'publication_shared': SharedPublicationForm()
     }
 
-    return render(request, "photologue/publication_detail.html", context)
+    return render(request, "photologue_groups/publication_detail.html", context)
 
 
 @login_required(login_url='/')
@@ -211,17 +210,17 @@ def delete_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = PublicationPhoto.objects.get(id=publication_id)
-        except PublicationPhoto.DoesNotExist:
+            publication = PublicationGroupMediaPhoto.objects.get(id=publication_id)
+        except PublicationGroupMediaPhoto.DoesNotExist:
             response = False
             return HttpResponse(json.dumps(response),
                                 content_type='application/json'
                                 )
         logger.info('publication_author: {} publication_board_photo: {} request.user: {}'.format(
-            publication.p_author.username, publication.board_photo, user.username))
+            publication.author.username, publication.board_photo, user.username))
 
         # Borramos publicacion
-        if user.id == publication.p_author.id or user.id == publication.board_photo.owner_id:
+        if user.id == publication.author.id or user.id == publication.board_photo.owner_id:
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
@@ -245,13 +244,13 @@ def add_like(request):
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
 
         try:
-            publication = PublicationPhoto.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        except PublicationPhoto.DoesNotExist:
+            publication = PublicationGroupMediaPhoto.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        except PublicationGroupMediaPhoto.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.p_author_id)
+            author = NodeProfile.nodes.get(user_id=publication.author_id)
             m = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
@@ -267,7 +266,7 @@ def add_like(request):
         logger.info("USUARIO DA LIKE")
         logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
         logger.info(
-            "(PERFIL DE USUARIO): " + publication.p_author.username + " PK_ID -> " + str(publication.p_author_id))
+            "(PERFIL DE USUARIO): " + publication.author.username + " PK_ID -> " + str(publication.author_id))
 
         in_like = False
         in_hate = False
@@ -345,13 +344,13 @@ def add_hate(request):
         user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
         try:
-            publication = PublicationPhoto.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        except PublicationPhoto.DoesNotExist:
+            publication = PublicationGroupMediaPhoto.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        except PublicationGroupMediaPhoto.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.p_author_id)
+            author = NodeProfile.nodes.get(user_id=publication.author_id)
             m = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
@@ -366,7 +365,7 @@ def add_hate(request):
         # Mostrar los usuarios que han dado un me gusta a ese comentario
         logger.info("USUARIO DA HATE")
         logger.info("(USUARIO PETICIÓN): " + user.username)
-        logger.info("(PERFIL DE USUARIO): " + publication.p_author.username)
+        logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
         in_like = False
         in_hate = False
@@ -432,88 +431,6 @@ def add_hate(request):
     return HttpResponse(data, content_type='application/json')
 
 
-@login_required(login_url='/')
-@transaction.atomic
-def share_publication(request):
-    """
-    Copia la publicacion de otro skyline
-    y se comparte en el tuyo
-    """
-    response = False
-    print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
-    if request.POST:
-        user = request.user
-        form = SharedPublicationForm(request.POST or None)
-
-        if form.is_valid():
-            obj_pub = form.cleaned_data['pk']
-            try:
-                pub_to_add = PublicationPhoto.objects.get(pk=obj_pub)
-
-            except PublicationPhoto.DoesNotExist:
-                response = False
-                return HttpResponse(json.dumps(response), content_type='application/json')
-
-            try:
-                author = NodeProfile.nodes.get(user_id=pub_to_add.p_author_id)
-                m = NodeProfile.nodes.get(user_id=user.id)
-            except NodeProfile.DoesNotExist:
-                return HttpResponse(json.dumps(response), content_type='application/json')
-
-            privacity = author.is_visible(m)
-
-            if privacity and privacity != 'all':
-                return HttpResponse(json.dumps(response), content_type='application/json')
-
-            shared = Publication.objects.filter(shared_photo_publication_id=obj_pub, author_id=user.id,
-                                                deleted=False).exists()
-
-            if not shared:
-                pub = form.save(commit=False)
-                pub.parse_content()  # parse publication content
-                pub.add_hashtag()
-                pub.parse_mentions()  # add mentions
-                pub.content = Emoji.replace(pub.content)
-                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
-                              'href="/profile/%s">@%s</a><br>%s' % (
-                                  pub_to_add.p_author.username, pub_to_add.p_author.username, pub.content)
-                pub.shared_photo_publication_id = pub_to_add.id
-                pub.author = user
-                pub.board_owner = user
-                pub.event_type = 7
-                try:
-                    with transaction.atomic(using="default"):
-                        pub.save()
-                        transaction.on_commit(lambda: pub.send_notification(request))
-                    response = True
-                except IntegrityError as e:
-                    logger.info(e)
-                logger.info('Compartido el comentario %d' % pub_to_add.id)
-
-            return HttpResponse(json.dumps(response), content_type='application/json')
-
-
-class RemoveSharedPhotoPublication(View):
-    model = Publication
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(RemoveSharedPhotoPublication, self).dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        pk = request.POST.get('pk', None)
-        user = request.user
-        try:
-            Publication.objects.filter(shared_photo_publication_id=pk, author_id=user.id, deleted=False).update(
-                deleted=True)
-        except ObjectDoesNotExist:
-            raise Http404
-        data = {
-            'response': True,
-        }
-        return JsonResponse(data)
-
-
 @transaction.atomic
 def edit_publication(request):
     """
@@ -528,9 +445,9 @@ def edit_publication(request):
             pk = form.cleaned_data['pk']
             user = request.user
 
-            publication = get_object_or_404(PublicationPhoto, id=pk)
+            publication = get_object_or_404(PublicationGroupMediaPhoto, id=pk)
 
-            if publication.p_author_id != user.id:
+            if publication.author_id != user.id:
                 return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
             if publication.event_type != 1 and publication.event_type != 3:
@@ -568,8 +485,8 @@ def load_more_descendants(request):
 
         print('PAGE: {}, PUB_ID: {}'.format(page, pub_id))
         try:
-            publication = PublicationPhoto.objects.get(id=pub_id)
-        except PublicationPhoto.DoesNotExist:
+            publication = PublicationGroupMediaPhoto.objects.get(id=pub_id)
+        except PublicationGroupMediaPhoto.DoesNotExist:
             return Http404
 
         try:
@@ -584,11 +501,11 @@ def load_more_descendants(request):
             return HttpResponseForbidden()
 
         if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+            pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(level__lte=1)
                                                         & Q(deleted=False))
         else:
-            pubs = publication.get_descendants().filter(~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+            pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(deleted=False))
 
         shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
@@ -611,8 +528,8 @@ def load_more_descendants(request):
             ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
             have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related(
             'publication_photo_extra_content', 'images',
-            'videos', 'parent__p_author') \
-            .select_related('p_author',
+            'videos', 'parent__author') \
+            .select_related('author',
                             'board_photo', 'parent')
 
         paginator = Paginator(pubs, 10)
@@ -629,5 +546,5 @@ def load_more_descendants(request):
             'publications': publications,
             'photo': publication.board_photo
         }
-        return render(request, 'photologue/ajax_load_replies.html', context=context)
+        return render(request, 'photologue_groups/ajax_load_replies.html', context=context)
     return HttpResponseForbidden()

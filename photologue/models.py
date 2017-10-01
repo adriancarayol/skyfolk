@@ -32,7 +32,6 @@ from taggit.managers import TaggableManager
 from uuslug import uuslug
 
 from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
-from user_groups.models import UserGroups
 from .tasks import generate_thumbnails, generate_video_thumbnail
 from .validators import validate_file_extension, validate_video, validate_extension, image_exists, valid_image_mimetype, \
     valid_image_size

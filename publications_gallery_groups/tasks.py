@@ -14,14 +14,14 @@ from notifications.models import Notification
 from publications.utils import convert_video_to_mp4
 from skyfolk.celery import app
 from user_profile.utils import notification_channel
-from .models import PublicationPhotoVideo, PublicationPhoto, PublicationVideo, PublicationVideoVideo
+from .models import PublicationPhotoVideo, PublicationGroupMediaPhoto, PublicationGroupMediaVideo, PublicationVideoVideo
 from django.db import IntegrityError
 
 logger = get_task_logger(__name__)
 
 generate_path_video = lambda filename, ext: (
-[os.path.join('skyfolk/media/photo_publications/videos', str(filename) + ext),
- os.path.join('photo_publications/videos', str(filename) + ext)])
+    [os.path.join('skyfolk/media/photo_publications/videos', str(filename) + ext),
+     os.path.join('photo_publications/videos', str(filename) + ext)])
 
 get_channel_video_name = lambda id: "video-pub-{}".format(id)
 
@@ -29,7 +29,7 @@ get_channel_video_name = lambda id: "video-pub-{}".format(id)
 @app.task(ignore_result=True, name='tasks.process_photo_pub_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
     try:
-        publication = PublicationPhoto.objects.get(id=publication_id)
+        publication = PublicationGroupMediaPhoto.objects.get(id=publication_id)
         photo = publication.board_photo
     except ObjectDoesNotExist:
         return
@@ -78,7 +78,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 @app.task(ignore_result=True, name='tasks.process_photo_pub_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None):
     try:
-        publication = PublicationPhoto.objects.get(id=publication_id)
+        publication = PublicationGroupMediaVideo.objects.get(id=publication_id)
         photo = publication.board_photo
     except ObjectDoesNotExist:
         return

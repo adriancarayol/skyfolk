@@ -1,14 +1,14 @@
 import logging
 from django import forms
 
-from publications_gallery.models import PublicationPhoto, PublicationVideo
+from publications_gallery_groups.models import PublicationGroupMediaVideo, PublicationGroupMediaPhoto
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class PublicationPhotoForm(forms.ModelForm):
     class Meta:
-        model = PublicationPhoto
+        model = PublicationGroupMediaPhoto
         exclude = ['image', 'created', 'user_give_me_like',
                    'user_give_me_hate', 'user_share_me', 'tags', 'deleted', 'event_type']
 
@@ -21,7 +21,7 @@ class PublicationPhotoForm(forms.ModelForm):
             'required': 'required',
         })
         self.fields['content'].label = ''
-        self.fields['p_author'].widget = forms.HiddenInput()
+        self.fields['author'].widget = forms.HiddenInput()
         self.fields['board_photo'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
 
@@ -48,7 +48,7 @@ class PublicationPhotoEdit(forms.ModelForm):
         })
 
     class Meta:
-        model = PublicationPhoto
+        model = PublicationGroupMediaPhoto
         fields = ['content', ]
 
     def clean_content(self):
@@ -72,7 +72,7 @@ class PublicationPhotoEdit(forms.ModelForm):
 
 class PublicationVideoForm(forms.ModelForm):
     class Meta:
-        model = PublicationVideo
+        model = PublicationGroupMediaVideo
         exclude = ['image', 'created', 'user_give_me_like',
                    'user_give_me_hate', 'user_share_me', 'tags', 'deleted', 'event_type']
 
@@ -112,7 +112,7 @@ class PublicationVideoEdit(forms.ModelForm):
         })
 
     class Meta:
-        model = PublicationVideo
+        model = PublicationGroupMediaVideo
         fields = ['content', ]
 
     def clean_content(self):

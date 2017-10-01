@@ -69,6 +69,10 @@ class UserGroups(Group):
     def group_channel(self):
         return "group-%d" % self.group_ptr_id
 
+    @property
+    def get_total_multimedia(self):
+        return self.group_photos.count() + self.group_videos.count()
+
 
 class GroupTheme(models.Model):
     board_group = models.ForeignKey(Group)

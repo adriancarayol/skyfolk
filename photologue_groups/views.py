@@ -1,5 +1,4 @@
 import json
-import warnings
 
 from PIL import Image
 from django.conf import settings
@@ -7,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db.models import Count, Q, Case, When, Value, IntegerField, OuterRef, Subquery
+from django.db.models import Count, Q, Case, When, Value, IntegerField
 from django.http import Http404, HttpResponseForbidden
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
@@ -16,22 +15,19 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.six import BytesIO
-from django.views.generic.base import RedirectView
-from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
-    YearArchiveView
 from django.views.generic.detail import DetailView
 from el_pagination.decorators import page_template
 from el_pagination.views import AjaxListView
 
 from itertools import chain
 
-from publications.models import Publication
-from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit, PublicationVideoEdit, \
+
+from publications_gallery_groups.forms import PublicationPhotoForm, PublicationPhotoEdit, PublicationVideoEdit, \
     PublicationVideoForm
 from publications.forms import SharedPublicationForm
-from publications_gallery.models import PublicationPhoto, PublicationVideo
+from publications_gallery_groups.models import PublicationGroupMediaPhoto, PublicationGroupMediaVideo
 from user_groups.decorators import user_can_view_group_info
-from user_profile.node_models import NodeProfile
+
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
 from .models import PhotoGroup, VideoGroup
@@ -219,7 +215,8 @@ def upload_video(request):
                 'result': True,
                 'state': 200,
                 'message': 'Success',
-                'content': '/multimedia/' + user.username
+                'content': render_to_string(request=request, template_name='channels/new_photo_group_gallery.html',
+                                            context={'photo': obj})
             }
         else:
             data = {
@@ -305,7 +302,7 @@ def upload_zip_form(request):
                 return HttpResponseForbidden("No puedes subir una colección a este grupo.")
 
             form.save(request=request)
-            return redirect(reverse('photologue_groups:photo-list', kwargs={'slug': group.id}))
+            return redirect(reverse('photologue_groups:photo-list', kwargs={'slug': group.slug }))
         else:
             # Cambiar por JsonResponse
             return JsonResponse({'response': False})
@@ -441,7 +438,7 @@ class PhotoDetailView(DetailView):
         page = self.request.GET.get('page', 1)
 
         paginator = Paginator(
-            PublicationPhoto.objects.annotate(likes=Count('user_give_me_like'),
+            PublicationGroupMediaPhoto.objects.annotate(likes=Count('user_give_me_like'),
                                               hates=Count('user_give_me_hate'), have_like=Count(Case(
                     When(user_give_me_like=user, then=Value(1)),
                     output_field=IntegerField()
@@ -449,11 +446,11 @@ class PhotoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(author__profile__from_blocked__to_blocked=user.profile)
                 & Q(board_photo_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
-                .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
-                .select_related('p_author',
+                .prefetch_related('publication_group_multimedia_photo_extra_content', 'images', 'videos') \
+                .select_related('author',
                                 'board_photo', 'parent'), 10)
 
         try:
@@ -469,7 +466,7 @@ class PhotoDetailView(DetailView):
             self.template_name = 'photologue_groups/publications_entries.html'
             return context
 
-        initial_photo = {'p_author': user.pk, 'board_photo': self.object}
+        initial_photo = {'author': user.pk, 'board_photo': self.object}
 
         context['form'] = EditFormPhoto(instance=self.object)
         context['publication_photo'] = PublicationPhotoForm(initial=initial_photo)
@@ -538,7 +535,7 @@ class VideoDetailView(DetailView):
         page = self.request.GET.get('page', 1)
 
         paginator = Paginator(
-            PublicationVideo.objects.annotate(likes=Count('user_give_me_like'),
+            PublicationGroupMediaVideo.objects.annotate(likes=Count('user_give_me_like'),
                                               hates=Count('user_give_me_hate'), have_like=Count(Case(
                     When(user_give_me_like=user, then=Value(1)),
                     output_field=IntegerField()
@@ -550,7 +547,7 @@ class VideoDetailView(DetailView):
                 & Q(board_video_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
-                .select_related('p_author',
+                .select_related('author',
                                 'board_photo', 'parent'), 10)
 
         try:

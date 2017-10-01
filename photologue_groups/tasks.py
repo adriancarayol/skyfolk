@@ -59,11 +59,11 @@ def cropped_thumbnail(img, size):
     return img.resize(target.size, Image.ANTIALIAS)
 
 
-@app.task(name="tasks.generate_photo_thumbnail")
+@app.task(name="tasks.generate_gallery_photo_thumbnail")
 def generate_thumbnails(instance):
     exist_photo = True
     try:
-        photo_to_crop = photologue.models.PhotoGroup.objects.get(pk=instance)
+        photo_to_crop = photologue_groups.models.PhotoGroup.objects.get(pk=instance)
     except ObjectDoesNotExist:
         exist_photo = False
         photo_to_crop = None
@@ -78,11 +78,11 @@ def generate_thumbnails(instance):
         photo_to_crop.save(created=False)
 
 
-@app.task(name='tasks.generate_video_thumbnail')
+@app.task(name='tasks.generate_gallery_video_thumbnail')
 def generate_video_thumbnail(instance):
     exist_video = True
     try:
-        video = photologue.models.VideoGroup.objects.get(pk=instance)
+        video = photologue_groups.models.VideoGroup.objects.get(pk=instance)
     except ObjectDoesNotExist:
         exist_video = False
         video = None

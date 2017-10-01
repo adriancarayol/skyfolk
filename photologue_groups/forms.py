@@ -120,6 +120,7 @@ class UploadZipForm(forms.Form):
 
             tags = self.cleaned_data['tags_collection']
             photo = PhotoGroup.objects.create(title=photo_title_root,
+                                              group_id=self.cleaned_data['group'],
                                               caption=self.cleaned_data['caption_collection'],
                                               owner=self.request.user)
             # first add title tag.
@@ -147,7 +148,7 @@ class UploadZipForm(forms.Form):
             contentfile = ContentFile(data)
             photo.image.save(filename, contentfile)
             photo.save()
-            photo.sites.add(current_site)
+            # photo.sites.add(current_site)
             count += 1
 
         zip.close()

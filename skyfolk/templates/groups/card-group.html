@@ -73,7 +73,7 @@
                 </li>
                 <li>
                     <a class="to_gallery"
-                       href="{% url "photologue_groups:photo-list" slug=group_profile.slug %}"><strong>50</strong><span>Fotos y vídeos</span></a>
+                       href="{% url "photologue_groups:photo-list" slug=group_profile.slug %}"><strong>{{ group_profile.get_total_multimedia }}</strong><span>Fotos y vídeos</span></a>
                 </li>
             </ul>
         </div>

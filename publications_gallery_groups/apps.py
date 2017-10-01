@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class PublicationGalleryAppConfig(AppConfig):
-    name = 'publications_gallery'
+class PublicationGroupGalleryAppConfig(AppConfig):
+    name = 'publications_gallery_groups'
 
     def ready(self):
-        super(PublicationGalleryAppConfig, self).ready()
-        from publications_gallery import signals
+        super(PublicationGroupGalleryAppConfig, self).ready()
+        from publications_gallery_groups import signals

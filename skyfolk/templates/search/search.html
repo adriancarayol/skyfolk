@@ -150,15 +150,7 @@ Template para las busquedas
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img class="lazyload" data-src="
-                    {% if item.thumbnail %}/media/
-
-
-
-
-
-
-                                        {{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
                                          alt="{{ item.title }}" title="{{ item.title }}"
                                          onclick="location.href='/photo/{{ item.slug }}'">
                                 </div>
@@ -255,15 +247,7 @@ Template para las busquedas
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                <img class="lazyload" data-src="
-                    {% if item.thumbnail %}/media/
-
-
-
-
-
-
-                                    {{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
                                      alt="{{ item.title }}" title="{{ item.title }}"
                                      onclick="location.href='/photo/{{ item.slug }}'">
                             </div>
