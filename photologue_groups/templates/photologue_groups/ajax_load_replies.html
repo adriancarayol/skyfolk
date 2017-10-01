@@ -19,7 +19,7 @@
             <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
             data-delay="50"
             data-tooltip="Ver conversación completa"><i class="material-icons md-18">open_in_new</i></span>
-            {% if user.id == node.p_author.id %}
+            {% if user.id == node.author.id %}
             <span data-id="{{ node.pk }}"
             class="top-options edit-comment tooltipped"
             data-position="bottom"
@@ -32,15 +32,15 @@
                         <div class="image col l1 m2 s2"
                         {% if   user.id == node.author.id %}title="¡Eres el autor!"
                         style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
-                        <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
+                        <div class="usr-img img-responsive">{% avatar node.author %}</div>
                     </div>
                     <div class="col l10 m12 s9">
                         <h2 class="h22"><a
-                            href="/profile/{{ node.p_author.username }}">@{{ node.p_author.username }}</a>
+                            href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                             {% if node.parent %}
                             <span class="chip">
-                                {% avatar node.parent.p_author %}
-                                <a href="/profile/{{ node.parent.p_author }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                                {% avatar node.parent.author %}
+                                <a href="/profile/{{ node.parent.author }}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                             </span>
                             {% endif %}
                         </h2>
@@ -58,7 +58,7 @@
                         <div class="row images">
                             {% for image in images %}
                             <div class="col s4 z-depth-2 center">
-                                <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.p_author }}" title="Imagen de: {{ node.p_author }}">
+                                <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                             </div>
                             {% endfor %}
                         </div>
@@ -77,23 +77,23 @@
                         </div>
                         {% endif %}
                         {% endwith %}
-                        {% if node.publication_photo_extra_content %}
-                        {% if node.publication_photo_extra_content.video %}
-                        {% video node.publication_photo_extra_content.video as my_video %}
+                        {% if node.publication_group_multimedia_photo_extra_content %}
+                        {% if node.publication_group_multimedia_photo_extra_content.video %}
+                        {% video node.publication_group_multimedia_photo_extra_content.video as my_video %}
                         {% video my_video "medium" %}
                         {% endvideo %}
                         {% else %}
                         {% comment %} Para publicaciones con URL {% endcomment %}
                         <div class="card small">
                             <div class="card-image">
-                                <img class="lazyload" data-src="{% if node.publication_photo_extra_content.image %}{{ node.publication_photo_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
-                                <span class="card-title white-text">{{ node.publication_photo_extra_content.title }}</span>
+                                <img class="lazyload" data-src="{% if node.publication_group_multimedia_photo_extra_content.image %}{{ node.publication_group_multimedia_photo_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                <span class="card-title white-text">{{ node.publication_group_multimedia_photo_extra_content.title }}</span>
                             </div>
                             <div class="card-content">
-                                <p>{{ node.publication_photo_extra_content.description }}</p>
+                                <p>{{ node.publication_group_multimedia_photo_extra_content.description }}</p>
                             </div>
                             <div class="card-action">
-                                <a href="{{ node.publication_photo_extra_content.url }}">Ver</a>
+                                <a href="{{ node.publication_group_multimedia_photo_extra_content.url }}">Ver</a>
                             </div>
                         </div>
                         {% endif %}
@@ -107,7 +107,7 @@
             <!-- OPCIONES DE COMENTARIOS -->
             <div class="options_comentarios">
                 <ul class="opciones">
-                    {% if   user.id == node.p_author.id or user.id == node.p.author.id %}
+                    {% if user.id == node.author.id or user.id == node.author.id %}
                     {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                     <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
                     </li>
@@ -121,15 +121,13 @@
                         <i class="material-icons md-18">keyboard_arrow_up</i>
                         <i class="like-value">{{ node.likes|zero_to_empty }}</i>
                     </li>
-                    <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.have_shared %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i class="material-icons md-18">format_quote</i>
-                                        <i class="share-values"> {{ node.total_shared|zero_to_empty }}</i></li>
-                        <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
+                    <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
                      </li>
                  </ul>
              </div>
          </div>
      </div>
-     {% if user.id == node.p_author.id %}
+     {% if user.id == node.author.id %}
      <div id="p_author-controls-{{ node.pk }}"
      class="p_author-controls">
      <div class="row">
@@ -160,7 +158,7 @@
 </div>
 {% endif %}
 <div class="wrapper-reply">
-    {% include "photologue/new_reply.html" %}
+    {% include "photologue_groups/new_reply.html" %}
 </div>
 {% if not node.is_leaf_node %}
 <div class="row">

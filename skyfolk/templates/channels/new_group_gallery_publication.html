@@ -5,7 +5,7 @@
 {% load mptt_tags %}
 {% load embed_video_tags %}
 {% load group_utils %}
-{% for node in publications %}
+
 <div class="row infinite-item">
     <div class="col s12">
         <div class="col s12 wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}"
@@ -118,7 +118,7 @@
                         <i class="material-icons md-18">keyboard_arrow_up</i>
                         <i class="like-value">{{ node.likes|zero_to_empty }}</i>
                     </li>
-                    <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
+                        <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
                      </li>
                  </ul>
              </div>
@@ -179,7 +179,3 @@
 </div>
 </div>
 </div>
-{% endfor %}
-{% if publications.has_next %}
-<a id="load-comments" class="waves-effect waves-light btn-large blue darken-1 white-text center" href="?page={{ publications.next_page_number }}">Cargar comentarios</a>
-{% endif %}

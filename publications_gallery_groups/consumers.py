@@ -1,11 +1,11 @@
 from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
 from user_profile.node_models import NodeProfile
-from .models import PublicationPhoto, PublicationVideo
+from .models import PublicationGroupMediaVideo, PublicationGroupMediaPhoto
 from .utils import get_channel_name
 
 
-class PublicationPhotoConsumer(WebsocketConsumer):
+class PublicationGroupGalleryPhotoConsumer(WebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
@@ -14,34 +14,39 @@ class PublicationPhotoConsumer(WebsocketConsumer):
     strict_ordering = False
 
     def __init__(self, message, **kwargs):
-        pubid = kwargs.get('pubid', None)
+        pubid = kwargs.get('id', None)
         if not pubid:
             raise Http404
 
         try:
-            publication_board_owner = PublicationPhoto.objects.values_list('board_photo__owner_id', flat=True).get(id=pubid)
-        except PublicationPhoto.DoesNotExist:
+            self.publication = PublicationGroupMediaPhoto.objects.select_related('board_photo__owner', 'board_photo__group').get(id=pubid)
+        except PublicationGroupMediaPhoto.DoesNotExist:
             raise Http404
 
-        try:
-            self.board_owner = NodeProfile.nodes.get(user_id=publication_board_owner)
-        except NodeProfile.DoesNotExist:
-            raise Http404
-
-        super(PublicationPhotoConsumer, self).__init__(message, **kwargs)
+        super(PublicationGroupGalleryPhotoConsumer, self).__init__(message, **kwargs)
 
     def connection_groups(self, **kwargs):
-        pubid = kwargs.get('pubid', None)
+        pubid = kwargs.get('id', None)
         return [get_channel_name(pubid)]
 
     def connect(self, message, **kwargs):
         user = message.user
+
+        group = self.publication.board_photo.group
+
+        if not group.is_public and user != group.owner_id:
+            if not user.groups.filter(id=group.group_ptr_id).exists():
+                self.message.reply_channel({'accept': False})
+                return
+
         try:
             n = NodeProfile.nodes.get(user_id=user.id)
+            board_owner = NodeProfile.nodes.get(user_id=self.publication.board_photo.owner_id)
         except NodeProfile.DoesNotExist:
             self.message.reply_channel.send({'accept': False})
+            return
 
-        visibility = self.board_owner.is_visible(n)
+        visibility = board_owner.is_visible(n)
         if visibility and visibility != 'all':
             self.message.reply_channel({'accept': False})
             return
@@ -55,7 +60,7 @@ class PublicationPhotoConsumer(WebsocketConsumer):
         pass
 
 
-class PublicationVideoConsumer(WebsocketConsumer):
+class PublicationGroupGalleryVideoConsumer(WebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
@@ -64,39 +69,45 @@ class PublicationVideoConsumer(WebsocketConsumer):
     strict_ordering = False
 
     def __init__(self, message, **kwargs):
-        print('xdxdxdxdxdxd')
-
-        pubid = kwargs.get('pubid', None)
+        pubid = kwargs.get('id', None)
         if not pubid:
             raise Http404
 
         try:
-            publication_board_owner = PublicationVideo.objects.values_list('board_video__owner_id', flat=True).get(id=pubid)
-        except PublicationVideo.DoesNotExist:
+            self.publication = PublicationGroupMediaPhoto.objects.select_related('board_video__owner',
+                                                                                 'board_video__group').get(id=pubid)
+        except PublicationGroupMediaVideo.DoesNotExist:
             raise Http404
 
-        try:
-            self.board_owner = NodeProfile.nodes.get(user_id=publication_board_owner)
-        except NodeProfile.DoesNotExist:
-            raise Http404
 
-        super(PublicationVideoConsumer, self).__init__(message, **kwargs)
+        super(PublicationGroupGalleryVideoConsumer, self).__init__(message, **kwargs)
 
     def connection_groups(self, **kwargs):
-        pubid = kwargs.get('pubid', None)
+        pubid = kwargs.get('id', None)
         return ["video-pub-{}".format(pubid)]
 
     def connect(self, message, **kwargs):
         user = message.user
+
+        group = self.publication.board_photo.group
+
+        if not group.is_public and user != group.owner_id:
+            if not user.groups.filter(id=group.group_ptr_id).exists():
+                self.message.reply_channel({'accept': False})
+                return
+
         try:
             n = NodeProfile.nodes.get(user_id=user.id)
+            board_owner = NodeProfile.nodes.get(user_id=self.publication.board_video.owner_id)
         except NodeProfile.DoesNotExist:
             self.message.reply_channel.send({'accept': False})
             return
 
-        visibility = self.board_owner.is_visible(n)
+        visibility = board_owner.is_visible(n)
+
         if visibility and visibility != 'all':
             self.message.reply_channel({'accept': False})
+            return
 
         self.message.reply_channel.send({'accept': True})
 

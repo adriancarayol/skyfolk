@@ -41,7 +41,7 @@ $(document).ready(function () {
 
     function expandComment(caja_pub) {
         var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
-        window.location.href = '/publication_pdetail/' + id_pub;
+        window.location.href = '/group/multimedia/publication/detail/' + id_pub;
     }
 
     $(tab_messages).on('click', '.options_comentarios .add-timeline', function () {
@@ -91,14 +91,14 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.options_comentarios .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = $(this);
-        AJAX_add_like_gallery(caja_publicacion, heart, "publication");
+        AJAX_add_like_group_gallery(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
     $(tab_messages).on('click', '.options_comentarios .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = $(this);
-        AJAX_add_hate_gallery(caja_publicacion, heart, "publication");
+        AJAX_add_hate_group_gallery(caja_publicacion, heart, "publication");
     });
 
     /* Borrar publicacion */
@@ -117,7 +117,7 @@ $(document).ready(function () {
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
-                AJAX_delete_publication_gallery(caja_publicacion);
+                AJAX_delete_publication_group_gallery(caja_publicacion);
             }
         });
     });
@@ -138,7 +138,7 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
-        AJAX_edit_publication_gallery(edit);
+        AJAX_edit_publication_group_gallery(edit);
     });
 
     $(tab_messages).on('click', '.load_more_descendants', function (e) {
@@ -148,7 +148,7 @@ $(document).ready(function () {
         var page = $('.page_for_' + pub_id).last().val();
         if (typeof page === 'undefined')
             page = 1;
-        AJAX_load_descendants_gallery(pub_id, loader, page, this);
+        AJAX_load_descendants_group_gallery(pub_id, loader, page, this);
     });
 
     $('#messages-wrapper').on('click', '#load-comments', function(e) {
@@ -215,7 +215,7 @@ function AJAX_submit_multimedia_group_photo_publication(obj_form, type, pks) {
     })
 }
 
-function AJAX_delete_publication_gallery(caja_publicacion) {
+function AJAX_delete_publication_group_gallery(caja_publicacion) {
     var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
     var id_user = $(caja_publicacion).data('id'); // obtengo id
     var data = {
@@ -225,7 +225,7 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
     };
 
     $.ajax({
-        url: '/publication_p/delete/',
+        url: '/group/multimedia/publication/delete/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -254,7 +254,7 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
 /********** AJAX para añadir me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_like_gallery(caja_publicacion, heart, type) {
+function AJAX_add_like_group_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
@@ -269,7 +269,7 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
     };
 
     $.ajax({
-        url: '/publication_p/add_like/',
+        url: '/group/multimedia/publication/add_like/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -332,7 +332,7 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
 /******* AJAX para añadir no me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
+function AJAX_add_hate_group_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
@@ -347,7 +347,7 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
     };
     //event.preventDefault(); //stop submit
     $.ajax({
-        url: '/publication_p/add_hate/',
+        url: '/group/multimedia/publication/add_hate/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -490,9 +490,9 @@ function AJAX_remove_timeline_gallery(pub_id, tag) {
 }
 
 /* EDIT PUBLICATION */
-function AJAX_edit_publication_gallery(data) {
+function AJAX_edit_publication_group_gallery(data) {
     $.ajax({
-        url: '/publication_p/edit/',
+        url: '/group/multimedia/publication/edit/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -514,9 +514,9 @@ function AJAX_edit_publication_gallery(data) {
     });
 }
 
-function AJAX_load_descendants_gallery(pub, loader, page, btn) {
+function AJAX_load_descendants_group_gallery(pub, loader, page, btn) {
     $.ajax({
-        url: '/publication_p/load_descendants/?pubid=' + pub + '&page=' + page,
+        url: '/group/multimedia/publication/load_descendants/?pubid=' + pub + '&page=' + page,
         type: 'GET',
         dataType: 'html',
         beforeSend: function() {

@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
-from photologue.models import Photo
+from photologue_groups.models import PhotoGroup
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
 from publications.views import logger
@@ -41,7 +41,11 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        photo = get_object_or_404(Photo, id=request.POST.get('board_photo', None))
+        photo = get_object_or_404(PhotoGroup.objects.select_related('group'), id=request.POST.get('board_photo', None))
+
+        if not photo.group.is_public and self.request.user.id != photo.group.owner_id:
+            if not self.request.user.groups.filter(id=photo.group_id).exists():
+                return HttpResponseForbidden("No tienes permiso para publicar en esta imágen")
 
         emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
         board_photo_owner = NodeProfile.nodes.get(user_id=photo.owner_id)
@@ -133,8 +137,10 @@ def publication_detail(request, publication_id):
     page = request.GET.get('page', 1)
     try:
         request_pub = PublicationGroupMediaPhoto.objects.select_related('board_photo', ).get(id=publication_id, deleted=False)
-        if not request_pub.board_photo.is_public and user.id != request_pub.board_photo.owner.id:
-            return redirect('photologue_groups:photo-list', username=request_pub.board_photo.owner.username)
+
+        if not request_pub.board_photo.group.is_public and user.id != request_pub.board_photo.group.owner_id:
+            if user.groups.filter(id=request_pub.board_photo.group_id).exists():
+                return redirect('photologue_groups:photo-list', username=request_pub.board_photo.owner.username)
     except ObjectDoesNotExist:
         raise Http404
 
@@ -149,16 +155,6 @@ def publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_photo.owner.username)
 
-    shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
-                                                     deleted=False).order_by().values(
-        'shared_photo_publication__id')
-
-    total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-    shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-        When(author_id=user.id, then=Value(1))
-    ))).values('have_shared')
-
     try:
         publication = request_pub.get_descendants(include_self=True) \
             .annotate(likes=Count('user_give_me_like'),
@@ -168,8 +164,7 @@ def publication_detail(request, publication_id):
             )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
                 output_field=IntegerField()
-            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
+            ))) \
             .filter(deleted=False) \
             .prefetch_related('publication_group_multimedia_photo_extra_content', 'images',
                               'videos', 'tags') \
@@ -191,8 +186,7 @@ def publication_detail(request, publication_id):
     context = {
         'publication': publication,
         'publication_id': publication_id,
-        'photo': request_pub.board_photo,
-        'publication_shared': SharedPublicationForm()
+        'object': request_pub.board_photo,
     }
 
     return render(request, "photologue_groups/publication_detail.html", context)
@@ -225,7 +219,7 @@ def delete_publication(request):
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
             if publication.has_extra_content():
-                publication.publication_photo_extra_content.delete()
+                publication.publication_group_multimedia_photo_extra_content.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
 
         response = True
@@ -508,15 +502,6 @@ def load_more_descendants(request):
             pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(deleted=False))
 
-        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
-                                                         deleted=False).order_by().values(
-            'shared_photo_publication__id')
-
-        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-            When(author_id=user.id, then=Value(1))
-        ))).values('have_shared')
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(
@@ -525,9 +510,8 @@ def load_more_descendants(request):
             )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
                 output_field=IntegerField()
-            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related(
-            'publication_photo_extra_content', 'images',
+            ))).prefetch_related(
+            'publication_group_multimedia_photo_extra_content', 'images',
             'videos', 'parent__author') \
             .select_related('author',
                             'board_photo', 'parent')
@@ -544,7 +528,7 @@ def load_more_descendants(request):
         context = {
             'pub_id': pub_id,
             'publications': publications,
-            'photo': publication.board_photo
+            'object': publication.board_photo
         }
         return render(request, 'photologue_groups/ajax_load_replies.html', context=context)
     return HttpResponseForbidden()

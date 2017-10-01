@@ -113,8 +113,8 @@ class PublicationGroupMediaPhoto(PublicationBase):
             'parent_id': self.parent_id,
             'level': self.level,
             'content': render_to_string(request=request,
-                                        template_name='channels/new_photo_publication.html',
-                                        context={'node': self, 'photo': self.board_photo})
+                                        template_name='channels/new_group_gallery_publication.html',
+                                        context={'node': self, 'object': self.board_photo})
         }
 
         # Enviamos a todos los usuarios que visitan la foto
@@ -122,8 +122,8 @@ class PublicationGroupMediaPhoto(PublicationBase):
             "text": json.dumps(data)
         })
 
-        data['content'] = render_to_string(request=request, template_name='channels/new_photo_publication_detail.html',
-                                           context={'node': self, 'photo': self.board_photo})
+        data['content'] = render_to_string(request=request, template_name='channels/new_photo_group_publication_detail.html',
+                                           context={'node': self, 'object': self.board_photo})
 
         if is_edited:
             channel_group(self.get_channel_name).send({

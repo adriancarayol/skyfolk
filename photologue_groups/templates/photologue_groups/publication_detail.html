@@ -18,47 +18,13 @@
 {% block title %} <title> Skyfolk - Publicacion #{{ publication_id }}</title> {% endblock %}
 {% block content %}
     <div class="container" id="publication-thread">
-        {% comment %}
-            Formulario para citar un comentario
-        {% endcomment %}
-        <div class="row">
-            <div class="col l5 m12 12 default-div compose-div share-publication-div" id="share-publication-wrapper" style="display: none;">
-                <div class="row">
-                    <div id="status" class="col s12 title-page-wrapper">
-                        <h4><i class="material-icons" aria-hidden="true"></i> Citar publicacion</h4>
-                        <h6>Comparte esta publicación con tus seguidores</h6>
-                    </div>
-                </div>
-                <form id="share_publication_form" action="" method="post">{% csrf_token %}
-                    {{ publication_shared.pk }}
-                    <div class="row">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                {{ publication_shared.content }}
-                                <label for="shared_comment_content">Escribe un comentario adicional</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col s12">
-                            <button type="submit" id="share_publication"
-                                    class="waves-effect waves-light btn right blue">
-                                Citar<i class="material-icons right">send</i></button>
-                            <button type="button" id="close_share_publication"
-                                    class="waves-effect waves-light btn right transparent black-text">Cancelar<i
-                                    class="material-icons right">close</i></button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
         <div class="row">
             <div class="col l3 offset-l5 offset-s3 s6 z-depth-2 board-photo">
                 <div class="col l3 s6 board-photo-container">
-                    <img src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}">
+                    <img src="{% if object.thumbnail %}{{ object.thumbnail.url }}{% elif object.image %}{{ object.image.url }}{% else %}{{ object.url_image }}{% endif %}">
                 </div>
                 <div class="col l9 s6 board-photo-link">
-                    <a href="/photo/{{ photo.slug }}">Ver imagen</a>
+                    <a href="{% url "photologue_groups:pl-photo" object.slug %}">Ver imagen</a>
                 </div>
             </div>
         </div>
@@ -73,8 +39,8 @@
                              data-id="{{ user.pk }}">
                         <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
                   data-delay="50"
-                  data-tooltip="Ver conversación completa"><a class="material-icons" href="/publication_pdetail/{{ node.id }}/">open_in_new</a></span>
-                    {% if user.id == node.p_author.id %}
+                  data-tooltip="Ver conversación completa"><a class="material-icons" href="{% url "publications_gallery_groups:publication_photo_detail" node.id %}">open_in_new</a></span>
+                    {% if user.id == node.author.id %}
                             {% if node.event_type == 1 or node.event_type == 3 %}
                                 <span data-id="{{ node.pk }}"
                                       class="top-options edit-comment tooltipped"
@@ -85,16 +51,16 @@
                         {% endif %}
                             <div class="row">
                                 <div class="image col l1 m2 s2">
-                                    <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
+                                    <div class="usr-img img-responsive">{% avatar node.author %}</div>
                                 </div>
                                 <div class="articulo col s9">
                                     <h2 class="author-header"><a
-                                            href="/profile/{{ node.p_author.username }}">@{{ node.p_author.username }}</a>
+                                            href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
                                         {% if node.parent %}
                                             <span class="chip">
-                                                        {% avatar node.parent.p_author %}
+                                                        {% avatar node.parent.author %}
                                                         <a
-                                                    href="/publication_pdetail/{{ node.parent.id }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                                                    href="{% url "publications_gallery_groups:publication_photo_detail" node.parent.id %}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
                                                 </span>
                                         {% endif %}
                                     </h2>
@@ -113,7 +79,7 @@
                                             <div class="row">
                                             {% for image in images %}
                                                 <div class="col s4 z-depth-2">
-                                                    <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.p_author }}" title="Imagen de: {{ node.p_author }}">
+                                                    <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                                 </div>
                                             {% endfor %}
                                             </div>
@@ -160,7 +126,7 @@
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12">
                                     <ul class="opciones">
-                                        {% if user.id == node.p_author.username or user.id == node.p_author.id %}
+                                        {% if user.id == node.author.username or user.id == node.author.id %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="material-icons">delete_forever</i>
                                             </li>
@@ -174,13 +140,12 @@
                                             <i class="material-icons md-18">keyboard_arrow_up</i>
                                             <i class="like-value">{{ node.likes|zero_to_empty }}</i>
                                         </li>
-                                        <li title="Añadir a mi skyline" id="share-{{node.id}}" data-id="{{ node.pk }}" class={% if node.have_shared %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i class="material-icons md-18">format_quote</i><i class="share-values"> {{ node.total_shared|zero_to_empty }}</i></li>
                                         <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                        {% if user.id == node.p_author.id %}
+                        {% if user.id == node.author.id %}
                             <div id="p_author-controls-{{ node.pk }}"
                                  class="p_author-controls">
                                 <div class="row">
@@ -210,7 +175,7 @@
                                 </div>
                             </div>
                     {% endif %}
-                            {% include "photologue/new_reply.html" %}
+                            {% include "photologue_groups/new_reply.html" %}
                         </div>
                     </div>
                 </div>
@@ -224,7 +189,7 @@
             <div class="indeterminate blue darken-1"></div>
         </div>
     </div>
-    <script src="{{ STATIC_URL }}js/photo_detail.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/photo_group_detail.js" type="text/javascript"></script>
      <script src="{{ STATIC_URL }}js/socket_photo_publication.js"></script>
     <script>
     UTILS.init([{{ user.pk }}]);

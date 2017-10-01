@@ -1,10 +1,11 @@
 from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
+
 from user_profile.node_models import NodeProfile
 from .models import PhotoGroup, VideoGroup
 
 
-class PhotoConsumer(WebsocketConsumer):
+class PhotoMediaGroupConsumer(WebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
@@ -18,23 +19,31 @@ class PhotoConsumer(WebsocketConsumer):
             raise Http404
 
         try:
-            self.photo = PhotoGroup.objects.only('owner').get(slug__exact=slug)
+            self.photo = PhotoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
         except PhotoGroup.DoesNotExist:
             raise Http404
 
-        super(PhotoConsumer, self).__init__(message, **kwargs)
+        super(PhotoMediaGroupConsumer, self).__init__(message, **kwargs)
 
     def connection_groups(self, **kwargs):
         return [self.photo.group_name]
 
     def connect(self, message, **kwargs):
         user = message.user
+
+        group = self.photo.group
+
+        if not group.is_public and user != group.owner_id:
+            if not user.groups.filter(id=group.group_ptr_id).exists():
+                self.message.reply_channel({'accept': False})
+
         try:
             n = NodeProfile.nodes.get(user_id=user.id)
             m = NodeProfile.nodes.get(user_id=self.photo.owner_id)
         except NodeProfile.DoesNotExist:
             self.message.reply_channel.send({'accept': False})
             return
+
 
         visibility = m.is_visible(n)
         if visibility and visibility != 'all':
@@ -50,7 +59,7 @@ class PhotoConsumer(WebsocketConsumer):
         pass
 
 
-class VideoConsumer(WebsocketConsumer):
+class VideoMediaGroupConsumer(WebsocketConsumer):
     """
     Consumidor para conectarse al perfil
     de un usuario
@@ -64,17 +73,24 @@ class VideoConsumer(WebsocketConsumer):
             raise Http404
 
         try:
-            self.video = VideoGroup.objects.only('owner').get(slug__exact=slug)
+            self.video = VideoGroup.objects.select_related('owner', 'group').get(slug__exact=slug)
         except VideoGroup.DoesNotExist:
             raise Http404
 
-        super(VideoConsumer, self).__init__(message, **kwargs)
+        super(VideoMediaGroupConsumer, self).__init__(message, **kwargs)
 
     def connection_groups(self, **kwargs):
         return [self.video.group_name]
 
     def connect(self, message, **kwargs):
         user = message.user
+
+        group = self.video.group
+
+        if not group.is_public and user != group.owner_id:
+            if not user.groups.filter(id=group.group_ptr_id).exists():
+                self.message.reply_channel({'accept': False})
+
         try:
             n = NodeProfile.nodes.get(user_id=user.id)
             m = NodeProfile.nodes.get(user_id=self.video.owner_id)
