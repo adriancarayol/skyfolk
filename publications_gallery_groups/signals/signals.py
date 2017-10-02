@@ -68,14 +68,14 @@ def add_extra_content(instance):
 
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
     if (not link_url or len(link_url) <= 0) and instance.has_extra_content():
-        instance.publication_photo_extra_content.delete()  # Borramos el extra content de esta
-        instance.publication_photo_extra_content = None
+        instance.publication_group_multimedia_photo_extra_content.delete()  # Borramos el extra content de esta
+        instance.publication_group_multimedia_photo_extra_content = None
     elif link_url and len(link_url) > 0:  # Eliminamos contenido extra para añadir el nuevo
         if instance.has_extra_content():
-            publication_photo_extra_content = instance.publication_photo_extra_content
+            publication_photo_extra_content = instance.publication_group_multimedia_photo_extra_content
             if publication_photo_extra_content.url != link_url[-1]:
                 publication_photo_extra_content.delete()
-                instance.publication_photo_extra_content = None
+                instance.publication_group_multimedia_photo_extra_content = None
 
     try:
         backend = detect_backend(link_url[-1])  # youtube o soundcloud

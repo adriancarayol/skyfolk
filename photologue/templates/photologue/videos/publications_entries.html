@@ -104,7 +104,7 @@
             <!-- OPCIONES DE COMENTARIOS -->
             <div class="options_comentarios">
                 <ul class="opciones">
-                    {% if user.id == node.author.id or user.id == node.p.author.id %}
+                    {% if user.id == node.author.id or user.id == object.owner_id %}
                     {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                     <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
                     </li>
@@ -118,8 +118,6 @@
                         <i class="material-icons md-18">keyboard_arrow_up</i>
                         <i class="like-value">{{ node.likes|zero_to_empty }}</i>
                     </li>
-                    <li title="Añadir a mi skyline" id="share-{{node.pk}}" data-id="{{ node.pk }}" class={% if node.have_shared %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i class="material-icons md-18">format_quote</i>
-                                        <i class="share-values"> {{ node.total_shared|zero_to_empty }}</i></li>
                         <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
                      </li>
                  </ul>

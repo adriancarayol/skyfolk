@@ -33,7 +33,6 @@ $(document).ready(function () {
         return false;
     });
 
-
     $(tab_messages).on('click', '.wrapper .zoom-pub', function () {
         var caja_pub = $(this).closest('.wrapper');
         expandComment(caja_pub);
@@ -41,8 +40,15 @@ $(document).ready(function () {
 
     function expandComment(caja_pub) {
         var id_pub = $(caja_pub).attr('id').split('-')[1];  // obtengo id
-        window.location.href = '/publication_pdetail/' + id_pub;
+        window.location.href = '/group/multimedia/video/publication/detail/' + id_pub;
     }
+
+
+    $("#tab-messages").find('#message-photo-form').on('submit', function (event) {
+        event.preventDefault();
+        var form = $('#messages-wrapper').find('#message-photo-form');
+        AJAX_submit_group_gallery_video_publication(form, 'publication');
+    });
 
     /* Abrir respuesta a comentario */
     $(tab_messages).on('click', '.options_comentarios .reply-comment', function () {
@@ -55,7 +61,7 @@ $(document).ready(function () {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
-        AJAX_submit_photo_publication(form, 'reply', parent_pk);
+        AJAX_submit_group_gallery_video_publication(form, 'reply', parent_pk);
     });
 
 
@@ -63,14 +69,14 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.options_comentarios .like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = $(this);
-        AJAX_add_like_gallery(caja_publicacion, heart, "publication");
+        AJAX_add_like_video_group_gallery(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
     $(tab_messages).on('click', '.options_comentarios .hate-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = $(this);
-        AJAX_add_hate_gallery(caja_publicacion, heart, "publication");
+        AJAX_add_hate_video_group_gallery(caja_publicacion, heart, "publication");
     });
 
     /* Borrar publicacion */
@@ -89,16 +95,9 @@ $(document).ready(function () {
             closeOnConfirm: true
         }, function (isConfirm) {
             if (isConfirm) {
-                AJAX_delete_publication_gallery(caja_publicacion);
+                AJAX_delete_video_group_publication_gallery(caja_publicacion);
             }
         });
-    });
-
-
-    $("#tab-messages").find('#message-photo-form').on('submit', function (event) {
-        event.preventDefault();
-        var form = $('#messages-wrapper').find('#message-photo-form');
-        AJAX_submit_photo_publication(form, 'publication');
     });
 
     /* Editar comentario */
@@ -110,7 +109,7 @@ $(document).ready(function () {
     $(tab_messages).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
-        AJAX_edit_publication_gallery(edit);
+        AJAX_edit_publication_video_group_gallery(edit);
     });
 
     $(tab_messages).on('click', '.load_more_descendants', function (e) {
@@ -120,7 +119,7 @@ $(document).ready(function () {
         var page = $('.page_for_' + pub_id).last().val();
         if (typeof page === 'undefined')
             page = 1;
-        AJAX_load_descendants_gallery(pub_id, loader, page, this);
+        AJAX_load_descendants_video_group_gallery(pub_id, loader, page, this);
     });
 
     $('#messages-wrapper').on('click', '#load-comments', function(e) {
@@ -139,12 +138,12 @@ $(document).ready(function () {
 });
 
 
-function AJAX_submit_photo_publication(obj_form, type, pks) {
+function AJAX_submit_group_gallery_video_publication(obj_form, type, pks) {
     var form = new FormData($(obj_form).get(0));
     form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     type = typeof type !== 'undefined' ? type : "reply"; //default para type
     $.ajax({
-        url: '/publication_p/',
+        url: '/group/multimedia/video/publication/',
         type: 'POST',
         data: form,
         async: true,
@@ -187,7 +186,7 @@ function AJAX_submit_photo_publication(obj_form, type, pks) {
     })
 }
 
-function AJAX_delete_publication_gallery(caja_publicacion) {
+function AJAX_delete_video_group_publication_gallery(caja_publicacion) {
     var id_pub = $(caja_publicacion).attr('id').split('-')[1];  // obtengo id
     var id_user = $(caja_publicacion).data('id'); // obtengo id
     var data = {
@@ -197,7 +196,7 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
     };
 
     $.ajax({
-        url: '/publication_p/delete/',
+        url: '/group/multimedia/video/publication/delete/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -226,7 +225,7 @@ function AJAX_delete_publication_gallery(caja_publicacion) {
 /********** AJAX para añadir me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_like_gallery(caja_publicacion, heart, type) {
+function AJAX_add_like_video_group_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
@@ -241,7 +240,7 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
     };
 
     $.ajax({
-        url: '/publication_p/add_like/',
+        url: '/group/multimedia/video/publication/add_like/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -304,7 +303,7 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
 /******* AJAX para añadir no me gusta a comentario ***/
 /*****************************************************/
 
-function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
+function AJAX_add_hate_video_group_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
@@ -319,7 +318,7 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
     };
     //event.preventDefault(); //stop submit
     $.ajax({
-        url: '/publication_p/add_hate/',
+        url: '/group/multimedia/video/publication/add_hate/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -382,89 +381,10 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
     });
 }
 
-function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
-    var shared_tag = tag.find('.share-values');
-    var count_shared = $(shared_tag).text();
-    count_shared = count_shared.replace(/ /g, '');
-
-    $.ajax({
-        url: '/publication_p/share/publication/',
-        type: 'POST',
-        dataType: 'json',
-        data: data_pub,
-        success: function (response) {
-            if (response === true) {
-                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                    count_shared++;
-                    if (count_shared > 0) {
-                        $(shared_tag).text(" " + count_shared);
-                    } else {
-                        $(shared_tag).text(" ");
-                    }
-                }
-                $(tag).attr("class", "remove-timeline");
-                $(tag).css('color', '#bbdefb');
-                $('#share-publication-wrapper').hide();
-
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to add to timeline.",
-                    type: "error"
-                });
-            }
-        },
-        error: function (rs, e) {
-            // alert('ERROR: ' + rs.responseText + e);
-        }
-    });
-}
-
-function AJAX_remove_timeline_gallery(pub_id, tag) {
-    var shared_tag = $(tag).find('.share-values');
-    var count_shared = $(shared_tag).text();
-    count_shared = count_shared.replace(/ /g, '');
-
-    $.ajax({
-        url: '/publication_p/delete/share/publication/',
-        type: 'POST',
-        dataType: 'json',
-        data: {
-            'pk': pub_id
-        },
-        success: function (data) {
-            var response = data.response;
-            if (response === true) {
-                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                    count_shared--;
-                    if (count_shared > 0) {
-                        $(shared_tag).text(" " + count_shared);
-                    } else {
-                        $(shared_tag).text(" ");
-                    }
-                }
-                $(tag).attr("class", "add-timeline");
-                $(tag).css('color', '#555');
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to add to timeline.",
-                    type: "error"
-                });
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            // console.log(jqXHR.status);
-        }
-    });
-}
-
 /* EDIT PUBLICATION */
-function AJAX_edit_publication_gallery(data) {
+function AJAX_edit_publication_video_group_gallery(data) {
     $.ajax({
-        url: '/publication_p/edit/',
+        url: '/group/multimedia/video/publication/edit/',
         type: 'POST',
         dataType: 'json',
         data: data,
@@ -486,9 +406,9 @@ function AJAX_edit_publication_gallery(data) {
     });
 }
 
-function AJAX_load_descendants_gallery(pub, loader, page, btn) {
+function AJAX_load_descendants_video_group_gallery(pub, loader, page, btn) {
     $.ajax({
-        url: '/publication_p/load_descendants/?pubid=' + pub + '&page=' + page,
+        url: '/group/multimedia/video/publication/load/?pubid=' + pub + '&page=' + page,
         type: 'GET',
         dataType: 'html',
         beforeSend: function() {

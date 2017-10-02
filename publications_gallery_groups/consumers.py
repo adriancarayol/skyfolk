@@ -74,7 +74,7 @@ class PublicationGroupGalleryVideoConsumer(WebsocketConsumer):
             raise Http404
 
         try:
-            self.publication = PublicationGroupMediaPhoto.objects.select_related('board_video__owner',
+            self.publication = PublicationGroupMediaVideo.objects.select_related('board_video__owner',
                                                                                  'board_video__group').get(id=pubid)
         except PublicationGroupMediaVideo.DoesNotExist:
             raise Http404
@@ -84,12 +84,12 @@ class PublicationGroupGalleryVideoConsumer(WebsocketConsumer):
 
     def connection_groups(self, **kwargs):
         pubid = kwargs.get('id', None)
-        return ["video-pub-{}".format(pubid)]
+        return ["group-video-pub-{}".format(pubid)]
 
     def connect(self, message, **kwargs):
         user = message.user
 
-        group = self.publication.board_photo.group
+        group = self.publication.board_video.group
 
         if not group.is_public and user != group.owner_id:
             if not user.groups.filter(id=group.group_ptr_id).exists():

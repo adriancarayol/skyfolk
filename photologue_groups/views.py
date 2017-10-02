@@ -546,9 +546,9 @@ class VideoDetailView(DetailView):
                 ~Q(author__profile__from_blocked__to_blocked=user.profile)
                 & Q(board_video_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
-                .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
+                .prefetch_related('publication_group_multimedia_video_extra_content', 'images', 'videos') \
                 .select_related('author',
-                                'board_photo', 'parent'), 10)
+                                'board_video', 'parent'), 10)
 
         try:
             publications = paginator.page(page)

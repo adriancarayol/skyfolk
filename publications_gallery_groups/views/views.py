@@ -122,7 +122,6 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
 
-
         return self.form_invalid(form=form)
 
 
@@ -136,7 +135,8 @@ def publication_detail(request, publication_id):
     user = request.user
     page = request.GET.get('page', 1)
     try:
-        request_pub = PublicationGroupMediaPhoto.objects.select_related('board_photo', ).get(id=publication_id, deleted=False)
+        request_pub = PublicationGroupMediaPhoto.objects.select_related('board_photo', ).get(id=publication_id,
+                                                                                             deleted=False)
 
         if not request_pub.board_photo.group.is_public and user.id != request_pub.board_photo.group.owner_id:
             if user.groups.filter(id=request_pub.board_photo.group_id).exists():
@@ -204,7 +204,8 @@ def delete_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = PublicationGroupMediaPhoto.objects.get(id=publication_id)
+            publication = PublicationGroupMediaPhoto.objects.select_related('board_video', 'board_photo__group').get(
+                id=publication_id)
         except PublicationGroupMediaPhoto.DoesNotExist:
             response = False
             return HttpResponse(json.dumps(response),
@@ -214,7 +215,7 @@ def delete_publication(request):
             publication.author.username, publication.board_photo, user.username))
 
         # Borramos publicacion
-        if user.id == publication.author.id or user.id == publication.board_photo.owner_id:
+        if user.id == publication.author.id or user.id == publication.board_photo.owner_id or user.has_perm('delete_publication', publication.board_video.group):
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
@@ -501,7 +502,6 @@ def load_more_descendants(request):
         else:
             pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(deleted=False))
-
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(

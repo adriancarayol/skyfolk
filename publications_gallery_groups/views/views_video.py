@@ -10,21 +10,19 @@ from django.db.models import Count, When, Value, Case, IntegerField, OuterRef, S
 from django.db.models import Q
 from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
-from django.utils.decorators import method_decorator
-from django.views import View
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
-from photologue.models import Video
+from photologue_groups.models import VideoGroup
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications.models import Publication
 from publications.views import logger
-from publications_gallery.forms import PublicationVideoForm, PublicationVideoEdit
+from publications_gallery_groups.forms import PublicationVideoForm, PublicationVideoEdit
 from publications.forms import SharedPublicationForm
-from publications_gallery.models import PublicationVideo
+from publications_gallery_groups.models import PublicationGroupMediaVideo
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from publications_gallery.media_processor import optimize_publication_media, check_num_images
+from publications_gallery_groups.media_processor import optimize_publication_media, check_num_images
 
 
 class PublicationVideoView(AjaxableResponseMixin, CreateView):
@@ -33,7 +31,7 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
     la galeria de un usuario.
     """
     form_class = PublicationVideoForm
-    model = PublicationVideo
+    model = PublicationGroupMediaVideo
     http_method_names = [u'post']
     success_url = '/thanks/'
 
@@ -43,7 +41,7 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        video = get_object_or_404(Video, id=request.POST.get('board_video', None))
+        video = get_object_or_404(VideoGroup.objects.select_related('group'), id=request.POST.get('board_video', None))
 
         emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
         board_video_owner = NodeProfile.nodes.get(user_id=video.owner_id)
@@ -52,6 +50,10 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
 
         if privacity and privacity != 'all':
             raise IntegrityError("No have permissions")
+
+        if not video.group.is_public and self.request.user.id != video.group.owner_id:
+            if not self.request.user.groups.filter(id=video.group_id).exists():
+                return HttpResponseForbidden("No tienes permiso para publicar en esta imágen")
 
         logger.debug('POST DATA: {}'.format(request.POST))
         logger.debug('tipo emitter: {}'.format(type(emitter)))
@@ -133,9 +135,13 @@ def video_publication_detail(request, publication_id):
     user = request.user
     page = request.GET.get('page', 1)
     try:
-        request_pub = PublicationVideo.objects.select_related('board_video').get(id=publication_id, deleted=False)
-        if not request_pub.board_video.is_public and user.id != request_pub.board_video.owner.id:
-            return redirect('photologue:photo-list', username=request_pub.board_video.owner.username)
+        request_pub = PublicationGroupMediaVideo.objects.select_related('board_video').get(id=publication_id,
+                                                                                           deleted=False)
+
+        if not request_pub.board_video.group.is_public and user.id != request_pub.board_video.group.owner_id:
+            if user.groups.filter(id=request_pub.board_video.group_id).exists():
+                return redirect('photologue_groups:photo-list', username=request_pub.board_video.owner.username)
+
     except ObjectDoesNotExist:
         raise Http404
 
@@ -143,22 +149,12 @@ def video_publication_detail(request, publication_id):
         author = NodeProfile.nodes.get(user_id=request_pub.author_id)
         m = NodeProfile.nodes.get(user_id=user.id)
     except NodeProfile.DoesNotExist:
-        return redirect('photologue:photo-list', username=request_pub.board_video.owner.username)
+        return redirect('photologue_groups:photo-list', username=request_pub.board_video.owner.username)
 
     privacity = author.is_visible(m)
 
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_video.owner.username)
-
-    shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
-                                                     deleted=False).order_by().values(
-        'shared_photo_publication__id')
-
-    total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-    shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-        When(author_id=user.id, then=Value(1))
-    ))).values('have_shared')
 
     try:
         publication = request_pub.get_descendants(include_self=True) \
@@ -169,10 +165,8 @@ def video_publication_detail(request, publication_id):
             )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
                 output_field=IntegerField()
-            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
-            .filter(deleted=False) \
-            .prefetch_related('publication_video_extra_content', 'images',
+            ))).filter(deleted=False) \
+            .prefetch_related('publication_group_multimedia_video_extra_content', 'images',
                               'videos', 'tags') \
             .select_related('author',
                             'board_video',
@@ -193,10 +187,9 @@ def video_publication_detail(request, publication_id):
         'publication': publication,
         'publication_id': publication_id,
         'object': request_pub.board_video,
-        'publication_shared': SharedPublicationForm()
     }
 
-    return render(request, "photologue/videos/publication_detail.html", context)
+    return render(request, "photologue_groups/videos/publication_detail.html", context)
 
 
 @login_required(login_url='/')
@@ -211,8 +204,8 @@ def delete_video_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = PublicationVideo.objects.get(id=publication_id)
-        except PublicationVideo.DoesNotExist:
+            publication = PublicationGroupMediaVideo.objects.get(id=publication_id)
+        except PublicationGroupMediaVideo.DoesNotExist:
             response = False
             return HttpResponse(json.dumps(response),
                                 content_type='application/json'
@@ -221,12 +214,13 @@ def delete_video_publication(request):
             publication.author.username, publication.board_video, user.username))
 
         # Borramos publicacion
-        if user.id == publication.author.id or user.id == publication.board_video.owner_id:
+        if user.id == publication.author.id or user.id == publication.board_video.owner_id or user.has_perm(
+                'delete_publication', publication.board_video.group):
             publication.deleted = True
             publication.save(update_fields=['deleted'])
             publication.get_descendants().update(deleted=True)
             if publication.has_extra_content():
-                publication.publication_video_extra_content.delete()
+                publication.publication_group_multimedia_video_extra_content.delete()
             logger.info('Publication deleted: {}'.format(publication.id))
 
         response = True
@@ -245,8 +239,8 @@ def add_video_like(request):
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
 
         try:
-            publication = PublicationVideo.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        except PublicationVideo.DoesNotExist:
+            publication = PublicationGroupMediaVideo.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        except PublicationGroupMediaVideo.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
@@ -345,8 +339,8 @@ def add_video_hate(request):
         user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
         try:
-            publication = PublicationVideo.objects.get(id=id_for_publication)  # Obtenemos la publicacion
-        except PublicationVideo.DoesNotExist:
+            publication = PublicationGroupMediaVideo.objects.get(id=id_for_publication)  # Obtenemos la publicacion
+        except PublicationGroupMediaVideo.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
@@ -446,7 +440,7 @@ def edit_video_publication(request):
             pk = form.cleaned_data['pk']
             user = request.user
 
-            publication = get_object_or_404(PublicationVideo, id=pk)
+            publication = get_object_or_404(PublicationGroupMediaVideo, id=pk)
 
             if publication.author_id != user.id:
                 return JsonResponse({'data': "No tienes permisos para editar este comentario"})
@@ -486,8 +480,8 @@ def load_more_video_descendants(request):
 
         print('PAGE: {}, PUB_ID: {}'.format(page, pub_id))
         try:
-            publication = PublicationVideo.objects.get(id=pub_id)
-        except PublicationVideo.DoesNotExist:
+            publication = PublicationGroupMediaVideo.objects.get(id=pub_id)
+        except PublicationGroupMediaVideo.DoesNotExist:
             return Http404
 
         try:
@@ -509,16 +503,6 @@ def load_more_video_descendants(request):
             pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(deleted=False))
 
-        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
-                                                         deleted=False).order_by().values(
-            'shared_photo_publication__id')
-
-        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-            When(author_id=user.id, then=Value(1))
-        ))).values('have_shared')
-
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(
                 When(user_give_me_like=user, then=Value(1)),
@@ -526,9 +510,8 @@ def load_more_video_descendants(request):
             )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
                 output_field=IntegerField()
-            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related(
-            'publication_video_extra_content', 'images',
+            ))).prefetch_related(
+            'publication_group_multimedia_video_extra_content', 'images',
             'videos', 'parent__author') \
             .select_related('author',
                             'board_video', 'parent')
@@ -547,5 +530,5 @@ def load_more_video_descendants(request):
             'publications': publications,
             'video': publication.board_video
         }
-        return render(request, 'photologue/videos/ajax_load_replies.html', context=context)
+        return render(request, 'photologue_groups/videos/ajax_load_replies.html', context=context)
     return HttpResponseForbidden()

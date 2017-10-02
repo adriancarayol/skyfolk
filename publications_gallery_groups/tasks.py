@@ -154,7 +154,7 @@ def process_video_video_publication(file, publication_id, filename, user_id=None
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="{0}">Ver</a>'.format(reverse_lazy(
-                                                           'publications_gallery_groups:video/publication/detail/',
+                                                           'publications_gallery_groups:publication_video_detail',
                                                            args=[publication_id])))
         except IntegrityError as e:
             logger.info(e)
@@ -204,7 +204,7 @@ def process_gif_video_publication(file, publication_id, filename, user_id=None):
             notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="{0}">Ver</a>'.format(reverse_lazy(
-                                                           'publications_gallery_groups:video/publication/detail/',
+                                                           'publications_gallery_groups:publication_video_detail',
                                                            args=[publication_id])))
         except IntegrityError as e:
             logger.info(e)

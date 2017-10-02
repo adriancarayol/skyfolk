@@ -160,7 +160,8 @@
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12">
                                     <ul class="opciones">
-                                        {% if user.id == node.author.username or user.id == node.author.id %}
+                                    {{ object }}
+                                        {% if user.id == object.owner_id or user.id == node.author.id %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="material-icons">delete_forever</i>
                                             </li>
@@ -174,7 +175,6 @@
                                             <i class="material-icons md-18">keyboard_arrow_up</i>
                                             <i class="like-value">{{ node.likes|zero_to_empty }}</i>
                                         </li>
-                                        <li title="Añadir a mi skyline" id="share-{{node.id}}" data-id="{{ node.pk }}" class={% if node.have_shared %}"remove-timeline"{% else %}"add-timeline"{% endif %}><i class="material-icons md-18">format_quote</i><i class="share-values"> {{ node.total_shared|zero_to_empty }}</i></li>
                                         <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
                                         </li>
                                     </ul>

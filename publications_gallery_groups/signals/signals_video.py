@@ -12,13 +12,13 @@ from requests.exceptions import MissingSchema
 
 from notifications.signals import notify
 from user_profile.node_models import NodeProfile
-from publications_gallery.models import PublicationVideo, ExtraContentPubVideo
+from publications_gallery_groups.models import PublicationGroupMediaVideo, ExtraContentPubVideo
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, sender=PublicationVideo, dispatch_uid='video_publication_save')
+@receiver(post_save, sender=PublicationGroupMediaVideo, dispatch_uid='video_group_gallery_publication_save')
 def video_publication_handler(sender, instance, created, **kwargs):
 
     is_edited = getattr(instance, '_edited', False)
@@ -69,14 +69,14 @@ def add_extra_content(instance):
 
     # Si no existe nuevo enlace y tiene contenido extra, eliminamos su contenido
     if (not link_url or len(link_url) <= 0) and instance.has_extra_content():
-        instance.publication_video_extra_content.delete()  # Borramos el extra content de esta
-        instance.publication_video_extra_content = None
+        instance.publication_group_multimedia_video_extra_content.delete()  # Borramos el extra content de esta
+        instance.publication_group_multimedia_video_extra_content = None
     elif link_url and len(link_url) > 0:  # Eliminamos contenido extra para añadir el nuevo
         if instance.has_extra_content():
-            publication_video_extra_content = instance.publication_video_extra_content
+            publication_video_extra_content = instance.publication_group_multimedia_video_extra_content
             if publication_video_extra_content.url != link_url[-1]:
                 publication_video_extra_content.delete()
-                instance.publication_video_extra_content = None
+                instance.publication_group_multimedia_video_extra_content = None
 
     try:
         backend = detect_backend(link_url[-1])  # youtube o soundcloud

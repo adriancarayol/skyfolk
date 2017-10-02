@@ -104,7 +104,7 @@
             <!-- OPCIONES DE COMENTARIOS -->
             <div class="options_comentarios">
                 <ul class="opciones">
-                    {% if user.id == node.author.id or user.id == node.p.author.id %}
+                    {% if user.id == node.author.id or user.id == object.owner_id %}
                     {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                     <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
                     </li>
