@@ -12,7 +12,7 @@ from embed_video.fields import EmbedVideoField
 from notifications.signals import notify
 from publications.models import PublicationBase
 from publications.utils import validate_video
-from user_groups.models import GroupTheme
+from user_groups.models import GroupTheme, UserGroups
 
 
 def upload_image_theme_publication(instance, filename):
@@ -92,13 +92,17 @@ class PublicationTheme(PublicationBase):
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
+
+        group_owner_id = UserGroups.objects.values_list('owner_id', flat=True).get(
+            group_ptr_id=self.board_theme.board_group_id)
+
         data = {
             'type': 'pub',
             'id': self.id,
             'parent_id': self.parent_id,
             'level': self.level,
             'content': render_to_string(request=request, template_name='groups/board_theme_publications.html',
-                                        context={'publications': [self, ], 'object': self.board_theme})
+                                        context={'publications': [self, ], 'object': self.board_theme, 'group_owner_id': group_owner_id})
         }
 
         # Enviamos a todos los usuarios que visitan el perfil

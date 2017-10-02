@@ -98,7 +98,7 @@
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12" data-id="{{ node.id }}" data-board="{{ node.board_group.id }}">
                                     <ul class="opciones">
-                                        {% if user.id == node.author.id %}
+                                        {% if user.id == node.author.id or user.id == group_profile.owner_id %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="material-icons">delete_forever</i>
                                             </li>

@@ -160,7 +160,7 @@
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12">
                                     <ul class="opciones">
-                                        {% if user.id == photo.owner_id or user.id == photo.owner_id %}
+                                        {% if user.id == photo.owner_id or user.id == node.p_author_id %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="material-icons">delete_forever</i>
                                             </li>

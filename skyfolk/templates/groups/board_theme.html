@@ -44,9 +44,11 @@
                                       {% if object.have_hate == 1 %}style="color: rgb(186, 104, 200);"{% endif %}><i
                                         class="material-icons">keyboard_arrow_down</i><i
                                         class="hate-theme-value">{{ object.hates|zero_to_empty }}</i></span>
+                                {% if user.id == object.owner.id or user.id == group_owner_id %}
                                 <span class="delete-theme">
                                     <i class="material-icons">delete_forever</i>
                                 </span>
+                            {% endif %}
                             </p>
                         </div>
                     </div>

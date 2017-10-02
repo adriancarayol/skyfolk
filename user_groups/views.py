@@ -645,7 +645,7 @@ list_group_profile = login_required(ProfileGroups.as_view(), login_url='/')
 
 class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
     form_class = GroupThemeForm
-    # success_url = reverse_lazy('user_groups:create_group_theme')
+    success_url = '/'
     http_method_names = [u'post']
 
     @method_decorator(login_required)
@@ -666,6 +666,7 @@ class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
             if not is_member:
                 return super(CreateGroupThemeView, self).form_invalid(form)
         else:
+
             return super(CreateGroupThemeView, self).form_valid(form)
 
 
@@ -781,7 +782,7 @@ class GroupThemeView(DetailView):
             ))).annotate(have_hate=Count(Case(
             When(hate_theme__by_user_id=user.id, then=Value(1)),
             output_field=IntegerField()
-        ))).select_related('owner')
+        ))).select_related('owner', 'board_group')
 
     def get_context_data(self, **kwargs):
         user = self.request.user
@@ -809,6 +810,8 @@ class GroupThemeView(DetailView):
 
         context['publications'] = pubs
         context['form'] = PublicationThemeForm()
+        context['group_owner_id'] = UserGroups.objects.values_list('owner_id', flat=True).get(
+            group_ptr_id=self.object.board_group_id)
         context['edit_form'] = EditGroupThemeForm(instance=self.object, initial={'pk': self.object.pk})
         return context
 

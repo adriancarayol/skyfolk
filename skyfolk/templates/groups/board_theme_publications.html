@@ -96,7 +96,7 @@
                                 <div class="divider"></div>
                                 <div class="options_comentarios col s12">
                                     <ul class="opciones">
-                                        {% if user.id == pub.author.id or user.id == user_profile.id %}
+                                        {% if user.id == pub.author.id or user.id == group_owner_id %}
                                             {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="material-icons md-18">delete_forever</i>

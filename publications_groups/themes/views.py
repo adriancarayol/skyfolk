@@ -94,8 +94,8 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
                     saved = super(PublicationThemeView, self).form_valid(form)
                 else:
                     saved = super(PublicationThemeView, self).form_valid(form,
-                                                                        msg=u"Estamos procesando tus videos, te avisamos "
-                                                                            u"cuando la publicación esté lista.")
+                                                                         msg=u"Estamos procesando tus videos, te avisamos "
+                                                                             u"cuando la publicación esté lista.")
                 transaction.on_commit(
                     lambda: optimize_publication_media(form.instance, media, exts))
                 transaction.on_commit(lambda: form.instance.send_notification(self.request))
@@ -229,7 +229,10 @@ class DeletePublicationTheme(UpdateView):
             return JsonResponse({'response': False})
 
         user = request.user
-        if self.object.author_id != user.id:
+        group_owner_id = UserGroups.objects.values_list('owner_id', flat=True).get(
+            group_ptr_id=self.object.board_theme.board_group_id)
+
+        if self.object.author_id != user.id and user.id != group_owner_id:
             return HttpResponseForbidden()
 
         self.object.deleted = True

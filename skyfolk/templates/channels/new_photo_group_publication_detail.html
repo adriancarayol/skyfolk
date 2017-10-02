@@ -95,7 +95,7 @@
                         <div class="divider"></div>
                         <div class="options_comentarios col s12">
                             <ul class="opciones">
-                                        {% if user.id == node.author.username or user.id == node.author.id %}
+                                        {% if user.id == object.owner_id or user.id == node.author.id %}
                                             <li class="trash-comment" title="Borrar comentario"><i
                                                     class="material-icons">delete_forever</i>
                                             </li>
