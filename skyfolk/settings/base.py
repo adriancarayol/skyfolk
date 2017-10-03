@@ -175,11 +175,15 @@ NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@lo
 NEOMODEL_ENCRYPTED_CONNECTION = True
 NEOMODEL_SIGNALS = True
 
+REDIS_PORT = 6379
+REDIS_DB = 0
+REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
+
 # cache
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': REDIS_HOST,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -258,6 +262,10 @@ TEMPLATES = [
 
 # rabbitmq
 rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
+
+RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
+
+
 rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % rabbitmq_host
 
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
