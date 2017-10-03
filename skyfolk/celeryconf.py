@@ -1,7 +1,25 @@
 import os
 
 rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
-broker_url = 'amqp://guest:guest@%s:5672/celery' % rabbitmq_host
+
+RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
+
+if RABBIT_HOSTNAME.startswith('tcp://'):  
+    RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
+
+broker_url = os.environ.get('BROKER_URL',  
+                            '')
+if not broker_url:  
+    broker_url = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
+        user=os.environ.get('RABBIT_ENV_USER', 'guest'),
+        password=os.environ.get('RABBIT_ENV_RABBITMQ_PASS', 'guest'),
+        hostname=RABBIT_HOSTNAME,
+        vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
+
+BROKER_HEARTBEAT = '?heartbeat=30'  
+
+if not broker_url.endswith(BROKER_HEARTBEAT):  
+    broker_url += BROKER_HEARTBEAT
 
 accept_content = ['json']
 task_serializer = 'json'

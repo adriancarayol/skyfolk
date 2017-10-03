@@ -1,0 +1,100 @@
+version: '2'
+
+services:  
+  # PostgreSQL database
+  db:
+    image: postgres:9.6.5
+    hostname: db
+    environment:
+      - POSTGRES_USER=skyfolk_pre
+      - POSTGRES_PASSWORD=gDFgg$$G=4h_%H
+      - POSTGRES_DB=skyfolk_pre_db
+    ports:
+      - "5432:5432"
+
+  # Neo4j datbase
+  neo4j:
+    image: neo4j:latest
+    environment:
+      - NEO4J_AUTH=neo4j/1518
+      - NEO4J_HEAP_MEMORY=2048
+      - NEO4J_CACHE_MEMORY=1G 
+    ports:
+        - "7474:7474"
+        - "1337:1337"
+        - "1099:1099"
+        - "7687:7687"
+  # Redis
+  redis:
+    image: redis:4.0
+    hostname: redis
+  # elasticsearch
+  elasticsearch1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.2
+    container_name: elasticsearch1
+    environmenit:
+        - cluster.name=docker-cluster
+        - bootstrap.memory_lock=true
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+        memlock:
+            soft: -1
+            hard: -1
+    mem_limit: 1g
+    volumes:
+        - esdata1:/usr/share/elasticsearch/data
+    ports:
+        - 9200:9200
+    networks:
+        - esnet
+  # RabbitMQ
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:3.6.12
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBIT_ENV_VHOST=celery
+    ports:
+      - "5672:5672"  # we forward this port because it's useful for debugging
+      - "15672:15672"  # here, we can access rabbitmq management plugin
+
+  # Django web server
+  web:
+    env_file:
+      - web-variables.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: web
+    command: ./run_web.sh
+    volumes:
+      - .:/app  # mount current directory inside container
+    ports:
+      - "8000:8000"
+    # set up links so that web knows about db, rabbit and redis
+    links:
+      - db
+      - rabbit
+      - redis
+    depends_on:
+      - db
+      - neo4j
+      - elasticsearch1
+
+  # Celery worker
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./run_celery.sh
+    volumes:
+      - .:/app
+    links:
+      - db
+      - rabbit
+      - redis
+    depends_on:
+      - rabbit
+      - web
+

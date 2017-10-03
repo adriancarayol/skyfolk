@@ -171,12 +171,9 @@ NOTIFICATIONS_USE_JSONFIELD = True
 
 # neo4j database
 
-config.DATABASE_URL = 'bolt://neo4j:1518@localhost:7687'  # default
 NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
 NEOMODEL_ENCRYPTED_CONNECTION = True
 NEOMODEL_SIGNALS = True
-
-db.set_connection('bolt://neo4j:1518@localhost:7687')
 
 # cache
 CACHES = {
@@ -261,7 +258,7 @@ TEMPLATES = [
 
 # rabbitmq
 rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
-rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F?heartbeat=15' % rabbitmq_host
+rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % rabbitmq_host
 
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
