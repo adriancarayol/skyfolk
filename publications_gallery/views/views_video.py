@@ -150,16 +150,6 @@ def video_publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_video.owner.username)
 
-    shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
-                                                     deleted=False).order_by().values(
-        'shared_photo_publication__id')
-
-    total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-    shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-        When(author_id=user.id, then=Value(1))
-    ))).values('have_shared')
-
     try:
         publication = request_pub.get_descendants(include_self=True) \
             .annotate(likes=Count('user_give_me_like'),
@@ -169,8 +159,7 @@ def video_publication_detail(request, publication_id):
             )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
                 output_field=IntegerField()
-            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField())) \
+            ))) \
             .filter(deleted=False) \
             .prefetch_related('publication_video_extra_content', 'images',
                               'videos', 'tags') \
@@ -431,89 +420,6 @@ def add_video_hate(request):
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
 
-
-@login_required(login_url='/')
-@transaction.atomic
-def share_video_publication(request):
-    """
-    Copia la publicacion de otro skyline
-    y se comparte en el tuyo
-    """
-    response = False
-    print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
-    if request.POST:
-        user = request.user
-        form = SharedPublicationForm(request.POST or None)
-
-        if form.is_valid():
-            obj_pub = form.cleaned_data['pk']
-            try:
-                pub_to_add = PublicationVideo.objects.get(pk=obj_pub)
-
-            except PublicationVideo.DoesNotExist:
-                response = False
-                return HttpResponse(json.dumps(response), content_type='application/json')
-
-            try:
-                author = NodeProfile.nodes.get(user_id=pub_to_add.author_id)
-                m = NodeProfile.nodes.get(user_id=user.id)
-            except NodeProfile.DoesNotExist:
-                return HttpResponse(json.dumps(response), content_type='application/json')
-
-            privacity = author.is_visible(m)
-
-            if privacity and privacity != 'all':
-                return HttpResponse(json.dumps(response), content_type='application/json')
-
-            shared = Publication.objects.filter(shared_video_publication_id=obj_pub, author_id=user.id,
-                                                deleted=False).exists()
-
-            if not shared:
-                pub = form.save(commit=False)
-                pub.parse_content()  # parse publication content
-                pub.add_hashtag()
-                pub.parse_mentions()  # add mentions
-                pub.content = Emoji.replace(pub.content)
-                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
-                              'href="/profile/%s">@%s</a><br>%s' % (
-                                  pub_to_add.author.username, pub_to_add.author.username, pub.content)
-                pub.shared_video_publication_id = pub_to_add.id
-                pub.author = user
-                pub.board_owner = user
-                pub.event_type = 7
-                try:
-                    with transaction.atomic(using="default"):
-                        pub.save()
-                        transaction.on_commit(lambda: pub.send_notification(request))
-                    response = True
-                except IntegrityError as e:
-                    logger.info(e)
-                logger.info('Compartido el comentario %d' % pub_to_add.id)
-
-            return HttpResponse(json.dumps(response), content_type='application/json')
-
-
-class RemoveSharedVideoPublication(View):
-    model = Publication
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(RemoveSharedVideoPublication, self).dispatch(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        pk = request.POST.get('pk', None)
-        user = request.user
-        try:
-            Publication.objects.filter(shared_video_publication_id=pk, author_id=user.id, deleted=False).update(
-                deleted=True)
-        except ObjectDoesNotExist:
-            raise Http404
-        data = {
-            'response': True,
-        }
-        return JsonResponse(data)
-
-
 @transaction.atomic
 def edit_video_publication(request):
     """
@@ -591,16 +497,6 @@ def load_more_video_descendants(request):
             pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
                                                         & Q(deleted=False))
 
-        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
-                                                         deleted=False).order_by().values(
-            'shared_photo_publication__id')
-
-        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-            When(author_id=user.id, then=Value(1))
-        ))).values('have_shared')
-
         pubs = pubs.annotate(likes=Count('user_give_me_like'),
                              hates=Count('user_give_me_hate'), have_like=Count(Case(
                 When(user_give_me_like=user, then=Value(1)),
@@ -608,8 +504,7 @@ def load_more_video_descendants(request):
             )), have_hate=Count(Case(
                 When(user_give_me_hate=user, then=Value(1)),
                 output_field=IntegerField()
-            ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-            have_shared=Subquery(shared_for_me, output_field=IntegerField())).prefetch_related(
+            ))).prefetch_related(
             'publication_video_extra_content', 'images',
             'videos', 'parent__author') \
             .select_related('author',

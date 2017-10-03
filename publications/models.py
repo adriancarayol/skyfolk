@@ -59,8 +59,6 @@ class PublicationBase(MPTTModel):
         (4, _("relevant")),
         (5, _("image")),
         (6, _("shared")),
-        (7, _("shared_photo_pub")),
-        (8, _("shared_group_pub")),
     )
 
     content = models.TextField(blank=False, null=True, max_length=500)
@@ -158,8 +156,6 @@ class Publication(PublicationBase):
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hates_me')
     shared_publication = models.ForeignKey('self', blank=True, null=True)
-    shared_photo_publication = models.ForeignKey('publications_gallery.PublicationPhoto', blank=True, null=True)
-    shared_video_publication = models.ForeignKey('publications_gallery.PublicationVideo', blank=True, null=True)
     shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True)
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
@@ -167,8 +163,7 @@ class Publication(PublicationBase):
     # objects = PublicationManager()
 
     class Meta:
-        unique_together = (('shared_photo_publication', 'id'),
-                           ('shared_publication', 'id'),
+        unique_together = (('shared_publication', 'id'),
                            ('board_owner', 'id'))
 
     class MPTTMeta:

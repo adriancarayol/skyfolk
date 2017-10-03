@@ -269,17 +269,13 @@ def publication_detail(request, publication_id):
                               'shared_publication__extra_content',
                               'tags',
                               'shared_publication__author',
-                              'shared_photo_publication__p_author',
-                              'shared_photo_publication__images',
-                              'shared_photo_publication__videos',
                               'shared_group_publication__images',
                               'shared_group_publication__author',
                               'shared_group_publication__videos',
-                              'shared_group_publication__group_extra_content',
-                              'shared_photo_publication__publication_photo_extra_content') \
+                              'shared_group_publication__group_extra_content',) \
             .select_related('author',
                             'board_owner', 'shared_publication',
-                            'parent', 'shared_photo_publication', 'shared_group_publication').annotate(
+                            'parent', 'shared_group_publication').annotate(
             total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
             have_shared=Subquery(shared_for_me, output_field=IntegerField()))
     except Exception as e:

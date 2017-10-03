@@ -67,10 +67,6 @@ def load_profile_publications(request, page, profile):
                                              'videos', 'shared_publication__images',
                                              'tags',
                                              'shared_publication__author',
-                                             'shared_photo_publication__images',
-                                             'shared_photo_publication__p_author',
-                                             'shared_photo_publication__videos',
-                                             'shared_photo_publication__publication_photo_extra_content',
                                              'shared_group_publication__images',
                                              'shared_group_publication__author',
                                              'shared_group_publication__videos',
@@ -78,7 +74,7 @@ def load_profile_publications(request, page, profile):
                                              'shared_publication__videos', 'shared_publication__extra_content') \
         .select_related('author',
                         'board_owner', 'shared_publication',
-                        'parent', 'shared_photo_publication', 'shared_group_publication').annotate(
+                        'parent', 'shared_group_publication').annotate(
         likes=Count('user_give_me_like'),
         hates=Count('user_give_me_hate')).annotate(have_like=Count(Case(
         When(user_give_me_like__id=user.id, then=Value(1)),
