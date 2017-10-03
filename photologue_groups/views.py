@@ -215,7 +215,7 @@ def upload_video(request):
                 'result': True,
                 'state': 200,
                 'message': 'Success',
-                'content': render_to_string(request=request, template_name='channels/new_photo_group_gallery.html',
+                'content': render_to_string(request=request, template_name='channels/new_video_gallery.html',
                                             context={'photo': obj})
             }
         else:

@@ -142,7 +142,7 @@ class DeletePublication(View):
             return JsonResponse({'response': response})
 
         try:
-            group = UserGroups.objects.get(group_ptr_id=board_group_id)
+            group = UserGroups.objects.get(id=board_group_id)
             publication = PublicationGroup.objects.get(id=pub_id, board_group_id=board_group_id)
         except ObjectDoesNotExist:
             return JsonResponse({'response': response})
@@ -417,7 +417,7 @@ class PublicationGroupDetail(ListView):
 
         try:
             n = NodeProfile.nodes.get(user_id=self.request.user.id)
-            g = NodeGroup.nodes.get(group_id=self.publication.board_group.group_ptr_id)
+            g = NodeGroup.nodes.get(group_id=self.publication.board_group_id)
         except (NodeProfile.DoesNotExist, NodeGroup.DoesNotExist) as e:
             raise Http404
 
@@ -467,7 +467,7 @@ class PublicationGroupDetail(ListView):
             context['publication_id'] = self.kwargs.get('pk', None)
             context['share_publication'] = SharedPublicationForm()
         context['group_profile'] = self.publication.board_group
-        context['enable_control_pubs_btn'] = self.request.user.has_perm('delete_publication', UserGroups.objects.get(group_ptr_id=self.publication.board_group))
+        context['enable_control_pubs_btn'] = self.request.user.has_perm('delete_publication', UserGroups.objects.get(id=self.publication.board_group_id))
         return context
 
 
@@ -490,7 +490,7 @@ class LoadRepliesForPublicationGroup(View):
             raise Http404
 
         try:
-            group = UserGroups.objects.get(group_ptr_id=publication.board_group.group_ptr_id)
+            group = UserGroups.objects.get(id=publication.board_group_id)
         except ObjectDoesNotExist:
             raise Http404
 
@@ -498,7 +498,7 @@ class LoadRepliesForPublicationGroup(View):
             pass
         else:
             try:
-                g = NodeGroup.nodes.get(group_id=publication.board_group.group_ptr_id)
+                g = NodeGroup.nodes.get(group_id=publication.board_group_id)
             except NodeGroup.DoesNotExist:
                 raise Http404
             try:

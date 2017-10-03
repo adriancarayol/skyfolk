@@ -67,7 +67,7 @@ class UserGroups(Group):
 
     @property
     def group_channel(self):
-        return "group-%d" % self.group_ptr_id
+        return "group-%d" % self.id
 
     @property
     def get_total_multimedia(self):
@@ -75,7 +75,7 @@ class UserGroups(Group):
 
 
 class GroupTheme(models.Model):
-    board_group = models.ForeignKey(Group)
+    board_group = models.ForeignKey(UserGroups)
     created = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(User)
     description = models.CharField(max_length=2048)
@@ -144,7 +144,7 @@ class LikeGroup(models.Model):
         unique_together = ('from_like', 'to_like')
 
     from_like = models.ForeignKey(User, related_name='from_likegroup')
-    to_like = models.ForeignKey(Group, related_name='to_likegroup')
+    to_like = models.ForeignKey(UserGroups, related_name='to_likegroup')
     created = models.DateTimeField(auto_now_add=True)
 
     objects = LikeGroupManager()
@@ -200,7 +200,7 @@ class RequestGroup(models.Model):
             <<notification>>: Notificación asociada a la petición
     """
     emitter = models.ForeignKey(User, related_name='from_group_request')
-    receiver = models.ForeignKey(Group, related_name='to_group_request')
+    receiver = models.ForeignKey(UserGroups, related_name='to_group_request')
     status = models.IntegerField(choices=REQUEST_STATUSES)
     created = models.DateTimeField(auto_now_add=True)
     objects = RequestGroupManager()

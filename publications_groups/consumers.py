@@ -22,7 +22,7 @@ class GroupPublicationConsumer(WebsocketConsumer):
             raise Http404
 
         try:
-            publication_board_group = PublicationGroup.objects.values_list('board_group__group_ptr_id', flat=True).get(
+            publication_board_group = PublicationGroup.objects.values_list('board_group__id', flat=True).get(
                 id=pubid)
         except PublicationGroup.DoesNotExist:
             raise Http404

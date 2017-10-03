@@ -43,7 +43,7 @@ def user_group_changed_handler(sender, instance, action, **kwargs):
     if isinstance(instance, UserGroups):
         pk_set = kwargs.pop('pk_set', [])
         try:
-            g = NodeGroup.nodes.get(group_id=instance.group_ptr_id)
+            g = NodeGroup.nodes.get(group_id=instance.id)
         except NodeGroup.DoesNotExist:
             raise ObjectDoesNotExist
 
@@ -90,7 +90,7 @@ def handle_delete_like(sender, instance, *args, **kwargs):
 def handle_new_theme(sender, instance, created, *args, **kwargs):
     if created:
         theme = render_to_string('groups/group_themes.html', {'themes': [instance, ]})
-        group = UserGroups.objects.get(group_ptr_id=instance.board_group.id)
+        group = UserGroups.objects.get(id=instance.board_group_id)
         data = {
             'theme': theme,
             'type': 'theme',

@@ -37,7 +37,7 @@ class GroupConsumer(WebsocketConsumer):
             raise Http404
 
         try:
-            g = NodeGroup.nodes.get(group_id=self.group_profile.group_ptr_id)
+            g = NodeGroup.nodes.get(group_id=self.group_profile.id)
         except NodeGroup.DoesNotExist:
             raise Http404
 

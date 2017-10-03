@@ -44,7 +44,7 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
 
         try:
             group_id = GroupTheme.objects.values_list('board_group_id', flat=True).get(id=form.instance.board_theme.id)
-            group = UserGroups.objects.get(group_ptr_id=group_id)
+            group = UserGroups.objects.get(id=group_id)
         except ObjectDoesNotExist:
             form.add_error('board_theme', 'El tema especificado no existe.')
             return super(PublicationThemeView, self).form_invalid(form)
@@ -230,7 +230,7 @@ class DeletePublicationTheme(UpdateView):
 
         user = request.user
         group_owner_id = UserGroups.objects.values_list('owner_id', flat=True).get(
-            group_ptr_id=self.object.board_theme.board_group_id)
+            id=self.object.board_theme.board_group_id)
 
         if self.object.author_id != user.id and user.id != group_owner_id:
             return HttpResponseForbidden()

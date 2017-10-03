@@ -61,23 +61,18 @@ class News(ListView):
                      ~Q(author__profile__from_blocked__to_blocked=profile)
                      & ~Q(author_id=self.request.user.id))) & Q(deleted=False) &
                 Q(parent=None)) \
-                               .select_related('author', 'shared_publication',
-                                               'shared_photo_publication', 'parent', 'shared_group_publication') \
+                               .select_related('author', 'shared_publication', 'parent', 'shared_group_publication') \
                                .prefetch_related('extra_content',
                                                  'images',
                                                  'videos',
-                                                 'shared_photo_publication__publication_photo_extra_content',
                                                  'shared_publication__extra_content',
                                                  'shared_publication__images',
                                                  'shared_publication__videos',
-                                                 'shared_photo_publication__videos',
-                                                 'shared_photo_publication__images',
                                                  'shared_group_publication__images',
                                                  'shared_group_publication__author',
                                                  'shared_group_publication__videos',
                                                  'shared_group_publication__group_extra_content',
-                                                 'shared_publication__author',
-                                                 'shared_photo_publication__p_author').distinct()[
+                                                 'shared_publication__author').distinct()[
                            offset:limit]
         except ObjectDoesNotExist:
             publications = Publication.objects.filter(

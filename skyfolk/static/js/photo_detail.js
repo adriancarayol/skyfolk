@@ -230,8 +230,6 @@ function AJAX_add_like_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
-    } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
     var id_user = $(caja_publicacion).attr('data-id'); // obtengo id
     var data = {
@@ -308,8 +306,6 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
     var id_pub;
     if (type.localeCompare("publication") == 0) {
         id_pub = $(caja_publicacion).attr('id').split('-')[1]; // obtengo id
-    } else if (type.localeCompare("timeline") == 0) {
-        id_pub = $(caja_publicacion).attr('data-publication'); // obtengo id
     }
     var id_user = $(caja_publicacion).attr('id'); // obtengo id
     var data = {
@@ -378,85 +374,6 @@ function AJAX_add_hate_gallery(caja_publicacion, heart, type) {
         },
         error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + e);
-        }
-    });
-}
-
-function AJAX_add_timeline_gallery(pub_id, tag, data_pub) {
-    var shared_tag = tag.find('.share-values');
-    var count_shared = $(shared_tag).text();
-    count_shared = count_shared.replace(/ /g, '');
-
-    $.ajax({
-        url: '/publication_p/share/publication/',
-        type: 'POST',
-        dataType: 'json',
-        data: data_pub,
-        success: function (response) {
-            if (response === true) {
-                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                    count_shared++;
-                    if (count_shared > 0) {
-                        $(shared_tag).text(" " + count_shared);
-                    } else {
-                        $(shared_tag).text(" ");
-                    }
-                }
-                $(tag).attr("class", "remove-timeline");
-                $(tag).css('color', '#bbdefb');
-                $('#share-publication-wrapper').hide();
-
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to add to timeline.",
-                    type: "error"
-                });
-            }
-        },
-        error: function (rs, e) {
-            // alert('ERROR: ' + rs.responseText + e);
-        }
-    });
-}
-
-function AJAX_remove_timeline_gallery(pub_id, tag) {
-    var shared_tag = $(tag).find('.share-values');
-    var count_shared = $(shared_tag).text();
-    count_shared = count_shared.replace(/ /g, '');
-
-    $.ajax({
-        url: '/publication_p/delete/share/publication/',
-        type: 'POST',
-        dataType: 'json',
-        data: {
-            'pk': pub_id
-        },
-        success: function (data) {
-            var response = data.response;
-            if (response === true) {
-                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                    count_shared--;
-                    if (count_shared > 0) {
-                        $(shared_tag).text(" " + count_shared);
-                    } else {
-                        $(shared_tag).text(" ");
-                    }
-                }
-                $(tag).attr("class", "add-timeline");
-                $(tag).css('color', '#555');
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to add to timeline.",
-                    type: "error"
-                });
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            // console.log(jqXHR.status);
         }
     });
 }

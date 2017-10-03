@@ -84,7 +84,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                     with transaction.atomic():
                         with db.transaction:
                             group.save()
-                            g = NodeGroup(group_id=group.group_ptr_id,
+                            g = NodeGroup(group_id=group.id,
                                           title=group.name).save()
                             n = NodeProfile.nodes.get(user_id=user.id)
                             group.user_set.add(user)
@@ -187,7 +187,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
 
         total_theme_publications = theme_publications.annotate(c=Count('*')).values('c')
 
-        themes = GroupTheme.objects.filter(board_group_id=group_profile.group_ptr_id).annotate(
+        themes = GroupTheme.objects.filter(board_group_id=group_profile.id).annotate(
             likes=Count('like_theme'),
             hates=Count('hate_theme')).annotate(
             have_like=Count(Case(
@@ -305,7 +305,7 @@ def follow_group(request):
             user = request.user
             group_id = request.POST.get('id', None)
             group = get_object_or_404(UserGroups,
-                                      group_ptr_id=group_id)
+                                      id=group_id)
 
             if user.pk != group.owner.pk:
                 try:
@@ -386,7 +386,7 @@ def unfollow_group(request):
         if request.is_ajax():
             user = request.user
             group_id = request.POST.get('id', None)
-            group = get_object_or_404(UserGroups, group_ptr_id=group_id)
+            group = get_object_or_404(UserGroups, id=group_id)
             if user.pk != group.owner.pk:
                 try:
                     with transaction.atomic(using="default"):
@@ -411,7 +411,7 @@ def like_group(request):
             user = request.user
             group_id = request.POST.get('id', None)
             group = get_object_or_404(UserGroups,
-                                      group_ptr_id=group_id)
+                                      id=group_id)
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
@@ -424,7 +424,7 @@ def like_group(request):
             if not created:
                 try:
                     like.delete()
-                    NodeGroup.nodes.get(group_id=group.group_ptr_id).likes.disconnect(
+                    NodeGroup.nodes.get(group_id=group.id).likes.disconnect(
                         NodeProfile.nodes.get(user_id=user.id))
                 except IntegrityError as e:
                     return JsonResponse({'response': 'error'})
@@ -482,7 +482,7 @@ class LikeListGroup(ListView):
 
     def get_queryset(self):
         self.group = UserGroups.objects.get(slug=self.kwargs.pop('groupname', None))
-        return LikeGroup.objects.filter(to_like_id=self.group.group_ptr_id).values('from_like__username',
+        return LikeGroup.objects.filter(to_like_id=self.group.id).values('from_like__username',
                                                                                    'from_like__first_name',
                                                                                    'from_like__last_name',
                                                                                    'from_like__profile__back_image'
@@ -507,14 +507,14 @@ class RespondGroupRequest(View):
         response = 'error'
         try:
             request_group = RequestGroup.objects.select_related('emitter').get(id=request_id)
-            group = UserGroups.objects.get(group_ptr_id=request_group.receiver_id)
+            group = UserGroups.objects.get(id=request_group.receiver_id)
         except ObjectDoesNotExist:
             return JsonResponse({'response': response})
 
         if request_status == 'accept':
             if user.id == group.owner_id:
                 try:
-                    g = NodeGroup.nodes.get(group_id=group.group_ptr_id)
+                    g = NodeGroup.nodes.get(group_id=group.id)
                     n = NodeProfile.nodes.get(user_id=request_group.emitter_id)
                 except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
                     return JsonResponse({'response': response})
@@ -584,7 +584,7 @@ class KickMemberGroup(View):
         group_id = int(request.POST.get('group_id', None))
 
         try:
-            group = UserGroups.objects.get(group_ptr_id=group_id)
+            group = UserGroups.objects.get(id=group_id)
             user_to_kick = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
             return JsonResponse({'response': 'error'})
@@ -811,7 +811,7 @@ class GroupThemeView(DetailView):
         context['publications'] = pubs
         context['form'] = PublicationThemeForm()
         context['group_owner_id'] = UserGroups.objects.values_list('owner_id', flat=True).get(
-            group_ptr_id=self.object.board_group_id)
+            id=self.object.board_group_id)
         context['edit_form'] = EditGroupThemeForm(instance=self.object, initial={'pk': self.object.pk})
         return context
 

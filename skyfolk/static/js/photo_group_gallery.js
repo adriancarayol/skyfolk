@@ -66,9 +66,8 @@ $(document).ready(function () {
             enctype: 'multipart/form-data',
             processData: false,
             success: function (data) {
-                console.log(data);
                 if (data.result === true) {
-
+                    $('.container-gallery > .row').prepend(data.content);
                 } else {
                     swal({
                         title: "¡Ups!.",

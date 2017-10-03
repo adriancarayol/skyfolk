@@ -11,7 +11,7 @@
 {% endblock %}
 {% block cf-form %}
     <form id="form-config-group" type="post"
-          action="{% url "user_groups:configuration_group:configuration_group" pk=object.group_ptr_id %}"
+          action="{% url "user_groups:configuration_group:configuration_group" pk=object.id %}"
           enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">

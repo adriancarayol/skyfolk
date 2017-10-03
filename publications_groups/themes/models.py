@@ -94,7 +94,7 @@ class PublicationTheme(PublicationBase):
         """
 
         group_owner_id = UserGroups.objects.values_list('owner_id', flat=True).get(
-            group_ptr_id=self.board_theme.board_group_id)
+            id=self.board_theme.board_group_id)
 
         data = {
             'type': 'pub',

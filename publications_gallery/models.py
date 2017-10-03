@@ -80,8 +80,6 @@ class PublicationPhoto(PublicationBase):
                                                related_name='likes_photo_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hate_photo_me')
-    user_share_me = models.ManyToManyField(User, blank=True,
-                                           related_name='share_photo_me')
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply_photo')
 
@@ -98,11 +96,6 @@ class PublicationPhoto(PublicationBase):
     @property
     def total_hates(self):
         return self.user_give_me_hate.count()
-
-    @property
-    def total_shares(self):
-        return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.p_author_id,
-                                          deleted=False).count()
 
     @property
     def get_channel_name(self):
@@ -201,8 +194,6 @@ class PublicationVideo(PublicationBase):
                                                related_name='likes_video_me')
     user_give_me_hate = models.ManyToManyField(User, blank=True,
                                                related_name='hate_video_me')
-    user_share_me = models.ManyToManyField(User, blank=True,
-                                           related_name='share_video_me')
     parent = models.ForeignKey('self', blank=True, null=True,
                                related_name='reply_photo')
 
@@ -222,11 +213,6 @@ class PublicationVideo(PublicationBase):
     @property
     def total_hates(self):
         return self.user_give_me_hate.count()
-
-    @property
-    def total_shares(self):
-        return Publication.objects.filter(shared_photo_publication_id=self.id, author_id=self.author_id,
-                                          deleted=False).count()
 
     @property
     def get_channel_name(self):

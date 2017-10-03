@@ -4,7 +4,7 @@ Nueva respuesta a una publicacion
 <div class="hidden" id="caja-comentario-{{ node.pk }}">
     <form class="reply-form" method="post">{% csrf_token %}
         <input name="author" type="hidden" value="{{ request.user.id }}">
-        <input name="board_group" type="hidden" value="{{ group_profile.group_ptr_id }}">
+        <input name="board_group" type="hidden" value="{{ group_profile.id }}">
         <input name="parent" type="hidden" value="{{ node.id }}">
         <div class="row">
             <div class="col s12">

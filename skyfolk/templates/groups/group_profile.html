@@ -171,7 +171,7 @@
     <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
     <script type="text/javascript" src="{% static "js/socket_group.js" %}"></script>
     <script>
-        UTILS.init([{{ group_profile.group_ptr_id }}]);
+        UTILS.init([{{ group_profile.id }}]);
         UTILS.conn_socket();
     </script>
 {% endblock %}

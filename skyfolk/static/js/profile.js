@@ -2,6 +2,8 @@ var countFriendList = 1;
 var flag_reply = false;
 var max_height_comment = 60;
 
+var cheat = document.getElementById('atajos-keyboard-profile');
+
 $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
     var tab_amigos = $('#tab-amigos');
@@ -111,6 +113,21 @@ $(document).ready(function () {
         $(commentReply).toggleClass("reply-actual-message-show");
     }
 
+    /* Bloquear usuario on key press */
+    $(this).keypress(function (e) {
+        var key = e.keyCode || e.which;
+        if (key === 66 && !($('input').is(":focus")) && !($('textarea').is(":focus"))) {
+            AJAX_bloq_user($('#bloq-user'));
+        }
+    });
+
+    /* Dar like on key press */
+    $(this).keypress(function (e) {
+        var key = e.keyCode || e.which;
+        if (key === 70 && !($('input').is(":focus")) && !($('textarea').is(":focus"))) {
+            AJAX_likeprofile("noabort");
+        }
+    });
     /* Expandir comentario */
 
     $(tab_comentarios).on('click', '.wrapper .zoom-pub', function () {
@@ -282,7 +299,7 @@ $(document).ready(function () {
 
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/
 function AJAX_likeprofile(status) {
-    if (status == "noabort") $.ajax({
+    if (status === "noabort") $.ajax({
         type: "POST",
         url: "/like_profile/",
         data: {
@@ -292,15 +309,15 @@ function AJAX_likeprofile(status) {
         dataType: "json",
         success: function (response) {
             var _likes = $('#likes').find('strong');
-            if (response == "like") {
+            if (response === "like") {
                 $("#ilike_profile").css('color', '#ec407a');
                 $(_likes).html(parseInt($(_likes).html()) + 1);
-            } else if (response == "nolike") {
+            } else if (response === "nolike") {
                 $("#ilike_profile").css('color', '#46494c');
                 if ($(_likes).html() > 0) {
                     $(_likes).html(parseInt($(_likes).html()) - 1);
                 }
-            } else if (response == "blocked") {
+            } else if (response === "blocked") {
                 swal({
                     title: "Vaya... algo no está bien.",
                     customClass: 'default-div',
@@ -316,7 +333,7 @@ function AJAX_likeprofile(status) {
         error: function (rs, e) {
             // alert(rs.responseText);
         }
-    }); else if (status == "anonymous") {
+    }); else if (status === "anonymous") {
         swal({
             title: "¡Ups!",
             text: "Debe estar registrado",

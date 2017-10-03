@@ -33,7 +33,7 @@ class ConfigurationGroupProfile(UpdateView):
 
     def get_initial(self):
         return {'tags': ','.join(
-            [tag.title for tag in NodeGroup.nodes.get(group_id=self.object.group_ptr_id).interest.match()]),
+            [tag.title for tag in NodeGroup.nodes.get(group_id=self.object.id).interest.match()]),
             'is_public': not self.object.is_public}
 
     def post(self, request, *args, **kwargs):
@@ -57,7 +57,7 @@ class ConfigurationGroupProfile(UpdateView):
         if self.request.is_ajax():
             tags = form.cleaned_data.get('tags', None)
             try:
-                g = NodeGroup.nodes.get(group_id=self.object.group_ptr_id)
+                g = NodeGroup.nodes.get(group_id=self.object.id)
             except NodeGroup.DoesNotExist:
                 raise Http404
             try:

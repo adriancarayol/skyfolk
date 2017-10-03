@@ -217,7 +217,8 @@ def upload_video(request):
                 'result': True,
                 'state': 200,
                 'message': 'Success',
-                'content': '/multimedia/' + user.username
+                'content': render_to_string(request=request, template_name='channels/new_video_gallery.html',
+                                            context={'photo': obj})
             }
         else:
             data = {
@@ -416,16 +417,6 @@ class PhotoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
-        shared_publications = Publication.objects.filter(shared_photo_publication__id=OuterRef('pk'),
-                                                         deleted=False).order_by().values(
-            'shared_photo_publication__id')
-
-        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-            When(author_id=user.id, then=Value(1))
-        ))).values('have_shared')
-
         paginator = Paginator(
             PublicationPhoto.objects.annotate(likes=Count('user_give_me_like'),
                                               hates=Count('user_give_me_hate'), have_like=Count(Case(
@@ -434,8 +425,7 @@ class PhotoDetailView(DetailView):
                 )), have_hate=Count(Case(
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
-                ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-                have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(
+                ))).filter(
                 ~Q(p_author__profile__from_blocked__to_blocked=user.profile)
                 & Q(board_photo_id=self.photo.id),
                 Q(level__lte=0) & Q(deleted=False)) \
@@ -547,15 +537,6 @@ class VideoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
-        shared_publications = Publication.objects.filter(shared_video_publication__id=OuterRef('pk'),
-                                                         deleted=False).order_by().values(
-            'shared_photo_publication__id')
-
-        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
-
-        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
-            When(author_id=user.id, then=Value(1))
-        ))).values('have_shared')
 
         paginator = Paginator(
             PublicationVideo.objects.annotate(likes=Count('user_give_me_like'),
@@ -565,8 +546,7 @@ class VideoDetailView(DetailView):
                 )), have_hate=Count(Case(
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
-                ))).annotate(total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
-                have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(
+                ))).filter(
                 ~Q(author__profile__from_blocked__to_blocked=user.profile)
                 & Q(board_video_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \

@@ -6,7 +6,7 @@
 {% load static %}
 <div class="row">
     <div class="col l12 m12 s12">
-        <div id="group-profile" data-id="{{ group_profile.group_ptr_id }}" class="user-card card">
+        <div id="group-profile" data-id="{{ group_profile.id }}" class="user-card card">
             <div class="ventana-pin">
                 <a><i class="material-icons">remove</i></a>
                 <a><i class="material-icons">flip_to_front</i></a>
@@ -28,7 +28,7 @@
                         </div>
                         <span class="informacion">
                         {% if group_owner %}
-                            <span data-url="{% url "user_groups:configuration_group:configuration_group" pk=group_profile.group_ptr_id %}" id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</span>
+                            <span data-url="{% url "user_groups:configuration_group:configuration_group" pk=group_profile.id %}" id="configurationOnProfile" class="material-icons configure-profile" title="Configuracion">settings</span>
                         {% elif follow_group %}
                             <span id="unfollow-group" class="material-icons group-follow" title="Dejar de seguir"
                                   style="color: #29b203;">remove</span>

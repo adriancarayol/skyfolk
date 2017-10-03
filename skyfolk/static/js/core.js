@@ -200,7 +200,7 @@ $(document).ready(function () {
     /* Atajo para enviar comentarios mas rapido */
     $(page_wrapper).find('#message3').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
             $('#sendformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
             $(this).blur(); // OFF FOCUS
@@ -209,7 +209,7 @@ $(document).ready(function () {
     /* Atajo para enviar comentarios mas rapido a mi perfil. */
     $(self_page_wrapper).find('#message2').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
             $('#sendselfformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
             $(this).blur(); // OFF FOCUS
@@ -225,7 +225,7 @@ $(document).ready(function () {
     /* Abre nuevo mensaje "m" */
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
-        if (key == 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(page_wrapper).toggle();
             $(page_wrapper).find('#message3').focus();
@@ -235,7 +235,7 @@ $(document).ready(function () {
     /* Abre nuevo mensaje (propio) "m" */
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
-        if (key == 77 && ($(self_page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 77 && ($(self_page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(self_page_wrapper).toggle();
             $(self_page_wrapper).find('#message2').focus();
@@ -247,7 +247,7 @@ $(document).ready(function () {
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
         var cheat = document.getElementById('atajos-keyboard-profile');
-        if (key == 97 && ($(cheat).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 65 && ($(cheat).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(cheat).show();
         }
@@ -292,7 +292,7 @@ $(document).ready(function () {
     /* Focus on input search */
     $(this).on('keydown', function (e) {
         if (e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // escape
-            $('#id_searchText').focus(); // Focus del textarea off.
+            $('#id_q').focus(); // Focus del textarea off.
             return false;
         }
     });
