@@ -12,6 +12,10 @@ services:
     ports:
       - "5432:5432"
 
+  # ffmpeg
+  ffmpeg:
+    image: jrottenberg/ffmpeg
+    tty: true
   # Neo4j datbase
   neo4j:
     image: neo4j:latest
@@ -24,6 +28,7 @@ services:
         - "1337:1337"
         - "1099:1099"
         - "7687:7687"
+
   # Redis
   redis:
     image: redis:4.0
@@ -98,10 +103,12 @@ services:
     links:
       - db
       - rabbit
+      - neo4j
       - redis
     depends_on:
       - db
       - neo4j
+      - rabbit
       - elasticsearch1
       - elasticsearch2
   

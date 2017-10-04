@@ -171,7 +171,9 @@ NOTIFICATIONS_USE_JSONFIELD = True
 
 # neo4j database
 
-NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
+NEO4J_URL = os.environ.get('NEO4J_BOLT_URL', 'neo4j')
+NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:1518@%s:7687' % NEO4J_URL
+
 NEOMODEL_ENCRYPTED_CONNECTION = True
 NEOMODEL_SIGNALS = True
 
@@ -266,7 +268,7 @@ rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
 RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
 
-rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % rabbitmq_host
+rabbitmq_url = 'amqp://guest:guest@%s:5672/%%2F' % RABBIT_HOSTNAME
 
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
@@ -341,11 +343,11 @@ POSTMAN_DISABLE_USER_EMAILING = True
 #     },
 # }
 
-
+ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://127.0.0.1:9200/',
+        'URL': 'http://%s:9200/' % ELASTIC_URL,
         'INDEX_NAME': 'haystack',
     },
 }
