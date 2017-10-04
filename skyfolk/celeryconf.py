@@ -1,14 +1,14 @@
 import os
 
-rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
-
-RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'localhost')
+RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
 if RABBIT_HOSTNAME.startswith('tcp://'):
     RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
 
 broker_url = os.environ.get('BROKER_URL',
                             '')
+
+
 if not broker_url:
     broker_url = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
         user=os.environ.get('RABBIT_ENV_USER', 'guest'),
