@@ -171,9 +171,8 @@ NOTIFICATIONS_USE_JSONFIELD = True
 
 # neo4j database
 
-NEO4J_URL = os.environ.get('NEO4J_BOLT_URL', 'neo4j')
-NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:1518@%s:7687' % NEO4J_URL
-
+NEO4J_URL = os.environ.get('NEO4J_URL', 'neo4j')
+NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:1518@%s' % NEO4J_URL
 NEOMODEL_ENCRYPTED_CONNECTION = True
 NEOMODEL_SIGNALS = True
 
@@ -344,7 +343,7 @@ ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://%s:9200/' % ELASTIC_URL,
+        'URL': 'http://{}/'.format(ELASTIC_URL),
         'INDEX_NAME': 'haystack',
     },
 }

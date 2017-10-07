@@ -2,7 +2,11 @@
 import os
 import subprocess
 import sys
+#TODO: Eliminar esta linea (hacer script)
+import imageio
 from django.core.management import execute_from_command_line
+#TODO: Eliminar esta linea (hacer script)
+imageio.plugins.ffmpeg.download()
 
 if __name__ == "__main__":
     # import ipdb;ipdb.set_trace()
@@ -45,8 +49,8 @@ if __name__ == "__main__":
         os.environ['SECRET_KEY'] = 'develop'
         os.environ['DAPHNE_RUNLEVEL'] = 'develop'
         os.environ['RABBIT_PORT_5672_TCP'] = 'localhost:5672'
-        os.environ['NEO4J_BOLT_URL'] = 'localhost'
-        os.environ['ELASTICSEARCH_URL'] = 'localhost'
+        os.environ['NEO4J_URL'] = 'localhost:7687'
+        os.environ['ELASTICSEARCH_URL'] = 'localhost:9200'
 
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
 

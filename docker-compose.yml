@@ -1,6 +1,6 @@
 version: '2'
 
-services:  
+services:   
   # PostgreSQL database
   db:
     image: postgres:9.6.5
@@ -15,7 +15,6 @@ services:
   # ffmpeg
   ffmpeg:
     image: jrottenberg/ffmpeg
-    tty: true
   # Neo4j datbase
   neo4j:
     image: neo4j:latest
@@ -37,7 +36,6 @@ services:
   # elasticsearch
   elasticsearch1:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.6.2
-    container_name: elasticsearch1
     environment:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
@@ -105,12 +103,16 @@ services:
       - rabbit
       - neo4j
       - redis
+      - elasticsearch1
+      - elasticsearch2
     depends_on:
       - db
       - neo4j
-      - rabbit
+      - rabbit 
       - elasticsearch1
       - elasticsearch2
+    tty: true
+    stdin_open: true
   
 volumes:
   esdata1:
