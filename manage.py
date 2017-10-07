@@ -49,8 +49,8 @@ if __name__ == "__main__":
         os.environ['SECRET_KEY'] = 'develop'
         os.environ['DAPHNE_RUNLEVEL'] = 'develop'
         os.environ['RABBIT_PORT_5672_TCP'] = 'localhost:5672'
-        os.environ['NEO4J_URL'] = 'localhost:7687'
-        os.environ['ELASTICSEARCH_URL'] = 'localhost:9200'
+        os.environ['NEO4J_URL'] = 'localhost'
+        os.environ['ELASTICSEARCH_URL'] = 'localhost'
 
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
 

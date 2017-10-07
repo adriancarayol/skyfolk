@@ -49,8 +49,6 @@ services:
       - xpack.security.enabled=false
       - cluster.routing.allocation.disk.threshold_enabled=false
       - http.cors.enabled=true
-      - transport.host="127.0.0.1
-      - http.host=0.0.0.0
     ulimits:
       memlock:
         soft: -1
@@ -72,9 +70,6 @@ services:
       - xpack.security.enabled=false
       - cluster.routing.allocation.disk.threshold_enabled=false
       - "discovery.zen.ping.unicast.hosts=elasticsearch1"
-      - http.cors.enabled=true
-      - transport.host=127.0.0.1
-      - http.host=0.0.0.0
     ulimits:
       memlock:
         soft: -1
@@ -121,8 +116,6 @@ services:
       - db
       - neo4j
       - rabbit 
-      - elasticsearch1
-      - elasticsearch2
       - ffmpeg
   
 volumes:
