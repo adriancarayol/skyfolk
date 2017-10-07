@@ -11,10 +11,16 @@ services:
       - POSTGRES_DB=skyfolk_pre_db
     ports:
       - "5432:5432"
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
 
   # ffmpeg
   ffmpeg:
     image: jrottenberg/ffmpeg
+    tty: true
+    stdin_open: true
+    volumes:
+      - "ffmpeg:/root/.imageio"
   # Neo4j datbase
   neo4j:
     image: neo4j:latest
@@ -23,10 +29,10 @@ services:
       - NEO4J_HEAP_MEMORY=2048
       - NEO4J_CACHE_MEMORY=1G 
     ports:
-        - "7474:7474"
-        - "1337:1337"
-        - "1099:1099"
-        - "7687:7687"
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - "./db/dbms:/data/dbms"
 
   # Redis
   redis:
@@ -42,6 +48,9 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - xpack.security.enabled=false
       - cluster.routing.allocation.disk.threshold_enabled=false
+      - http.cors.enabled=true
+      - transport.host="127.0.0.1
+      - http.host=0.0.0.0
     ulimits:
       memlock:
         soft: -1
@@ -63,6 +72,9 @@ services:
       - xpack.security.enabled=false
       - cluster.routing.allocation.disk.threshold_enabled=false
       - "discovery.zen.ping.unicast.hosts=elasticsearch1"
+      - http.cors.enabled=true
+      - transport.host=127.0.0.1
+      - http.host=0.0.0.0
     ulimits:
       memlock:
         soft: -1
@@ -95,7 +107,7 @@ services:
     hostname: web
     command: ./run_web.sh
     volumes:
-      - .:/app  # mount current directory inside container
+      - .:/code  # mount current directory inside container
     ports:
       - "8000:8000"
     links:
@@ -111,14 +123,18 @@ services:
       - rabbit 
       - elasticsearch1
       - elasticsearch2
-    tty: true
-    stdin_open: true
+      - ffmpeg
   
 volumes:
   esdata1:
     driver: local
   esdata2:
     driver: local
+  dbdata:
+    driver: local
+  ffmpeg:
+    driver: local
+  
 
 networks:
   esnet:
