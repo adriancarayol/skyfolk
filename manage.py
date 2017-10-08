@@ -2,12 +2,11 @@
 import os
 import subprocess
 import sys
-#TODO: Eliminar esta linea (hacer script)
-import imageio
 from django.core.management import execute_from_command_line
-#TODO: Eliminar esta linea (hacer script)
-imageio.plugins.ffmpeg.download()
 
+# Eliminar esto
+import imageio
+imageio.plugins.ffmpeg.download()
 if __name__ == "__main__":
     # import ipdb;ipdb.set_trace()
     # verificamos si param --entorno [develop|pre|master]

@@ -279,7 +279,7 @@
                                     <div class="tags-content">
                                         {% for tag in item.tags.all %}
                                         <blockquote
-                                            onclick="location.href='{% url 'photologue:collection-list' item.owner tag.name %}'">{{ tag.name }}</blockquote>
+                                            onclick="location.href='{% url 'photologue:collection-list' item.owner tag.slug %}'">{{ tag.slug }}</blockquote>
                                         {% endfor %}
                                     </div>
                                     {% endif %}

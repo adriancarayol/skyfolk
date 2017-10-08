@@ -343,7 +343,7 @@ ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://elasticsearch1:9200/',
+        'URL': 'http://elasticsearch:9200/',
         'INDEX_NAME': 'haystack',
     },
 }
