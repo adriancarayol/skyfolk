@@ -6,7 +6,6 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
-
 from nine import versions
 
 from ....base import get_layout

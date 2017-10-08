@@ -3,15 +3,17 @@
 {% load photologue_tags i18n %}
 {% load i18n %}
 {% load humanize %}
+
 {% load compress %}
-{% block title %} <title>{{ object.title }} por: {{ object.owner }}</title> {% endblock %}
+{% block title %} <title>Skyfolk / {{ object.title }} por: {{ object.owner }}</title> {% endblock %}
 
 {% block include_files %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css" onload="if(media!='all')media='all'">
-    <!-- Estilos para la galeria de fotos -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/photo_detail.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/comentarios.css" onload="if(media!='all')media='all'">
-    <!-- Estilos para el contenedor de la imagen -->
+    {% compress css %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/photo_detail.css">
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/comentarios.css">
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
+    {% endcompress %}
 {% endblock %}
 
 {% block content %}
@@ -22,11 +24,13 @@
                     <div class="col l8 m12 s12 photo-body" data-id="{{ object.pk }}">
                         {% if object.image %}
                             <a href="{{ object.image.url }}">
-                                <img src="{{ object.image.url }}" class="thumbnail" alt="{{ object.title }}">
+                                <img data-src="{{ object.image.url }}" class="thumbnail lazyload"
+                                     alt="{{ object.title }}">
                             </a>
                         {% else %}
                             <a href="{{ object.url_image }}">
-                                <img src="{{ object.url_image }}" class="thumbnail" alt="{{ object.title }}">
+                                <img data-src="{{ object.url_image }}" class="thumbnail lazyload"
+                                     alt="{{ object.title }}">
                             </a>
                         {% endif %}
                         <div class="col s12 photo-details">
@@ -35,26 +39,29 @@
                             </div>
                             <div class="col l8 m8 s8 legend-user-data">
                                 <a href="/profile/{{ object.owner.username }}">@{{ object.owner.username }}</a>
-                                <i class="photo-title">{{ object.title }}{% if object.caption %}
-                                    <p>{{ object.caption|safe }} </p>{% endif %}</i>
-                                <i class="photo-date"><i class="fa fa-clock-o"
-                                                         aria-hidden="true"></i> {% trans "Published" %} {{ object.date_added|naturaltime }}
+                                <i class="photo-title"><i class="material-icons md-18">camera_alt</i>{{ object.title }}
+                                        {% if object.caption %}
+                                            <p>{{ object.caption|safe }} </p>{% endif %}</i>
+                                <i class="photo-date"><i
+                                        class="material-icons">access_time</i> {% trans "Published" %} {{ object.date_added|naturaltime }}
                                 </i>
                             </div>
                             <div class="col l12 m12 s12 tags-content">
-                                {% for tag in photo.tags.all %}
-                                    <blockquote>{{ tag.name }}</blockquote>
+                                {% for tag in object.tags.all %}
+                                    <blockquote><a
+                                            href="{% url 'photologue:collection-list' photo.owner.username tag.name %}">{{ tag.name }}</a>
+                                    </blockquote>
                                 {% endfor %}
                             </div>
                         </div>
-                        {% if request.user.pk == object.owner_id %}
+                        {% if user.id == object.owner_id %}
                             <div class="row">
                                 <div class="col s12">
                                     <div class="divider"></div>
                                     <div class="row">
                                         <div class="author-controls">
                                             <a id="edit-photo"
-                                               class="waves-effect waves-light btn right green">Editar</a>
+                                               class="waves-effect waves-light btn right blue">Editar</a>
                                             <a id="del-photo"
                                                class="waves-effect waves-light btn right red">Eliminar</a>
                                             <div class="edit-form" id="wrapper-edit-form">
@@ -100,32 +107,18 @@
                         <div class="row">
                             {% if previous %}
                                 <a href="{{ previous.get_absolute_url }}">
-                                    <img title="{{ previous }}" class="responsive-img" src="{% if previous.thumbnail %}{{ previous.thumbnail.url }}{% elif previous.image %}{{ previous.image.url }}{% else %}{{ previous.url_image }}{% endif %}">
+                                    <img title="{{ previous }}" class="responsive-img lazyload" data-src="
+                                            {% if previous.thumbnail %}{{ previous.thumbnail.url }}{% elif previous.image %}{{ previous.image.url }}{% else %}{{ previous.url_image }}{% endif %}">
                                 </a>
                             {% endif %}
                             {% if next %}
                                 <a href="{{ next.get_absolute_url }}">
-                                    <img title="{{ next }}" class="responsive-img" src="{% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
+                                    <img title="{{ next }}" class="responsive-img lazyload" data-src="
+                                            {% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
                                 </a>
                             {% endif %}
                         </div>
                     </div>
-                    {% comment %}
-                <div class="gallery-details">
-                    {% if object.public_galleries %}
-                    <p>{% trans "This photo is found in the following galleries" %}:</p>
-                    <table>
-                        {% for gallery in object.public_galleries %}
-                        <tr>
-                            <td>{% previous_in_gallery object gallery %}</td>
-                            <td class="text-center"><a href="{{ gallery.get_absolute_url }}">{{ gallery.title }}</a></td>
-                            <td>{% next_in_gallery object gallery %}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                    {% endif %}
-                </div>
-                {% endcomment %}
                     <div id="tab-messages" class="col l4 m12 s12 photo-messages sidebar card">
                         <ul class="unstyled table fullwidth links">
                             <li class="tab active">
@@ -133,18 +126,31 @@
                             </li>
                         </ul>
                         <div id="messages-wrapper">
-                            {% if publications|length == 0 %}
-                                <!-- Si el usuario no tiene comentarios, proponemos uno -->
+                            {% if publications|length > 0 %}
+                                {% include "photologue/publications_entries.html" %}
+                                <div class="progress loading_publications" style="display: none">
+                                    <div class="indeterminate blue darken-1"></div>
+                                </div>
+
+                            {% else %}
                                 <div class="no-comments" id="without-comments">
                                     <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
                                 </div>
-                            {% else %}
-                                {% include "photologue/publications_entries.html" %}
                             {% endif %}
                             <div class="row form-wrapper">
                                 <form id="message-photo-form" action="" method="post">{% csrf_token %}
                                     {{ publication_photo.csrftoken }}
                                     {{ publication_photo }}
+                                    <div class="file-field input-field">
+                                        <div class="btn">
+                                            <span>Imágenes</span>
+                                            <input id="id_image" name="image" type="file" multiple>
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text"
+                                                   placeholder="Upload one or more files">
+                                        </div>
+                                    </div>
                                     <button type="submit" id="send_form_photo_publi"
                                             class="waves-effect waves-light btn right blue">
                                         Enviar<i class="material-icons right">send</i></button>
@@ -157,14 +163,13 @@
         </div>
     </div>
     {% compress js %}
-    <script src="{{ STATIC_URL }}js/photo_gallery.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/photo_detail.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/socket_photo.js"></script>
-    <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+        <script src="{{ STATIC_URL }}js/photo_gallery.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/photo_detail.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/socket_photo.js"></script>
+        <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
     {% endcompress %}
     <script>
         UTILS.init([{{ user.pk }}]);
         UTILS.conn_socket();
     </script>
-
 {% endblock %}

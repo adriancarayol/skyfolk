@@ -1,0 +1,65 @@
+$whitecolor: #fff
+$transparentgraycolor: rgba(0, 0, 0, 0.4)
+$blueskyfolk: #1e88e5
+$graylightcolor: #e0e0e0
+$graycolor: #555
+
+.bloq-user
+  background-color: $whitecolor
+  margin-bottom: 5%
+  height: 300px
+  box-shadow: 0 1px 5px $transparentgraycolor
+  padding: 10px
+  margin-left: 0.7%
+  & .header
+    height: 150px
+    & .back-profile-user
+      width: 100%
+      height: 100%
+      position: relative
+    & .bg-user
+      width: 80px
+      height: 80px
+      position: relative
+      margin: auto
+      display: block
+    & .profile-user-bg
+      position: relative
+      margin-top: -80px
+      width: 80px
+      height: 80px
+      border-radius: 3px
+      box-shadow: 0 1px 5px $blueskyfolk
+      cursor: pointer
+      transition: all .3s ease-in
+      &:hover
+        transform: scale(1.1)
+        border-color: $blueskyfolk
+      & img
+        width: 100%
+        height: 100%
+        display: block
+  & .name-friend
+    width: 60%
+    height: auto
+    margin: 50px auto auto
+    text-align: center
+    border-radius: 7px
+    padding: 10px
+    color: $graycolor
+    background-color: $graylightcolor
+    clear: both
+    & a:first-child
+      color: $blueskyfolk
+      text-decoration: none
+    & p:last-child
+      color: $graycolor
+  & .unblock-user-div
+    clear: both
+    margin-top: 3%
+    text-align: center
+    & .unblock-user
+      color: $blueskyfolk
+      font-weight: 600
+      cursor: pointer
+      font-size: 1.1em

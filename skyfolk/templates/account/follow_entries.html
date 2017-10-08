@@ -1,13 +1,22 @@
 {% load avatar_tags %}
 {% load app_filters %}
-{% load el_pagination_tags %}
-
-{% paginate friends_top12 using "follow_entries" %}
-{% for item in friends_top12 %}
-    <li id="friend-{{ item.user_id }}">
-        <div class="usr-img img-responsive">{% avatar item.title %}</div>
-        <a class="name" href="/profile/{{ item.title }}">{{ item.first_name }} {{ item.last_name }}
-            ({{ item.title }})</a>
-    </li>
-{% endfor %}
-{% show_more %}
+<div class="row infinite-following">
+    {% for item in friends_top12 %}
+        <div class="item-followed col l6 s12">
+            <div class="following-item" id="friend-{{ item.user_id }}">
+                <div class="usr-img img-responsive">{% avatar item %}</div>
+                <a class="name" href="/profile/{{ item.username }}">{{ item.first_name }} {{ item.last_name }}
+                    @{{ item.username }}</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% if followed.has_next %}
+    <div class="row center">
+        <a class="infinite-more-followed waves-effect waves-light btn-large blue darken-1 white-text center"
+           href="?page={{ followed.next_page_number }}&qs=following"><i class="material-icons">add</i></a>
+        <div class="progress load_following" style="display: none">
+            <div class="indeterminate blue darken-1"></div>
+        </div>
+    </div>
+{% endif %}

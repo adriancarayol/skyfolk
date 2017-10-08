@@ -1,0 +1,24 @@
+{% extends "groups/configuration/base_cf_group.html" %}
+{% load static %}
+{% load static %}
+{% load avatar_tags %}
+{% block title %} <title>Skyfolk / Configuración {{ object.name }}.</title> {% endblock %}
+{% block cf-title %}
+    <div class="hgroup">
+        <h4 class="cn"> Grupo </h4>
+        <h6 class="ch"> Cambia la información de tu grupo.</h6>
+    </div>
+{% endblock %}
+{% block cf-form %}
+    <div class="wrapper disable-account-wrapper">
+        <form action="." method="POST">{% csrf_token %}
+            <p>¿Estás seguro que quieres eliminar el grupo <b>{{ object }}</b>?</p>
+            {{ form }}
+            <button class="btn btn-primary right blue lighten-2" type="submit" name="action">Confirmar</button>
+        </form>
+    </div>
+    <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
+    <script>
+        $('.menu-config').find('li:nth-child(2)').css({'background-color': 'rgba(0, 0, 0, 0.1)', 'color': 'tomato'});
+    </script>
+{% endblock %}

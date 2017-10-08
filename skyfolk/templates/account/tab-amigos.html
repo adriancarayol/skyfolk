@@ -1,12 +1,15 @@
 {% comment %}
-  Pestaña de amigos en el perfil
+Pestaña de amigos en el perfil
 {% endcomment %}
 <div id="tab-amigos">
-    <input class="search" type="search" placeholder="¿A quién buscas?" title="Search">
-    <button class="sort" data-sort="name">
-        Ordenar
-    </button>
-    <ul class="list">
+    <div class="row center"><br>
+        <div class="col s12">
+            <a class="waves-effect waves-light btn blue white-text"
+               href="{% url 'user_profile:following_profile_list' username=user_profile.username %}">Ver todos</a>
+        </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row followed-container">
         {% include "account/follow_entries.html" %}
-    </ul>
+    </div>
 </div>

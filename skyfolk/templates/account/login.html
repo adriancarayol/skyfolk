@@ -4,6 +4,7 @@
 {% endcomment %}
 {% load i18n %}
 {% load account %}
+{% load static %}
 <!--{% block head_title %}{% trans "Sign In" %}{% endblock %}-->
 {% block extra_head %}
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -86,7 +87,7 @@
             </form>
         </div>
     </div>
-    <script src="{{ STATIC_URL }}js/fingerprint2.js" type="text/javascript"></script>
+    <script src="{% static "js/fingerprint2.js" %}" type="text/javascript"></script>
     <script>
         new Fingerprint2().get(function (result, components) {
             $('#id_auth_browser').val(result + " " + components[0].value);

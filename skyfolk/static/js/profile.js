@@ -2,11 +2,11 @@ var countFriendList = 1;
 var flag_reply = false;
 var max_height_comment = 60;
 
+var cheat = document.getElementById('atajos-keyboard-profile');
+
 $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
-    var tab_timeline = $('#tab-timeline');
     var tab_amigos = $('#tab-amigos');
-    // var wrapper_timeline = $(tab_timeline).find('#wrapperx-timeline');
     var wrapper_shared_pub = $('#share-publication-wrapper');
 
     /* Show more - Show less */
@@ -38,43 +38,26 @@ $(document).ready(function () {
         return false;
     });
 
-    $(tab_timeline).find('.timeline-pub').each(function () {
-        var comment = $(this).find('#timeline-id-content');
-        var text = comment.text();
-        var show = $(this).find('.show-more a');
-        text = text.replace(/\s\s+/g, ' ');
-
-        if (text.length < 90) {
-            $(show).css('display', 'none');
-        }
-    });
-
-    $(tab_timeline).on('click', '.show-more a', function () {
-        var $this = $(this);
-        var $content = $this.parent().prev("#timeline-id-content");
-        var linkText = $this.text().toUpperCase();
-
-        if (linkText === "+ MOSTRAR MÁS") {
-            linkText = "- Mostrar menos";
-            $content.css('height', 'auto');
-        } else {
-            linkText = "+ Mostrar más";
-            $content.css('height', '2.6em');
-        }
-        $this.text(linkText);
-        return false;
-    });
-
-    $('.fa-paw').on('click', function () {
+    $('.menu-profile').on('click', function () {
         $(".info-paw").show();
     });
 
     $('.info-trof').on('click', function () {
-        $(".trofeos").show();
+        var id = $(this).data('id');
+        $(".trofeos").toggle(0, function () {
+            if ($(this).is(":visible")) {
+                $('.wrapper-trofeos').load('/awards/user/' + id + '/');
+            }
+        });
     });
 
     $('.info-groups').on('click', function () {
-        $(".grupos").show();
+        var id = $(this).data('id');
+        $(".grupos").toggle(0, function () {
+            if ($(this).is(":visible")) {
+                $('.wrapper-groups').load('/groups/profile/' + id + '/');
+            }
+        });
     });
 
     $('#close-trofeos').on('click', function () {
@@ -85,6 +68,15 @@ $(document).ready(function () {
         $(".grupos").hide();
     });
 
+    $('.trofeos').on('click', '.next-awards, .prev-awards', function (e) {
+        e.preventDefault()
+        $('.wrapper-trofeos').load($(this).attr('href'));
+    });
+
+    $('.grupos').on('click', '.wrapper-groups .pagination a', function (e) {
+        e.preventDefault()
+        $('.wrapper-groups').load($(this).attr('href'));
+    });
 
     $('#configurationOnProfile').on('click', function () {
         var _ventana_pin = $('.ventana-pin');
@@ -98,22 +90,21 @@ $(document).ready(function () {
     });
 
     /* Abrir respuesta a comentario */
-    $(tab_comentarios).on('click', '#options-comments .fa-reply', function () {
+    $(tab_comentarios).on('click', '.options_comentarios .reply-comment', function () {
         var id_ = $(this).attr("id").slice(6);
         $("#" + id_).slideToggle("fast");
     });
 
     /* Editar comentario */
-    $(tab_comentarios).on('click', '#edit-comment-content', function () {
+    $(tab_comentarios).on('click', '.edit-comment', function () {
         var id = $(this).attr('data-id');
         $("#author-controls-" + id).slideToggle("fast");
     });
 
-    $(tab_comentarios).on('click', '#submit_edit_publication', function (event) {
+    $(tab_comentarios).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
-        var id = $(this).attr('data-id');
-        var content = $(this).closest('#author-controls-' + id).find('#id_caption-' + id).val();
-        AJAX_edit_publication(id, content);
+        var edit = $(this).closest('form').serialize();
+        AJAX_edit_publication(edit);
     });
 
     function replyComment(caja_pub) {
@@ -122,6 +113,21 @@ $(document).ready(function () {
         $(commentReply).toggleClass("reply-actual-message-show");
     }
 
+    /* Bloquear usuario on key press */
+    $(this).keypress(function (e) {
+        var key = e.keyCode || e.which;
+        if (key === 66 && !($('input').is(":focus")) && !($('textarea').is(":focus"))) {
+            AJAX_bloq_user($('#bloq-user'));
+        }
+    });
+
+    /* Dar like on key press */
+    $(this).keypress(function (e) {
+        var key = e.keyCode || e.which;
+        if (key === 70 && !($('input').is(":focus")) && !($('textarea').is(":focus"))) {
+            AJAX_likeprofile("noabort");
+        }
+    });
     /* Expandir comentario */
 
     $(tab_comentarios).on('click', '.wrapper .zoom-pub', function () {
@@ -148,7 +154,7 @@ $(document).ready(function () {
     }
 
     /* Borrar publicacion */
-    $(tab_comentarios).on('click', '#options-comments .fa-trash', function () {
+    $(tab_comentarios).on('click', '.options_comentarios .trash-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         swal({
             title: "Are you sure?",
@@ -169,17 +175,17 @@ $(document).ready(function () {
     });
 
     /* Agregar skyline */
-    $(document).on('click', '#options-comments #add_to_skyline', function () {
-        var tag = this;
-        $(wrapper_shared_pub).attr('data-id', $(tag).attr('data-id'));
+    $(this).on('click', '.add-timeline', function (e) {
+        var tag = $(this);
+        $(wrapper_shared_pub).find('#id_pk').val($(tag).data('id'));
         $(wrapper_shared_pub).show();
     });
 
     /* Compartir a skyline */
     $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
         event.preventDefault();
-        var content = $(wrapper_shared_pub).find('#shared_comment_content').val();
-        var pub_id = $(wrapper_shared_pub).attr('data-id');
+        var content = $(this).serialize();
+        var pub_id = $(wrapper_shared_pub).find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
         AJAX_add_timeline(pub_id, tag, content);
     });
@@ -187,58 +193,29 @@ $(document).ready(function () {
     /* Cerrar div de compartir publicacion */
     $('#close_share_publication').click(function () {
         $(wrapper_shared_pub).hide();
+        $(wrapper_shared_pub).find('#id_pk').val('');
     });
 
     /* Eliminar skyline */
-    $(document).on('click', '#options-comments #remove_from_skyline', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
-        var tag = this;
-        AJAX_add_timeline($(caja_publicacion).attr('id').split('-')[1], tag, null);
+    $(this).on('click', '.remove-timeline', function () {
+        var tag = $(this);
+        AJAX_remove_timeline(tag.data('id'), tag);
     });
 
     /* Añadir me gusta a comentario */
-    $(document).on('click', '#options-comments #like-heart', function () {
+    $(this).on('click', '.like-comment', function () {
         var caja_publicacion = $(this).closest('.wrapper');
         var heart = this;
         AJAX_add_like(caja_publicacion, heart, "publication");
     });
 
     /* Añadir no me gusta a comentario */
-    $(document).on('click', '#options-comments #fa-hate', function () {
-        var caja_publicacion = $(this).closest('.wrapper');
-        var heart = this;
+    $(document).on('click', '.hate-comment', function () {
+        var caja_publicacion = $(this).closest('.infinite-item');
+        var heart = $(this);
         AJAX_add_hate(caja_publicacion, heart, "publication");
     });
 
-    /* FUNCIONES AJAX PARA TABS DE PERFIL */
-
-    /*$(tab_amigos).bind('scroll', function () {
-     if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-     countFriendList++;
-     $.ajax({
-     type: "POST",
-     url: "/load_friends/",
-     data: {
-     'slug': countFriendList,
-     'csrfmiddlewaretoken': csrftoken
-     },
-     dataType: "json",
-     success: function (response) {
-
-     //load friends
-     for (var i = 0; i < response.length; i++) {
-     addFriendToHtmlList(response[i]);
-     }
-     },
-     error: function (rs, e) {
-
-     }
-     });
-     }
-     });*/
-
-
-    /**/
     $("#li-tab-amigos").click(function () {
         $(tab_amigos).css({
             "overflow": "auto"
@@ -284,7 +261,7 @@ $(document).ready(function () {
     $(this).click(function (event) {
         var _personal_card_info = $('#personal-card-info');
         if (!$(event.target).closest('#personal-card-info').length) {
-            if (!$(event.target).closest('.fa-paw').length) {
+            if (!$(event.target).closest('.menu-profile').length) {
                 if ($(_personal_card_info).is(":visible")) {
                     $(_personal_card_info).hide();
                 }
@@ -293,51 +270,36 @@ $(document).ready(function () {
     });
 
     /* LOAD MORE ON CLICK */
-    $(tab_comentarios).on('click', '#load_more_publications', function () {
-        var loader = $(this).next().find('#load_publications_descendants');
-        $(loader).fadeIn();
-        var last_pub = $(loader).closest('.row').prev('.children').find('.wrapper').last().attr('id');
-        var last_pub_id = "";
-        if (undefined !== last_pub && last_pub.length) {
-            last_pub_id = last_pub.toString().split('-')[1];
+    $(tab_comentarios).on('click', '.load_more_publications', function (e) {
+        e.preventDefault();
+        var loader = $(this).next().find('.load_publications_descendants');
+        var pub_id = $(this).data('id');
+        var page = $('.page_for_' + pub_id).last().val();
+        if (typeof page === 'undefined') {
+            page = 1;
         }
-        AJAX_load_publications($(this).attr("data-id"), loader, last_pub_id, this);
-        return false;
+        AJAX_load_publications(pub_id, loader, page, this);
     });
 
-    /* LOAD MORE SKYLINE ON CLICK */
-    $(tab_comentarios).on('click', '#load_more_skyline', function () {
-        var input_skyline = $(this);
-        var loader = $(input_skyline).next().find('#load_publications_skyline');
-        $(loader).fadeIn();
-        AJAX_load_skyline(loader, input_skyline);
-        return false;
+    $(tab_amigos).on('click', '.infinite-more-followed', function (e) {
+        e.preventDefault();
+        var _next = $(this).attr('href');
+        $.get(_next, function (data, status) {
+            var $load_following = $('.load_following');
+            $load_following.show();
+            var _items = $(data).find('.item-followed');
+            $('.infinite-following').append(_items);
+            $('.infinite-more-followed').replaceWith($(data).find('.infinite-more-followed'));
+            $load_following.hide();
+        }).always(function () {
+
+        });
     });
 }); // END DOCUMENT READY */
 
-
-var didScroll = false;
-
-$(window).scroll(function () {
-    if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-        didScroll = true;
-    }
-});
-
-setInterval(function () {
-    if (didScroll) {
-        didScroll = false;
-        var input_skyline = $('#load_more_skyline');
-        var loader = $(input_skyline).next().find('#load_publications_skyline');
-        $(loader).fadeIn();
-        AJAX_load_skyline(loader, input_skyline);
-    }
-}, 250);
-
-
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/
 function AJAX_likeprofile(status) {
-    if (status == "noabort") $.ajax({
+    if (status === "noabort") $.ajax({
         type: "POST",
         url: "/like_profile/",
         data: {
@@ -347,15 +309,15 @@ function AJAX_likeprofile(status) {
         dataType: "json",
         success: function (response) {
             var _likes = $('#likes').find('strong');
-            if (response == "like") {
+            if (response === "like") {
                 $("#ilike_profile").css('color', '#ec407a');
                 $(_likes).html(parseInt($(_likes).html()) + 1);
-            } else if (response == "nolike") {
+            } else if (response === "nolike") {
                 $("#ilike_profile").css('color', '#46494c');
                 if ($(_likes).html() > 0) {
                     $(_likes).html(parseInt($(_likes).html()) - 1);
                 }
-            } else if (response == "blocked") {
+            } else if (response === "blocked") {
                 swal({
                     title: "Vaya... algo no está bien.",
                     customClass: 'default-div',
@@ -371,7 +333,7 @@ function AJAX_likeprofile(status) {
         error: function (rs, e) {
             // alert(rs.responseText);
         }
-    }); else if (status == "anonymous") {
+    }); else if (status === "anonymous") {
         swal({
             title: "¡Ups!",
             text: "Debe estar registrado",
@@ -381,453 +343,39 @@ function AJAX_likeprofile(status) {
 
 }
 
-function add_loaded_publication(pub, data, btn, is_skyline) {
-    var publications = JSON.parse(data);
-
-    if (publications === undefined || publications.length <= 0) {
-        if (is_skyline)
-            $(btn).remove();
-        return;
-    }
-
-    var existing = $('#pub-' + pub);
-    var pub_to_add;
-
-    if (existing.length && !is_skyline) {
-        var children_list = $(existing).find('.children').first();
-        if (!children_list.length) {
-            children_list = $(existing).find('.wrapper-reply').after('<ul class="children"></ul>');
-        }
-        var content = "";
-        var i;
-        for (i = 0; i < publications.length; i++) {
-            pub_to_add = $('pub-' + publications[i].id);
-            if (undefined !== pub_to_add && pub_to_add.length) continue;
-
-            content = '<div class="row">';
-            content += '<div class="col s12">';
-            if (publications[i].level > 0 && publications[i].level < 3) {
-                content += ' <div class="col s12 wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 98% !important;">';
-            } else
-                content += ' <div class=\"col s12 wrapper\" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '">';
-            content += "            <div class=\"box\">";
-            content += '            <span id="check-' + publications[i].id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
-            if (publications[i].user_id == publications[i].author_id && (publications[i].event_type == 1 || publications[i].event_type == 3)) {
-                content += '            <span data-id="' + publications[i].id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
-            }
-            content += '<div class="row">';
-            content += "                <div class=\"articulo col s12\">";
-            content += '<div class="row">';
-            if (publications[i].user_id == publications[i].author_id) {
-                content += '      <div class="image col l1 m2 s2" style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);">';
-            } else {
-                content += "      <div class=\"image col l1 m2 s2\">";
-            }
-            content += '        <div class="usr-img img-responsive"><img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"></div>';
-            content += "      </div>";
-            content += '<div class="col l10 m12 s9">';
-            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a>';
-            if (publications[i].parent) {
-                content += '<span class="chip">';
-                content += '<img src="' + publications[i].parent_avatar + '" alt="' + publications[i].parent_author + '">';
-                content += '<i class="fa fa-reply"></i> <a href="/profile/' + publications[i].parent_author + '">@' + publications[i].parent_author + '</a>';
-                content += '</span>';
-            }
-            content += '</h2>';
-            content += '                    <p id="pub-created" class="blue-text text-darken-2">' + publications[i].created + '<\/p><br>';
-            content += '<div class="row publication-content">';
-            content += "                  <div class=\"parrafo comment\">";
-            content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
-            content += "                  </div>";
-            content += '                    <div class="show-more" id="show-comment-' + publications[i].id + '">';
-            content += "                        <a href=\"#\">+ Mostrar más<\/a>";
-            content += "                    </div>";
-            content += "                    </div>";
-            if (publications[i].extra_content) {
-                content += '<div class="card small">';
-                content += '<div class="card-image">';
-                if (publications[i].extra_content_image) {
-                    content += '<img src="' + publications[i].extra_content_image + '">';
-                } else {
-                    content += '<img src="/static/dist/img/nuevo_back.png">';
-                }
-                content += '<span class="card-title white-text">' + publications[i].extra_content_title + '</span>';
-                content += '</div>';
-                content += '<div class="card-content">';
-                content += '<p>' + publications[i].extra_content_description + '</p>';
-                content += '</div>';
-                content += '<div class="card-action">';
-                content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
-                content += '</div></div>';
-            }
-            if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
-                content += '<div class="row images">';
-                for (var image = 0; image < publications[i].images.length; image++) {
-                    content += '<div class="col s4 z-depth-2">';
-                    content += '<img class="responsive-img" src="/media/' + publications[i].images[image].image + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
-                    content += "                    </div>";
-                }
-                content += "                    </div>";
-            }
-            if (typeof(publications[i].videos) !== 'undefined' && publications[i].videos.length > 0) {
-                content += '<div class="row videos">';
-                for (var video = 0; video < publications[i].videos.length; video++) {
-                    content += '<div class="col s4 z-depth-2 center">';
-                    content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video].video + '" type="video/mp4"></video>';
-                    content += "                    </div>";
-                }
-                content += "                    </div>";
-            }
-            content += "                    </div>";
-            content += "                    </div>";
-            content += "                    </div>";
-            content += "                    </div>";
-            content += '<div class="row">';
-            content += '<div class="divider"></div>';
-            content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
-            content += "                    <ul class=\"opciones\">";
-            if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications[i].author_id) {
-                content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
-            }
-            if (publications[i].user_id != publications[i].author_id) {
-                content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
-                content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
-                content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
-                content += "                            </li>";
-                content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
-            }
-            content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline" id="add_to_skyline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
-            content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                    </ul>";
-            content += "                </div>";
-            content += "                </div>";
-            content += "    </div>";
-            if (publications[i].user_id == publications[i].author_id) {
-                content += '<div data-user-id="' + publications[i].author_id + '" id="author-controls-' + publications[i].id + '" class="author-controls">';
-                content += '<div class="row">';
-                content += '<div class="col s12">';
-                content += '<form method="post" accept-charset="utf-8">';
-                content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-                content += '<div class="row">';
-                content += '<div class="input-field col s12">';
-                content += '<i class="material-icons prefix">create</i>';
-                content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + publications[i].id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
-                content += '<label for="id_caption-' + publications[i].id + '">Editar comentario</label></div>';
-                content += '<div class="row">';
-                content += '<button data-id="' + publications[i].id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button" id="submit_edit_publication">Editar<i class="material-icons right">mode_edit</i></button>';
-                content += '</div></div></form></div></div></div>';
-            }
-            content += '<div class="wrapper-reply">';
-            content += '<div class="hidden" id="caja-comentario-' + publications[i].id + '">';
-            content += '<form class="reply-form" action="" method="post">';
-            content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-            content += '<input id="id_author" name="author" type="hidden" value="' + publications[i].user_id + '">';
-            content += '<input id="id_board_owner" name="board_owner" type="hidden" value="' + publications[i].board_owner_id + '">';
-            content += '<input id="id_parent" name="parent" type="hidden">';
-            content += '<div class="row">';
-            content += '<div class="col s12">';
-            content += '<div class="row">';
-            content += '<div class="input-field col s12">';
-            content += '<textarea class="materialize-textarea message-reply" id="message-reply-' + publications[i].id + '" cols="40" maxlength="500" name="content" placeholder="Responder a @' + publications[i].author_username + '" rows="10" required=""></textarea>';
-            content += '<label for="message-reply-' + publications[i].id + '">Escribe tu mensaje aqui...</label>';
-            content += '</div>';
-            content += '<div class="file-field input-field col s12">';
-            content += '<div class="btn">';
-            content += '<span>Imágenes</span>';
-            content += '<input id="id_image_reply" name="image" type="file" multiple>';
-            content += '</div>';
-            content += '<div class="file-path-wrapper">';
-            content += '<input class="file-path validate" type="text" placeholder="Upload one or more files">';
-            content += '</div></div></div></div></div>';
-            content += '<button type="button" id="reply-' + publications[i].id + '" class="waves-effect waves-light btn right blue enviar">Enviar<i class="material-icons right">send</i></button>';
-            content += '</form></div></div>';
-            if (publications[i].descendants > 0) {
-                content += '<div class="row">';
-                content += '<div class="col s12">';
-                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#" id="load_more_publications" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
-                content += '<div>';
-                content += '<div class="progress" id="load_publications_descendants" style="display: none;">';
-                content += '<div class="indeterminate blue darken-1"></div></div>';
-                content += '</div></div></div>';
-            }
-            content += "    </div></div></div>";
-            $(content).appendTo(children_list).hide().fadeIn(250);
-        }
-        var child_count = $(btn).find('#child_count');
-        var result_child_count = parseInt($(child_count).html(), 10) - publications.length;
-        if (result_child_count > 0)
-            $(child_count).html(result_child_count);
-        else
-            $(btn).remove();
-    } else if (is_skyline) {
-        for (i = 0; i < publications.length; i++) {
-            pub_to_add = $('pub-' + publications[i].id);
-            if (pub_to_add.length) continue;
-
-            content = '<div class="row">';
-            content += '<div class="col s12">';
-            if (publications[i].level > 0 && publications[i].level < 3) {
-                content += ' <div class="col s12 wrapper" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '" style="min-width: 98% !important;">';
-            } else
-                content += ' <div class=\"col s12 wrapper\" id="pub-' + publications[i].id + '" data-id="' + publications[i].user_id + '">';
-            content += "            <div class=\"box\">";
-            content += '            <span id="check-' + publications[i].id + '" class=\"top-options zoom-pub tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Ver conversación completa\"><i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"><\/i><\/span>';
-            if (publications[i].user_id == publications[i].author_id && (publications[i].event_type == 1 || publications[i].event_type == 3)) {
-                content += '            <span data-id="' + publications[i].id + '" id=\"edit-comment-content\" class=\"top-options edit-comment tooltipped\" data-position=\"bottom\" data-delay=\"50\" data-tooltip=\"Editar comentario\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"><\/i><\/span>';
-            }
-            content += '<div class="row">';
-            content += "                <div class=\"articulo col s12\">";
-            content += '<div class="row">';
-            if (publications[i].user_id == publications[i].author_id) {
-                content += '      <div class="image col l1 m2 s2" style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);">';
-            } else {
-                content += "      <div class=\"image col l1 m2 s2\">";
-            }
-            content += '        <div class="usr-img img-responsive"><img src="' + publications[i].author_avatar + '" alt="' + publications[i].author_username + '" width="120" height="120"></div>';
-            content += "      </div>";
-            content += '<div class="col l10 m12 s9">';
-            content += '                  <h2 class="h22"><a href="/profile/' + publications[i].author_username + '" >@' + publications[i].author_username + '</a>';
-
-            if (publications[i].parent) {
-                content += '<span class="chip">';
-                content += '<img src="' + publications[i].parent_avatar + '" alt="' + publications[i].parent_author + '">';
-                content += '<i class="fa fa-reply"></i> <a href="/profile/' + publications[i].parent_author + '">@' + publications[i].parent_author + '</a>';
-                content += '</span>';
-            }
-            content += '</h2>';
-            content += '                    <p id="pub-created" class="blue-text text-darken-2">' + publications[i].created + '<\/p><br>';
-            content += '<div class="row publication-content">';
-            content += "                  <div class=\"parrafo comment\">";
-            content += '                      <div class="wrp-comment">' + publications[i].content + '<\/div>';
-            content += "                  </div>";
-            content += '                    <div class="show-more" id="show-comment-' + publications[i].id + '">';
-            content += "                        <a href=\"#\">+ Mostrar más<\/a>";
-            content += "                    </div>";
-            content += "                    </div>";
-            if (publications[i].extra_content) {
-                content += '<div class="card small">';
-                content += '<div class="card-image">';
-                if (publications[i].extra_content_image) {
-                    content += '<img src="' + publications[i].extra_content_image + '">';
-                } else {
-                    content += '<img src="/static/dist/img/nuevo_back.png">';
-                }
-                content += '<span class="card-title white-text">' + publications[i].extra_content_title + '</span>';
-                content += '</div>';
-                content += '<div class="card-content">';
-                content += '<p>' + publications[i].extra_content_description + '</p>';
-                content += '</div>';
-                content += '<div class="card-action">';
-                content += '<a href="' + publications[i].extra_content_url + '">Ver</a>';
-                content += '</div></div>';
-            }
-            if (typeof(publications[i].images) !== 'undefined' && publications[i].images.length > 0) {
-                content += '<div class="row images">';
-                for (var image = 0; image < publications[i].images.length; image++) {
-                    content += '<div class="col s4 z-depth-2">';
-                    content += '<img class="responsive-img" src="/media/' + publications[i].images[image].image + '" alt="Imagen de: ' + publications[i].author_username + '" title="Imagen de: ' + publications[i].author_username + '">';
-                    content += "                    </div>";
-                }
-                content += "                    </div>";
-            }
-            if (typeof(publications[i].videos) !== 'undefined' && publications[i].videos.length > 0) {
-                content += '<div class="row videos">';
-                for (var video = 0; video < publications[i].videos.length; video++) {
-                    content += '<div class="col s4 z-depth-2 center">';
-                    content += '<video class="responsive-video" controls loop><source src="/media/' + publications[i].videos[video].video + '" type="video/mp4"></video>';
-                    content += "                    </div>";
-                }
-                content += "                    </div>";
-            }
-            if (publications[i].event_type === 6) {
-                content += '<style>.comment .fa-share {color: #1e88e5;font-style: normal;}</style>';
-                content += '<div class="card grey lighten-5">';
-                content += '<div class="card-content black-text">';
-                content += '<img src="' + publications[i].shared_pub_avatar + '" alt="' + publications[i].shared_pub_author + '" width="70" height="70" style="box-shadow: 0 1px 5px rgba(30, 136, 229, 0.15);"><br>';
-                content += '<span class="card-title"><a href="/profile/' + publications[i].shared_pub_author + '">@' + publications[i].author_username + '</a>';
-                content += '<i class="blue-text text-darken-2"> ' + publications[i].shared_created + '</i></span>';
-                content += '<p>' + publications[i].shared_pub_content + '</p>';
-                if (publications[i].shared_image) {
-                    content += '<br><div class="row">';
-                    content += '<div class="col s7">';
-                    content += '<img class="responsive-img" src="' + publications[i].shared_image + '" alt="Imagen de: ' + publications[i].shared_pub_author + '" title="Imagen de: ' + publications[i].shared_pub_author + '">';
-                    content += '</div></div>';
-                }
-                if (publications[i].shared_pub_extra_url !== undefined && publications[i].shared_pub_extra_url) {
-                    content += '<div class="card small">';
-                    content += '<div class="card-image">';
-                    if (publications[i].shared_pub_extra_image)
-                        content += '<img src="' + publications[i].shared_pub_extra_image + '">';
-                    else
-                        content += '<img src="/static/dist/img/nuevo_back.png">';
-                    content += '<span class="card-title white-text">' + publications[i].shared_pub_extra_title + '</span></div>';
-                    content += '<div class="card-content">';
-                    content += '<p>' + publications[i].shared_pub_extra_description + '</p></div>';
-                    content += '<div class="card-action">';
-                    content += '<a href="' + publications[i].shared_pub_extra_url + '">Ver</a></div></div></div>';
-
-                }
-                content += '<div class="card-action">';
-                content += '<a class="blue-text text-darken-2" href="/publication/' + publications[i].shared_pub_id + '">Ver</a></div></div>';
-            }
-            content += "                    </div>";
-            content += "                    </div>";
-            content += "                    </div>";
-            content += "                    </div>";
-            content += '<div class="row">';
-            content += '<div class="divider"></div>';
-            content += "                <div class=\"options_comentarios\" id=\"options-comments\">";
-            content += "                    <ul class=\"opciones\">";
-            if (publications[i].user_id == publications[i].board_owner_id || publications[i].user_id == publications[i].author_id) {
-                content += "                             <li class=\"trash-comment\" title=\"Borrar comentario\"><i class=\"fa fa-trash\"><\/i><\/li>";
-            }
-            if (publications[i].user_id != publications[i].author_id) {
-                content += "                            <li title=\"No me gusta\" class=\"hate-comment\" id=\"fa-hate\">";
-                content += '                                <i class="fa fa-angle-down" aria-hidden="true"></i>';
-                content += '                                <i class="fa hate-value">' + (publications[i].hates > 0 ? publications[i].hates : '') + '</i>';
-                content += "                            </li>";
-                content += '                        <li id="like-heart" title="¡Me gusta!" class="like-comment"><i class="fa fa-angle-up" aria-hidden="true"></i><i id="like-value" class="fa">' + (publications[i].likes > 0 ? publications[i].likes : '') + '</i></li>';
-            }
-            content += '                       <li title="Añadir a mi skyline" data-id="' + publications[i].id + '" class="add-timeline" id="add_to_skyline"><i class="fa fa-quote-right" aria-hidden="true"> ' + (publications[i].shares > 0 ? publications[i].shares : '') + '</i></li>';
-            content += '                       <li title="Responder" class="reply-comment"><i class="fa fa-reply" id="reply-caja-comentario-' + publications[i].id + '"><\/i><\/li>';
-            content += "                    </ul>";
-            content += "                </div>";
-            content += "                </div>";
-            content += "    </div>";
-            if (publications[i].user_id == publications[i].author_id) {
-                content += '<div data-user-id="' + publications[i].author_id + '" id="author-controls-' + publications[i].id + '" class="author-controls">';
-                content += '<div class="row">';
-                content += '<div class="col s12">';
-                content += '<form method="post" accept-charset="utf-8">';
-                content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-                content += '<div class="row">';
-                content += '<div class="input-field col s12">';
-                content += '<i class="material-icons prefix">create</i>';
-                content += '<textarea class="materialize-textarea" placeholder="Escribe el contenido del nuevo mensaje" id="id_caption-' + publications[i].id + '" cols="40" maxlength="500" name="content" rows="10" required="required" style="height: 10.9969px;"></textarea>';
-                content += '<label for="id_caption-' + publications[i].id + '">Editar comentario</label></div>';
-                content += '<div class="row">';
-                content += '<button data-id="' + publications[i].id + '" class="waves-effect waves-light btn blue darken-1 right edit-comment-btn" type="button" id="submit_edit_publication">Editar<i class="material-icons right">mode_edit</i></button>';
-                content += '</div></div></form></div></div></div>';
-            }
-            content += '<div class="wrapper-reply">';
-            content += '<div class="hidden" id="caja-comentario-' + publications[i].id + '">';
-            content += '<form class="reply-form" action="" method="post">';
-            content += '<input type="hidden" name="csrfmiddlewaretoken" value="' + publications[i].token + '">';
-            content += '<input id="id_author" name="author" type="hidden" value="' + publications[i].user_id + '">';
-            content += '<input id="id_board_owner" name="board_owner" type="hidden" value="' + publications[i].board_owner_id + '">';
-            content += '<input id="id_parent" name="parent" type="hidden">';
-            content += '<div class="row">';
-            content += '<div class="col s12">';
-            content += '<div class="row">';
-            content += '<div class="input-field col s12">';
-            content += '<textarea class="materialize-textarea message-reply" id="message-reply-' + publications[i].id + '" cols="40" maxlength="500" name="content" placeholder="Responder a @' + publications[i].author_username + '" rows="10" required=""></textarea>';
-            content += '<label for="message-reply-' + publications[i].id + '">Escribe tu mensaje aqui...</label>';
-            content += '</div>';
-            content += '<div class="file-field input-field col s12">';
-            content += '<div class="btn">';
-            content += '<span>Imágenes</span>';
-            content += '<input id="id_image_reply" name="image" type="file" multiple>';
-            content += '</div>';
-            content += '<div class="file-path-wrapper">';
-            content += '<input class="file-path validate" type="text" placeholder="Upload one or more files">';
-            content += '</div></div></div></div></div>';
-            content += '<button type="button" id="reply-' + publications[i].id + '" class="waves-effect waves-light btn right blue enviar">Enviar<i class="material-icons right">send</i></button>';
-            content += '</form></div></div>';
-            if (publications[i].descendants > 0) {
-                content += '<div class="row">';
-                content += '<div class="col s12">';
-                content += '<a class="waves-effect waves-light btn-large blue darken-1 white-text center" href="#" id="load_more_publications" data-id="' + publications[i].id + '"><i class=" material-icons left">expand_more</i>Cargar comentarios (' + publications[i].descendants + ')</a>';
-                content += '<div>';
-                content += '<div class="progress" id="load_publications_descendants" style="display: none;">';
-                content += '<div class="indeterminate blue darken-1"></div></div>';
-                content += '</div></div></div>';
-            }
-            content += "    </div></div></div>";
-            $('#tab-comentarios').find('#loader_skyline').before(content);
-        }
-
-        if (publications === undefined || publications.length <= 20)
-            $(btn).remove();
-        else
-            $(btn).attr("data-id", publications[publications.length - 1].id);
-    }
-}
 /* LOAD MORE COMMENTS */
-function AJAX_load_publications(pub, loader, last_pub, btn) {
-    var data = {
-        'id': pub,
-        'last_pub': last_pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
+function AJAX_load_publications(pub, loader, page, btn) {
     $.ajax({
-        url: '/publication/load/more/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-
+        url: '/publication/load/more/?pubid=' + pub + '&page=' + page,
+        type: 'GET',
+        beforeSend: function () {
+            $(loader).fadeIn();
+        },
         success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                add_loaded_publication(pub, data.pubs, btn, false);
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to load more publications.",
-                    type: "error"
-                });
+            var $existing = $('#pub-' + pub);
+            var $children_list = $existing.find('.children').first();
+            if (!$children_list.length) {
+                $children_list = $existing.find('.wrapper-reply').after('<ul class="children"></ul>');
             }
+            $children_list.append(data);
+            var $child_count = $(btn).find('.child_count');
+            var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
+            if ($result_child_count > 0)
+                $($child_count).html($result_child_count);
+            else
+                $(btn).remove();
         },
         complete: function () {
             $(loader).fadeOut();
         },
         error: function (rs, e) {
-        }
-    });
-}
-
-function AJAX_load_skyline(loader, btn) {
-    if ($(btn) === undefined || !($(btn).length)) return;
-
-    var pub = $(btn).attr("data-id");
-    var data = {
-        'id': pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-    $.ajax({
-        url: '/publication/load/skyline/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-
-        success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                add_loaded_publication(pub, data.pubs, btn, true);
-            } else {
-                swal({
-                    title: "Fail",
-                    customClass: 'default-div',
-                    text: "Failed to load more publications.",
-                    type: "error"
-                });
-            }
-        },
-        complete: function () {
-            $(loader).fadeOut();
-        },
-        error: function (rs, e) {
+            console.log(e);
         }
     });
 }
 
 /* EDIT PUBLICATION */
-function AJAX_edit_publication(pub, content) {
-    var data = {
-        'id': pub,
-        'content': content,
-        'csrfmiddlewaretoken': csrftoken
-    };
+function AJAX_edit_publication(data) {
     $.ajax({
         url: '/publication/edit/',
         type: 'POST',
@@ -836,11 +384,8 @@ function AJAX_edit_publication(pub, content) {
 
         success: function (data) {
             var response = data.data;
-            console.log(data.data);
             // borrar caja publicacion
-            if (response == true) {
-                $('#author-controls-' + pub).fadeToggle("fast");
-            } else {
+            if (response === false) {
                 swal({
                     title: "Fail",
                     customClass: 'default-div',
@@ -856,6 +401,7 @@ function AJAX_edit_publication(pub, content) {
 
 /*****************************************************/
 /********** AJAX para botones de comentarios *********/
+
 /*****************************************************/
 
 function AJAX_delete_publication(caja_publicacion) {
@@ -874,8 +420,19 @@ function AJAX_delete_publication(caja_publicacion) {
         data: data,
         success: function (data) {
             // borrar caja publicacion
-            if (data == true) {
+            if (data.response == true) {
                 $(caja_publicacion).fadeToggle("fast");
+                if (data.shared_pub_id) {
+                    var shared_btn = $('#share-' + data.shared_pub_id);
+                    var shared_btn_child = shared_btn.find('.share-values');
+                    var countShares = $(shared_btn_child).text();
+                    if (!countShares || (Math.floor(countShares) == countShares && $.isNumeric(countShares))) {
+                        countShares--;
+                        countShares > 0 ? shared_btn_child(countShares) : shared_btn_child.text('');
+                    }
+                    shared_btn.attr('class', 'add-timeline');
+                    shared_btn.css('color', '#555');
+                }
             } else {
                 swal({
                     title: "Fail",
@@ -893,6 +450,7 @@ function AJAX_delete_publication(caja_publicacion) {
 
 /*****************************************************/
 /********** AJAX para añadir me gusta a comentario ***/
+
 /*****************************************************/
 
 function AJAX_add_like(caja_publicacion, heart, type) {
@@ -917,7 +475,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
         success: function (data) {
             var response = data.response;
             var status = data.statuslike;
-            var numLikes = $(heart).find('#like-value');
+            var numLikes = $(heart).find('.like-value');
             var countLikes = numLikes.text();
             if (response == true) {
                 if (!countLikes || (Math.floor(countLikes) == countLikes && $.isNumeric(countLikes))) {
@@ -971,6 +529,7 @@ function AJAX_add_like(caja_publicacion, heart, type) {
 
 /*****************************************************/
 /******* AJAX para añadir no me gusta a comentario ***/
+
 /*****************************************************/
 
 function AJAX_add_hate(caja_publicacion, heart, type) {
@@ -1012,7 +571,7 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
                         $(heart).css('color', '#ba68c8');
                         countHates++;
                         var likesObj = $(heart).next();
-                        var likes = likesObj.find("#like-value");
+                        var likes = likesObj.find(".like-value");
                         var countLikes = likes.text();
                         countLikes--;
                         if (countLikes <= 0) {
@@ -1053,16 +612,11 @@ function AJAX_add_hate(caja_publicacion, heart, type) {
 
 /*****************************************************/
 /********** AJAX para agregar al TIMELINE *********/
+
 /*****************************************************/
 function AJAX_add_timeline(pub_id, tag, data_pub) {
 
-    var data = {
-        'publication_id': pub_id,
-        'content': data_pub,
-        'csrfmiddlewaretoken': csrftoken
-    };
-
-    var shared_tag = $(tag).find('.fa-quote-right');
+    var shared_tag = $(tag).find('.share-values');
     var count_shared = $(shared_tag).text();
     count_shared = count_shared.replace(/ /g, '');
 
@@ -1070,35 +624,20 @@ function AJAX_add_timeline(pub_id, tag, data_pub) {
         url: '/publication/share/publication/',
         type: 'POST',
         dataType: 'json',
-        data: data,
+        data: data_pub,
         success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                var status = data.status;
-                if (status == 1) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared++;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
+            if (data === true) {
+                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                    count_shared++;
+                    if (count_shared > 0) {
+                        $(shared_tag).text(" " + count_shared);
+                    } else {
+                        $(shared_tag).text(" ");
                     }
-                    $(tag).attr("id", "remove_from_skyline");
-                    $(tag).css('color', '#bbdefb');
-                    $('#share-publication-wrapper').hide();
-                } else if (status == 2) {
-                    if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
-                        count_shared--;
-                        if (count_shared > 0) {
-                            $(shared_tag).text(" " + count_shared)
-                        } else {
-                            $(shared_tag).text(" ");
-                        }
-                    }
-                    $(tag).attr("id", "add_to_skyline");
-                    $(tag).css('color', '#555');
                 }
+                $(tag).attr("class", "remove-timeline");
+                $(tag).css('color', '#bbdefb');
+                $('#share-publication-wrapper').hide();
             } else {
                 swal({
                     title: "Fail",
@@ -1110,6 +649,48 @@ function AJAX_add_timeline(pub_id, tag, data_pub) {
         },
         error: function (rs, e) {
             // alert('ERROR: ' + rs.responseText + e);
+        }
+    });
+}
+
+function AJAX_remove_timeline(pub_id, tag) {
+    var shared_tag = $(tag).find('.share-values');
+    var count_shared = $(shared_tag).text();
+    count_shared = count_shared.replace(/ /g, '');
+
+    $.ajax({
+        url: '/publication/delete/share/publication/',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            'pk': pub_id
+        },
+        success: function (data) {
+            var response = data.response;
+            if (response === true) {
+                if (!count_shared || (Math.floor(count_shared) == count_shared && $.isNumeric(count_shared))) {
+                    count_shared--;
+                    if (count_shared > 0) {
+                        $(shared_tag).text(" " + count_shared);
+                    } else {
+                        $(shared_tag).text(" ");
+                    }
+                }
+                $(tag).attr("class", "add-timeline");
+                $(tag).css('color', '#555');
+                $('#pub-' + data.id_to_delete).remove();
+
+            } else {
+                swal({
+                    title: "Fail",
+                    customClass: 'default-div',
+                    text: "Failed to add to timeline.",
+                    type: "error"
+                });
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            // console.log(jqXHR.status);
         }
     });
 }
@@ -1128,12 +709,12 @@ function AJAX_bloq_user(buttonBan) {
         success: function (data) {
             if (data.response == true) {
                 $(buttonBan).css('color', '#FF6347');
-                if (data.status == "none" || data.status == "isfollow") {
-                    $('#addfriend').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
-                } else if (data.status == "inprogress") {
-                    $('#follow_request').replaceWith('<span class="fa fa-ban" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + ' ' + '</span>');
+                if (data.status === "none" || data.status === "isfollow") {
+                    $('#addfriend').replaceWith('<span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</span>');
+                } else if (data.status === "inprogress") {
+                    $('#follow_request').replaceWith('<span class="material-icons block-profile" id="bloq-user-span" title="Bloqueado" onclick="AJAX_remove_bloq();">' + 'block' + '</span>');
                 }
-                if (data.haslike == "liked") {
+                if (data.haslike === "liked") {
                     $("#ilike_profile").css('color', '#46494c');
                     var obj_likes = document.getElementById('likes');
                     if ($(obj_likes).find("strong").html() > 0) {
@@ -1166,7 +747,7 @@ function AJAX_remove_bloq() {
         dataType: "json",
         success: function (response) {
             if (response == true) {
-                $('#bloq-user-span').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                $('#bloq-user-span').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
                 $('#bloq-user').css('color', '#555');
             } else {
                 swal({
@@ -1182,4 +763,3 @@ function AJAX_remove_bloq() {
         }
     });
 }
-

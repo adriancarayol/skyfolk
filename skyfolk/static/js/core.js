@@ -8,13 +8,84 @@ $(window).ready(function () {
 $(document).ready(function () {
     var page_wrapper = $('#page-wrapper');
     var self_page_wrapper = $('#self-page-wrapper');
-    var _group_profile = $('#group-profile');
     var tab_comentarios = $('#tab-comentarios');
 
     $('select').material_select();
 
     $('textarea#message2, textarea#message3').characterCounter();
+    var Autocomplete = function (options) {
+        this.form_selector = options.form_selector;
+        this.url = options.url || '/search/autocomplete/';
+        this.delay = parseInt(options.delay || 300);
+        this.minimum_length = parseInt(options.minimum_length || 3);
+        this.form_elem = null;
+        this.query_box = null;
+    }
 
+    Autocomplete.prototype.setup = function () {
+        var self = this;
+
+        this.form_elem = $(this.form_selector);
+        this.query_box = this.form_elem.find('input[name=q]');
+
+        // Watch the input box.
+        this.query_box.on('keyup', function () {
+            var query = self.query_box.val();
+
+            if (query.length < self.minimum_length) {
+                return false;
+            }
+
+            self.fetch(query);
+        })
+    }
+
+    Autocomplete.prototype.fetch = function (query) {
+        var self = this
+
+        $.ajax({
+            url: this.url
+            , data: {
+                'q': query
+            }
+            , success: function (data) {
+                self.show_results(data);
+            }
+        })
+    }
+
+    Autocomplete.prototype.show_results = function (data) {
+        // Remove any existing results.
+        $('.ac-results').remove();
+
+        var results = data.results || [];
+        var results_wrapper = $('<div class="ac-results"></div>');
+        var base_elem = $('<div class="result-wrapper"><a href="#" class="ac-result"></a></div>');
+
+        if (results.length > 0) {
+            for (var res_offset in results) {
+                var elem = base_elem.clone();
+                var result = elem.find('.ac-result');
+                result.attr('href', '/profile/' + results[res_offset].username);
+                result.text('@' + results[res_offset].username + ' (' + results[res_offset].first_name + ' ' +
+                    results[res_offset].last_name + ')');
+                result.prepend(results[res_offset].avatar);
+                results_wrapper.append(elem);
+            }
+        }
+        else {
+            var elem = base_elem.clone()
+            elem.text("No se encontraron resultados.");
+            results_wrapper.append(elem);
+        }
+
+        this.query_box.after(results_wrapper);
+    }
+    window.autocomplete = new Autocomplete({
+        form_selector: '.autocomplete-me'
+    })
+
+    window.autocomplete.setup();
 
     $(".button-menu-left").sideNav({
         edge: 'left', // Choose the horizontal origin
@@ -70,21 +141,23 @@ $(document).ready(function () {
 
     $("#new_group").click(function () {
         $('#create_group').toggle();
+        $('.button-menu-left').sideNav('hide');
     });
 
     /* Close nuevo grupo */
     $("#btn_close_group").click(function () {
         $('#create_group').hide();
+        return false;
     });
 
     /* Close page-wrapper (mensaje) */
-    $(page_wrapper).find('#close').on('click', function (event) {
+    $(page_wrapper).find('.close').on('click', function (event) {
         event.preventDefault();
         $(page_wrapper).find('#message2').val('');
         $(page_wrapper).hide();
     });
     /* Close self-page-wrapper (mensaje propio) */
-    $(self_page_wrapper).find('#close').on('click', function (event) {
+    $(self_page_wrapper).find('.close').on('click', function (event) {
         event.preventDefault();
         $(self_page_wrapper).find('#message3').val('');
         $(self_page_wrapper).hide();
@@ -109,34 +182,25 @@ $(document).ready(function () {
         event.preventDefault();
         var parent_pk = $(this).attr('id').split('-')[1];
         var form = $(this).parent();
-        $(form).find('input[name=parent]').val(parent_pk);
-        var user_pk = $(form).find('input[name=author]').val();
-        var owner_pk = $(form).find('input[name=board_owner]').val();
-        var data = $(form).serialize();
-        var pks = [user_pk, owner_pk, parent_pk];
-        AJAX_submit_publication(form, 'reply', pks);
+        AJAX_submit_publication(form, 'reply', parent_pk);
     });
 
     /* Submit creacion de grupo */
     $('button#btn_new_group').on('click', function (event) {
         event.preventDefault();
-        var form = $(this).closest('#from_new_group');
-        var owner_pk = $(form).find('input[name=owner]').val();
-        console.log(owner_pk);
-        var data = $(form).serialize();
-        AJAX_submit_group(data);
+        AJAX_submit_group();
     });
     /**** ATAJOS DE TECLADO ****/
 
     /* Mostrar atajos */
-    $('#atajos-keyboard-profile').find('.atajos-title .fa-close').on('click', function () {
+    $('#atajos-keyboard-profile').find('.atajos-title .close-shortcuts').on('click', function () {
         $('#atajos-keyboard-profile').hide();
     });
 
     /* Atajo para enviar comentarios mas rapido */
     $(page_wrapper).find('#message3').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
             $('#sendformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
             $(this).blur(); // OFF FOCUS
@@ -145,7 +209,7 @@ $(document).ready(function () {
     /* Atajo para enviar comentarios mas rapido a mi perfil. */
     $(self_page_wrapper).find('#message2').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
             $('#sendselfformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
             $(this).blur(); // OFF FOCUS
@@ -161,7 +225,7 @@ $(document).ready(function () {
     /* Abre nuevo mensaje "m" */
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
-        if (key == 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(page_wrapper).toggle();
             $(page_wrapper).find('#message3').focus();
@@ -171,7 +235,7 @@ $(document).ready(function () {
     /* Abre nuevo mensaje (propio) "m" */
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
-        if (key == 77 && ($(self_page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 77 && ($(self_page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(self_page_wrapper).toggle();
             $(self_page_wrapper).find('#message2').focus();
@@ -183,7 +247,7 @@ $(document).ready(function () {
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
         var cheat = document.getElementById('atajos-keyboard-profile');
-        if (key == 97 && ($(cheat).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 65 && ($(cheat).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(cheat).show();
         }
@@ -207,6 +271,7 @@ $(document).ready(function () {
             $(messageWrapperMessage3).val("");
             $(self_page_wrapper).hide(); // Oculta form para crear comentario.
             $(atj).hide(); // Oculta atajos de teclado.
+            $('.ac-results').remove(); // Elimina resultados sugeridos
             $(ampliado).hide(); // Oculta mensaje ampliado.
             $(personalInfo).hide(); // Oculta informacion personal
             $("#create_group").hide(); // Oculta form para crear grupo
@@ -216,10 +281,18 @@ $(document).ready(function () {
             $('.side-nav').sideNav('hide');
         }
     });
+
+    /* REMOVE suggestion results */
+    $(this).click(function (event) {
+        if (!$(event.target).closest('.ac-results').length) {
+            $('.ac-results').remove();
+        }
+    });
+
     /* Focus on input search */
     $(this).on('keydown', function (e) {
         if (e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // escape
-            $('#id_searchText').focus(); // Focus del textarea off.
+            $('#id_q').focus(); // Focus del textarea off.
             return false;
         }
     });
@@ -252,29 +325,6 @@ $(document).ready(function () {
             }
             AJAX_addNewFriendByUsernameOrPin(inputValue);
         });
-    });
-
-    // FOLLOW GROUP
-    $(_group_profile).on('click', '#follow-group', function (e) {
-        e.preventDefault();
-        var id = $(_group_profile).attr('data-id');
-        AJAX_follow_group(id);
-        return false;
-    });
-    // UNFOLLOW GROUP
-    $(_group_profile).on('click', '#unfollow-group', function (e) {
-        e.preventDefault();
-        var id = $(_group_profile).attr('data-id');
-        AJAX_unfollow_group(id);
-        return false;
-    });
-
-    // LIKE GROUP
-    $(_group_profile).on('click', '#like-group', function (e) {
-        e.preventDefault();
-        var id = $(_group_profile).attr('data-id');
-        AJAX_like_group(id);
-        return false;
     });
 
     // Search users
@@ -370,6 +420,7 @@ function AJAX_mark_all_read() {
         }
     });
 }
+
 /* Para marcar una notificacion como leida */
 function AJAX_mark_read(obj) {
     var slug = obj.getAttribute('data-notification');
@@ -391,6 +442,7 @@ function AJAX_mark_read(obj) {
         }
     });
 }
+
 /* Para eliminar una notificacion */
 function AJAX_delete_notification(slug, id) {
     var url_ = '/inbox/notifications/delete/' + slug + '/';
@@ -435,9 +487,10 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 }, function () {
-                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                    $('#addfriend').replaceWith('<span class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</span>');
                     if (data.friend_username)
-                        addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
+                        if (typeof addItemToFriendList === "function")
+                            addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
                 });
             } else if (response == 'your_own_pin') {
                 swal({
@@ -548,14 +601,48 @@ function AJAX_respondFriendRequest(id_emitter, status, obj_data) {
             if (response == "added_friend") {
                 //TODO: Add to "seguidos" list
                 // addItemToFriendList('Nuevo', 'nuevo');
-                sweetAlert("You have added a friend!");
+                sweetAlert("¡Has añadido un seguidor!");
                 $('li[data-id=' + obj_data + ']').fadeOut("fast");
             } else {
                 $('li[data-id=' + obj_data + ']').fadeOut("fast");
             }
         },
         error: function (rs, e) {
-            alert(rs.responseText + " " + e);
+            // alert(rs.responseText + " " + e);
+        }
+    });
+
+
+}
+
+function AJAX_respondGroupRequest(id_object, status, obj_data) {
+    $.ajax({
+        type: "POST",
+        url: "/respond_group_request/",
+        data: {
+            'slug': parseInt(id_object),
+            'status': status,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: "json",
+        success: function (data) {
+            var response = data.response;
+            if (response == "added_friend") {
+                sweetAlert("¡Has añadido un nuevo miembro al grupo!");
+                $('li[data-id=' + obj_data + ']').fadeOut("fast");
+            } else if (response == 'error') {
+                swal({
+                    title: "¡Ups!",
+                    text: "Es posible que el usuario haya cancelado la solicitud.",
+                    customClass: 'default-div',
+                    type: "error"
+                });
+            } else {
+                $('li[data-id=' + obj_data + ']').fadeOut("fast");
+            }
+        },
+        error: function (rs, e) {
+            // alert(rs.responseText + " " + e);
         }
     });
 
@@ -595,54 +682,34 @@ function AJAX_submit_publication(obj_form, type, pks) {
         enctype: 'multipart/form-data',
         processData: false,
         success: function (data) {
-            var response = data.response;
             var msg = data.msg;
-
-            if (response === true && (typeof(msg) !== 'undefined' && msg !== null)) {
+            if (typeof(msg) !== 'undefined' && msg !== null) {
                 swal({
                     title: "",
                     text: msg,
                     customClass: 'default-div',
                     type: "success"
                 });
-            } else if (response === true) {
-
-            } else {
-                swal({
-                    title: "",
-                    text: "Failed to publish",
-                    customClass: 'default-div',
-                    type: "error"
-                });
             }
             if (type === "reply") {
-                var caja_comentarios = $('#caja-comentario-' + pks[2]);
+                var caja_comentarios = $('#caja-comentario-' + pks);
                 $(caja_comentarios).find('.message-reply').val(''); // Borramos contenido
                 $(caja_comentarios).fadeOut();
             } else if (type === "publication") {
                 $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
             }
-        },
-        error: function (data, textStatus) {
-            var response = $.parseJSON(data.responseText);
-            var error_msg = response.error[0];
-            var type_error = response.type_error;
-
-            if (type_error === 'incorrent_data') {
-                swal({
-                    title: '¡Ups!',
-                    text: error_msg, // rs.responseText,
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            } else {
-                swal({
-                    title: '¡Ups!',
-                    text: 'Revisa el contenido de tu mensaje', // rs.responseText,
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            }
+        }, error: function (data, textStatus, jqXHR) {
+            var errors = [];
+            $.each(data.responseJSON, function (i, val) {
+                errors.push(val);
+            });
+            swal({
+                title: "Tenemos un problema...",
+                customClass: 'default-div',
+                text: errors.join(),
+                timer: 4000,
+                showConfirmButton: true
+            });
         }
     }).done(function () {
 
@@ -650,24 +717,27 @@ function AJAX_submit_publication(obj_form, type, pks) {
 }
 
 
-function AJAX_submit_group(data) {
+function AJAX_submit_group() {
+    var f = $('#from_new_group');
+    var form = new FormData(f.get(0));
+    form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     $.ajax({
         url: '/create_group/',
         type: 'POST',
         dataType: 'json',
-        data: data,
+        contentType: false,
+        processData: false,
+        async: true,
+        enctype: 'multipart/form-data',
+        data: form,
         success: function (data) {
-            var response = data.response;
-            console.log('RESPONSE AQUI (grupos): ' + response);
-            if (response == true) {
+            var msg = data.msg;
+            if (typeof(msg) !== 'undefined' && msg !== null) {
+                Materialize.toast(msg, 4000);
+            }
+            if (typeof data.pk !== 'undefined' && data.pk !== null) {
+                f.trigger("reset");
                 $('#create_group').hide();
-            } else {
-                swal({
-                    title: "¡Ups!",
-                    text: "Fallo al crear el grupo.",
-                    customClass: 'default-div',
-                    type: "error"
-                });
             }
         },
         error: function (rs, e) {
@@ -717,7 +787,7 @@ function AJAX_requestfriend(status) {
                             }
                         });
                 } else if (response == "inprogress") {
-                    $('#addfriend').replaceWith('<span class="fa fa-clock-o" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + ' ' + '</span>');
+                    $('#addfriend').replaceWith('<span class="material-icons cancel-request" id="follow_request" title="En proceso" onclick="AJAX_remove_request_friend();">' + 'watch_later' + '</span>');
                 } else if (response == "user_blocked") {
                     swal({
                         title: "Petición denegada.",
@@ -731,7 +801,7 @@ function AJAX_requestfriend(status) {
                 } else if (response == "added_friend") {
                     var currentValue = document.getElementById('followers-stats');
                     $(currentValue).html(parseInt($(currentValue).html()) + 1);
-                    $('#addfriend').replaceWith('<span class="fa fa-remove" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                    $('#addfriend').replaceWith('<span class="material-icons unfollow-profile" id="addfriend" title="Dejar de seguir" style="color: #29b203;" onclick=AJAX_requestfriend("noabort");>' + 'remove' + '</span>');
                 }
                 else {
 
@@ -745,6 +815,7 @@ function AJAX_requestfriend(status) {
         alert("Debe estar registrado");
     }
 }
+
 /* Eliminar relacion entre dos usuarios */
 function AJAX_remove_relationship(slug) {
     $.ajax({
@@ -760,7 +831,7 @@ function AJAX_remove_relationship(slug) {
                 var currentValue = document.getElementById('followers-stats');
                 var addFriendButton = document.getElementById('addfriend');
                 $(currentValue).html(parseInt($(currentValue).html()) - 1);
-                $(addFriendButton).replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + ' ' + '</span>');
+                $(addFriendButton).replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" style="color:#555 !important;" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
@@ -788,7 +859,7 @@ function AJAX_remove_request_friend() {
         dataType: 'json',
         success: function (response) {
             if (response == true) {
-                $('#follow_request').replaceWith('<span id="addfriend" class="fa fa-plus" title="Seguir" onclick=AJAX_requestfriend("noabort");></span>');
+                $('#follow_request').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
@@ -829,8 +900,10 @@ function AJAX_remove_bloq_from_config(obj) {
         }
     });
 }
+
 /*****************************************************/
 /**********              UTIL                *********/
+
 /*****************************************************/
 
 function is_numeric(value) {

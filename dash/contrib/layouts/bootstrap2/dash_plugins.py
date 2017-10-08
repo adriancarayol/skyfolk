@@ -1,22 +1,20 @@
+from .dash_widgets import (
+    BaseBookmarkBootstrapTwoWidget,
+    URLBootstrapTwo1x1Bootstrap2FluidMainWidget,
+)
+from .forms import URLBootstrapTwoForm
 from ....base import plugin_registry, plugin_widget_registry
-from ....factory import plugin_widget_factory
-
 from ....contrib.plugins.dummy.dash_widgets import BaseDummyWidget
 from ....contrib.plugins.image.dash_widgets import BaseImageWidget
 from ....contrib.plugins.memo.dash_widgets import (
     BaseMemoWidget,
     BaseTinyMCEMemoWidget
 )
-# from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
-from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
 # from ....contrib.plugins.weather.dash_widgets import BaseWeatherWidget
 from ....contrib.plugins.url.dash_plugins import BaseURLPlugin
-from .dash_widgets import (
-    BaseBookmarkBootstrapTwoWidget,
-    URLBootstrapTwo1x1Bootstrap2FluidMainWidget,
-    URLBootstrapTwo2x2Bootstrap2FluidMainWidget,
-)
-from .forms import URLBootstrapTwoForm
+# from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
+from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
+from ....factory import plugin_widget_factory
 
 __title__ = 'dash.contrib.layouts.bootstrap2.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

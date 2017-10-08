@@ -3,11 +3,12 @@
   Base para el template de busqueda
 {% endcomment %}
 {% load app_filters %}
+{% load static %}
 {% block title %} <title>Buscar contactos</title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css" onload="if(media!='all')media='all'">
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/search_advanced.css"
-          onload="if(media!='all')media='all'">
+    <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}">
+    <link type="text/css" rel="stylesheet" href="{% static "css/search_advanced.css" %}">
+    <link type="text/css" rel="stylesheet" href="{% static "css/news.css" %}">
 {% endblock %}
 
 {% block content %}

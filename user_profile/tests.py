@@ -1,8 +1,10 @@
-from neomodel import db, clear_neo4j_database
-from django.test import TestCase
 from django.contrib.auth.models import User
-from user_profile.models import NodeProfile
 from django.db import transaction
+from django.test import TestCase
+from neomodel import db, clear_neo4j_database
+
+from user_profile.node_models import NodeProfile
+
 
 class UserTestClass(TestCase):
     def setUp(self):

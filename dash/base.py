@@ -10,7 +10,6 @@ from django.forms import ModelForm
 from django.http import Http404
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-
 from nine.versions import DJANGO_GTE_1_8
 
 from .discover import autodiscover
@@ -24,7 +23,6 @@ from .settings import (
     DEFAULT_PLACEHOLDER_VIEW_TEMPLATE_NAME,
     LAYOUT_CELL_UNITS,
 )
-
 
 if DJANGO_GTE_1_8:
     from django.forms.utils import ErrorList

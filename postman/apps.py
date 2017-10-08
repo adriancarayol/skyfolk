@@ -10,5 +10,5 @@ class PostmanConfig(AppConfig):
 
     def ready(self):
         from .models import setup
-        import postman.signals
+        from postman import signals
         setup()

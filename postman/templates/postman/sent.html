@@ -7,3 +7,8 @@
 {% block pm_sender_header %}{% endblock %}
 {% block pm_date %}{% trans "Sent" %}{% endblock %}
 {% block pm_sender_cell %}{% endblock %}
+{% block pm_footer_info %}
+    <script>
+        $('#postman_menu').find('li:nth-child(3)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
+{% endblock %}

@@ -1,0 +1,7 @@
+{{ object.username }}
+{{ object.firstname }}
+{{ object.user.username }}
+{{ object.lastname }}
+{{ object.user.get_full_name }}
+{{ object.pub_date }}
+

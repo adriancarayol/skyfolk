@@ -11,7 +11,7 @@ from django.utils.translation import ungettext, ugettext_lazy as _
 
 from .forms import UploadZipForm
 from .models import Photo, PhotoEffect, PhotoSize, \
-    Watermark
+    Watermark, Video
 
 MULTISITE = getattr(settings, 'PHOTOLOGUE_MULTISITE', False)
 
@@ -157,3 +157,10 @@ class WatermarkAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Watermark, WatermarkAdmin)
+
+
+class VideoAdmin(admin.ModelAdmin):
+    list_display = ('name', 'caption', 'owner')
+
+
+admin.site.register(Video, VideoAdmin)

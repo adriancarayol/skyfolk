@@ -31,10 +31,16 @@ urlpatterns = [
     # {'document_root': settings.MEDIA_ROOT}),
     # url publications
     url(r'^', include('publications.urls', namespace="publications"), name="publications"),
+    url(r'^', include('publications_groups.urls', namespace="publications_groups"),
+        name="publications_groups"),
+    url(r'^group/multimedia/', include('publications_gallery_groups.urls', namespace="publications_gallery_groups"),
+        name="publications_gallery_groups"),
+    # Publicaciones en imagenes de la galeria
+    url(r'^', include('publications_gallery.urls', namespace="publications_gallery"), name="publications_gallery"),
     # url novedades e inicio
     url(r'^', include('latest_news.urls', namespace="latest_news"), name="news"),
     # url mensajes privados
-    
+
     # About skyfolk
     url(r'^', include('about.urls')),
     # Recomendacion password para usuarios
@@ -54,6 +60,7 @@ urlpatterns = [
                                          namespace='notifications')),
     # django-photologue
     url(r'^', include('photologue.urls', namespace='photologue')),  # original photologue
+    url(r'^group/', include('photologue_groups.urls', namespace='photologue_groups')),  # photologue groups
     url(r'^messages/', include('postman.urls', namespace='postman', app_name='postman')),
     # django-dash URLs:
     # url(r'^dashboard/', include('dash.urls')),
@@ -61,7 +68,17 @@ urlpatterns = [
     # url(r'^contrib/', include('dash.contrib.apps.public_dashboard.urls')),
     # feedback
     url(r'^tellme/', include("tellme.urls")),
+    # logros
+    url(r'^badges/', include('badgify.urls')),
+    url(r'^awards/', include('awards.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns = [
+                      url(r'^__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns

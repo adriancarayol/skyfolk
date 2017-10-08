@@ -1,10 +1,9 @@
-from django.template.loader import render_to_string
 from django.conf import settings
-
-from ....base import BaseDashboardPluginWidget
+from django.template.loader import render_to_string
 
 from .helpers import get_crop_filter
 from .settings import FIT_METHOD_FIT_WIDTH, FIT_METHOD_FIT_HEIGHT
+from ....base import BaseDashboardPluginWidget
 
 __title__ = 'dash.contrib.plugins.image.dash_widgets'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

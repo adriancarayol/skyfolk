@@ -1,6 +1,6 @@
 # from optparse import OptionParser
-from time import sleep
 import unittest
+from time import sleep
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -12,13 +12,11 @@ from django.test import (
     LiveServerTestCase,
     # Client,
 )
-
 from selenium import webdriver
 # from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 # from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
-
 from six import print_
 
 from .base import (

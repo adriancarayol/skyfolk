@@ -1,0 +1,13 @@
+{% extends "account/base_cf.html" %}
+{% block nav %}
+    <div class="row">
+        <div class="col s12">
+            <div class="col l2 m12 s12 wrapper-config-menu">
+                <ul class="menu-config">
+                    <li id="config-group" onclick="location.href='{% url 'user_groups:configuration_group:configuration_group' pk=object.id %}'">Grupo<i
+                            class="material-icons right">person</i></li>
+                    <li id="config-delete-group" onclick="location.href='{% url 'user_groups:configuration_group:configuration_delete_group' pk=object.id %}'">Eliminar grupo<i
+                            class="material-icons right">delete</i></li>
+                </ul>
+            </div>
+{% endblock %}

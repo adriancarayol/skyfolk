@@ -1,18 +1,21 @@
 # encoding:utf-8
 import logging
-import requests
+
+from PIL import Image
 from allauth.account.forms import LoginForm
 from django import forms
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.db import IntegrityError
 from django.utils.translation import ugettext_lazy as _
-from user_profile.models import AuthDevices, NodeProfile
-from .validators import validate_file_extension
+from haystack.forms import SearchForm
 from ipware.ip import get_real_ip, get_ip
-from PIL import Image
-from django.conf import settings
+
+from user_profile.models import AuthDevices, NotificationSettings
+from user_profile.node_models import NodeProfile
+from .validators import validate_file_extension
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
@@ -47,7 +50,8 @@ class CustomLoginForm(LoginForm):
                     device.save()
                     send_mail(
                         '[Skyfolk] - Nuevo inicio de sesión.',
-                        'Hemos detectado un nuevo inicio de sesión desde la IP: %s. \n' % ip + ",".join(components).replace(",", " "),
+                        'Hemos detectado un nuevo inicio de sesión desde la IP: %s. \n' % ip + ",".join(
+                            components).replace(",", " "),
                         'noreply@skyfolk.net',
                         [self.user.email],
                         fail_silently=False,
@@ -68,7 +72,7 @@ class CustomLoginForm(LoginForm):
         return super(CustomLoginForm, self).login(request=request, redirect_url=redirect_url)
 
 
-class SearchForm(forms.Form):
+class SearchForm(SearchForm):
     """
     Formulario de búsqueda (input)
     que se muestra en el navegador principal de la página web,
@@ -76,11 +80,12 @@ class SearchForm(forms.Form):
     Como mínimo se debe introducir un caracter para realizar una búsqueda.
     """
 
-    searchText = forms.CharField(label="", help_text="", required=False,
-                                 widget=forms.TextInput(attrs={'placeholder': '¿Que es lo que quieres buscar?',
-                                                               'pattern': '.{1,}',
-                                                               'required title': '1 character minimum',
-                                                               'autocomplete': 'off'}))
+    q = forms.CharField(label="", help_text="", required=False,
+                        widget=forms.TextInput(attrs={'placeholder': '¿Que es lo que quieres buscar?',
+                                                      'pattern': '.{1,}',
+                                                      'required title': '1 character minimum', 'autocomplete': 'off'}))
+    s = forms.CharField(label="", help_text="", required=False,
+                        widget=forms.HiddenInput())
 
 
 class AdvancedSearchForm(forms.Form):
@@ -158,7 +163,11 @@ class ProfileForm(forms.Form):
                                                            'maxlength': '20'}), required=False)
 
     backImage = forms.ImageField(label='Escoge una imagen.',
-                                          help_text='Elige una imagen de fondo.', required=False)
+                                 help_text='Elige una imagen de fondo.', required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(ProfileForm, self).__init__(*args, **kwargs)
 
     def clean_status(self):
         status = self.cleaned_data['status']
@@ -168,7 +177,9 @@ class ProfileForm(forms.Form):
         return status
 
     def clean_backImage(self):
-        back_image = self.cleaned_data.get('backImage', None)
+        back_image = self.request.FILES.get('image', None)
+        if not back_image:
+            return None
         if back_image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise forms.ValidationError("La imágen no puede ser mayor a 5MB.")
         if back_image:
@@ -176,8 +187,6 @@ class ProfileForm(forms.Form):
             trial_image = Image.open(back_image)
             trial_image.verify()
         return back_image
-
-
 
 
 class PrivacityForm(forms.Form):
@@ -201,7 +210,6 @@ class PrivacityForm(forms.Form):
             return privacity
         else:
             return 'A'
-
 
 
 class DeactivateUserForm(forms.ModelForm):

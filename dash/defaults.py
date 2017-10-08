@@ -1,5 +1,3 @@
-from django.utils.translation import ugettext
-
 __title__ = 'dash.defaults'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2013-2017 Artur Barseghyan'

@@ -844,14 +844,14 @@ $followcolor: #64b5f6
   background: #FAFAFA
 
 #tab-amigos
-  overflow: auto
+  overflow: hidden !important
   height: 100%
 
 #tab-comentarios
-  overflow: auto
+  overflow: hidden
   height: 100%
 
-#tab-amigos ul.list
+#tab-amigos .infinite-following
   position: relative
   margin: auto
   list-style-type: none
@@ -863,7 +863,7 @@ $followcolor: #64b5f6
 #hood-tabs::-webkit-scrollbar
   display: none
 
-#tab-amigos ul.list li
+#tab-amigos .infinite-following .following-item
   display: table
   background-color: #FAFAFA
   margin: 10px
@@ -875,14 +875,14 @@ $followcolor: #64b5f6
   -moz-box-shadow: 0 0 3px 1px #1e88e5
   box-shadow: 0 0 3px 1px #1e88e5
 
-#tab-amigos ul.list li img
+#tab-amigos .infinite-following .following-item img
   width: 72px
   height: 72px
   float: left
   border-right: 2px solid #1e88e5
   cursor: pointer
 
-#tab-amigos ul.list li a
+#tab-amigos .infinite-following .following-item a
   text-decoration: none
   vertical-align: middle
   display: table-cell
@@ -895,7 +895,7 @@ $followcolor: #64b5f6
   margin: auto auto auto 0
   width: 100%
 
-#tab-amigos ul.list li a:hover
+#tab-amigos .infinite-following .following-item a:hover
   opacity: 0.5
   transition: all .2s ease-in
 
@@ -916,7 +916,7 @@ ul.table > li
 #closesession a
   float: right
 
-.fa-paw
+.menu-profile
   cursor: pointer
   color: rgba(44, 44, 44, 0.666)
   font-size: 25px
@@ -925,7 +925,7 @@ ul.table > li
   padding: 5px
   text-shadow: grey 1px 1px 1px
 
-.fa-paw:hover
+.menu-profile:hover
   -webkit-transform: rotate(15deg) scale(1.3)
   -moz-transform: rotate(15deg) scale(1.3)
   transform: rotate(15deg) scale(1.3)
@@ -1020,39 +1020,16 @@ ul.table > li
 .trofeos
   position: absolute
   z-index: 9999
-  left: 0
-  right: 0
-  margin-right: auto
-  margin-left: auto
   background-color: #fafafa
   top: 10%
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5)
   display: none
+  min-height: 380px
 
-.trofeos .trofeo-user
-  height: 90px
-  display: inline-block
-  border-radius: 100%
-  background-color: transparent
-  border: 5px solid #1e88e5
-  margin-left: 50px
-  margin-top: 15px
-
-.trofeos .fa-close, .grupos .fa-close
-  float: right
-  display: inline
-  margin-top: 7px
-  margin-right: 7px
-  color: #1e88e5
-  font-size: 20px
-  cursor: pointer
-  -webkit-transition: all .1s ease-in-out
-  -moz-transition: all .1s ease-in-out
-  transition: all .1s ease-in-out
-
-.trofeos .fa-close:hover, .grupos .fa-close:hover
-  opacity: 0.8
-
+.trofeos .user-award
+  padding: 10px
+  
+  
 .trofeos .trofeos-title
   text-align: center
   color: #212121
@@ -1063,33 +1040,19 @@ ul.table > li
   border-bottom: 1px solid #212121
   width: 80%
 
-.trofeos .wrapper-trofeos
-  position: relative
-  width: 85%
-  margin: auto auto auto 7%
-  height: 570px
-
 .trofeos img
-  width: 60px
-  height: 60px
-  border-radius: 100%
-  margin-left: -5px
-  -webkit-box-shadow: inset 0.2px 0.2px 18px 1px rgba(178, 223, 219, 1)
-  -moz-box-shadow: inset 0.2px 0.2px 18px 1px rgba(178, 223, 219, 1)
-  box-shadow: inset 0.2px 0.2px 18px 1px rgba(178, 223, 219, 1)
-
+  max-width: 100%
+  max-height: 100%
+  
 /* GRUPOS */
 .grupos
   position: absolute
   z-index: 9999
-  left: 0
-  right: 0
-  margin-right: auto
-  margin-left: auto
   background-color: #fafafa
   top: 10%
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5)
   display: none
+  min-height: 380px
 
 .grupos .grupos-title
   text-align: center
@@ -1101,45 +1064,9 @@ ul.table > li
   border-bottom: 1px solid #212121
   width: 80%
 
-.grupos .grupo-user
-  display: inline-block
-  background-color: #000
-  height: 160px
-  margin-left: 43px
-  margin-top: 20px
-  margin-bottom: 20px
-
 .grupos img
-  width: 100%
-  height: 100%
-
-.grupos .text-description
-  position: relative
-  top: -90%
-  font-size: 1.4em
-  color: #fff
-  font-weight: 400
-  margin-left: 7px
-
-.grupos .fa-users
-  position: relative
-  margin-top: -30px
-  float: left
-  margin-left: 7px
-  color: #fff
-
-.grupos .fa-heart
-  position: relative
-  margin-top: -30px
-  float: right
-  margin-right: 7px
-  color: #fff
-
-.grupos .fa-users:hover
-  color: #1e88e5
-
-.grupos .fa-heart:hover
-  color: #ec407a
+  max-width: 100%
+  max-height: 100%
 
 /*Fin informacion perfil */
 
@@ -1282,7 +1209,7 @@ ul.table > li
 
 /*INFORMACION*/
 
-@-webkit-keyframes fa-paw
+@-webkit-keyframes menu-profile
   50%
     -webkit-transform: scale(0.8)
     transform: scale(0.8)
@@ -1291,7 +1218,7 @@ ul.table > li
     -webkit-transform: scale(1)
     transform: scale(1)
 
-@keyframes fa-paw
+@keyframes menu-profile
   50%
     -webkit-transform: scale(0.8)
     transform: scale(0.8)
@@ -1300,7 +1227,7 @@ ul.table > li
     -webkit-transform: scale(1)
     transform: scale(1)
 
-.fa-paw
+.menu-profile
   display: inline-block
   -webkit-transform: translateZ(0)
   transform: translateZ(0)
@@ -1444,17 +1371,6 @@ ul.table > li
   margin-left: 27%
   margin-top: 20px
 
-.wrapper .widget-options i
-  font-style: normal
-  font-family: 'Open Sans', sans-serif
-  font-size: 1.4em
-
-.wrapper .widget-options .widget-result-ok
-  color: #c5e1a5
-
-.wrapper .widget-options .widget-result-no
-  color: #ef9a9a
-
 /* Div para mensajes ocultos */
 .cmt-hidden
   position: relative
@@ -1518,3 +1434,92 @@ ul.table > li
 .account-disabled
   text-align: center
   font-size: 2em
+
+.informacion
+  span
+    &[class*="write-profile"]
+      cursor: pointer
+      float: left
+      display: block
+      font-size: 2em
+      text-align: center
+      height: 100%
+      width: 70px
+      padding: 30px 20px
+      opacity: 1
+      z-index: 2
+      position: relative
+    &[class*="configure-profile"]
+      cursor: pointer
+      float: left
+      display: block
+      font-size: 2em
+      text-align: center
+      height: 100%
+      width: 70px
+      padding: 30px 20px
+      opacity: 1
+      z-index: 2
+      position: relative
+    &[class*="group-profile"], &[class*="follow-profile"]
+      cursor: pointer
+      float: left
+      display: block
+      font-size: 2em
+      height: 100%
+      text-align: center
+      width: 70px
+      padding: 30px 20px
+      opacity: 1
+      z-index: 2
+      position: relative
+    &[class*="like-profile"]
+      cursor: pointer
+      float: left
+      display: block
+      font-size: 2em
+      height: 100%
+      text-align: center
+      width: 70px
+      padding: 30px 20px
+      opacity: 1
+      z-index: 2
+      position: relative
+    &[class*="cancel-request"], &[class*="block-profile"], &[class*="unfollow-profile"]
+      cursor: pointer
+      float: left
+      display: block
+      font-size: 2em
+      height: 100%
+      text-align: center
+      width: 70px
+      padding: 30px 20px
+      opacity: 1
+      z-index: 2
+      position: relative
+  .cancel-request
+    background: #c8e6c9
+    &:hover
+      background: #a5d6a7
+  .block-profile
+    background: #FF6347
+    &:hover
+      background: #e57373
+  .follow-profile
+    background: #e1f5fe
+    &:hover
+      background: rgba(48, 164, 209, 0.3)
+
+span
+  &[class*="write-profile"]
+    background: #b3e5fc
+    &:hover
+      background: rgba(46, 120, 209, 0.3)
+  &[class*="configure-profile"]
+    background: #e1f5fe
+    &:hover
+      background: rgba(46, 120, 209, 0.3)
+  &[class*="group-profile"], &[class*="like-profile"]
+    background: #81d4fa
+    &:hover
+      background: rgba(48, 164, 209, 0.3)

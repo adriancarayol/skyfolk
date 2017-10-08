@@ -4,16 +4,35 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.validators import URLValidator
 from neomodel import db
-from user_profile.models import TagProfile
-from depot.manager import DepotManager
-from user_profile.models import NodeProfile, Request
+
+from user_profile.models import Request
+from user_profile.node_models import NodeProfile, TagProfile
 
 register = template.Library()
+
+CHOICES = (
+    ('D', '<i class="material-icons">fitness_center</i>'),
+    ('M', '<i class="material-icons">language</i>'),
+    ('MU', '<i class="material-icons">music_note</i>'),
+    ('C', '<i class="material-icons">loupe</i>'),
+    ('L', '<i class="material-icons">edit</i>'),
+    ('T', '<i class="material-icons">laptop</i>'),
+    ('CO', '<i class="material-icons">room_service</i>'),
+    ('MO', '<i class="material-icons">motorcycle</i>'),
+    ('CON', '<i class="material-icons">people</i>'),
+    ('F', '<i class="material-icons">local_bar</i>'),
+    ('DM', '<i class="material-icons">whatshot</i>'),
+    ('VJ', '<i class="material-icons">videogame_asset</i>'),
+    ('FT', '<i class="material-icons">camera_alt</i>'),
+    ('CI', '<i class="material-icons">camera_roll</i>'),
+    ('A', '<i class="material-icons">brush</i>'),
+)
 
 
 @register.filter(name='file_exists')
 def file_exists(value):
     return default_storage.exists(value)
+
 
 @register.filter(name='url_exists')
 def url_exists(value):
@@ -80,7 +99,6 @@ def check_follow(request, author):
 
 @register.filter(name='check_blocked')
 def check_blocked(request, author):
-
     try:
         user_profile = NodeProfile.nodes.get(user_id=author)
         me = NodeProfile.nodes.get(user_id=request)
@@ -113,7 +131,6 @@ def is_follow(request, profile):
 
 @register.filter(name='exist_request')
 def exist_request(request, profile):
-
     try:
         m = NodeProfile.nodes.get(user_id=profile)
         n = NodeProfile.nodes.get(user_id=request)
@@ -153,8 +170,25 @@ def get_tags(request):
     :return Lista de intereses del usuario:
     """
     r, m = db.cypher_query(
-        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.uid='%s' RETURN tag" % request
+        "MATCH (u1:NodeProfile)-[:INTEREST]->(tag:TagProfile) WHERE u1.user_id=%s RETURN tag" % request
     )
     results = [TagProfile.inflate(row[0]) for row in r]
     return results
 
+
+@register.filter
+def classname(obj):
+    return obj.__class__.__name__
+
+
+@register.filter
+def interest_to_icon(tag):
+    return dict(CHOICES).get(tag)
+
+
+@register.filter
+def lookup(d, key):
+    try:
+        return d[key]
+    except KeyError:
+        return ''

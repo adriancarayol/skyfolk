@@ -2,12 +2,14 @@
 {% comment %}
   Template para los seguidores de un perfil
 {% endcomment %}
-{% block title %} <title>Usuarios de </title> {% endblock %}
+{% load static %}
+{% block title %} <title>Usuarios de {{ group.name }}</title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css" onload="if(media!='all')media='all'">
+    <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block content %}
     <div class="container">
+        <input id="group_id" type="hidden" value="{{ group.id }}"/>
         <div class="row">
             <div class="col l12 m10 s12 container-responsive">
                 <div class="row">
@@ -15,15 +17,34 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            {% if is_paginated %}
+                <ul class="pagination center">
+                    {% if page_obj.has_previous %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a>
+                        </li>
+                    {% else %}
+                        <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+                    {% endif %}
+                    {% for i in paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <li class="active blue darken-1 white-text"><span>{{ i }}</span></li>
+                        {% else %}
+                            <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li><a href="?page={{ page_obj.next_page_number }}">
+                            <i class="material-icons">chevron_right</i>
+                        </a></li>
+                    {% else %}
+                        <li class="disabled"><span>
+                <i class="material-icons">chevron_right</i>
+        </span></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+        <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
     </div>
-    {% block js %}
-        {{ block.super }}
-        <script src="{{ STATIC_URL }}el-pagination/js/el-pagination.js"></script>
-        <script>
-            $.endlessPaginate({
-                paginateOnScroll: true,
-                paginateOnScrollMargin: 20
-            });
-        </script>
-    {% endblock %}
 {% endblock %}

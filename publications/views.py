@@ -1,36 +1,39 @@
+import io
 import json
 import logging
-import io
 import os
-import magic
 import tempfile
 
-from bs4 import BeautifulSoup
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
-from django.db import IntegrityError
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render, redirect, Http404
-from django.views.generic.edit import CreateView
-from django.http import JsonResponse
-from photologue.models import Photo
-from publications.forms import PublicationForm, PublicationPhotoForm, SharedPublicationForm
-from publications.models import Publication, PublicationPhoto, SharedPublication, PublicationImage, PublicationVideo
-from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from emoji import Emoji
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from .utils import get_author_avatar
-from django.db import transaction
-from .utils import parse_string
-from django.middleware import csrf
+import magic
 from PIL import Image
-from user_profile.models import NodeProfile
+from bs4 import BeautifulSoup
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.contrib.humanize.templatetags.humanize import naturaltime, intword
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import IntegrityError
+from django.db import transaction
+from django.db.models import Count, Q, When, Value, IntegerField, Case, OuterRef, Subquery
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden
+from django.middleware import csrf
+from django.shortcuts import get_object_or_404, render, redirect, Http404
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.generic.edit import CreateView
+from mptt.templatetags.mptt_tags import cache_tree_children
+
+from avatar.templatetags.avatar_tags import avatar_url
+from emoji import Emoji
+from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
+from .models import Publication, PublicationImage, PublicationVideo, ExtraContent
+from user_profile.node_models import NodeProfile
+from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .exceptions import MaxFilesReached, SizeIncorrect, CantOpenMedia, MediaNotSupported, EmptyContent
 from .tasks import process_video_publication, process_gif_publication
+from latest_news.tasks import send_to_stream
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -59,37 +62,39 @@ def check_num_images(image_collection):
         raise MaxFilesReached(u'Sólo se permiten 5 archivos por publicación.')
 
 
-def _optimize_publication_media(instance, image_upload):
-    check_num_images(image_upload)
-    content_video = False
+def _optimize_publication_media(instance, image_upload, exts):
     if image_upload:
         for index, media in enumerate(image_upload):
             check_image_property(media)
-            f = magic.Magic(mime=True, uncompress=True)
-            file_type = f.from_buffer(media.read(1024)).split('/')
             try:
-                if file_type[0] == "video":  # es un video
-                    if file_type[1] == 'mp4':
+                if exts[index][0] == "video":  # es un video
+                    if exts[index][1] == 'mp4':
                         PublicationVideo.objects.create(publication=instance, video=media)
                     else:
                         tmp = tempfile.NamedTemporaryFile(delete=False)
                         for block in media.chunks():
                             tmp.write(block)
-                        process_video_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
-                    content_video = True
-                elif file_type[0] == "image" and file_type[1] == "gif":  # es un gif
+                        process_video_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
+                                                        board_owner_id=instance.board_owner_id)
+
+                elif exts[index][0] == "image" and exts[index][1] == "gif":  # es un gif
                     tmp = tempfile.NamedTemporaryFile(suffix='.gif', delete=False)
                     for block in media.chunks():
                         tmp.write(block)
-                    process_gif_publication.delay(tmp.name, instance.id, media.name, instance.author.id)
-                    content_video = True
+                    process_gif_publication.delay(tmp.name, instance.id, media.name, user_id=instance.author.id,
+                                                  board_owner_id=instance.board_owner_id)
+
                 else:  # es una imagen normal
                     try:
                         image = Image.open(media)
                     except IOError:
                         raise CantOpenMedia(u'No podemos procesar el archivo {image}'.format(image=media.name))
-                    if image.mode != 'RGBA':
-                        image = image.convert('RGBA')
+
+                    fill_color = (255, 255, 255, 0)
+                    if image.mode in ('RGBA', 'LA'):
+                        background = Image.new(image.mode[:-1], image.size, fill_color)
+                        background.paste(image, image.split()[-1])
+                        image = background
                     image.thumbnail((800, 600), Image.ANTIALIAS)
                     output = io.BytesIO()
                     image.save(output, format='JPEG', optimize=True, quality=70)
@@ -99,7 +104,6 @@ def _optimize_publication_media(instance, image_upload):
                     PublicationImage.objects.create(publication=instance, image=photo)
             except IndexError:
                 raise MediaNotSupported(u'No podemos procesar este tipo de archivo {file}.'.format(file=media.name))
-    return content_video
 
 
 class PublicationNewView(AjaxableResponseMixin, CreateView):
@@ -112,23 +116,25 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
     success_url = '/thanks/'
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(PublicationNewView, self).__init__(**kwargs)
         self.object = None
 
     def post(self, request, *args, **kwargs):
-
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
-        emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
-        board_owner = NodeProfile.nodes.get(user_id=int(request.POST['board_owner']))
+        try:
+            emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
+            board_owner = NodeProfile.nodes.get(user_id=request.POST['board_owner'])
+        except NodeProfile.DoesNotExist as e:
+            form.add_error('board_owner', 'El perfil donde quieres publicar no existe.')
+            return self.form_invalid(form=form)
 
         privacity = board_owner.is_visible(emitter)
 
         if privacity and privacity != 'all':
-            raise IntegrityError("No have permissions")
+            return HttpResponseForbidden()
 
-        is_correct_content = False
         logger.info('POST DATA: {} \n FILES: {}'.format(request.POST, request.FILES))
         logger.info('tipo emitter: {}'.format(type(emitter.title)))
         logger.info('tipo board_owner: {}'.format(type(board_owner.title)))
@@ -136,59 +142,94 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
         if form.is_valid():
             try:
                 publication = form.save(commit=False)
-                publication.author = User.objects.get(id=emitter.user_id)
-                publication.board_owner = User.objects.get(id=board_owner.user_id)
-                print('SAVED!')
-                soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
-                for tag in soup.find_all(recursive=True):
-                    if tag.text and not tag.text.isspace():
-                        is_correct_content = True
-                        break
+                parent = publication.parent
 
-                if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
+                if parent:
+                    parent_owner = parent.author_id
+                    parent_node = NodeProfile.nodes.get(user_id=parent_owner)
+                    if parent_node.bloq.is_connected(emitter):
+                        form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
+                        return self.form_invalid(form=form)
 
-                    logger.info('Publicacion contiene espacios o no tiene texto')
-                    raise EmptyContent('¡Comprueba el texto del comentario!')
+                publication.author_id = emitter.user_id
+                publication.board_owner_id = board_owner.user_id
 
-                if publication.content.isspace():  # Comprobamos si el comentario esta vacio
-                    raise EmptyContent('¡Comprueba el texto del comentario!')
-
-                publication.save()  # Creamos publicacion
-                publication.add_hashtag()  # add hashtags
-                publication.parse_mentions()  # add mentions
                 publication.parse_content()  # parse publication content
+                publication.parse_mentions()  # add mentions
+                publication.add_hashtag()  # add hashtags
                 publication.content = Emoji.replace(publication.content)  # Add emoji img
-                form.save_m2m()  # Saving tags
-                content_video = _optimize_publication_media(publication, request.FILES.getlist('image'))
-                publication.save(update_fields=['content'],
-                                 new_comment=True, csrf_token=get_or_create_csrf_token(
-                        self.request))  # Guardamos la publicacion si no hay errores
-                if not content_video:
+
+                media = request.FILES.getlist('image')
+
+                try:
+                    check_num_images(media)
+                except MaxFilesReached:
+                    form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
+                    return self.form_invalid(form=form)
+
+                try:
+                    f = magic.Magic(mime=True, uncompress=True)
+                    exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                except magic.MagicException as e:
+                    form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
+                    return self.form_invalid(form=form)
+
+                have_video = False
+                if any(word in 'gif video' for word in set([item for sublist in exts for item in sublist])):
+                    have_video = True
+
+                try:
+                    with transaction.atomic(using="default"):
+                        publication.save()  # Creamos publicacion
+                        form.save_m2m()  # Saving tags
+                        transaction.on_commit(
+                            lambda: _optimize_publication_media(publication, media, exts))
+                        transaction.on_commit(lambda: publication.send_notification(request, is_edited=False))
+                        # enviamos a los seguidores
+                        if publication.author_id == publication.board_owner_id:
+                            transaction.on_commit(
+                                lambda: send_to_stream.apply_async(args=[publication.author_id, publication.id],
+                                                                   queue='low'))
+
+                except (SizeIncorrect, MediaNotSupported, CantOpenMedia) as ex:
+                    form.add_error('content', str(ex))
+                    publication.delete()
+                    return self.form_invalid(form=form)
+
+                except Exception as e:
+                    raise ValidationError(e)
+
+                if not have_video:
                     return self.form_valid(form=form)
                 else:
                     return self.form_valid(form=form,
                                            msg=u"Estamos procesando tus videos, te avisamos "
-                                               u"cuando la publicación esté lista,")
+                                               u"cuando la publicación esté lista.")
+
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
-                return self.form_invalid(form=form, errors=e)
+                return self.form_invalid(form=form)
+
         return self.form_invalid(form=form)
 
 
-publication_new_view = login_required(PublicationNewView.as_view(), login_url='/')
-publication_new_view = transaction.atomic(publication_new_view)
+publication_new_view = login_required(
+    PublicationNewView.as_view(), login_url='/')
 
 
+@login_required(login_url='/')
 def publication_detail(request, publication_id):
     """
     Muestra el thread de una conversacion
     """
     user = request.user
+    page = request.GET.get('page', 1)
+
     try:
-        request_pub = Publication.objects.get(id=publication_id, deleted=False)
-        publication = request_pub.get_descendants(include_self=True).filter(deleted=False)
+        request_pub = Publication.objects \
+            .select_related('author').get(id=publication_id, deleted=False)
     except ObjectDoesNotExist:
-        return Http404
+        raise Http404
 
     try:
         author = NodeProfile.nodes.get(user_id=request_pub.author_id)
@@ -201,7 +242,57 @@ def publication_detail(request, publication_id):
     if privacity and privacity != 'all':
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
+    try:
+        shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),
+                                                         deleted=False).order_by().values(
+            'shared_publication__id')
+
+        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+            When(author_id=user.id, then=Value(1))
+        ))).values('have_shared')
+
+        publication = request_pub.get_descendants(include_self=True) \
+            .annotate(likes=Count('user_give_me_like'),
+                      hates=Count('user_give_me_hate'), have_like=Count(Case(
+                When(user_give_me_like=user, then=Value(1)),
+                output_field=IntegerField()
+            )), have_hate=Count(Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                output_field=IntegerField()
+            ))) \
+            .filter(deleted=False) \
+            .prefetch_related('extra_content', 'images',
+                              'videos', 'shared_publication__images',
+                              'shared_publication__videos',
+                              'shared_publication__extra_content',
+                              'tags',
+                              'shared_publication__author',
+                              'shared_group_publication__images',
+                              'shared_group_publication__author',
+                              'shared_group_publication__videos',
+                              'shared_group_publication__group_extra_content',) \
+            .select_related('author',
+                            'board_owner', 'shared_publication',
+                            'parent', 'shared_group_publication').annotate(
+            total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+            have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+    except Exception as e:
+        logger.info(e)
+        raise Exception('Error al cargar descendientes para la publicacion: {}'.format(request_pub))
+
+    paginator = Paginator(publication, 10)
+
+    try:
+        publication = paginator.page(page)
+    except PageNotAnInteger:
+        publication = paginator.page(1)
+    except EmptyPage:
+        publication = paginator.page(paginator.num_pages)
+
     context = {
+        'publication_id': publication_id,
         'publication': publication,
         'publication_shared': SharedPublicationForm()
     }
@@ -209,53 +300,14 @@ def publication_detail(request, publication_id):
     return render(request, "account/publication_detail.html", context)
 
 
-class PublicationPhotoView(AjaxableResponseMixin, CreateView):
-    """
-    Crear una publicación para mi perfil.
-    """
-    form_class = PublicationPhotoForm
-    model = PublicationPhoto
-    http_method_names = [u'post']
-    success_url = '/thanks/'
-
-    def __init__(self):
-        self.object = None
-        super(PublicationPhotoView, self).__init__()
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        emitter = get_object_or_404(get_user_model(),
-                                    pk=request.POST.get('p_author', None))
-
-        photo = get_object_or_404(Photo, pk=request.POST.get('board_photo', None))
-        publication = None
-        logger.debug('POST DATA: {}'.format(request.POST))
-        logger.debug('tipo emitter: {}'.format(type(emitter)))
-        if form.is_valid():
-            try:
-                publication = form.save(commit=False)
-                publication.author = emitter
-                publication.board_photo = photo
-                if publication.content.isspace():
-                    raise IntegrityError('El comentario esta vacio')
-                publication.save(new_comment=True)
-                logger.debug('>>>> PUBLICATION: '.format(publication))
-
-                return self.form_valid(form=form)
-            except IntegrityError as e:
-                logger.debug("views.py line 48 -> {}".format(e))
-
-        return self.form_invalid(form=form)
-
-
-publication_photo_view = login_required(PublicationPhotoView.as_view(), login_url='/')
-
-
 @login_required(login_url='/')
 @transaction.atomic
 def delete_publication(request):
     logger.debug('>>>>>>>> PETICION AJAX BORRAR PUBLICACION')
-    response = False
+    data = {
+        'response': False,
+        'shared_pub_id': None
+    }
     if request.POST:
         # print request.POST['userprofile_id']
         # print request.POST['publication_id']
@@ -264,10 +316,10 @@ def delete_publication(request):
         logger.info('usuario: {} quiere eliminar publicacion: {}'.format(user.username, publication_id))
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
-            publication = Publication.objects.get(id=publication_id)
+            publication = Publication.objects.prefetch_related('extra_content').select_related(
+                'shared_publication').defer('content').get(id=publication_id)
         except ObjectDoesNotExist:
-            response = False
-            return HttpResponse(json.dumps(response),
+            return HttpResponse(json.dumps(data),
                                 content_type='application/json'
                                 )
         logger.info('publication_author: {} publication_board_owner: {} request.user: {}'.format(
@@ -275,21 +327,21 @@ def delete_publication(request):
 
         # Borramos publicacion
         if user.id == publication.author.id or user.id == publication.board_owner.id:
-            publication.deleted = True
-            publication.save(update_fields=['deleted'])
-            # Publication.objects.filter(parent=publication).update(deleted=True)
-            publication.get_descendants().update(deleted=True)
-            shared = publication.shared_publication  # Comprobamos si es un comentario de compartir
-            if shared:
-                shared.publication.save()
-                shared.delete()
-            extra_content = publication.extra_content
-            if extra_content:
-                extra_content.delete()
+            try:
+                with transaction.atomic(using="default"):
+                    publication.deleted = True
+                    publication.save(update_fields=['deleted'])
+                    publication.get_descendants().update(deleted=True)
+                    if publication.has_extra_content():
+                        publication.extra_content.delete()
+            except Exception as e:
+                logger.info(e)
+                return HttpResponse(json.dumps(data), content_type='application/json')
+            shared_pub = publication.shared_publication
+            data['shared_pub_id'] = shared_pub.id if shared_pub else None
             logger.info('Publication deleted: {}'.format(publication.id))
-
-        response = True
-    return HttpResponse(json.dumps(response),
+            data['response'] = True
+    return HttpResponse(json.dumps(data),
                         content_type='application/json'
                         )
 
@@ -299,7 +351,7 @@ def delete_publication(request):
 def add_like(request):
     response = False
     statuslike = 0
-    if request.POST:
+    if request.method == 'POST':
         user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
 
@@ -327,68 +379,64 @@ def add_like(request):
         logger.info("(USUARIO PETICIÓN): " + user.username + " PK_ID -> " + str(user.pk))
         logger.info("(PERFIL DE USUARIO): " + publication.author.username + " PK_ID -> " + str(publication.author.pk))
 
-        if user.pk != publication.author.pk:
-            # Si el escritor del comentario
-            # es el que pulsa el boton de like
-            # no dejamos que incremente el contador
-            in_like = False
-            in_hate = False
+        in_like = False
+        in_hate = False
 
-            if user in publication.user_give_me_like.all():  # Usuario en lista de likes
-                in_like = True
+        if publication.user_give_me_like.filter(pk=user.pk).exists():  # Usuario en lista de likes
+            in_like = True
 
-            if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
-                in_hate = True
+        if publication.user_give_me_hate.filter(pk=user.pk).exists():  # Usuario en lista de hate
+            in_hate = True
 
-            if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
-                publication.user_give_me_like.remove(user)
-                publication.user_give_me_hate.remove(user)
-                logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+        if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
+            publication.user_give_me_like.remove(user)
+            publication.user_give_me_hate.remove(user)
+            logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
 
-            if in_hate:  # Si ha dado antes unlike
-                logger.info("Incrementando like")
-                logger.info("Decrementando hate")
-                try:
-                    publication.user_give_me_hate.remove(user)  # remove from hates
-                    publication.user_give_me_like.add(user)  # add to like
-                    publication.save()
-                    response = True
-                    statuslike = 3
+        if in_hate:  # Si ha dado antes unlike
+            logger.info("Incrementando like")
+            logger.info("Decrementando hate")
+            try:
+                publication.user_give_me_hate.remove(user)  # remove from hates
+                publication.user_give_me_like.add(user)  # add to like
+                publication.save()
+                response = True
+                statuslike = 3
 
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-                data = json.dumps({'response': response, 'statuslike': statuslike})
-                return HttpResponse(data, content_type='application/json')
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
-            elif in_like:  # Si ha dado antes like
-                logger.info("Decrementando like")
-                try:
-                    publication.user_give_me_like.remove(request.user)
-                    publication.save()
-                    response = True
-                    statuslike = 2
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+        elif in_like:  # Si ha dado antes like
+            logger.info("Decrementando like")
+            try:
+                publication.user_give_me_like.remove(request.user)
+                publication.save()
+                response = True
+                statuslike = 2
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-                data = json.dumps({'response': response, 'statuslike': statuslike})
-                return HttpResponse(data, content_type='application/json')
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
-            else:  # Si no ha dado like ni unlike
-                try:
-                    publication.user_give_me_like.add(user)
-                    publication.save()
-                    response = True
-                    statuslike = 1
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+        else:  # Si no ha dado like ni unlike
+            try:
+                publication.user_give_me_like.add(user)
+                publication.save()
+                response = True
+                statuslike = 1
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-        else:
-            response = False
-            statuslike = 0
+    else:
+        response = False
+        statuslike = 0
 
     logger.info("Fin like comentario ---> Response" + str(response)
                 + " Estado" + str(statuslike))
@@ -402,7 +450,6 @@ def add_like(request):
 def add_hate(request):
     response = False
     statuslike = 0
-    data = []
     if request.POST:
         user = request.user
         id_for_publication = request.POST['publication_id']  # Obtenemos el ID de la publicacion
@@ -430,68 +477,63 @@ def add_hate(request):
         logger.info("(USUARIO PETICIÓN): " + user.username)
         logger.info("(PERFIL DE USUARIO): " + publication.author.username)
 
-        if user.pk != publication.author.pk:
-            # Si el escritor del comentario
-            # es el que pulsa el boton de like
-            # no dejamos que incremente el contador
-            # tampoco si el usuario ya ha dado like antes.
-            in_like = False
-            in_hate = False
+        in_like = False
+        in_hate = False
 
-            if user in publication.user_give_me_like.all():  # Usuario en lista de likes
-                in_like = True
+        if publication.user_give_me_like.filter(pk=user.pk).exists():  # Usuario en lista de likes
+            in_like = True
 
-            if user in publication.user_give_me_hate.all():  # Usuario en lista de hate
-                in_hate = True
+        if publication.user_give_me_hate.filter(pk=user.pk).exists():  # Usuario en lista de hate
+            in_hate = True
 
-            if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
-                publication.user_give_me_like.remove(user)
-                publication.user_give_me_hate.remove(user)
-                logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
+        if in_like and in_hate:  # Si esta en ambas listas (situacion no posible)
+            publication.user_give_me_like.remove(user)
+            publication.user_give_me_hate.remove(user)
+            logger.info("Usuario esta en ambas listas, eliminado usuario de ambas listas")
 
-            if in_like:  # Si ha dado antes like
-                logger.info("Incrementando hate")
-                logger.info("Decrementando like")
-                try:
-                    publication.user_give_me_like.remove(user)  # remove from like
-                    publication.user_give_me_hate.add(user)  # add to hate
-                    publication.save()
-                    response = True
-                    statuslike = 3
+        if in_like:  # Si ha dado antes like
+            logger.info("Incrementando hate")
+            logger.info("Decrementando like")
+            try:
+                publication.user_give_me_like.remove(user)  # remove from like
+                publication.user_give_me_hate.add(user)  # add to hate
+                publication.save()
+                response = True
+                statuslike = 3
 
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-                data = json.dumps({'response': response, 'statuslike': statuslike})
-                return HttpResponse(data, content_type='application/json')
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
-            elif in_hate:  # Si ha dado antes hate
-                logger.info("Decrementando hate")
-                try:
-                    publication.user_give_me_hate.remove(request.user)
-                    publication.save()
-                    response = True
-                    statuslike = 2
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
+        elif in_hate:  # Si ha dado antes hate
+            logger.info("Decrementando hate")
+            try:
+                publication.user_give_me_hate.remove(request.user)
+                publication.save()
+                response = True
+                statuslike = 2
+            except IntegrityError:
+                response = False
+                statuslike = 0
 
-                data = json.dumps({'response': response, 'statuslike': statuslike})
-                return HttpResponse(data, content_type='application/json')
+            data = json.dumps({'response': response, 'statuslike': statuslike})
+            return HttpResponse(data, content_type='application/json')
 
-            else:  # Si no ha dado like ni unlike
-                try:
-                    publication.user_give_me_hate.add(user)
-                    publication.save()
-                    response = True
-                    statuslike = 1
-                except IntegrityError:
-                    response = False
-                    statuslike = 0
-        else:
-            response = False
-            statuslike = 0
+        else:  # Si no ha dado like ni unlike
+            try:
+                publication.user_give_me_hate.add(user)
+                publication.save()
+                response = True
+                statuslike = 1
+            except IntegrityError:
+                response = False
+                statuslike = 0
+    else:
+        response = False
+        statuslike = 0
 
     logger.info("Fin hate comentario ---> Response" + str(response)
                 + " Estado" + str(statuslike))
@@ -505,38 +547,37 @@ def edit_publication(request):
     editar el contenido de la publicacion
     """
     if request.method == 'POST':
-        user = request.user
-        publication = get_object_or_404(Publication, id=request.POST['id'])
+        form = PublicationEdit(request.POST or None)
 
-        if publication.author.id != user.id:
-            return JsonResponse({'data': "No tienes permisos para editar este comentario"})
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            pk = form.cleaned_data['pk']
+            user = request.user
 
-        if publication.event_type != 1 and publication.event_type != 3:
-            return JsonResponse({'data': "No puedes editar este tipo de comentario"})
+            publication = get_object_or_404(Publication, id=pk)
 
-        publication.content = request.POST.get('content', None)
+            if publication.author.id != user.id:
+                return JsonResponse({'data': "No tienes permisos para editar este comentario"})
 
-        publication.add_hashtag()  # add hashtags
-        publication.parse_content()  # parse publication content
-        is_correct_content = False
-        soup = BeautifulSoup(publication.content)  # Buscamos si entre los tags hay contenido
-        for tag in soup.find_all(recursive=True):
-            if tag.text and not tag.text.isspace():
-                is_correct_content = True
-                break
+            if publication.event_type != 1 and publication.event_type != 3:
+                return JsonResponse({'data': "No puedes editar este tipo de comentario"})
 
-        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-            logger.info('Publicacion contiene espacios o no tiene texto')
-            raise IntegrityError('El comentario esta vacio')
+            try:
+                publication.content = content
+                publication.parse_content()  # parse publication content
+                publication.add_hashtag()  # add hashtags
+                publication.parse_mentions()
+                publication.content = Emoji.replace(publication.content)
+                publication._edited = True
+                with transaction.atomic(using="default"):
+                    publication.save()  # Guardamos la publicacion si no hay errores
+                    transaction.on_commit(lambda: publication.send_notification(request, is_edited=True))
+                return JsonResponse({'data': True})
+            except IntegrityError:
+                return JsonResponse({'data': False})
+        else:
+            return JsonResponse({'data': False})
 
-        if publication.content.isspace():  # Comprobamos si el comentario esta vacio
-            raise IntegrityError('El comentario esta vacio')
-
-        publication.parse_mentions()  # add mentions
-        publication.save(update_fields=['content', 'created', 'extra_content'],
-                         new_comment=True, is_edited=True)  # Guardamos la publicacion si no hay errores
-
-        return JsonResponse({'data': True})
     return JsonResponse({'data': "No puedes acceder a esta URL."})
 
 
@@ -546,219 +587,81 @@ def load_more_comments(request):
     Carga respuestas de un comentario padre (carga comentarios hijos (nivel 1) de un comentario padre (nivel 0))
     o carga comentarios a respuestas (cargar comentarios descendientes (nivel > 1) de un comentario hijo (nivel 1))
     """
-    data = {
-        'response': False
-    }
-    if request.method == 'POST':
+    if request.is_ajax():
         user = request.user
-        pub_id = request.POST.get('id', None)  # publicacion padre
-        last_pub = request.POST.get('last_pub', None)  # Ultima publicacion add
+        pub_id = request.GET.get('pubid', None)  # publicacion padre
+        page = request.GET.get('page', 1)  # Ultima publicacion add
+
         try:
-            publication = Publication.objects.get(id=pub_id)
+            publication = Publication.objects.select_related('board_owner').get(id=pub_id)
         except ObjectDoesNotExist:
-            return JsonResponse(data)
+            raise Http404
 
         try:
             board_owner = NodeProfile.nodes.get(user_id=publication.board_owner_id)
             m = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
-            return JsonResponse(data)
+            raise Http404
 
         privacity = board_owner.is_visible(m)
 
         if privacity and privacity != 'all':
-            return JsonResponse(data)
+            return HttpResponseForbidden()
 
-        list_responses = []
+        if not publication.parent:
+            publications = publication.get_descendants() \
+                .filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+                        & Q(level__lte=1) & Q(deleted=False))
 
-        if not publication.parent:  # Si es publicacion padre, devolvemos solo sus hijos (nivel 1)
-            if not last_pub:
-                for row in publication.get_descendants().filter(level__lte=1, deleted=False)[:20]:
-                    extra_c = row.extra_content
-                    have_extra_content = False
-                    if extra_c:
-                        have_extra_content = True
-                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                                           'author_username': row.author.username, 'user_id': user.id,
-                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
-                                           'event_type': row.event_type, 'extra_content': have_extra_content,
-                                           'descendants': row.get_children_count(),
-                                           'token': get_or_create_csrf_token(request),
-                                           'parent': True if row.parent else False,
-                                           'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.author_id),
-                                           'images': list(row.images.all().values('image')),
-                                           'videos': list(row.videos.all().values('video')),
-                                           'author_avatar': get_author_avatar(row.author_id),
-                                           'likes': row.total_likes, 'hates': row.total_hates,
-                                           'shares': row.total_shares})
-                    if have_extra_content:
-                        list_responses[-1]['extra_content_title'] = extra_c.title
-                        list_responses[-1]['extra_content_description'] = extra_c.description
-                        list_responses[-1]['extra_content_image'] = extra_c.image
-                        list_responses[-1]['extra_content_url'] = extra_c.url
-            else:
-                for row in publication.get_descendants().filter(level__lte=1, id__lt=last_pub, deleted=False)[:20]:
-                    extra_c = row.extra_content
-                    have_extra_content = False
-                    if extra_c:
-                        have_extra_content = True
-                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                                           'author_username': row.author.username, 'user_id': user.id,
-                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
-                                           'event_type': row.event_type, 'extra_content': have_extra_content,
-                                           'descendants': row.get_children_count(),
-                                           'token': get_or_create_csrf_token(request),
-                                           'parent': True if row.parent else False,
-                                           'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.autho_id),
-                                           'images': list(row.images.all().values('image')),
-                                           'videos': list(row.videos.all().values('video')),
-                                           'author_avatar': get_author_avatar(row.author_id),
-                                           'likes': row.total_likes, 'hates': row.total_hates,
-                                           'shares': row.total_shares
-                                           })
-                    if have_extra_content:
-                        list_responses[-1]['extra_content_title'] = extra_c.title
-                        list_responses[-1]['extra_content_description'] = extra_c.description
-                        list_responses[-1]['extra_content_image'] = extra_c.image
-                        list_responses[-1]['extra_content_url'] = extra_c.url
-            data['pubs'] = json.dumps(list_responses)
-        else:  # Si es publicacion respuesta, devolvemos todos los niveles
-            if not last_pub:
-                for row in publication.get_descendants().filter(deleted=False)[:20]:
-                    extra_c = row.extra_content
-                    have_extra_content = False
-                    if extra_c:
-                        have_extra_content = True
-                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                                           'author_username': row.author.username, 'user_id': user.id,
-                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
-                                           'event_type': row.event_type, 'extra_content': have_extra_content,
-                                           'token': get_or_create_csrf_token(request),
-                                           'parent': True if row.parent else False,
-                                           'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.author_id),
-                                           'images': list(row.images.all().values('image')),
-                                           'videos': list(row.videos.all().values('video')),
-                                           'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
-                                           'likes': row.total_likes, 'hates': row.total_hates,
-                                           'shares': row.total_shares
-                                           })
-                    if have_extra_content:
-                        list_responses[-1]['extra_content_title'] = extra_c.title
-                        list_responses[-1]['extra_content_description'] = extra_c.description
-                        list_responses[-1]['extra_content_image'] = extra_c.image
-                        list_responses[-1]['extra_content_url'] = extra_c.url
-            else:
-                for row in publication.get_descendants().filter(deleted=False, id__lt=last_pub)[:20]:
-                    extra_c = row.extra_content
-                    have_extra_content = False
-                    if extra_c:
-                        have_extra_content = True
-                    list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                                           'author_username': row.author.username, 'user_id': user.id,
-                                           'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
-                                           'event_type': row.event_type, 'extra_content': have_extra_content,
-                                           'token': get_or_create_csrf_token(request),
-                                           'parent': True if row.parent else False,
-                                           'parent_author': row.parent.author.username,
-                                           'parent_avatar': get_author_avatar(row.parent.author_id),
-                                           'images': list(row.images.all().values('image')),
-                                           'videos': list(row.videos.all().values('video')),
-                                           'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
-                                           'likes': row.total_likes, 'hates': row.total_hates,
-                                           'shares': row.total_shares})
-                    if have_extra_content:
-                        list_responses[-1]['extra_content_title'] = extra_c.title
-                        list_responses[-1]['extra_content_description'] = extra_c.description
-                        list_responses[-1]['extra_content_image'] = extra_c.image
-                        list_responses[-1]['extra_content_url'] = extra_c.url
-            data['pubs'] = json.dumps(list_responses)
-        data['response'] = True
-    return JsonResponse(data)
+        else:
+            publications = publication.get_descendants() \
+                .filter(
+                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                & Q(deleted=False))
 
+        shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),
+                                                         deleted=False).order_by().values(
+            'shared_publication__id')
 
-@login_required(login_url='/')
-def load_more_skyline(request):
-    """
-    Carga comentarios de nivel 0 en el skyline del perfil
-    """
-    data = {
-        'response': False
-    }
-    if request.method == 'POST':
-        user = request.user
-        pub_id = request.POST.get('id', None)  # ultima publicacion en skyline
-        try:
-            publication = Publication.objects.get(id=pub_id)
-        except ObjectDoesNotExist:
-            return JsonResponse(data)
+        total_shared_publications = shared_publications.annotate(c=Count('*')).values('c')
+
+        shared_for_me = shared_publications.annotate(have_shared=Count(Case(
+            When(author_id=user.id, then=Value(1))
+        ))).values('have_shared')
+
+        publications = publications.annotate(likes=Count('user_give_me_like'),
+                                             hates=Count('user_give_me_hate'), have_like=Count(Case(
+                When(user_give_me_like=user, then=Value(1)),
+                output_field=IntegerField()
+            )), have_hate=Count(Case(
+                When(user_give_me_hate=user, then=Value(1)),
+                output_field=IntegerField()
+            ))).prefetch_related('extra_content', 'images',
+                                 'videos',
+                                 'tags') \
+            .select_related('author',
+                            'board_owner',
+                            'parent').annotate(
+            total_shared=Subquery(total_shared_publications, output_field=IntegerField())).annotate(
+            have_shared=Subquery(shared_for_me, output_field=IntegerField()))
+
+        paginator = Paginator(publications, 10)
 
         try:
-            board_owner = NodeProfile.nodes.get(user_id=publication.board_owner_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            return JsonResponse(data)
+            publications = paginator.page(page)
+        except PageNotAnInteger:
+            publications = paginator.page(1)
+        except EmptyPage:
+            publications = paginator.page(paginator.num_pages)
 
-        privacity = board_owner.is_visible(m)
+        context = {
+            'pub_id': pub_id,
+            'publications': publications,
+            'user_profile': publication.board_owner
+        }
+        return render(request, 'account/ajax_load_replies.html', context=context)
 
-        if privacity and privacity != 'all':
-            return JsonResponse(data)
-
-        publications = Publication.objects.filter(board_owner=publication.board_owner, deleted=False, parent=None,
-                                                  id__lt=pub_id)[:20]
-        list_responses = []
-
-        for row in publications:
-            extra_c = row.extra_content
-            have_extra_content = False
-            if extra_c:
-                have_extra_content = True
-
-            shared_pub = row.shared_publication
-            have_shared_publication = False
-            if shared_pub:
-                have_shared_publication = True
-
-            list_responses.append({'content': row.content, 'created': naturaltime(row.created), 'id': row.id,
-                                   'author_username': row.author.username, 'user_id': user.id,
-                                   'author_id': row.author.id, 'board_owner_id': row.board_owner_id,
-                                   'author_avatar': get_author_avatar(row.author_id), 'level': row.level,
-                                   'event_type': row.event_type, 'extra_content': have_extra_content,
-                                   'descendants': row.get_children_count(), 'shared_pub': have_shared_publication,
-                                   'images': list(row.images.all().values('image')),
-                                   'videos': list(row.videos.all().values('video')),
-                                   'token': get_or_create_csrf_token(request),
-                                   'likes': row.total_likes, 'hates': row.total_hates, 'shares': row.total_shares})
-            if have_extra_content:
-                list_responses[-1]['extra_content_title'] = extra_c.title
-                list_responses[-1]['extra_content_description'] = extra_c.description
-                list_responses[-1]['extra_content_image'] = extra_c.image
-                list_responses[-1]['extra_content_url'] = extra_c.url
-
-            if have_shared_publication:
-                list_responses[-1]['shared_pub_id'] = shared_pub.publication.pk
-                list_responses[-1]['shared_pub_content'] = shared_pub.publication.content
-                list_responses[-1]['shared_pub_author'] = shared_pub.publication.author.username
-                list_responses[-1]['shared_pub_avatar'] = get_author_avatar(shared_pub.publication.author_id)
-                list_responses[-1]['shared_created'] = naturaltime(shared_pub.publication.created)
-                list_responses[-1][
-                    'shared_image'] = shared_pub.publication.image.url if shared_pub.publication.image else None
-
-                shared_pub_extra_c = shared_pub.publication.extra_content
-
-                if shared_pub_extra_c:
-                    list_responses[-1]['shared_pub_extra_title'] = shared_pub.publication.extra_content.title
-                    list_responses[-1][
-                        'shared_pub_extra_description'] = shared_pub.publication.extra_content.description
-                    list_responses[-1][
-                        'shared_pub_extra_image'] = shared_pub.publication.extra_content.image if shared_pub.publication.extra_content.image else None
-                    list_responses[-1]['shared_pub_extra_url'] = shared_pub.publication.extra_content.url
-
-        data['pubs'] = json.dumps(list_responses)
-        data['response'] = True
-    return JsonResponse(data)
+    return HttpResponseForbidden()
 
 
 @login_required(login_url='/')
@@ -772,78 +675,221 @@ def share_publication(request):
     status = 0
     print('>>>>>>>>>>>>> PETITION AJAX ADD TO TIMELINE')
     if request.POST:
-        obj_pub = request.POST.get('publication_id', None)
         user = request.user
         form = SharedPublicationForm(request.POST or None)
-
+        print(request.POST)
         if form.is_valid():
+            obj_pub = form.cleaned_data['pk']
             try:
                 pub_to_add = Publication.objects.get(pk=obj_pub)
-
-                try:
-                    author = NodeProfile.nodes.get(user_id=pub_to_add.author_id)
-                    m = NodeProfile.nodes.get(user_id=user.id)
-                except NodeProfile.DoesNotExist:
-                    return HttpResponse(json.dumps(response), content_type='application/json')
-
-                privacity = author.is_visible(m)
-
-                if privacity and privacity != 'all':
-                    return HttpResponse(json.dumps(response), content_type='application/json')
-
-                shared, created = SharedPublication.objects.get_or_create(by_user=user, publication=pub_to_add)
-
-                if created:
-                    content = request.POST.get('content', None)
-
-                    if content:
-
-                        is_correct_content = False
-                        pub_content = parse_string(content)  # Comprobamos que el comentario sea correcto
-                        soup = BeautifulSoup(pub_content)  # Buscamos si entre los tags hay contenido
-                        for tag in soup.find_all(recursive=True):
-                            if tag.text and not tag.text.isspace():
-                                is_correct_content = True
-                                break
-
-                        if not is_correct_content:  # Si el contenido no es valido, lanzamos excepcion
-                            logger.info('Publicacion contiene espacios o no tiene texto')
-                            raise IntegrityError('El comentario esta vacio')
-
-                        if pub_content.isspace():  # Comprobamos si el comentario esta vacio
-                            raise IntegrityError('El comentario esta vacio')
-
-                        Publication.objects.create(
-                            content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a><br>%s' % (
-                                pub_to_add.author.username, pub_to_add.author.username, pub_content),
-                            shared_publication=shared,
-                            author=user,
-                            board_owner=user, event_type=6)
-                    else:
-                        Publication.objects.create(
-                            content='<i class="fa fa-share" aria-hidden="true"></i> Ha compartido de <a href="/profile/%s">@%s</a>' % (
-                                pub_to_add.author.username, pub_to_add.author.username), shared_publication=shared,
-                            author=user,
-                            board_owner=user, event_type=6)
-
-                    pub_to_add.save()
-                    response = True
-                    status = 1  # Representa la comparticion de la publicacion
-                    logger.info('Compartido el comentario %d' % (pub_to_add.id))
-                    return HttpResponse(json.dumps({'response': response, 'status': status}),
-                                        content_type='application/json')
-
-                if not created and shared:
-                    Publication.objects.get(shared_publication=shared).delete()
-                    shared.delete()
-                    pub_to_add.save()
-                    response = True
-                    status = 2  # Representa la eliminacion de la comparticion
-                    logger.info('Compartido el comentario %d' % (pub_to_add.id))
-                    return HttpResponse(json.dumps({'response': response, 'status': status}),
-                                        content_type='application/json')
-
             except ObjectDoesNotExist:
                 response = False
+                return HttpResponse(json.dumps(response), content_type='application/json')
 
-        return HttpResponse(json.dumps(response), content_type='application/json')
+            try:
+                author = NodeProfile.nodes.get(user_id=pub_to_add.author_id)
+                m = NodeProfile.nodes.get(user_id=user.id)
+            except NodeProfile.DoesNotExist:
+                return HttpResponse(json.dumps(response), content_type='application/json')
+
+            privacity = author.is_visible(m)
+
+            if privacity and privacity != 'all':
+                return HttpResponse(json.dumps(response), content_type='application/json')
+
+            shared = Publication.objects.filter(shared_publication_id=obj_pub, author_id=user.id,
+                                                deleted=False).exists()
+
+            if not shared:
+                pub = form.save(commit=False)
+                pub.parse_content()  # parse publication content
+                pub.add_hashtag()
+                pub.parse_mentions()  # add mentions
+                pub.content = Emoji.replace(pub.content)
+
+                pub.content = '<i class="material-icons blue1e88e5 left">format_quote</i> Ha compartido de <a ' \
+                              'href="/profile/%s">@%s</a><br>%s' % (
+                                  pub_to_add.author.username, pub_to_add.author.username, pub.content)
+
+                pub.shared_publication_id = pub_to_add.id
+                pub.author = user
+                pub.board_owner = user
+                pub.event_type = 6
+                try:
+                    with transaction.atomic(using="default"):
+                        pub.save()
+                        transaction.on_commit(lambda: pub.send_notification(request))
+                    response = True
+                except IntegrityError as e:
+                    logger.info(e)
+                logger.info('Compartido el comentario %d' % pub_to_add.id)
+
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
+class RemoveSharedPublication(View):
+    model = Publication
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(RemoveSharedPublication, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        pk = request.POST.get('pk', None)
+        user = request.user
+
+        try:
+            pub_to_delete = Publication.objects.get(shared_publication_id=pk, author_id=user.id, deleted=False)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        id_to_delete = pub_to_delete.id
+
+        try:
+            pub_to_delete.deleted = True
+            pub_to_delete.save(update_fields=['deleted'])
+        except IntegrityError:
+            data = {
+                'response': False
+            }
+            return JsonResponse(data)
+
+        data = {
+            'response': True,
+            'id_to_delete': id_to_delete
+        }
+
+        return JsonResponse(data)
+
+
+def publication_filter_by_time(request):
+    user = request.user
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
+            try:
+                board_owner_id = int(json_data['board_owner'])
+            except ValueError:
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"),
+                                    content_type='application/json')
+        except KeyError:
+            return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+
+        try:
+            owner = NodeProfile.nodes.get(user_id=board_owner_id)
+            emitter = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        privacity = owner.is_visible(emitter)
+
+        if privacity and privacity != 'all':
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        root_nodes = cache_tree_children(
+            Publication.objects.filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).select_related(
+                'author')[:5])
+        dicts = []
+        """
+        for n in root_nodes:
+            dicts.append(recursive_node_to_dict(n))
+        """
+        [dicts.append({
+            'id': c.id,
+            'content': c.content,
+            'author__username': c.author.username,
+            'created': naturaltime(c.created),
+            'author__avatar': avatar_url(c.author)
+        }) for c in root_nodes]
+        return HttpResponse(json.dumps(dicts), content_type='application/json')
+    return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
+
+
+def publication_filter_by_like(request):
+    user = request.user
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
+            try:
+                board_owner_id = int(json_data['board_owner'])
+            except ValueError:
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"),
+                                    content_type='application/json')
+        except KeyError:
+            return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+
+        try:
+            owner = NodeProfile.nodes.get(user_id=board_owner_id)
+            emitter = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        privacity = owner.is_visible(emitter)
+
+        if privacity and privacity != 'all':
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
+                                         .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by(
+            '-likes').select_related('author')[:5])
+
+        dicts = []
+        [dicts.append({
+            'id': c.id,
+            'content': c.content,
+            'author__username': c.author.username,
+            'created': naturaltime(c.created),
+            'author__avatar': avatar_url(c.author),
+            'likes': intword(c.likes)
+        }) for c in root_nodes]
+        """
+        for n in root_nodes:
+            dicts.append(recursive_node_to_dict(n))
+        """
+        return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
+    return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')
+
+
+def publication_filter_by_relevance(request):
+    user = request.user
+    if request.method == "POST":
+        json_data = json.loads(request.body.decode('utf-8'))
+        try:
+            try:
+                board_owner_id = int(json_data['board_owner'])
+            except ValueError:
+                return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"),
+                                    content_type='application/json')
+        except KeyError:
+            return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
+
+        try:
+            owner = NodeProfile.nodes.get(user_id=board_owner_id)
+            emitter = NodeProfile.nodes.get(user_id=user.id)
+        except NodeProfile.DoesNotExist:
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        privacity = owner.is_visible(emitter)
+
+        if privacity and privacity != 'all':
+            return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
+
+        root_nodes = cache_tree_children(Publication.objects.annotate(likes=Count('user_give_me_like')) \
+                                         .filter(board_owner_id=board_owner_id, deleted=False, level__lte=0).order_by(
+            '-likes', '-created').select_related('author')[:5])
+
+        dicts = []
+        [dicts.append({
+            'id': c.id,
+            'content': c.content,
+            'author__username': c.author.username,
+            'created': naturaltime(c.created),
+            'author__avatar': avatar_url(c.author),
+            'likes': intword(c.likes)
+        }) for c in root_nodes]
+        """
+        for n in root_nodes:
+            dicts.append(recursive_node_to_dict(n))
+        """
+        return HttpResponse(json.dumps(dicts, indent=2), content_type='application/json')
+    return HttpResponse(json.dumps("Only POST METHOD"), content_type='application/json')

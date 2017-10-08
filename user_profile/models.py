@@ -1,21 +1,17 @@
-import hashlib
 import datetime
-import os, glob
+import hashlib
+import logging
 
+from badgify.models import Award, Badge
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
-from django.utils.http import urlencode
-from notifications.models import Notification
-from photologue.models import Photo
-from django_neomodel import DjangoNode
-from neomodel import UniqueIdProperty, Relationship, StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, \
-    BooleanProperty, Property, StructuredRel, DateTimeProperty
 from django.core.cache import cache
-from neomodel.properties import validator
-from django.utils.translation import ugettext_lazy as _
-from django.core.files.storage import FileSystemStorage
+from django.db import models
+from django.db import transaction
+from django.utils.http import urlencode
+
+from notifications.models import Notification
+from photologue.models import Photo, Video
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
@@ -26,63 +22,57 @@ REQUEST_STATUSES = (
     (REQUEST_BLOCKED, 'Blocked'),
 )
 
+FOLLOWING = 1
+FOLLOWER = 2
+BLOCK = 3
+RELATIONSHIP_STATUSES = (
+    (FOLLOWING, 1),
+    (FOLLOWER, 2),
+    (BLOCK, 3)
+)
 
-def uploadBackImagePath(instance, filename):
-    return '%s/backImage/%s' % (instance.user.username, filename)
-
-
-class TagProfile(DjangoNode):
-    uid = UniqueIdProperty()
-    title = StringProperty(unique_index=True)
-    common = Relationship('TagProfile', 'COMMON')
-    user = RelationshipFrom('NodeProfile', 'INTEREST')
-
-    class Meta:
-        app_label = 'tag_profile'
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
-class UploadedFileProperty(Property):
-    def __init__(self, **kwargs):
-        for item in ['required', 'unique_index', 'index', 'default']:
-            if item in kwargs:
-                raise ValueError('{} argument ignored by {}'.format(item, self.__class__.__name__))
-
-        # kwargs['unique_index'] = True
-        super(UploadedFileProperty, self).__init__(**kwargs)
-
-    @validator
-    def inflate(self, value):
-        return str(value)
-
-    @validator
-    def deflate(self, value):
-        return str(value)
+def upload_cover_path(instance, filename):
+    return '%s/cover_image/%s' % (instance.user.username, filename)
 
 
-class FollowRel(StructuredRel):
-    weight = IntegerProperty(default=0)
-    created = DateTimeProperty(default=lambda: datetime.datetime.now())
+class RelationShipProfile(models.Model):
+    """
+    Establece una relacion entre dos usuarios
+    (Modelo util para hacer busquedas)
+    """
+    to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True)
+    from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True)
+    type = models.IntegerField(choices=RELATIONSHIP_STATUSES)
 
     class Meta:
-        app_label = 'django_rel'
+        unique_together = ('to_profile', 'from_profile', 'type')
 
 
-class NodeProfile(DjangoNode):
-    uid = UniqueIdProperty()
-    user_id = IntegerProperty(unique_index=True)  # user_id
-    title = StringProperty(unique_index=True)  # username
-    first_name = StringProperty()  # first_name
-    last_name = StringProperty()  # last_name
-    follow = RelationshipTo('NodeProfile', 'FOLLOW', model=FollowRel)  # follow user
-    like = RelationshipTo('NodeProfile', 'LIKE')  # like user
-    bloq = RelationshipTo('NodeProfile', 'BLOQ')  # bloq user
-    is_first_login = BooleanProperty(default=True)
-    status = StringProperty(required=False)
-    back_image_ = UploadedFileProperty(db_property='back_image')
-    is_active = BooleanProperty(default=True, help_text=_(
-        'Designates whether this user should be treated as active. '
-        'Unselect this instead of deleting accounts.'))
+class BlockedProfile(models.Model):
+    """
+    Establece una relacion de bloqueo entre dos usuarios
+    (Modelo util para hacer busquedas)
+    """
+    to_blocked = models.ForeignKey('Profile', related_name='to_blocked', db_index=True)
+    from_blocked = models.ForeignKey('Profile', related_name='from_blocked', db_index=True)
 
+    class Meta:
+        unique_together = ('to_blocked', 'from_blocked')
+
+
+class Profile(models.Model):
+    """
+    Modelo para guardar
+    informacion extra del usuario
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    back_image = models.ImageField(blank=True, null=True, upload_to=upload_cover_path)
+    status = models.CharField(blank=True, null=True, max_length=100)
+    is_first_login = models.BooleanField(default=True)
     ONLYFOLLOWERS = 'OF'
     ONLYFOLLOWERSANDFOLLOWS = 'OFAF'
     ALL = 'A'
@@ -93,174 +83,32 @@ class NodeProfile(DjangoNode):
         (ALL, 'All'),
         (NOTHING, 'Nothing'),
     )
-    privacity = StringProperty(choices=OPTIONS_PRIVACITY, default='A')
+    privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
+    relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False,
+                                           related_name="profile_relationships")
+    blockeds = models.ManyToManyField('self', through=BlockedProfile, symmetrical=False,
+                                      related_name="profile_blockeds")
 
-    @property
-    def back_image(self):
-        try:
-            file = glob.glob("%s.*" % (settings.MEDIA_ROOT + '/' + self.back_image_))
-            if file and len(file) > 0:
-                fs = FileSystemStorage()
-                return fs.url(os.path.basename(file[0]))
-            return None
-        except Exception:
-            return None
-
-    @back_image.setter
-    def back_image(self, value):
-        if self.back_image_:
-            try:
-                for filename in glob.glob("%s*" % (settings.MEDIA_ROOT + '/' + self.back_image_)):
-                    fs = FileSystemStorage()
-                    fs.delete(filename)
-            except Exception:
-                pass
-            self.back_image_ = None
-
-        # set the value
-        if isinstance(value, str):
-            try:
-                self.back_image_ = value
-            except ValueError:
-                raise TypeError('Value "{}" is not a path'.format(value))
-        else:
-            TypeError('Value "{}" should be of type str'.format(value))
-
-    @property
-    def group_name(self):
-        """
-        Devuelve el nombre del canal para enviar las notificaciones
-        """
-        return "users-%s" % self.user_id
-
-    @property
-    def notification_channel(self):
-        """
-        Devuelve el nombre del canal notification para cada usuario
-        """
-        return "notification-%s" % self.user_id
-
-    @property
-    def news_channel(self):
-        """
-        Devuelve el nombre del canal para enviar actualizaciones
-        al tablon de inicio
-        """
-        return "news-%s" % self.user_id
+    reindex_related = ('user',)
 
     class Meta:
-        app_label = 'node_profile'
+        ordering = ['-user__date_joined']
 
-    def get_followers(self):
-        results, columns = self.cypher("MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
-        return [self.inflate(row[0]) for row in results]
+    def __str__(self):
+        return "%s profile" % self.user.username
 
-    def count_followers(self):
-        results, columns = self.cypher(
-            "MATCH (a)<-[:FOLLOW]-(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
-        return results[0][0]
+    def last_seen(self):
+        return cache.get('seen_%s' % self.user.username)
 
-    def get_follows(self):
-        results, columns = self.cypher("MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} AND b.is_active=true RETURN b")
-        return [self.inflate(row[0]) for row in results]
-
-    def count_follows(self):
-        results, columns = self.cypher(
-            "MATCH (a)-[:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN COUNT(b)")
-        return results[0][0]
-
-    def has_like(self, to_like):
-        results, columns = self.cypher(
-            "MATCH (a)-[like:LIKE]->(b) WHERE id(a)={self} AND b.user_id=%d RETURN like" % to_like)
-        return True if len(results) > 0 else False
-
-    def count_likes(self):
-        results, columns = self.cypher(
-            "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN COUNT(like)")
-        return results[0][0]
-
-    def get_like_to_me(self):
-        results, columns = self.cypher(
-            "MATCH (n:NodeProfile)<-[like:LIKE]-(m:NodeProfile) WHERE id(n)={self} RETURN m")
-        return [self.inflate(row[0]) for row in results]
-
-    def get_favs_users(self):
-        results, columns = self.cypher(
-            "MATCH (a)-[follow:FOLLOW]->(b) WHERE id(a)={self} and b.is_active=true RETURN b ORDER BY follow.weight DESC LIMIT 6")
-        return [self.inflate(row[0]) for row in results]
-
-    def is_visible(self, user_profile):
-        """
-        Devuelve si el perfil con id user_id
-        es visible por nosotros.
-        :param user_id:
-        :return template que determina si el perfil es visible:
-        """
-
-        # Si estoy visitando mi propio perfil
-        if self.user_id == user_profile.user_id:
-            return "all"
-
-        # Si el perfil es privado
-        if self.privacity == NodeProfile.NOTHING:
-            return "nothing"
-
-        # Si el perfil esta bloqueado
-        if self.bloq.is_connected(user_profile):
-            return "block"
-
-        # Recuperamos la relacion de "seguidor"
-        try:
-            relation_follower = user_profile.follow.is_connected(self)
-        except ObjectDoesNotExist:
-            relation_follower = None
-
-        # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
-        if self.privacity == NodeProfile.ONLYFOLLOWERS and not relation_follower:
-            return "followers"
-
-        # Recuperamos la relacion de "seguir"
-        try:
-            relation_follow = self.follow.is_connected(user_profile)
-        except ObjectDoesNotExist:
-            relation_follow = None
-
-        # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
-        if self.privacity == NodeProfile.ONLYFOLLOWERSANDFOLLOWS and not \
-                (relation_follower or relation_follow):
-            return "both"
-
-        # Si el nivel de privacidad es TODOS
-        if self.privacity == NodeProfile.ALL:
-            return "all"
-
-        return None
-
-    # Methods of multimedia
-    def get_num_multimedia(self):
-        """
-        Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
-        """
-        return Photo.objects.filter(owner=self.user_id, is_public=True).count()
-
-    def get_total_num_multimedia(self):
-        """
-        Devuelve el numero de contenido multimedia de un perfil.
-        """
-        return Photo.objects.filter(owner=self.user_id).count()
-
-    def check_if_first_time_login(self):
-        """
-        Funcion para comprobar si un usuario se ha logueado
-        por primera vez.
-        """
-        is_first_time_login = self.is_first_login
-
-        if is_first_time_login:
-            self.is_first_login = False
-            self.save()
-
-        return is_first_time_login
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
+                return False
+            else:
+                return True
+        else:
+            return False
 
     @property
     def gravatar(self, size=120):
@@ -275,18 +123,38 @@ class NodeProfile(DjangoNode):
             hashlib.md5(str(User.objects.get(id=self.user_id).email).encode('utf-8')).hexdigest(),
             urlencode({'d': default, 's': str(size).encode('utf-8')}))
 
-    def last_seen(self):
-        return cache.get('seen_%s' % self.title)
+    def check_if_first_time_login(self):
+        """
+        Funcion para comprobar si un usuario se ha logueado
+        por primera vez.
+        """
+        is_first_time_login = self.is_first_login
 
-    def online(self):
-        if self.last_seen():
-            now = datetime.datetime.now()
-            if now > self.last_seen() + datetime.timedelta(seconds=settings.USER_ONLINE_TIMEOUT):
-                return False
-            else:
-                return True
-        else:
-            return False
+        if is_first_time_login:
+            try:
+                with transaction.atomic(using='default'):
+                    self.is_first_login = False
+                    Award.objects.create(user=self.user, badge=Badge.objects.get(slug='new-account'))
+                    self.save()
+            except Exception as e:
+                logger.info(e)
+
+        return is_first_time_login
+
+    # Methods of multimedia
+    def get_num_multimedia(self):
+        """
+        Devuelve el numero de contenido multimedia de un perfil (sin imagenes privadas).
+        """
+        return Photo.objects.filter(owner=self.user_id, is_public=True).count() + Video.objects.filter(
+            owner=self.user_id, is_public=True).count()
+
+    def get_total_num_multimedia(self):
+        """
+        Devuelve el numero de contenido multimedia de un perfil.
+        """
+        return Photo.objects.filter(owner=self.user_id).count() + Video.objects.filter(owner=self.user_id).count()
+
 
 class RequestManager(models.Manager):
     def get_follow_request(self, from_profile, to_profile):
@@ -317,13 +185,9 @@ class RequestManager(models.Manager):
         Elimina la petición de seguimiento hacia un perfil
         :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
         """
-        try:
-            request = Request.objects.get(emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING)
-            request.notification.delete()  # Eliminamos la notificacion
-            request.delete()
-            return True
-        except ObjectDoesNotExist:
-            return False
+        request = Request.objects.get(emitter_id=from_profile, receiver_id=to_profile, status=REQUEST_FOLLOWING)
+        request.notification.delete()  # Eliminamos la notificacion
+        request.delete()
 
 
 class Request(models.Model):
@@ -400,3 +264,16 @@ class AuthDevices(models.Model):
     user_profile = models.ForeignKey(User, related_name='device_to_profile')
     browser_token = models.CharField(max_length=1024)
     objects = AuthDevicesManager()
+
+
+class NotificationSettings(models.Model):
+    """
+    Permite al usuario establecer que tipo de notificaciones quiere recibir
+    """
+    email_when_new_notification = models.BooleanField(default=True)
+    email_when_recommendations = models.BooleanField(default=True)
+    email_when_mp = models.BooleanField(default=True)
+    followed_notifications = models.BooleanField(default=True)
+    followers_notifications = models.BooleanField(default=True)
+    only_confirmed_users = models.BooleanField(default=True)
+    user = models.OneToOneField(User, related_name='notification_settings')

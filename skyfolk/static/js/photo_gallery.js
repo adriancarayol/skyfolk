@@ -8,12 +8,23 @@ $(document).ready(function () {
         $('#upload_photo').toggle();
     });
 
-    $('#close_upload_form, #close_upload_zip_form').on('click', function () {
+    $('#close_upload_form, #close_upload_zip_form, #close_upload_video_form').on('click', function () {
         $('#upload_photo').toggle();
     });
 
     $('#del-photo').click(AJAX_delete_photo);
 
+    $('#del-video').click(AJAX_delete_video);
+
+    $("#edit-video").click(function () {
+        $(this).text(function (i, text) {
+            return text === "Editar" ? "No editar" : "Editar";
+        });
+
+        $('#wrapper-edit-form').toggle();
+
+        return false;
+    });
 
     $("#edit-photo").click(function () {
         $(this).text(function (i, text) {
@@ -27,11 +38,6 @@ $(document).ready(function () {
 
     $('.tags-content').on('click', 'blockquote', function () {
         $(this).nextAll('input').click();
-    });
-
-    $('#crop-image').on('click', function () {
-        $('#crop-image-preview').show();
-        $('.avatar-form .is-cutted').val('true');
     });
 
     $('#crop-image-preview').find('.close-crop-image').on('click', function () {
@@ -54,10 +60,36 @@ $(document).ready(function () {
         }
     });
 
-    $('#tab-messages').find('#message-photo-form').on('submit', function (event) {
-        event.preventDefault();
-        var data = $('.form-wrapper').find('#message-photo-form').serialize();
-        AJAX_submit_photo_publication(data, 'publication');
+
+    $('#form-video').submit(function (e) {
+        e.preventDefault();
+        var url = $(this).attr('action');
+        var data = new FormData($(this).get(0));
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            async: true,
+            contentType: false,
+            enctype: 'multipart/form-data',
+            processData: false,
+            success: function (data) {
+                if (data.result === true) {
+                    $('.container-gallery > .row').prepend(data.content);
+                } else {
+                    swal({
+                        title: "¡Ups!.",
+                        type: 'error',
+                        text: data.message,
+                        timer: 4000,
+                        showConfirmButton: true
+                    });
+                }
+            }, error: function (rs, e) {
+                swal(rs.responseText + " " + e);
+            }
+        });
     });
 }); // FIN DOCUMENT READY
 
@@ -87,40 +119,28 @@ function AJAX_delete_photo() {
     });
 }
 
-function AJAX_submit_photo_publication(data, type, pks) {
-    type = typeof type !== 'undefined' ? type : "reply"; //default para type
+/* DELETE VIDEO */
+function AJAX_delete_video() {
+    var _id = $('.photo-body').attr('data-id');
     $.ajax({
-        url: '/publication_photo/',
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-        success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                /* nothing */
-            } else {
-                swal({
-                    title: "",
-                    text: "Failed to publish",
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            }
-            if (type === "reply") {
-                var caja_comentarios = $('#caja-comentario-' + pks[2]);
-                $(caja_comentarios).find('#message-reply').val(''); // Borramos contenido
-                $(caja_comentarios).fadeOut();
-            } else if (type === "publication") {
-            }
+        url: '/delete/video/',
+        type: 'DELETE',
+        data: {
+            'id': _id,
+            'csrfmiddlewaretoken': csrftoken
         },
-        error: function (rs, e) {
+        dataType: 'json',
+        success: function (json) {
             swal({
-                title: '¡Ups!',
-                text: 'Revisa el contenido de tu mensaje', // rs.responseText,
-                customClass: 'default-div',
-                type: "error"
+                title: "Photo was deleted.",
+                text: json.msg,
+                timer: 2500,
+                showConfirmButton: true
+            }, function () {
+                window.location.replace('/multimedia/' + json.author + '/');
             });
+        }, error: function (rs, e) {
+            swal(rs.responseText + " " + e);
         }
-    }).done(function () {
-    })
+    });
 }

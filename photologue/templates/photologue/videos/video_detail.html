@@ -1,0 +1,169 @@
+{% extends 'account/base_interface.html' %}
+{% load avatar_tags %}
+{% load photologue_tags i18n %}
+{% load i18n %}
+{% load humanize %}
+
+{% load compress %}
+{% block title %} <title>Skyfolk / {{ object.name }} por: {{ object.owner }}</title> {% endblock %}
+
+{% block include_files %}
+    {% compress css %}
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/photo_detail.css">
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/comentarios.css">
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/publication_detail.css">
+    {% endcompress %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col l12 m12 s12 container-photo">
+                <div class="photo">
+                    <div class="col l8 m12 s12 photo-body" data-id="{{ object.pk }}">
+                        {% if object.video %}
+                            <video controls style="max-width: 100%; max-height: 100%;">
+                                <source src="{{ object.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% endif %}
+                        <div class="col s12 photo-details">
+                            <div class="legend-user-image">
+                                {% avatar object.owner.username %}
+                            </div>
+                            <div class="col l8 m8 s8 legend-user-data">
+                                <a href="/profile/{{ object.owner.username }}">@{{ object.owner.username }}</a>
+                                <i class="photo-title"><i class="material-icons md-18">videocam</i>{{ object.name }}{% if object.caption %}
+                                    <p>{{ object.caption|safe }} </p>{% endif %}</i>
+                                <i class="photo-date"><i
+                                        class="material-icons">access_time</i> {% trans "Published" %} {{ object.date_added|naturaltime }}
+                                </i>
+                            </div>
+                            <div class="col l12 m12 s12 tags-content">
+                                {% for tag in object.tags.all %}
+                                    <blockquote>{{ tag.name }}</blockquote>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if user.id == object.owner_id %}
+                            <div class="row">
+                                <div class="col s12">
+                                    <div class="divider"></div>
+                                    <div class="row">
+                                        <div class="author-controls">
+                                            <a id="edit-video"
+                                               class="waves-effect waves-light btn right blue">Editar</a>
+                                            <a id="del-video"
+                                               class="waves-effect waves-light btn right red">Eliminar</a>
+                                            <div class="edit-form" id="wrapper-edit-form">
+                                                <form method="post" accept-charset="utf-8"
+                                                      action="{% url "photologue:edit-video" video_id=object.pk %}">{% csrf_token %}
+                                                    <div class="row">
+                                                        {{ form.name.errors }}
+                                                        <div class="input-field col s12">
+                                                            <i class="material-icons prefix">title</i>
+                                                            {{ form.name }}
+                                                            <label for="id_name">{% trans "title" %}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        {{ form.caption.errors }}
+                                                        <div class="input-field col s12">
+                                                            <i class="material-icons prefix">closed_caption</i>
+                                                            {{ form.caption }}
+                                                            <label for="id_caption">{% trans "caption" %}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        {{ form.tags.errors }}
+                                                        <div class="input-field col s12">
+                                                            <i class="material-icons prefix">label</i>
+                                                            {{ form.tags }}
+                                                            <label for="id_caption">{{ form.tags.help_text }}</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <button class="waves-effect waves-light btn blue darken-1 right"
+                                                                type="submit">Editar
+                                                            <i class="material-icons right">mode_edit</i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            {% if previous %}
+                                <a href="{{ previous.get_absolute_url }}">
+                                    <img title="{{ previous }}" class="responsive-img lazyload" data-src="
+                                            {% if previous.thumbnail %}{{ previous.thumbnail.url }}{% endif %}">
+                                </a>
+                            {% endif %}
+                            {% if next %}
+                                <a href="{{ next.get_absolute_url }}">
+                                    <img title="{{ next }}" class="responsive-img lazyload" data-src="
+
+
+                                            {% if next.thumbnail %}{{ next.thumbnail.url }}{% elif next.image %}{{ next.image.url }}{% else %}{{ next.url_image }}{% endif %}">
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div id="tab-messages" class="col l4 m12 s12 photo-messages sidebar card">
+                        <ul class="unstyled table fullwidth links">
+                            <li class="tab active">
+                                <a class="active">Comentarios</a>
+                            </li>
+                        </ul>
+                        <div id="messages-wrapper">
+                            {% if publications|length > 0 %}
+                                {% include "photologue/videos/publications_entries.html" %}
+                                <div class="progress loading_publications" style="display: none">
+                                    <div class="indeterminate blue darken-1"></div>
+                                </div>
+
+                            {% else %}
+                                <div class="no-comments" id="without-comments">
+                                    <span class="no-comments-text-info">¡{{ user_profile.username }} no tiene comentarios!</span>
+                                </div>
+                            {% endif %}
+                            <div class="row form-wrapper">
+                                <form id="message-photo-form" action="" method="post">{% csrf_token %}
+                                    {{ publication_video.csrftoken }}
+                                    {{ publication_video }}
+                                    <div class="file-field input-field">
+                                        <div class="btn">
+                                            <span>Imágenes</span>
+                                            <input id="id_image" name="image" type="file" multiple>
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate" type="text"
+                                                   placeholder="Upload one or more files">
+                                        </div>
+                                    </div>
+                                    <button type="submit" id="send_form_photo_publi"
+                                            class="waves-effect waves-light btn right blue">
+                                        Enviar<i class="material-icons right">send</i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% compress js %}
+        <script src="{{ STATIC_URL }}js/photo_gallery.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/video_detail.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}js/socket_photo.js"></script>
+        <script src="{{ STATIC_URL }}js/reconnecting-websocket.min.js"></script>
+    {% endcompress %}
+    <script>
+        UTILS.init([{{ user.pk }}]);
+        UTILS.conn_socket();
+    </script>
+{% endblock %}

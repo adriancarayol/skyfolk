@@ -3,14 +3,14 @@
 {% endcomment %}
 {% load avatar_tags %}
 {% load app_filters %}
-
+{% load static %}
 <ul id="vertical-menu" class="side-nav">
     <li>
         <div class="userView">
-            {% if request.user.profile.backImage and request.user.profile.backImage|file_exists %}
-                <img class="background" src="{{ request.user.profile.backImage.url }}">
+            {% if request.user.profile.back_image %}
+                <img class="background" src="{{ request.user.profile.back_image.url }}">
             {% else %}
-                <img class="background" src="{{ STATIC_URL }}dist/img/nuevo_back.png">
+                <img class="background" src="{% static "dist/img/nuevo_back.png" %}">
             {% endif %}
             <a href="/profile/{{ request.user }}">{% avatar user %}</a>
             <a href="/profile/{{ request.user }}"><span class="white-text name">{{ request.user.username }}</span></a>
@@ -19,7 +19,7 @@
     </li>
     <li class="hide-on-large-only">
         <div class="field" id="searchform">
-            <form method='post' action='/search/'>{% csrf_token %}
+            <form method='post' action='/user-search/'>{% csrf_token %}
                 {{ searchForm }}
             </form>
         </div>

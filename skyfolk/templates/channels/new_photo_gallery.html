@@ -1,0 +1,32 @@
+{% load avatar_tags %}
+{% load i18n %}
+{% load humanize %}
+<div class="col l2 m12 s12 image-div">
+    <div class="container-image">
+        <div class="principal-content">
+            {% if photo.tags.all %}
+                <div class="tags-content">
+                    {% for tag in photo.tags.all %}
+                        <blockquote
+                                onclick="location.href='{% url 'photologue:collection-list' photo.owner.username tag.name %}'">{{ tag.name }}</blockquote>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <img class="lazyload" data-src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}"
+                 alt="{{ photo.title }}" title="{{ photo.title }}"
+                 onclick="location.href='{{ photo.get_absolute_url }}'">
+        </div>
+        <div class="col s12 legend-content">
+            <div class="legend-user-image">
+                {% avatar photo.owner.username %}
+            </div>
+            <div class="col l8 m8 s8 legend-user-data">
+                <a href="/profile/{{ photo.owner.username }}">@{{ photo.owner.username }}</a>
+                <a href="{% url "photologue:pl-photo" slug=photo.slug %}" class="photo-title truncate">
+                            <i class="material-icons md-18">camera_alt</i>{{ photo.title }}</a>
+                <i class="truncate photo-date"><i
+                        class="material-icons md-18">access_time</i> {{ photo.date_added|naturaltime }}</i>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,6 @@ try:
     from importlib import import_module
 except ImportError:
     from django.utils.importlib import import_module  # Django 1.6 / py2.6
-import sys
 
 from django import VERSION
 from django.conf import settings

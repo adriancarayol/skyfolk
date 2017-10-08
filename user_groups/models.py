@@ -1,9 +1,22 @@
 # encoding:utf-8
-from django.contrib.auth.models import User
-from django.db import models
 from django.contrib.auth.models import Group
-from django_neomodel import DjangoNode
-from neomodel import StringProperty, RelationshipTo, RelationshipFrom, IntegerProperty, One
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+from django.utils.text import slugify
+from uuslug import uuslug
+
+from notifications.models import Notification
+
+REQUEST_FOLLOWING = 1
+REQUEST_FOLLOWER = 2
+REQUEST_BLOCKED = 3
+REQUEST_STATUSES = (
+    (REQUEST_FOLLOWING, 'Following'),
+    (REQUEST_FOLLOWER, 'Follower'),
+    (REQUEST_BLOCKED, 'Blocked'),
+)
+
 
 def upload_small_group_image(instance, filename):
     return '%s/small_group_image/%s' % (instance.name, filename)
@@ -13,90 +26,16 @@ def upload_large_group_image(instance, filename):
     return '%s/large_group_image/%s' % (instance.name, filename)
 
 
-class NodeGroup(DjangoNode):
-    slug = StringProperty(unique_index=True)
-    title = StringProperty(unique_index=True)
-    group_id = IntegerProperty(unique_index=True)
-    description = StringProperty()
-    members = RelationshipFrom('NodeProfile', 'MEMBER')
-    interest = RelationshipTo('TagProfile', 'INTEREST_GROUP')
-    owner = RelationshipTo('NodeProfile', 'OWNER', cardinality=One)
-
-    class Meta:
-        app_label = 'group_node'
+def group_avatar_path(instance, filename):
+    return 'group_{0}_avatar/{1}'.format(instance.id, filename)
 
 
-class RolUserGroup(models.Model):
-    """
-    Establece un rol para un usuario especifico
-    dentro de un grupo.
-    """
-    ROL_CHOICES = (
-        ('A', 'Admin'),
-        ('M', 'Mod'),
-        ('N', 'Normal'),
-    )
-    user = models.ForeignKey(User, related_name='rol_user', blank=True, null=True)
-    rol = models.CharField(max_length=1, choices=ROL_CHOICES, default='A')
-
-    def get_rol_verbose(self):
-        return dict(RolUserGroup.ROL_CHOICES)[self.rol]
+def group_back_image_path(instance, filename):
+    return 'group_{0}_back_image/{1}'.format(instance.id, filename)
 
 
-class UserGroupsQuerySet(models.QuerySet):
-    """
-    QuerySet para UserGroups
-    """
-
-    def get_normal(self):
-        """
-        :return: Los usuarios con el rol normal
-        """
-        return self.filter(users__rol='N')
-
-    def get_admin(self):
-        """
-        :return: Los usuarios con el rol administrador
-        """
-        return self.filter(users__rol='A')
-
-    def get_mod(self):
-        """
-        Devuelve los usuarios con el rot mod
-        :return: Los usuarios con el rol mod
-        """
-        return self.filter(users__rol='M')
-
-    def is_follow(self, group_id, user_id):
-        """
-        :param user_id: ID del usuario del que se quiere comprobar
-        si es seguidor del grupo
-        :param group_id: ID del grupo del que se quiere saber
-        si un usuario lo sigue
-        :return: Si un usuario es seguidor o no del grupo
-        """
-        return self.filter(id=group_id, users__user=user_id).exists()
-
-
-class UserGroupsManager(models.Manager):
-    """
-    Manager para UserGroups
-    """
-
-    def get_queryset(self):
-        return UserGroupsQuerySet(self.model, using=self._db)
-
-    def get_normal(self):
-        return self.get_queryset().get_normal()
-
-    def get_admin(self):
-        return self.get_queryset().get_admin()
-
-    def get_mod(self):
-        return self.get_queryset().get_mod()
-
-    def is_follow(self, group_id, user_id):
-        return self.get_queryset().is_follow(group_id=group_id, user_id=user_id)
+def group_themes_images(instance, filename):
+    return 'group_{0}/themes/{1}'.format(instance.board_group, filename)
 
 
 class UserGroups(Group):
@@ -104,9 +43,16 @@ class UserGroups(Group):
         Proxy para grupos.
     """
     owner = models.ForeignKey(User, related_name='owner_group')
+    slug = models.SlugField(max_length=100, unique=True)
+    description = models.CharField(max_length=500)
+    is_public = models.BooleanField(default=True)
+    avatar = models.ImageField(upload_to=group_avatar_path, null=True, blank=True)
+    back_image = models.ImageField(upload_to=group_back_image_path, null=True, blank=True)
+
     class Meta:
         permissions = (
             ('view_notification', 'View notification'),
+            ('can_publish', 'Can publish'),
             ('change_description', 'Change description'),
             ('delete_publication', 'Delete publication'),
             ('delete_image', 'Delete image'),
@@ -114,6 +60,55 @@ class UserGroups(Group):
             ('ban_member', 'Ban member'),
             ('modify_notification', 'Modify notification'),
         )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(UserGroups, self).save(*args, **kwargs)
+
+    @property
+    def group_channel(self):
+        return "group-%d" % self.id
+
+    @property
+    def get_total_multimedia(self):
+        return self.group_photos.count() + self.group_videos.count()
+
+
+class GroupTheme(models.Model):
+    board_group = models.ForeignKey(UserGroups)
+    created = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User)
+    description = models.CharField(max_length=2048)
+    title = models.CharField(max_length=256)
+    image = models.ImageField(upload_to=group_themes_images, blank=True, null=True)
+    slug = models.SlugField(unique=True)
+
+    class Meta:
+        ordering = ('-created', )
+
+    def save(self, *args, **kwargs):
+        self.slug = uuslug(self.title, instance=self)
+        super(GroupTheme, self).save(*args, **kwargs)
+
+    @property
+    def theme_channel(self):
+        return "{}-theme".format(self.id)
+
+class LikeGroupTheme(models.Model):
+    theme = models.ForeignKey(GroupTheme, related_name='like_theme')
+    by_user = models.ForeignKey(User)
+
+    class Meta:
+        unique_together = ('theme', 'by_user')
+
+
+class HateGroupTheme(models.Model):
+    theme = models.ForeignKey(GroupTheme, related_name='hate_theme')
+    by_user = models.ForeignKey(User)
+
+    class Meta:
+        unique_together = ('theme', 'by_user')
+
 
 
 class LikeGroupQuerySet(models.QuerySet):
@@ -149,7 +144,7 @@ class LikeGroup(models.Model):
         unique_together = ('from_like', 'to_like')
 
     from_like = models.ForeignKey(User, related_name='from_likegroup')
-    to_like = models.ForeignKey(Group, related_name='to_likegroup')
+    to_like = models.ForeignKey(UserGroups, related_name='to_likegroup')
     created = models.DateTimeField(auto_now_add=True)
 
     objects = LikeGroupManager()
@@ -157,3 +152,58 @@ class LikeGroup(models.Model):
     def __str__(self):
         return "Emitter: {0} Receiver: {1} Created: {2}".format(self.from_like.username, self.to_like.name,
                                                                 self.created)
+
+
+class RequestGroupManager(models.Manager):
+    def get_follow_request(self, from_profile, to_group):
+        """
+        Devuelve la petición de seguimiento de un perfil
+        :param profile => Perfil del que se quiere recuperar la solicitud de seguimiento:
+        :return Devuelve la petición de seguimiento de un perfil:
+        """
+        return self.get(emitter_id=from_profile,
+                        receiver_id=to_group, status=REQUEST_FOLLOWING)
+
+    def add_follow_request(self, from_profile, to_group):
+        """
+        Añade una solicitud de seguimiento
+        :param profile => Perfil que quiero seguir:
+        :param notify => Notificacion generada:
+        """
+        obj, created = self.get_or_create(emitter_id=from_profile,
+                                          receiver_id=to_group,
+                                          status=REQUEST_FOLLOWING)
+        # Si existe la peticion de amistad, actualizamos la notificacion
+        obj.save()
+        return obj
+
+    def remove_received_follow_request(self, from_profile, to_group):
+        """
+        Elimina la petición de seguimiento hacia un perfil
+        :param profile => Perfil del que se quiere eliminar una petición de seguimiento:
+        """
+        try:
+            request = self.get(emitter_id=from_profile, receiver_id=to_group, status=REQUEST_FOLLOWING)
+            request.delete()
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+
+class RequestGroup(models.Model):
+    """
+        Modelo que gestiona las peticiones de amistad:
+            <<emitter>>: Emisor de la petición
+            <<receiver>>: Receptor de la petición
+            <<status>>: Estado en el que se encuentra la petición
+            <<created>>: Fecha en la que se creó la petición
+            <<notification>>: Notificación asociada a la petición
+    """
+    emitter = models.ForeignKey(User, related_name='from_group_request')
+    receiver = models.ForeignKey(UserGroups, related_name='to_group_request')
+    status = models.IntegerField(choices=REQUEST_STATUSES)
+    created = models.DateTimeField(auto_now_add=True)
+    objects = RequestGroupManager()
+
+    class Meta:
+        unique_together = ('emitter', 'receiver', 'status')

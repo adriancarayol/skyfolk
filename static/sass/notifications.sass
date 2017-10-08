@@ -1,0 +1,68 @@
+$defaultcolor: #555
+$blueskyfolk: #1e88e5
+$buttonbackgroundcolor: #eee
+$redcolorbutton: #f44336
+$greenbuttoncolor: #4caf50
+
+.container .all-notifications-options
+  margin-top: 3.5%
+  text-align: center
+
+.notifications
+  width: 100%
+  position: relative
+  display: block
+  margin-top: 5%
+  & li
+    margin-top: .5%
+    margin-left: 0.775%
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15)
+    padding: 10px
+    min-height: 120px
+    clear: right
+    font-size: 1.2em
+    & a, a:visited
+      text-decoration: none
+      color: $blueskyfolk
+    & b
+      font-weight: 600
+    & .fa-bell
+      margin-right: 1%
+      color: $blueskyfolk
+      font-size: 1.3em
+
+    & .notice-timesince, .notice-description
+      padding-top: 10px
+      margin-top: 2%
+
+    & .fa-eye, .fa-eye-slash, .fa-trash
+      margin: auto 3px 0 3px
+
+    & .notification-buttons
+      width: 100%
+      position: relative
+      margin-top: 5%
+      text-align: center
+      & button
+        border: medium none
+        border-radius: 2px
+        height: 36px
+        line-height: 36px
+        padding: 0 2rem
+        display: inline-block
+        text-transform: uppercase
+        vertical-align: middle
+        text-decoration: none
+        background-color: transparent
+        text-align: center
+        letter-spacing: 0.5px
+        transition: all 0.2s ease-out 0s
+        cursor: pointer
+        outline: none
+        &:nth-child(2)
+          color: $greenbuttoncolor
+        &:nth-child(1)
+          color: $redcolorbutton
+        &:hover
+          background-color: $buttonbackgroundcolor
+          opacity: 0.8

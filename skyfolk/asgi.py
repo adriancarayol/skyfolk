@@ -6,7 +6,9 @@ ASGI applications at "liveblog.asgi:channel_layer" as their channel layer.
 """
 
 import os
+
 from channels.asgi import get_channel_layer
+
 
 def get_env_variable(var_name):
     '''Intenta leer una variable de entorno'''
@@ -27,6 +29,4 @@ else:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
 
 
-
 channel_layer = get_channel_layer()
-

@@ -1,73 +1,103 @@
 {% extends "groups/base_group.html" %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load static %}
 {% block title %} <title>Skyfolk - Grupos</title> {% endblock %}
 
 {% block extra-css %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/groups.css" onload="if(media!='all')media='all'">
+<link rel="stylesheet" type="text/css" href="{% static "css/groups.css" %}" onload="if(media!='all')media='all'">
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col s12 wrapper-groups">
-                <div class="row">
-                    {% for group in object_list %}
-                        <div class="col l3 m10 s12 offset-m1">
-                            <div class="personal-card">
-                                <div class="row">
-                                    <div class="col s12">
-                                        <div class="header">
-                                            {% if group.large_image and group.large_image|file_exists %}
-                                                <img class="back-profile-user"
-                                                     src="{{ MEDIA_URL }}{{ group.large_image }}">
+<div class="container">
+    <div class="row">
+        <div class="col s12 wrapper-groups">
+            <div class="row">
+                {% for group in object_list %}
+                <div class="col l3 m10 s12 offset-m1">
+                    <div class="personal-card">
+                        <div class="row">
+                            <div class="col s12">
+                                <div class="header">
+                                    {% if group.back_image  %}
+                                    <img class="back-profile-user"
+                                    src="{{ MEDIA_URL }}{{ group.back_image }}">
+                                    {% else %}
+                                    <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
+                                    {% endif %}
+                                    <i class="material-icons md-24 group-icon"
+                                        title="{{ group.users.all|length }}">group</i>
+                                    <div class="bg-user">
+                                        <div onclick="location.href='/group/{{ group.slug }}'"
+                                            class="profile-user-bg">
+                                            {% if group.avatar %}
+                                            <img src="{{ MEDIA_URL }}{{ group.avatar }}"
+                                            alt="avatar_group">
                                             {% else %}
-                                                <img class="back-profile-user" src="{{ STATIC_URL }}img/nuevo_back.png">
+                                            <img src="{% static "img/nuevo.png" %}"
+                                            alt="avatar_group">
                                             {% endif %}
-                                            <i class="material-icons md-24 group-icon"
-                                               title="{{ group.users.all|length }}">group</i>
-                                            <div class="bg-user">
-                                                <div onclick="location.href='/group/{{ group.slug }}'"
-                                                     class="profile-user-bg">
-                                                    {% if group.small_image and group.small_image|file_exists %}
-                                                        <img src="{{ MEDIA_URL }}{{ group.small_image }}"
-                                                             alt="small_image_group">
-                                                    {% else %}
-                                                        <img src="{{ STATIC_URL }}img/nuevo.png"
-                                                             alt="small_image_group">
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="row">
-                                        <div class="col s12">
-                                            <div class="name-friend">
-                                                <a class="truncate"
-                                                   href="/group/{{ group.slug }}">{{ group.name }}</a><br><br>
-                                                <p class="truncate">{{ group.description }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="divider"></div>
-                                    <div class="row">
-                                        <div class="col s12 group-data">
-                                            {% for tag in group.tags.most_common|slice:":5" %}
-                                                <span class="chip">
-                                                        {{ tag.name|truncatechars:9 }}
-                                                    </span>
-                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
+                        <div class="row">
+                            <div class="row">
+                                <div class="col s12">
+                                    <div class="name-friend">
+                                        <a class="truncate"
+                                            href="{% url "user_groups:group-profile" groupname=group.slug %}">
+                                            {% if not group.is_public %}<i title="Este grupo es privado" class="material-icons md-18">lock</i>{% endif %}
+                                            {{ group.name }}</a>
+                                        <p class="truncate">{{ group.description|truncatechars:100 }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col s12 group-data">
+                                    {% for tag in group.tags.most_common|slice:":5" %}
+                                    <span class="chip">
+                                        {{ tag.name|truncatechars:9 }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %} 
             </div>
         </div>
     </div>
+</div>
+<div class="row">
+    {% if is_paginated %}
+    <ul class="pagination center">
+        {% if page_obj.has_previous %}
+        <li><a href="?page={{ page_obj.previous_page_number }}"><i class="material-icons">chevron_left</i></a></li>
+        {% else %}
+        <li class="disabled"><span><i class="material-icons">chevron_left</i></span></li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+        {% if page_obj.number == i %}
+        <li class="active blue darken-1 white-text"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+        <li class="waves-effect"><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li><a href="?page={{ page_obj.next_page_number }}">
+                <i class="material-icons">chevron_right</i>
+        </a></li>
+        {% else %}
+        <li class="disabled"><span>
+                <i class="material-icons">chevron_right</i>
+        </span></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+</div>
     </div>
-{% endblock %}
+    {% endblock %}

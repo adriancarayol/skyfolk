@@ -1,44 +1,33 @@
-import json
+from channels.generic.websockets import WebsocketConsumer
 
-from channels import Group
-from channels.auth import channel_session_user, channel_session_user_from_http
-
-from user_profile.models import NodeProfile
+from user_profile.node_models import NodeProfile
 
 
-@channel_session_user_from_http
-def ws_connect_news(message):
+class MyFeedConsumer(WebsocketConsumer):
     """
-    Establece una conexion para recibibir
-    actualizaciones en el tablon inicio
+    Consumidor para conectarse al perfil
+    de un usuario
     """
-    username = message.user.username
-    try:
-        profile = NodeProfile.nodes.get(title=username)
-    except NodeProfile.DoesNotExist:
-        message.reply_channel.send({
-            "text": json.dumps({"error": "bad_slug"}),
-            "close": True,
-        })
-        return
-    message.reply_channel.send({"accept": True})
-    Group(profile.news_channel).add(message.reply_channel)
+    http_user = True
+    strict_ordering = False
 
-@channel_session_user
-def disconnect_news(message):
-    """
-    Removes the user from the liveblog group when they disconnect.
+    def connection_groups(self, **kwargs):
+        username = self.message.user.username
+        if not username:
+            raise Http404
 
-    Channels will auto-cleanup eventually, but it can take a while, and having old
-    entries cluttering up your group will reduce performance.
-    """
-    username = message.user.username
-    try:
-        profile_blog =  NodeProfile.nodes.get(title=username)
-    except NodeProfile.DoesNotExist:
-        # This is the disconnect message, so the socket is already gone; we can't
-        # send an error back. Instead, we just return from the consumer.
-        return
-    # It's called .discard() because if the reply channel is already there it
-    # won't fail - just like the set() type.
-    Group(profile_blog.news_channel).discard(message.reply_channel)
+        try:
+            profile = NodeProfile.nodes.get(title=username)
+        except NodeProfile.DoesNotExist:
+            raise Http404
+
+        return [profile.news_channel]
+
+    def connect(self, message, **kwargs):
+        self.message.reply_channel.send({'accept': True})
+
+    def receive(self, content, **kwargs):
+        self.send(content)
+
+    def disconnect(self, message, **kwargs):
+        pass

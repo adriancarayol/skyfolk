@@ -1,15 +1,16 @@
+from user_groups.forms import FormUserGroup
 from user_profile.forms import SearchForm
 
 
-def notifications_processor(request):
+def user_processor(request):
     user = request.user
+    if not user:
+        return {}
     if user and not user.is_authenticated():
         return {}
-    return {'user_notifications': user.notifications.unread_limit()}
-
-
-def search_processor(request):
-    user = request.user
-    if user and not user.is_authenticated():
-        return {}
-    return {'searchForm': SearchForm()}
+    return {
+            'user_notifications': user.notifications.unread_limit(),
+            'total_notifications': user.notifications.unread_limit().count(),
+            'searchForm': SearchForm(),
+            'groupForm': FormUserGroup(initial={'owner': user.pk})
+            }

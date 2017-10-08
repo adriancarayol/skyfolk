@@ -90,6 +90,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.conf.urls import url
+
 if getattr(settings, 'POSTMAN_I18N_URLS', False):
     from django.utils.translation import pgettext_lazy
 else:

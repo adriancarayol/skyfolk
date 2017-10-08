@@ -1,9 +1,19 @@
-$.getJSON('/emoji/all.json', function (data) {
-    $('#message2, .message-reply, #message3').textcomplete([
+var retrievedEmojis = localStorage.getItem('emojis');
+var emojis;
+if (retrievedEmojis === null) {
+    $.getJSON('/emoji/all.json', function (data) {
+        emojis = data;
+        localStorage.setItem('emojis', JSON.stringify(data));
+    });
+}
+
+var emojis = JSON.parse(retrievedEmojis);
+
+$('textarea').textcomplete([
         { // emoji strategy
             match: /\B:([\-+\w]*)$/,
             search: function (term, callback) {
-                callback($.map(data, function (key, emoji) {
+                callback($.map(emojis, function (key, emoji) {
                     return emoji.indexOf(term) === 0 ? emoji : null;
                 }));
             },
@@ -15,5 +25,4 @@ $.getJSON('/emoji/all.json', function (data) {
             },
             index: 1
         }
-    ], {})
-});
+], {})

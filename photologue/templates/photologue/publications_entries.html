@@ -1,110 +1,185 @@
-{% load decorators %}
+{% load photo_publications_tags %}
 {% load app_filters %}
 {% load humanize %}
 {% load avatar_tags %}
-{% load el_pagination_tags %}
-
-{% for pub in publications %}
-    <div class="wrapper" id="pub-{{ pub.pk }}" data-id="{{ user.pk }}">
+{% load mptt_tags %}
+{% load embed_video_tags %}
+{% load group_utils %}
+{% for node in publications %}
+<div class="row infinite-item">
+    <div class="col s12">
+        <div class="col s12 wrapper" id="pub-{{ node.pk }}" data-id="{{ user.pk }}"
+        {% if node.level > 0 and node.level < 3 %}style="min-width: 98% !important;"{% endif %}>
         <div class="box">
-            <span id="check-{{ pub.pk }}" class="zoom-pub"><i class="fa fa-expand fa-lg"> </i></span>
-            <!-- Check para ampliar el mensaje... -->
-            <div class="ampliado" id="expand-{{ pub.pk }}">
-                <div class="cerrar_ampliado"><i class="fa fa-close"></i></div>
-                <div class="nombre_image">
-                    <ul>
-                        <li><i class="first">{{ pub.p_author.first_name }} {{ pub.p_author.last_name }}</i></li>
-                        <li><a class="name" href="/profile/{{ pub.p_author.username }}">{{ pub.p_author.username }}</a>
-                        </li>
-                    </ul>
-                    <div class="usr-img img-responsive">{% avatar pub.p_author %}</div>
-                </div>
-                <div class="parrafo comment-tab">
-                    <a href="/profile/{{ pub.p_author.username }}">{{ pub.p_author.username }}</a>
-                    <a target="_blank">{{ pub.created|naturaltime }}</a><br><br>
-                    {{ pub.content|safe }}
-                </div>
-                <div class="wrapper-reply">
-                    {% comment %}
-                {% include "account/new_reply.html" %}
-                {% endcomment %}
-                    <!-- RESPUESTAS A COMENTARIOS -->
-                    {% for reply in pub.replies %}
-                        <div class="comment-reply">
-                            <div class="avatar-reply">{% avatar reply.p_author %}</div>
-                            <div class="author-reply"><span class="triangle"> </span><a
-                                    href="/profile/{{ reply.p_author }}">{{ reply.p_author }}</a></div>
-                            <div class="content-reply">{{ reply|safe }}</div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="image">
-                <div class="usr-img img-responsive">{% avatar pub.p_author %}</div>
-            </div>
-        </div>
-        <div class="articulo">
-            <h2 class="h22"><a href="/profile/{{ pub.p_author.username }}">{{ pub.p_author.username }}</a> ha comentado:
-            </h2>
-            <div class="parrafo comment">
-                <a target="_blank">{{ pub.created|naturaltime }}</a><br>
-                <div class="wrp-comment">{{ pub.content|safe }}</div>
-            </div>
-            <div class="show-more" id="show-comment-{{ pub.pk }}">
-                <a href="#">+ Mostrar más</a>
-            </div>
-            <!-- OPCIONES DE COMENTARIOS -->
-            <div class="options_comentarios" id="options-comments">
-                <ul class="opciones">
-                    {% if user.is_authenticated and user.username == pub.p_author.username %}
-                        <!-- Si estamos visitando un perfil que no es el nuestro -->
-                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
-                    {% elif user.is_authenticated and user.username == user_profile.username %}
-                        <!-- Si estamos visitando nuestro propio perfil -->
-                        <li class="trash-comment" title="Borrar comentario"><i class="fa fa-trash"></i></li>
-                    {% endif %}
-                    {% with hates=pub.pk %}
-                        {% if hates > 0 %}
-                            <li title="No me gusta" class="fa-stack hate-with-values" id="fa-hate">
-                    <span class="hate-comment">
-                        <i class="fa fa-heart fa-stack-1x"></i>
-                        <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-                        <i class="fa hate-value">{{ hates }}</i>
-                    </span>
-                            </li>
-                        {% else %}
-                            <li title="No me gusta" class="fa-stack" id="fa-hate">
-                    <span class="hate-comment">
-                        <i class="fa fa-heart fa-stack-1x"></i>
-                        <i class="fa fa-bolt fa-stack-1x fa-inverse"></i>
-                        <i class="fa hate-value"></i>
-                    </span>
-                            </li>
-                        {% endif %}
-                    {% endwith %}
-                    <li title="¡Me gusta!" class="like-comment"><i id="like-heart" class="fa fa-heart">{{ pub.pk }}</i>
-                    </li>
-                    <li title="Citar" class="quote-comment"><i class="fa fa-quote-left">
-                    </i></li>
-                    <li title="Responder" class="reply-comment"><i class="fa fa-reply"
-                                                                   id="reply-caja-comentario-{{ pub.pk }}"></i></li>
-                    <li title="Añadir a mi timeline" class="add-timeline"><i class="fa fa-tag"> {{ pub.pk }}</i></li>
-                </ul>
-            </div>
-        </div>
-        <div class="wrapper-reply">
-            {% include "account/new_reply.html" %}
-            <!-- RESPUESTAS A COMENTARIOS -->
-            {% for reply in pub.replies %}
-                <div class="comment-reply">
-                    <div class="avatar-reply">{% avatar reply.author %}</div>
-                    <div class="author-reply">
-                        <a href="/profile/{{ reply.author }}">{{ reply.author }}</a>
-                        <i class="reply-created">{{ reply.created|naturaltime }}</i>
+            <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
+            data-delay="50"
+            data-tooltip="Ver conversación completa"><i class="material-icons md-18">open_in_new</i></span>
+            {% if user.id == node.p_author.id %}
+            {% if node.event_type == 1 or node.event_type == 3 %}
+            <span data-id="{{ node.pk }}"
+            class="top-options edit-comment tooltipped"
+            data-position="bottom"
+            data-delay="50"
+            data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
+            {% endif %}
+            {% endif %}
+            <div class="row">
+                <div class="articulo col s12">
+                    <div class="row">
+                        <div class="image col l1 m2 s2"
+                        {% if   user.id == node.author.id %}title="¡Eres el autor!"
+                        style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
+                        <div class="usr-img img-responsive">{% avatar node.p_author %}</div>
                     </div>
-                    <div class="content-reply">{{ reply|safe }}</div>
+                    <div class="col l10 m12 s9">
+                        <h2 class="h22"><a
+                            href="/profile/{{ node.p_author.username }}">@{{ node.p_author.username }}</a>
+                            {% if node.parent %}
+                            <span class="chip">
+                                {% avatar node.parent.p_author %}
+                                <a href="/profile/{{ node.parent.p_author }}">@{{ node.parent.p_author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                            </span>
+                            {% endif %}
+                        </h2>
+                        <p class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}</p>
+                        <div class="row publication-content">
+                            <div class="parrafo comment">
+                                <div class="wrp-comment">{{ node.content|safe }}</div>
+                            </div>
+                            <div class="show-more" id="show-comment-{{ node.pk }}">
+                                <a href="#">+ Mostrar más</a>
+                            </div>
+                        </div>
+                        {% with node.images.all as images %}
+                        {% if images %}
+                        <div class="row images">
+                            {% for image in images %}
+                            <div class="col s4 z-depth-2 center">
+                                <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.p_author }}" title="Imagen de: {{ node.p_author }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                        {% with node.videos.all as videos %}
+                        {% if videos %}
+                        <div class="row videos">
+                           {% for video in videos %}
+                           <div class="col s4 z-depth-2 center">
+                            <video class="responsive-video" controls loop>
+                                <source src="{{ video.video.url }}" type="video/mp4">
+                                </video>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                        {% if node.publication_photo_extra_content %}
+                        {% if node.publication_photo_extra_content.video %}
+                        {% video node.publication_photo_extra_content.video as my_video %}
+                        {% video my_video "medium" %}
+                        {% endvideo %}
+                        {% else %}
+                        {% comment %} Para publicaciones con URL {% endcomment %}
+                        <div class="card small">
+                            <div class="card-image">
+                                <img class="lazyload" data-src="{% if node.publication_photo_extra_content.image %}{{ node.publication_photo_extra_content.image }}{% else %}{{ STATIC_URL }}dist/img/nuevo_back.png{% endif %}">
+                                <span class="card-title white-text">{{ node.publication_photo_extra_content.title }}</span>
+                            </div>
+                            <div class="card-content">
+                                <p>{{ node.publication_photo_extra_content.description }}</p>
+                            </div>
+                            <div class="card-action">
+                                <a href="{{ node.publication_photo_extra_content.url }}">Ver</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="divider"></div>
+            <!-- OPCIONES DE COMENTARIOS -->
+            <div class="options_comentarios">
+                <ul class="opciones">
+                    {% if user.id == node.p_author.id or user.id == photo.owner_id %}
+                    {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
+                    <li class="trash-comment" title="Borrar comentario"><i class="material-icons md-18">delete_forever</i>
+                    </li>
+                    {% endif %}
+                    {% comment %} Si el usuario esta logueado {% endcomment %}
+                    <li title="No me gusta" class="hate-comment"{% if node.have_hate %} style="color: rgb(186, 104, 200);"{% endif %}>
+                        <i class="material-icons md-18">keyboard_arrow_down</i>
+                        <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
+                    </li>
+                    <li title="¡Me gusta!" class="like-comment" {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
+                        <i class="material-icons md-18">keyboard_arrow_up</i>
+                        <i class="like-value">{{ node.likes|zero_to_empty }}</i>
+                    </li>
+                        <li title="Responder" class="reply-comment" id="reply-caja-comentario-{{ node.pk }}"><i class="material-icons md-18">reply</i>
+                     </li>
+                 </ul>
+             </div>
+         </div>
+     </div>
+     {% if user.id == node.p_author.id %}
+     <div id="p_author-controls-{{ node.pk }}"
+     class="p_author-controls">
+     <div class="row">
+        <div class="col s12">
+            <form method="post" accept-charset="utf-8">{% csrf_token %}
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input type="number" name="pk" required value="{{ node.pk }}" hidden>
+                        <i class="material-icons prefix">create</i>
+                        <textarea class="materialize-textarea"
+                        placeholder="Escribe el contenido del nuevo mensaje"
+                        id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
+                        name="content" rows="10" required="required"
+                        style="height: 10.9969px;"></textarea>
+                        <label for="id_caption-{{ node.pk }}">Editar comentario</label>
+                    </div>
+                    <div class="row">
+                        <button
+                        class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
+                        type="button">Editar
+                        <i class="material-icons right">mode_edit</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+{% endif %}
+<div class="wrapper-reply">
+    {% include "photologue/new_reply.html" %}
+</div>
+{% if not node.is_leaf_node %}
+<div class="row">
+    <div class="col s12">
+        {% with node.get_children_count as descendants %}
+        {% if descendants > 0 %}
+            <a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_descendants"
+            href="#"
+            data-id="{{ node.id }}" data-created="{{ node.created|date:"U"}}"><i class=" material-icons left">expand_more</i>Cargar
+            comentarios (<span class="child_count">{{ descendants }}</span>)</a>
+        {% endif %}
+        {% endwith %}
+        <div>
+            <div class="progress load_publications_descendants" style="display: none">
+                <div class="indeterminate blue darken-1"></div>
+            </div>
         </div>
     </div>
+</div>
+{% endif %}
+</div>
+</div>
+</div>
 {% endfor %}
+{% if publications.has_next %}
+<a id="load-comments" class="waves-effect waves-light btn-large blue darken-1 white-text center" href="?page={{ publications.next_page_number }}">Cargar comentarios</a>
+{% endif %}

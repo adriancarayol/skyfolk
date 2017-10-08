@@ -1,5 +1,7 @@
-from .base import *
 from django.core.exceptions import ImproperlyConfigured
+
+from .base import *
+
 
 # Cargamos SECRET_KEY
 def get_env_variable(var_name):
@@ -50,6 +52,8 @@ DEFAULT_FILE_STORAGE = 'custom_storages.custom_storages.MediaStorage'
 COMPRESS_URL = STATIC_URL
 COMPRESS_STORAGE = 'custom_storages.custom_storages.CachedS3BotoStorage'
 
+# ACCOUNT SETTINGS FOR PRE
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 #STATIC_URL = '/static/'
 #STATIC_ROOT = '/var/www/skyfolk/static/master/static'

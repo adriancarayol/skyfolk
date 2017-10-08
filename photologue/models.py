@@ -1,6 +1,6 @@
 import logging
+import mimetypes
 import os
-import random
 import tempfile
 import unicodedata
 import uuid
@@ -12,6 +12,7 @@ from os.path import splitext
 from urllib.parse import urlparse
 
 import exifread
+import magic
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -23,18 +24,17 @@ from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
-from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text, smart_str, filepath_to_uri
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.functional import curry
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
-from mimetypes import guess_extension, guess_type
+from uuslug import uuslug
 
-from .validators import validate_extension
-from .validators import validate_file_extension
-from .tasks import generate_thumbnails
+from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
+from .tasks import generate_thumbnails, generate_video_thumbnail
+from .validators import validate_file_extension, validate_video, validate_extension, image_exists, valid_image_mimetype, \
+    valid_image_size
 
 # Required PIL classes may or may not be available from the root namespace
 # depending on the installation method used.
@@ -54,18 +54,16 @@ except ImportError:
             'Photologue was unable to import the Python Imaging Library. Please confirm it`s installed and available '
             'on your current Python path.')
 
-from sortedm2m.fields import SortedManyToManyField
-
 from .utils.reflection import add_reflection
 from .utils.watermark import apply_watermark
-from .managers import GalleryQuerySet, PhotoQuerySet
+from .managers import PhotoQuerySet
 
 logger = logging.getLogger('photologue.models')
 
-# Default limit for gallery.latest
+# Default limit for publications_gallery.latest
 LATEST_LIMIT = getattr(settings, 'PHOTOLOGUE_GALLERY_LATEST_LIMIT', None)
 
-# Number of random images from the gallery to display.
+# Number of random images from the publications_gallery to display.
 SAMPLE_SIZE = getattr(settings, 'PHOTOLOGUE_GALLERY_SAMPLE_SIZE', 5)
 
 # max_length setting for the ImageModel ImageField
@@ -279,6 +277,7 @@ class ImageModel(models.Model):
         self.view_count += 1
         models.Model.save(self)
 
+    """
     def __getattr__(self, name):
         global size_method_map
         if not size_method_map:
@@ -290,6 +289,7 @@ class ImageModel(models.Model):
             return result
         else:
             raise AttributeError
+    """
 
     def size_exists(self, photosize):
         func = getattr(self, "get_%s_filename" % photosize.name, None)
@@ -454,7 +454,7 @@ class ImageModel(models.Model):
 @python_2_unicode_compatible
 class Photo(ImageModel):
     title = models.CharField(_('title'),
-                             max_length=250)
+                             max_length=60)
     slug = models.SlugField(_('slug'),
                             unique=True,
                             max_length=250,
@@ -474,7 +474,7 @@ class Photo(ImageModel):
     sites = models.ManyToManyField(Site, verbose_name=_(u'sites'),
                                    blank=True)
 
-    url_image = models.URLField(max_length=255, blank=True, null=True)
+    url_image = models.URLField(max_length=255, default='', blank=True)
 
     thumbnail = models.ImageField(_('thumbnail'),
                                   upload_to=get_storage_path,
@@ -499,8 +499,8 @@ class Photo(ImageModel):
         return "photos-%s" % self.pk
 
     def save(self, created=True, *args, **kwargs):
-        if created and not self.slug:
-            self.slug = slugify(self.title + 'by' + str(self.owner.username) + str(uuid.uuid1()))
+        if created:
+            self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
             self.get_remote_image()
         super(Photo, self).save(*args, **kwargs)
 
@@ -509,50 +509,34 @@ class Photo(ImageModel):
         Obtiene la url introducida por el usuario
         """
 
-        if not self.url_image and not self.image:
-            raise ValueError('Select image')
+        if not self.url_image:
+            return
 
         if self.url_image and not self.image:
             if len(self.url_image) > 255:
                 raise ValueError('URL is very long.')
 
-            parsed = urlparse(self.url_image)
-            name, ext = splitext(parsed.path)
-
-            validate_extension(ext)
-
-            response = requests.head(self.url_image)
-            length = response.headers.get('content-length', None)
-
-            if length and int(length) > settings.BACK_IMAGE_DEFAULT_SIZE:
-                raise ValueError("La imagen no puede exceder de 5MB")
-
             else:
-                request = requests.get(self.url_image, stream=True)
+                domain, path = split_url(self.url_image)
+                filename = get_url_tail(path)
 
-                if request.status_code != requests.codes.ok:
-                    raise ValueError('Cant get image')
+                if not image_exists(self.url_image):
+                    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
 
-                tmp = tempfile.NamedTemporaryFile()
-                read = 0
-                for block in request.iter_content(1024 * 8):
-                    if not block:
-                        break
-                    read += len(block)
-                    if read > settings.BACK_IMAGE_DEFAULT_SIZE:
-                        raise ValueError("La imagen no puede exceder de 5MB")
-                    tmp.write(block)
-                # Comprobamos que se trata de una imagen
-                try:
-                    im = Image.open(tmp)
-                    im.thumbnail((800, 600), Image.ANTIALIAS)
-                    im.save(tmp, format='JPEG', optimize=True, quality=90)
-                    tmp.seek(0)
-                    tmp.close()
-                except IOError:
-                    raise ValueError('Cant get image')
+                fobject = retrieve_image(self.url_image)
 
-                self.image.save(self.slug + ext, File(tmp))
+                if not valid_image_mimetype(fobject):
+                    raise ValidationError(_("Downloaded file was not a valid image"))
+
+                pil_image = Image.open(fobject)
+                pil_image.thumbnail((800, 600), Image.ANTIALIAS)
+
+                if not valid_image_size(pil_image)[0]:
+                    raise ValidationError(_("Image is too large (> 5mb)"))
+
+                django_file = pil_to_django(pil_image)
+
+                self.image.save(filename, django_file)
 
     def get_absolute_url(self):
         return reverse('photologue:pl-photo', args=[self.slug])
@@ -562,15 +546,15 @@ class Photo(ImageModel):
         return self.galleries.filter(is_public=True)
 
     def get_previous_in_gallery(self):
-        """Find the neighbour of this photo in the supplied gallery.
-        We assume that the gallery and all its photos are on the same site.
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
         """
         if not self.is_public:
             # raise ValueError('Cannot determine neighbours of a non-public photo.')
             return None
         photos = Photo.objects.filter(owner=self.owner, is_public=True)
         if self not in photos:
-            raise ValueError('Photo does not belong to gallery.')
+            raise ValueError('Photo does not belong to publications_gallery.')
         previous = None
         for photo in photos:
             if photo == self:
@@ -579,15 +563,15 @@ class Photo(ImageModel):
         return None
 
     def get_next_in_gallery(self):
-        """Find the neighbour of this photo in the supplied gallery.
-        We assume that the gallery and all its photos are on the same site.
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
         """
         if not self.is_public:
             return None
             # raise ValueError('Cannot determine neighbours of a non-public photo.')
         photos = Photo.objects.filter(owner=self.owner, is_public=True)
         if self not in photos:
-            raise ValueError('Photo does not belong to gallery.')
+            raise ValueError('Photo does not belong to publications_gallery.')
         matched = False
         for photo in photos:
             if matched:
@@ -597,12 +581,12 @@ class Photo(ImageModel):
         return None
 
     def get_previous_in_own_gallery(self):
-        """Find the neighbour of this photo in the supplied gallery.
-        We assume that the gallery and all its photos are on the same site.
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
         """
         photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
-            raise ValueError('Photo does not belong to gallery.')
+            raise ValueError('Photo does not belong to publications_gallery.')
         previous = None
         for photo in photos:
             if photo == self:
@@ -611,12 +595,145 @@ class Photo(ImageModel):
         return None
 
     def get_next_in_own_gallery(self):
-        """Find the neighbour of this photo in the supplied gallery.
-        We assume that the gallery and all its photos are on the same site.
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
         """
         photos = Photo.objects.filter(owner=self.owner)
         if self not in photos:
-            raise ValueError('Photo does not belong to gallery.')
+            raise ValueError('Photo does not belong to publications_gallery.')
+        matched = False
+        for photo in photos:
+            if matched:
+                return photo
+            if photo == self:
+                matched = True
+        return None
+
+
+def upload_video(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('photologue/videos', filename)
+
+
+def upload_thumbnail_video(instance, filename):
+    """
+    Funcion para calcular la ruta
+    donde se almacenaran las imagenes
+    de una publicacion
+    """
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('photologue/videos/thumbnails', filename)
+
+
+class Video(models.Model):
+    name = models.CharField(_('name'),
+                            max_length=60)
+    slug = models.SlugField(_('slug'),
+                            unique=True,
+                            max_length=250,
+                            help_text=_('A "slug" is a unique URL-friendly title for an object.'))
+    caption = models.TextField(_('caption'),
+                               blank=True, max_length=1000)
+    is_public = models.BooleanField(_('is public'),
+                                    default=True,
+                                    help_text=_('Public photographs will be displayed in the default views.'))
+    date_added = models.DateTimeField(_('date added'),
+                                      default=now)
+    tags = TaggableManager(blank=True)
+    owner = models.ForeignKey(User, null=True, blank=True, related_name='user_videos')
+
+    video = models.FileField(_('video'), upload_to=upload_video,
+                             max_length=IMAGE_FIELD_MAX_LENGTH, validators=[validate_video])
+
+    thumbnail = models.ImageField(_('thumbnail'), upload_to=upload_thumbnail_video, blank=True)
+
+    class Meta:
+        ordering = ['-date_added']
+        get_latest_by = 'date_added'
+        verbose_name = _("video")
+        verbose_name_plural = _("videos")
+
+    @property
+    def group_name(self):
+        """
+        Devuelve el nombre del canal para enviar notificaciones
+        """
+        return "videos-%s" % self.pk
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('photologue:pl-video', args=[self.slug])
+
+    def save(self, created=True, *args, **kwargs):
+        if created:
+            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
+        super(Video, self).save(*args, **kwargs)
+
+    def get_previous_in_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        if not self.is_public:
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+            return None
+        photos = Video.objects.filter(owner=self.owner, is_public=True)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        previous = None
+        for photo in photos:
+            if photo == self:
+                return previous
+            previous = photo
+        return None
+
+    def get_next_in_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        if not self.is_public:
+            return None
+            # raise ValueError('Cannot determine neighbours of a non-public photo.')
+        photos = Video.objects.filter(owner=self.owner, is_public=True)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        matched = False
+        for photo in photos:
+            if matched:
+                return photo
+            if photo == self:
+                matched = True
+        return None
+
+    def get_previous_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        photos = Video.objects.filter(owner=self.owner)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
+        previous = None
+        for photo in photos:
+            if photo == self:
+                return previous
+            previous = photo
+        return None
+
+    def get_next_in_own_gallery(self):
+        """Find the neighbour of this photo in the supplied publications_gallery.
+        We assume that the publications_gallery and all its photos are on the same site.
+        """
+        photos = Video.objects.filter(owner=self.owner)
+        if self not in photos:
+            raise ValueError('Photo does not belong to publications_gallery.')
         matched = False
         for photo in photos:
             if matched:
@@ -949,5 +1066,18 @@ def generate_thumb(instance, created, **kwargs):
         generate_thumbnails.delay(instance=instance.pk)
 
 
+def generate_video_thumb(instance, created, **kwargs):
+    """
+    Generamos thumbnail para video
+    :param instance: Video
+    :param created: Si es creado o actualizado
+    :param kwargs:
+    :return:
+    """
+    if created:
+        generate_video_thumbnail.delay(instance=instance.pk)
+
+
 post_save.connect(add_default_site, sender=Photo)
 post_save.connect(generate_thumb, sender=Photo)
+post_save.connect(generate_video_thumb, sender=Video)

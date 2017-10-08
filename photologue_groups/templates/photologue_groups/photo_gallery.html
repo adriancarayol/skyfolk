@@ -1,0 +1,269 @@
+{% extends 'account/base_interface.html' %}
+{% load avatar_tags %}
+{% load i18n %}
+{% load humanize %}
+{% load static %}
+{% block title %} <title>Skyfolk / Media de {{ group_gallery.name }} </title> {% endblock %}
+
+{% block include_files %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/cropper.min.css">
+{% endblock %}
+
+{% block content %}
+    <div class="container" id="crop-avatar">
+        <div class="row">
+            <div class="col l12 m12 s12 container-gallery">
+                <a id="btn-upload-photo" class="btn-floating btn-large waves-effect waves-light blue darken-1"><i
+                        class="material-icons">add</i></a>
+                {% if object_list %}
+                    <div class="row">
+                        {% include 'photologue_groups/photo_gallery_page.html' %}
+                    </div>
+                {% endif %}
+            </div> <!-- end container-gallery -->
+        </div>
+        <div class="upload_form" id="upload_photo" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+            <div class="col s12">
+                <ul class="tabs">
+                    <li class="tab col s3"><a href="#foto" class="active">Foto</a></li>
+                    <li class="tab col s3"><a href="#video">Vídeo</a></li>
+                    <li class="tab col s3"><a href="#collection">Colección</a></li>
+                </ul>
+            </div>
+            <div id="foto">
+                <form id="submit-photo" class="avatar-form" action="{% url "photologue_groups:upload-photo" %}" method="post"
+                      accept-charset="utf-8"
+                      enctype="multipart/form-data">{% csrf_token %}
+                    <input type="number" value="{{ group_gallery.id }}" hidden name="pk">
+                    <div class="row">
+                        <div class="file-field input-field avatar-upload">
+                            {{ form.image.errors }}
+                            <div class="btn blue darken-1 waves-effect waves-light">
+                                <span>Imágen</span>
+                                {{ form.image }}
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate avatar-input" name="image" type="text">
+                            </div>
+                            <input type="hidden" class="avatar-src" name="avatar_src">
+                            <input type="hidden" class="avatar-data" name="avatar_data">
+                            <input type="hidden" class="is-cutted" name="avatar_cut" value="false">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <a id="crop-image" class="waves-effect waves-light btn blue darken-1 right">Recortar
+                            <i class="material-icons right">crop</i>
+                        </a>
+                    </div>
+                    <div class="row">
+                        {{ form.url_image.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">link</i>
+                            {{ form.url_image }}
+                            <label for="id_url_image">URL Imagen</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.title.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">title</i>
+                            {{ form.title }}
+                            <label for="id_title">{{ form.title.help_text }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.caption.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">closed_caption</i>
+                            {{ form.caption }}
+                            <label for="id_caption">{{ form.caption.help_text }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form.tags.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">label</i>
+                            {{ form.tags }}
+                            <label for="id_tags">{{ form.tags.help_text }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
+                            <i class="material-icons right">file_upload</i>
+                        </button>
+                        <button id="close_upload_form"
+                                class="waves-effect waves-light btn right transparent black-text btn-close"
+                                type="button">Cerrar
+                            <i class="material-icons right">close</i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div id="collection">
+                <form id="collection-form" method="post" action="{% url "photologue_groups:upload-zip" %}" accept-charset="utf-8"
+                      enctype="multipart/form-data">{% csrf_token %}
+                    <input type="number" value="{{ group_gallery.id }}" hidden name="group">
+                    <div class="row">
+                        <div class="file-field input-field">
+                            <div class="btn blue darken-1 waves-effect waves-light">
+                                <span>{{ form_zip.zip_file.help_text }}</span>
+                                {{ form_zip.zip_file }}
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">title</i>
+                            {{ form_zip.title_collection }}
+                            <label for="id_title_collection">{{ form_zip.title_collection.help_text }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form_zip.caption_collection.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">closed_caption</i>
+                            {{ form_zip.caption_collection }}
+                            <label for="id_caption_collection">{{ form_zip.caption_collection.help_text }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form_zip.tags_collection.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">label</i>
+                            {{ form_zip.tags_collection }}
+                            <label for="id_tags_collection">{{ form_zip.tags_collection.help_text }}</label>
+                        </div>
+                    </div>
+                    <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
+                        <i class="material-icons right">file_upload</i>
+                    </button>
+                    <button id="close_upload_zip_form"
+                            class="waves-effect waves-light btn right transparent black-text btn-close"
+                            type="button">Cerrar
+                        <i class="material-icons right">close</i>
+                    </button>
+                </form>
+            </div>
+            <div id="video">
+                <form id="form-video" class="video-form" action="{% url "photologue_groups:upload-video" %}" method="post"
+                      accept-charset="utf-8"
+                      enctype="multipart/form-data">{% csrf_token %}
+                    <input type="number" value="{{ group_gallery.id }}" hidden name="pk">
+                    <div class="row">
+                        <div class="file-field input-field">
+                            <div class="btn blue darken-1 waves-effect waves-light">
+                                <span>{{ form_video.video.help_text }}</span>
+                                {{ form_video.video }}
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">title</i>
+                            {{ form_video.name }}
+                            <label for="id_name_video">{{ form_video.name.help_text }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">closed_caption</i>
+                            {{ form_video.caption }}
+                            <label for="id_caption_video">{{ form_video.caption.help_text }}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {{ form_video.tags.errors }}
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">label</i>
+                            {{ form_video.tags }}
+                            <label for="id_tags_video">{{ form_video.tags.help_text }}</label>
+                        </div>
+                    </div>
+                    <button class="waves-effect waves-light btn blue darken-1 right" type="submit">Subir
+                        <i class="material-icons right">file_upload</i>
+                    </button>
+                    <button id="close_upload_video_form"
+                            class="waves-effect waves-light btn right transparent black-text btn-close"
+                            type="button">Cerrar
+                        <i class="material-icons right">close</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div id="crop-image-preview" class="crop-image-div">
+            <div class="row">
+                <span class="close-crop-image material-icons right">remove</span>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="avatar-wrapper"></div>
+                </div>
+            </div>
+            <div class="row avatar-btns">
+                <div class="col s12">
+                    <div class="btn-group">
+                        <button type="button" class="waves-effect waves-light btn transparent black-text"
+                                data-method="rotate"
+                                data-option="-90"
+                                title="Rotate -90 degrees">Rotate Left
+                        </button>
+                        <button type="button" class="waves-effect waves-light btn transparent black-text"
+                                data-method="rotate"
+                                data-option="-15">-15deg
+                        </button>
+                        <button type="button" class="waves-effect waves-light btn transparent black-text"
+                                data-method="rotate"
+                                data-option="-30">-30deg
+                        </button>
+                        <button type="button" class="waves-effect waves-light btn transparent black-text"
+                                data-method="rotate"
+                                data-option="-45">-45deg
+                        </button>
+                        <button type="button" class="waves-effect waves-light btn transparent black-text"
+                                data-method="rotate"
+                                data-option="90"
+                                title="Rotate 90 degrees">Rotate Right
+                        </button>
+                        <button type="button" class="waves-effect waves-light btn transparent black-text"
+                                data-method="rotate"
+                                data-option="15">15deg
+                        </button>
+                        <button type="button" class="waves-effect waves-light btn transparent black-text"
+                                data-method="rotate"
+                                data-option="30">30deg
+                        </button>
+                        <button type="button" class="waves-effect waves-light btn transparent black-text"
+                                data-method="rotate"
+                                data-option="45">45deg
+                        </button>
+                        <button id="cut-done" type="button" class="waves-effect waves-light btn blue darken-1 right">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
+    </div> <!-- end wrapper -->
+    {% block js-gallery %}
+        {{ block.super }}
+        <script src="{% static "js/photo_group_gallery.js" %}" type="text/javascript"></script>
+        <script type="text/javascript" src="{% static "js/cropper.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "js/main.js" %}"></script>
+        <script src="{% static "el-pagination/js/el-pagination.js" %}"></script>
+        <script>
+            $.endlessPaginate({
+                paginateOnScroll: true,
+                paginateOnScrollMargin: 20
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

@@ -34,7 +34,7 @@
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15); }
   .container-image .principal-content {
     display: block;
-    height: 85%;
+    height: 83%;
     width: 100%;
     position: relative; }
     .container-image .principal-content img {
@@ -59,7 +59,7 @@
         .container-image .principal-content .tags-content blockquote:hover {
           background-color: white; }
   .container-image .legend-content {
-    height: 15%;
+    height: 17%;
     padding: 5px; }
     .container-image .legend-content .legend-user-image {
       width: 20%;

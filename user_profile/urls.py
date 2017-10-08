@@ -1,13 +1,26 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 
 from user_profile import views as user_profile_views
 
 urlpatterns = [
     url(r'^profile/(?P<username>[\w-]+)/$', user_profile_views.profile_view,
         name='profile'),
-    url(r'^search/$', user_profile_views.search),
-    url(r'^search/(?P<option>[\w]*)/$', user_profile_views.search),
-    url(r'^search-advanced/$', user_profile_views.advanced_view,
+    # url(r'^user-search/$', user_profile_views.search),
+    url(r'^user-search/$',
+        user_profile_views.SearchUsuarioView.as_view(),
+        name='general-search'),
+    url(r'^follow/by_affinity/$', login_required(
+        user_profile_views.FollowingByAffinityList.as_view()),
+        name='follow-by-affinity'),
+    url(r'^followers/by_affinity/$', login_required(
+        user_profile_views.FollowersByAffinityList.as_view()),
+        name='followers-by-affinity'),
+    # url(r'^user-search/(?P<option>[\w]*)/$', user_profile_views.search),
+    url(r'^user-search/(?P<option>[\w]*)/$',
+        user_profile_views.SearchUsuarioView.as_view(),
+        name='category-search'),
+    url(r'^user-search-advanced/$', user_profile_views.advanced_view,
         name='advanced_view'),
     # URL CONFIG PROFILE USER
     url(r'^config/profile/$', user_profile_views.config_profile,
@@ -23,15 +36,11 @@ urlpatterns = [
     url(r'^config/blocked/$', user_profile_views.config_blocked),
     url(r'^like_profile/$', user_profile_views.like_profile,
         name='like_profile'),
-    url(r'^following/(?P<username>[\w-]+)/$', user_profile_views.following),
+    url(r'^following/(?P<username>[\w-]+)/$', user_profile_views.following, name='following_profile_list'),
     url(r'^followers/(?P<username>[\w-]+)/$', user_profile_views.followers),
     url(r'^respond_friend_request/$',
         user_profile_views.respond_friend_request,
         name='respond_friend_request'),
-    # Cargar mas followers
-    url(r'^load_followers/$', user_profile_views.load_followers),
-    # Cargar mas follows
-    url(r'^load_follows/$', user_profile_views.load_follows),
     url(r'^request_friend/$', user_profile_views.request_friend),
     url(r'^remove_relationship/$', user_profile_views.remove_relationship),
     url(r'^remove_blocked/$', user_profile_views.remove_blocked),
@@ -50,6 +59,8 @@ urlpatterns = [
         name='account_email'),
     url(r"^config/password/done/$", user_profile_views.password_done,
         name="account_done_password"),
+    url(r"^config/notifications/$", user_profile_views.NotificationSettingsView.as_view(),
+        name="account_notifications"),
     # Página de bienvenida a nuevos usuarios.
     url(r'^welcome/(?P<username>[\w-]+)/$', user_profile_views.welcome_view,
         name='welcome'),
@@ -65,6 +76,12 @@ urlpatterns = [
     # Lista de usuarios que han dado like al perfil <<username>>
     url(r'^likes/(?P<username>[\w-]+)/$', user_profile_views.like_list,
         name='like_list'),
-    url(r'^pre_search/users/', user_profile_views.search_users,
-        name='pre_search_users'),
+    url(r'^recommendations/users/$', user_profile_views.recommendation_real_time,
+        name='recommendation_users'),
+    url(r'^search/autocomplete/$', user_profile_views.autocomplete,
+        name='autocomplete'),
+
+    # url(r'^prueba-search/$', login_required(
+    #     user_profile_views.SearchUsuarioView.as_view()),
+    #     name='busqueda-prueba'),
 ]

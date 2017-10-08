@@ -4,7 +4,6 @@ try:
 except ImportError:
     from django.utils.importlib import import_module  # Django 1.6 / py2.6
 import re
-import sys
 from textwrap import TextWrapper
 
 from django import VERSION

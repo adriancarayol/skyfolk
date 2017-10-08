@@ -1,0 +1,333 @@
+{% extends 'account/base_search.html' %}
+{% comment %}
+Template para las busquedas
+{% endcomment %}
+{% load app_filters %}
+{% load avatar_tags %}
+{% load humanize %}
+{% load highlight %}
+{% load static %}
+{% block title %} <title>Skyfolk / Busqueda {{ q }}</title> {% endblock %}
+{% block include_files %}
+    <!-- Estilos para la galeria de fotos -->
+    <style>
+        .grid {
+            margin: 0 auto;
+        }
+
+        .grid-item {
+            width: 300px;
+            margin-bottom: 10px;
+            float: left;
+        }
+
+        .photo-date {
+            display: initial;
+        }
+
+        .grid-item .img {
+            border-radius: 3px;
+            box-shadow: 0 1px 5px #1e88e5;
+        }
+
+        .grid-item .img > img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col l12 m12 s12">
+                <ul class="query-options">
+                    <li class="list-vertical" {% if s == 'all' %}style="border-bottom: 3px solid #1e88e5;"{% endif %}><a
+                            href="{% url 'user_profile:category-search' 'all' %}?q={{ q }}">Ensalada de Frutas</a></li>
+                    <li class="list-vertical" {% if s == 'images' %}
+                        style="border-bottom: 3px solid #1e88e5;" {% endif %}><a
+                            href="{% url 'user_profile:category-search' 'images' %}?q={{ q }}">Imágenes</a></li>
+                    <li class="list-vertical" {% if s == 'publications' %}
+                        style="border-bottom: 3px solid #1e88e5;" {% endif %}><a
+                            href="{% url 'user_profile:category-search' 'publications' %}?q={{ q }}">Publicaciones</a>
+                    </li>
+                    <li class="list-vertical" {% if s == 'videos' %}
+                        style="border-bottom: 3px solid #1e88e5;" {% endif %}><a
+                            href="{% url 'user_profile:category-search' 'videos' %}?q={{ q }}">Videos</a></li>
+                    <li class="list-vertical" {% if s == 'accounts' %}
+                        style="border-bottom: 3px solid #1e88e5;" {% endif %}><a
+                            href="{% url 'user_profile:category-search' 'accounts' %}?q={{ q }}">Cuentas</a></li>
+                    <li class="list-vertical">Más opciones<i class="material-icons">arrow_drop_down</i>
+                        <div id="dropdown-search" class="dropdown-options">
+                            <ul class="dropdown-ul">
+                                <li>Todo</li>
+                                <li>Nuevo</li>
+                                <li>De todos</li>
+                                <li>Personas que sigues</li>
+                                <li>Personas que te siguen</li>
+                                <li id="search-advanced">Búsqueda avanzada</li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {% if object_list|length == 0 %}
+            <div class="row">
+                <div class="col s12">
+                    <div class="noelements-search" id="search-noelements">
+                        <h5 class="">Sin resultados :-(</h5>
+                        <i class="not-query">No se obtuvo ningún resultado para:
+                            <b>{{ q }}</b>
+                        </i>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if s == 'all' %}
+            <div class="grid row">
+                {% for item in page_obj.object_list %}
+                    {% if item.model_name == 'profile' %}
+                        <div class="grid-item infinite-item">
+                            <div class="personal-card">
+                                <div class="header">
+                                    {% if item.object.back_image %}
+                                        <img class="back-profile-user" src="{{ item.object.back_image.url }}">
+                                    {% else %}
+                                        <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
+                                    {% endif %}
+                                    <i class="material-icons like-him">person</i>
+                                    <div class="bg-user">
+                                        <div onclick="location.href='/profile/{{ item.username }}'"
+                                             class="profile-user-bg">{% avatar item.object.user %}</div>
+                                    </div>
+                                </div>
+                                <div class="col s12">
+                                    <div style="cursor: default" class="name-friend">
+                                        <a href="{% url "user_profile:profile" username=item.username %}">@{{ item.username }}</a>
+                                        <p>{{ item.firstname }} {{ item.lastname }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif item.model_name == 'publication' %}
+                        <div class="grid-item infinite-item">
+                            <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
+                                <div class="col s3 img">
+                                    {% avatar item.object.author %}
+                                </div>
+                                <div class="col l9 m9 s8 author">
+                                    <div class="row">
+                                        <span><a
+                                                href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i></span>
+                                        <span><a href="/publication/{{ item.object.id }}" title="Ver publicación"><i
+                                                class="material-icons md-18 right"
+                                                aria-hidden="true">open_in_new</i></a></span>
+                                        <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
+                                    </div>
+                                    <div class="row" style="word-wrap: break-word;">
+                                        <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
+                                        <br>
+                                        {% for i in item.object.images.all %}
+                                            <div class="col s12">
+                                                <img src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
+                                                     height="100%"/>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif item.model_name == 'photo' %}
+                        <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
+                             data-tooltip="{{ item.description|truncatechars:"150" }}">
+                            <div class="container-image">
+                                <div class="principal-content">
+                                    {% if item.tags %}
+                                        <div class="tags-content">
+                                            {% for tag in item.tags %}
+                                                <blockquote
+                                                        onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                                         alt="{{ item.title }}" title="{{ item.title }}"
+                                         onclick="location.href='/photo/{{ item.slug }}'">
+                                </div>
+                                <div class="col s12 legend-content">
+                                    <div class="legend-user-image">
+                                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                                    </div>
+                                    <div class="col l8 m8 s8 legend-user-data">
+                                        <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
+                                        <i class="photo-title truncate">{{ item.title }}</i>
+                                        <i class="truncate photo-date"><i
+                                                class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}
+                                        </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if s == 'accounts' %}
+            <div class="grid row">
+                {% for item in object_list %}
+                    <div class="grid-item infinite-item">
+                        <div class="personal-card">
+                            <div class="header">
+                                {% if item.object.back_image %}
+                                    <img class="back-profile-user" src="{{ item.object.back_image.url }}">
+                                {% else %}
+                                    <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
+                                {% endif %}
+                                <i class="material-icons like-him">person</i>
+                                <div class="bg-user">
+                                    <div onclick="location.href='/profile/{{ item.username }}'"
+                                         class="profile-user-bg">{% avatar item.object.user %}</div>
+                                </div>
+                            </div>
+                            <div class="col s12">
+                                <div style="cursor: default" class="name-friend">
+                                    <a href="{% url "user_profile:profile" username=item.username %}">@{{ item.username }}</a>
+                                    <p>{{ item.firstname }} {{ item.lastname }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if s == 'publications' %}
+            <div class="grid row">
+                {% for item in object_list %}
+                    <div class="grid-item infinite-item">
+                        <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
+                            <div class="col s3 img">
+                                {% avatar item.object.author %}
+                            </div>
+                            <div class="col l9 m9 s8 author">
+                                <div class="row">
+                                    <span><a
+                                            href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i></span>
+                                    <span><a href="/publication/{{ item.object.id }}" title="Ver publicación"><i
+                                            class="material-icons md-18 right">open_in_new</i></a></span>
+                                    <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
+                                </div>
+                                <div class="row" style="word-wrap: break-word;">
+                                    <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
+                                    <br>
+                                    {% for i in item.object.images.all %}
+                                        <div class="col s12">
+                                            <img src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
+                                                 height="100%"/>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if s == 'images' %}
+            <div class="grid row">
+                {% for item in object_list %}
+                    <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
+                         data-tooltip="{{ item.description }}">
+                        <div class="container-image">
+                            <div class="principal-content">
+                                {% if item.tags %}
+                                    <div class="tags-content">
+                                        {% for tag in item.tags %}
+                                            <blockquote
+                                                    onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                                     alt="{{ item.title }}" title="{{ item.title }}"
+                                     onclick="location.href='/photo/{{ item.slug }}'">
+                            </div>
+                            <div class="col s12 legend-content">
+                                <div class="legend-user-image">
+                                    <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                                </div>
+                                <div class="col l8 m8 s8 legend-user-data">
+                                    <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
+                                    <i class="photo-title truncate">{{ item.title }}</i>
+                                    <i class="truncate photo-date"><i
+                                            class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}</i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if s == 'videos' %}
+            <div class="grid row">
+                {% for result in object_list %}
+                    <div class="grid-item infinite-item">
+                        <div class="personal-card">
+                            <div class="col s12">
+                                <div class="header">
+                                    <a href="{{ result.object.get_absolute_url }}">{{ result.author }}</a>
+                                </div>
+                            </div>
+                            <div class="col s12">
+                                <p>
+                                    <a href="{{ result.object.get_absolute_url }}">{{ result.text }}</a>
+                                    {{ result.pub_date }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="row">
+            {% if page_obj.has_next %}
+                <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center"
+                   href="?page={{ page_obj.next_page_number }}&q={{ q }}">More</a>
+            {% endif %}
+            <div class="progress loading_search" style="display: none">
+                <div class="indeterminate blue darken-1"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static "js/search.js" %}"></script>
+    <script src="{% static "js/photo_gallery.js" %}" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/imagesloaded.pkgd.min.js"></script>
+    <script>
+        var infinite = new Waypoint.Infinite({
+            element: $('.grid'),
+            offset: 'bottom-in-view',
+            onBeforePageLoad: function () {
+                $('.loading_search').show();
+            },
+            onAfterPageLoad: function () {
+                $('.loading_search').hide();
+                $grid.imagesLoaded().progress(function () {
+                    $grid.masonry('reloadItems');
+                    $grid.masonry('layout');
+                });
+            }
+        });
+
+        var $grid = $('.grid').masonry({
+            itemSelector: '.grid-item',
+            columnWidth: 300,
+            gutter: 10,
+            fitWidth: true,
+            initLayout: false,
+            horizontalOrder: true,
+            transitionDuration: '0.3s'
+        });
+        $grid.imagesLoaded().progress(function () {
+            $grid.masonry('layout');
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "account/base_cf.html" %}
+{% block cf-title %}
+    <div class="hgroup">
+        <h4 class="cn"> Notificaciones </h4>
+        <h6 class="ch"> Configura que tipo de notificaciones deseas recibir.</h6>
+    </div>
+{% endblock %}
+{% block cf-form %}
+    <form action="{% url 'user_profile:account_notifications' %}" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <h4>Notificaciones por correo.</h4><br>
+            <p>
+                {{ form.email_when_new_notification }}
+                <label for="id_email_when_new_notification">Cuando tenga notificaciones nuevas.</label>
+            </p>
+            <p>
+                {{ form.email_when_recommendations }}
+                <label for="id_email_when_recommendations">Cuando existan recomendaciones para mi.</label>
+            </p>
+            <p>
+                {{ form.email_when_mp }}
+                <label for="id_email_when_mp">Cuando reciba un mensaje privado.</label>
+            </p>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+            <h4>Notificaciones en Skyfolk.</h4><br>
+            <p>
+                {{ form.followed_notifications }}
+                <label for="id_followed_notifications">Personas que no sigues.</label>
+            </p>
+            <p>
+                {{ form.followers_notifications }}
+                <label for="id_followers_notifications">Personas que no te siguen.</label>
+            </p>
+            <p>
+                {{ form.only_confirmed_users }}
+                <label for="id_only_confirmed_users">Sólo cuentas confirmadas.</label>
+            </p>
+        </div>
+        <button class="btn btn-info right blue darken-1" id="btn-notifications">Salvar
+            cambios
+        </button>
+    </form>
+    <script>
+        $('.menu-config').find('li:nth-child(7)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
+{% endblock %}

@@ -1,5 +1,6 @@
 import logging
 
+import feedparser
 from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -7,9 +8,6 @@ from django.core.validators import URLValidator
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-
-import feedparser
-
 from nine import versions
 
 from .defaults import (

@@ -8,18 +8,17 @@ from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-
 from nine.versions import DJANGO_LTE_1_5, DJANGO_GTE_1_10
 
 from .base import get_registered_plugins, get_registered_layouts
 from .constants import ACTION_CHOICE_REPLACE
+from .forms import BulkChangeDashboardPluginsForm
 from .models import (
     DashboardEntry,
     DashboardPlugin,
     DashboardSettings,
     DashboardWorkspace,
 )
-from .forms import BulkChangeDashboardPluginsForm
 
 if DJANGO_GTE_1_10:
     from django.shortcuts import render

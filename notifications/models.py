@@ -1,15 +1,16 @@
 import json
+from distutils.version import StrictVersion
+
+from channels import Group as group_channel
+from django import get_version
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django import get_version
+from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.timesince import timesince as timesince_
 from avatar.models import Avatar
-from .utils import get_author_avatar
-from django.forms import model_to_dict
-from channels import Group as group_channel
-from user_profile import models as user_profile
-from django.contrib.humanize.templatetags.humanize import naturaltime
-from distutils.version import StrictVersion
+from avatar.templatetags.avatar_tags import avatar
+from mailer.handler import notify_via_email
 from user_profile.utils import notification_channel
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
@@ -18,8 +19,7 @@ else:
     from django.contrib.contenttypes.generic import GenericForeignKey
 
 from django.db import models
-from django.db.models.query import QuerySet
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.utils.six import text_type
 from .utils import id2slug
 
@@ -27,7 +27,7 @@ from .signals import notify
 
 from model_utils import Choices
 from jsonfield.fields import JSONField
-
+from user_profile.node_models import NodeProfile
 from django.contrib.auth.models import Group
 
 
@@ -47,7 +47,6 @@ def assert_soft_delete():
 
 
 class NotificationQuerySet(models.query.QuerySet):
-
     def unsent(self):
         return self.filter(emailed=False)
 
@@ -57,12 +56,12 @@ class NotificationQuerySet(models.query.QuerySet):
     def unread(self, include_deleted=False):
         """Return only unread items in the current queryset"""
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=True, deleted=False)
+            return self.filter(unread=True, deleted=False).prefetch_related('actor')
         else:
             """ when SOFT_DELETE=False, developers are supposed NOT to touch 'deleted' field.
             In this case, to improve query performance, don't filter by 'deleted' field
             """
-            return self.filter(unread=True)
+            return self.filter(unread=True).prefetch_related('actor')
 
     def unread_limit(self, include_deleted=False, limit=20):
         """
@@ -71,19 +70,19 @@ class NotificationQuerySet(models.query.QuerySet):
         :return Devuelve solo las notificaciones no leidas:
         """
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=True, deleted=False)[:limit]
+            return self.filter(unread=True, deleted=False).prefetch_related('actor')[:limit]
         else:
-            return self.filter(unread=True)[:limit]
+            return self.filter(unread=True).prefetch_related('actor')[:limit]
 
     def read(self, include_deleted=False):
         """Return only read items in the current queryset"""
         if is_soft_delete() and not include_deleted:
-            return self.filter(unread=False, deleted=False)
+            return self.filter(unread=False, deleted=False).prefetch_related('actor')
         else:
             """ when SOFT_DELETE=False, developers are supposed NOT to touch 'deleted' field.
             In this case, to improve query performance, don't filter by 'deleted' field
             """
-            return self.filter(unread=False)
+            return self.filter(unread=False).prefetch_related('actor')
 
     def mark_all_as_read(self, recipient=None):
         """Mark as read any unread messages in the current queryset.
@@ -113,12 +112,12 @@ class NotificationQuerySet(models.query.QuerySet):
     def deleted(self):
         """Return only deleted items in the current queryset"""
         assert_soft_delete()
-        return self.filter(deleted=True)
+        return self.filter(deleted=True).prefetch_related('actor')
 
     def active(self):
         """Return only active(un-deleted) items in the current queryset"""
         assert_soft_delete()
-        return self.filter(deleted=False)
+        return self.filter(deleted=False).prefetch_related('actor')
 
     def mark_all_as_deleted(self, recipient=None):
         """Mark current queryset as deleted.
@@ -210,7 +209,7 @@ class Notification(models.Model):
     objects = NotificationQuerySet.as_manager()
 
     class Meta:
-        ordering = ('-timestamp', )
+        ordering = ('-timestamp',)
         app_label = 'notifications'
 
     def __unicode__(self):
@@ -238,7 +237,6 @@ class Notification(models.Model):
         Shortcut for the ``django.utils.timesince.timesince`` function of the
         current timestamp.
         """
-        from django.utils.timesince import timesince as timesince_
         return timesince_(self.timestamp, now)
 
     @property
@@ -255,6 +253,7 @@ class Notification(models.Model):
             self.unread = True
             self.save()
 
+
 # 'NOTIFY_USE_JSONFIELD' is for backward compatibility
 # As app name is 'notifications', let's use 'NOTIFICATIONS' consistently from now
 EXTRA_DATA = getattr(settings, 'NOTIFY_USE_JSONFIELD', None)
@@ -266,7 +265,6 @@ def notify_handler(verb, **kwargs):
     """
     Handler function to create Notification instance upon action signal call.
     """
-
     # Pull the options out of kwargs
     kwargs.pop('signal', None)
     recipient = kwargs.pop('recipient')
@@ -274,12 +272,14 @@ def notify_handler(verb, **kwargs):
     optional_objs = [
         (kwargs.pop(opt, None), opt)
         for opt in ('target', 'action_object')
-        ]
+    ]
     public = bool(kwargs.pop('public', True))
     description = kwargs.pop('description', None)
     timestamp = kwargs.pop('timestamp', timezone.now())
     level = kwargs.pop('level', Notification.LEVELS.info)
     send_channel = kwargs.pop('send_to_channel', True)
+    immediately = kwargs.pop('immediately', False)
+
     # Check if User or Group
     if isinstance(recipient, Group):
         recipients = recipient.user_set.all()
@@ -287,7 +287,33 @@ def notify_handler(verb, **kwargs):
         recipients = [recipient]
 
     for recipient in recipients:
-        actor_avatar = get_author_avatar(authorpk=actor.id)
+        try:
+            try:
+                n = NodeProfile.nodes.get(user_id=actor.id)
+                m = NodeProfile.nodes.get(user_id=recipient.id)
+            except NodeProfile.DoesNotExist:
+                return
+
+            if n.bloq.is_connected(m) or m.bloq.is_connected(n):
+                return
+
+            if recipient.notification_settings.only_confirmed_users:
+                if not actor.is_active:
+                    return
+
+            if not recipient.notification_settings.followed_notifications:
+                if not m.follow.is_connected(n):
+                    return
+
+            if not recipient.notification_settings.followers_notifications:
+                if not n.follow.is_connected(m):
+                    return
+
+        except ObjectDoesNotExist:
+            pass
+
+        actor_avatar = avatar(actor)
+
         newnotify, created = Notification.objects.get_or_create(
             recipient=recipient,
             actor_content_type=ContentType.objects.get_for_model(actor),
@@ -311,23 +337,31 @@ def notify_handler(verb, **kwargs):
             newnotify.data = kwargs
 
         newnotify.save()
-        data = model_to_dict(newnotify)
-        if newnotify.actor:
-            data['actor'] = str(newnotify.actor)
-        if newnotify.target:
-            data['target'] = str(newnotify.target)
-        if newnotify.action_object:
-            data['action_object'] = str(newnotify.action_object)
-        if newnotify.slug:
-            data['slug'] = str(newnotify.slug)
-        if newnotify.timestamp:
-            data['timestamp'] = str(naturaltime(newnotify.timestamp))
+
+        # Si el usuario desea recibir notificaciones de skyfolk a su correo
+        try:
+            if recipient.notification_settings.email_when_new_notification:
+                notify_via_email(actor, [recipient],
+                                 "Skyfolk - {0}, tienes nuevas notificaciones.".format(recipient.username),
+                                 'emails/new_notification.html', {'to_user': recipient.username, 'description': description})
+        except ObjectDoesNotExist:
+            pass
+
+        content = render_to_string(template_name='channels/new_notification.html',
+                                   context={'notification': newnotify})
+
+        data = {
+            'content': content,
+            'id': newnotify.id
+        }
         # Enviamos notificacion al canal del receptor
+
         if send_channel:
             group_channel(notification_channel(recipient.id)).send({
                 "text": json.dumps(data)
-            })
-        return newnotify  # add by adrian
+            }, immediately=immediately)
+
+        return newnotify
 
 
 # connect the signal

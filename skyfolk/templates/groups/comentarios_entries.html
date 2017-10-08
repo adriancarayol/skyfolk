@@ -1,0 +1,211 @@
+{% load avatar_tags %}
+{% load humanize %}
+{% load embed_video_tags %}
+{% load app_filters %}
+{% load group_utils %}
+{% load static %}
+<div id="list-publications" class="infinite-container">
+    {% for node in publications %}
+        <div class="row infinite-item" id="pub-{{ node.pk }}" data-id="{{ user.pk }}">
+            <div class="col s12">
+                <div class="col s12 wrapper"
+                     {% if node.level > 0 and node.level < 3 %}style="min-width: 98% !important;"{% endif %}>
+                    <div class="box">
+            <span id="check-{{ node.pk }}" class="top-options zoom-pub tooltipped" data-position="bottom"
+                  data-delay="50"
+                  data-tooltip="Ver conversación completa"
+                  data-url="{% url "publications_groups:detail_group_publication" pk=node.id %}">
+                <i class="material-icons md-18">open_in_new</i></span>
+                        {% if user.id == node.author.id %}
+                            <span data-id="{{ node.pk }}"
+                                  class="top-options edit-comment tooltipped"
+                                  data-position="bottom"
+                                  data-delay="50"
+                                  data-tooltip="Editar comentario"><i class="material-icons md-18">mode_edit</i></span>
+                        {% endif %}
+                        <div class="row">
+                            <div class="articulo col s12">
+                                <div class="row">
+                                    <div class="image col l1 m2 s2"
+                                         {% if user.id == node.author.id %}title="¡Eres el autor!"
+                                         style="box-shadow: 0 1px 5px rgba(129, 199, 132, 1);"{% endif %}>
+                                        <div class="usr-img img-responsive">{% avatar node.author %}</div>
+                                    </div>
+                                    <div class="col l10 m12 s9">
+                                        <h2 class="h22"><a
+                                                href="/profile/{{ node.author.username }}">@{{ node.author.username }}</a>
+                                            {% if node.parent %}
+                                                <span class="chip">
+                                                        {% avatar node.parent.author %}
+                                                        <a href="/profile/{{ node.parent.author }}">@{{ node.parent.author }}: {{ node.parent.content|truncatewords_html:10|safe }}</a>
+                                                </span>
+                                            {% endif %}
+                                        </h2>
+                                        <p class="blue-text text-darken-2 pub-created">{{ node.created|naturaltime }}</p>
+                                        <div class="row publication-content">
+                                            <div class="parrafo comment">
+                                                <div class="wrp-comment">{{ node.content|safe }}</div>
+                                            </div>
+                                            <div class="show-more" id="show-comment-{{ node.pk }}">
+                                                <a href="#">+ Mostrar más</a>
+                                            </div>
+                                        </div>
+                                        {% with node.images.all as images %}
+                                            {% if images %}
+                                                <div class="row images">
+                                                    {% for image in images %}
+                                                        <div class="col s4 z-depth-2 center">
+                                                            <img class="lazyload responsive-img"
+                                                                 data-src="{{ image.image.url }}"
+                                                                 alt="Imagen de: {{ node.author }}"
+                                                                 title="Imagen de: {{ node.author }}">
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                        {% with node.videos.all as videos %}
+                                            {% if videos %}
+                                                <div class="row videos">
+                                                    {% for video in videos %}
+                                                        <div class="col s4 z-depth-2 center">
+                                                            <video class="responsive-video" controls loop>
+                                                                <source src="{{ video.video.url }}" type="video/mp4">
+                                                            </video>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endwith %}
+                                        {% if node.group_extra_content %}
+                                            {% if node.group_extra_content.video %}
+                                                {% video node.group_extra_content.video as my_video %}
+                                                {% video my_video "medium" %}
+                                                {% endvideo %}
+                                            {% else %}
+                                                {% comment %} Para publicaciones con URL {% endcomment %}
+                                                <div class="card small">
+                                                    <div class="card-image">
+                                                        <img class="lazyload" data-src="
+                                                                {% if node.group_extra_content.image %}{{ node.group_extra_content.image }}{% else %}{% static "dist/img/nuevo_back.png" %}{% endif %}">
+                                                        <span class="card-title white-text">{{ node.group_extra_content.title }}</span>
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <p>{{ node.group_extra_content.description }}</p>
+                                                    </div>
+                                                    <div class="card-action">
+                                                        <a href="{{ node.group_extra_content.url }}">Ver</a>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="divider"></div>
+                            <!-- OPCIONES DE COMENTARIOS -->
+                            <div class="options_comentarios" data-id="{{ node.id }}"
+                                 data-board="{{ node.board_group.id }}">
+                                <ul class="opciones">
+                                    {% if user.id == node.author.id or enable_control_pubs_btn %}
+                                        {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
+                                        <li class="trash-comment" title="Borrar comentario"><i
+                                                class="material-icons md-18">delete_forever</i>
+                                        </li>
+                                    {% endif %}
+                                    {% comment %} Si el usuario esta logueado {% endcomment %}
+                                    <li title="No me gusta" class="hate-comment" {% if node.have_hate %}
+                                            style="color: rgb(186, 104, 200);"{% endif %}>
+                                        <i class="material-icons md-18">keyboard_arrow_down</i>
+                                        <i class="hate-value">{{ node.hates|zero_to_empty }}</i>
+                                    </li>
+                                    <li title="¡Me gusta!" class="like-comment"
+                                            {% if node.have_like %}style="color: rgb(240, 98, 146);"{% endif %}>
+                                        <i class="material-icons md-18">keyboard_arrow_up</i>
+                                        <i class="like-value">{{ node.likes|zero_to_empty }}</i>
+                                    </li>
+                                    <li id="share-{{ node.pk }}" data-id="{{ node.pk }}"
+                                        class={% if node.have_shared %}"remove-timeline"
+                                        title="Eliminar de mi skyline" {% else %}"add-timeline" title="Añadir a mi skyline" {% endif %}>
+                                    <i class="material-icons md-18">format_quote</i>
+                                    <i class="share-values"> {{ node.total_shared|zero_to_empty }}</i>
+                                    </li>
+                                    <li title="Responder" class="reply-comment"
+                                        id="reply-caja-comentario-{{ node.pk }}">
+                                        <i class="material-icons md-18">reply</i>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% if user.id == node.author.id %}
+                        <div id="author-controls-{{ node.pk }}"
+                             class="author-controls">
+                            <div class="row">
+                                <div class="col s12">
+                                    <form method="post" accept-charset="utf-8">{% csrf_token %}
+                                        <div class="row">
+                                            <div class="input-field col s12">
+                                                <input type="number" name="pk" required value="{{ node.pk }}" hidden>
+                                                <i class="material-icons prefix">create</i>
+                                                <textarea class="materialize-textarea"
+                                                          placeholder="Escribe el contenido del nuevo mensaje"
+                                                          id="id_caption-{{ node.pk }}" cols="40" maxlength="500"
+                                                          name="content" rows="10" required="required"
+                                                          style="height: 11px;"></textarea>
+                                                <label for="id_caption-{{ node.pk }}">Editar comentario</label>
+                                            </div>
+                                            <div class="row">
+                                                <button
+                                                        class="waves-effect waves-light btn blue darken-1 right edit-comment-btn"
+                                                        type="button">Editar
+                                                    <i class="material-icons right">mode_edit</i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="wrapper-reply">
+                        {% include "groups/new_reply.html" %}
+                    </div>
+                    {% if not node.is_leaf_node %}
+                        <ul class="children">
+                            {{ children }}
+                        </ul>
+                        <div class="row">
+                            <div class="col s12">
+                                {% with node.get_children_count as descendants %}
+                                    {% if descendants > 0 %}
+                                        <a class="waves-effect waves-light btn-large blue darken-1 white-text center load_more_publications"
+                                           href="/publication/group/load/replies/?page=1&pubid={{ node.id }}"
+                                           data-id="{{ node.id }}" data-created="{{ node.created|date:"U" }}"><i
+                                                class=" material-icons left">expand_more</i>Cargar
+                                            comentarios (<span
+                                                    class="child_count">{{ descendants }}</span>)</a>
+                                    {% endif %}
+                                {% endwith %}
+                                <div>
+                                    <div class="progress load_publications_descendants" style="display: none">
+                                        <div class="indeterminate blue darken-1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% if publications.has_next %}
+    <a class="infinite-more-link waves-effect waves-light btn-large blue darken-1 white-text center"
+       href="?page={{ publications.next_page_number }}&qs=publications">More</a>
+{% endif %}
+<div class="progress loading_skyline" style="display: none">
+    <div class="indeterminate blue darken-1"></div>
+</div>

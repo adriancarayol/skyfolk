@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.contrib import admin
+
 try:
     from django.contrib.sites.shortcuts import get_current_site  # Django 1.7
 except ImportError:

@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
+
 import hashlib
+
 try:
     from importlib import import_module
 except ImportError:

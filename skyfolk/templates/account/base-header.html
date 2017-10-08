@@ -1,53 +1,20 @@
 {% comment %}
-  Base para el head de la pagina (menu horizontal con busqueda etc...)
+Base para el head de la pagina (menu horizontal con busqueda etc...)
 {% endcomment %}
 {% load notification_tags %}
 {% load compress %}
-{% comment %}
-<nav class="box-tool">
-    <ul class="box-tool-wrapper">
-      <li>
-        {% include "account/menu-vertical.html" %}
-      </li>
-      <li><div class="field" id="searchform">
-        <form method='post' action='/search/'>{% csrf_token %}
-          {{searchForm}}
-        </form>
-        <!-- Logotipo que re-direcciona a la pagina principal -->
-         </div></li>
-        <li>
-          <div class="logotipo_skyfolk" onclick="location.href='/profile/{{ request.user }}'" title="Perfil de {{ user }}"><i>S</i>kyfolk</div>
-        </li>
-         <!-- Notificaciones para skyfolk - (Botón campana) -->
-        <li class="notification-bell">
-          <i class="fa fa-bell fa-lg"></i>
-          <em onclick="contador()">{% live_notify_badge %}</em>
-        </li>
-      {% if showPerfilButtons or user.username == user_profile.username %}
-      <!-- BOTONES ESPACIALES PARA EL USUARIO QUE HACE LOGIN, SÓLO VISIBLE POR EL USUARIO QUE INICIA SESIÓN -->
-        {% endif %}
-      <!-- Menu principal - horizontal -->
-        <!-- MENU HORIZONTAL - PANEL DE USUARIO -->
-        {% include "account/menu-horizontal.html" %}
-        <!-- MENU VERTICAL CON NOTIFICACIONES  -->
-        {% include "account/notification-right-menu.html" %}
-        <!-- LOADER DE TODA LA PÁGINA -->
-        <li id="loader"></li>
-    </ul>
-    </nav>
-    {% endcomment %}
-
+{% load static %}
 <div class="navbar-fixed">
     <nav>
         <div class="nav-wrapper white z-depth-1">
-            <a title="Inicio" href="/inicio" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
+            <a title="Inicio" href="{% url "latest_news:user-feed" %}" class="brand-logo center logotipo_skyfolk"><span>S</span>kyfolk</a>
             <a data-activates="vertical-menu" class="btn-flat left button-menu-left blue-text text-darken-1"><i
                     class="material-icons">menu</i></a>
             {% include "account/menu-horizontal.html" %}
             <a data-activates="notification-menu" class="right button-right-notify btn-flat"><i class="material-icons">notifications</i><span
-                    id="live_notify_badge">{{ user_notifications|length }}</span></a>
+                    id="live_notify_badge">{{ total_notifications }}</span></a>
             <div class="right field hide-on-med-and-down" id="searchform">
-                <form method='post' action='/search/'>{% csrf_token %}
+                <form class="autocomplete-me" method='get' action="{% url 'user_profile:general-search' %}">
                     {{ searchForm }}
                 </form>
             </div>
@@ -58,22 +25,21 @@
 </div>
 <li id="loader"></li>
 {% compress js %}
-    <script src="{{ STATIC_URL }}js/core.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.shorten.1.0.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.textcomplete.min.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/jquery.shorten.1.0.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}js/materialize.min.js" type="text/javascript"></script>
-    <script src="{{ STATIC_URL }}dist/sweetalert.min.js" type="text/javascript"></script>
+<script src="{% static "js/materialize.min.js" %}" type="text/javascript"></script>
+<script src="{% static "js/core.js" %}" type="text/javascript"></script>
+<script src="{% static "js/jquery.textcomplete.min.js" %}" type="text/javascript"></script>
+<script src="{% static "dist/sweetalert.min.js" %}" type="text/javascript"></script>
 {% endcompress %}
+
 <!-- <script async src="{{STATIC_URL}}js/jquery.textcomplete.js"></script> -->
 <!-- Mentions -->
 <!--
-    <script src="{{STATIC_URL}}js/mentions/bootstrap-typeahead.js"></script>
-    <script src="{{STATIC_URL}}js/mentions/mention.js"></script>
-  -->
+<script src="{{STATIC_URL}}js/mentions/bootstrap-typeahead.js"></script>
+<script src="{{STATIC_URL}}js/mentions/mention.js"></script>
+-->
 <!-- Sweet Alert -->
 {% compress css %}
-<link rel="stylesheet" href="{{ STATIC_URL }}dist/sweetalert.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}emoji/css/textarea_find_emoji.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}themes/google/google.css">
+<link rel="stylesheet" href="{% static "dist/sweetalert.css" %}">
+<link rel="stylesheet" href="{% static "emoji/css/textarea_find_emoji.css" %}">
+<link rel="stylesheet" href="{% static "themes/google/google.css" %}">
 {% endcompress %}

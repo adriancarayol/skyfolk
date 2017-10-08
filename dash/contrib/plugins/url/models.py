@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from six import python_2_unicode_compatible
 
 from .settings import BOOKMARK_IMAGE_CHOICES_WITH_EMPTY_OPTION

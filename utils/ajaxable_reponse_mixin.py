@@ -5,18 +5,11 @@ class AjaxableResponseMixin(object):
     """
     Mixin to add AJAX support to a form.
     Must be used with an object-based FormView (e.g. CreateView)
-    Extracted from: https://docs.djangoproject.com/es/1.9/topics/class-based-
-    views/generic-editing/
     """
-
-    def form_invalid(self, form, errors=None):
+    def form_invalid(self, form):
         response = super(AjaxableResponseMixin, self).form_invalid(form)
         if self.request.is_ajax():
-            data = {
-                'error': list(errors) if errors else [u'Comprueba el contenido de tu publicación.'],
-                'type_error': 'incorrent_data'
-            }
-            return JsonResponse(data, status=400)
+            return JsonResponse(form.errors, status=400)
         else:
             return response
 
@@ -27,8 +20,8 @@ class AjaxableResponseMixin(object):
         response = super(AjaxableResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
             data = {
-                'msg': msg,
-                'response': True,
+                'pk': self.object.pk,
+                'msg': msg
             }
             return JsonResponse(data)
         else:

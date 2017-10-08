@@ -2,14 +2,12 @@
 
 {% load i18n %}
 {% load account %}
-{% load url from future %}
-{% load staticfiles %}
+{% load static %}
 
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/login.css"/>
-    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />-->
+    <link rel="stylesheet" type="text/css" href="{% static "css/login.css" %}"/>
 {% endblock %}
 
 {% block content %}

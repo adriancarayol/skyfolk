@@ -2,10 +2,11 @@
 {% comment %}
   Lista de usuarios que han dado like al perfil pasado como parametro de la url.
 {% endcomment %}
+{% load static %}
 {% block title %} <title>Likes de {{ user_profile }} </title> {% endblock %}
 {% block extra-css %}
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/amigos.css" onload="if(media!='all')media='all'">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/profile.css" onload="if(media!='all')media='all'">
+    <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}" onload="if(media!='all')media='all'">
+    <link rel="stylesheet" href="{% static "css/profile.css" %}" onload="if(media!='all')media='all'">
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -16,20 +17,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    {% block js %}
-        {{ block.super }}
-        <script src="{{ STATIC_URL }}el-pagination/js/el-pagination.js"></script>
-        <script>
-            $.endlessPaginate({
-                paginateOnScroll: true,
-                paginateOnScrollMargin: 20
-            });
-        </script>
-        {% if url_name == "following" %}
-            <script>
-                $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
-            </script>
-        {% endif %}
-    {% endblock %}
+        {{ pagination|safe }}
+    </div> 
 {% endblock %}

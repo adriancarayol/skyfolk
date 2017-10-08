@@ -1,105 +1,204 @@
 {% extends "account/base_cf.html" %}
 {% comment %}
-	Template para la configuracion del perfil de usuario
+Template para la configuracion del perfil de usuario
 {% endcomment %}
+{% load static %}
+{% block extra-css %}
+<link rel="stylesheet" href="{% static "css/main.css" %}">
+<link rel="stylesheet" href="{% static "css/cropper.min.css" %}">
+{% endblock %}
 {% block additional_files %}
-    {% load i18n avatar_tags %}
+{% load i18n avatar_tags %}
 {% endblock %}
 {% block cf-title %}
-    <div class="hgroup">
-        <h4 class="cn"> Perfil </h4>
-        <h6 class="ch"> Cambia datos de tu perfil</h6>
-    </div>
+<div class="hgroup">
+    <h4 class="cn"> Perfil </h4>
+    <h6 class="ch"> Cambia datos de tu perfil</h6>
+</div>
 {% endblock %}
 {% block cf-form %}
-    <form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
+    <form class="avatar-form" method='post' accept-charset="utf-8" enctype='multipart/form-data' action='{% url 'user_profile:config_profile' %}'>{% csrf_token %}
         <div class="col l12 m12 s12 wrapper-profilex">
-            {% if node_profile.back_image %}
+            {% if user_profile.back_image %}
+            <div class="col l12 m12 s12 profilex"
+                style="background: url('{{ user_profile.back_image.url }}') no-repeat center center; background-size: cover;">
+                {% else %}
                 <div class="col l12 m12 s12 profilex"
-                     style="background: url('{{ node_profile.back_image }}') no-repeat center center; background-size: cover;">
-            {% else %}
-                <div class="col l12 m12 s12 profilex"
-                     style="background: url('{{ STATIC_URL }}dist/img/nuevo_back.png') no-repeat center center; background-size: cover;">
-            {% endif %}
-            <!-- Si el usuario tiene imagen, lo redireccionamos a change -->
-            <div id="avatar-profile" title="Imágen de perfil" class="img-profile"
-                 style="background-image: url({% avatar_url user_profile %}); background-repeat: no-repeat; background-position: center;
-                         background-size: 100% 100%">
-                <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
-                        class="fa fa-trash"></i></a>
-                <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
-                        class="fa fa-plus"></i></a>
-            </div>
-            </div>
-            <div class="col l12 m12 s12 index-wrapper">
-                <div class="row">
+                    style="background: url('{% static "dist/img/nuevo_back.png" %}') no-repeat center center; background-size: cover;">
+                    {% endif %}
+                    <!-- Si el usuario tiene imagen, lo redireccionamos a change -->
+                    <div id="avatar-profile" title="Imágen de perfil" class="img-profile"
+                        style="background-image: url({% avatar_url request.user %}); background-repeat: no-repeat; background-position: center;
+                        background-size: 100% 100%">
+                        <a title="Eliminar imágenes de perfil" href="{% url 'avatar_delete' %}" class="delete-profile-image"><i
+                                class="material-icons">delete_forever</i></a>
+                        <a title="Subir imágenes de perfil" href="{% url 'avatar_add' %}" class="add-profile-image"><i
+                                class="material-icons">add</i></a>
+                    </div>
+                </div>
+                <div class="col l12 m12 s12 index-wrapper">
                     <div class="row">
-                        <div class="red-text">{{ user_form.first_name.errors }}</div>
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">perm_identity</i>
-                            {{ user_form.first_name }}
-                            <label for="id_first_name">{% trans "Name" %}</label>
+                        <div class="row">
+                            <div class="red-text">{{ user_form.first_name.errors }}</div>
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">perm_identity</i>
+                                {{ user_form.first_name }}
+                                <label for="id_first_name">{% trans "Name" %}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="row">
+                            <div class="red-text">{{ user_form.last_name.errors }}</div>
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">perm_identity</i>
+                                {{ user_form.last_name }}
+                                <label for="id_last_name">Apellido</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="backimage-usr file-field input-field avatar-upload">
+                            <p>{{ perfil_form.backImage.errors }}</p>
+                            <div class="btn blue darken-1 waves-effect wavesl-light">
+                                <span>Imagen de fondo</span>
+                                <input id="id_backImage" name="image" type="file" class="avatar-input">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate avatar-input" name="image" type="text">
+                            </div>
+                            <input type="hidden" class="avatar-src" name="avatar_src">
+                            <input type="hidden" class="avatar-data" name="avatar_data">
+                            <input type="hidden" class="is-cutted" name="avatar_cut" value="false">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <a id="crop-image" class="waves-effect waves-light btn blue darken-1 right">Recortar
+                            <i class="material-icons right">crop</i>
+                        </a>
+                    </div>
+                    <div class="row">
+                        <div class="row">
+                            <div class="red-text">{{ perfil_form.status.errors }}</div>
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">insert_emoticon</i>
+                                {{ perfil_form.status }}
+                                <label for="id_status">Di como te sientes</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="row">
-                        <div class="red-text">{{ user_form.last_name.errors }}</div>
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">perm_identity</i>
-                            {{ user_form.last_name }}
-                            <label for="id_last_name">Apellido</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="backimage-usr">
-                        <p>{{ perfil_form.backImage.errors }}</p>
-                        <p>Elige una imagen de fondo.</p>
-                        <p>{{ perfil_form.backImage }}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="row">
-                        <div class="red-text">{{ perfil_form.status.errors }}</div>
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">insert_emoticon</i>
-                            {{ perfil_form.status }}
-                            <label for="id_status">Di como te sientes</label>
-                        </div>
-                    </div>
-                </div>
             </div>
-            </div>
-            <button class="btn btn-info right blue darken-1" id="boton-perfil" type="submit">Salvar cambios</button>
+            <button class="btn btn-info right blue darken-1"id="boton-perfil" type="submit">Salvar cambios</button>
         </div>
     </form>
-    {% comment %}
-		Para evitar cadenas de texto muy largas (a la hora de mostrar el nombre del fichero)
-	{% endcomment %}
-    <script async>
-        jQuery("a").each(function (i, value) {
-            var hyperlink = jQuery(value);
-            var text = hyperlink.text();
+{% comment %}
+Para evitar cadenas de texto muy largas (a la hora de mostrar el nombre del fichero)
+{% endcomment %}
+<script async>
+    jQuery("a").each(function (i, value) {
+        var hyperlink = jQuery(value);
+        var text = hyperlink.text();
 
-            if (text.length > 25) {
-                hyperlink.text(text.substring(0, 21) + "...");
+        if (text.length > 100) {
+            hyperlink.text(text.substring(0, 21) + "...");
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#avatar-profile').on('click', function () {
+            {% if request.user|has_avatar %}
+            window.location.href = "{% url 'avatar_change' %}";
+            {% else %}
+            window.location.href = "{% url 'avatar_add' %}";
+            {% endif %}
+        });
+
+        $('#crop-image-preview').find('.close-crop-image').on('click', function () {
+            $('#crop-image-preview').hide();
+            $('.avatar-form .is-cutted').val('false');
+        });
+
+        $('#crop-image-preview').find('#cut-done').on('click', function () {
+            $('#crop-image-preview').hide();
+            $('.avatar-form .is-cutted').val('true'); // Redundancia
+
+        });
+
+        $(this).on('keydown', function (e) {
+            var key = e.keyCode || e.which;
+            if (key == 27) {
+                $('#upload_photo').hide();
+                $('#crop-image-preview').hide();
+                $('.avatar-form .is-cutted').val('false');
             }
         });
-    </script>
+    });
 
-    <script>
-        $(document).ready(function () {
-            $('#avatar-profile').on('click', function () {
-                {% if user_profile|has_avatar %}
-                    window.location.href = "{% url 'avatar_change' %}";
-                {% else %}
-                    window.location.href = "{% url 'avatar_add' %}";
-                {% endif %}
-            });
-        });
-    </script>
-    <script>
-        $('.menu-config').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
-    </script>
+</script>
+<script>
+
+</script>
+<script type="text/javascript" src="{% static "js/cropper.min.js" %}"></script>
+<script type="text/javascript" src="{% static "js/cropper_backimage.js" %}"></script>
+<script>
+    $('.menu-config').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+</script>
+{% endblock %}
+{% block cropper %}
+    <div id="crop-image-preview" class="crop-image-div">
+        <div class="row">
+            <span class="close-crop-image material-icons right">remove</span>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <div class="avatar-wrapper"></div>
+            </div>
+        </div>
+        <div class="row avatar-btns">
+            <div class="col s12">
+                <div class="btn-group">
+                    <button type="button" class="waves-effect waves-light btn transparent black-text"
+                        data-method="rotate"
+                        data-option="-90"
+                        title="Rotate -90 degrees">Rotate Left
+                    </button>
+                    <button type="button" class="waves-effect waves-light btn transparent black-text"
+                        data-method="rotate"
+                        data-option="-15">-15deg
+                    </button>
+                    <button type="button" class="waves-effect waves-light btn transparent black-text"
+                        data-method="rotate"
+                        data-option="-30">-30deg
+                    </button>
+                    <button type="button" class="waves-effect waves-light btn transparent black-text"
+                        data-method="rotate"
+                        data-option="-45">-45deg
+                    </button>
+                    <button type="button" class="waves-effect waves-light btn transparent black-text"
+                        data-method="rotate"
+                        data-option="90"
+                        title="Rotate 90 degrees">Rotate Right
+                    </button>
+                    <button type="button" class="waves-effect waves-light btn transparent black-text"
+                        data-method="rotate"
+                        data-option="15">15deg
+                    </button>
+                    <button type="button" class="waves-effect waves-light btn transparent black-text"
+                        data-method="rotate"
+                        data-option="30">30deg
+                    </button>
+                    <button type="button" class="waves-effect waves-light btn transparent black-text"
+                        data-method="rotate"
+                        data-option="45">45deg
+                    </button>
+                    <button id="cut-done" type="button" class="waves-effect waves-light btn blue darken-1 right">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
 {% endblock %}

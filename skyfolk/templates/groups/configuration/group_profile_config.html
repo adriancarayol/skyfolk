@@ -1,0 +1,76 @@
+{% extends "groups/configuration/base_cf_group.html" %}
+{% load static %}
+{% load static %}
+{% load avatar_tags %}
+{% block title %} <title>Skyfolk / Configuración {{ object.name }}.</title> {% endblock %}
+{% block cf-title %}
+    <div class="hgroup">
+        <h4 class="cn"> Grupo </h4>
+        <h6 class="ch"> Cambia la información de tu grupo.</h6>
+    </div>
+{% endblock %}
+{% block cf-form %}
+    <form id="form-config-group" type="post"
+          action="{% url "user_groups:configuration_group:configuration_group" pk=object.id %}"
+          enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col l12 m12 s12 profilex"
+                 style="{% if object.back_image %}background: url('{{ object.back_image.url }}'){% else %}background: url('{% static "dist/img/nuevo_back.png" %}'){% endif %} no-repeat center center; background-size: cover;">
+
+                <!-- Si el usuario tiene imagen, lo redireccionamos a change -->
+                <div id="avatar-profile" title="Imágen de perfil" class="img-profile"
+                     style="{% if object.avatar %}background: url('{{ object.avatar.url }}'){% else %}background: url('{% static "dist/img/nuevo.png" %}'){% endif %}; background-repeat: no-repeat; background-position: center;
+                             background-size: 100% 100%">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">description</i>
+                {{ form.description }}
+                <label for="edit_description">Descripción</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="file-field input-field col s12">
+                <div class="btn blue lighten-2">
+                    <span>Avatar</span>
+                    {{ form.avatar }}
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="file-field input-field col s12">
+                <div class="btn blue lighten-2">
+                    <span>Cabecera</span>
+                    {{ form.back_image }}
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                {{ form.is_public }}
+                <label for="edit_is_public">Active esta casilla para hacer el grupo privado.</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12 col s12">
+                <i class="material-icons prefix">bookmark</i>
+                {{ form.tags }}
+                <label for="edit_tags">Introduce una "," para añadir un nuevo tema. (Música, Deporte)</label>
+            </div>
+        </div>
+        <button class="btn btn-info right blue darken-1" id="boton-perfil" type="submit">Salvar cambios</button>
+    </form>
+    <script type="text/javascript" src="{% static "js/groups.js" %}"></script>
+    <script>
+        $('.menu-config').find('li:nth-child(1)').css({'background-color': 'rgba(0,0,0,0.1)', 'color': '#1e88e5'});
+    </script>
+{% endblock %}

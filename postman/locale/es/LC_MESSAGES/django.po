@@ -348,13 +348,13 @@ msgstr "Archivar"
 msgid "Undelete"
 msgstr "Recuperar"
 
-#: .\templates\postman\base_folder.html:27
+#: .\templates\postman\base_folder.html:67
 msgid "Mark as read"
-msgstr ""
+msgstr "Marcar como leído"
 
-#: .\templates\postman\base_folder.html:28
+#: .\templates\postman\base_folder.html:70
 msgid "Mark as unread"
-msgstr ""
+msgstr "Marcar como no leído"
 
 #: .\templates\postman\base_folder.html:33
 msgid "Action"
