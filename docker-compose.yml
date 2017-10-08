@@ -100,7 +100,7 @@ services:
       context: .
       dockerfile: Dockerfile
     hostname: web
-    command: ./run_web.sh
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code  # mount current directory inside container
     ports:
@@ -116,7 +116,6 @@ services:
       - db
       - neo4j
       - rabbit 
-      - ffmpeg
   
 volumes:
   esdata1:

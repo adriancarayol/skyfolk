@@ -14,5 +14,5 @@ python manage.py badgify_sync badges --update
 # python manage.py rebuild_index --noinput
 # python manage.py runserver
 python manage.py runworker
-daphne -b 0.0.0.0 -p 8000 skyfolk.asgi:channel_layer
+daphne -b 0.0.0.0 -p 8001 skyfolk.asgi:channel_layer
 
