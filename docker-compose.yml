@@ -14,13 +14,6 @@ services:
     volumes:
       - "dbdata:/var/lib/postgresql/data"
 
-  # ffmpeg
-  ffmpeg:
-    image: jrottenberg/ffmpeg
-    tty: true
-    stdin_open: true
-    volumes:
-      - "ffmpeg:/root/.imageio"
   # Neo4j datbase
   neo4j:
     image: neo4j:latest
@@ -100,7 +93,7 @@ services:
       context: .
       dockerfile: Dockerfile
     hostname: web
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ./run_web.sh
     volumes:
       - .:/code  # mount current directory inside container
     ports:
@@ -115,8 +108,27 @@ services:
     depends_on:
       - db
       - neo4j
-      - rabbit 
-  
+      - rabbit
+  # Celery worker
+  worker:
+    env_file:
+      - web-variables.env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./run_celery.sh
+    volumes:
+      - .:/code
+    links:
+      - neo4j
+      - db
+      - rabbit
+      - redis
+      - web
+    depends_on:
+      - web
+
+
 volumes:
   esdata1:
     driver: local
@@ -124,9 +136,6 @@ volumes:
     driver: local
   dbdata:
     driver: local
-  ffmpeg:
-    driver: local
-  
 
 networks:
   esnet:

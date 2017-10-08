@@ -2,12 +2,13 @@ import os
 
 RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
+RABBIT_HOSTNAME = 'rabbit'
+
 if RABBIT_HOSTNAME.startswith('tcp://'):
     RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
 
 broker_url = os.environ.get('BROKER_URL',
                             '')
-
 
 if not broker_url:
     broker_url = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
@@ -20,6 +21,8 @@ if not broker_url:
 BROKER_HEARTBEAT = '?heartbeat=60'
 if not broker_url.endswith(BROKER_HEARTBEAT):
     broker_url += BROKER_HEARTBEAT
+
+
 
 accept_content = ['json']
 task_serializer = 'json'
