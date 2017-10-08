@@ -172,7 +172,6 @@ NOTIFICATIONS_USE_JSONFIELD = True
 # neo4j database
 
 NEO4J_URL = os.environ.get('NEO4J_URL', 'neo4j')
-#TODO: Set to NEO4J_URL
 NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:1518@neo4j:7687'
 NEOMODEL_ENCRYPTED_CONNECTION = True
 NEOMODEL_SIGNALS = True
@@ -185,7 +184,7 @@ REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': REDIS_HOST,
+        'LOCATION': 'redis://redis:6379/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -344,7 +343,7 @@ ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://%s:9200/' % ELASTIC_URL,
+        'URL': 'http://elasticsearch1:9200/',
         'INDEX_NAME': 'haystack',
     },
 }
