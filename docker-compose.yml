@@ -25,7 +25,7 @@ services:
       - "7474:7474"
       - "7687:7687"
     volumes:
-      - "./db/dbms:/data/dbms"
+      - "./db/dbms:/var/lib/neo4j/data"
 
   # Redis
   redis:
