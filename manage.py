@@ -4,9 +4,6 @@ import subprocess
 import sys
 from django.core.management import execute_from_command_line
 
-# Eliminar esto
-import imageio
-imageio.plugins.ffmpeg.download()
 if __name__ == "__main__":
     # import ipdb;ipdb.set_trace()
     # verificamos si param --entorno [develop|pre|master]
