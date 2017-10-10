@@ -82,6 +82,7 @@ THIRD_PARTY_APPS = (
     'haystack',
     'badgify',
     'django_celery_beat',
+    'invitations',
 )
 
 FIRST_PARTY_APPS = (
@@ -140,6 +141,8 @@ EXTERNAL_SIGNUP_URL = None
 EXTERNAL_LOGOUT_URL = None
 # / DJANGO ALL AUTH CONFIG
 
+# INVITATIONS
+INVITATIONS_INVITATION_ONLY = True
 # CONFIG E-MAIL
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25

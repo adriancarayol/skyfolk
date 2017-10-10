@@ -4,9 +4,9 @@ from allauth.account.adapter import DefaultAccountAdapter
 from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
-
 from user_profile.models import Profile
-
+from allauth.account.signals import user_signed_up
+from invitations.app_settings import app_settings
 
 class MyAccountAdapter(DefaultAccountAdapter):
     """
@@ -49,3 +49,17 @@ class MyAccountAdapter(DefaultAccountAdapter):
             )
 
         return path.format(username=request.user.username)
+
+    def is_open_for_signup(self, request):
+        # For invitations
+        if hasattr(request, 'session') and request.session.get(
+                'account_verified_email'):
+            return True
+        elif app_settings.INVITATION_ONLY is True:
+            return False
+        else:
+            return True
+
+    def get_user_signed_up_signal(self):
+        # For invitations
+        return user_signed_up

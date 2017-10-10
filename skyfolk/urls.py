@@ -71,6 +71,8 @@ urlpatterns = [
     # logros
     url(r'^badges/', include('badgify.urls')),
     url(r'^awards/', include('awards.urls')),
+    # invitaciones
+    url(r'^invitations/', include('invitations.urls', namespace='invitations')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
