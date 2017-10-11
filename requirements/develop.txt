@@ -107,4 +107,3 @@ Twisted[tls,http2]
 django_celery_beat>=1.0.1
 django-uuslug>=1.1.8
 django-invitations
--e git+https://github.com/adriancarayol/asgi_rabbitmq.git#egg=asgi_rabbitmq

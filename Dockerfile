@@ -23,6 +23,7 @@ WORKDIR /code
 ADD requirements/develop.txt /code/
 
 RUN pip install -r develop.txt
+RUN pip install git+https://github.com/adriancarayol/asgi_rabbitmq.git
 
 ADD . /code/
 
