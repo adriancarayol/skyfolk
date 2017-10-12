@@ -40,7 +40,7 @@ app.conf.beat_schedule = {
     },
     'recommendations-via-email': {
         'task': 'tasks.send_recommendation_via_email',
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(minute='*/15'),
         'options': {'queue': 'background'}
     }
 }

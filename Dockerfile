@@ -1,21 +1,22 @@
 # update and install ffmpeg
 FROM ubuntu
 
-RUN apt-get update
-RUN apt-get dist-upgrade -y
+RUN apt-get -y update && apt-get install -y wget nano git build-essential yasm pkg-config
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python-software-properties
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
-RUN DEBIAN_FRONTEND=noninteractive apt-add-repository -y ppa:jonathonf/ffmpeg-3
+# Compile and install ffmpeg from source
+RUN mkdir /root/.imageio
+RUN git clone https://github.com/FFmpeg/FFmpeg /root/.imageio/ffmpeg && \
+        cd /root/.imageio/ffmpeg && \
+        ./configure --enable-nonfree --disable-shared --extra-cflags=-I/usr/local/include && \
+        make -j8 && make install -j8
 
-RUN apt-get update
-RUN apt-get install -y ffmpeg
+ENV FFMPEG_BINARY = /root/.imageio/ffmpeg
 
 FROM python:3.6
 
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE=skyfolk.settings.pre
+
 
 RUN mkdir /code
 WORKDIR /code
