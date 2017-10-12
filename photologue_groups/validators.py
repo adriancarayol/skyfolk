@@ -31,8 +31,7 @@ def valid_url_mimetype(url, mimetype_list=VALID_IMAGE_MIMETYPES):
 
 
 def get_mimetype(fobject):
-    mime = magic.Magic(mime=True)
-    mimetype = mime.from_buffer(fobject.read(1024))
+    mimetype = magic.from_buffer(fobject.read(1024), mime=True)
     fobject.seek(0)
     return mimetype
 

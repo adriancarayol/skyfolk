@@ -11,9 +11,6 @@ from io import BytesIO
 from os.path import splitext
 from urllib.parse import urlparse
 
-import exifread
-import magic
-import requests
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site

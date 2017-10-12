@@ -18,11 +18,10 @@ from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupp
 from publications.models import Publication
 from publications.views import logger
 from publications_gallery_groups.forms import PublicationPhotoForm, PublicationPhotoEdit
-from publications.forms import SharedPublicationForm
 from publications_gallery_groups.models import PublicationGroupMediaPhoto
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
-from publications_gallery_groups.utils import optimize_publication_media, check_num_images
+from publications_gallery_groups.utils import optimize_publication_media, check_num_images, check_image_property
 
 
 class PublicationPhotoView(AjaxableResponseMixin, CreateView):
@@ -86,9 +85,11 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                     form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
                     return self.form_invalid(form=form)
 
+                for file in media:
+                    check_image_property(file)
+
                 try:
-                    f = magic.Magic(mime=True, uncompress=True)
-                    exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                    exts = [magic.from_buffer(x.read(), mime=True).split('/') for x in media]
                 except magic.MagicException as e:
                     form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
                     return self.form_invalid(form=form)
@@ -120,6 +121,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
                                            msg=u"Estamos procesando tus videos, te avisamos "
                                                u"cuando la publicación esté lista.")
             except Exception as e:
+                form.add_error('content', str(e))
                 logger.info("Publication not created -> {}".format(e))
 
         return self.form_invalid(form=form)

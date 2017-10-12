@@ -245,8 +245,7 @@ class UploadFormVideo(forms.ModelForm):
         if video._size > settings.BACK_IMAGE_DEFAULT_SIZE:
             raise forms.ValidationError('El video seleccionado ocupa más de 5MB.')
 
-        f = magic.Magic(mime=True, uncompress=True)
-        type = f.from_buffer(video.read(1024))
+        type = magic.from_buffer(video.read(1024), mime=True)
 
         if type.split('/')[0] != 'video':
             raise forms.ValidationError('Selecciona un formato de vídeo válido.')

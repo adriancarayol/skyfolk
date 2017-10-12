@@ -14,7 +14,6 @@ from .tasks import process_gif_publication, process_video_publication
 def optimize_publication_media(instance, image_upload, exts):
     if image_upload:
         for index, media in enumerate(image_upload):
-            check_image_property(media)
             try:
                 if exts[index][0] == "video":  # es un video
                     if exts[index][1] == 'mp4':

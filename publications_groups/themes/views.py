@@ -12,7 +12,7 @@ from emoji import Emoji
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications_groups.forms import PublicationThemeForm, ThemePublicationEdit
 from publications_groups.themes.models import PublicationTheme
-from publications_groups.themes.utils import optimize_publication_media
+from publications_groups.themes.utils import optimize_publication_media, check_image_property
 from publications_groups.utils import check_num_images
 from user_groups.models import GroupTheme, UserGroups
 from user_profile.node_models import NodeProfile
@@ -74,9 +74,11 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
             form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
             return self.form_invalid(form=form)
 
+        for file in media:
+            check_image_property(file)
+
         try:
-            f = magic.Magic(mime=True, uncompress=True)
-            exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+            exts = [magic.from_buffer(x.read(), mime=True).split('/') for x in media]
         except magic.MagicException as e:
             form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
             return self.form_invalid(form=form)
@@ -105,7 +107,8 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
             form.instance.delete()
             return self.form_invalid(form=form)
 
-        except IntegrityError:
+        except IntegrityError as e:
+            form.add_error('content', str(e))
             return self.form_invalid(form=form)
 
         return saved

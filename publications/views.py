@@ -65,7 +65,6 @@ def check_num_images(image_collection):
 def _optimize_publication_media(instance, image_upload, exts):
     if image_upload:
         for index, media in enumerate(image_upload):
-            check_image_property(media)
             try:
                 if exts[index][0] == "video":  # es un video
                     if exts[index][1] == 'mp4':
@@ -148,7 +147,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     parent_owner = parent.author_id
                     parent_node = NodeProfile.nodes.get(user_id=parent_owner)
                     if parent_node.bloq.is_connected(emitter):
-                        form.add_error('board_photo', 'El autor de la publicación te ha bloqueado.')
+                        form.add_error('board_owner', 'El autor de la publicación te ha bloqueado.')
                         return self.form_invalid(form=form)
 
                 publication.author_id = emitter.user_id
@@ -167,9 +166,11 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
                     form.add_error('content', 'El número máximo de imágenes que puedes subir es 5.')
                     return self.form_invalid(form=form)
 
+                for file in media:
+                    check_image_property(file)
+
                 try:
-                    f = magic.Magic(mime=True, uncompress=True)
-                    exts = [f.from_buffer(x.read(1024)).split('/') for x in media]
+                    exts = [magic.from_buffer(x.read(), mime=True).split('/') for x in media]
                 except magic.MagicException as e:
                     form.add_error('content', 'No hemos podido procesar los archivos adjuntos.')
                     return self.form_invalid(form=form)
@@ -208,6 +209,7 @@ class PublicationNewView(AjaxableResponseMixin, CreateView):
 
             except Exception as e:
                 logger.info("Publication not created -> {}".format(e))
+                form.add_error('content', str(e))
                 return self.form_invalid(form=form)
 
         return self.form_invalid(form=form)

@@ -1,19 +1,13 @@
 import logging
-import mimetypes
 import os
-import tempfile
 import unicodedata
 import uuid
 from datetime import datetime
 from importlib import import_module
 from inspect import isclass
 from io import BytesIO
-from os.path import splitext
-from urllib.parse import urlparse
 
 import exifread
-import magic
-import requests
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site

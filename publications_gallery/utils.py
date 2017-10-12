@@ -3,7 +3,6 @@ import os
 import tempfile
 import uuid
 
-import magic
 from PIL import Image
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -40,7 +39,6 @@ def check_num_images(image_collection):
 def optimize_publication_media(instance, image_upload, exts):
     if image_upload:
         for index, media in enumerate(image_upload):
-            check_image_property(media)
             try:
                 if exts[index][0] == "video":  # es un video
                     if exts[index][1] == 'mp4':

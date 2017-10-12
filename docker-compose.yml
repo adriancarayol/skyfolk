@@ -13,6 +13,7 @@ services:
       - "5432:5432"
     volumes:
       - "dbdata:/var/lib/postgresql/data"
+    restart: always
 
   # Neo4j datbase
   neo4j:
@@ -26,11 +27,13 @@ services:
       - "7687:7687"
     volumes:
       - "./db/dbms:/var/lib/neo4j/data"
+    restart: always
 
   # Redis
   redis:
     image: redis:4.0
     hostname: redis
+    restart: always
     
   # elasticsearch
   elasticsearch:
@@ -39,6 +42,7 @@ services:
       - "9200:9200"
     volumes:
       - ./esdata/:/usr/share/elasticsearch/data/
+    restart: always
 
   kibana:
     image: kibana
@@ -46,6 +50,7 @@ services:
       - "5601:5601"
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
+    restart: always
 
   # RabbitMQ
   rabbit:
@@ -58,6 +63,7 @@ services:
     ports:
       - "5672:5672"  # we forward this port because it's useful for debugging
       - "15672:15672"  # here, we can access rabbitmq management plugin
+    restart: always
 
   # Django web server
   web:
@@ -82,6 +88,7 @@ services:
       - db
       - neo4j
       - rabbit
+    restart: always
   # Celery worker
   worker:
     env_file:
@@ -100,6 +107,7 @@ services:
       - web
     depends_on:
       - web
+    restart: always
 
 volumes:
   dbdata:
