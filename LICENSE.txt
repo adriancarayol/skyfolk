@@ -1,0 +1,5 @@
+/* Copyright (C) Adrián Carayol Orenes - All Rights Reserved
+ * Unauthorized copying of this file/folder/project, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Adrián Carayol Orenes <adriancarayol@gmail.com>, Oct 2017
+ */
