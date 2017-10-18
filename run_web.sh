@@ -3,7 +3,7 @@
 sleep 10
 
 # su -m skyfolk -c "command"
-
+ls -lra /root/.imageio
 su -m skyfolk -c "python manage.py install_labels"
 su -m skyfolk -c "python manage.py makemigrations"
 su -m skyfolk -c "python manage.py makemigrations badgify"

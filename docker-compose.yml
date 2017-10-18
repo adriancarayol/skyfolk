@@ -74,6 +74,8 @@ services:
       dockerfile: Dockerfile
     hostname: web
     command: ./run_web.sh
+    tmpfs:
+      - /tmp
     volumes:
       - .:/code  # mount current directory inside container
     ports:
@@ -97,6 +99,8 @@ services:
       context: .
       dockerfile: Dockerfile
     command: ./run_celery.sh
+    tmpfs:
+      - /tmp
     volumes:
       - .:/code
     links:

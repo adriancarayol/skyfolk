@@ -4,9 +4,10 @@ ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE=skyfolk.settings.pre
 
 RUN mkdir /code
-WORKDIR /code
 
 ADD requirements/develop.txt /code/
+
+WORKDIR /code
 
 RUN pip install -r develop.txt
 RUN pip install git+https://github.com/adriancarayol/asgi_rabbitmq.git
@@ -38,6 +39,15 @@ RUN ln -s /root/.imageio/ffmpeg/ffmpeg.linux64 /usr/bin/ffmpeg
 # modify ImageMagick policy file so that Textclips work correctly.
 RUN cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMagick-6/policy.xml
 
-ADD . /code/
+# create non root user
+RUN adduser --disabled-password --gecos '' skyfolk
+# set ffmpeg owner to skyfolk group
+RUN chgrp skyfolk /usr/bin/ffmpeg
+# set root owner to skyfolk group
+RUN chgrp -R skyfolk /root/
 
-RUN adduser --disabled-password --gecos '' skyfolk 
+RUN chmod 770 /usr/bin/ffmpeg
+RUN chmod -R 770 /root/
+
+RUN usermod -a -G skyfolk root
+
