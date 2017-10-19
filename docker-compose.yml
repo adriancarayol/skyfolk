@@ -74,10 +74,9 @@ services:
       dockerfile: Dockerfile
     hostname: web
     command: ./run_web.sh
-    tmpfs:
-      - /tmp
     volumes:
       - .:/code  # mount current directory inside container
+      - /tmp:/tmp
     ports:
       - "8000:8000"
     links:
@@ -99,10 +98,9 @@ services:
       context: .
       dockerfile: Dockerfile
     command: ./run_celery.sh
-    tmpfs:
-      - /tmp
     volumes:
       - .:/code
+      - /tmp:/tmp
     links:
       - neo4j
       - db
