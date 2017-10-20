@@ -34,3 +34,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/skyfolk/static/pre/static'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/var/www/skyfolk/static/pre/media'
+# INVITATIONS ONLY EMAIL
+INVITATIONS_INVITATION_ONLY = True

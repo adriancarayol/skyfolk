@@ -14,6 +14,8 @@ services:
     volumes:
       - "dbdata:/var/lib/postgresql/data"
     restart: always
+    networks:
+      - webnet
 
   # Neo4j datbase
   neo4j:
@@ -28,12 +30,16 @@ services:
     volumes:
       - "./db/dbms:/var/lib/neo4j/data"
     restart: always
+    networks:
+      - webnet
 
   # Redis
   redis:
     image: redis:4.0
     hostname: redis
     restart: always
+    networks:
+      - webnet
     
   # elasticsearch
   elasticsearch:
@@ -43,14 +49,20 @@ services:
     volumes:
       - ./esdata/:/usr/share/elasticsearch/data/
     restart: always
+    networks:
+      - webnet
 
   kibana:
-    image: kibana
+    image: kibana:4.6.0
     ports:
       - "5601:5601"
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
     restart: always
+    volumes:
+      - ./kibana/config/:/usr/share/kibana/config
+    depends_on:
+      - elasticsearch
+    networks:
+      - webnet
 
   # RabbitMQ
   rabbit:
@@ -64,6 +76,8 @@ services:
       - "5672:5672"  # we forward this port because it's useful for debugging
       - "15672:15672"  # here, we can access rabbitmq management plugin
     restart: always
+    networks:
+      - webnet
 
   # Django web server
   web:
@@ -79,16 +93,14 @@ services:
       - /tmp:/tmp
     ports:
       - "8000:8000"
-    links:
-      - db
-      - rabbit
-      - neo4j
-      - redis
-      - elasticsearch
+    networks:
+      - webnet
     depends_on:
       - db
       - neo4j
       - rabbit
+    networks:
+      - webnet
     restart: always
   # Celery worker
   worker:
@@ -101,12 +113,8 @@ services:
     volumes:
       - .:/code
       - /tmp:/tmp
-    links:
-      - neo4j
-      - db
-      - rabbit
-      - redis
-      - web
+    networks:
+      - webnet
     depends_on:
       - web
     restart: always
@@ -114,3 +122,7 @@ services:
 volumes:
   dbdata:
     driver: local
+
+networks:
+  webnet:
+    driver: bridge 
