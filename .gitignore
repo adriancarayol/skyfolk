@@ -26,3 +26,9 @@ Web.config
 celerybeat-schedule
 celerybeat.pid
 geckodriver.log
+# docker files
+esdata/
+db/
+kibana/
+tmp/
+celerybeat.pid

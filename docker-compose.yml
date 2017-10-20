@@ -79,6 +79,23 @@ services:
     networks:
       - webnet
 
+  webworker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/code
+      - /tmp:/tmp
+    command: ./run_worker.sh
+    env_file:
+      - web-variables.env
+    networks:
+      - webnet
+    depends_on:
+      - db
+      - neo4j
+      - rabbit
+    restart: always
   # Django web server
   web:
     env_file:
