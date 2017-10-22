@@ -1,6 +1,17 @@
 version: '2'
 
 services:   
+  nginx:
+    image: nginx:latest
+    container_name: ng01
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+      - /tmp:/tmp
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - web
   # PostgreSQL database
   db:
     image: postgres:9.6.5
