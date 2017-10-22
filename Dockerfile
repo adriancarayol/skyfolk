@@ -10,7 +10,6 @@ ADD requirements/develop.txt /code/
 WORKDIR /code
 
 RUN pip install -r develop.txt
-RUN pip install git+https://github.com/adriancarayol/asgi_rabbitmq.git
 
 # Install numpy using system package manager
 RUN apt-get -y update && apt-get -y install libav-tools imagemagick libopencv-dev python-opencv
@@ -50,4 +49,5 @@ RUN chmod 770 /usr/bin/ffmpeg
 RUN chmod -R 770 /root/
 
 RUN usermod -a -G skyfolk root
-
+# can delete this line
+RUN usermod -a -G skyfolk skyfolk

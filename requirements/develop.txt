@@ -1,6 +1,7 @@
 amqp==2.2.2
 appdirs==1.4.3
 asgi-redis==1.4.3
+asgi_rabbitmq==0.5.4
 asgiref==1.1.2
 autobahn==17.8.1
 backports-abc==0.4

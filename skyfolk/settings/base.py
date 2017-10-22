@@ -265,7 +265,7 @@ TEMPLATES = [
 # rabbitmq
 RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
-rabbitmq_url = 'amqp://guest:guest@rabbit/%2F'
+rabbitmq_url = 'amqp://guest:guest@rabbit/%2F?heartbeat=60'
 
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
