@@ -265,7 +265,7 @@ TEMPLATES = [
 # rabbitmq
 RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
-rabbitmq_url = 'amqp://guest:guest@rabbit/%2F?heartbeat=60'
+rabbitmq_url = 'amqp://guest:guest@rabbit/%2F'
 
 # https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
 
@@ -349,7 +349,7 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-#HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 #HAYSTACK_SEARCH_RESULTS_PER_PAGE = 30
 
 # LOGROS

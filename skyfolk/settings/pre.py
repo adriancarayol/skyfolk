@@ -1,4 +1,5 @@
 import os
+from django.core.exceptions import ImproperlyConfigured
 from .base import *
 
 
@@ -11,8 +12,11 @@ def get_env_variable(var_name):
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
 
-
-SECRET_KEY = get_env_variable('SECRET_KEY')
+# Eliminar except
+try:
+    SECRET_KEY = get_env_variable('SECRET_KEY')
+except:
+    SECRET_KEY = '0)3c4u$y^+3&tx=rsgqsnr!=r5nl%j)w401o#86v97w%2v$99#'
 
 DEBUG = True
 
@@ -27,12 +31,16 @@ DATABASES = {
     }
 }
 # ACCOUNT SETTINGS FOR PRE
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+ALLOWED_HOSTS = ALLOWED_HOSTS + ['45.55.57.214']
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/skyfolk/static/pre/static'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = '/var/www/skyfolk/static/pre/static'
+MEDIA_ROOT = os.path.join(BASE_DIR, "skyfolk/media")
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/var/www/skyfolk/static/pre/media'
+# MEDIA_ROOT = '/var/www/skyfolk/static/pre/media'
 # INVITATIONS ONLY EMAIL
-INVITATIONS_INVITATION_ONLY = True
+# INVITATIONS_INVITATION_ONLY = True
+

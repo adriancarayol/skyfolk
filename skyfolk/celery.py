@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+import os
 import skyfolk.celeryconf as celeryconf
 from celery import Celery
 from celery.schedules import crontab
@@ -6,7 +7,7 @@ from django.conf import settings
 from kombu import Exchange, Queue
 
 # set the default Django settings module for the 'celery' program.
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skyfolk.settings.develop')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skyfolk.settings.develop')
 
 app = Celery('skyfolk')
 

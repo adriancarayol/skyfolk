@@ -17,13 +17,6 @@ if not broker_url:
         hostname=RABBIT_HOSTNAME,
         vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
 
-# We don't want to have dead connections stored on rabbitmq, so we have to negotiate using heartbeats
-BROKER_HEARTBEAT = '?heartbeat=60'
-if not broker_url.endswith(BROKER_HEARTBEAT):
-    broker_url += BROKER_HEARTBEAT
-
-
-
 accept_content = ['json']
 task_serializer = 'json'
 result_serializer = 'json'
