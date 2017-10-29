@@ -17,6 +17,7 @@ if not broker_url:
         hostname=RABBIT_HOSTNAME,
         vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
 
+
 accept_content = ['json']
 task_serializer = 'json'
 result_serializer = 'json'

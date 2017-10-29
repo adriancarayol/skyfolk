@@ -19,7 +19,7 @@
     </li>
     <li class="hide-on-large-only">
         <div class="field" id="searchform">
-            <form method='post' action='{% url 'user_profile:general-search' %}'>{% csrf_token %}
+            <form class="autocomplete-me" method='get' action='{% url 'user_profile:general-search' %}'>
                 {{ searchForm }}
             </form>
         </div>

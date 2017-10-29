@@ -267,8 +267,6 @@ RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
 rabbitmq_url = 'amqp://guest:guest@rabbit/%2F'
 
-# https://channels.readthedocs.io/en/latest/deploying.html#setting-up-a-channel-backend
-
 CHANNEL_LAYERS = {
     "default": {
         'BACKEND': 'asgi_rabbitmq.RabbitmqChannelLayer',

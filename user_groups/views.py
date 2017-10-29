@@ -665,8 +665,9 @@ class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
             is_member = self.request.user.groups.filter(id=board_group.id).exists()
             if not is_member:
                 return super(CreateGroupThemeView, self).form_invalid(form)
+            else:
+                return super(CreateGroupThemeView, self).form_valid(form)
         else:
-
             return super(CreateGroupThemeView, self).form_valid(form)
 
 

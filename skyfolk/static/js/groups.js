@@ -1246,7 +1246,6 @@ function AJAX_submit_theme_publication(form) {
         type: 'POST',
         data: form_data,
         async: true,
-        dataType: "json",
         contentType: false,
         enctype: 'multipart/form-data',
         processData: false,
