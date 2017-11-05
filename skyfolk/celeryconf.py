@@ -1,6 +1,6 @@
 import os
 
-RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
+RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit_2')
 
 RABBIT_HOSTNAME = 'rabbit'
 
@@ -25,7 +25,7 @@ enable_utc = True
 result_cache_max = 32768
 worker_disable_rate_limits = True
 task_acks_late = True
-broker_heartbeat = 0
+broker_heartbeat = 60
 result_backend = 'django-db'
 result_persistent = True
 result_compression = 'gzip'

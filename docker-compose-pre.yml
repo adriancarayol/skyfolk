@@ -59,38 +59,6 @@ services:
       - web
     networks:
       - webnet
-  # PostgreSQL database
-  db:
-    image: postgres:9.6.5
-    hostname: db
-    environment:
-      - POSTGRES_USER=skyfolk_pre
-      - POSTGRES_PASSWORD=gDFgg$$G=4h_%H
-      - POSTGRES_DB=skyfolk_pre_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - "dbdata:/var/lib/postgresql/data"
-    restart: always
-    networks:
-      - webnet
-
-  # Neo4j datbase
-  neo4j:
-    image: neo4j:latest
-    environment:
-      - NEO4J_AUTH=neo4j/1518
-      - NEO4J_HEAP_MEMORY=2048
-      - NEO4J_CACHE_MEMORY=1G 
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-    volumes:
-      - "./db/dbms:/var/lib/neo4j/data"
-    restart: always
-    networks:
-      - webnet
-
   # Redis
   redis:
     image: redis:4.0
@@ -136,6 +104,20 @@ services:
     restart: always
     networks:
       - webnet
+  # nodo 2
+  rabbit_2:
+    hostname: rabbit_2
+    image: rabbitmq:3.6.12
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie' 
+    ports:
+      - "5673:5672"  # we forward this port because it's useful for debugging
+      - "15673:15672"  # here, we can access rabbitmq management plugin
+    restart: always
+    networks:
+      - webnet
 
   webworker:
     build:
@@ -150,8 +132,6 @@ services:
     networks:
       - webnet
     depends_on:
-      - db
-      - neo4j
       - rabbit
     restart: always
   # Django web server
@@ -168,11 +148,11 @@ services:
       - /tmp:/tmp
     ports:
       - "8000:8000"
+    extra_hosts:
+      - "database:45.55.57.214"
     networks:
       - webnet
     depends_on:
-      - db
-      - neo4j
       - rabbit
     networks:
       - webnet
@@ -190,10 +170,10 @@ services:
       - /tmp:/tmp
     networks:
       - webnet
+    extra_hosts:
+      - "database:45.55.57.214"
     depends_on:
       - web
-      - db
-      - neo4j
     restart: always
   celery_beat:
     env_file:
@@ -205,17 +185,15 @@ services:
     volumes:
       - .:/code
       - /tmp:/tmp
+    extra_hosts:
+      - "database:45.55.57.214"
     networks:
       - webnet
     depends_on:
       - web
-      - db
-      - neo4j
     restart: always
 
 volumes:
-  dbdata:
-    driver: local
   maildata:
     driver: local
   mailstate:

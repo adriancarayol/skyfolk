@@ -22,12 +22,12 @@ DEBUG = True
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_ENV_DB', 'skyfolk_pre_db'),
         'USER': os.environ.get('DB_ENV_POSTGRES_USER', 'skyfolk_pre'),
         'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', 'gDFgg$G=4h_%H'),
-        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', 'db'),
-        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', ''),
+        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', '45.55.57.214'),
+        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', '5433'),
     }
 }
 # ACCOUNT SETTINGS FOR PRE
@@ -42,5 +42,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "skyfolk/media")
 MEDIA_URL = '/media/'
 # MEDIA_ROOT = '/var/www/skyfolk/static/pre/media'
 # INVITATIONS ONLY EMAIL
-# INVITATIONS_INVITATION_ONLY = True
+INVITATIONS_INVITATION_ONLY = True
 
