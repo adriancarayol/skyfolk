@@ -1,5 +1,5 @@
+import os
 from django.conf.global_settings import SECRET_KEY
-
 from .base import *
 
 SECRET_KEY = 'develop'
@@ -14,6 +14,9 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# NEO4j config
+NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'

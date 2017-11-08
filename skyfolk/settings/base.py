@@ -4,9 +4,6 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
 
-from neomodel import config
-from neomodel import db
-
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
@@ -170,13 +167,6 @@ TAGGIT_CASE_INSENSITIVE = True
 # NOTIFICATION
 NOTIFICATIONS_USE_JSONFIELD = True
 
-# neo4j database
-
-NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:1518@45.55.57.214:7687'
-# Set to true in production
-NEOMODEL_ENCRYPTED_CONNECTION = False
-NEOMODEL_SIGNALS = True
-
 REDIS_PORT = 6379
 REDIS_DB = 0
 REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
@@ -185,7 +175,7 @@ REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/1',
+        'LOCATION': 'redis://{redis_host}:6379/1'.format(redis_host=REDIS_HOST),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -265,7 +255,7 @@ TEMPLATES = [
 # rabbitmq
 RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
-rabbitmq_url = 'amqp://guest:guest@rabbit/%2F'
+rabbitmq_url = 'amqp://guest:guest@{rabbit_host}/%2F?heartbeat=60'.format(rabbit_host=RABBIT_HOSTNAME)
 
 CHANNEL_LAYERS = {
     "default": {
@@ -342,7 +332,7 @@ ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://elasticsearch:9200/',
+        'URL': 'http://{elastic_host}:9200/'.format(elastic_host=ELASTIC_URL),
         'INDEX_NAME': 'haystack',
     },
 }

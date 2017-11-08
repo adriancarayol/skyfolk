@@ -7,7 +7,6 @@ from neomodel import UniqueIdProperty, IntegerProperty, StringProperty, Relation
 
 
 class TagProfile(DjangoNode):
-    uid = UniqueIdProperty()
     title = StringProperty(unique_index=True)
     common = Relationship('TagProfile', 'COMMON')
     user = RelationshipFrom('NodeProfile', 'INTEREST')

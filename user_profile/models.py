@@ -38,11 +38,10 @@ logger = logging.getLogger(__name__)
 def upload_cover_path(instance, filename):
     return '%s/cover_image/%s' % (instance.user.username, filename)
 
-
+#TODO: Merge BlockedProfile y RelationShipProfile
 class RelationShipProfile(models.Model):
     """
     Establece una relacion entre dos usuarios
-    (Modelo util para hacer busquedas)
     """
     to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True)
     from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True)
@@ -55,7 +54,6 @@ class RelationShipProfile(models.Model):
 class BlockedProfile(models.Model):
     """
     Establece una relacion de bloqueo entre dos usuarios
-    (Modelo util para hacer busquedas)
     """
     to_blocked = models.ForeignKey('Profile', related_name='to_blocked', db_index=True)
     from_blocked = models.ForeignKey('Profile', related_name='from_blocked', db_index=True)
@@ -155,6 +153,52 @@ class Profile(models.Model):
         """
         return Photo.objects.filter(owner=self.user_id).count() + Video.objects.filter(owner=self.user_id).count()
 
+    def is_visible(self, user_profile):
+        """
+        Devuelve si el perfil con id user_id
+        es visible por nosotros.
+        :param user_profile:
+        :return template que determina si el perfil es visible:
+        """
+
+        # Si estoy visitando mi propio perfil
+        if self.id == user_profile.id:
+            return "all"
+
+        # Si el perfil es privado
+        if self.privacity == Profile.NOTHING:
+            return "nothing"
+
+        # Si el perfil esta bloqueado
+        if BlockedProfile.objects.filter(to_blocked=user_profile, from_blocked=self).exists():
+            return "block"
+
+        # Recuperamos la relacion de "seguidor"
+        try:
+            relation_follower = RelationShipProfile.objects.filter(to_profile=self, from_profile=user_profile, type=FOLLOWING)
+        except Exception:
+            relation_follower = None
+
+        # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
+        if self.privacity == Profile.ONLYFOLLOWERS and not relation_follower:
+            return "followers"
+
+        # Recuperamos la relacion de "seguir"
+        try:
+            relation_follow = RelationShipProfile.objects.filter(to_profile=user_profile, from_profile=self, type=FOLLOWING)
+        except Exception:
+            relation_follow = None
+
+        # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
+        if self.privacity == Profile.ONLYFOLLOWERSANDFOLLOWS and not \
+                (relation_follower or relation_follow):
+            return "both"
+
+        # Si el nivel de privacidad es TODOS
+        if self.privacity == Profile.ALL:
+            return "all"
+
+        return None
 
 class RequestManager(models.Manager):
     def get_follow_request(self, from_profile, to_profile):
