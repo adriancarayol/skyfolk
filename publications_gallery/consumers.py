@@ -1,5 +1,7 @@
 from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
+
+from user_profile.models import Profile
 from user_profile.node_models import NodeProfile
 from .models import PublicationPhoto, PublicationVideo
 from .utils import get_channel_name
@@ -16,17 +18,18 @@ class PublicationPhotoConsumer(WebsocketConsumer):
     def __init__(self, message, **kwargs):
         pubid = kwargs.get('pubid', None)
         if not pubid:
-            raise Http404
+            return
 
         try:
-            publication_board_owner = PublicationPhoto.objects.values_list('board_photo__owner_id', flat=True).get(id=pubid)
+            publication_board_owner = PublicationPhoto.objects.values_list('board_photo__owner_id', flat=True).get(
+                id=pubid)
         except PublicationPhoto.DoesNotExist:
-            raise Http404
+            return
 
         try:
-            self.board_owner = NodeProfile.nodes.get(user_id=publication_board_owner)
-        except NodeProfile.DoesNotExist:
-            raise Http404
+            self.board_owner = Profile.objects.get(user_id=publication_board_owner)
+        except Profile.DoesNotExist:
+            return
 
         super(PublicationPhotoConsumer, self).__init__(message, **kwargs)
 
@@ -37,13 +40,15 @@ class PublicationPhotoConsumer(WebsocketConsumer):
     def connect(self, message, **kwargs):
         user = message.user
         try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            self.message.reply_channel.send({'accept': False})
+            n = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            self.message.reply_channel.send({'close': True})
+            return
 
         visibility = self.board_owner.is_visible(n)
+
         if visibility and visibility != 'all':
-            self.message.reply_channel({'accept': False})
+            self.message.reply_channel({'close': True})
             return
 
         self.message.reply_channel.send({'accept': True})
@@ -68,17 +73,18 @@ class PublicationVideoConsumer(WebsocketConsumer):
 
         pubid = kwargs.get('pubid', None)
         if not pubid:
-            raise Http404
+            return
 
         try:
-            publication_board_owner = PublicationVideo.objects.values_list('board_video__owner_id', flat=True).get(id=pubid)
+            publication_board_owner = PublicationVideo.objects.values_list('board_video__owner_id', flat=True).get(
+                id=pubid)
         except PublicationVideo.DoesNotExist:
-            raise Http404
+            return
 
         try:
             self.board_owner = NodeProfile.nodes.get(user_id=publication_board_owner)
         except NodeProfile.DoesNotExist:
-            raise Http404
+            return
 
         super(PublicationVideoConsumer, self).__init__(message, **kwargs)
 
@@ -89,14 +95,15 @@ class PublicationVideoConsumer(WebsocketConsumer):
     def connect(self, message, **kwargs):
         user = message.user
         try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            self.message.reply_channel.send({'accept': False})
+            n = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            self.message.reply_channel.send({'close': True})
             return
 
         visibility = self.board_owner.is_visible(n)
         if visibility and visibility != 'all':
-            self.message.reply_channel({'accept': False})
+            self.message.reply_channel({'close': True})
+            return
 
         self.message.reply_channel.send({'accept': True})
 

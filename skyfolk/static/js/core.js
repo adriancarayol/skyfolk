@@ -307,7 +307,7 @@ $(document).ready(function () {
         swal({
             title: "Add new friend!",
             customClass: "default-div",
-            text: "Insert the friend's username or PIN",
+            text: "Insert the friend's username",
             type: "input",
             animation: "slide-from-top",
             showConfirmButton: true,
@@ -479,7 +479,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
             console.log(data);
             var response = data.response;
 
-            if (response == "added_friend") {
+            if (response === "added_friend") {
                 swal({
                     title: "Success!",
                     text: "You have added a friend!",
@@ -492,15 +492,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                         if (typeof addItemToFriendList === "function")
                             addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
                 });
-            } else if (response == 'your_own_pin') {
-                swal({
-                    title: "Wait a moment!",
-                    text: "It's your own pin!",
-                    customClass: 'default-div',
-                    timer: 4000,
-                    showConfirmButton: true
-                });
-            } else if (response == 'your_own_username') {
+            } else if (response === 'your_own_username') {
                 swal({
                     title: "Wait a moment!",
                     text: "It's your own username!",
@@ -508,7 +500,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'its_your_friend') {
+            } else if (response === 'its_your_friend') {
                 swal({
                     title: "Wait a moment!",
                     text: "It's already your friend!",
@@ -516,7 +508,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'its_blocked') {
+            } else if (response === 'its_blocked') {
                 swal({
                     title: "Espera un momento!",
                     text: "Tienes bloqueado este perfil!",
@@ -524,7 +516,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'no_added_friend') {
+            } else if (response === 'no_added_friend') {
                 swal({
                     title: "We have a problem",
                     text: "Friend no added",
@@ -532,15 +524,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'no_match') {
-                swal({
-                    title: "We have a problem",
-                    text: "This username or pin no exists.",
-                    customClass: 'default-div',
-                    timer: 4000,
-                    showConfirmButton: true
-                });
-            } else if (response == 'in_progress') {
+            } else if (response === 'in_progress') {
                 swal({
                     title: "Request in progress",
                     text: "Your request is to confirm!.",
@@ -548,7 +532,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'new_petition') {
+            } else if (response === 'new_petition') {
                 swal({
                     title: "New petition sent!",
                     text: "Wait to confirm!.",
@@ -556,7 +540,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'user_blocked') {
+            } else if (response === 'user_blocked') {
                 swal({
                     title: "Petición denegada.",
                     text: "El usuario te ha bloqueado.",
@@ -566,7 +550,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     animation: "slide-from-top",
                     showConfirmButton: false
                 });
-            } else if (response == 'blocked_profile') {
+            } else if (response === 'blocked_profile') {
                 swal({
                     title: "Petición denegada.",
                     text: "Tienes bloqueado a este perfil.",

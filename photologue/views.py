@@ -24,12 +24,11 @@ from el_pagination.views import AjaxListView
 
 from itertools import chain
 
-from publications.models import Publication
 from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit, PublicationVideoEdit, \
     PublicationVideoForm
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto, PublicationVideo
-from user_profile.models import RelationShipProfile, BLOCK
+from user_profile.models import RelationShipProfile, BLOCK, Profile
 from user_profile.node_models import NodeProfile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
@@ -52,9 +51,9 @@ def collection_list(request, username,
 
     # Para comprobar si tengo permisos para ver el contenido de la coleccion
     try:
-        user_profile = NodeProfile.nodes.get(title=username)
-        m = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
+        user_profile = Profile.objects.get(user__username=username)
+        m = Profile.objects.get(user_id=user.id)
+    except Profile.DoesNotExist:
         raise Http404
 
     visibility = user_profile.is_visible(m)
@@ -146,8 +145,11 @@ class PhotoListView(AjaxListView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        user_profile = NodeProfile.nodes.get(title=self.username)
-        m = NodeProfile.nodes.get(user_id=user.id)
+        try:
+            user_profile = Profile.objects.get(user__username=self.username)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            return False
 
         visibility = user_profile.is_visible(m)
 
@@ -497,10 +499,10 @@ class PhotoDetailView(DetailView):
             return True
 
         try:
-            user_profile = NodeProfile.nodes.get(title=self.username)
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            raise Http404
+            user_profile = Profile.objects.get(user__username=self.username)
+            n = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            return False
 
         visibility = user_profile.is_visible(n)
 
@@ -619,9 +621,9 @@ class VideoDetailView(DetailView):
             return True
 
         try:
-            user_profile = NodeProfile.nodes.get(title=self.username)
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            user_profile = Profile.objects.get(user__username=self.username)
+            n = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             raise Http404
 
         visibility = user_profile.is_visible(n)

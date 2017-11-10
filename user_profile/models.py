@@ -35,6 +35,46 @@ def upload_cover_path(instance, filename):
     return '%s/cover_image/%s' % (instance.user.username, filename)
 
 
+class RelationShipProfileManager(models.Manager):
+    def get_total_following(self, profile_id):
+        """
+        Return total following of profile_id
+        :param profile_id: Profile
+        :return: Total following
+        """
+        qs = self.get_queryset()
+        return qs.filter(from_profile=profile_id).count()
+
+    def get_total_followers(self, profile_id):
+        """
+        Return total followers of profile_id
+        :param profile_id: Profile
+        :return: Total followers
+        """
+        qs = self.get_queryset()
+        return qs.filter(to_profile=profile_id).count()
+
+    def is_follow(self, to_profile, from_profile):
+        """
+        Return if from_profile follow to_profile
+        :param to_profile:
+        :param from_profile:
+        :return:
+        """
+        qs = self.get_queryset()
+        return qs.filter(to_profile=to_profile, from_profile=from_profile, type=FOLLOWING).exists()
+
+    def is_blocked(self, to_profile, from_profile):
+        """
+        Return if from_profile blocks to_profile
+        :param to_profile:
+        :param from_profile:
+        :return:
+        """
+        qs = self.get_queryset()
+        return qs.filter(to_profile=to_profile, from_profile=from_profile, type=BLOCK).exists()
+
+
 class RelationShipProfile(models.Model):
     """
     Establece una relacion entre dos usuarios
@@ -42,6 +82,7 @@ class RelationShipProfile(models.Model):
     to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True)
     from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True)
     type = models.IntegerField(choices=RELATIONSHIP_STATUSES)
+    objects = RelationShipProfileManager()
 
     class Meta:
         unique_together = ('to_profile', 'from_profile')
@@ -90,6 +131,28 @@ class Profile(models.Model):
                 return True
         else:
             return False
+
+    @property
+    def group_name(self):
+        """
+        Devuelve el nombre del canal para enviar las notificaciones
+        """
+        return "users-%s" % self.user_id
+
+    @property
+    def notification_channel(self):
+        """
+        Devuelve el nombre del canal notification para cada usuario
+        """
+        return "notification-%s" % self.user_id
+
+    @property
+    def news_channel(self):
+        """
+        Devuelve el nombre del canal para enviar actualizaciones
+        al tablon de inicio
+        """
+        return "news-%s" % self.user_id
 
     @property
     def gravatar(self, size=120):

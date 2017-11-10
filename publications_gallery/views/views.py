@@ -22,7 +22,7 @@ from publications.views import logger
 from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto
-from user_profile.models import RelationShipProfile, BLOCK
+from user_profile.models import RelationShipProfile, BLOCK, Profile
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery.utils import optimize_publication_media, check_num_images, check_image_property
@@ -144,9 +144,9 @@ def publication_detail(request, publication_id):
         raise Http404
 
     try:
-        author = NodeProfile.nodes.get(user_id=request_pub.p_author_id)
-        m = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
+        author = Profile.objects.get(user_id=request_pub.p_author_id)
+        m = Profile.objects.get(user_id=user.id)
+    except Profile.DoesNotExist:
         return redirect('photologue:photo-list', username=request_pub.board_photo.owner.username)
 
     privacity = author.is_visible(m)
@@ -244,9 +244,9 @@ def add_like(request):
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.p_author_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            author = Profile.objects.get(user_id=publication.p_author_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
@@ -344,9 +344,9 @@ def add_hate(request):
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.p_author_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            author = Profile.objects.get(user_id=publication.p_author_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
@@ -484,9 +484,9 @@ def load_more_descendants(request):
             return Http404
 
         try:
-            board_owner = NodeProfile.nodes.get(user_id=publication.board_photo.owner_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            board_owner = Profile.objects.get(user_id=publication.board_photo.owner_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             raise Http404
 
         privacity = board_owner.is_visible(m)

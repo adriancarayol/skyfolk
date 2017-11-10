@@ -168,9 +168,9 @@ def profile_view(request, username,
                                      username__iexact=username)
 
     try:
-        n = NodeProfile.nodes.get(user_id=user_profile.id)
-        m = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
+        n = Profile.objects.get(user_id=user_profile.id)
+        m = Profile.objects.get(user_id=user.id)
+    except Profile.DoesNotExist:
         raise Http404
 
     context = {}
@@ -187,35 +187,49 @@ def profile_view(request, username,
     context['user_profile'] = user_profile
     context['privacity'] = privacity
 
-    # Recuperamos requests para el perfil y si el perfil es gustado.
-    if user.username != username:
+    # Recuperamos si el perfil es gustado.
+    try:
+        node_m = NodeProfile.nodes.get(user_id=user.id)
+    except Exception as e:
+        node_m = None
+        logging.info(e)
+
+    if node_m and user.username != username:
         try:
-            liked = m.has_like(to_like=user_profile.id)
+            liked = node_m.has_like(to_like=user_profile.id)
         except Exception:
             liked = False
     else:
         liked = False
 
+    # Recuperamos el numero total de likes
+    total_likes = 0
+    if node_m:
+        try:
+            total_likes = node_m.count_likes()
+        except Exception as e:
+            logging.info(e)
+
     # Comprobamos si el perfil esta bloqueado
     isBlocked = False
     if user.username != username:
         try:
-            isBlocked = m.bloq.is_connected(n)
-        except Exception:
+            isBlocked = RelationShipProfile.objects.filter(from_profile=m, to_profile=n, type=BLOCK).exists()
+        except Exception as e:
             pass
 
     # Comprobamos si el perfil es seguidor
     isFollower = False
     if user.username != username:
         try:
-            isFollower = n.follow.is_connected(m)
+            isFollower = RelationShipProfile.objects.filter(from_profile=n, to_profile=m, type=FOLLOWING).exists()
         except Exception:
             pass
     # Comprobamos si el perfil es seguido
     isFollow = False
     if user.username != username:
         try:
-            isFollow = m.follow.is_connected(n)
+            isFollow = RelationShipProfile.objects.filter(from_profile=m, to_profile=n, type=FOLLOWING).exists()
         except Exception:
             pass
     # Comprobamos si existe una peticion de seguimiento
@@ -233,7 +247,7 @@ def profile_view(request, username,
         context['existFollowRequest'] = True if friend_request else False
         template = "account/privacity/private_profile.html"
         return render(request, template, context)
-    elif n.bloq.is_connected(m):
+    elif RelationShipProfile.objects.filter(from_profile=n, to_profile=m, type=BLOCK):
         template = "account/privacity/block_profile.html"
         context['isBlocked'] = isBlocked
         context['liked'] = liked
@@ -241,13 +255,13 @@ def profile_view(request, username,
 
     # Recuperamos el numero de seguidores
     try:
-        num_followers = n.count_followers()
+        num_followers = RelationShipProfile.objects.get_total_followers(n.id)
     except Exception:
         num_followers = 0
 
     # Recuperamos el numero de seguidos y la lista de seguidos
     try:
-        num_follows = n.count_follows()
+        num_follows = RelationShipProfile.objects.get_total_following(n.id)
     except Exception:
         num_follows = 0
 
@@ -261,7 +275,7 @@ def profile_view(request, username,
         multimedia_count = 0
 
     context['liked'] = liked
-    context['n_likes'] = n.count_likes()
+    context['n_likes'] = total_likes
     context['followers'] = num_followers
     context['following'] = num_follows
     context['isBlocked'] = isBlocked
@@ -447,20 +461,6 @@ def config_profile(request):
 
 
 @login_required(login_url='/')
-def config_pincode(request):
-    user = request.user
-    user_profile = NodeProfile.nodes.get(user_id=user.id)
-    initial = {'author': user.pk, 'board_owner': user.pk}
-    pin = user_profile.uid
-
-    context = {'showPerfilButtons': True,
-               'pin': pin,
-               }
-
-    return render(request, 'account/cf-pincode.html', context)
-
-
-@login_required(login_url='/')
 def config_blocked(request):
     user = request.user
     n = NodeProfile.nodes.get(user_id=user.id)
@@ -485,125 +485,37 @@ def add_friend_by_username_or_pin(request):
         'friend': friend
     }
     if request.method == 'POST':
-        pin = str(request.POST.get('valor'))
-        if len(pin) > 15:
-            user_request = request.user
-
-            try:
-                user = NodeProfile.nodes.get(user_id=user_request.id)
-            except NodeProfile.DoesNotExist:
-                return HttpResponse(
-                    json.dumps(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript'))
-
-            logging.info('Pin: {}'.format(pin))
-
-            if str(user.uid).strip() == pin.strip():
-                return HttpResponse(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript')
-            else:
-                logging.info('personal_pin: {} pin: {}'.format(user.uid, pin))
-
-            try:
-                friend = NodeProfile.nodes.get(uid=pin)
-            except NodeProfile.DoesNotExist:
-                data['response'] = 'no_match'
-                return HttpResponse(json.dumps(data), content_type='application/javascript')
-
-            if user.follow.is_connected(friend):
-                data['response'] = 'its_your_friend'
-                data['friend'] = friend.title
-                return HttpResponse(json.dumps(data), content_type='application/javascript')
-
-            # Me tienen bloqueado
-            if friend.bloq.is_connected(user):
-                data['response'] = 'user_blocked'
-                data['friend'] = friend.title
-                return HttpResponse(json.dumps(data), content_type='application/javascript')
-
-            # Yo tengo bloqueado al perfil
-            if user.bloq.is_connected(friend):
-                data['response'] = 'blocked_profile'
-                data['friend'] = friend.title
-                return HttpResponse(json.dumps(data), content_type='application/javascript')
-
-            # Comprobamos si el usuario necesita peticion de amistad
-            no_need_petition = friend.privacity == NodeProfile.ALL
-            if no_need_petition:
-                try:
-                    with transaction.atomic(using="default"):
-                        with db.transaction:
-                            sql_friend = User.objects.select_related('profile').get(id=friend.user_id)
-                            emitter = Profile.objects.get(user_id=user_request.id)
-                            RelationShipProfile.objects.create(to_profile=sql_friend.profile,
-                                                               from_profile=emitter, type=FOLLOWING)
-                            data['response'] = 'added_friend'
-                except Exception as e:
-                    logging.info(e)
-
-                data['friend_username'] = friend.title
-                data['friend_avatar'] = avatar(sql_friend)
-                data['friend_first_name'] = sql_friend.first_name
-                data['friend_last_name'] = sql_friend.last_name
-                return HttpResponse(json.dumps(data), content_type='application/javascript')
-
-            # enviamos peticion de amistad
-            try:
-                friend_request = Request.objects.get_follow_request(from_profile=user.user_id,
-                                                                    to_profile=friend.user_id)
-            except ObjectDoesNotExist:
-                friend_request = None
-
-            if not friend_request:
-                # Eliminamos posibles notificaciones residuales
-                sql_friend = User.objects.get(id=friend.user_id)
-                Notification.objects.filter(actor_object_id=user_request.pk,
-                                            recipient=sql_friend,
-                                            level='friendrequest').delete()
-                # Enviamos la notificacion
-                notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
-                                           recipient=sql_friend,
-                                           verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
-                                               user_request.title),
-                                           level='friendrequest')
-                # Enlazamos notificacion con peticion de amistad
-                try:
-                    created = Request.objects.add_follow_request(user.user_id, friend.user_id, notification[0][1])
-                    response = 'new_petition'
-                except ObjectDoesNotExist:
-                    response = "no_added_friend"
-
+        username = str(request.POST.get('valor'))
+        if not username:
+            return HttpResponse(
+                json.dumps(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript'))
         else:  # tipo == username
             user_request = request.user
-            username = pin
 
-            try:
-                user = NodeProfile.nodes.get(user_id=user_request.id)
-            except NodeProfile.DoesNotExist:
-                return HttpResponse(
-                    json.dumps(json.dumps({'response': 'your_own_pin'}), content_type='application/javascript'))
-
-            if user.title == username:
+            if user_request.username == username:
                 data['response'] = 'your_own_username'
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             try:
-                friend = NodeProfile.nodes.get(title=username)
-            except NodeProfile.DoesNotExist:
+                friend = Profile.objects.get(user__username=username).select_related('user')
+                user_profile = Profile.objects.get(user_id=user_request.id).select_related('user')
+            except Profile.DoesNotExist:
                 data['response'] = 'no_match'
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
-            if user.follow.is_connected(friend):  # if user.is_friend(friend):
+            if RelationShipProfile.objects.is_follow(from_profile=user_profile, to_profile=friend, type=FOLLOWING):
                 data['response'] = 'its_your_friend'
                 data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
-            if friend.bloq.is_connected(user):
+            if RelationShipProfile.objects.is_blocked(from_profile=friend, to_profile=user_profile):
                 data['response'] = 'user_blocked'
                 data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
-            if user.bloq.is_connected(friend):
+            if RelationShipProfile.objects.is_blocked(from_profile=user_profile, to_profile=friend):
                 data['response'] = 'blocked_profile'
                 data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
@@ -614,24 +526,22 @@ def add_friend_by_username_or_pin(request):
                 try:
                     with transaction.atomic(using="default"):
                         with db.transaction:
-                            sql_friend = User.objects.select_related('profile').get(id=friend.user_id)
-                            emitter = Profile.objects.get(user_id=user_request.id)
-                            RelationShipProfile.objects.create(to_profile=sql_friend.profile,
-                                                               from_profile=emitter, type=FOLLOWING)
+                            RelationShipProfile.objects.create(to_profile=friend,
+                                                               from_profile=user_profile, type=FOLLOWING)
                             data['response'] = 'added_friend'
                 except Exception as e:
                     logging.info(e)
                     return HttpResponse(json.dumps(data), content_type='application/javascript')
 
-                data['friend_username'] = friend.title
-                data['friend_avatar'] = avatar(sql_friend)
-                data['friend_first_name'] = sql_friend.first_name
-                data['friend_last_name'] = sql_friend.last_name
+                data['friend_username'] = friend.user.username
+                data['friend_avatar'] = avatar(friend.user)
+                data['friend_first_name'] = friend.user.first_name
+                data['friend_last_name'] = friend.user.last_name
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # enviamos peticion de amistad
             try:
-                friend_request = Request.objects.get_follow_request(from_profile=user.user_id,
+                friend_request = Request.objects.get_follow_request(from_profile=user_profile.user_id,
                                                                     to_profile=friend.user_id)
                 response = 'in_progress'
             except ObjectDoesNotExist:
@@ -639,28 +549,27 @@ def add_friend_by_username_or_pin(request):
 
             if not friend_request:
                 # Eliminamos posibles notificaciones residuales
-                sql_friend = User.objects.get(id=friend.user_id)
                 Notification.objects.filter(actor_object_id=user_request.pk,
-                                            recipient=sql_friend,
+                                            recipient=friend.user,
                                             level='friendrequest').delete()
                 # Enviamos nueva notificacion
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
-                                           recipient=sql_friend,
+                                           recipient=friend.user,
                                            verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
                                                user_request.title), level='friendrequest')
                 # Enlazamos notificacion y peticion de amistad
                 try:
-                    Request.objects.add_follow_request(user.user_id, friend.user_id, notification[0][1])
+                    Request.objects.add_follow_request(user_profile.user_id, friend.user_id, notification[0][1])
                     response = 'new_petition'
                 except ObjectDoesNotExist:
                     response = "no_added_friend"
 
-    sql_friend = User.objects.get(id=friend.user_id)
     data['response'] = response
-    data['friend_username'] = sql_friend.username
-    data['friend_avatar'] = avatar(sql_friend)
-    data['friend_first_name'] = sql_friend.first_name
-    data['friend_last_name'] = sql_friend.last_name
+    data['friend_username'] = friend.user.username
+    data['friend_avatar'] = avatar(friend.user)
+    data['friend_first_name'] = friend.user.first_name
+    data['friend_last_name'] = friend.user.last_name
+
     return HttpResponse(json.dumps(data), content_type='application/javascript')
 
 
@@ -723,17 +632,21 @@ def request_friend(request):
         user = request.user
         slug = request.POST.get('slug', None)
 
-        n = NodeProfile.nodes.get(user_id=user.id)
-        m = NodeProfile.nodes.get(user_id=slug)
+        try:
+            n = Profile.objects.get(user_id=user.id)
+            m = Profile.objects.get(user_id=slug)
+        except Profile.DoesNotExist:
+            return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         # El perfil me ha bloqueado
 
-        if m.bloq.is_connected(n):
+        if RelationShipProfile.objects.is_blocked(from_profile=m, to_profile=n):
             response = "user_blocked"
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         try:
-            user_friend = n.follow.is_connected(m)  # Comprobamos si YO ya sigo al perfil deseado.
+            user_friend = RelationShipProfile.objects.is_follow(from_profile=n,
+                                                                to_profile=m)  # Comprobamos si YO ya sigo al perfil deseado.
         except Exception:
             user_friend = None
 
@@ -741,20 +654,19 @@ def request_friend(request):
             response = "isfriend"
         else:
             # Comprobamos si el perfil necesita peticion de amistad
-            no_need_petition = m.privacity == NodeProfile.ALL
+            no_need_petition = m.privacity == Profile.ALL
             if no_need_petition:
                 try:
                     with transaction.atomic(using="default"):
                         with db.transaction:
-                            recipient = User.objects.select_related('profile').get(id=m.user_id)
-                            emitter = Profile.objects.get(user_id=user.id)
-                            RelationShipProfile.objects.create(to_profile=recipient.profile,
-                                                               from_profile=emitter, type=FOLLOWING)
+                            RelationShipProfile.objects.create(to_profile=m,
+                                                               from_profile=n, type=FOLLOWING)
                             # enviamos notificacion informando del evento
-                            notify.send(user, actor=n.title,
-                                        recipient=recipient,
+                            notify.send(user, actor=n.user.username,
+                                        recipient=m.user,
                                         description="@{0} ahora es tu seguidor.".format(user.username),
-                                        verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (n.title, n.title),
+                                        verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (
+                                        n.user.username, n.user.username),
                                         level='new_follow')
                     response = "added_friend"
                 except Exception as e:
@@ -775,12 +687,12 @@ def request_friend(request):
                                             recipient=m.user_id,
                                             level='friendrequest').delete()
 
-                recipient = User.objects.get(id=m.user_id)
                 # Creamos y enviamos la nueva notificacion
-                notification = notify.send(user, actor=n.title,
-                                           recipient=recipient,
-                                           description="@{0} quiere seguirte.".format(n.title),
-                                           verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(n.title),
+                notification = notify.send(user, actor=n.user.username,
+                                           recipient=m.user,
+                                           description="@{0} quiere seguirte.".format(n.user.username),
+                                           verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
+                                               n.user.username),
                                            level='friendrequest')
 
                 # Enlazamos notificacion con peticion de amistad
@@ -864,19 +776,17 @@ def remove_relationship(request):
 
     if request.method == 'POST':
         try:
-            profile_user = NodeProfile.nodes.get(user_id=slug)
-            me = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            profile_user = Profile.objects.get(user_id=slug)
+            me = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
-        if me.follow.is_connected(profile_user):
+        if RelationShipProfile.objects.is_follow(from_profile=me, to_profile=profile_user):
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        emitter = Profile.objects.get(user_id=user.id)
-                        recipient = Profile.objects.get(user_id=slug)
-                        RelationShipProfile.objects.filter(to_profile=recipient,
-                                                           from_profile=emitter, type=FOLLOWING).delete()
+                        RelationShipProfile.objects.filter(to_profile=profile_user,
+                                                           from_profile=me, type=FOLLOWING).delete()
                 response = True
             except Exception as e:
                 logging.info(e)
@@ -896,18 +806,16 @@ def remove_blocked(request):
 
     if request.method == 'POST':
         try:
-            m = NodeProfile.nodes.get(user_id=user.id)
-            n = NodeProfile.nodes.get(user_id=slug)
-        except NodeProfile.DoesNotExist:
+            m = Profile.objects.get(user_id=user.id)
+            n = Profile.objects.get(user_id=slug)
+        except Profile.DoesNotExist:
             return HttpResponse(json.dumps(response), content_type='application/javascript')
 
         try:
-            if m.bloq.is_connected(n):
-                emitter = Profile.objects.get(user_id=user.id)
-                recipient = Profile.objects.get(user_id=slug)
+            if RelationShipProfile.objects.filter(from_profile=m, to_profile=n, type=BLOCK).exists():
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        RelationShipProfile.objects.filter(to_profile=recipient, from_profile=emitter,
+                        RelationShipProfile.objects.filter(to_profile=n, from_profile=m,
                                                            type=BLOCK).delete()
                 response = True
             else:
@@ -959,8 +867,9 @@ class FollowersListView(ListView):
         return super(FollowersListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        followers_list = RelationShipProfile.objects.filter(to_profile__user__username=self.kwargs.get('username', None),
-                                                            type=FOLLOWING).values('from_profile_id')
+        followers_list = RelationShipProfile.objects.filter(
+            to_profile__user__username=self.kwargs.get('username', None),
+            type=FOLLOWING).values('from_profile_id')
         return User.objects.filter(profile__id=followers_list).select_related(
             'profile')
 
@@ -988,8 +897,9 @@ class FollowingListView(ListView):
         return super(FollowingListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        following_list = RelationShipProfile.objects.filter(from_profile__user__username=self.kwargs.get('username', None),
-                                                            type=FOLLOWING).values('to_profile_id')
+        following_list = RelationShipProfile.objects.filter(
+            from_profile__user__username=self.kwargs.get('username', None),
+            type=FOLLOWING).values('to_profile_id')
         return User.objects.filter(profile__in=following_list).select_related(
             'profile')
 
@@ -1155,7 +1065,8 @@ def bloq_user(request):
         # Ver si seguimos al perfil que vamos a bloquear
         emitter = Profile.objects.get(user_id=user.id)
         recipient = Profile.objects.get(user_id=id_user)
-        if m.follow.is_connected(n):
+
+        if RelationShipProfile.objects.is_follow(from_profile=emitter, to_profile=recipient):
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
@@ -1181,7 +1092,7 @@ def bloq_user(request):
 
         # Ver si seguimos al perfil que vamos a bloquear
 
-        if n.follow.is_connected(m):
+        if RelationShipProfile.objects.is_follow(from_profile=recipient, to_profile=emitter):
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
@@ -1199,6 +1110,7 @@ def bloq_user(request):
             with transaction.atomic(using="default"):
                 with db.transaction:
                     RelationShipProfile.objects.create(to_profile=recipient, from_profile=emitter, type=BLOCK)
+
         except Exception as e:
             logging.info(e)
             response = False

@@ -76,7 +76,7 @@ tornado==4.5.2
 tornado-redis==2.4.18
 traitlets==4.3.2
 transliterate==1.10
-Twisted==17.9.0
+Twisted[tls,http2]
 txaio==2.8.2
 Unidecode==0.04.21
 vine==1.1.4

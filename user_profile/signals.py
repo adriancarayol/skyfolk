@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 def handle_new_relationship(sender, instance, created, **kwargs):
     emitter = instance.from_profile.user
     recipient = instance.to_profile.user
-    type = instance.type
+    type_of_relationship = instance.type
 
     try:
         n = NodeProfile.nodes.get(user_id=emitter.id)
@@ -28,7 +28,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
     except NodeProfile.DoesNotExist:
         raise Exception("No se encuentran los nodos en neo4j")
 
-    if type == BLOCK:
+    if type_of_relationship == BLOCK:
         n.bloq.connect(m)
     else:
         n.follow.connect(m)
@@ -59,7 +59,7 @@ def handle_new_relationship(sender, instance, created, **kwargs):
                 raise Exception("Publication relationship not created: {}".format(e))
 
             # Aumentamos la fuerza de la relacion entre los usuarios
-            if n.uid != m.uid:
+            if n.user_id != m.user_id:
                 rel = n.follow.relationship(m)
                 if rel:
                     rel.weight = rel.weight + 20
@@ -70,7 +70,8 @@ def handle_new_relationship(sender, instance, created, **kwargs):
 def handle_delete_relationship(sender, instance, *args, **kwargs):
     emitter_id = instance.from_profile.user_id
     recipient_id = instance.to_profile.user_id
-    type = instance.type
+
+    type_of_relationship = instance.type
 
     try:
         n = NodeProfile.nodes.get(user_id=emitter_id)
@@ -78,8 +79,8 @@ def handle_delete_relationship(sender, instance, *args, **kwargs):
     except NodeProfile.DoesNotExist:
         raise Exception("No se encuentran los nodos en neo4j")
 
-    if type == BLOCK:
-        m.bloq.disconnect(n)
+    if type_of_relationship == BLOCK:
+        n.bloq.disconnect(m)
     else:
         n.follow.disconnect(m)
 

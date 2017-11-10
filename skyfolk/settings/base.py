@@ -255,7 +255,7 @@ TEMPLATES = [
 # rabbitmq
 RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
-rabbitmq_url = 'amqp://guest:guest@{rabbit_host}/%2F?heartbeat=60'.format(rabbit_host=RABBIT_HOSTNAME)
+rabbitmq_url = 'amqp://guest:guest@{rabbit_host}/%2F?heartbeat=15'.format(rabbit_host=RABBIT_HOSTNAME)
 
 CHANNEL_LAYERS = {
     "default": {

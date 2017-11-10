@@ -165,7 +165,7 @@ def is_blocked(request, profile):
 @register.filter(name='get_tags')
 def get_tags(request):
     """
-    Muestra los intereses dado el uid del NodeProfile de un usuario.
+    Muestra los intereses dado el user_id del NodeProfile de un usuario.
     :param request uid del NodeProfile de un usuario:
     :return Lista de intereses del usuario:
     """

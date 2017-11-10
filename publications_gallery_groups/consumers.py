@@ -1,5 +1,6 @@
 from channels.generic.websockets import WebsocketConsumer
-from django.http import Http404
+
+from user_profile.models import Profile
 from user_profile.node_models import NodeProfile
 from .models import PublicationGroupMediaVideo, PublicationGroupMediaPhoto
 from .utils import get_channel_name
@@ -16,12 +17,13 @@ class PublicationGroupGalleryPhotoConsumer(WebsocketConsumer):
     def __init__(self, message, **kwargs):
         pubid = kwargs.get('id', None)
         if not pubid:
-            raise Http404
+            return
 
         try:
-            self.publication = PublicationGroupMediaPhoto.objects.select_related('board_photo__owner', 'board_photo__group').get(id=pubid)
+            self.publication = PublicationGroupMediaPhoto.objects.select_related('board_photo__owner',
+                                                                                 'board_photo__group').get(id=pubid)
         except PublicationGroupMediaPhoto.DoesNotExist:
-            raise Http404
+            return
 
         super(PublicationGroupGalleryPhotoConsumer, self).__init__(message, **kwargs)
 
@@ -36,14 +38,14 @@ class PublicationGroupGalleryPhotoConsumer(WebsocketConsumer):
 
         if not group.is_public and user != group.owner_id:
             if not user.groups.filter(id=group.group_ptr_id).exists():
-                self.message.reply_channel({'accept': False})
+                self.message.reply_channel({'close': True})
                 return
 
         try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-            board_owner = NodeProfile.nodes.get(user_id=self.publication.board_photo.owner_id)
-        except NodeProfile.DoesNotExist:
-            self.message.reply_channel.send({'accept': False})
+            n = Profile.objects.get(user_id=user.id)
+            board_owner = Profile.objects.get(user_id=self.publication.board_photo.owner_id)
+        except Profile.DoesNotExist:
+            self.message.reply_channel.send({'close': True})
             return
 
         visibility = board_owner.is_visible(n)
@@ -71,14 +73,13 @@ class PublicationGroupGalleryVideoConsumer(WebsocketConsumer):
     def __init__(self, message, **kwargs):
         pubid = kwargs.get('id', None)
         if not pubid:
-            raise Http404
+            return
 
         try:
             self.publication = PublicationGroupMediaVideo.objects.select_related('board_video__owner',
                                                                                  'board_video__group').get(id=pubid)
         except PublicationGroupMediaVideo.DoesNotExist:
-            raise Http404
-
+            return
 
         super(PublicationGroupGalleryVideoConsumer, self).__init__(message, **kwargs)
 
@@ -93,20 +94,20 @@ class PublicationGroupGalleryVideoConsumer(WebsocketConsumer):
 
         if not group.is_public and user != group.owner_id:
             if not user.groups.filter(id=group.group_ptr_id).exists():
-                self.message.reply_channel({'accept': False})
+                self.message.reply_channel({'close': True})
                 return
 
         try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-            board_owner = NodeProfile.nodes.get(user_id=self.publication.board_video.owner_id)
-        except NodeProfile.DoesNotExist:
-            self.message.reply_channel.send({'accept': False})
+            n = Profile.objects.get(user_id=user.id)
+            board_owner = Profile.objects.get(user_id=self.publication.board_video.owner_id)
+        except Profile.DoesNotExist:
+            self.message.reply_channel.send({'close': True})
             return
 
         visibility = board_owner.is_visible(n)
 
         if visibility and visibility != 'all':
-            self.message.reply_channel({'accept': False})
+            self.message.reply_channel({'close': True})
             return
 
         self.message.reply_channel.send({'accept': True})

@@ -37,7 +37,7 @@ from publications_groups.models import PublicationGroup
 from publications_groups.themes.models import PublicationTheme
 from user_groups.forms import GroupThemeForm, EditGroupThemeForm
 from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
-from user_profile.models import RelationShipProfile, BLOCK
+from user_profile.models import RelationShipProfile, BLOCK, Profile
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup, GroupThemeForm
@@ -618,9 +618,9 @@ class ProfileGroups(APIView):
         user = User.objects.get(id=kwargs.pop('user_id'))
 
         try:
-            profile = NodeProfile.nodes.get(user_id=user.id)
-            request_user = NodeProfile.nodes.get(user_id=request.user.id)
-        except User.DoesNotExist:
+            profile = Profile.objects.get(user_id=user.id)
+            request_user = Profile.objects.get(user_id=request.user.id)
+        except Profile.DoesNotExist:
             raise Http404
 
         privacity = profile.is_visible(request_user)

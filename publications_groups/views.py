@@ -24,7 +24,7 @@ from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups
 from user_groups.node_models import NodeGroup
-from user_profile.models import RelationShipProfile, BLOCK
+from user_profile.models import RelationShipProfile, BLOCK, Profile
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media, check_num_images, check_image_property
@@ -193,9 +193,9 @@ class AddPublicationLike(View):
             raise Http404
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.author_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            author = Profile.objects.get(user_id=publication.author_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             return HttpResponseForbidden()
 
         privacity = author.is_visible(m)
@@ -282,9 +282,9 @@ class AddPublicationHate(View):
             raise Http404
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.author_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            author = Profile.objects.get(user_id=publication.author_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             return HttpResponseForbidden()
 
         privacity = author.is_visible(m)
@@ -593,9 +593,9 @@ class ShareGroupPublication(View):
                 raise Http404
 
             try:
-                author = NodeProfile.nodes.get(user_id=pub_to_add.author_id)
-                m = NodeProfile.nodes.get(user_id=user.id)
-            except NodeProfile.DoesNotExist:
+                author = Profile.objects.get(user_id=pub_to_add.author_id)
+                m = Profile.objects.get(user_id=user.id)
+            except Profile.DoesNotExist:
                 raise Http404
 
             privacity = author.is_visible(m)
