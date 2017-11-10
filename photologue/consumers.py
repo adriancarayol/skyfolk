@@ -41,7 +41,6 @@ class PhotoConsumer(WebsocketConsumer):
             self.message.reply_channel({'accept': False})
 
         self.message.reply_channel.send({'accept': True})
-        
 
     def receive(self, content, **kwargs):
         self.send(content)

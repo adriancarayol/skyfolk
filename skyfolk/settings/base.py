@@ -321,24 +321,8 @@ POSTMAN_AUTO_MODERATE_AS = True
 # con el modulo notifications
 POSTMAN_DISABLE_USER_EMAILING = True
 
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-#         'URL': 'http://127.0.0.1:8080/solr/',
-#     },
-# }
-
-ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://{elastic_host}:9200/'.format(elastic_host=ELASTIC_URL),
-        'INDEX_NAME': 'haystack',
-    },
-}
-
+# HAYSTACK REALTIME SIGNAL
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
-#HAYSTACK_SEARCH_RESULTS_PER_PAGE = 30
 
 # LOGROS
 BADGIFY_BATCH_SIZE = None

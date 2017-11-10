@@ -19,6 +19,7 @@ from publications.models import Publication
 from publications.views import logger
 from publications_gallery_groups.forms import PublicationPhotoForm, PublicationPhotoEdit
 from publications_gallery_groups.models import PublicationGroupMediaPhoto
+from user_profile.models import RelationShipProfile, BLOCK
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery_groups.utils import optimize_publication_media, check_num_images, check_image_property
@@ -497,12 +498,15 @@ def load_more_descendants(request):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
                                                         & Q(level__lte=1)
                                                         & Q(deleted=False))
         else:
-            pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
                                                         & Q(deleted=False))
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),

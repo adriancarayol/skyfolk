@@ -29,6 +29,7 @@ from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdi
     PublicationVideoForm
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto, PublicationVideo
+from user_profile.models import RelationShipProfile, BLOCK
 from user_profile.node_models import NodeProfile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
@@ -67,11 +68,11 @@ def collection_list(request, username,
     print('>>>>>>> TAGNAME {}'.format(tag_slug))
     if user.username == username:
         photos = Photo.objects.filter(owner__username=username,
-                                           tags__name__exact=tag_slug)
+                                      tags__name__exact=tag_slug)
         videos = Video.objects.filter(owner__username=username, tags__slug=tag_slug)
     else:
         photos = Photo.objects.filter(owner__username=username,
-                                           tags__name__exact=tag_slug, is_public=True)
+                                      tags__name__exact=tag_slug, is_public=True)
         videos = Video.objects.filter(owner__username=username, tags__slug=tag_slug, is_public=True)
 
     items = list(
@@ -417,6 +418,9 @@ class PhotoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         paginator = Paginator(
             PublicationPhoto.objects.annotate(likes=Count('user_give_me_like'),
                                               hates=Count('user_give_me_hate'), have_like=Count(Case(
@@ -426,7 +430,7 @@ class PhotoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(p_author__profile__in=users_not_blocked_me)
                 & Q(board_photo_id=self.photo.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
@@ -537,6 +541,8 @@ class VideoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
         paginator = Paginator(
             PublicationVideo.objects.annotate(likes=Count('user_give_me_like'),
@@ -547,7 +553,7 @@ class VideoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(board_video_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_video_extra_content', 'images', 'videos') \

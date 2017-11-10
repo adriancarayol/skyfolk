@@ -37,6 +37,7 @@ from publications_groups.models import PublicationGroup
 from publications_groups.themes.models import PublicationTheme
 from user_groups.forms import GroupThemeForm, EditGroupThemeForm
 from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
+from user_profile.models import RelationShipProfile, BLOCK
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .forms import FormUserGroup, GroupThemeForm
@@ -222,6 +223,9 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         When(author_id=user.id, then=Value(1))
     ))).values('have_shared')
 
+    users_not_blocked_me = RelationShipProfile.objects.filter(
+        to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
     publications = PublicationGroup.objects.annotate(likes=Count('user_give_me_like'),
                                                      hates=Count('user_give_me_hate'), have_like=Count(Case(
             When(user_give_me_like__id=user.id, then=Value(1)),
@@ -233,7 +237,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
         have_shared=Subquery(shared_for_me, output_field=IntegerField())).filter(Q(board_group=group_profile) &
                                                                                  Q(deleted=False) & Q(
         level__lte=0) & ~Q(
-        author__profile__from_blocked__to_blocked=user.profile)) \
+        author__profile__in=users_not_blocked_me)) \
         .prefetch_related('group_extra_content', 'images',
                           'videos', 'user_give_me_like', 'user_give_me_hate', 'tags') \
         .select_related('author',
@@ -483,10 +487,10 @@ class LikeListGroup(ListView):
     def get_queryset(self):
         self.group = UserGroups.objects.get(slug=self.kwargs.pop('groupname', None))
         return LikeGroup.objects.filter(to_like_id=self.group.id).values('from_like__username',
-                                                                                   'from_like__first_name',
-                                                                                   'from_like__last_name',
-                                                                                   'from_like__profile__back_image'
-                                                                                   )
+                                                                         'from_like__first_name',
+                                                                         'from_like__last_name',
+                                                                         'from_like__profile__back_image'
+                                                                         )
 
     def get_context_data(self, **kwargs):
         context = super(LikeListGroup, self).get_context_data(**kwargs)

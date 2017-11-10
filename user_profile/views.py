@@ -36,7 +36,7 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import Request, Profile, \
-    RelationShipProfile, FOLLOWING, BlockedProfile, NotificationSettings
+    RelationShipProfile, FOLLOWING, NotificationSettings, BLOCK
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .serializers import UserSerializer
@@ -60,8 +60,11 @@ def load_profile_publications(request, page, profile):
         When(author_id=user.id, then=Value(1))
     ))).values('have_shared')
 
+    users_not_blocked_me = RelationShipProfile.objects.filter(
+        to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
     pubs = Publication.objects.filter(
-        ~Q(author__profile__from_blocked__to_blocked=user.profile) &
+        ~Q(author__profile__in=users_not_blocked_me) &
         Q(board_owner_id=profile.id) & Q(level__lte=0) & Q(
             deleted=False)).prefetch_related('extra_content', 'images',
                                              'videos', 'shared_publication__images',
@@ -124,7 +127,11 @@ def profile_view_ajax(request, user_profile, node_profile=None):
         template = 'account/follow_entries.html'
         profile = Profile.objects.values_list('id', flat=True).get(user=request.user)
 
-        users = User.objects.filter(profile__to_profile__from_profile_id=profile)
+        following_list = RelationShipProfile.objects.filter(
+            from_profile=profile,
+            type=FOLLOWING).values('to_profile_id')
+
+        users = User.objects.filter(profile__in=following_list)
         paginator = Paginator(users, 25)  # Show 25 contacts per page
 
         try:
@@ -900,7 +907,8 @@ def remove_blocked(request):
                 recipient = Profile.objects.get(user_id=slug)
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        BlockedProfile.objects.filter(to_blocked=recipient, from_blocked=emitter).delete()
+                        RelationShipProfile.objects.filter(to_profile=recipient, from_profile=emitter,
+                                                           type=BLOCK).delete()
                 response = True
             else:
                 logging.info('%s no tiene bloqueado a %s' % (m.title, n.title))
@@ -951,7 +959,9 @@ class FollowersListView(ListView):
         return super(FollowersListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return User.objects.filter(profile__from_profile__to_profile=self.request.user.profile).select_related(
+        followers_list = RelationShipProfile.objects.filter(to_profile__user__username=self.kwargs.get('username', None),
+                                                            type=FOLLOWING).values('from_profile_id')
+        return User.objects.filter(profile__id=followers_list).select_related(
             'profile')
 
     def get_context_data(self, **kwargs):
@@ -978,7 +988,9 @@ class FollowingListView(ListView):
         return super(FollowingListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        return User.objects.filter(profile__to_profile__from_profile=self.request.user.profile).select_related(
+        following_list = RelationShipProfile.objects.filter(from_profile__user__username=self.kwargs.get('username', None),
+                                                            type=FOLLOWING).values('to_profile_id')
+        return User.objects.filter(profile__in=following_list).select_related(
             'profile')
 
     def get_context_data(self, **kwargs):
@@ -1186,7 +1198,7 @@ def bloq_user(request):
         try:
             with transaction.atomic(using="default"):
                 with db.transaction:
-                    BlockedProfile.objects.create(to_blocked=recipient, from_blocked=emitter)
+                    RelationShipProfile.objects.create(to_profile=recipient, from_profile=emitter, type=BLOCK)
         except Exception as e:
             logging.info(e)
             response = False
@@ -1394,56 +1406,64 @@ class SearchUsuarioView(SearchView):
 
     def get_queryset(self):
         profile = Profile.objects.get(user_id=self.request.user.id)
+
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=profile, type=BLOCK).values('from_profile_id')
+
+        following = RelationShipProfile.objects.filter(Q(from_profile=profile) & ~Q(type=BLOCK)).values('to_profile_id')
+        followers = RelationShipProfile.objects.filter(Q(to_profile=profile) & ~Q(type=BLOCK)).values('from_profile_id')
+
         queryset = RelatedSearchQuerySet().order_by('-pub_date').load_all().load_all_queryset(
             Publication, Publication.objects.filter((SQ(board_owner_id=self.request.user.id)
                                                      | SQ(author_id=self.request.user.id)) | (
-                                                        (~SQ(board_owner__profile__from_blocked__to_blocked=profile) & ~SQ(
+                                                        (~SQ(
+                                                            board_owner__profile__in=users_not_blocked_me) & ~SQ(
                                                             board_owner__profile__privacity='N') & ~SQ(
-                                                            author__profile__from_blocked__to_blocked=profile)) &
+                                                            author__profile__in=users_not_blocked_me)) &
                                                         ((SQ(board_owner__profile__privacity='A') | (
                                                             (SQ(board_owner__profile__privacity='OF') &
                                                              SQ(
-                                                                 board_owner__profile__to_profile__from_profile=profile)) | (
+                                                                 board_owner__profile__in=following)) | (
                                                                 SQ(board_owner__profile__privacity='OFAF') &
                                                                 (SQ(
-                                                                    board_owner__profile__to_profile__from_profile=profile) | SQ(
-                                                                    board_owner__profile__from_profile__to_profile=profile))
+                                                                    board_owner__profile__in=following) | SQ(
+                                                                    board_owner__profile__in=followers))
                                                             )) & ((SQ(author__profile__privacity='OF') &
                                                                    SQ(
-                                                                       author__profile__to_profile__from_profile=profile)) | (
+                                                                       author__profile__in=following)) | (
                                                                       SQ(author__profile__privacity='OFAF') &
                                                                       (SQ(
-                                                                          author__profile__to_profile__from_profile=profile) | SQ(
-                                                                          author__profile__from_profile__to_profile=profile))
+                                                                          author__profile__in=following) | SQ(
+                                                                          author__profile__in=followers))
                                                                   ) | SQ(author__profile__privacity='A'))) | (
                                                              SQ(author__profile__privacity='A') | (
                                                                  (SQ(author__profile__privacity='OF') &
                                                                   SQ(
-                                                                      author__profile__to_profile__from_profile=profile)) | (
+                                                                      author__profile__in=following)) | (
                                                                      SQ(author__profile__privacity='OFAF') &
                                                                      (SQ(
-                                                                         author__profile__to_profile__from_profile=profile) | SQ(
-                                                                         author__profile__from_profile__to_profile=profile))
+                                                                         author__profile__in=following) | SQ(
+                                                                         author__profile__in=followers))
                                                                  )) & ((SQ(board_owner__profile__privacity='OF') &
                                                                         SQ(
-                                                                            board_owner__profile__to_profile__from_profile=profile)) | (
+                                                                            board_owner__profile__in=following)) | (
                                                                            SQ(board_owner__profile__privacity='OFAF') &
                                                                            (SQ(
-                                                                               board_owner__profile__to_profile__from_profile=profile) | SQ(
-                                                                               board_owner__profile__from_profile__to_profile=profile))
+                                                                               board_owner__profile__in=following) | SQ(
+                                                                               board_owner__profile__in=followers))
                                                                        ) | SQ(board_owner__profile__privacity='A')))))) \
                 .select_related('author').prefetch_related('images')
         ).load_all_queryset(
             Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
                                         ((~SQ(owner__profile__privacity='N') & ~SQ(
-                                            owner__profile__from_blocked__to_blocked=profile))
+                                            owner__profile__in=users_not_blocked_me))
                                          & ((SQ(owner__profile__privacity='OF') &
-                                             SQ(owner__profile__to_profile__from_profile=profile)
+                                             SQ(owner__profile__in=following)
                                              & SQ(is_public=True))
                                             | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (
                                                 SQ(owner__profile__privacity='OFAF') & (
-                                                    SQ(owner__profile__from_profile__to_profile=profile) | SQ(
-                                                        owner__profile__to_profile__from_profile=profile)))))) \
+                                                    SQ(owner__profile__in=following) | SQ(
+                                                        owner__profile__in=followers)))))) \
                 .select_related('owner').prefetch_related('tags')
         ).load_all_queryset(
             Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))

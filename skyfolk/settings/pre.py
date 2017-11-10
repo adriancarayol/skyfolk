@@ -47,3 +47,13 @@ MEDIA_URL = '/media/'
 # INVITATIONS ONLY EMAIL
 INVITATIONS_INVITATION_ONLY = True
 
+# ELASTICSEARCH CONFIGURATION
+ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://{elastic_host}:9200/'.format(elastic_host=ELASTIC_URL),
+        'INDEX_NAME': 'haystack',
+    },
+}

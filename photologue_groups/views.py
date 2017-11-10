@@ -27,6 +27,7 @@ from publications_gallery_groups.forms import PublicationPhotoForm, PublicationP
 from publications.forms import SharedPublicationForm
 from publications_gallery_groups.models import PublicationGroupMediaPhoto, PublicationGroupMediaVideo
 from user_groups.decorators import user_can_view_group_info
+from user_profile.models import RelationShipProfile, BLOCK
 
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
@@ -437,6 +438,9 @@ class PhotoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         paginator = Paginator(
             PublicationGroupMediaPhoto.objects.annotate(likes=Count('user_give_me_like'),
                                               hates=Count('user_give_me_hate'), have_like=Count(Case(
@@ -446,7 +450,7 @@ class PhotoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(board_photo_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_group_multimedia_photo_extra_content', 'images', 'videos') \
@@ -534,6 +538,9 @@ class VideoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         paginator = Paginator(
             PublicationGroupMediaVideo.objects.annotate(likes=Count('user_give_me_like'),
                                               hates=Count('user_give_me_hate'), have_like=Count(Case(
@@ -543,7 +550,7 @@ class VideoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(board_video_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_group_multimedia_video_extra_content', 'images', 'videos') \

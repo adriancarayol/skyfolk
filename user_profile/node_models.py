@@ -151,7 +151,7 @@ class NodeProfile(DjangoNode):
         if self.privacity == NodeProfile.NOTHING:
             return "nothing"
 
-        # Si el perfil esta bloqueado
+        # Si el perfil me bloquea
         if self.bloq.is_connected(user_profile):
             return "block"
 

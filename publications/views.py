@@ -27,6 +27,7 @@ from mptt.templatetags.mptt_tags import cache_tree_children
 
 from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
+from user_profile.models import RelationShipProfile, BLOCK
 from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
 from .models import Publication, PublicationImage, PublicationVideo, ExtraContent
 from user_profile.node_models import NodeProfile
@@ -610,15 +611,18 @@ def load_more_comments(request):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         if not publication.parent:
             publications = publication.get_descendants() \
-                .filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+                .filter(~Q(author__profile__in=users_not_blocked_me)
                         & Q(level__lte=1) & Q(deleted=False))
 
         else:
             publications = publication.get_descendants() \
                 .filter(
-                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(deleted=False))
 
         shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),

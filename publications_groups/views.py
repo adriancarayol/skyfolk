@@ -24,6 +24,7 @@ from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups
 from user_groups.node_models import NodeGroup
+from user_profile.models import RelationShipProfile, BLOCK
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media, check_num_images, check_image_property
@@ -511,15 +512,18 @@ class LoadRepliesForPublicationGroup(View):
             if not g.members.is_connected(n):
                 return HttpResponseForbidden()
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         if not publication.parent:
             pubs = publication.get_descendants() \
-                .filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+                .filter(~Q(author__profile__in=users_not_blocked_me)
                         & Q(level__lte=1) & Q(deleted=False))
 
         else:
             pubs = publication.get_descendants() \
                 .filter(
-                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(deleted=False))
 
         shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),

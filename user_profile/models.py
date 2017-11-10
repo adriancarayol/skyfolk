@@ -14,20 +14,16 @@ from notifications.models import Notification
 from photologue.models import Photo, Video
 
 REQUEST_FOLLOWING = 1
-REQUEST_FOLLOWER = 2
 REQUEST_BLOCKED = 3
 REQUEST_STATUSES = (
     (REQUEST_FOLLOWING, 'Following'),
-    (REQUEST_FOLLOWER, 'Follower'),
     (REQUEST_BLOCKED, 'Blocked'),
 )
 
 FOLLOWING = 1
-FOLLOWER = 2
 BLOCK = 3
 RELATIONSHIP_STATUSES = (
     (FOLLOWING, 1),
-    (FOLLOWER, 2),
     (BLOCK, 3)
 )
 
@@ -38,7 +34,7 @@ logger = logging.getLogger(__name__)
 def upload_cover_path(instance, filename):
     return '%s/cover_image/%s' % (instance.user.username, filename)
 
-#TODO: Merge BlockedProfile y RelationShipProfile
+
 class RelationShipProfile(models.Model):
     """
     Establece una relacion entre dos usuarios
@@ -48,18 +44,7 @@ class RelationShipProfile(models.Model):
     type = models.IntegerField(choices=RELATIONSHIP_STATUSES)
 
     class Meta:
-        unique_together = ('to_profile', 'from_profile', 'type')
-
-
-class BlockedProfile(models.Model):
-    """
-    Establece una relacion de bloqueo entre dos usuarios
-    """
-    to_blocked = models.ForeignKey('Profile', related_name='to_blocked', db_index=True)
-    from_blocked = models.ForeignKey('Profile', related_name='from_blocked', db_index=True)
-
-    class Meta:
-        unique_together = ('to_blocked', 'from_blocked')
+        unique_together = ('to_profile', 'from_profile')
 
 
 class Profile(models.Model):
@@ -84,8 +69,6 @@ class Profile(models.Model):
     privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
     relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False,
                                            related_name="profile_relationships")
-    blockeds = models.ManyToManyField('self', through=BlockedProfile, symmetrical=False,
-                                      related_name="profile_blockeds")
 
     reindex_related = ('user',)
 
@@ -113,6 +96,7 @@ class Profile(models.Model):
         """
         Devuelve el gravatar por defecto asociado al email
         del usuario
+        :param size: Size of avatar
         :param size => tamaño de la imagen:
         :return url con el gravatar del usuario, o la imagen por defecto de skyfolk:
         """
@@ -158,7 +142,7 @@ class Profile(models.Model):
         Devuelve si el perfil con id user_id
         es visible por nosotros.
         :param user_profile:
-        :return template que determina si el perfil es visible:
+        :return devuelve el nivel de visibilidad:
         """
 
         # Si estoy visitando mi propio perfil
@@ -169,13 +153,14 @@ class Profile(models.Model):
         if self.privacity == Profile.NOTHING:
             return "nothing"
 
-        # Si el perfil esta bloqueado
-        if BlockedProfile.objects.filter(to_blocked=user_profile, from_blocked=self).exists():
+        # Si el perfil me bloquea
+        if RelationShipProfile.objects.filter(to_profile=user_profile, from_profile=self, type=BLOCK).exists():
             return "block"
 
         # Recuperamos la relacion de "seguidor"
         try:
-            relation_follower = RelationShipProfile.objects.filter(to_profile=self, from_profile=user_profile, type=FOLLOWING)
+            relation_follower = RelationShipProfile.objects.filter(to_profile=self, from_profile=user_profile,
+                                                                   type=FOLLOWING)
         except Exception:
             relation_follower = None
 
@@ -185,7 +170,8 @@ class Profile(models.Model):
 
         # Recuperamos la relacion de "seguir"
         try:
-            relation_follow = RelationShipProfile.objects.filter(to_profile=user_profile, from_profile=self, type=FOLLOWING)
+            relation_follow = RelationShipProfile.objects.filter(to_profile=user_profile, from_profile=self,
+                                                                 type=FOLLOWING)
         except Exception:
             relation_follow = None
 
@@ -199,6 +185,7 @@ class Profile(models.Model):
             return "all"
 
         return None
+
 
 class RequestManager(models.Manager):
     def get_follow_request(self, from_profile, to_profile):
