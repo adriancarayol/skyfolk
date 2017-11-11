@@ -128,7 +128,7 @@ services:
       - /tmp:/tmp
     command: ./run_worker.sh
     env_file:
-      - web-variables.env
+      - web-pre-variables.env
     networks:
       - webnet
     depends_on:
@@ -137,7 +137,7 @@ services:
   # Django web server
   web:
     env_file:
-      - web-variables.env
+      - web-pre-variables.env
     build:
       context: .
       dockerfile: Dockerfile
@@ -160,7 +160,7 @@ services:
   # Celery worker
   celery_worker:
     env_file:
-      - web-variables.env
+      - web-pre-variables.env
     build:
       context: .
       dockerfile: Dockerfile
@@ -177,7 +177,7 @@ services:
     restart: always
   celery_beat:
     env_file:
-      - web-variables.env
+      - web-pre-variables.env
     build:
       context: .
       dockerfile: Dockerfile
