@@ -28,7 +28,7 @@ from rest_framework.renderers import JSONRenderer
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from notifications.models import Notification
 from notifications.signals import notify
-from photologue.models import Photo
+from photologue.models import Photo, Video
 from publications.forms import PublicationForm, PublicationEdit, SharedPublicationForm
 from publications.models import Publication, PublicationVideo
 from user_profile.decorators import user_can_view_profile_info
@@ -666,7 +666,7 @@ def request_friend(request):
                                         recipient=m.user,
                                         description="@{0} ahora es tu seguidor.".format(user.username),
                                         verb=u'¡ahora te sigue <a href="/profile/%s">%s</a>!.' % (
-                                        n.user.username, n.user.username),
+                                            n.user.username, n.user.username),
                                         level='new_follow')
                     response = "added_friend"
                 except Exception as e:
@@ -1378,7 +1378,20 @@ class SearchUsuarioView(SearchView):
                                                         owner__profile__in=followers)))))) \
                 .select_related('owner').prefetch_related('tags')
         ).load_all_queryset(
-            Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N')))
+            Profile, Profile.objects.filter(SQ(user__is_active=True) & ~SQ(privacity='N'))) \
+            .load_all_queryset(
+            Video, Video.objects.filter(SQ(owner_id=self.request.user.id) |
+                                        ((~SQ(owner__profile__privacity='N') & ~SQ(
+                                            owner__profile__in=users_not_blocked_me))
+                                         & ((SQ(owner__profile__privacity='OF') &
+                                             SQ(owner__profile__in=following)
+                                             & SQ(is_public=True))
+                                            | (SQ(owner__profile__privacity='A') & SQ(is_public=True)) | (
+                                                SQ(owner__profile__privacity='OFAF') & (
+                                                    SQ(owner__profile__in=following) | SQ(
+                                                        owner__profile__in=followers)))))) \
+                .select_related('owner').prefetch_related('tags')
+        )
 
         models = []
 
@@ -1391,6 +1404,7 @@ class SearchUsuarioView(SearchView):
             models.append(Profile)
             models.append(Publication)
             models.append(Photo)
+            models.append(Video)
         if criteria == 'accounts':
             models.append(Profile)
         if criteria == 'publications':
@@ -1398,7 +1412,7 @@ class SearchUsuarioView(SearchView):
         if criteria == 'images':
             models.append(Photo)
         if criteria == 'videos':
-            models.append(PublicationVideo)
+            models.append(Video)
 
         q = self.request.GET['q']
         self.initial = {'q': q, 's': criteria}

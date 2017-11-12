@@ -261,11 +261,26 @@ def crop_image(obj, request):
             w = str_value.get('width')
             h = str_value.get('height')
             rotate = str_value.get('rotate')
+
     if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
         raise ValueError("Backimage > 5MB!")
 
     im = Image.open(image)
     fill_color = (255, 255, 255, 0)
+
+    try:
+        im.seek(1)
+    except EOFError:
+        is_animated = False
+    else:
+        is_animated = True
+
+    if is_animated:
+        obj.image = image
+        return
+
+    im.seek(0)
+
     if im.mode in ('RGBA', 'LA'):
         background = Image.new(im.mode[:-1], im.size, fill_color)
         background.paste(im, im.split()[-1])

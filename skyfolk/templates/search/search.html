@@ -56,6 +56,7 @@ Template para las busquedas
                     <li class="list-vertical" {% if s == 'accounts' %}
                         style="border-bottom: 3px solid #1e88e5;" {% endif %}><a
                             href="{% url 'user_profile:category-search' 'accounts' %}?q={{ q }}">Cuentas</a></li>
+                {% comment %}
                     <li class="list-vertical">Más opciones<i class="material-icons">arrow_drop_down</i>
                         <div id="dropdown-search" class="dropdown-options">
                             <ul class="dropdown-ul">
@@ -68,6 +69,7 @@ Template para las busquedas
                             </ul>
                         </div>
                     </li>
+                {% endcomment %}
                 </ul>
             </div>
         </div>
@@ -139,7 +141,7 @@ Template para las busquedas
                         </div>
                     {% elif item.model_name == 'photo' %}
                         <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
-                             data-tooltip="{{ item.description|truncatechars:"150" }}">
+                             data-tooltip="{{ item.caption|truncatechars:"150" }}">
                             <div class="container-image">
                                 <div class="principal-content">
                                     {% if item.tags %}
@@ -160,7 +162,46 @@ Template para las busquedas
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <i class="photo-title truncate">{{ item.title }}</i>
+                                        <a href="{% url "photologue:pl-photo" slug=item.slug %}" class="photo-title truncate">{{ item.title }}</a>
+                                        <i class="truncate photo-date"><i
+                                                class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}
+                                        </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif item.model_name == 'video' %}
+                        <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
+                             data-tooltip="{{ item.caption|truncatechars:"150" }}">
+                            <div class="container-image">
+                                <div class="principal-content">
+                                    {% if item.tags %}
+                                        <div class="tags-content">
+                                            {% for tag in item.tags %}
+                                                <blockquote
+                                                        onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if item.thumbnail %}
+                                        <img class="lazyload" data-src="{{ item.thumbnail.url }}"
+                                             alt="{{ item.name }}" title="{{ item.name }}"
+                                             onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                        {% else %}
+                                            <video controls style="width: 100%; height: 100%; outline: none;">
+                                                <source src="/media/{{ item.video }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                    {% endif %}
+                                </div>
+                                <div class="col s12 legend-content">
+                                    <div class="legend-user-image">
+                                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                                    </div>
+                                    <div class="col l8 m8 s8 legend-user-data">
+                                        <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
+                                        <a href="{% url "photologue:pl-video" slug=item.slug %}" class="photo-title truncate">
+                                        {{ item.name }}</a>
                                         <i class="truncate photo-date"><i
                                                 class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}
                                         </i>
@@ -269,22 +310,45 @@ Template para las busquedas
         {% endif %}
         {% if s == 'videos' %}
             <div class="grid row">
-                {% for result in object_list %}
-                    <div class="grid-item infinite-item">
-                        <div class="personal-card">
-                            <div class="col s12">
-                                <div class="header">
-                                    <a href="{{ result.object.get_absolute_url }}">{{ result.author }}</a>
+                {% for item in object_list %}
+                    <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
+                             data-tooltip="{{ item.caption|truncatechars:"150" }}">
+                            <div class="container-image">
+                                <div class="principal-content">
+                                    {% if item.tags %}
+                                        <div class="tags-content">
+                                            {% for tag in item.tags %}
+                                                <blockquote
+                                                        onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if item.thumbnail %}
+                                        <img class="lazyload" data-src="{{ item.thumbnail.url }}"
+                                             alt="{{ item.name }}" title="{{ item.name }}"
+                                             onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                        {% else %}
+                                            <video controls style="width: 100%; height: 100%; outline: none;">
+                                                <source src="/media/{{ item.video }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                    {% endif %}
+                                </div>
+                                <div class="col s12 legend-content">
+                                    <div class="legend-user-image">
+                                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
+                                    </div>
+                                    <div class="col l8 m8 s8 legend-user-data">
+                                        <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
+                                        <a href="{% url "photologue:pl-video" slug=item.slug %}" class="photo-title truncate">
+                                        {{ item.name }}</a>
+                                        <i class="truncate photo-date"><i
+                                                class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}
+                                        </i>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col s12">
-                                <p>
-                                    <a href="{{ result.object.get_absolute_url }}">{{ result.text }}</a>
-                                    {{ result.pub_date }}
-                                </p>
-                            </div>
                         </div>
-                    </div>
                 {% endfor %}
             </div>
         {% endif %}
