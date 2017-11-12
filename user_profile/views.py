@@ -31,6 +31,7 @@ from notifications.signals import notify
 from photologue.models import Photo, Video
 from publications.forms import PublicationForm, PublicationEdit, SharedPublicationForm
 from publications.models import Publication, PublicationVideo
+from user_groups.models import UserGroups
 from user_profile.decorators import user_can_view_profile_info
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
@@ -1391,7 +1392,9 @@ class SearchUsuarioView(SearchView):
                                                     SQ(owner__profile__in=following) | SQ(
                                                         owner__profile__in=followers)))))) \
                 .select_related('owner').prefetch_related('tags')
-        )
+        ) \
+            .load_all_queryset(
+            UserGroups, UserGroups.objects.all())
 
         models = []
 
@@ -1405,6 +1408,7 @@ class SearchUsuarioView(SearchView):
             models.append(Publication)
             models.append(Photo)
             models.append(Video)
+            models.append(UserGroups)
         if criteria == 'accounts':
             models.append(Profile)
         if criteria == 'publications':
@@ -1413,6 +1417,8 @@ class SearchUsuarioView(SearchView):
             models.append(Photo)
         if criteria == 'videos':
             models.append(Video)
+        if criteria == 'groups':
+            models.append(UserGroups)
 
         q = self.request.GET['q']
         self.initial = {'q': q, 's': criteria}

@@ -72,7 +72,15 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                 if image:
                     if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
                         raise ValueError('BackImage > 5MB!')
-                    im = Image.open(image).convert('RGBA')
+
+                    im = Image.open(image)
+                    fill_color = (255, 255, 255, 0)
+
+                    if im.mode in ('RGBA', 'LA'):
+                        background = Image.new(im.mode[:-1], im.size, fill_color)
+                        background.paste(im, im.split()[-1])
+                        im = background
+
                     im.thumbnail((1500, 630), Image.ANTIALIAS)
                     tempfile_io = six.BytesIO()
                     im.save(tempfile_io, format='JPEG', optimize=True, quality=90)

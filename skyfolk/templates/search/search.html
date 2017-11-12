@@ -56,6 +56,9 @@ Template para las busquedas
                     <li class="list-vertical" {% if s == 'accounts' %}
                         style="border-bottom: 3px solid #1e88e5;" {% endif %}><a
                             href="{% url 'user_profile:category-search' 'accounts' %}?q={{ q }}">Cuentas</a></li>
+                    <li class="list-vertical" {% if s == 'groups' %}
+                        style="border-bottom: 3px solid #1e88e5;" {% endif %}><a
+                            href="{% url 'user_profile:category-search' 'groups' %}?q={{ q }}">Grupos</a></li>
                 {% comment %}
                     <li class="list-vertical">Más opciones<i class="material-icons">arrow_drop_down</i>
                         <div id="dropdown-search" class="dropdown-options">
@@ -107,6 +110,31 @@ Template para las busquedas
                                     <div style="cursor: default" class="name-friend">
                                         <a href="{% url "user_profile:profile" username=item.username %}">@{{ item.username }}</a>
                                         <p>{{ item.firstname }} {{ item.lastname }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% elif item.model_name == 'usergroups' %}
+                        <div class="grid-item infinite-item">
+                            <div class="personal-card">
+                                <div class="header">
+                                    {% if item.object.back_image %}
+                                        <img class="back-profile-user" src="{{ item.object.back_image.url }}">
+                                    {% else %}
+                                        <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
+                                    {% endif %}
+                                    <i class="material-icons like-him">group</i>
+                                    <div class="bg-user">
+                                        <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
+                                             class="profile-user-bg"><img src="{% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
+                                                                          alt="Imagen de {{ item.name }}"
+                                                                          title="Imagen de {{ item.name }}"/></div>
+                                    </div>
+                                </div>
+                                <div class="col s12">
+                                    <div style="cursor: default" class="name-friend">
+                                        <a href="{% url "user_groups:group-profile" groupname=item.slug %}">{{ item.name }}</a>
+                                        <p class="truncate">{{ item.description|truncatechars:100 }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -239,6 +267,36 @@ Template para las busquedas
                         </div>
                     </div>
                 {% endfor %}
+            </div>
+        {% endif %}
+        {% if s == "groups" %}
+            <div class="grid row">
+            {% for item in object_list %}
+            <div class="grid-item infinite-item">
+                <div class="personal-card">
+                    <div class="header">
+                        {% if item.object.back_image %}
+                            <img class="back-profile-user" src="{{ item.object.back_image.url }}">
+                        {% else %}
+                            <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
+                        {% endif %}
+                        <i class="material-icons like-him">group</i>
+                        <div class="bg-user">
+                            <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
+                                 class="profile-user-bg"><img src="{% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
+                                                              alt="Imagen de {{ item.name }}"
+                                                              title="Imagen de {{ item.name }}"/></div>
+                        </div>
+                    </div>
+                    <div class="col s12">
+                        <div style="cursor: default" class="name-friend">
+                            <a href="{% url "user_groups:group-profile" groupname=item.slug %}">{{ item.name }}</a>
+                            <p class="truncate">{{ item.description|truncatechars:100 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
             </div>
         {% endif %}
         {% if s == 'publications' %}
