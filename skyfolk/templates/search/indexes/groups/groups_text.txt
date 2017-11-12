@@ -1,0 +1,7 @@
+{{ object.owner.get_full_name }}
+{{ object.owner.username }}
+{{ object.description }}
+{{ object.pub_date }}
+{{ object.slug }}
+{{ object.name }}
+{{ object.users }}

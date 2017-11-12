@@ -24,11 +24,11 @@ from el_pagination.views import AjaxListView
 
 from itertools import chain
 
-from publications.models import Publication
 from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdit, PublicationVideoEdit, \
     PublicationVideoForm
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto, PublicationVideo
+from user_profile.models import RelationShipProfile, BLOCK, Profile
 from user_profile.node_models import NodeProfile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
@@ -51,9 +51,9 @@ def collection_list(request, username,
 
     # Para comprobar si tengo permisos para ver el contenido de la coleccion
     try:
-        user_profile = NodeProfile.nodes.get(title=username)
-        m = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
+        user_profile = Profile.objects.get(user__username=username)
+        m = Profile.objects.get(user_id=user.id)
+    except Profile.DoesNotExist:
         raise Http404
 
     visibility = user_profile.is_visible(m)
@@ -67,11 +67,11 @@ def collection_list(request, username,
     print('>>>>>>> TAGNAME {}'.format(tag_slug))
     if user.username == username:
         photos = Photo.objects.filter(owner__username=username,
-                                           tags__name__exact=tag_slug)
+                                      tags__name__exact=tag_slug)
         videos = Video.objects.filter(owner__username=username, tags__slug=tag_slug)
     else:
         photos = Photo.objects.filter(owner__username=username,
-                                           tags__name__exact=tag_slug, is_public=True)
+                                      tags__name__exact=tag_slug, is_public=True)
         videos = Video.objects.filter(owner__username=username, tags__slug=tag_slug, is_public=True)
 
     items = list(
@@ -145,8 +145,11 @@ class PhotoListView(AjaxListView):
         para ver la galeria solicitada.
         """
         user = self.request.user
-        user_profile = NodeProfile.nodes.get(title=self.username)
-        m = NodeProfile.nodes.get(user_id=user.id)
+        try:
+            user_profile = Profile.objects.get(user__username=self.username)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            return False
 
         visibility = user_profile.is_visible(m)
 
@@ -258,11 +261,26 @@ def crop_image(obj, request):
             w = str_value.get('width')
             h = str_value.get('height')
             rotate = str_value.get('rotate')
+
     if image._size > settings.BACK_IMAGE_DEFAULT_SIZE:
         raise ValueError("Backimage > 5MB!")
 
     im = Image.open(image)
     fill_color = (255, 255, 255, 0)
+
+    try:
+        im.seek(1)
+    except EOFError:
+        is_animated = False
+    else:
+        is_animated = True
+
+    if is_animated:
+        obj.image = image
+        return
+
+    im.seek(0)
+
     if im.mode in ('RGBA', 'LA'):
         background = Image.new(im.mode[:-1], im.size, fill_color)
         background.paste(im, im.split()[-1])
@@ -417,6 +435,9 @@ class PhotoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         paginator = Paginator(
             PublicationPhoto.objects.annotate(likes=Count('user_give_me_like'),
                                               hates=Count('user_give_me_hate'), have_like=Count(Case(
@@ -426,7 +447,7 @@ class PhotoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(p_author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(p_author__profile__in=users_not_blocked_me)
                 & Q(board_photo_id=self.photo.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_photo_extra_content', 'images', 'videos') \
@@ -493,10 +514,10 @@ class PhotoDetailView(DetailView):
             return True
 
         try:
-            user_profile = NodeProfile.nodes.get(title=self.username)
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            raise Http404
+            user_profile = Profile.objects.get(user__username=self.username)
+            n = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            return False
 
         visibility = user_profile.is_visible(n)
 
@@ -537,6 +558,8 @@ class VideoDetailView(DetailView):
         user = self.request.user
         page = self.request.GET.get('page', 1)
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
 
         paginator = Paginator(
             PublicationVideo.objects.annotate(likes=Count('user_give_me_like'),
@@ -547,7 +570,7 @@ class VideoDetailView(DetailView):
                     When(user_give_me_hate=user, then=Value(1)),
                     output_field=IntegerField()
                 ))).filter(
-                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(board_video_id=self.object.id),
                 Q(level__lte=0) & Q(deleted=False)) \
                 .prefetch_related('publication_video_extra_content', 'images', 'videos') \
@@ -613,9 +636,9 @@ class VideoDetailView(DetailView):
             return True
 
         try:
-            user_profile = NodeProfile.nodes.get(title=self.username)
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            user_profile = Profile.objects.get(user__username=self.username)
+            n = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             raise Http404
 
         visibility = user_profile.is_visible(n)

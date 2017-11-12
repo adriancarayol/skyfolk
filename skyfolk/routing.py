@@ -1,6 +1,3 @@
-from channels.routing import route
-from channels.staticfiles import StaticFilesConsumer
-
 from latest_news.consumers import MyFeedConsumer
 from photologue.consumers import PhotoConsumer, VideoConsumer
 from publications.consumers import PublicationConsumer
@@ -9,14 +6,15 @@ from user_profile.consumers import BlogConsumer, NotificationConsumer
 from user_groups.consumers import GroupConsumer, ThemeConsumer
 from publications_groups.consumers import GroupPublicationConsumer
 from photologue_groups.consumers import PhotoMediaGroupConsumer, VideoMediaGroupConsumer
-from publications_gallery_groups.consumers import PublicationGroupGalleryPhotoConsumer, PublicationGroupGalleryVideoConsumer
+from publications_gallery_groups.consumers import PublicationGroupGalleryPhotoConsumer, \
+    PublicationGroupGalleryVideoConsumer
+
 # The channel routing defines what channels get handled by what consumers,
 # including optional matching on message attributes. WebSocket messages of all
 # types have a 'path' attribute, so we're using that to route the socket.
 # While this is under stream/ compared to the HTML page, we could have it on the
 # same URL if we wanted; Daphne separates by protocol as it negotiates with a browser.
 channel_routing = [
-    route('http.request', StaticFilesConsumer()),
     # Consumidor para el perfil del usuario
     BlogConsumer.as_route(path=r'^/profile/(?P<username>[\w-]+)/stream/$'),
     # channels en fotos
@@ -47,7 +45,8 @@ channel_routing = [
     # photo publication detail
     PublicationGroupGalleryPhotoConsumer.as_route(path=r'^/group/multimedia/publication/detail/(?P<id>\d+)/stream/$'),
     # video publication detail
-    PublicationGroupGalleryVideoConsumer.as_route(path=r'^/group/multimedia/video/publication/detail/(?P<id>\d+)/stream/$'),
+    PublicationGroupGalleryVideoConsumer.as_route(
+        path=r'^/group/multimedia/video/publication/detail/(?P<id>\d+)/stream/$'),
     # A default "http.request" route is always inserted by Django at the end of the routing list
     # that routes all unmatched HTTP requests to the Django view system. If you want lower-level
     # HTTP handling - e.g. long-polling - you can do it here and route by path, and let the rest

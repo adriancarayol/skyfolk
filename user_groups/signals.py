@@ -14,7 +14,6 @@ from user_profile.node_models import NodeProfile
 from .models import UserGroups, RequestGroup, LikeGroup, GroupTheme
 from channels import Group as GroupChannel
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -30,6 +29,11 @@ def handle_new_group(sender, instance, created, **kwargs):
         assign_perm('kick_member', instance.owner, instance)
         assign_perm('ban_member', instance.owner, instance)
         assign_perm('modify_notification', instance.owner, instance)
+
+
+@receiver(post_delete, sender=UserGroups)
+def handle_delete_group(sender, instance, *args, **kwargs):
+    NodeGroup.nodes.get(group_id=instance.id).delete()
 
 
 @receiver(post_delete, sender=RequestGroup)
@@ -65,6 +69,7 @@ def user_group_changed_handler(sender, instance, action, **kwargs):
 
                 g.members.disconnect(n)
 
+
 @receiver(post_save, sender=LikeGroup)
 def handle_new_like(sender, instance, created, *args, **kwargs):
     if created:
@@ -76,6 +81,7 @@ def handle_new_like(sender, instance, created, *args, **kwargs):
 
         g.likes.connect(n)
 
+
 @receiver(post_delete, sender=LikeGroup)
 def handle_delete_like(sender, instance, *args, **kwargs):
     try:
@@ -85,6 +91,7 @@ def handle_delete_like(sender, instance, *args, **kwargs):
         raise ObjectDoesNotExist
 
     g.likes.disconnect(n)
+
 
 @receiver(post_save, sender=GroupTheme)
 def handle_new_theme(sender, instance, created, *args, **kwargs):

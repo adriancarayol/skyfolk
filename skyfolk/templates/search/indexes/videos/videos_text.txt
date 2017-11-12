@@ -1,3 +1,11 @@
-{{ object.author.get_full_name }}
-{{ object.url_video }}
-{{ object.date_added }}
+{{ object.owner.get_full_name }}
+{{ object.owner.username }}
+{{ object.name }}
+{{ object.thumbnail }}
+{{ object.pub_date }}
+{{ object.slug }}
+{{ object.video }}
+{{ object.description }}
+{% for tag in object.tags.all %}
+    {{ tag.name }}
+{% endfor %}

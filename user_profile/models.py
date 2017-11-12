@@ -14,20 +14,16 @@ from notifications.models import Notification
 from photologue.models import Photo, Video
 
 REQUEST_FOLLOWING = 1
-REQUEST_FOLLOWER = 2
 REQUEST_BLOCKED = 3
 REQUEST_STATUSES = (
     (REQUEST_FOLLOWING, 'Following'),
-    (REQUEST_FOLLOWER, 'Follower'),
     (REQUEST_BLOCKED, 'Blocked'),
 )
 
 FOLLOWING = 1
-FOLLOWER = 2
 BLOCK = 3
 RELATIONSHIP_STATUSES = (
     (FOLLOWING, 1),
-    (FOLLOWER, 2),
     (BLOCK, 3)
 )
 
@@ -39,29 +35,57 @@ def upload_cover_path(instance, filename):
     return '%s/cover_image/%s' % (instance.user.username, filename)
 
 
+class RelationShipProfileManager(models.Manager):
+    def get_total_following(self, profile_id):
+        """
+        Return total following of profile_id
+        :param profile_id: Profile
+        :return: Total following
+        """
+        qs = self.get_queryset()
+        return qs.filter(from_profile=profile_id).count()
+
+    def get_total_followers(self, profile_id):
+        """
+        Return total followers of profile_id
+        :param profile_id: Profile
+        :return: Total followers
+        """
+        qs = self.get_queryset()
+        return qs.filter(to_profile=profile_id).count()
+
+    def is_follow(self, to_profile, from_profile):
+        """
+        Return if from_profile follow to_profile
+        :param to_profile:
+        :param from_profile:
+        :return:
+        """
+        qs = self.get_queryset()
+        return qs.filter(to_profile=to_profile, from_profile=from_profile, type=FOLLOWING).exists()
+
+    def is_blocked(self, to_profile, from_profile):
+        """
+        Return if from_profile blocks to_profile
+        :param to_profile:
+        :param from_profile:
+        :return:
+        """
+        qs = self.get_queryset()
+        return qs.filter(to_profile=to_profile, from_profile=from_profile, type=BLOCK).exists()
+
+
 class RelationShipProfile(models.Model):
     """
     Establece una relacion entre dos usuarios
-    (Modelo util para hacer busquedas)
     """
     to_profile = models.ForeignKey('Profile', related_name='to_profile', db_index=True)
     from_profile = models.ForeignKey('Profile', related_name='from_profile', db_index=True)
     type = models.IntegerField(choices=RELATIONSHIP_STATUSES)
+    objects = RelationShipProfileManager()
 
     class Meta:
-        unique_together = ('to_profile', 'from_profile', 'type')
-
-
-class BlockedProfile(models.Model):
-    """
-    Establece una relacion de bloqueo entre dos usuarios
-    (Modelo util para hacer busquedas)
-    """
-    to_blocked = models.ForeignKey('Profile', related_name='to_blocked', db_index=True)
-    from_blocked = models.ForeignKey('Profile', related_name='from_blocked', db_index=True)
-
-    class Meta:
-        unique_together = ('to_blocked', 'from_blocked')
+        unique_together = ('to_profile', 'from_profile')
 
 
 class Profile(models.Model):
@@ -86,8 +110,6 @@ class Profile(models.Model):
     privacity = models.CharField(choices=OPTIONS_PRIVACITY, default='A', max_length=4)
     relationships = models.ManyToManyField('self', through=RelationShipProfile, symmetrical=False,
                                            related_name="profile_relationships")
-    blockeds = models.ManyToManyField('self', through=BlockedProfile, symmetrical=False,
-                                      related_name="profile_blockeds")
 
     reindex_related = ('user',)
 
@@ -111,10 +133,33 @@ class Profile(models.Model):
             return False
 
     @property
+    def group_name(self):
+        """
+        Devuelve el nombre del canal para enviar las notificaciones
+        """
+        return "users-%s" % self.user_id
+
+    @property
+    def notification_channel(self):
+        """
+        Devuelve el nombre del canal notification para cada usuario
+        """
+        return "notification-%s" % self.user_id
+
+    @property
+    def news_channel(self):
+        """
+        Devuelve el nombre del canal para enviar actualizaciones
+        al tablon de inicio
+        """
+        return "news-%s" % self.user_id
+
+    @property
     def gravatar(self, size=120):
         """
         Devuelve el gravatar por defecto asociado al email
         del usuario
+        :param size: Size of avatar
         :param size => tamaño de la imagen:
         :return url con el gravatar del usuario, o la imagen por defecto de skyfolk:
         """
@@ -154,6 +199,55 @@ class Profile(models.Model):
         Devuelve el numero de contenido multimedia de un perfil.
         """
         return Photo.objects.filter(owner=self.user_id).count() + Video.objects.filter(owner=self.user_id).count()
+
+    def is_visible(self, user_profile):
+        """
+        Devuelve si el perfil con id user_id
+        es visible por nosotros.
+        :param user_profile:
+        :return devuelve el nivel de visibilidad:
+        """
+
+        # Si estoy visitando mi propio perfil
+        if self.id == user_profile.id:
+            return "all"
+
+        # Si el perfil es privado
+        if self.privacity == Profile.NOTHING:
+            return "nothing"
+
+        # Si el perfil me bloquea
+        if RelationShipProfile.objects.filter(to_profile=user_profile, from_profile=self, type=BLOCK).exists():
+            return "block"
+
+        # Recuperamos la relacion de "seguidor"
+        try:
+            relation_follower = RelationShipProfile.objects.filter(to_profile=self, from_profile=user_profile,
+                                                                   type=FOLLOWING)
+        except Exception:
+            relation_follower = None
+
+        # Si el perfil es seguido y tiene la visiblidad "solo seguidores"
+        if self.privacity == Profile.ONLYFOLLOWERS and not relation_follower:
+            return "followers"
+
+        # Recuperamos la relacion de "seguir"
+        try:
+            relation_follow = RelationShipProfile.objects.filter(to_profile=user_profile, from_profile=self,
+                                                                 type=FOLLOWING)
+        except Exception:
+            relation_follow = None
+
+        # Si la privacidad es "seguidores y/o seguidos" y cumple los requisitos
+        if self.privacity == Profile.ONLYFOLLOWERSANDFOLLOWS and not \
+                (relation_follower or relation_follow):
+            return "both"
+
+        # Si el nivel de privacidad es TODOS
+        if self.privacity == Profile.ALL:
+            return "all"
+
+        return None
 
 
 class RequestManager(models.Manager):

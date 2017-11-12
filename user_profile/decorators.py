@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 
+from user_profile.models import Profile
 from user_profile.node_models import NodeProfile
 
 
@@ -14,9 +15,9 @@ def user_can_view_profile_info(function):
         user = request.user
 
         try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-            m = NodeProfile.nodes.get(title=username)
-        except NodeProfile.DoesNotExist:
+            n = Profile.objects.get(user_id=user.id)
+            m = Profile.objects.get(user__username=username)
+        except Profile.DoesNotExist:
             raise Http404
 
         privacity = m.is_visible(n)

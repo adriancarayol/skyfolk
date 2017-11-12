@@ -2,8 +2,6 @@ import os
 
 RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit_2')
 
-RABBIT_HOSTNAME = 'rabbit'
-
 if RABBIT_HOSTNAME.startswith('tcp://'):
     RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
 

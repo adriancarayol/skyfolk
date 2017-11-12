@@ -17,12 +17,12 @@ class GroupConsumer(WebsocketConsumer):
     def __init__(self, message, **kwargs):
         groupname = kwargs.pop('groupname', None)
         if not groupname:
-            raise Http404
+            return
 
         try:
             self.group_profile = UserGroups.objects.get(slug=groupname)
         except UserGroups.DoesNotExist:
-            raise Http404
+            return
 
         super(GroupConsumer, self).__init__(message, **kwargs)
 
@@ -34,15 +34,18 @@ class GroupConsumer(WebsocketConsumer):
         try:
             n = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
-            raise Http404
+            self.message.reply_channel.send({'close': True})
+            return
 
         try:
             g = NodeGroup.nodes.get(group_id=self.group_profile.id)
         except NodeGroup.DoesNotExist:
-            raise Http404
+            self.message.reply_channel.send({'close': True})
+            return
 
         if not self.group_profile.is_public and not g.members.is_connected(n):
-            self.message.reply_channel.send({'accept': False})
+            self.message.reply_channel.send({'close': True})
+            return
 
         self.message.reply_channel.send({'accept': True})
 
@@ -64,12 +67,12 @@ class ThemeConsumer(WebsocketConsumer):
     def __init__(self, message, **kwargs):
         slug = kwargs.pop('slug', None)
         if not slug:
-            raise Http404
+            return
 
         try:
             self.theme = GroupTheme.objects.select_related('board_group').get(slug=slug)
         except UserGroups.DoesNotExist:
-            raise Http404
+            return
 
         super(ThemeConsumer, self).__init__(message, **kwargs)
 
@@ -81,10 +84,12 @@ class ThemeConsumer(WebsocketConsumer):
         try:
             group = UserGroups.objects.get(id=self.theme.board_group_id)
         except UserGroups.DoesNotExist:
-            raise Http404
+            self.message.reply_channel.send({'close': True})
+            return
 
         if not group.is_public and not user.groups.filter(id=self.theme.board_group_id).exists():
-            self.message.reply_channel.send({'accept': False})
+            self.message.reply_channel.send({'close': True})
+            return
 
         self.message.reply_channel.send({'accept': True})
 

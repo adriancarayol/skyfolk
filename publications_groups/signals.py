@@ -132,7 +132,7 @@ def increase_affinity(instance):
     n = NodeProfile.nodes.get(user_id=instance.author.id)
     m = NodeProfile.nodes.get(user_id=instance.board_group.owner_id)
     # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.uid != m.uid:
+    if n.user_id != m.user_id:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight + 1
@@ -142,7 +142,7 @@ def increase_affinity(instance):
 def decrease_affinity(instance):
     n = NodeProfile.nodes.get(user_id=instance.author.id)
     m = NodeProfile.nodes.get(user_id=instance.board_group.owner_id)
-    if n.uid != m.uid:
+    if n.user_id != m.user_id:
         rel = n.follow.relationship(m)
         if rel:
             rel.weight = rel.weight - 1

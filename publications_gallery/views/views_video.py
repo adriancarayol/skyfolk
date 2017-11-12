@@ -22,6 +22,7 @@ from publications.views import logger
 from publications_gallery.forms import PublicationVideoForm, PublicationVideoEdit
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationVideo
+from user_profile.models import RelationShipProfile, BLOCK, Profile
 from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from publications_gallery.media_processor import optimize_publication_media, check_num_images, check_image_property
@@ -143,9 +144,9 @@ def video_publication_detail(request, publication_id):
         raise Http404
 
     try:
-        author = NodeProfile.nodes.get(user_id=request_pub.author_id)
-        m = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
+        author = Profile.objects.get(user_id=request_pub.author_id)
+        m = Profile.objects.get(user_id=user.id)
+    except Profile.DoesNotExist:
         return redirect('photologue:photo-list', username=request_pub.board_video.owner.username)
 
     privacity = author.is_visible(m)
@@ -243,9 +244,9 @@ def add_video_like(request):
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.author_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            author = Profile.objects.get(user_id=publication.author_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
@@ -343,9 +344,9 @@ def add_video_hate(request):
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.author_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            author = Profile.objects.get(user_id=publication.author_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
@@ -482,9 +483,9 @@ def load_more_video_descendants(request):
             return Http404
 
         try:
-            board_owner = NodeProfile.nodes.get(user_id=publication.board_video.owner_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            board_owner = Profile.objects.get(user_id=publication.board_video.owner_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             raise Http404
 
         privacity = board_owner.is_visible(m)
@@ -492,12 +493,15 @@ def load_more_video_descendants(request):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         if not publication.parent:
-            pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
                                                         & Q(level__lte=1)
                                                         & Q(deleted=False))
         else:
-            pubs = publication.get_descendants().filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+            pubs = publication.get_descendants().filter(~Q(author__profile__in=users_not_blocked_me)
                                                         & Q(deleted=False))
 
         pubs = pubs.annotate(likes=Count('user_give_me_like'),

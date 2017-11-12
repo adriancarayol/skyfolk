@@ -16,11 +16,11 @@
             <div class="col l12 m12 s12 container-gallery">
                 <a id="btn-upload-photo" class="btn-floating btn-large waves-effect waves-light blue darken-1"><i
                         class="material-icons">add</i></a>
-                {% if object_list %}
                     <div class="row">
-                        {% include 'photologue/photo_gallery_page.html' %}
+                        {% if object_list %}
+                            {% include 'photologue/photo_gallery_page.html' %}
+                        {% endif %}
                     </div>
-                {% endif %}
             </div> <!-- end container-gallery -->
         </div>
         <div class="upload_form" id="upload_photo" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">

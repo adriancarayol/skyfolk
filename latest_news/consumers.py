@@ -14,12 +14,12 @@ class MyFeedConsumer(WebsocketConsumer):
     def connection_groups(self, **kwargs):
         username = self.message.user.username
         if not username:
-            raise Http404
+            return
 
         try:
             profile = NodeProfile.nodes.get(title=username)
         except NodeProfile.DoesNotExist:
-            raise Http404
+            return
 
         return [profile.news_channel]
 

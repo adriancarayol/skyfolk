@@ -27,8 +27,6 @@ urlpatterns = [
         name="config_profile"),
     # URL CHANGE PRIVACITY
     url(r'^config/privacity/$', user_profile_views.config_privacity),
-    # CONSULTAR PINCODE
-    url(r'^config/pincode/$', user_profile_views.config_pincode),
     # DESACTIVAR CUENTA DE SKYFOLK
     url(r'^config/delete_account/$',
         user_profile_views.custom_delete_account),

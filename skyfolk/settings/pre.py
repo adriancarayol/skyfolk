@@ -30,6 +30,9 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', '5433'),
     }
 }
+# NEO4J config
+NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@45.55.57.214:7687')
+
 # ACCOUNT SETTINGS FOR PRE
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # Static files (CSS, JavaScript, Images)
@@ -44,3 +47,13 @@ MEDIA_URL = '/media/'
 # INVITATIONS ONLY EMAIL
 INVITATIONS_INVITATION_ONLY = True
 
+# ELASTICSEARCH CONFIGURATION
+ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://{elastic_host}:9200/'.format(elastic_host=ELASTIC_URL),
+        'INDEX_NAME': 'haystack',
+    },
+}

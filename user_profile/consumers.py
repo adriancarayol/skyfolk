@@ -1,6 +1,7 @@
 from channels.generic.websockets import WebsocketConsumer
 from django.http import Http404
 
+from user_profile.models import Profile
 from user_profile.node_models import NodeProfile
 
 
@@ -15,12 +16,12 @@ class BlogConsumer(WebsocketConsumer):
     def __init__(self, message, **kwargs):
         username = kwargs.pop('username', None)
         if not username:
-            raise Http404
+            return
 
         try:
-            self.profile_blog = NodeProfile.nodes.get(title=username)
+            self.profile_blog = Profile.objects.get(user__username=username)
         except NodeProfile.DoesNotExist:
-            raise Http404
+            return
 
         super(BlogConsumer, self).__init__(message, **kwargs)
 
@@ -30,13 +31,16 @@ class BlogConsumer(WebsocketConsumer):
     def connect(self, message, **kwargs):
         user = message.user
         try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            self.message.reply_channel.send({'accept': False})
+            n = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            self.message.reply_channel.send({'close': True})
+            return
 
         visibility = self.profile_blog.is_visible(n)
+
         if visibility and visibility != 'all':
-            self.message.reply_channel({'accept': False})
+            self.message.reply_channel({'close': True})
+            return
 
         self.message.reply_channel.send({'accept': True})
 
@@ -49,7 +53,7 @@ class BlogConsumer(WebsocketConsumer):
 
 class NotificationConsumer(WebsocketConsumer):
     """
-    Consumidor para conectarse al perfil
+    Consumidor para conectarse a las notificaciones
     de un usuario
     """
     http_user = True
@@ -58,12 +62,12 @@ class NotificationConsumer(WebsocketConsumer):
     def connection_groups(self, **kwargs):
         username = self.message.user.username
         if not username:
-            raise Http404
+            return
 
         try:
             profile = NodeProfile.nodes.get(title=username)
         except NodeProfile.DoesNotExist:
-            raise Http404
+            return
 
         return [profile.notification_channel]
 

@@ -4,9 +4,6 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
 
-from neomodel import config
-from neomodel import db
-
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
@@ -83,6 +80,7 @@ THIRD_PARTY_APPS = (
     'badgify',
     'django_celery_beat',
     'invitations',
+    'webpack_loader',
 )
 
 FIRST_PARTY_APPS = (
@@ -170,13 +168,6 @@ TAGGIT_CASE_INSENSITIVE = True
 # NOTIFICATION
 NOTIFICATIONS_USE_JSONFIELD = True
 
-# neo4j database
-
-NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:1518@45.55.57.214:7687'
-# Set to true in production
-NEOMODEL_ENCRYPTED_CONNECTION = False
-NEOMODEL_SIGNALS = True
-
 REDIS_PORT = 6379
 REDIS_DB = 0
 REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
@@ -185,7 +176,7 @@ REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/1',
+        'LOCATION': 'redis://{redis_host}:6379/1'.format(redis_host=REDIS_HOST),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -263,15 +254,32 @@ TEMPLATES = [
 ]
 
 # rabbitmq
-RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
+#TODO: Usar rabbitmq cuando se haya solucionado el problema de cerre de conexion...
+# RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
-rabbitmq_url = 'amqp://guest:guest@rabbit/%2F'
+# rabbitmq_url = 'amqp://guest:guest@{rabbit_host}/%2F?heartbeat=15'.format(rabbit_host=RABBIT_HOSTNAME)
 
+"""
 CHANNEL_LAYERS = {
     "default": {
         'BACKEND': 'asgi_rabbitmq.RabbitmqChannelLayer',
         "CONFIG": {
             "url": rabbitmq_url
+        },
+        "ROUTING": "skyfolk.routing.channel_routing",
+    },
+}
+"""
+
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
+
+# Channel layer definitions
+# http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(redis_host, 6379)],
         },
         "ROUTING": "skyfolk.routing.channel_routing",
     },
@@ -331,24 +339,21 @@ POSTMAN_AUTO_MODERATE_AS = True
 # con el modulo notifications
 POSTMAN_DISABLE_USER_EMAILING = True
 
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-#         'URL': 'http://127.0.0.1:8080/solr/',
-#     },
-# }
-
-ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://elasticsearch:9200/',
-        'INDEX_NAME': 'haystack',
-    },
-}
-
+# HAYSTACK REALTIME SIGNAL
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
-#HAYSTACK_SEARCH_RESULTS_PER_PAGE = 30
 
 # LOGROS
 BADGIFY_BATCH_SIZE = None
+
+
+# WEBPACK
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'js/bundles/', # must end with slash
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+    }
+}

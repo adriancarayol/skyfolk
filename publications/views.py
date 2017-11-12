@@ -27,6 +27,7 @@ from mptt.templatetags.mptt_tags import cache_tree_children
 
 from avatar.templatetags.avatar_tags import avatar_url
 from emoji import Emoji
+from user_profile.models import RelationShipProfile, BLOCK, Profile
 from .forms import PublicationForm, SharedPublicationForm, PublicationEdit
 from .models import Publication, PublicationImage, PublicationVideo, ExtraContent
 from user_profile.node_models import NodeProfile
@@ -234,9 +235,9 @@ def publication_detail(request, publication_id):
         raise Http404
 
     try:
-        author = NodeProfile.nodes.get(user_id=request_pub.author_id)
-        m = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
+        author = Profile.objects.get(user_id=request_pub.author_id)
+        m = Profile.objects.get(user_id=user.id)
+    except Profile.DoesNotExist:
         return redirect('user_profile:profile', username=request_pub.board_owner.username)
 
     privacity = author.is_visible(m)
@@ -364,9 +365,9 @@ def add_like(request):
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.author_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            author = Profile.objects.get(user_id=publication.author_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
@@ -462,9 +463,9 @@ def add_hate(request):
             return HttpResponse(data, content_type='application/json')
 
         try:
-            author = NodeProfile.nodes.get(user_id=publication.author_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            author = Profile.objects.get(user_id=publication.author_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             data = json.dumps({'response': response, 'statuslike': statuslike})
             return HttpResponse(data, content_type='application/json')
 
@@ -600,9 +601,9 @@ def load_more_comments(request):
             raise Http404
 
         try:
-            board_owner = NodeProfile.nodes.get(user_id=publication.board_owner_id)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            board_owner = Profile.objects.get(user_id=publication.board_owner_id)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             raise Http404
 
         privacity = board_owner.is_visible(m)
@@ -610,15 +611,18 @@ def load_more_comments(request):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=user.profile, type=BLOCK).values('from_profile_id')
+
         if not publication.parent:
             publications = publication.get_descendants() \
-                .filter(~Q(author__profile__from_blocked__to_blocked=user.profile)
+                .filter(~Q(author__profile__in=users_not_blocked_me)
                         & Q(level__lte=1) & Q(deleted=False))
 
         else:
             publications = publication.get_descendants() \
                 .filter(
-                ~Q(author__profile__from_blocked__to_blocked=user.profile)
+                ~Q(author__profile__in=users_not_blocked_me)
                 & Q(deleted=False))
 
         shared_publications = Publication.objects.filter(shared_publication__id=OuterRef('pk'),
@@ -689,9 +693,9 @@ def share_publication(request):
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
             try:
-                author = NodeProfile.nodes.get(user_id=pub_to_add.author_id)
-                m = NodeProfile.nodes.get(user_id=user.id)
-            except NodeProfile.DoesNotExist:
+                author = Profile.objects.get(user_id=pub_to_add.author_id)
+                m = Profile.objects.get(user_id=user.id)
+            except Profile.DoesNotExist:
                 return HttpResponse(json.dumps(response), content_type='application/json')
 
             privacity = author.is_visible(m)
@@ -778,9 +782,9 @@ def publication_filter_by_time(request):
             return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
 
         try:
-            owner = NodeProfile.nodes.get(user_id=board_owner_id)
-            emitter = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            owner = Profile.objects.get(user_id=board_owner_id)
+            emitter = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         privacity = owner.is_visible(emitter)
@@ -821,9 +825,9 @@ def publication_filter_by_like(request):
             return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
 
         try:
-            owner = NodeProfile.nodes.get(user_id=board_owner_id)
-            emitter = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            owner = Profile.objects.get(user_id=board_owner_id)
+            emitter = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         privacity = owner.is_visible(emitter)
@@ -866,9 +870,9 @@ def publication_filter_by_relevance(request):
             return HttpResponse(json.dumps("No se encuentra el perfil seleccionado"), content_type='application/json')
 
         try:
-            owner = NodeProfile.nodes.get(user_id=board_owner_id)
-            emitter = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            owner = Profile.objects.get(user_id=board_owner_id)
+            emitter = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             return HttpResponse(json.dumps("No puedes ver este perfil"), content_type='application/json')
 
         privacity = owner.is_visible(emitter)

@@ -1,0 +1,19 @@
+from haystack import indexes
+
+from .models import UserGroups
+
+
+class GroupIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(
+        document=True, use_template=True,
+        template_name='search/indexes/groups/groups_text.txt')
+
+    owner = indexes.CharField(model_attr='owner')
+    name = indexes.CharField(model_attr='name')
+    description = indexes.CharField(model_attr='description')
+    is_public = indexes.BooleanField(model_attr='is_public')
+    slug = indexes.CharField(model_attr='slug')
+    pub_date = indexes.DateTimeField(model_attr='created')
+
+    def get_model(self):
+        return UserGroups

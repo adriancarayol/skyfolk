@@ -2,7 +2,6 @@ from channels.generic.websockets import WebsocketConsumer
 
 from user_profile.node_models import NodeProfile
 from .models import PublicationGroup
-from django.http import Http404
 from .utils import get_channel_name
 from user_groups.models import UserGroups
 from user_groups.node_models import NodeGroup
@@ -19,18 +18,18 @@ class GroupPublicationConsumer(WebsocketConsumer):
     def __init__(self, message, **kwargs):
         pubid = kwargs.get('pk', None)
         if not pubid:
-            raise Http404
+            return
 
         try:
             publication_board_group = PublicationGroup.objects.values_list('board_group__id', flat=True).get(
                 id=pubid)
         except PublicationGroup.DoesNotExist:
-            raise Http404
+            return
 
         try:
             self.group = NodeGroup.nodes.get(group_id=publication_board_group)
         except NodeProfile.DoesNotExist:
-            raise Http404
+            return
 
         super(GroupPublicationConsumer, self).__init__(message, **kwargs)
 
@@ -43,15 +42,18 @@ class GroupPublicationConsumer(WebsocketConsumer):
         try:
             n = NodeProfile.nodes.get(user_id=user.id)
         except NodeProfile.DoesNotExist:
-            self.message.reply_channel.send({'accept': False})
+            self.message.reply_channel.send({'close': True})
+            return
 
         try:
             g = UserGroups.objects.get(group_ptr_id=self.group.group_id)
         except UserGroups.DoesNotExist:
-            self.message.reply_channel.send({'accept': False})
+            self.message.reply_channel.send({'close': True})
+            return
 
         if not g.is_public and not g.members.is_connected(n):
-            self.message.reply_channel({'accept': False})
+            self.message.reply_channel({'close': True})
+            return
 
         self.message.reply_channel.send({'accept': True})
 

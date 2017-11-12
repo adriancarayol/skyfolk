@@ -47,6 +47,7 @@ if __name__ == "__main__":
         os.environ['RABBIT_PORT_5672_TCP'] = 'localhost:5672'
         os.environ['NEO4J_URL'] = 'localhost'
         os.environ['ELASTICSEARCH_URL'] = 'localhost'
+        os.environ['REDIS_PORT_6379_TCP_ADDR'] = 'localhost'
 
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "skyfolk.settings.develop")
 

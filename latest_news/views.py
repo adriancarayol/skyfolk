@@ -9,7 +9,7 @@ from neomodel import db
 
 from photologue.models import Photo
 from publications.models import Publication
-from user_profile.models import Profile
+from user_profile.models import Profile, RelationShipProfile, BLOCK
 from user_profile.node_models import NodeProfile
 
 
@@ -43,22 +43,41 @@ class News(ListView):
         limit = 25 * current_page
         offset = limit - 25
 
-        profile = Profile.objects.get(user_id=self.request.user.id)
-        n = NodeProfile.nodes.get(user_id=self.request.user.id)
-        # ids de usuarios favoritos
-        pk_list = [x.user_id for x in n.get_favs_users(offset=0, limit=20)]
+        try:
+            profile = Profile.objects.get(user_id=self.request.user.id)
+            n = NodeProfile.nodes.get(user_id=self.request.user.id)
+        except Exception as e:
+            raise ValueError("El perfil o el nodo de {user} no existe, {e}".format(user=self.request.user, e=e))
 
-        # ids de usuarios recomendados
-        pk_list.extend([u.user_id for u in self.get_recommendation_users()])
+        pk_list = []
+
+        try:
+            # ids de usuarios favoritos
+            pk_list = [x.user_id for x in n.get_favs_users(offset=0, limit=20)]
+        except Exception as e:
+            pass
+
+        try:
+            # ids de usuarios recomendados
+            pk_list.extend([u.user_id for u in self.get_recommendation_users()])
+        except Exception as e:
+            pass
+
+        # Usuarios que me tienen bloqueado
+        users_not_blocked_me = RelationShipProfile.objects.filter(
+            to_profile=profile, type=BLOCK).values('from_profile_id')
+
+        # Usuarios a los que sigo
+        following = RelationShipProfile.objects.filter(Q(from_profile=profile) & ~Q(type=BLOCK)).values('to_profile_id')
 
         # Publicaciones de seguidos + favoritos + recomendados
         try:
             publications = Publication.objects.filter(
-                ((Q(board_owner__profile__to_profile__from_profile=profile) |
+                ((Q(board_owner__profile__in=following) |
                   Q(board_owner__in=pk_list)) & (
+                     ~Q(author__profile__in=users_not_blocked_me) &
+                     ~Q(board_owner__profile__in=users_not_blocked_me) &
                      ~Q(board_owner__profile__privacity='N') & ~Q(author__profile__privacity='N')
-                     & ~Q(board_owner__profile__from_blocked__to_blocked=profile) &
-                     ~Q(author__profile__from_blocked__to_blocked=profile)
                      & ~Q(author_id=self.request.user.id))) & Q(deleted=False) &
                 Q(parent=None)) \
                                .select_related('author', 'shared_publication', 'parent', 'shared_group_publication') \
@@ -80,9 +99,9 @@ class News(ListView):
 
         # Photos de seguidos + favoritos + recomendados
         try:
-            photos = Photo.objects.filter(((Q(owner__profile__to_profile__from_profile=profile)
+            photos = Photo.objects.filter(((Q(owner__profile__in=following)
                                             | Q(owner_id__in=pk_list)) & ~Q(
-                owner__profile__from_blocked__to_blocked=profile)) & Q(is_public=True)).select_related(
+                owner__profile__in=users_not_blocked_me)) & Q(is_public=True)).select_related(
                 'owner').prefetch_related('tags').order_by('-date_added').distinct()[offset:limit]
         except Photo.DoesNotExist:
             photos = Photo.objects.filter(
@@ -119,6 +138,7 @@ class News(ListView):
             context['mix'] = mix
             context['follows'] = [u.id for u in mix]
         context['pagination'] = self.pagination
+        context['component'] = 'recommendations.js'
         return context
 
 

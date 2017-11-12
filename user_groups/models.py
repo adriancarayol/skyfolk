@@ -48,6 +48,7 @@ class UserGroups(Group):
     is_public = models.BooleanField(default=True)
     avatar = models.ImageField(upload_to=group_avatar_path, null=True, blank=True)
     back_image = models.ImageField(upload_to=group_back_image_path, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         permissions = (
@@ -94,6 +95,7 @@ class GroupTheme(models.Model):
     def theme_channel(self):
         return "{}-theme".format(self.id)
 
+
 class LikeGroupTheme(models.Model):
     theme = models.ForeignKey(GroupTheme, related_name='like_theme')
     by_user = models.ForeignKey(User)
@@ -108,7 +110,6 @@ class HateGroupTheme(models.Model):
 
     class Meta:
         unique_together = ('theme', 'by_user')
-
 
 
 class LikeGroupQuerySet(models.QuerySet):

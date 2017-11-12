@@ -7,7 +7,6 @@ from neomodel import UniqueIdProperty, IntegerProperty, StringProperty, Relation
 
 
 class TagProfile(DjangoNode):
-    uid = UniqueIdProperty()
     title = StringProperty(unique_index=True)
     common = Relationship('TagProfile', 'COMMON')
     user = RelationshipFrom('NodeProfile', 'INTEREST')
@@ -25,7 +24,6 @@ class FollowRel(StructuredRel):
 
 
 class NodeProfile(DjangoNode):
-    uid = UniqueIdProperty()  # TODO: Eliminar este field
     user_id = IntegerProperty(unique_index=True)  # user_id
     title = StringProperty(unique_index=True)  # username
     follow = RelationshipTo('NodeProfile', 'FOLLOW', model=FollowRel)  # follow user
@@ -152,7 +150,7 @@ class NodeProfile(DjangoNode):
         if self.privacity == NodeProfile.NOTHING:
             return "nothing"
 
-        # Si el perfil esta bloqueado
+        # Si el perfil me bloquea
         if self.bloq.is_connected(user_profile):
             return "block"
 

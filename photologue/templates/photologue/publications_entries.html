@@ -54,7 +54,7 @@
                         {% if images %}
                         <div class="row images">
                             {% for image in images %}
-                            <div class="col s4 z-depth-2 center">
+                            <div class="col l9 s12 z-depth-2 center">
                                 <img class="responsive-img lazyload" data-src="{{image.image.url}}" alt="Imagen de: {{ node.p_author }}" title="Imagen de: {{ node.p_author }}">
                             </div>
                             {% endfor %}
@@ -65,7 +65,7 @@
                         {% if videos %}
                         <div class="row videos">
                            {% for video in videos %}
-                           <div class="col s4 z-depth-2 center">
+                           <div class="col l9 s12 z-depth-2 center">
                             <video class="responsive-video" controls loop>
                                 <source src="{{ video.video.url }}" type="video/mp4">
                                 </video>
