@@ -3,6 +3,7 @@
 Template para los seguidores de un perfil
 {% endcomment %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 {% block title %}<title>{% if url_name == "followers" %}Seguidores de{% else %}
     Seguidos{% endif %} {{ username }}</title> {% endblock %}
 {% block extra-css %}
@@ -61,8 +62,5 @@ Template para los seguidores de un perfil
             $('#menu-hr').find('li:nth-child(3)').css('background-color', 'rgba(0,0,0,0.1)');
         </script>
     {% endif %}
-
-    {% with 'js/'|add:component as component %}
-        <script src="{% static component %}"></script>
-    {% endwith %}
+    {% render_bundle component %}
 {% endblock %}

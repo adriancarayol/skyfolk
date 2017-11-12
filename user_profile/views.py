@@ -297,7 +297,7 @@ def profile_view(request, username,
 
     # Contenido de las tres tabs
     context['publications'] = publications
-    context['component'] = 'react/publications.js'
+    context['component'] = 'publications.js'
     context['friend_page'] = 1
 
     return render(request, template, context)
@@ -876,7 +876,7 @@ class FollowersListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(FollowersListView, self).get_context_data(**kwargs)
         context['url_name'] = "followers"
-        context['component'] = 'react/followers_react.js'
+        context['component'] = 'followers_react.js'
         context['username'] = self.kwargs.get('username', None)
         return context
 
@@ -906,7 +906,7 @@ class FollowingListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(FollowingListView, self).get_context_data(**kwargs)
         context['url_name'] = "following"
-        context['component'] = 'react/following_react.js'
+        context['component'] = 'following_react.js'
         context['username'] = self.kwargs.get('username', None)
         return context
 

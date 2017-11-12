@@ -6,6 +6,7 @@ Template para el perfil de cada usuario
 {% load avatar_tags %}
 {% load compress %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
 {% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
 {% endblock %}
@@ -126,9 +127,7 @@ Template para el perfil de cada usuario
                                             <script>
                                                 window.board_owner = {{ user_profile.id }};
                                             </script>
-                                            {% with 'js/'|add:component as component %}
-                                                <script src="{% static component %}"></script>
-                                            {% endwith %}
+                                            {% render_bundle component %}
                                         </div>
                                         {% if publications|length == 0 %}
                                             <div class="no-comments" id="without-comments">

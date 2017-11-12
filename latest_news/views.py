@@ -138,6 +138,7 @@ class News(ListView):
             context['mix'] = mix
             context['follows'] = [u.id for u in mix]
         context['pagination'] = self.pagination
+        context['component'] = 'recommendations.js'
         return context
 
 

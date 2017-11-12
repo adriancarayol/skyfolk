@@ -80,6 +80,7 @@ THIRD_PARTY_APPS = (
     'badgify',
     'django_celery_beat',
     'invitations',
+    'webpack_loader',
 )
 
 FIRST_PARTY_APPS = (
@@ -253,15 +254,32 @@ TEMPLATES = [
 ]
 
 # rabbitmq
-RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
+#TODO: Usar rabbitmq cuando se haya solucionado el problema de cerre de conexion...
+# RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
-rabbitmq_url = 'amqp://guest:guest@{rabbit_host}/%2F?heartbeat=15'.format(rabbit_host=RABBIT_HOSTNAME)
+# rabbitmq_url = 'amqp://guest:guest@{rabbit_host}/%2F?heartbeat=15'.format(rabbit_host=RABBIT_HOSTNAME)
 
+"""
 CHANNEL_LAYERS = {
     "default": {
         'BACKEND': 'asgi_rabbitmq.RabbitmqChannelLayer',
         "CONFIG": {
             "url": rabbitmq_url
+        },
+        "ROUTING": "skyfolk.routing.channel_routing",
+    },
+}
+"""
+
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
+
+# Channel layer definitions
+# http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(redis_host, 6379)],
         },
         "ROUTING": "skyfolk.routing.channel_routing",
     },
@@ -326,3 +344,16 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # LOGROS
 BADGIFY_BATCH_SIZE = None
+
+
+# WEBPACK
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'js/bundles/', # must end with slash
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+    }
+}
