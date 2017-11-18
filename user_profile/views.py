@@ -498,13 +498,13 @@ def add_friend_by_username_or_pin(request):
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             try:
-                friend = Profile.objects.get(user__username=username).select_related('user')
-                user_profile = Profile.objects.get(user_id=user_request.id).select_related('user')
+                friend = Profile.objects.get(user__username=username)
+                user_profile = Profile.objects.get(user_id=user_request.id)
             except Profile.DoesNotExist:
                 data['response'] = 'no_match'
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
-            if RelationShipProfile.objects.is_follow(from_profile=user_profile, to_profile=friend, type=FOLLOWING):
+            if RelationShipProfile.objects.is_follow(from_profile=user_profile, to_profile=friend):
                 data['response'] = 'its_your_friend'
                 data['friend'] = friend.title
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
