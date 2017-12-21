@@ -189,15 +189,11 @@ def profile_view(request, username,
     context['privacity'] = privacity
 
     # Recuperamos si el perfil es gustado.
-    try:
-        node_m = NodeProfile.nodes.get(user_id=user.id)
-    except Exception as e:
-        node_m = None
-        logging.info(e)
 
-    if node_m and user.username != username:
+
+    if user.username != username:
         try:
-            liked = node_m.has_like(to_like=user_profile.id)
+            liked = LikeProfile.objects.filter(to_profile__user__username=username, from_profile__user=user).exists()
         except Exception:
             liked = False
     else:
@@ -205,11 +201,10 @@ def profile_view(request, username,
 
     # Recuperamos el numero total de likes
     total_likes = 0
-    if node_m:
-        try:
-            total_likes = node_m.count_likes()
-        except Exception as e:
-            logging.info(e)
+    try:
+        total_likes = LikeProfile.objects.filter(to_profile__user__username=user.username).count()
+    except Exception as e:
+        logging.info(e)
 
     # Comprobamos si el perfil esta bloqueado
     isBlocked = False
