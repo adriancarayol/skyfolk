@@ -37,7 +37,7 @@ from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import Request, Profile, \
-    RelationShipProfile, FOLLOWING, NotificationSettings, BLOCK
+    RelationShipProfile, FOLLOWING, NotificationSettings, BLOCK, LikeProfile
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .serializers import UserSerializer
@@ -584,39 +584,31 @@ def like_profile(request):
         user = request.user
         slug = request.POST.get('slug', None)
 
-        actual_profile = get_object_or_404(User,
-                                           id=slug)
-        n = NodeProfile.nodes.get(user_id=user.id)
-        m = NodeProfile.nodes.get(user_id=slug)
+        try:
+            n = Profile.objects.get(user_id=user.id)
+            m = Profile.objects.get(user_id=slug)
+        except Profile.DoesNotExist:
+            raise Httpt404
 
-        if n.like.is_connected(m):
-            n.like.disconnect(NodeProfile.nodes.get(user_id=slug))
-            rel = n.follow.relationship(m)
-            if rel:
-                rel.weight = rel.weight - 10
-                rel.save()
-            response = "nolike"
+        if LikeProfile.objects.filter(to_profile=m, from_profile=n).exists():
+            try:
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        LikeProfile.objects.filter(to_profile=m, from_profile=n).delete()
+                response = "nolike"
+            except Exception as e:
+                pass
         else:
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        n.like.connect(NodeProfile.nodes.get(user_id=slug))
-                        rel = n.follow.relationship(m)
-                        if rel:
-                            rel.weight = rel.weight + 10
-                            rel.save()
-                        notify.send(user, actor=user.username,
-                                    recipient=actual_profile,
-                                    description="@{0} ha dado like a tu perfil.".format(user.username),
-                                    verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
-                                        user.username, user.username), level='like_profile')
+                        LikeProfile.objects.create(to_profile=m, from_profile=n)
                 response = "like"
             except Exception as e:
                 pass
 
-        logging.info('%s da like a %s' % (user.username, actual_profile.username))
-        logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
-        logging.info("Response: " + response)
+        logging.info("Response like_function (to_like: {} from_like: {}) response = {}".format(m.user, n.user, response)
+        )
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -1041,16 +1033,15 @@ def bloq_user(request):
             return HttpResponse(json.dumps(data), content_type='application/json')
 
         try:
-            n = NodeProfile.nodes.get(user_id=id_user)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            n = Profile.objects.get(user_id=id_user)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             data = {'response': False, 'haslike': haslike}
             return HttpResponse(json.dumps(data), content_type='application/json')
 
         # Eliminar me gusta al perfil que se va a bloquear
-
-        if m.like.is_connected(n):
-            m.like.disconnect(n)
+        deleted = LikeProfile.objects.filter(from_profile=m, to_profile=n).delete()
+        if deleted:
             haslike = "liked"
 
         # Ver si hay una peticion de "seguir" pendiente
