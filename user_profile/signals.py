@@ -9,8 +9,10 @@ from django.dispatch import receiver
 from neomodel import db
 
 from publications.models import Publication
-from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK
+from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK, \
+        LikeProfile
 from user_profile.node_models import NodeProfile
+from notifications.signals import notify
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -134,6 +136,35 @@ def save_user_profile(sender, instance, created, **kwargs):
         except Profile.DoesNotExist:
             Profile.objects.create(user=instance)
 
+
+@receiver(post_save, sender=LikeProfile)
+def handle_new_like(sender, instance, created, **kwargs):
+    n = NodeProfile.nodes.get(user_id=instance.from_profile.user_id)
+    m = NodeProfile.nodes.get(user_id=instance.to_profile.user_id)
+
+    n.like.connect(m)
+    rel = n.follow.relationship(m)
+    if rel:
+        rel.weight = rel.weight + 10
+        rel.save()
+
+    notify.send(instance.from_profile.user, actor=instance.from_profile.user.username,
+            recipient=instance.to_profile.user,
+            description="@{0} ha dado like a tu perfil.".format(instance.from_profile.user.username),
+            verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
+                instance.from_profile.user.username, instance.from_profile.user.username), level='like_profile')
+
+
+@receiver(post_delete, sender=LikeProfile)
+def handle_delete_like(sender, instance, *args, **kwargs):
+    n = NodeProfile.nodes.get(user_id=instance.from_profile.user_id)
+    m = NodeProfile.nodes.get(user_id=instance.to_profile.user_id)
+
+    n.like.disconnect(m)
+    rel = n.follow.relationship(m)
+    if rel:
+        rel.weight = rel.weight - 10
+        rel.save()
 
 def handle_login(sender, user, request, **kwargs):
     try:

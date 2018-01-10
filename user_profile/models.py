@@ -88,6 +88,13 @@ class RelationShipProfile(models.Model):
         unique_together = ('to_profile', 'from_profile')
 
 
+class LikeProfile(models.Model):
+    to_profile = models.ForeignKey('Profile', related_name="to_like", db_index=True)
+    from_profile = models.ForeignKey('Profile', related_name="from_like", db_index=True)
+
+    class Meta:
+        unique_together = ('to_profile', 'from_profile')
+
 class Profile(models.Model):
     """
     Modelo para guardar
