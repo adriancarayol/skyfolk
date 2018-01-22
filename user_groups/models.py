@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.text import slugify
+from taggit.managers import TaggableManager
 from uuslug import uuslug
 
 from notifications.models import Notification
@@ -49,6 +50,7 @@ class UserGroups(Group):
     avatar = models.ImageField(upload_to=group_avatar_path, null=True, blank=True)
     back_image = models.ImageField(upload_to=group_back_image_path, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
+    tags = TaggableManager(blank=True)
 
     class Meta:
         permissions = (
