@@ -27,7 +27,7 @@ def plugin_factory(base_class, plugin_uid_prefix, sizes=[]):
     :param iterable sizes: Iterable of tuples.
 
     :example:
-    >>> from dash import BaseImagePlugin
+    >>> from dash.contrib.plugins.image.dash_plugins import BaseImagePlugin
     >>> plugin_factory(
     >>>     BaseImagePlugin, 'image', zip(range(6, 10), range(6, 10))
     >>> )
@@ -84,7 +84,7 @@ def plugin_widget_factory(base_class,
     :param iterable sizes: Iterable of tuples.
 
     :example:
-    >>> from dash import BaseImageWidget
+    >>> from dash.contrib.plugins.image.dash_widgets import BaseImageWidget
     >>> plugin_widget_factory(
     >>>     BaseImageWidget,
     >>>     'android',

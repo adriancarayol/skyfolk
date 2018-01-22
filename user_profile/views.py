@@ -2,6 +2,13 @@ import json
 import logging
 
 from allauth.account.views import PasswordChangeView, EmailView
+from dash.helpers import iterable_to_dict
+
+from dash.models import DashboardEntry
+
+from dash.base import get_layout
+
+from dash.utils import get_user_plugins, get_or_create_dashboard_settings, get_workspaces, get_public_dashboard_url
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
@@ -24,7 +31,7 @@ from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
 from neomodel import db
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
-
+from django.utils.translation import ugettext, ugettext_lazy as _
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from notifications.models import Notification
 from notifications.signals import notify
@@ -295,6 +302,67 @@ def profile_view(request, username,
     context['publications'] = publications
     context['component'] = 'publications.js'
     context['friend_page'] = 1
+
+    # PARA DASHBOARD
+    registered_plugins = get_user_plugins(request.user)
+    user_plugin_uids = [uid for uid, repr in registered_plugins]
+
+    # Getting dashboard settings for the user. Then get users' layout.
+    dashboard_settings = get_or_create_dashboard_settings(request.user)
+
+    workspaces = get_workspaces(
+        request.user,
+        dashboard_settings.layout_uid,
+        None,
+        different_layouts=dashboard_settings.allow_different_layouts
+    )
+
+    layout = get_layout(
+        layout_uid=(
+            workspaces['current_workspace'].layout_uid
+            if workspaces['current_workspace']
+            else dashboard_settings.layout_uid
+        ),
+        as_instance=True
+    )
+
+    # If workspace with slug given is not found in the list of workspaces
+    # redirect to the default dashboard.
+    if workspaces['current_workspace_not_found']:
+        msg = _('The workspace with slug "{0}" does '
+                'not belong to layout "{1}".').format(None, layout.name)
+        if dashboard_settings.allow_different_layouts:
+            msg = _('The workspace with slug "{0}" does not exist').format(
+                None
+            )
+        return redirect('dash.edit_dashboard')
+
+    # Getting the (frozen) queryset.
+    dashboard_entries = DashboardEntry._default_manager \
+                            .get_for_user(user=request.user,
+                                          layout_uid=layout.uid,
+                                          workspace=None) \
+                            .select_related('workspace', 'user') \
+                            .filter(plugin_uid__in=user_plugin_uids) \
+                            .order_by('placeholder_uid', 'position')[:]
+
+    placeholders = layout.get_placeholder_instances(
+        dashboard_entries, request=request
+    )
+
+    layout.collect_widget_media(dashboard_entries)
+
+    context['css'] = layout.get_css(placeholders)
+    context['layout'] = layout
+    context['dashboard_settings'] = dashboard_settings
+    context['placeholders'] = placeholders
+    context['placeholders_dict'] = iterable_to_dict(placeholders, key_attr_name='uid')
+
+    context.update(workspaces)
+
+    context.update(
+        {'public_dashboard_url': get_public_dashboard_url(dashboard_settings)}
+    )
 
     return render(request, template, context)
 

@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext
+
 __title__ = 'dash.defaults'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2013-2017 Artur Barseghyan'
@@ -73,5 +75,11 @@ WAIT_AT_TEST_END = 4
 # Key of the clipboard variable used in sessions to store the plugin clipboard
 # data.
 PLUGIN_CLIPBOARD_KEY = 'dash_plugin_clipboard'
+
+# Login URL names for resolving login and logout views. Defaults work
+# for django-registration package, which you would likely be using, but you
+# may override it in settings with whatever is suitable for you.
+AUTH_LOGIN_URL_NAME = 'auth_login'
+AUTH_LOGOUT_URL_NAME = 'auth_logout'
 
 DEBUG = False

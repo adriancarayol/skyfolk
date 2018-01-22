@@ -1,11 +1,14 @@
 import logging
 
 from autoslug import AutoSlugField
+
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 from nine import versions
+
 from six import python_2_unicode_compatible
 
 from .base import (
@@ -13,8 +16,8 @@ from .base import (
     get_registered_plugins,
     plugin_registry,
 )
-from .fields import OrderField
 from .helpers import slugify_workspace
+from .fields import OrderField
 
 if versions.DJANGO_GTE_1_10:
     from django.urls import reverse
@@ -175,7 +178,7 @@ class DashboardEntry(models.Model):
         - `layout_uid` (str): Layout to which the entry belongs to.
         - `placeholder_uid` (str): Placeholder to which the entry belongs to.
         - `plugin_uid` (str): Plugin name.
-        - `plugin_data` (str): JSON formatted string with plugin data.
+        - `plugin_data` (str): JSON formatted string with plugin data. (Point to trigger results)
         - `position` (int): Entry position.
     """
     user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User"))

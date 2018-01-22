@@ -6,12 +6,14 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
+
 from nine import versions
 
 from ....base import get_layout
 from ....helpers import iterable_to_dict
 from ....models import DashboardEntry
 from ....utils import get_user_plugins, get_workspaces, get_dashboard_settings
+from ....settings import AUTH_LOGIN_URL_NAME, AUTH_LOGOUT_URL_NAME
 
 if versions.DJANGO_GTE_1_10:
     from django.shortcuts import render
@@ -93,7 +95,9 @@ def public_dashboard(request,
             request,
             origin='dash.public_dashboard'
         ),
-        'dashboard_settings': dashboard_settings
+        'dashboard_settings': dashboard_settings,
+        'AUTH_LOGIN_URL_NAME': AUTH_LOGIN_URL_NAME,
+        'AUTH_LOGOUT_URL_NAME': AUTH_LOGOUT_URL_NAME,
     }
 
     workspaces = get_workspaces(user, layout.uid, workspace, public=True)

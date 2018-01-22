@@ -1,14 +1,15 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from ....base import DashboardPluginFormBase
+from ....widgets import BooleanRadioSelect
+
 from .defaults import (
     DEFAULT_CACHE_FOR,
     DEFAULT_MAX_FEED_ITEMS,
     DEFAULT_SHOW_TITLE,
     DEFAULT_TRUNCATE_AFTER,
 )
-from ....base import DashboardPluginFormBase
-from ....widgets import BooleanRadioSelect
 
 __title__ = 'dash.contrib.plugins.rss_feed.forms'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

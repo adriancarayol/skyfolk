@@ -1,8 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
 
-from .forms import DummyForm, DummyShortcutsForm
 from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
+from .forms import DummyForm, DummyShortcutsForm
 
 __title__ = 'dash.contrib.plugins.dummy.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

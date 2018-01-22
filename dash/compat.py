@@ -2,6 +2,8 @@
 Compatibility module for safe and sane User model import.
 """
 
+from django.core.exceptions import ImproperlyConfigured
+
 from nine.user import User
 
 __title__ = 'dash.compat'

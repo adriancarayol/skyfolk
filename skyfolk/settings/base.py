@@ -38,26 +38,42 @@ DEFAULT_APPS = (
 
 # Third Party Applications
 THIRD_PARTY_APPS = (
+    'skyfolk',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',  # REST framework
-
-    # 'achievements',   # achivements       Portando a Python3
     'emoji',
     'avatar',  # Avatares para usuarios.
     'channels',  # django-channels
     'photologue',  # photologue original
-    'photologue_groups', # photologue groups
+    'photologue_groups',  # photologue groups
     'sortedm2m',
     'taggit',  # para etiquetas
     'el_pagination',  # Para paginacion
     'notifications',  # notificaciones
     'django_celery_results',
-    'easy_thumbnails',
+    'formtools',
+    'django_js_reverse',
+    'th_rss',
+    'th_evernote',
+    'th_github',
+    'th_instapush',
+    'th_mastodon',
+    'th_pelican',
+    'th_pocket',
+    'th_pushbullet',
+    'th_reddit',
+    'th_slack',
+    'th_taiga',
+    'th_todoist',
+    'th_trello',
+    'th_tumblr',
+    'th_twitter',
+    'th_wallabag',
     'dash',
     'dash.contrib.layouts.android',
-    'dash.contrib.layouts.bootstrap2',
+    'dash.contrib.layouts.profile',
     'dash.contrib.layouts.windows8',
     'dash.contrib.plugins.dummy',
     'dash.contrib.plugins.image',
@@ -66,10 +82,12 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.url',
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
+    'dash.contrib.plugins.service',
     'mptt',
     'tasks_server',
     'postman',
     'django_neomodel',
+    'easy_thumbnails',
     'compressor',
     'storages',
     'corsheaders',
@@ -89,7 +107,7 @@ FIRST_PARTY_APPS = (
     'publications',  # publicaciones en el perfil
     'publications_gallery',  # publicaciones en galeria
     'publications_groups',  # publicaciones en grupos
-    'publications_groups.themes', # publicaciones para temas
+    'publications_groups.themes',  # publicaciones para temas
     'publications_gallery_groups',
     'user_groups.configuration',
     'about',  # sobre los autores
@@ -180,7 +198,27 @@ CACHES = {
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
-    }
+    },
+    'redis-cache':
+        {
+            'TIMEOUT': 3600,
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://localhost:6379/12",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "MAX_ENTRIES": 5000,
+            }
+        },
+    'django_th':
+        {
+            'TIMEOUT': 3600,
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://localhost:6379/13",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "MAX_ENTRIES": 5000,
+            }
+        },
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
@@ -254,7 +292,7 @@ TEMPLATES = [
 ]
 
 # rabbitmq
-#TODO: Usar rabbitmq cuando se haya solucionado el problema de cerre de conexion...
+# TODO: Usar rabbitmq cuando se haya solucionado el problema de cerre de conexion...
 # RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
 # rabbitmq_url = 'amqp://guest:guest@{rabbit_host}/%2F?heartbeat=15'.format(rabbit_host=RABBIT_HOSTNAME)
@@ -345,15 +383,84 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # LOGROS
 BADGIFY_BATCH_SIZE = None
 
-
 # WEBPACK
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
-        'BUNDLE_DIR_NAME': 'js/bundles/', # must end with slash
+        'BUNDLE_DIR_NAME': 'js/bundles/',  # must end with slash
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': ['.+\.hot-update.js', '.+\.map']
     }
 }
+
+# LOGGIN
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format':
+                '%(asctime)s %(levelname)s %(module)s %(process)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR + '/trigger_happy.log',
+            'maxBytes': 61280,
+            'backupCount': 3,
+            'formatter': 'verbose',
+
+        },
+    },
+    'loggers':
+        {
+            'django.request': {
+                'handlers': ['mail_admins', 'file'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            'skyfolk.trigger_happy': {
+                'handlers': ['console', 'file'],
+                'level': 'INFO',
+            }
+        }
+}
+
+# dedicated TriggerHappy settings
+try:
+    from skyfolk.th_settings import *
+except ImportError:
+    raise ImportError("you should create a th_settings.py with "
+                      "everything related to TriggerHappy, see th_settings_sample.py")
+
+TEST_RUNNER = 'skyfolk.runner.DiscoverRunnerTriggerHappy'
+# Unit Test are buggy for this app ; so do not make them
+TEST_RUNNER_WHITELIST = ('oauth2_provider', 'corsheaders')
+
+# local settings management
+try:
+    from .local_settings import *
+except ImportError:
+    pass

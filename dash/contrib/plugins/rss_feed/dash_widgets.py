@@ -1,4 +1,5 @@
 from django.template.loader import render_to_string
+
 from nine import versions
 
 from ....base import BaseDashboardPluginWidget

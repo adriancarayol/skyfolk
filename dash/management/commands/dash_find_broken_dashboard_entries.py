@@ -1,5 +1,6 @@
-from django.core.management.base import BaseCommand
 from six import print_
+
+from django.core.management.base import BaseCommand
 
 from ...base import get_registered_layout_uids, get_registered_plugin_uids
 from ...models import DashboardEntry

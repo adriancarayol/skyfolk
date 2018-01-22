@@ -80,23 +80,18 @@ Template para el perfil de cada usuario
             <div class="row clearfix">
                 <div class="col l4 m12 s12 push-l8">
                     <div class="row">
-                        {% comment %} CARD USUARIO - FOTO PERFIL ETC...  {% endcomment %}
-
-                        {% comment %}
-                PIN ARRIBA IZQUIERDA
-                {% endcomment %}
-                        {% include "account/pin-left-top.html" %}
-                        {% comment %}
-                PIN ARRIBA DERECHA
-                {% endcomment %}
-                        {% include "account/pin-right-top.html" %}
-
+                        <div class="col s12">
+                            <div class="stock card">
+                                {% for placeholder in placeholders %}
+                                    <div id="{{ placeholder.html_id }}"
+                                         class="placeholder">
+                                        {{ placeholder.render_for_view|safe }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
-                    {% comment %}
-            PIN ABAJO
-            {% endcomment %}
                     {% include "account/pin-bottom.html" %}
-
                 </div>
                 <div class="col l8 m12 s12 pull-l4">
                     <div class="col s12">

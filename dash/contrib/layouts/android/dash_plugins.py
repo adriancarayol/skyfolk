@@ -1,9 +1,5 @@
-from .dash_widgets import (
-    BaseBookmarkAndroidWidget,
-    URL1x1AndroidMainWidget,
-    URL1x1AndroidShortcutWidget,
-)
 from ....base import plugin_widget_registry
+from ....factory import plugin_widget_factory
 from ....contrib.plugins.dummy.dash_widgets import BaseDummyWidget
 from ....contrib.plugins.image.dash_widgets import BaseImageWidget
 from ....contrib.plugins.memo.dash_widgets import (
@@ -13,7 +9,13 @@ from ....contrib.plugins.memo.dash_widgets import (
 from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
 from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
 from ....contrib.plugins.weather.dash_widgets import BaseWeatherWidget
-from ....factory import plugin_widget_factory
+from ....contrib.plugins.service.dash_widgets import BaseTriggerWidget
+
+from .dash_widgets import (
+    BaseBookmarkAndroidWidget,
+    URL1x1AndroidMainWidget,
+    URL1x1AndroidShortcutWidget,
+)
 
 __title__ = 'dash.contrib.layouts.android.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -147,6 +149,24 @@ plugin_widget_factory(BaseVideoWidget,
                       'android',
                       'main',
                       'video',
+                      main_sizes)
+
+
+# **************************************************************************
+# ***************** Registering the widgets for Trigger plugin ***************
+# **************************************************************************
+
+
+main_sizes = (
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+)
+plugin_widget_factory(BaseTriggerWidget,
+                      'android',
+                      'main',
+                      'trigger',
                       main_sizes)
 
 # **************************************************************************

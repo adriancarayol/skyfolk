@@ -2,11 +2,13 @@ import logging
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
 from pif import get_public_ip
 
-from .defaults import DEFAULT_CACHE_FOR, DEFAULT_SHOW_TITLE
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
+
+from .defaults import DEFAULT_CACHE_FOR, DEFAULT_SHOW_TITLE
 
 __title__ = 'dash.contrib.plugins.weather.forms'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

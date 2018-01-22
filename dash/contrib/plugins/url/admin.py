@@ -3,9 +3,10 @@ import logging
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Bookmark
 from ....models import DashboardEntry
 from ....utils import update_plugin_data_for_entries
+
+from .models import Bookmark
 
 __title__ = 'dash.contrib.plugins.urls.admin'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
