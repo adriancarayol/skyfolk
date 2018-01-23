@@ -8,7 +8,8 @@ from dash.models import DashboardEntry
 
 from dash.base import get_layout
 
-from dash.utils import get_user_plugins, get_or_create_dashboard_settings, get_workspaces, get_public_dashboard_url
+from dash.utils import get_user_plugins, get_or_create_dashboard_settings, get_workspaces, get_public_dashboard_url, \
+    get_dashboard_settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
@@ -31,13 +32,13 @@ from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
 from neomodel import db
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.http import Http404
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo, Video
 from publications.forms import PublicationForm, PublicationEdit, SharedPublicationForm
-from publications.models import Publication, PublicationVideo
+from publications.models import Publication
 from user_groups.models import UserGroups
 from user_profile.decorators import user_can_view_profile_info
 from user_profile.forms import AdvancedSearchForm
@@ -160,6 +161,46 @@ def profile_view_ajax(request, user_profile, node_profile=None):
         raise ValueError('No existe el querystring %s' % qs[:25])
 
     return render(request, template_name=template, context=context)
+
+
+def fill_profile_dashboard(request, user, username, context):
+    dashboard_settings = get_dashboard_settings(username)
+
+    if dashboard_settings:
+        layout = get_layout(layout_uid=dashboard_settings.layout_uid,
+                            as_instance=True)
+    else:
+        raise Http404
+
+    registered_plugins = get_user_plugins(user)
+    user_plugin_uids = [uid for uid, repr in registered_plugins]
+    logging.debug(user_plugin_uids)
+
+    entries_q = Q(user=user, layout_uid=layout.uid, workspace=None)
+
+    dashboard_entries = DashboardEntry._default_manager \
+                            .filter(entries_q) \
+                            .select_related('workspace', 'user') \
+                            .order_by('placeholder_uid', 'position')[:]
+
+    placeholders = layout.get_placeholder_instances(dashboard_entries,
+                                                    request=request)
+
+    layout.collect_widget_media(dashboard_entries)
+
+    context['css'] = layout.get_css(placeholders)
+    context['layout'] = layout
+    context['dashboard_settings'] = dashboard_settings
+    context['placeholders'] = placeholders
+    context['placeholders_dict'] = iterable_to_dict(placeholders, key_attr_name='uid')
+
+    workspaces = get_workspaces(user, layout.uid, None, public=True)
+
+    context.update(workspaces)
+
+    context.update(
+        {'public_dashboard_url': get_public_dashboard_url(dashboard_settings)}
+    )
 
 
 @login_required(login_url='/')
@@ -303,66 +344,7 @@ def profile_view(request, username,
     context['component'] = 'publications.js'
     context['friend_page'] = 1
 
-    # PARA DASHBOARD
-    registered_plugins = get_user_plugins(request.user)
-    user_plugin_uids = [uid for uid, repr in registered_plugins]
-
-    # Getting dashboard settings for the user. Then get users' layout.
-    dashboard_settings = get_or_create_dashboard_settings(request.user)
-
-    workspaces = get_workspaces(
-        request.user,
-        dashboard_settings.layout_uid,
-        None,
-        different_layouts=dashboard_settings.allow_different_layouts
-    )
-
-    layout = get_layout(
-        layout_uid=(
-            workspaces['current_workspace'].layout_uid
-            if workspaces['current_workspace']
-            else dashboard_settings.layout_uid
-        ),
-        as_instance=True
-    )
-
-    # If workspace with slug given is not found in the list of workspaces
-    # redirect to the default dashboard.
-    if workspaces['current_workspace_not_found']:
-        msg = _('The workspace with slug "{0}" does '
-                'not belong to layout "{1}".').format(None, layout.name)
-        if dashboard_settings.allow_different_layouts:
-            msg = _('The workspace with slug "{0}" does not exist').format(
-                None
-            )
-        return redirect('dash.edit_dashboard')
-
-    # Getting the (frozen) queryset.
-    dashboard_entries = DashboardEntry._default_manager \
-                            .get_for_user(user=request.user,
-                                          layout_uid=layout.uid,
-                                          workspace=None) \
-                            .select_related('workspace', 'user') \
-                            .filter(plugin_uid__in=user_plugin_uids) \
-                            .order_by('placeholder_uid', 'position')[:]
-
-    placeholders = layout.get_placeholder_instances(
-        dashboard_entries, request=request
-    )
-
-    layout.collect_widget_media(dashboard_entries)
-
-    context['css'] = layout.get_css(placeholders)
-    context['layout'] = layout
-    context['dashboard_settings'] = dashboard_settings
-    context['placeholders'] = placeholders
-    context['placeholders_dict'] = iterable_to_dict(placeholders, key_attr_name='uid')
-
-    context.update(workspaces)
-
-    context.update(
-        {'public_dashboard_url': get_public_dashboard_url(dashboard_settings)}
-    )
+    fill_profile_dashboard(request, user, username, context)
 
     return render(request, template, context)
 
@@ -651,7 +633,7 @@ def like_profile(request):
             n = Profile.objects.get(user_id=user.id)
             m = Profile.objects.get(user_id=slug)
         except Profile.DoesNotExist:
-            raise Httpt404
+            raise Http404
 
         if LikeProfile.objects.filter(to_profile=m, from_profile=n).exists():
             try:
@@ -671,7 +653,7 @@ def like_profile(request):
                 pass
 
         logging.info("Response like_function (to_like: {} from_like: {}) response = {}".format(m.user, n.user, response)
-        )
+                     )
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 

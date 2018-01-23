@@ -8,9 +8,10 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from neomodel import db
 
+from dash.models import DashboardWorkspace
 from publications.models import Publication
 from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK, \
-        LikeProfile
+    LikeProfile
 from user_profile.node_models import NodeProfile
 from notifications.signals import notify
 
@@ -119,8 +120,11 @@ def save_user_profile(sender, instance, created, **kwargs):
                 with db.transaction:
                     node = NodeProfile.nodes.get_or_none(user_id=instance.id)
                     if not node:
-                        Profile.objects.create(user=instance)
-                        NotificationSettings.objects.create(user=instance)
+                        Profile.objects.get_or_create(user=instance)
+                        NotificationSettings.objects.get_or_create(user=instance)
+                        DashboardWorkspace.objects.get_or_create(user=instance, position=1, layout_uid="profile",
+                                                                 is_public=True,
+                                                                 is_clonable=False)
                         NodeProfile(user_id=instance.id, title=instance.username,
                                     first_name=instance.first_name, last_name=instance.last_name).save()
                     logger.info(
@@ -149,10 +153,10 @@ def handle_new_like(sender, instance, created, **kwargs):
         rel.save()
 
     notify.send(instance.from_profile.user, actor=instance.from_profile.user.username,
-            recipient=instance.to_profile.user,
-            description="@{0} ha dado like a tu perfil.".format(instance.from_profile.user.username),
-            verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
-                instance.from_profile.user.username, instance.from_profile.user.username), level='like_profile')
+                recipient=instance.to_profile.user,
+                description="@{0} ha dado like a tu perfil.".format(instance.from_profile.user.username),
+                verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
+                    instance.from_profile.user.username, instance.from_profile.user.username), level='like_profile')
 
 
 @receiver(post_delete, sender=LikeProfile)
@@ -165,6 +169,7 @@ def handle_delete_like(sender, instance, *args, **kwargs):
     if rel:
         rel.weight = rel.weight - 10
         rel.save()
+
 
 def handle_login(sender, user, request, **kwargs):
     try:

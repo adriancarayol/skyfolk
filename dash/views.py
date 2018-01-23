@@ -66,28 +66,6 @@ else:
     from django.core.urlresolvers import reverse
     from django.shortcuts import render_to_response
 
-__title__ = 'dash.views'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = (
-    'add_dashboard_entry',
-    'clone_dashboard_workspace',
-    'copy_dashboard_entry',
-    'create_dashboard_workspace',
-    'cut_dashboard_entry',
-    'dashboard',
-    'dashboard_workspaces',
-    'delete_dashboard_entry',
-    'delete_dashboard_workspace',
-    'edit_dashboard',
-    'edit_dashboard_entry',
-    'edit_dashboard_settings',
-    'edit_dashboard_workspace',
-    'paste_dashboard_entry',
-    'plugin_widgets',
-)
-
 
 # ***************************************************************************
 # ***************************************************************************
@@ -185,7 +163,7 @@ def edit_dashboard(request, workspace=None):
         Otherwise we deal with no workspace.
     :return django.http.HttpResponse:
     """
-    # Getting the list of plugins that user is allowed to use.
+    # Getting the list of plugins that user is z to use.
     registered_plugins = get_user_plugins(request.user)
     user_plugin_uids = [uid for uid, repr in registered_plugins]
 
@@ -270,11 +248,50 @@ class AddDashboardEntry(SessionWizardView):
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
-        self.workspace = self.kwargs.get('workspace', None)
-        self.placeholder_uid = self.kwargs.get('placeholder_uid', None)
-        self.plugin_uid = self.kwargs.get('plugin_uid', None)
-        self.position = self.kwargs.get('position', None)
-        return super().dispatch(request, *args, **kwargs)
+        plugin_uid = self.kwargs.get('plugin_uid', None)
+        dashboard_settings = get_or_create_dashboard_settings(self.request.user)
+        workspace = self.kwargs.get('workspace', None)
+        placeholder_uid = self.kwargs.get('placeholder_uid', None)
+
+        if workspace:
+            workspace_slug = slugify_workspace(workspace)
+            filters = {
+                'slug': workspace_slug,
+                'user': self.request.user,
+            }
+            if not dashboard_settings.allow_different_layouts:
+                filters.update({
+                    'layout_uid': dashboard_settings.layout_uid,
+                })
+            try:
+                workspace = DashboardWorkspace._default_manager.get(**filters)
+            except ObjectDoesNotExist as e:
+                if dashboard_settings.allow_different_layouts:
+                    message = _('The workspace with slug "{0}" was not found.'
+                                '').format(workspace_slug)
+                else:
+                    message = _(
+                        'The workspace with slug "{0}" does not belong to '
+                        'layout "{1}".'
+                    ).format(workspace_slug, layout.name)
+                messages.info(self.request, message)
+                return redirect('dash.edit_dashboard')
+
+        if dashboard_settings.allow_different_layouts and workspace:
+            layout_uid = workspace.layout_uid
+        else:
+            layout_uid = dashboard_settings.layout_uid
+
+        layout = get_layout(layout_uid=layout_uid, as_instance=True)
+        plugin = plugin_registry.get(plugin_uid)(layout.uid, placeholder_uid)
+
+        if plugin is not None and plugin.name != 'Trigger':
+            return add_dashboard_entry(self.request, placeholder_uid,
+                                       plugin_uid,
+                                       workspace=workspace,
+                                       position=None, )
+
+        return super(AddDashboardEntry, self).dispatch(request, *args, **kwargs)
 
     def get_form_initial(self, step):
         """
@@ -288,8 +305,13 @@ class AddDashboardEntry(SessionWizardView):
     def get_form(self, step=None, data=None, files=None):
         dashboard_settings = get_or_create_dashboard_settings(self.request.user)
 
-        if self.workspace:
-            workspace_slug = slugify_workspace(self.workspace)
+        workspace = self.kwargs.get('workspace', None)
+        placeholder_uid = self.kwargs.get('placeholder_uid', None)
+        plugin_uid = self.kwargs.get('plugin_uid', None)
+        position = self.kwargs.get('position', None)
+
+        if workspace:
+            workspace_slug = slugify_workspace(workspace)
             filters = {
                 'slug': workspace_slug,
                 'user': self.request.user,
@@ -299,7 +321,7 @@ class AddDashboardEntry(SessionWizardView):
                     'layout_uid': dashboard_settings.layout_uid,
                 })
             try:
-                self.workspace = DashboardWorkspace._default_manager.get(**filters)
+                workspace = DashboardWorkspace._default_manager.get(**filters)
             except ObjectDoesNotExist as e:
                 if dashboard_settings.allow_different_layouts:
                     message = _('The workspace with slug "{0}" was not found.'
@@ -312,27 +334,27 @@ class AddDashboardEntry(SessionWizardView):
                 messages.info(self.request, message)
                 return redirect('dash.edit_dashboard')
 
-        if dashboard_settings.allow_different_layouts and self.workspace:
-            layout_uid = self.workspace.layout_uid
+        if dashboard_settings.allow_different_layouts and workspace:
+            layout_uid = workspace.layout_uid
         else:
             layout_uid = dashboard_settings.layout_uid
 
         layout = get_layout(layout_uid=layout_uid, as_instance=True)
 
-        if not validate_placeholder_uid(layout, self.placeholder_uid):
+        if not validate_placeholder_uid(layout, placeholder_uid):
             raise Http404(ugettext("Invalid placeholder: {0}").format(placeholder))
 
-        if not validate_plugin_uid(self.plugin_uid):
-            raise Http404(ugettext("Invalid plugin name: {0}").format(self.plugin_uid))
+        if not validate_plugin_uid(plugin_uid):
+            raise Http404(ugettext("Invalid plugin name: {0}").format(plugin_uid))
 
-        placeholder = layout.get_placeholder(self.placeholder_uid)
+        placeholder = layout.get_placeholder(placeholder_uid)
 
         # Cell that would be occupied by the plugin upon addition.
         widget_occupied_cells = get_occupied_cells(
             layout,
             placeholder,
-            self.plugin_uid,
-            self.position,
+            plugin_uid,
+            position,
             check_boundaries=True,
             fail_silently=True
         )
@@ -342,7 +364,7 @@ class AddDashboardEntry(SessionWizardView):
             self.request.user,
             layout,
             placeholder,
-            self.workspace
+            workspace
         )
 
         # Checking if it's still possible to insert a widget.
@@ -350,7 +372,7 @@ class AddDashboardEntry(SessionWizardView):
                 or lists_overlap(widget_occupied_cells, occupied_cells):
             raise Http404(ugettext("Collisions detected"))
 
-        plugin = plugin_registry.get(self.plugin_uid)(layout.uid, self.placeholder_uid)
+        plugin = plugin_registry.get(plugin_uid)(layout.uid, placeholder_uid)
         plugin.request = self.request
 
         if plugin.add_form_template:
@@ -385,9 +407,13 @@ class AddDashboardEntry(SessionWizardView):
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form, **kwargs)
         dashboard_settings = get_or_create_dashboard_settings(self.request.user)
+        workspace = self.kwargs.get('workspace', None)
+        placeholder_uid = self.kwargs.get('placeholder_uid', None)
+        plugin_uid = self.kwargs.get('plugin_uid', None)
+        position = self.kwargs.get('position', None)
 
-        if self.workspace:
-            workspace_slug = slugify_workspace(self.workspace)
+        if workspace:
+            workspace_slug = slugify_workspace(workspace)
             filters = {
                 'slug': workspace_slug,
                 'user': self.request.user,
@@ -397,7 +423,7 @@ class AddDashboardEntry(SessionWizardView):
                     'layout_uid': dashboard_settings.layout_uid,
                 })
             try:
-                self.workspace = DashboardWorkspace._default_manager.get(**filters)
+                workspace = DashboardWorkspace._default_manager.get(**filters)
             except ObjectDoesNotExist as e:
                 if dashboard_settings.allow_different_layouts:
                     message = _('The workspace with slug "{0}" was not found.'
@@ -410,8 +436,8 @@ class AddDashboardEntry(SessionWizardView):
                 messages.info(self.request, message)
                 return redirect('dash.edit_dashboard')
 
-        if dashboard_settings.allow_different_layouts and self.workspace:
-            layout_uid = self.workspace.layout_uid
+        if dashboard_settings.allow_different_layouts and workspace:
+            layout_uid = workspace.layout_uid
         else:
             layout_uid = dashboard_settings.layout_uid
 
@@ -433,15 +459,18 @@ class AddDashboardEntry(SessionWizardView):
 
     def get_template_names(self):
         dashboard_settings = get_or_create_dashboard_settings(self.request.user)
+        workspace = self.kwargs.get('workspace', None)
+        placeholder_uid = self.kwargs.get('placeholder_uid', None)
+        plugin_uid = self.kwargs.get('plugin_uid', None)
 
-        if dashboard_settings.allow_different_layouts and self.workspace:
-            layout_uid = self.workspace.layout_uid
+        if dashboard_settings.allow_different_layouts and workspace:
+            layout_uid = workspace.layout_uid
         else:
             layout_uid = dashboard_settings.layout_uid
 
         layout = get_layout(layout_uid=layout_uid, as_instance=True)
 
-        plugin = plugin_registry.get(self.plugin_uid)(layout.uid, self.placeholder_uid)
+        plugin = plugin_registry.get(plugin_uid)(layout.uid, placeholder_uid)
         plugin.request = self.request
 
         template_name = 'dash/add_dashboard_entry.html'
@@ -453,9 +482,12 @@ class AddDashboardEntry(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         dashboard_settings = get_or_create_dashboard_settings(self.request.user)
-
-        if dashboard_settings.allow_different_layouts and self.workspace:
-            layout_uid = self.workspace.layout_uid
+        workspace = self.kwargs.get('workspace', None)
+        placeholder_uid = self.kwargs.get('placeholder_uid', None)
+        plugin_uid = self.kwargs.get('plugin_uid', None)
+        position = self.kwargs.get('position', None)
+        if dashboard_settings.allow_different_layouts and workspace:
+            layout_uid = workspace.layout_uid
         else:
             layout_uid = dashboard_settings.layout_uid
 
@@ -498,10 +530,10 @@ class AddDashboardEntry(SessionWizardView):
 
         obj = DashboardEntry()
         obj.layout_uid = layout.uid
-        obj.placeholder_uid = self.placeholder_uid
-        obj.plugin_uid = self.plugin_uid
+        obj.placeholder_uid = placeholder_uid
+        obj.plugin_uid = plugin_uid
         obj.user = self.request.user
-        obj.workspace = self.workspace
+        obj.workspace = workspace
 
         # Getting the plugin data.
         obj.plugin_data = json.dumps(
@@ -509,7 +541,7 @@ class AddDashboardEntry(SessionWizardView):
 
         # If position given, use it.
         try:
-            position = int(self.position)
+            position = int(position)
         except Exception:
             position = None
 
@@ -1123,8 +1155,8 @@ def delete_dashboard_workspace(request, workspace_id,
     # Check if user trying to edit the dashboard workspace actually owns it
     # and then delete the workspace.
     if (
-            request.method == 'POST'
-            and 'delete' in request.POST is None
+                        request.method == 'POST'
+                and 'delete' in request.POST is None
             and request.POST.get('next', None)
     ):
         return redirect(request.POST.get('next'))
