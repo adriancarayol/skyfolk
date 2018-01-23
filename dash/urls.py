@@ -1,8 +1,9 @@
+from skyfolk.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
 from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
 from .views import (
-    add_dashboard_entry,
+    AddDashboardEntry,
     clone_dashboard_workspace,
     copy_dashboard_entry,
     create_dashboard_workspace,
@@ -24,7 +25,6 @@ __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2013-2017 Artur Barseghyan'
 __license__ = 'GPL 2.0/LGPL 2.1'
 __all__ = ('urlpatterns',)
-
 
 urlpatterns = [
     # Paste dashboard entry
@@ -49,19 +49,35 @@ urlpatterns = [
     # Add dashboard entry.
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'ws/(?P<workspace>[\w_\-]+)/pos/(?P<position>\d+)/$'),
-        view=add_dashboard_entry,
+        view=AddDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'ws/(?P<workspace>[\w_\-]+)/$'),
-        view=add_dashboard_entry,
+        view=AddDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'pos/(?P<position>\d+)/$'),
-        view=add_dashboard_entry,
+        view=AddDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/'
           r'(?P<plugin_uid>[\w_\-]+)/$'),
-        view=add_dashboard_entry,
+        view=AddDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.add_dashboard_entry'),
 
     # Edit dashboard entry.

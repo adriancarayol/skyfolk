@@ -186,8 +186,8 @@ class Profile(models.Model):
             try:
                 with transaction.atomic(using='default'):
                     self.is_first_login = False
-                    Award.objects.create(user=self.user, badge=Badge.objects.get(slug='new-account'))
-                    self.save()
+                    Award.objects.get_or_create(user=self.user, badge=Badge.objects.get(slug='new-account'))
+                    self.save(update_fields=['is_first_login'])
             except Exception as e:
                 logger.info(e)
 

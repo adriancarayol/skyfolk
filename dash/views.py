@@ -1,13 +1,21 @@
+import os
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import FileSystemStorage
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
-
+from formtools.wizard.views import SessionWizardView
 from nine import versions
+from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect
+from django.conf import settings
 
+from skyfolk.forms.wizard import ConsumerForm
+from skyfolk.models import UserService, TriggerService
+from skyfolk.tools import class_for_name, get_service
 from .base import (
     get_layout,
     plugin_registry,
@@ -15,7 +23,7 @@ from .base import (
     # PluginWidgetRegistry,
     validate_placeholder_uid,
     validate_plugin_uid,
-)
+    DashboardPluginDataStorage)
 from .clipboard import (
     can_paste_entry_from_clipboard,
     copy_entry_to_clipboard,
@@ -80,6 +88,7 @@ __all__ = (
     'plugin_widgets',
 )
 
+
 # ***************************************************************************
 # ***************************************************************************
 # **************************** Dashboard views ******************************
@@ -133,12 +142,12 @@ def dashboard(request, workspace=None):
 
     # Getting the (frozen) queryset.
     dashboard_entries = DashboardEntry._default_manager \
-        .get_for_user(user=request.user,
-                      layout_uid=layout.uid,
-                      workspace=workspace) \
-        .select_related('workspace', 'user') \
-        .filter(plugin_uid__in=user_plugin_uids) \
-        .order_by('placeholder_uid', 'position')[:]
+                            .get_for_user(user=request.user,
+                                          layout_uid=layout.uid,
+                                          workspace=workspace) \
+                            .select_related('workspace', 'user') \
+                            .filter(plugin_uid__in=user_plugin_uids) \
+                            .order_by('placeholder_uid', 'position')[:]
 
     placeholders = layout.get_placeholder_instances(
         dashboard_entries, request=request
@@ -164,7 +173,6 @@ def dashboard(request, workspace=None):
     template_name = layout.get_view_template_name(request)
 
     return render(request, template_name, context)
-
 
 
 @login_required
@@ -207,17 +215,17 @@ def edit_dashboard(request, workspace=None):
             request,
             _('The workspace with slug "{0}" does '
               'not belong to layout "{1}".').format(workspace, layout.name)
-            )
+        )
         return redirect('dash.edit_dashboard')
 
     # Getting the (frozen) queryset.
     dashboard_entries = DashboardEntry._default_manager \
-        .get_for_user(user=request.user,
-                      layout_uid=layout.uid,
-                      workspace=workspace) \
-        .select_related('workspace', 'user') \
-        .filter(plugin_uid__in=user_plugin_uids) \
-        .order_by('placeholder_uid', 'position')[:]
+                            .get_for_user(user=request.user,
+                                          layout_uid=layout.uid,
+                                          workspace=workspace) \
+                            .select_related('workspace', 'user') \
+                            .filter(plugin_uid__in=user_plugin_uids) \
+                            .order_by('placeholder_uid', 'position')[:]
 
     placeholders = layout.get_placeholder_instances(
         dashboard_entries, workspace=workspace, request=request
@@ -256,6 +264,262 @@ def edit_dashboard(request, workspace=None):
 # ********************* Add/edit/delete dashboard entry *********************
 # ***************************************************************************
 # ***************************************************************************
+
+class AddDashboardEntry(SessionWizardView):
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.workspace = self.kwargs.get('workspace', None)
+        self.placeholder_uid = self.kwargs.get('placeholder_uid', None)
+        self.plugin_uid = self.kwargs.get('plugin_uid', None)
+        self.position = self.kwargs.get('position', None)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_initial(self, step):
+        """
+        get the services provider/consumer of the current user
+        :param step: current set
+        :return: dict with initial data
+        """
+        data = {'user': self.request.user}
+        return self.initial_dict.get(step, data)
+
+    def get_form(self, step=None, data=None, files=None):
+        dashboard_settings = get_or_create_dashboard_settings(self.request.user)
+
+        if self.workspace:
+            workspace_slug = slugify_workspace(self.workspace)
+            filters = {
+                'slug': workspace_slug,
+                'user': self.request.user,
+            }
+            if not dashboard_settings.allow_different_layouts:
+                filters.update({
+                    'layout_uid': dashboard_settings.layout_uid,
+                })
+            try:
+                self.workspace = DashboardWorkspace._default_manager.get(**filters)
+            except ObjectDoesNotExist as e:
+                if dashboard_settings.allow_different_layouts:
+                    message = _('The workspace with slug "{0}" was not found.'
+                                '').format(workspace_slug)
+                else:
+                    message = _(
+                        'The workspace with slug "{0}" does not belong to '
+                        'layout "{1}".'
+                    ).format(workspace_slug, layout.name)
+                messages.info(self.request, message)
+                return redirect('dash.edit_dashboard')
+
+        if dashboard_settings.allow_different_layouts and self.workspace:
+            layout_uid = self.workspace.layout_uid
+        else:
+            layout_uid = dashboard_settings.layout_uid
+
+        layout = get_layout(layout_uid=layout_uid, as_instance=True)
+
+        if not validate_placeholder_uid(layout, self.placeholder_uid):
+            raise Http404(ugettext("Invalid placeholder: {0}").format(placeholder))
+
+        if not validate_plugin_uid(self.plugin_uid):
+            raise Http404(ugettext("Invalid plugin name: {0}").format(self.plugin_uid))
+
+        placeholder = layout.get_placeholder(self.placeholder_uid)
+
+        # Cell that would be occupied by the plugin upon addition.
+        widget_occupied_cells = get_occupied_cells(
+            layout,
+            placeholder,
+            self.plugin_uid,
+            self.position,
+            check_boundaries=True,
+            fail_silently=True
+        )
+
+        # Cells currently occupied in the workspace given.
+        occupied_cells = build_cells_matrix(
+            self.request.user,
+            layout,
+            placeholder,
+            self.workspace
+        )
+
+        # Checking if it's still possible to insert a widget.
+        if widget_occupied_cells is False \
+                or lists_overlap(widget_occupied_cells, occupied_cells):
+            raise Http404(ugettext("Collisions detected"))
+
+        plugin = plugin_registry.get(self.plugin_uid)(layout.uid, self.placeholder_uid)
+        plugin.request = self.request
+
+        if plugin.add_form_template:
+            template_name = plugin.add_form_template
+
+        if step is None:
+            step = self.steps.current
+
+        if step == '1':
+            prev_data = self.get_cleaned_data_for_step('0')
+            service_name = str(prev_data.get('provider')).split('Service')[1]
+            class_name = 'th_' + service_name.lower() + '.forms'
+            form_name = service_name + 'ProviderForm'
+            form_class = class_for_name(class_name, form_name)
+            form = form_class(data)
+        elif step == '2':
+            step0_data = self.get_cleaned_data_for_step('0')
+            form = ConsumerForm(
+                data, initial={'provider': step0_data.get('provider'), 'user': self.request.user})
+        elif step == '3':
+            prev_data = self.get_cleaned_data_for_step('2')
+            service_name = str(prev_data.get('consumer')).split('Service')[1]
+            class_name = 'th_' + service_name.lower() + '.forms'
+            form_name = service_name + 'ConsumerForm'
+            form_class = class_for_name(class_name, form_name)
+            form = form_class(data)
+        else:
+            form = super(AddDashboardEntry, self).get_form(step, data, files)
+
+        return form
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form, **kwargs)
+        dashboard_settings = get_or_create_dashboard_settings(self.request.user)
+
+        if self.workspace:
+            workspace_slug = slugify_workspace(self.workspace)
+            filters = {
+                'slug': workspace_slug,
+                'user': self.request.user,
+            }
+            if not dashboard_settings.allow_different_layouts:
+                filters.update({
+                    'layout_uid': dashboard_settings.layout_uid,
+                })
+            try:
+                self.workspace = DashboardWorkspace._default_manager.get(**filters)
+            except ObjectDoesNotExist as e:
+                if dashboard_settings.allow_different_layouts:
+                    message = _('The workspace with slug "{0}" was not found.'
+                                '').format(workspace_slug)
+                else:
+                    message = _(
+                        'The workspace with slug "{0}" does not belong to '
+                        'layout "{1}".'
+                    ).format(workspace_slug, layout.name)
+                messages.info(self.request, message)
+                return redirect('dash.edit_dashboard')
+
+        if dashboard_settings.allow_different_layouts and self.workspace:
+            layout_uid = self.workspace.layout_uid
+        else:
+            layout_uid = dashboard_settings.layout_uid
+
+        layout = get_layout(layout_uid=layout_uid, as_instance=True)
+
+        context['layout'] = layout
+        context['dashboard_settings'] = dashboard_settings
+
+        template_name_ajax = 'dash/add_dashboard_entry_ajax.html'
+
+        if layout.add_dashboard_entry_ajax_template_name:
+            template_name_ajax = layout.add_dashboard_entry_ajax_template_name
+
+        context.update(
+            {'add_dashboard_entry_ajax_template_name': template_name_ajax}
+        )
+
+        return context
+
+    def get_template_names(self):
+        dashboard_settings = get_or_create_dashboard_settings(self.request.user)
+
+        if dashboard_settings.allow_different_layouts and self.workspace:
+            layout_uid = self.workspace.layout_uid
+        else:
+            layout_uid = dashboard_settings.layout_uid
+
+        layout = get_layout(layout_uid=layout_uid, as_instance=True)
+
+        plugin = plugin_registry.get(self.plugin_uid)(layout.uid, self.placeholder_uid)
+        plugin.request = self.request
+
+        template_name = 'dash/add_dashboard_entry.html'
+
+        if plugin.add_form_template:
+            template_name = plugin.add_form_template
+
+        return template_name
+
+    def done(self, form_list, **kwargs):
+        dashboard_settings = get_or_create_dashboard_settings(self.request.user)
+
+        if dashboard_settings.allow_different_layouts and self.workspace:
+            layout_uid = self.workspace.layout_uid
+        else:
+            layout_uid = dashboard_settings.layout_uid
+
+        layout = get_layout(layout_uid=layout_uid, as_instance=True)
+
+        for index, form in enumerate(form_list):
+            data = form.cleaned_data
+
+            if index == 0:
+                trigger_provider = UserService.objects.get(name=data.get('provider'), user=self.request.user.id)
+                model_provider = get_service(data.get('provider'), 'models')
+            # get the service we selected at step 2 : consumer
+            elif index == 2:
+                trigger_consumer = UserService.objects.get(name=data.get('consumer'), user=self.request.user.id)
+                model_consumer = get_service(data.get('consumer'), 'models')
+            # get the description we gave for the trigger
+            elif index == 4:
+                trigger_description = data.get('description')
+
+        # save the trigger
+        trigger = TriggerService(provider=trigger_provider, consumer=trigger_consumer, user=self.request.user,
+                                 status=True, description=trigger_description)
+        trigger.save()
+
+        for index, form in enumerate(form_list):
+            model_fields = {}
+            data = form.cleaned_data
+            # get the data for the provider service
+            if index == 1:
+                for field in data:
+                    model_fields.update({field: data[field]})
+                model_fields.update({'trigger_id': trigger.id, 'status': True})
+                model_provider.objects.create(**model_fields)
+            # get the data for the consumer service
+            elif index == 3:
+                for field in data:
+                    model_fields.update({field: data[field]})
+                model_fields.update({'trigger_id': trigger.id, 'status': True})
+                model_consumer.objects.create(**model_fields)
+
+        obj = DashboardEntry()
+        obj.layout_uid = layout.uid
+        obj.placeholder_uid = self.placeholder_uid
+        obj.plugin_uid = self.plugin_uid
+        obj.user = self.request.user
+        obj.workspace = self.workspace
+
+        # Getting the plugin data.
+        obj.plugin_data = json.dumps(
+            {"result": trigger.result, "trigger": trigger.pk, "description": trigger_description})
+
+        # If position given, use it.
+        try:
+            position = int(self.position)
+        except Exception:
+            position = None
+
+        if position:
+            obj.position = position
+
+        # Save the object.
+        obj.save()
+
+        return HttpResponseRedirect('/dashboard')
 
 
 @login_required
@@ -342,8 +606,7 @@ def add_dashboard_entry(request,
 
     # Checking if it's still possible to insert a widget.
     if widget_occupied_cells is False \
-       or lists_overlap(widget_occupied_cells, occupied_cells):
-
+            or lists_overlap(widget_occupied_cells, occupied_cells):
         raise Http404(ugettext("Collisions detected"))
 
     plugin = plugin_registry.get(plugin_uid)(layout.uid, placeholder_uid)
@@ -433,12 +696,7 @@ def add_dashboard_entry(request,
     elif layout.add_dashboard_entry_template_name:
         template_name = layout.add_dashboard_entry_template_name
 
-    if versions.DJANGO_GTE_1_10:
-        return render(request, template_name, context)
-    else:
-        return render_to_response(
-            template_name, context, context_instance=RequestContext(request)
-        )
+    return render(request, template_name, context)
 
 
 @login_required
@@ -461,8 +719,8 @@ def edit_dashboard_entry(request,
 
     try:
         obj = DashboardEntry._default_manager \
-                            .select_related('workspace') \
-                            .get(pk=entry_id, user=request.user)
+            .select_related('workspace') \
+            .get(pk=entry_id, user=request.user)
     except ObjectDoesNotExist as err:
         raise Http404(err)
 
@@ -558,8 +816,8 @@ def delete_dashboard_entry(request, entry_id):
     """
     try:
         obj = DashboardEntry._default_manager \
-                            .select_related('workspace') \
-                            .get(pk=entry_id, user=request.user)
+            .select_related('workspace') \
+            .get(pk=entry_id, user=request.user)
         plugin = obj.get_plugin()
         plugin.request = request
         plugin._delete_plugin_data()
@@ -582,6 +840,7 @@ def delete_dashboard_entry(request, entry_id):
         if request.is_ajax():
             return HttpResponse(json.dumps({'success': 1}))
         raise Http404(err)
+
 
 # ***************************************************************************
 # ***************************************************************************
@@ -686,6 +945,7 @@ def plugin_widgets(request,
         return render_to_response(
             template_name, context, context_instance=RequestContext(request)
         )
+
 
 # ***************************************************************************
 # ***************************************************************************
@@ -871,14 +1131,14 @@ def delete_dashboard_workspace(request, workspace_id,
 
     try:
         obj = DashboardWorkspace._default_manager \
-                                .get(pk=workspace_id, user=request.user)
+            .get(pk=workspace_id, user=request.user)
 
     except ObjectDoesNotExist as err:
         raise Http404(err)
 
     layout = get_layout(
         layout_uid=workspace.layout_uid, as_instance=True
-        )
+    )
 
     if request.method == 'POST':
         if 'delete' in request.POST:
@@ -886,11 +1146,11 @@ def delete_dashboard_workspace(request, workspace_id,
 
             # Getting the (frozen) queryset.
             dashboard_entries = DashboardEntry._default_manager \
-                .filter(user=request.user,
-                        layout_uid=layout.uid,
-                        workspace__id=workspace_id) \
-                .select_related('workspace', 'user') \
-                .order_by('placeholder_uid', 'position')[:]
+                                    .filter(user=request.user,
+                                            layout_uid=layout.uid,
+                                            workspace__id=workspace_id) \
+                                    .select_related('workspace', 'user') \
+                                    .order_by('placeholder_uid', 'position')[:]
 
             # Cleaning the plugin data for the deleted entries.
             clean_plugin_data(dashboard_entries, request=request)
@@ -974,6 +1234,7 @@ def dashboard_workspaces(request,
         return render_to_response(
             template_name, context, context_instance=RequestContext(request)
         )
+
 
 # ***************************************************************************
 # ***************************************************************************
@@ -1097,6 +1358,7 @@ def clone_dashboard_workspace(request, workspace_id):
         )
         return redirect('dash.edit_dashboard')
 
+
 # ***************************************************************************
 # ***************************************************************************
 # **************************** Clipboard views ******************************
@@ -1118,8 +1380,8 @@ def cut_dashboard_entry(request, entry_id):
     :return django.http.HttpResponse:
     """
     dashboard_entry = DashboardEntry._default_manager \
-                                    .select_related('workspace') \
-                                    .get(pk=entry_id, user=request.user)
+        .select_related('workspace') \
+        .get(pk=entry_id, user=request.user)
     workspace = dashboard_entry.workspace
     plugin = dashboard_entry.get_plugin()
 
@@ -1155,8 +1417,8 @@ def copy_dashboard_entry(request, entry_id):
     # )
 
     dashboard_entry = DashboardEntry._default_manager \
-                                    .select_related('workspace') \
-                                    .get(pk=entry_id, user=request.user)
+        .select_related('workspace') \
+        .get(pk=entry_id, user=request.user)
     workspace = dashboard_entry.workspace
     plugin = dashboard_entry.get_plugin()
 

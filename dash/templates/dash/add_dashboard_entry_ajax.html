@@ -2,22 +2,31 @@
 <div class="generic-content-wrapper">
     <div class="wrapper-bg"></div>
     <div class="hero-unit-small">
-        <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Add {{ plugin_name }} to Dashboard{% endblocktrans %}</h2>
+        <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Add {{ plugin_name }} to
+            Dashboard{% endblocktrans %}</h2>
     </div>
 
     <div class="content-body">
-        <form method="post" action="{{ request.path }}" enctype="multipart/form-data" class="form-horizontal">
-            {% csrf_token %}
-            <ul class="content-listing generic-form">
-                {% include layout.form_snippet_template_name %}
-                <li class="buttons control-group">
-                    <div class="controls">
-                        <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
-                    </div>
-                </li>
+        <form method="post" action="{{ request.path }}" enctype="multipart/form-data"
+              class="form-horizontal">{% csrf_token %}
+            {{ wizard.management_form }}
+            {% if wizard.form.forms %}
+                {{ wizard.form.management_form }}
+                {% for form in wizard.form.forms %}
+                    {{ form }}
+                {% endfor %}
+            {% else %}
+                {{ wizard.form }}
+            {% endif %}
 
-                {% include "dash/snippets/plugin_help_text.html" %}
-            </ul>
+            {% if wizard.steps.prev %}
+                <button name="wizard_goto_step" type="submit"
+                        value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+                <button name="wizard_goto_step" type="submit"
+                        value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+            {% endif %}
+            <input type="submit" value="{% trans "submit" %}"/>
+
         </form>
     </div>
 </div>

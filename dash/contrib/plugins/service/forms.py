@@ -8,7 +8,6 @@ __all__ = (
     'TriggerForm',
 )
 
-
 class TriggerForm(forms.Form, DashboardPluginFormBase):
     class Media(object):
         """Media."""
