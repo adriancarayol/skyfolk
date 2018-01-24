@@ -1,225 +1,414 @@
-2018-01-23 22:20:21,867 ERROR exception 22546 Internal Server Error: /submit_photo/
+2018-01-24 16:59:35,489 ERROR exception 28740 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 497, in save
-    self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
-2018-01-23 22:20:35,259 ERROR exception 22546 Internal Server Error: /submit_photo/
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:00:18,653 ERROR exception 29168 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 497, in save
-    self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
-2018-01-23 22:22:52,068 ERROR exception 24359 Internal Server Error: /submit_photo/
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:00:43,080 ERROR exception 29349 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 497, in save
-    self.slug = uuslug(str(self.owner_id) + self.title, instance=self, max_length=250)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
-2018-01-23 22:23:02,537 ERROR exception 24527 Internal Server Error: /submit_photo/
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:00:55,171 ERROR exception 29519 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 497, in save
-    self.slug = uuslug(self.title, instance=self, max_length=250)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
-2018-01-23 22:27:06,990 ERROR exception 25126 Internal Server Error: /submit_photo/
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:02:05,272 ERROR exception 30138 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 497, in save
-    self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
-2018-01-23 22:28:06,722 ERROR exception 25126 Internal Server Error: /submit_photo/
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:03:25,529 ERROR exception 30586 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 497, in save
-    self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
-2018-01-23 22:34:58,585 ERROR exception 27315 Internal Server Error: /submit_photo/
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:03:56,330 ERROR exception 30823 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 497, in save
-    print(uuslug(self.title, instance=self))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
-2018-01-23 22:38:18,017 ERROR exception 28058 Internal Server Error: /submit_photo/
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:05:43,104 ERROR exception 31417 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 497, in save
-    self.slug = uuslug(str(self.owner_id) + self.title, self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
-2018-01-23 22:41:27,180 ERROR exception 29171 Internal Server Error: /submit_photo/
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:06:29,245 ERROR exception 31729 Internal Server Error: /submit_photo/
 Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
     return func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
     obj.save()
-  File "/home/adrian/skyfolk/photologue/models.py", line 496, in save
-    self.slug = uuslug(str(self.owner_id) + self.title, self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 44, in uuslug
-    save_order=save_order, stopwords=stopwords)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/uuslug/uuslug.py", line 19, in slugify
-    word_boundary, separator, save_order, stopwords))
-TypeError: __call__() takes 2 positional arguments but 10 were given
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:07:46,863 ERROR exception 32440 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:08:26,999 ERROR exception 379 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 528, in get_remote_image
+    raise ValidationError(_("Downloaded file was not a valid image"))
+django.core.exceptions.ValidationError: ['Downloaded file was not a valid image']
+2018-01-24 17:09:10,393 ERROR exception 1270 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:14:44,150 ERROR exception 3046 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:15:40,607 ERROR exception 3426 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:17:19,808 ERROR exception 4029 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:18:52,458 ERROR exception 4029 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:24:52,473 ERROR exception 6249 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 180, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]
+2018-01-24 17:25:26,299 ERROR exception 6495 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.5/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 179, in upload_photo
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 502, in save
+    self.get_remote_image()
+  File "/home/adrian/skyfolk/photologue/models.py", line 523, in get_remote_image
+    raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
+django.core.exceptions.ValidationError: ["Couldn't retreive image. (There was an error reaching the server)"]

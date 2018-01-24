@@ -43,10 +43,26 @@ app.conf.beat_schedule = {
         'task': 'tasks.send_recommendation_via_email',
         'schedule': crontab(hour='*/15'),
         'options': {'queue': 'background'}
-    }
+    },
+    'read_services': {
+        'task': 'tasks.read_services',
+        'schedule': crontab(),
+        'options': {'queue': 'low'}
+    },
+    'publish_services': {
+        'task': 'tasks.publish_services',
+        'schedule': crontab(),
+        'options': {'queue': 'low'}
+    },
+    'recycle_services': {
+        'task': 'tasks.recycle_services',
+        'schedule': crontab(),
+        'options': {'queue': 'low'}
+    },
 }
 
 
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
+

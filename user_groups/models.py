@@ -1,11 +1,11 @@
 # encoding:utf-8
+import itertools
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
-from uuslug import uuslug
 
 from notifications.models import Notification
 
@@ -90,7 +90,11 @@ class GroupTheme(models.Model):
         ordering = ('-created', )
 
     def save(self, *args, **kwargs):
-        self.slug = uuslug(self.title, instance=self)
+        self.slug = orig = slugify(str(self.owner_id) + self.title)
+        for x in itertools.count(1):
+            if not GroupTheme.objects.filter(slug=self.slug).exists():
+                break
+            self.slug = '%s-%d' % (orig, x)
         super(GroupTheme, self).save(*args, **kwargs)
 
     @property

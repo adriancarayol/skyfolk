@@ -1,5 +1,4 @@
 import os
-import logging
 from io import BytesIO
 
 from PIL import Image

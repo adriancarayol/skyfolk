@@ -184,7 +184,7 @@ class UploadFormPhoto(forms.ModelForm):
         return cleaned_data
 
     def clean_url_image(self):
-        url_image = self.cleaned_data['url_image'].lower()
+        url_image = self.cleaned_data['url_image']
 
         if url_image:
             domain, path = split_url(url_image)

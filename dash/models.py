@@ -58,7 +58,7 @@ class DashboardSettings(models.Model):
     title = models.CharField(_("Title"), max_length=255)
     allow_different_layouts = models.BooleanField(
         _("Allow different layouts per workspace?"),
-        default=False,
+        default=True,
         help_text=_("Allows you to use different layouts for each workspace.")
     )
     is_public = models.BooleanField(
