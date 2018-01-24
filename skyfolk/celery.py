@@ -1,9 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 import os
-import skyfolk.celeryconf as celeryconf
 from celery import Celery
 from celery.schedules import crontab
-from django.conf import settings
 from kombu import Exchange, Queue
 
 # set the default Django settings module for the 'celery' program.
@@ -11,7 +9,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skyfolk.settings.develop')
 
 app = Celery('skyfolk')
 
-app.config_from_object(celeryconf)
+app.config_from_object('skyfolk.celeryconf')
+
+app.autodiscover_tasks()
 
 app.conf.task_default_queue = 'medium'
 
@@ -24,9 +24,6 @@ app.conf.task_queues = (
     Queue('clean', Exchange('clean'), routing_key='clean'),
     Queue('background', Exchange('background'), routing_key='background'),
 )
-
-# Load task modules from all registered Django app configs.
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 app.conf.beat_schedule = {
     'deleted-publication': {
@@ -43,26 +40,10 @@ app.conf.beat_schedule = {
         'task': 'tasks.send_recommendation_via_email',
         'schedule': crontab(hour='*/15'),
         'options': {'queue': 'background'}
-    },
-    'read_services': {
-        'task': 'tasks.read_services',
-        'schedule': crontab(),
-        'options': {'queue': 'low'}
-    },
-    'publish_services': {
-        'task': 'tasks.publish_services',
-        'schedule': crontab(),
-        'options': {'queue': 'low'}
-    },
-    'recycle_services': {
-        'task': 'tasks.recycle_services',
-        'schedule': crontab(),
-        'options': {'queue': 'low'}
-    },
+    }
 }
 
 
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
-

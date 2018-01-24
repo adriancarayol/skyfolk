@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-
+from celery import shared_task
 import publications_gallery_groups
 from notifications.models import Notification
 from publications.utils import convert_video_to_mp4
@@ -24,6 +24,7 @@ generate_path_video = lambda filename, ext: (
      os.path.join('photo_publications/videos', str(filename) + ext)])
 
 get_channel_video_name = lambda id: "group-video-pub-{}".format(id)
+
 
 
 @app.task(ignore_result=True, name='tasks.process_group_photo_pub_video')
@@ -76,6 +77,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
         Channel_group(photo.group_name).send({
             "text": json.dumps(data)
         }, immediately=True)
+
 
 
 @app.task(ignore_result=True, name='tasks.process_group_photo_pub_gif')
@@ -132,7 +134,6 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
 
 
 # Video tasks
-
 @app.task(ignore_result=True, name='tasks.process_group_video_pub_video')
 def process_video_video_publication(file, publication_id, filename, user_id=None):
     try:

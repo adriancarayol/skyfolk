@@ -9,9 +9,9 @@ from django.utils import html
 from django.utils.translation import ugettext as _
 
 # django_th classes
-from skyfolk.models import update_result, UserService
-from skyfolk.services.services import ServicesMgr
-from skyfolk.tools import download_image
+from dash_services.models import update_result, UserService
+from dash_services.services.services import ServicesMgr
+from dash_services.tools import download_image
 
 from logging import getLogger
 

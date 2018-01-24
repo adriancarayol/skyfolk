@@ -9,7 +9,7 @@ import photologue
 from photologue.utils.utils import generate_thumbnail_path_video
 from skyfolk.celery import app
 from utils.media import create_thumbnail_video
-
+from celery import shared_task
 
 def flat(*nums):
     'Build a tuple of ints from float or integer arguments. Useful because PIL crop and resize require integer points.'
@@ -56,7 +56,6 @@ def cropped_thumbnail(img, size):
         img = img.crop(flat(side_cut_line, 0, side_cut_line + crop_size.width, crop_size.height))
 
     return img.resize(target.size, Image.ANTIALIAS)
-
 
 @app.task(name="tasks.generate_photo_thumbnail")
 def generate_thumbnails(instance):

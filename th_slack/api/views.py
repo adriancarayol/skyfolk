@@ -2,8 +2,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from skyfolk.models import TriggerService
-from skyfolk.services import default_provider
+from dash_services.models import TriggerService
+from dash_services.services import default_provider
 
 from th_slack.models import Slack
 

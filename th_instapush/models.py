@@ -1,7 +1,7 @@
 # coding: utf-8
 from django.db import models
-from skyfolk.models.services import Services
-from skyfolk.models import TriggerService
+from dash_services.models.services import Services
+from dash_services.models import TriggerService
 
 
 class Instapush(Services):

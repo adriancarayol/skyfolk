@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.core.cache import caches
 # django_th classes
-from skyfolk.services.services import ServicesMgr
+from dash_services.services.services import ServicesMgr
 
 from logging import getLogger
 

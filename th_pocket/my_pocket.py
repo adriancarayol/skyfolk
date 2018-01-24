@@ -5,9 +5,9 @@ from django.conf import settings
 from django.core.cache import caches
 
 # django_th classes
-from skyfolk.html_entities import HtmlEntities
-from skyfolk.models import update_result, UserService
-from skyfolk.services.services import ServicesMgr
+from dash_services.html_entities import HtmlEntities
+from dash_services.models import update_result, UserService
+from dash_services.services.services import ServicesMgr
 
 from logging import getLogger
 # pocket API

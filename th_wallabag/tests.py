@@ -1,7 +1,7 @@
 # coding: utf-8
 from django.test import RequestFactory
 
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 
 import requests
 

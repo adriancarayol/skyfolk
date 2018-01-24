@@ -5,9 +5,9 @@ import arrow
 from django.core.urlresolvers import reverse
 from django.core.cache import caches
 # django_th classes
-from skyfolk.services.services import ServicesMgr
-from skyfolk.html_entities import HtmlEntities
-from skyfolk.models import UserService, ServicesActivated, update_result
+from dash_services.services.services import ServicesMgr
+from dash_services.html_entities import HtmlEntities
+from dash_services.models import UserService, ServicesActivated, update_result
 
 from logging import getLogger
 import requests

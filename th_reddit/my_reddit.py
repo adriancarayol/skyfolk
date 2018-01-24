@@ -7,8 +7,8 @@ from django.core.cache import caches
 from django.urls import reverse
 
 # django_th classes
-from skyfolk.models import update_result, UserService
-from skyfolk.services.services import ServicesMgr
+from dash_services.models import update_result, UserService
+from dash_services.services.services import ServicesMgr
 
 from logging import getLogger
 

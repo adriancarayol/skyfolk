@@ -3,8 +3,8 @@
 from django.core.cache import caches
 
 # django_th classes
-from skyfolk.services.services import ServicesMgr
-from skyfolk.models import TriggerService
+from dash_services.services.services import ServicesMgr
+from dash_services.models import TriggerService
 
 from logging import getLogger
 

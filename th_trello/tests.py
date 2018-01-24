@@ -1,7 +1,7 @@
 # coding: utf-8
 from django.conf import settings
 
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 
 from th_trello.models import Trello
 from th_trello.forms import TrelloProviderForm, TrelloConsumerForm

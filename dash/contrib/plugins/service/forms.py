@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from ....base import DashboardPluginFormBase
-from skyfolk.models import TriggerService
+from dash_services.models import TriggerService
 
 __all__ = (
     'TriggerForm',

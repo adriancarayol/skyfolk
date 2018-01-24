@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import RequestFactory
 
-from skyfolk.tests.test_main import MainTest, setup_view
+from dash_services.tests.test_main import MainTest, setup_view
 import skyfolk
 
 from th_rss.forms import RssProviderForm

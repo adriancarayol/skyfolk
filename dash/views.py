@@ -13,17 +13,16 @@ from django.utils.decorators import method_decorator
 from django.http import HttpResponseRedirect
 from django.conf import settings
 
-from skyfolk.forms.wizard import ConsumerForm
-from skyfolk.models import UserService, TriggerService
-from skyfolk.tools import class_for_name, get_service
+from dash_services.forms.wizard import ConsumerForm
+from dash_services.models import UserService, TriggerService
+from dash_services.tools import class_for_name, get_service
 from .base import (
     get_layout,
     plugin_registry,
     # plugin_widget_registry,
     # PluginWidgetRegistry,
     validate_placeholder_uid,
-    validate_plugin_uid,
-    DashboardPluginDataStorage)
+    validate_plugin_uid)
 from .clipboard import (
     can_paste_entry_from_clipboard,
     copy_entry_to_clipboard,

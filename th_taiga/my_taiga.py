@@ -2,8 +2,8 @@
 # django classes
 from django.core.cache import caches
 # django_th classes
-from skyfolk.models import UserService
-from skyfolk.services.services import ServicesMgr
+from dash_services.models import UserService
+from dash_services.services.services import ServicesMgr
 
 from logging import getLogger
 from taiga import TaigaAPI

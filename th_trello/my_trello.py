@@ -4,9 +4,9 @@ from django.conf import settings
 from django.core.cache import caches
 from django.utils.translation import ugettext as _
 # django_th classes
-from skyfolk.apps import SkyfolkConfig
-from skyfolk.models import update_result, UserService
-from skyfolk.services.services import ServicesMgr
+from dash_services.apps import DashServicesConfig
+from dash_services.models import update_result, UserService
+from dash_services.services.services import ServicesMgr
 
 from logging import getLogger
 # Trello API
@@ -42,7 +42,7 @@ class ServiceTrello(ServicesMgr):
     def __init__(self, token=None, **kwargs):
         super(ServiceTrello, self).__init__(token, **kwargs)
         # app name
-        self.app_name = SkyfolkConfig.verbose_name
+        self.app_name = DashServicesConfig.verbose_name
         # expiration
         self.expiry = "30days"
         # scope define the rights access

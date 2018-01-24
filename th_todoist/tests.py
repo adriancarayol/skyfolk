@@ -1,6 +1,6 @@
 # coding: utf-8
 from django.conf import settings
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 
 from th_todoist.models import Todoist
 from th_todoist.forms import TodoistProviderForm, TodoistConsumerForm

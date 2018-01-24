@@ -7,7 +7,7 @@ from logging import getLogger
 # TodoistAPI
 from todoist.api import TodoistAPI
 # django_th classes
-from skyfolk.services.services import ServicesMgr
+from dash_services.services.services import ServicesMgr
 
 
 """

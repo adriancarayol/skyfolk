@@ -1,7 +1,7 @@
 # coding: utf-8
 from django.conf import settings
 
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 from pushbullet import Pushbullet as Pushb
 from th_pushbullet.forms import PushbulletProviderForm, PushbulletConsumerForm
 from th_pushbullet.models import Pushbullet

@@ -3,8 +3,8 @@ import arrow
 # django classes
 from django.conf import settings
 # django_th classes
-from skyfolk.services.services import ServicesMgr
-from skyfolk.tools import to_datetime
+from dash_services.services.services import ServicesMgr
+from dash_services.tools import to_datetime
 
 from logging import getLogger
 from slugify import slugify

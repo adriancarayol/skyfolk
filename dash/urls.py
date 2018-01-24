@@ -1,4 +1,4 @@
-from skyfolk.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
+from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
 from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 

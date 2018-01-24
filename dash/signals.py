@@ -2,7 +2,7 @@ import json
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
-from skyfolk.models import TriggerService
+from dash_services.models import TriggerService
 from .models import DashboardEntry
 from io import StringIO
 

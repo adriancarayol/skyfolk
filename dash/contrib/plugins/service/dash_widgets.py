@@ -1,5 +1,5 @@
 from django.template.loader import render_to_string
-from skyfolk.models import TriggerService
+from dash_services.models import TriggerService
 from th_rss.models import Rss
 from django.core.cache import caches
 from ....base import BaseDashboardPluginWidget

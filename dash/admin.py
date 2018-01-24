@@ -5,11 +5,8 @@ from django.contrib import messages
 from django.contrib.admin import helpers
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import redirect
-from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
-
-from nine.versions import DJANGO_LTE_1_5, DJANGO_GTE_1_10
 
 from .base import get_registered_plugins, get_registered_layouts
 from .constants import ACTION_CHOICE_REPLACE
@@ -21,10 +18,7 @@ from .models import (
 )
 from .forms import BulkChangeDashboardPluginsForm
 
-if DJANGO_GTE_1_10:
-    from django.shortcuts import render
-else:
-    from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 staff_member_required_m = method_decorator(staff_member_required)
 
@@ -78,12 +72,8 @@ def bulk_change_dashboard_plugins(modeladmin, request, queryset):
 
     template_name = 'dash/admin/bulk_change_dashboard_plugins.html'
 
-    if DJANGO_GTE_1_10:
-        return render(request, template_name, context)
-    else:
-        return render_to_response(
-            template_name, context, context_instance=RequestContext(request)
-        )
+
+    return render(request, template_name, context)
 
 
 class CompatModelAdmin(admin.ModelAdmin):
@@ -172,16 +162,11 @@ class DashboardEntryAdmin(CompatModelAdmin):
         app_label = _('Dashboard entry')
 
     def __queryset(self, request):
-        if DJANGO_LTE_1_5:
-            queryset = super(DashboardEntryAdmin, self).queryset(request)
-        else:
-            queryset = super(DashboardEntryAdmin, self).get_queryset(request)
+        queryset = super(DashboardEntryAdmin, self).get_queryset(request)
         queryset = queryset.select_related('workspace', 'user')
         return queryset
 
     get_queryset = __queryset
-    if DJANGO_LTE_1_5:
-        queryset = __queryset
 
 
 admin.site.register(DashboardEntry, DashboardEntryAdmin)
@@ -219,17 +204,13 @@ class DashboardPluginAdmin(CompatModelAdmin):
         app_label = _('Dashboard plugin')
 
     def __queryset(self, request):
-        if DJANGO_LTE_1_5:
-            queryset = super(DashboardPluginAdmin, self).queryset(request)
-        else:
-            queryset = super(DashboardPluginAdmin, self).get_queryset(request)
+
+        queryset = super(DashboardPluginAdmin, self).get_queryset(request)
 
         queryset = queryset.prefetch_related('users', 'groups')
         return queryset
 
     get_queryset = __queryset
-    if DJANGO_LTE_1_5:
-        queryset = __queryset
 
     @staff_member_required_m
     def bulk_change_dashboard_plugins(self, request):
@@ -332,18 +313,13 @@ class DashboardSettingsAdmin(CompatModelAdmin):
         app_label = _('Dashboard settings')
 
     def __queryset(self, request):
-        if DJANGO_LTE_1_5:
-            queryset = super(DashboardSettingsAdmin, self).queryset(request)
-        else:
-            queryset = \
-                super(DashboardSettingsAdmin, self).get_queryset(request)
+        queryset = \
+            super(DashboardSettingsAdmin, self).get_queryset(request)
 
         queryset = queryset.select_related('user')
         return queryset
 
     get_queryset = __queryset
-    if DJANGO_LTE_1_5:
-        queryset = __queryset
 
 
 admin.site.register(DashboardSettings, DashboardSettingsAdmin)

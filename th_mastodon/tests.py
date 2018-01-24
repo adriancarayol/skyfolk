@@ -2,8 +2,8 @@
 from django.conf import settings
 from django.core.cache import caches
 
-from skyfolk.tests.test_main import MainTest
-from skyfolk.models import ServicesActivated
+from dash_services.tests.test_main import MainTest
+from dash_services.models import ServicesActivated
 
 from mastodon import Mastodon as MastodonAPI
 

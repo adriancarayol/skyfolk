@@ -2,7 +2,7 @@
 from django.core.cache import caches
 from django.utils.translation import ugettext as _
 
-from skyfolk.models import update_result
+from dash_services.models import update_result
 
 import evernote.edam.type.ttypes as Types
 from evernote.edam.error.ttypes import EDAMSystemException, EDAMUserException

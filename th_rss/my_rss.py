@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.cache import caches
 
 # django_th classes
-from skyfolk.services.services import ServicesMgr
+from dash_services.services.services import ServicesMgr
 # th_rss classes
 from th_rss.lib.feedsservice import Feeds
 

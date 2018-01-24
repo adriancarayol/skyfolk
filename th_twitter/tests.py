@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core.cache import caches
 
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 
 from th_twitter.models import Twitter
 from th_twitter.forms import TwitterProviderForm, TwitterConsumerForm

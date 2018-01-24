@@ -4,7 +4,7 @@ from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
 
 from .forms import TriggerForm
-from skyfolk.models import TriggerService
+from dash_services.models import TriggerService
 
 # ****************************************************************************
 # ********************************* Service plugin *******************************

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.cache import caches
 from django.views.generic import TemplateView, ListView
 
-from skyfolk.models import TriggerService
+from dash_services.models import TriggerService
 import skyfolk
 
 from th_rss.models import Rss

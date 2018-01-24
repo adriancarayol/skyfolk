@@ -1,5 +1,5 @@
 # coding: utf-8
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 
 from instapush import App
 

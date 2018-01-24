@@ -1,7 +1,7 @@
 # coding: utf-8
 from django.conf import settings
 from django.core.cache import caches
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 
 from github3 import GitHub
 

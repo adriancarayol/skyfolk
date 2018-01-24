@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core.cache import caches
 
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 
 from evernote.api.client import EvernoteClient
 

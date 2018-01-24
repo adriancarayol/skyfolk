@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from skyfolk.models import TriggerService, UserService, ServicesActivated
+from dash_services.models import TriggerService, UserService, ServicesActivated
 
 from pytumblr import TumblrRestClient
 

@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from skyfolk.models import TriggerService, UserService, ServicesActivated
+from dash_services.models import TriggerService, UserService, ServicesActivated
 
 from th_reddit.forms import RedditProviderForm, RedditConsumerForm
 from th_reddit.models import Reddit

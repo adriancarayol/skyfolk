@@ -38,7 +38,7 @@ DEFAULT_APPS = (
 
 # Third Party Applications
 THIRD_PARTY_APPS = (
-    'skyfolk',
+    'dash_services',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -82,7 +82,6 @@ THIRD_PARTY_APPS = (
     'dash.contrib.plugins.url',
     'dash.contrib.plugins.video',
     'dash.contrib.plugins.weather',
-    'dash.contrib.plugins.service',
     'mptt',
     'tasks_server',
     'postman',
@@ -455,7 +454,7 @@ except ImportError:
     raise ImportError("you should create a th_settings.py with "
                       "everything related to TriggerHappy, see th_settings_sample.py")
 
-TEST_RUNNER = 'skyfolk.runner.DiscoverRunnerTriggerHappy'
+TEST_RUNNER = 'dash_services.runner.DiscoverRunnerTriggerHappy'
 # Unit Test are buggy for this app ; so do not make them
 TEST_RUNNER_WHITELIST = ('oauth2_provider', 'corsheaders')
 

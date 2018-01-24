@@ -4,16 +4,16 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
 
-from skyfolk.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
+from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
 
-from skyfolk.views import TriggerListView, TriggerDeleteView, TriggerUpdateView, TriggerEditedTemplateView
-from skyfolk.views import TriggerDeletedTemplateView
-from skyfolk.views_fbv import logout_view, trigger_switch_all_to, trigger_edit, trigger_on_off, fire_trigger
-from skyfolk.views_fbv import service_related_triggers_switch_to
+from dash_services.views import TriggerListView, TriggerDeleteView, TriggerUpdateView, TriggerEditedTemplateView
+from dash_services.views import TriggerDeletedTemplateView
+from dash_services.views_fbv import logout_view, trigger_switch_all_to, trigger_edit, trigger_on_off
+from dash_services.views_fbv import service_related_triggers_switch_to
 
-from skyfolk.views_userservices import UserServiceListView, UserServiceCreateView, UserServiceUpdateView
-from skyfolk.views_userservices import UserServiceDeleteView, renew_service
-from skyfolk.views_wizard import UserServiceWizard, finalcallback
+from dash_services.views_userservices import UserServiceListView, UserServiceCreateView, UserServiceUpdateView
+from dash_services.views_userservices import UserServiceDeleteView, renew_service
+from dash_services.views_wizard import UserServiceWizard, finalcallback
 
 from django_js_reverse.views import urls_js
 

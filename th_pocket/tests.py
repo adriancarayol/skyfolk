@@ -3,7 +3,7 @@ import arrow
 import datetime
 
 from django.conf import settings
-from skyfolk.tests.test_main import MainTest
+from dash_services.tests.test_main import MainTest
 
 from pocket import Pocket
 

@@ -6,8 +6,8 @@ from django.utils import html
 from django.utils.translation import ugettext as _
 from django.core.cache import caches
 # django_th classes
-from skyfolk.services.services import ServicesMgr
-from skyfolk.models import update_result, UserService
+from dash_services.services.services import ServicesMgr
+from dash_services.models import update_result, UserService
 
 from logging import getLogger
 
