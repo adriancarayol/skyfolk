@@ -121,6 +121,9 @@ class DashboardWorkspace(models.Model):
         verbose_name = _("Dashboard workspace")
         verbose_name_plural = _("Dashboard workspaces")
         unique_together = (('user', 'slug'), ('user', 'name'),)
+        permissions = (
+            ('view_workspace', 'View workspace'),
+        )
 
     def __str__(self):
         return self.name
@@ -198,6 +201,9 @@ class DashboardEntry(models.Model):
         """Meta."""
         verbose_name = _("Dashboard entry")
         verbose_name_plural = _("Dashboard entries")
+        permissions = (
+            ('copy_entry', 'Copy Entry'),
+        )
 
     def __str__(self):
         return "{0} plugin for user {1}".format(self.plugin_uid, self.user)

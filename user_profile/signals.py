@@ -7,7 +7,6 @@ from django.db import transaction
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from neomodel import db
-
 from dash.models import DashboardWorkspace
 from publications.models import Publication
 from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK, \

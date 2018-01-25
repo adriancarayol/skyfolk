@@ -81,5 +81,3 @@ PLUGIN_CLIPBOARD_KEY = 'dash_plugin_clipboard'
 # may override it in settings with whatever is suitable for you.
 AUTH_LOGIN_URL_NAME = 'auth_login'
 AUTH_LOGOUT_URL_NAME = 'auth_logout'
-
-DEBUG = False

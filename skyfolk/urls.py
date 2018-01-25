@@ -158,7 +158,7 @@ urlpatterns = [
     url(r'^dashboard/', include('dash.urls')),
     url(r'^dash/contrib/plugins/rss-feed/',
                 include('dash.contrib.plugins.rss_feed.urls')),
-    url(r'^', include('dash.contrib.apps.public_dashboard.urls'))
+    # url(r'^', include('dash.contrib.apps.public_dashboard.urls'))
 ]
 
 urlpatterns += staticfiles_urlpatterns()

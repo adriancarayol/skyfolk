@@ -42,6 +42,8 @@ def public_dashboard(request,
     :return django.http.HttpResponse:
     """
     # Getting dashboard settings for the user. Then get users' layout.
+    print(username)
+    print(workspace)
     dashboard_settings = get_dashboard_settings(username)
     if dashboard_settings:
         layout = get_layout(layout_uid=dashboard_settings.layout_uid,
