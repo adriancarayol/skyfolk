@@ -7,6 +7,7 @@ from dash_services.models import TriggerService
 from dash_services.read import Read
 from dash_services.publish import Pub
 from django.db.models import Q
+from celery import group
 
 logger = get_task_logger(__name__)
 
@@ -50,3 +51,9 @@ def publish_services():
     for t in trigger:
         p = Pub()
         result = p.publishing(t)
+
+
+@app.task(name="tasks.recycle_services", ignore_result=True)
+def recycle_services():
+    from dash_services.recycle import recycle
+    recycle()

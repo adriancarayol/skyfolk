@@ -554,3 +554,4 @@ Traceback (most recent call last):
     layout_uid=workspace.layout_uid, as_instance=True
 NameError: name 'workspace' is not defined
 2018-01-25 12:59:44,701 INFO publish 28724 adrian - ServiceTwitter - ServiceRss - lol - 0 new data
+2018-01-25 20:35:00,189 INFO publish 15796 adrian - ServiceTwitter - ServiceRss - Murcia Twits para skyfolkkkkkkkkkkkkkkkkkkkkk - 0 new data

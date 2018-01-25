@@ -52,6 +52,11 @@ app.conf.beat_schedule = {
         'task': 'tasks.publish_services',
         'schedule': crontab(),
         'options': {'queue': 'low'}
+    },
+    'recycle_services': {
+        'task': 'tasks.recycle_services',
+        'schedule': crontab(),
+        'options': {'queue': 'low'}
     }
 }
 

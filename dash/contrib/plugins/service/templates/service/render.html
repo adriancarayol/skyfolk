@@ -1,14 +1,28 @@
-<h3>
-	</br>
-	{{ plugin.data.description }}
-</h3>
-{% if plugin.data.result == "OK" %}
-<b>CORRECTO</b>
-{% else %}
-{% endif %}
-<p>
-    {% for item in results %}
-    	<i>{{ item.title }}</i>
-    	<p>{{ item.content }}</p>
-    {% endfor %}
-</p>
+<div class="col s12">
+	<div class="stock card">
+		<div class="wrapper">
+			<div class="widget-wr">
+				<div class="row widget-title blue">
+					<div class="col s4">
+						<h4 class="flow-text">{{ plugin.data.description }}</h4>
+					</div>
+					<div class="col s8">
+						<div class="widget-controls">
+							<button class="right" title="Actualizar datos"><i class="material-icons">sync</i></button>
+						</div>
+					</div>
+				</div>					
+				{% for item in results %}
+					<div class="row widget-item">
+						<div class="row">
+							<h5>{{ item.title }}</h5>
+						</div>
+						<div class="row">
+							<p>{{ item.content }}</p>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
