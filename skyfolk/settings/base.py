@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = (
     'dash.contrib.layouts.profile',
     'dash.contrib.layouts.windows8',
     'dash.contrib.plugins.dummy',
+    'dash.contrib.plugins.service',
     'dash.contrib.plugins.image',
     'dash.contrib.plugins.memo',
     'dash.contrib.plugins.rss_feed',
@@ -187,7 +188,7 @@ NOTIFICATIONS_USE_JSONFIELD = True
 
 REDIS_PORT = 6379
 REDIS_DB = 0
-REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
+REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'localhost')
 
 # cache
 CACHES = {

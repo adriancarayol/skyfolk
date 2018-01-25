@@ -1,7 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 import os
+import django
 from celery import Celery
 from celery.schedules import crontab
+from django.conf import settings
 from kombu import Exchange, Queue
 
 # set the default Django settings module for the 'celery' program.
@@ -40,10 +42,30 @@ app.conf.beat_schedule = {
         'task': 'tasks.send_recommendation_via_email',
         'schedule': crontab(hour='*/15'),
         'options': {'queue': 'background'}
+    },
+    'read_services': {
+        'task': 'tasks.read_services',
+        'schedule': crontab(),
+        'options': {'queue': 'low'}
+    },
+    'publish_services': {
+        'task': 'tasks.publish_services',
+        'schedule': crontab(),
+        'options': {'queue': 'low'}
     }
 }
 
+"""
+Celery tiene problemas a la hora de descubrir
+subaplicaciones dentro de aplicaciones, 
+por ejemplo 'dash.contrib.layouts.profile'
+es necesario llamar a setup() para cargar
+la configuracion de las aplicaciones necesaria
+"""
+if not hasattr(django, 'apps'):
+    django.setup()
 
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
+

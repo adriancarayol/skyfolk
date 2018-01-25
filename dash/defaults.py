@@ -30,7 +30,7 @@ def gettext(val):
 # If set to True, plugins would be only accessible by the white-listed user(s)
 # or group(s). If set to False, all users have the same access rights to all
 # plugins.
-RESTRICT_PLUGIN_ACCESS = True
+RESTRICT_PLUGIN_ACCESS = False
 
 # If set to True, exceptions are raised when user has insufficient permissions.
 RAISE_EXCEPTION_WHEN_PERMISSIONS_INSUFFICIENT = True

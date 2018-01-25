@@ -251,9 +251,11 @@ class AddDashboardEntry(SessionWizardView):
         dashboard_settings = get_or_create_dashboard_settings(self.request.user)
         workspace = self.kwargs.get('workspace', None)
         placeholder_uid = self.kwargs.get('placeholder_uid', None)
+        position = self.kwargs.get('position', None)
 
         if workspace:
             workspace_slug = slugify_workspace(workspace)
+            
             filters = {
                 'slug': workspace_slug,
                 'user': self.request.user,
@@ -285,10 +287,11 @@ class AddDashboardEntry(SessionWizardView):
         plugin = plugin_registry.get(plugin_uid)(layout.uid, placeholder_uid)
 
         if plugin is not None and plugin.name != 'Trigger':
-            return add_dashboard_entry(self.request, placeholder_uid,
-                                       plugin_uid,
-                                       workspace=workspace,
-                                       position=None, )
+            return add_dashboard_entry(self.request, 
+                                        placeholder_uid,
+                                        plugin_uid,
+                                        workspace=self.kwargs.get('workspace', None),
+                                        position=position)
 
         return super(AddDashboardEntry, self).dispatch(request, *args, **kwargs)
 
@@ -561,7 +564,7 @@ def add_dashboard_entry(request,
                         workspace=None,
                         position=None,
                         template_name='dash/add_dashboard_entry.html',
-                        template_name_ajax='dash/add_dashboard_entry_ajax'
+                        template_name_ajax='dash/add_dashboard_widget_ajax'
                                            '.html'):
     """Add dashboard entry.
 
