@@ -51,7 +51,7 @@ from .utils import (
     get_workspaces,
 )
 from .json_package import json
-
+from io import StringIO
 if versions.DJANGO_GTE_1_10:
     from django.shortcuts import render
     from django.urls import reverse
@@ -318,81 +318,6 @@ class AddDashboardEntry(SessionWizardView):
         return self.initial_dict.get(step, data)
 
     def get_form(self, step=None, data=None, files=None):
-        dashboard_settings = get_or_create_dashboard_settings(self.request.user)
-
-        workspace = self.kwargs.get('workspace', None)
-        placeholder_uid = self.kwargs.get('placeholder_uid', None)
-        plugin_uid = self.kwargs.get('plugin_uid', None)
-        position = self.kwargs.get('position', None)
-
-        if workspace:
-            workspace_slug = slugify_workspace(workspace)
-            filters = {
-                'slug': workspace_slug,
-                'user': self.request.user,
-            }
-            if not dashboard_settings.allow_different_layouts:
-                filters.update({
-                    'layout_uid': dashboard_settings.layout_uid,
-                })
-            try:
-                workspace = DashboardWorkspace._default_manager.get(**filters)
-            except ObjectDoesNotExist as e:
-                if dashboard_settings.allow_different_layouts:
-                    message = _('The workspace with slug "{0}" was not found.'
-                                '').format(workspace_slug)
-                else:
-                    message = _(
-                        'The workspace with slug "{0}" does not belong to '
-                        'layout "{1}".'
-                    ).format(workspace_slug, layout.name)
-                messages.info(self.request, message)
-                return redirect('dash.edit_dashboard')
-
-        if dashboard_settings.allow_different_layouts and workspace:
-            layout_uid = workspace.layout_uid
-        else:
-            layout_uid = dashboard_settings.layout_uid
-
-        layout = get_layout(layout_uid=layout_uid, as_instance=True)
-
-        if not validate_placeholder_uid(layout, placeholder_uid):
-            raise Http404(ugettext("Invalid placeholder: {0}").format(placeholder))
-
-        if not validate_plugin_uid(plugin_uid):
-            raise Http404(ugettext("Invalid plugin name: {0}").format(plugin_uid))
-
-        placeholder = layout.get_placeholder(placeholder_uid)
-
-        # Cell that would be occupied by the plugin upon addition.
-        widget_occupied_cells = get_occupied_cells(
-            layout,
-            placeholder,
-            plugin_uid,
-            position,
-            check_boundaries=True,
-            fail_silently=True
-        )
-
-        # Cells currently occupied in the workspace given.
-        occupied_cells = build_cells_matrix(
-            self.request.user,
-            layout,
-            placeholder,
-            workspace
-        )
-
-        # Checking if it's still possible to insert a widget.
-        if widget_occupied_cells is False \
-                or lists_overlap(widget_occupied_cells, occupied_cells):
-            raise Http404(ugettext("Collisions detected"))
-
-        plugin = plugin_registry.get(plugin_uid)(layout.uid, placeholder_uid)
-        plugin.request = self.request
-
-        if plugin.add_form_template:
-            template_name = plugin.add_form_template
-
         if step is None:
             step = self.steps.current
 
@@ -745,11 +670,181 @@ def add_dashboard_entry(request,
     return render(request, template_name, context)
 
 
+class EditDashboardEntry(SessionWizardView):
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos_edit'))
+
+    def check_if_service(self):
+        plugin = self.obj.get_plugin(fetch_related_data=True)
+
+        if plugin is not None and plugin.name != 'Trigger':
+            return False
+
+        return True
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.entry_id = self.kwargs.get('entry_id', None)
+
+        self.dashboard_settings = get_or_create_dashboard_settings(self.request.user)
+
+        try:
+            self.obj = DashboardEntry._default_manager \
+                    .select_related('workspace') \
+                    .get(pk=self.entry_id, user=self.request.user)
+        except ObjectDoesNotExist as err:
+            raise Http404(err)
+
+        if self.check_if_service():
+            return super(EditDashboardEntry, self).dispatch(request, *args, **kwargs)
+        else:
+            return edit_dashboard_entry(self.request, self.entry_id)
+
+    def get_form_initial(self, step):
+        data = {'user': self.request.user}
+        return self.initial_dict.get(step, data)
+
+    def get_form(self, step=None, data=None, files=None):
+        if step is None:
+            step = self.steps.current
+
+        if step == '1':
+            prev_data = self.get_cleaned_data_for_step('0')
+            service_name = str(prev_data.get('provider')).split('Service')[1]
+            class_name = 'th_' + service_name.lower() + '.forms'
+            form_name = service_name + 'ProviderForm'
+            form_class = class_for_name(class_name, form_name)
+            form = form_class(data)
+        elif step == '2':
+            step0_data = self.get_cleaned_data_for_step('0')
+            form = ConsumerForm(
+                data, initial={'provider': step0_data.get('provider'), 'user': self.request.user})
+        elif step == '3':
+            prev_data = self.get_cleaned_data_for_step('2')
+            service_name = str(prev_data.get('consumer')).split('Service')[1]
+            class_name = 'th_' + service_name.lower() + '.forms'
+            form_name = service_name + 'ConsumerForm'
+            form_class = class_for_name(class_name, form_name)
+            form = form_class(data)
+        else:
+            form = super(EditDashboardEntry, self).get_form(step, data, files)
+
+        return form
+
+    def get_context_data(self, form, **kwargs):
+        context = super(EditDashboardEntry, self).get_context_data(form, **kwargs)
+
+        if self.obj.layout_uid:
+            layout_uid  = self.obj.layout_uid
+        else:
+            layout_uid = dashboard_settings.layout_uid
+
+        layout = get_layout(
+            layout_uid=layout_uid, as_instance=True
+        )
+
+        context['layout'] = layout
+        context['dashboard_settings'] = self.dashboard_settings
+
+        template_name_ajax = 'dash/edit_dashboard_entry_ajax.html'
+
+        if layout.edit_dashboard_entry_ajax_template_name:
+            template_name_ajax = layout.edit_dashboard_entry_ajax_template_name
+
+        context.update(
+            {'edit_dashboard_entry_ajax_template_name': template_name_ajax}
+        )
+
+        return context
+
+    def get_template_names(self):
+        if self.obj.layout_uid:
+            layout_uid  = self.obj.layout_uid
+        else:
+            layout_uid = dashboard_settings.layout_uid
+
+        layout = get_layout(
+            layout_uid=layout_uid, as_instance=True
+        )
+
+        plugin = self.obj.get_plugin(fetch_related_data=True)
+
+        plugin.request = self.request
+
+        if plugin.edit_form_template:
+            template_name = plugin.edit_form_template
+
+        if layout.edit_dashboard_entry_ajax_template_name:
+            template_name_ajax = layout.edit_dashboard_entry_ajax_template_name
+
+        template_name = 'dash/edit_dashboard_entry.html'
+
+        if plugin.add_form_template:
+            template_name = plugin.add_form_template
+
+        if self.request.is_ajax():
+            template_name = template_name_ajax
+        elif layout.edit_dashboard_entry_template_name:
+            template_name = layout.edit_dashboard_entry_template_name
+
+        return template_name
+
+    def done(self, form_list, **kwargs):
+        for index, form in enumerate(form_list):
+            data = form.cleaned_data
+
+            if index == 0:
+                trigger_provider = UserService.objects.get(name=data.get('provider'), user=self.request.user.id)
+                model_provider = get_service(data.get('provider'), 'models')
+            # get the service we selected at step 2 : consumer
+            elif index == 2:
+                trigger_consumer = UserService.objects.get(name=data.get('consumer'), user=self.request.user.id)
+                model_consumer = get_service(data.get('consumer'), 'models')
+            # get the description we gave for the trigger
+            elif index == 4:
+                trigger_description = data.get('description')
+
+        # remove trigger
+        io = StringIO(self.obj.plugin_data)
+        plugin_data = json.load(io)
+
+        try:
+            TriggerService.objects.filter(pk=plugin_data.get('trigger')).delete()
+        except ObjectDoesNotExist as err:
+            raise Http404(err)
+
+        # save the new trigger
+        trigger = TriggerService(provider=trigger_provider, consumer=trigger_consumer, user=self.request.user,
+                                 status=True, description=trigger_description)
+        trigger.save()
+
+        for index, form in enumerate(form_list):
+            model_fields = {}
+            data = form.cleaned_data
+            # get the data for the provider service
+            if index == 1:
+                for field in data:
+                    model_fields.update({field: data[field]})
+                model_fields.update({'trigger_id': trigger.id, 'status': True})
+                model_provider.objects.create(**model_fields)
+            # get the data for the consumer service
+            elif index == 3:
+                for field in data:
+                    model_fields.update({field: data[field]})
+                model_fields.update({'trigger_id': trigger.id, 'status': True})
+                model_consumer.objects.create(**model_fields)
+
+        self.obj.plugin_data = json.dumps(
+            {"result": trigger.result, "trigger": trigger.pk, "description": trigger_description})
+
+        self.obj.save()
+        
+        return redirect('dash.edit_dashboard')
+
 @login_required
 def edit_dashboard_entry(request,
                          entry_id,
                          template_name='dash/edit_dashboard_entry.html',
-                         template_name_ajax='dash/edit_dashboard_entry_ajax'
+                         template_name_ajax='dash/edit_dashboard_widget_ajax'
                                             '.html'):
     """Edit dashboard entry.
 

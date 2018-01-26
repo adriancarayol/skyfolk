@@ -26,7 +26,7 @@
                         value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
             {% endif %}
             <input type="submit" value="{% trans "submit" %}"/>
-
+            {% include "dash/snippets/plugin_help_text.html" %}
         </form>
     </div>
 </div>

@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .views import (
     AddDashboardEntry,
+    EditDashboardEntry,
     clone_dashboard_workspace,
     copy_dashboard_entry,
     create_dashboard_workspace,
@@ -13,7 +14,6 @@ from .views import (
     delete_dashboard_entry,
     delete_dashboard_workspace,
     edit_dashboard,
-    edit_dashboard_entry,
     edit_dashboard_settings,
     edit_dashboard_workspace,
     paste_dashboard_entry,
@@ -82,7 +82,11 @@ urlpatterns = [
 
     # Edit dashboard entry.
     url(_(r'^entry/edit/(?P<entry_id>\d+)/$'),
-        view=edit_dashboard_entry,
+        view=EditDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.edit_dashboard_entry'),
 
     # Delete dashboard entry.
