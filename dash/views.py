@@ -808,7 +808,7 @@ class EditDashboardEntry(SessionWizardView):
         plugin_data = json.load(io)
 
         try:
-            TriggerService.objects.filter(pk=plugin_data.get('trigger')).delete()
+            TriggerService.objects.filter(id=plugin_data.get('trigger')).delete()
         except ObjectDoesNotExist as err:
             raise Http404(err)
 
