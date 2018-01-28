@@ -409,6 +409,23 @@ class AddDashboardEntry(SessionWizardView):
         placeholder_uid = self.kwargs.get('placeholder_uid', None)
         plugin_uid = self.kwargs.get('plugin_uid', None)
 
+        if workspace:
+            workspace_slug = slugify_workspace(workspace)
+            filters = {
+                'slug': workspace_slug,
+                'user': self.request.user,
+            }
+            if not dashboard_settings.allow_different_layouts:
+                filters.update({
+                    'layout_uid': dashboard_settings.layout_uid,
+                })
+            try:
+                workspace = DashboardWorkspace._default_manager.get(**filters)
+            except ObjectDoesNotExist as e:
+                if dashboard_settings.allow_different_layouts:
+                    message = _('The workspace with slug "{0}" was not found.'
+                                '').format(workspace_slug)
+
         if dashboard_settings.allow_different_layouts and workspace:
             layout_uid = workspace.layout_uid
         else:
