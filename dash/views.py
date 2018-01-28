@@ -50,6 +50,7 @@ from .utils import (
     get_widgets,
     get_workspaces,
 )
+from django.http import JsonResponse
 from .json_package import json
 from io import StringIO
 if versions.DJANGO_GTE_1_10:
@@ -218,6 +219,8 @@ def edit_dashboard(request, workspace=None):
         'dashboard_settings': dashboard_settings
     }
 
+
+
     context.update(workspaces)
 
     context.update(
@@ -225,6 +228,9 @@ def edit_dashboard(request, workspace=None):
     )
 
     template_name = layout.get_edit_template_name(request)
+
+    import pprint
+    pprint.pprint(context)
 
     if versions.DJANGO_GTE_1_10:
         return render(request, template_name, context)
@@ -1607,3 +1613,19 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
         return redirect('dash.edit_dashboard', workspace=workspace)
     else:
         return redirect('dash.edit_dashboard')
+
+@login_required
+def update_entry_info(request):
+    #TODO
+    if request.POST:
+        plugin_uid = request.POST['plugin_uid']
+        obj = DashboardEntry._default_manager \
+                    .select_related('workspace') \
+                    .filter(user=request.user)
+
+        for o in obj:
+            print(o._meta.fields)
+        data = {
+            'plugin_uid': '0000'
+        }
+        return JsonResponse(data)

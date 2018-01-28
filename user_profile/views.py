@@ -344,7 +344,7 @@ def profile_view(request, username,
     context['component'] = 'publications.js'
     context['friend_page'] = 1
 
-    fill_profile_dashboard(request, user, username, context)
+    fill_profile_dashboard(request, user_profile, username, context)
 
     return render(request, template, context)
 

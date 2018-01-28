@@ -7,19 +7,18 @@
         </a>
     </div>
 {% endfor %}
-
 {% for entry in dashboard_entries %}
         {% get_dash_plugin entry as plugin %}
 
         <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}">
             <a href="{% url 'dash.delete_dashboard_entry' entry.pk %}" class="remove-plugin" title="{% trans 'Remove widget' %}">
-                <span class="iconic icon-remove-sign"></span>
+                <span class="material-icons">close</span>
             </a>
             <a href="{% url 'dash.edit_dashboard_entry' entry.pk %}" class="edit-plugin" title="{% trans 'Edit widget' %}">
-                <span class="iconic icon-edit-sign"></span>
+                <span class="material-icons">edit</span>
             </a>
             <a href="{% url 'dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin" title="{% trans 'Copy widget' %}">
-                <span class="iconic icon-copy"></span>
+                <span class="material-icons">content_copy</span>
             </a>
             <div class="plugin-content-wrapper">
                 {{ plugin.render }}

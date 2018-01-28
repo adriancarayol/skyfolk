@@ -18,6 +18,7 @@ from .views import (
     edit_dashboard_workspace,
     paste_dashboard_entry,
     plugin_widgets,
+    update_entry_info,
 )
 
 __title__ = 'dash.urls'
@@ -165,6 +166,11 @@ urlpatterns = [
     url(_(r'^settings/edit/$'),
         view=edit_dashboard_settings,
         name='dash.edit_dashboard_settings'),
+
+    # Update dashboard entry
+    url(_(r'^entry/update/$'), 
+        view=update_entry_info,
+        name='dash.update_dashobard_entry'),
 
     # View default dashboard (no workspace selected == default workspace used).
     url(_(r'^$'),

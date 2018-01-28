@@ -6,6 +6,7 @@ Template para el perfil de cada usuario
 {% load avatar_tags %}
 {% load compress %}
 {% load static %}
+{% load dash_tags %}
 {% load render_bundle from webpack_loader %}
 {% block title %} <title> Perfil de {{ user_profile.username }}</title> {% endblock %}
 {% block include_files %}
@@ -80,12 +81,21 @@ Template para el perfil de cada usuario
             <div class="row clearfix">
                 <div class="col l4 m12 s12 push-l8">
                     <div class="row">
-                        {% for placeholder in placeholders %}
-                            <div id="{{ placeholder.html_id }}"
-                                    class="placeholder">
-                                {{ placeholder.render_for_view|safe }}
-                            </div>
-                        {% endfor %}
+                        {% if request.user == user_profile %}
+                            {% for placeholder in placeholders %}
+                                <div id="{{ placeholder.html_id }}"
+                                        class="placeholder">
+                                    {{ placeholder.render_for_edit|safe }}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {% for placeholder in placeholders %}
+                                <div id="{{ placeholder.html_id }}"
+                                        class="placeholder">
+                                    {{ placeholder.render_for_view|safe }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col l8 m12 s12 pull-l4">

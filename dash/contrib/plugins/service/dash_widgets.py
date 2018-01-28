@@ -26,6 +26,7 @@ class BaseTriggerWidget(BaseDashboardPluginWidget):
         cache = caches['django_th']
         pattern = 'th_{provider}_{id}'.format(provider=provider,
                                                   id=rss.trigger_id)
+
         context = {'plugin': self.plugin, 'results': cache.get(pattern)}
         return render_to_string('service/render.html', context)
 
