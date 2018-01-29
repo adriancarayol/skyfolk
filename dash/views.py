@@ -229,9 +229,6 @@ def edit_dashboard(request, workspace=None):
 
     template_name = layout.get_edit_template_name(request)
 
-    import pprint
-    pprint.pprint(context)
-
     if versions.DJANGO_GTE_1_10:
         return render(request, template_name, context)
     else:

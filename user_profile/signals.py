@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from neomodel import db
-from dash.models import DashboardWorkspace
+from dash.models import DashboardSettings
 from publications.models import Publication
 from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK, \
     LikeProfile
@@ -95,6 +95,8 @@ def create_user_profile(sender, instance, created, **kwargs):
                 with db.transaction:
                     Profile.objects.create(user=instance)
                     NotificationSettings.objects.create(user=instance)
+                    DashboardSettings.objects.create(user=instance, title="Profile", layout_uid="profile",
+                                                                 is_public=True)
                     NodeProfile(user_id=instance.id, title=instance.username,
                                 first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
@@ -119,13 +121,11 @@ def save_user_profile(sender, instance, created, **kwargs):
                 with db.transaction:
                     node = NodeProfile.nodes.get_or_none(user_id=instance.id)
                     if not node:
-                        Profile.objects.get_or_create(user=instance)
-                        NotificationSettings.objects.get_or_create(user=instance)
-                        DashboardWorkspace.objects.get_or_create(user=instance, position=1, layout_uid="profile",
-                                                                 is_public=True,
-                                                                 is_clonable=False)
                         NodeProfile(user_id=instance.id, title=instance.username,
                                     first_name=instance.first_name, last_name=instance.last_name).save()
+                    Profile.objects.get_or_create(user=instance)
+                    NotificationSettings.objects.get_or_create(user=instance)
+                    DashboardSettings.objects.get_or_create(user=instance, title="Profile", layout_uid="profile", is_public=True)
                     logger.info(
                         "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
                     )
