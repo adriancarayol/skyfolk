@@ -8,10 +8,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
 <div class="row">
     <div class="col l12 m12 s12">
         <div class="user-card card">
-            <div class="ventana-pin">
-                <a><i class="material-icons">remove</i></a>
-                <a><i class="material-icons">flip_to_front</i></a>
-            </div>
             <div class="row">
                 <div class="user-avatar" style="background: {% if user_profile.profile.back_image %}
                     url({{ user_profile.profile.back_image.url }})

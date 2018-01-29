@@ -2,26 +2,32 @@
 
 {% for cell_html_class, cell_position in widget_cells %}
     <div class="empty-widget-cell {{ cell_html_class }}">
-        <a href="{% if workspace %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid workspace=workspace position=cell_position %}{% else %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid position=cell_position %}{% endif %}" class="add-plugin" title="{% trans 'Add widget' %}">
-            <span class="iconic icon-plus-sign icon-2x"></span>
+        <a href="{% if workspace %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid workspace=workspace position=cell_position %}{% else %}{% url 'dash.plugin_widgets' placeholder_uid=placeholder.uid position=cell_position %}{% endif %}"
+           class="add-plugin" title="{% trans 'Add widget' %}">
+            <span class="material-icons">add_circle</span>
         </a>
     </div>
 {% endfor %}
 {% for entry in dashboard_entries %}
-        {% get_dash_plugin entry as plugin %}
+    {% get_dash_plugin entry as plugin %}
 
-        <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}">
-            <a href="{% url 'dash.delete_dashboard_entry' entry.pk %}" class="remove-plugin" title="{% trans 'Remove widget' %}">
+    <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}">
+        <div class="ventana-pin blue">
+            <a href="{% url 'dash.delete_dashboard_entry' entry.pk %}" class="remove-plugin"
+               title="{% trans 'Remove widget' %}">
                 <span class="material-icons">close</span>
             </a>
-            <a href="{% url 'dash.edit_dashboard_entry' entry.pk %}" class="edit-plugin" title="{% trans 'Edit widget' %}">
+            <a href="{% url 'dash.edit_dashboard_entry' entry.pk %}" class="edit-plugin"
+               title="{% trans 'Edit widget' %}">
                 <span class="material-icons">edit</span>
             </a>
-            <a href="{% url 'dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin" title="{% trans 'Copy widget' %}">
+            <a href="{% url 'dash.copy_dashboard_entry' entry.pk %}" class="copy-plugin"
+               title="{% trans 'Copy widget' %}">
                 <span class="material-icons">content_copy</span>
             </a>
-            <div class="plugin-content-wrapper">
-                {{ plugin.render }}
-            </div>
         </div>
+        <div class="plugin-content-wrapper">
+            {{ plugin.render }}
+        </div>
+    </div>
 {% endfor %}

@@ -1,2 +1,14 @@
-    {{ plugin.data.embed_code|safe }}
-            
+<div class="col s12">
+	<div class="stock card">
+		<div class="wrapper">
+			<div class="widget-wr">
+				<div class="row widget-title blue">
+					<div class="col s4">
+						<h4 class="flow-text">{{ plugin.data.title }}</h4>
+					</div>
+				</div>
+				{{ plugin.data.embed_code|safe }}
+			</div>
+		</div>
+	</div>
+</div>

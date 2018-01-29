@@ -7,7 +7,7 @@ class ProfileMainPlaceholder(BaseDashboardPlaceholder):
 
     uid = 'main'
     cols = 1
-    rows = 3
+    rows = 4
     cell_width = 90
     cell_height = 100
 

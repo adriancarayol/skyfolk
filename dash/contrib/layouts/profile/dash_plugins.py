@@ -28,9 +28,6 @@ from .dash_widgets import (
 
 main_sizes = (
     (1, 1),
-    (1, 2),
-    (2, 1),
-    (3, 3),
 )
 
 plugin_widget_factory(BaseDummyWidget,
@@ -46,10 +43,6 @@ plugin_widget_factory(BaseDummyWidget,
 
 main_sizes = (
     (1, 1),
-    (2, 2),
-    (2, 3),
-    (3, 2),
-    (3, 3),
 )
 plugin_widget_factory(BaseImageWidget,
                       'profile',
@@ -63,9 +56,7 @@ plugin_widget_factory(BaseImageWidget,
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
-    (4, 5),
+    (1, 1),
 )
 
 plugin_widget_factory(BaseMemoWidget,
@@ -80,8 +71,7 @@ plugin_widget_factory(BaseMemoWidget,
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
+    (1, 1),
 )
 plugin_widget_factory(BaseTinyMCEMemoWidget,
                       'profile',
@@ -95,8 +85,7 @@ plugin_widget_factory(BaseTinyMCEMemoWidget,
 
 
 main_sizes = (
-    (2, 3),
-    (3, 3),
+    (1, 1),
 )
 plugin_widget_factory(BaseReadRSSFeedWidget,
                       'profile',
@@ -117,10 +106,7 @@ plugin_widget_registry.register(URL1x1ProfileMainWidget)
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
+    (1, 1),
 )
 plugin_widget_factory(BaseVideoWidget,
                       'profile',
@@ -134,8 +120,7 @@ plugin_widget_factory(BaseVideoWidget,
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
+    (1, 1),
 )
 plugin_widget_factory(BaseWeatherWidget,
                       'profile',
@@ -150,7 +135,6 @@ plugin_widget_factory(BaseWeatherWidget,
 
 main_sizes = (
     (1, 1),
-    (2, 2),
 )
 
 plugin_widget_factory(BaseTriggerWidget,

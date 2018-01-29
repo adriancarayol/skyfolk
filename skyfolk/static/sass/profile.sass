@@ -91,14 +91,20 @@ $followcolor: #64b5f6
 
 .ventana-pin
   width: 100%
-  height: auto
+  height: 30px
+  line-height: 30px
   display: none
   border-radius: 3px
+  clear: both
 
 .ventana-pin a
   float: right
   font-size: 17px
   margin-right: 14px
+  text-decoration: none
+  color: white
+  &:hover
+    opacity: 0.8
 
 .body-inConf
   background-color: #e6e6e6
@@ -1312,7 +1318,6 @@ ul.table > li
 /* WIDGET ENCUESTA */
 .stock .wrapper
   margin-top: 0
-  height: 457px
 
 .wrapper .widget-wr
   background-color: #fff
@@ -1542,3 +1547,31 @@ span
     background: #81d4fa
     &:hover
       background: rgba(48, 164, 209, 0.3)
+
+
+.placeholder
+  overflow: hidden
+  margin: 0
+  padding: 0
+
+.placeholder .empty-widget-cell
+  position: relative
+  overflow: hidden
+  margin: 0
+  padding: 0
+  border-bottom: 3px solid #000
+  z-index: 1
+  background-color: #fff
+
+.placeholder .empty-widget-cell .add-plugin span
+  z-index: 0
+  display: block
+  margin: 30% auto 0 auto
+  width: 100%
+  text-align: center
+  &:hover
+    opacity: 0.8
+
+.placeholder .plugin iframe
+  width: 100%
+  min-height: 300px

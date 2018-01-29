@@ -53,6 +53,7 @@ from .utils import (
 from django.http import JsonResponse
 from .json_package import json
 from io import StringIO
+
 if versions.DJANGO_GTE_1_10:
     from django.shortcuts import render
     from django.urls import reverse
@@ -132,8 +133,8 @@ def dashboard(request, workspace=None):
         'placeholders': placeholders,
         'placeholders_dict': iterable_to_dict(placeholders,
                                               key_attr_name='uid'),
-        'perms': ['dash.add_dashboardworkspace', 'dash.change_dashboardsettings', 
-        'dash.change_dashboardworkspace', 'dash.add_dashboardentry', 'dash.delete_dashboardworkspace'],
+        'perms': ['dash.add_dashboardworkspace', 'dash.change_dashboardsettings',
+                  'dash.change_dashboardworkspace', 'dash.add_dashboardentry', 'dash.delete_dashboardworkspace'],
         'css': layout.get_css(placeholders),
         'layout': layout,
         'dashboard_settings': dashboard_settings
@@ -211,15 +212,13 @@ def edit_dashboard(request, workspace=None):
         'placeholders': placeholders,
         'placeholders_dict': iterable_to_dict(placeholders,
                                               key_attr_name='uid'),
-        'perms': ['dash.add_dashboardworkspace', 'dash.change_dashboardsettings', 
-        'dash.change_dashboardworkspace', 'dash.add_dashboardentry', 'dash.delete_dashboardworkspace'],
+        'perms': ['dash.add_dashboardworkspace', 'dash.change_dashboardsettings',
+                  'dash.change_dashboardworkspace', 'dash.add_dashboardentry', 'dash.delete_dashboardworkspace'],
         'css': layout.get_css(placeholders),
         'layout': layout,
         'edit_mode': True,
         'dashboard_settings': dashboard_settings
     }
-
-
 
     context.update(workspaces)
 
@@ -253,7 +252,7 @@ class AddDashboardEntry(SessionWizardView):
     def check_if_service(self):
         if self.workspace:
             workspace_slug = slugify_workspace(self.workspace)
-            
+
             filters = {
                 'slug': workspace_slug,
                 'user': self.request.user,
@@ -274,7 +273,7 @@ class AddDashboardEntry(SessionWizardView):
                     message = _(
                         'The workspace with slug "{0}" does not belong to '
                         'layout "{1}".'
-                    ).format(workspace_slug, layout.name)
+                    ).format(workspace_slug, self.dashboard_settings.layout_uid)
                 messages.info(self.request, message)
                 return redirect('dash.edit_dashboard')
         else:
@@ -293,7 +292,6 @@ class AddDashboardEntry(SessionWizardView):
 
         return True
 
-
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         self.plugin_uid = self.kwargs.get('plugin_uid', None)
@@ -305,11 +303,11 @@ class AddDashboardEntry(SessionWizardView):
         if self.check_if_service():
             return super(AddDashboardEntry, self).dispatch(request, *args, **kwargs)
         else:
-            return add_dashboard_entry(self.request, 
-                                        self.placeholder_uid,
-                                        self.plugin_uid,
-                                        workspace=self.workspace,
-                                        position=self.position)
+            return add_dashboard_entry(self.request,
+                                       self.placeholder_uid,
+                                       self.plugin_uid,
+                                       workspace=self.workspace,
+                                       position=self.position)
 
     def get_form_initial(self, step):
         """
@@ -375,7 +373,7 @@ class AddDashboardEntry(SessionWizardView):
                     message = _(
                         'The workspace with slug "{0}" does not belong to '
                         'layout "{1}".'
-                    ).format(workspace_slug, layout.name)
+                    ).format(workspace_slug, self.dashboard_settings.layout_uid)
                 messages.info(self.request, message)
                 return redirect('dash.edit_dashboard')
 
@@ -511,7 +509,12 @@ class AddDashboardEntry(SessionWizardView):
         # Save the object.
         obj.save()
 
-        return HttpResponseRedirect('/dashboard')
+        if obj.workspace:
+            return redirect(
+                'dash.edit_dashboard', workspace=obj.workspace.slug
+            )
+        else:
+            return redirect('user_profile:profile', username=self.request.user.username)
 
 
 @login_required
@@ -558,7 +561,7 @@ def add_dashboard_entry(request,
                 message = _(
                     'The workspace with slug "{0}" does not belong to '
                     'layout "{1}".'
-                ).format(workspace_slug, layout.name)
+                ).format(workspace_slug, dashboard_settings.layout_uid)
             messages.info(request, message)
             return redirect('dash.edit_dashboard')
 
@@ -570,7 +573,7 @@ def add_dashboard_entry(request,
     layout = get_layout(layout_uid=layout_uid, as_instance=True)
 
     if not validate_placeholder_uid(layout, placeholder_uid):
-        raise Http404(ugettext("Invalid placeholder: {0}").format(placeholder))
+        raise Http404(ugettext("Invalid placeholder: {0}").format(placeholder_uid))
 
     if not validate_plugin_uid(plugin_uid):
         raise Http404(ugettext("Invalid plugin name: {0}").format(plugin_uid))
@@ -709,8 +712,8 @@ class EditDashboardEntry(SessionWizardView):
 
         try:
             self.obj = DashboardEntry._default_manager \
-                    .select_related('workspace') \
-                    .get(pk=self.entry_id, user=self.request.user)
+                .select_related('workspace') \
+                .get(pk=self.entry_id, user=self.request.user)
         except ObjectDoesNotExist as err:
             raise Http404(err)
 
@@ -754,9 +757,9 @@ class EditDashboardEntry(SessionWizardView):
         context = super(EditDashboardEntry, self).get_context_data(form, **kwargs)
 
         if self.obj.layout_uid:
-            layout_uid  = self.obj.layout_uid
+            layout_uid = self.obj.layout_uid
         else:
-            layout_uid = dashboard_settings.layout_uid
+            layout_uid = self.dashboard_settings.layout_uid
 
         layout = get_layout(
             layout_uid=layout_uid, as_instance=True
@@ -778,9 +781,9 @@ class EditDashboardEntry(SessionWizardView):
 
     def get_template_names(self):
         if self.obj.layout_uid:
-            layout_uid  = self.obj.layout_uid
+            layout_uid = self.obj.layout_uid
         else:
-            layout_uid = dashboard_settings.layout_uid
+            layout_uid = self.dashboard_settings.layout_uid
 
         layout = get_layout(
             layout_uid=layout_uid, as_instance=True
@@ -857,8 +860,9 @@ class EditDashboardEntry(SessionWizardView):
             {"result": trigger.result, "trigger": trigger.pk, "description": trigger_description})
 
         self.obj.save()
-        
+
         return redirect('dash.edit_dashboard')
+
 
 @login_required
 def edit_dashboard_entry(request,
@@ -938,7 +942,7 @@ def edit_dashboard_entry(request,
                         'dash.edit_dashboard', workspace=obj.workspace.slug
                     )
                 else:
-                    return redirect('dash.edit_dashboard')
+                    return redirect('user_profile:profile', username=request.user.username)
 
         else:
             form = plugin.get_initialised_edit_form_or_404()
@@ -991,10 +995,7 @@ def delete_dashboard_entry(request, entry_id):
             return HttpResponse(json.dumps({'success': 1}))
         else:
             # Redirect to dashboard view.
-            if workspace:
-                return redirect('dash.edit_dashboard', workspace=workspace)
-            else:
-                return redirect('dash.edit_dashboard')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     except ObjectDoesNotExist as err:
         if request.is_ajax():
             return HttpResponse(json.dumps({'success': 1}))
@@ -1292,7 +1293,7 @@ def delete_dashboard_workspace(request, workspace_id,
         raise Http404(err)
 
     layout = get_layout(
-        layout_uid=workspace.layout_uid, as_instance=True
+        layout_uid=obj.layout_uid, as_instance=True
     )
 
     if request.method == 'POST':
@@ -1576,7 +1577,7 @@ def copy_dashboard_entry(request, entry_id):
     if workspace and workspace.slug:
         return redirect('dash.edit_dashboard', workspace=workspace.slug)
     else:
-        return redirect('dash.edit_dashboard')
+        return redirect('user_profile:profile', username=request.user.username)
 
 
 @login_required
@@ -1628,14 +1629,15 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
     else:
         return redirect('dash.edit_dashboard')
 
+
 @login_required
 def update_entry_info(request):
-    #TODO
+    # TODO
     if request.POST:
         plugin_uid = request.POST['plugin_uid']
         obj = DashboardEntry._default_manager \
-                    .select_related('workspace') \
-                    .filter(user=request.user)
+            .select_related('workspace') \
+            .filter(user=request.user)
 
         for o in obj:
             print(o._meta.fields)
