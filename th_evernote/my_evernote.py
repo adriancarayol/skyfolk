@@ -47,6 +47,7 @@ class ServiceEvernote(ServicesMgr):
     """
         Service Evernote
     """
+
     def __init__(self, token=None, **kwargs):
         super(ServiceEvernote, self).__init__(token, **kwargs)
         self.sandbox = settings.TH_EVERNOTE_KEY['sandbox']
@@ -90,6 +91,7 @@ class ServiceEvernote(ServicesMgr):
         data = self.get_evernote_notes(evernote_filter)
 
         cache.set('th_evernote_' + str(trigger_id), data)
+
         return data
 
     def set_evernote_filter(self, date_triggered, trigger):
@@ -124,14 +126,20 @@ class ServiceEvernote(ServicesMgr):
         data = []
 
         note_store = self.client.get_note_store()
-        our_note_list = note_store.findNotesMetadata(self.token, evernote_filter, 0, 100,
+
+        try:
+            our_note_list = note_store.findNotesMetadata(self.token, evernote_filter, 0, 100,
                                                      EvernoteMgr.set_evernote_spec())
+        except Exception as e:
+            logger.warning(e)
+            our_note_list = []
 
         for note in our_note_list.notes:
             whole_note = note_store.getNote(self.token, note.guid, True, True, False, False)
             content = self._cleaning_content(whole_note.content)
             data.append({'title': note.title, 'my_date': arrow.get(note.created),
                          'link': whole_note.attributes.sourceURL, 'content': content})
+
 
         return data
 

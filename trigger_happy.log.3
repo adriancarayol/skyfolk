@@ -1,718 +1,4 @@
-2018-01-28 12:31:25,514 ERROR exception 2980 Internal Server Error: /dashboard/entry/update/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1618, in update_entry_info
-    .get(plugin_uid=plugin_uid, user=request.user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 380, in get
-    self.model._meta.object_name
-dash.models.DoesNotExist: DashboardEntry matching query does not exist.
-2018-01-28 12:31:52,157 ERROR exception 3158 Internal Server Error: /dashboard/entry/update/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1618, in update_entry_info
-    .get(placeholder_uid=plugin_uid, user=request.user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 380, in get
-    self.model._meta.object_name
-dash.models.DoesNotExist: DashboardEntry matching query does not exist.
-2018-01-28 12:33:04,566 ERROR exception 3626 Internal Server Error: /dashboard/entry/update/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1618, in update_entry_info
-    .get(uid=plugin_uid, user=request.user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1154, in build_filter
-    lookups, parts, reffed_expression = self.solve_lookup_type(arg)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1034, in solve_lookup_type
-    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1352, in names_to_path
-    "Choices are: %s" % (name, ", ".join(available)))
-django.core.exceptions.FieldError: Cannot resolve keyword 'uid' into field. Choices are: id, layout_uid, placeholder_uid, plugin_data, plugin_uid, position, user, user_id, workspace, workspace_id
-2018-01-28 12:33:05,775 ERROR exception 3626 Internal Server Error: /dashboard/entry/update/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1618, in update_entry_info
-    .get(uid=plugin_uid, user=request.user)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1154, in build_filter
-    lookups, parts, reffed_expression = self.solve_lookup_type(arg)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1034, in solve_lookup_type
-    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1352, in names_to_path
-    "Choices are: %s" % (name, ", ".join(available)))
-django.core.exceptions.FieldError: Cannot resolve keyword 'uid' into field. Choices are: id, layout_uid, placeholder_uid, plugin_data, plugin_uid, position, user, user_id, workspace, workspace_id
-2018-01-28 12:40:10,238 ERROR exception 6521 Internal Server Error: /dashboard/entry/update/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1621, in update_entry_info
-    print(o.html_id)
-AttributeError: 'DashboardEntry' object has no attribute 'html_id'
-2018-01-28 13:06:29,783 ERROR exception 11165 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 349, in profile_view
-    return render(request, template, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/dash/templatetags/dash_tags.py", line 43, in render
-    plugin = dashboard_entry.get_plugin(request=request)
-AttributeError: 'NoneType' object has no attribute 'get_plugin'
-2018-01-28 13:06:38,181 ERROR exception 11165 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 349, in profile_view
-    return render(request, template, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/dash/templatetags/dash_tags.py", line 43, in render
-    plugin = dashboard_entry.get_plugin(request=request)
-AttributeError: 'ProfileMainPlaceholder' object has no attribute 'get_plugin'
-2018-01-28 13:06:40,254 ERROR exception 11165 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 349, in profile_view
-    return render(request, template, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/dash/templatetags/dash_tags.py", line 43, in render
-    plugin = dashboard_entry.get_plugin(request=request)
-AttributeError: 'ProfileMainPlaceholder' object has no attribute 'get_plugin'
-2018-01-28 13:18:36,771 ERROR exception 22871 Internal Server Error: /dashboard/edit/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 231, in edit_dashboard
-    return render(request, template_name, context)
-NameError: name 'template_name' is not defined
-2018-01-28 13:27:47,008 ERROR exception 24879 Internal Server Error: /dashboard/edit/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 236, in edit_dashboard
-    return render(request, template_name, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
-    output = self.filter_expression.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
-    obj = self.var.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
-    value = self._resolve_lookup(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
-    current = current()
-  File "/home/adrian/skyfolk/dash/base.py", line 551, in render_for_edit
-    return render_to_string(self.get_edit_template_name(), context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 67, in render_to_string
-    template = get_template(template_name, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 21, in get_template
-    return engine.get_template(template_name)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 39, in get_template
-    return Template(self.engine.get_template(template_name), self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 162, in get_template
-    template, origin = self.find_template(template_name)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 136, in find_template
-    name, template_dirs=dirs, skip=skip,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loaders/base.py", line 44, in get_template
-    contents, origin, origin.template_name, self.engine,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 191, in __init__
-    self.nodelist = self.compile_nodelist()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 230, in compile_nodelist
-    return parser.parse()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 515, in parse
-    raise self.error(token, e)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 513, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 827, in do_for
-    nodelist_loop = parser.parse(('empty', 'endfor',))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 486, in parse
-    raise self.error(token, e)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 484, in parse
-    filter_expression = self.compile_filter(token.contents)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 600, in compile_filter
-    return FilterExpression(token, self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 694, in __init__
-    filter_func = parser.find_filter(filter_name)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 606, in find_filter
-    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
-django.template.exceptions.TemplateSyntaxError: Invalid filter: 'render'
-2018-01-28 13:27:48,550 ERROR exception 24879 Internal Server Error: /dashboard/edit/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 236, in edit_dashboard
-    return render(request, template_name, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
-    output = self.filter_expression.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
-    obj = self.var.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
-    value = self._resolve_lookup(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
-    current = current()
-  File "/home/adrian/skyfolk/dash/base.py", line 551, in render_for_edit
-    return render_to_string(self.get_edit_template_name(), context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 67, in render_to_string
-    template = get_template(template_name, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 21, in get_template
-    return engine.get_template(template_name)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 39, in get_template
-    return Template(self.engine.get_template(template_name), self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 162, in get_template
-    template, origin = self.find_template(template_name)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 136, in find_template
-    name, template_dirs=dirs, skip=skip,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loaders/base.py", line 44, in get_template
-    contents, origin, origin.template_name, self.engine,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 191, in __init__
-    self.nodelist = self.compile_nodelist()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 230, in compile_nodelist
-    return parser.parse()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 515, in parse
-    raise self.error(token, e)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 513, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 827, in do_for
-    nodelist_loop = parser.parse(('empty', 'endfor',))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 486, in parse
-    raise self.error(token, e)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 484, in parse
-    filter_expression = self.compile_filter(token.contents)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 600, in compile_filter
-    return FilterExpression(token, self)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 694, in __init__
-    filter_func = parser.find_filter(filter_name)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 606, in find_filter
-    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
-django.template.exceptions.TemplateSyntaxError: Invalid filter: 'render'
-2018-01-28 23:40:50,124 ERROR exception 15191 Internal Server Error: /dashboard/entry/add/main/trigger_2x2/ws/dashboardworkspace/pos/1/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
-    return bound_func(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
-    return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "/home/adrian/skyfolk/dash/views.py", line 309, in dispatch
-    return super(AddDashboardEntry, self).dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
-    response = super(WizardView, self).dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 266, in get
-    return self.render(self.get_form())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 586, in render
-    return self.render_to_response(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 130, in render_to_response
-    template=self.get_template_names(),
-  File "/home/adrian/skyfolk/dash/views.py", line 413, in get_template_names
-    layout_uid = workspace.layout_uid
-AttributeError: 'str' object has no attribute 'layout_uid'
-2018-01-28 23:42:01,478 ERROR exception 15191 Internal Server Error: /dashboard/entry/add/main/trigger_2x2/ws/dashboardworkspace/pos/1/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
-    return bound_func(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
-    return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "/home/adrian/skyfolk/dash/views.py", line 309, in dispatch
-    return super(AddDashboardEntry, self).dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
-    response = super(WizardView, self).dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 266, in get
-    return self.render(self.get_form())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 586, in render
-    return self.render_to_response(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 130, in render_to_response
-    template=self.get_template_names(),
-  File "/home/adrian/skyfolk/dash/views.py", line 413, in get_template_names
-    layout_uid = workspace.layout_uid
-AttributeError: 'str' object has no attribute 'layout_uid'
-2018-01-29 20:22:56,998 ERROR exception 23688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 349, in profile_view
-    return render(request, template, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
-    output = self.filter_expression.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
-    obj = self.var.resolve(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
-    value = self._resolve_lookup(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
-    current = current()
-  File "/home/adrian/skyfolk/dash/base.py", line 551, in render_for_edit
-    'widget_cells': self._generate_widget_cells()
-  File "/home/adrian/skyfolk/dash/base.py", line 532, in _generate_widget_cells
-    print(self.layout.workspace)
-AttributeError: 'ProfileLayout' object has no attribute 'workspace'
-2018-01-29 21:48:25,700 INFO publish 14912 adrian - ServiceTwitter - ServiceRss - Twitter to RSS - 0 new data
-2018-01-29 21:48:25,709 INFO publish 14912 adrian - ServiceTwitter - ServiceRss - Twitter => RSS - 0 new data
-2018-01-30 12:06:11,033 ERROR exception 22712 Internal Server Error: /dashboard/entry/add/main/read_rss_feed_3x3/ws/private_workspace/pos/4/
+2018-01-30 12:07:24,429 ERROR exception 23193 Internal Server Error: /dashboard/entry/add/main/read_rss_feed_3x3/ws/private_workspace/pos/4/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -744,6 +30,652 @@ Traceback (most recent call last):
     return self.render_to_response(context)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 130, in render_to_response
     template=self.get_template_names(),
-  File "/home/adrian/skyfolk/dash/views.py", line 425, in get_template_names
+  File "/home/adrian/skyfolk/dash/views.py", line 426, in get_template_names
     layout_uid = workspace.layout_uid
 AttributeError: 'str' object has no attribute 'layout_uid'
+2018-01-30 12:48:49,999 ERROR exception 29042 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render_to_response(lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 297, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 194, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 219, in callback_oauth1
+    request.GET.get('oauth_verifier', '')
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 318, in get_access_token
+    access_token = twitter.get_authorized_tokens(oauth_verifier)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/twython/api.py", line 379, in get_authorized_tokens
+    ken'), error_code=response.status_code)
+twython.exceptions.TwythonError: Twitter API returned a 401 (Unauthorized), Invalid / expired To             ken
+2018-01-30 12:51:17,594 INFO publish 30256 adrian - ServiceReddit - ServiceTwitter - On reddit, publish Twitter - 0 new data
+2018-01-30 12:51:17,883 INFO publish 30256 adrian - ServiceTwitter - ServiceRss - Rss - 0 new data
+2018-01-30 12:51:56,910 INFO publish 30615 adrian - ServiceTwitter - ServiceRss - Rss - 1 new data
+2018-01-30 12:52:33,842 INFO publish 30784 adrian - ServiceTwitter - ServiceRss - Rss - 1 new data
+2018-01-30 12:53:09,841 INFO publish 31209 adrian - ServiceTwitter - ServiceRss - Rss - 1 new data
+2018-01-30 12:53:36,763 INFO publish 31348 adrian - ServiceTwitter - ServiceRss - Rss - 1 new data
+2018-01-30 12:55:38,094 INFO publish 31585 adrian - ServiceReddit - ServiceTwitter - okokokok - 0 new data
+2018-01-30 12:59:37,167 INFO publish 32198 adrian - ServiceTwitter - ServiceRss - Rss - 2 new data
+2018-01-30 13:04:11,208 INFO publish 427 adrian - ServiceReddit - ServiceRss - reddit to rss - 0 new data
+2018-01-30 13:06:11,579 ERROR exception 32742 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 186, in upload_photo
+    context={'photo': obj})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('adrian', 'en la puta boca')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-01-30 13:08:59,932 ERROR exception 32742 Internal Server Error: /photo/1pero-que-es-esta-puta-mierda/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('adrian', 'en la puta boca')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-01-30 13:09:22,182 ERROR exception 32742 Internal Server Error: /photo/1pero-que-es-esta-puta-mierda/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('adrian', 'en la puta boca')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-01-30 13:11:52,460 ERROR exception 1715 Internal Server Error: /photo/1pero-que-es-esta-puta-mierda/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('adrian', 'en la puta boca')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-01-30 13:15:04,713 ERROR exception 2000 Internal Server Error: /submit_video/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 216, in upload_video
+    obj.save()
+  File "/home/adrian/skyfolk/photologue/models.py", line 677, in save
+    self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
+NameError: name 'uuslug' is not defined
+2018-01-30 13:16:13,477 ERROR exception 2439 Internal Server Error: /submit_video/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue/views.py", line 224, in upload_video
+    context={'photo': obj})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('adrian', 'en la puta boca')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-01-30 13:18:28,597 ERROR exception 2439 Internal Server Error: /group/multimedia/submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue_groups/views.py", line 172, in upload_photo
+    context={'photo': obj})
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('adrian', 'en la puta boca')' not found. 1 pattern(s) tried: ['group/multimedia/collection/by(?P<slug>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-01-30 13:20:18,317 ERROR exception 2439 Internal Server Error: /group/multimedia/submit_photo/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/PIL/JpegImagePlugin.py", line 605, in _save
+    rawmode = RAWMODE[im.mode]
+KeyError: 'P'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/photologue_groups/views.py", line 162, in upload_photo
+    crop_image(obj, request)
+  File "/home/adrian/skyfolk/photologue_groups/views.py", line 280, in crop_image
+    im.save(tempfile_io, format='JPEG', optimize=True, quality=90)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/PIL/Image.py", line 1928, in save
+    save_handler(self, fp, filename)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/PIL/JpegImagePlugin.py", line 607, in _save
+    raise IOError("cannot write mode %s as JPEG" % im.mode)
+OSError: cannot write mode P as JPEG
+2018-01-30 13:23:36,696 INFO publish 3642 adrian - ServiceTwitter - ServiceRss - Rss - 2 new data
+2018-01-30 13:24:36,534 INFO publish 4142 adrian - ServiceTwitter - ServiceRss - Rss - 2 new data
+2018-01-30 13:27:16,617 INFO publish 5026 adrian - ServiceTwitter - ServiceRss - Rss - 2 new data
+2018-01-30 13:27:16,842 INFO publish 5026 adrian - ServiceReddit - ServiceRss - reddit to rss - 2 new data
+2018-01-30 13:32:16,090 ERROR exception 6260 Internal Server Error: /dashboard/edit/new_workspace/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 232, in edit_dashboard
+    return render(request, template_name, context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/dash/base.py", line 554, in render_for_edit
+    'widget_cells': self._generate_widget_cells()
+  File "/home/adrian/skyfolk/dash/base.py", line 533, in _generate_widget_cells
+    workspace=self.workspace).values_list(
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
+    condition = lookup_class(lhs, value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
+    self.rhs = self.get_prep_lookup()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
+    return int(value)
+ValueError: invalid literal for int() with base 10: 'new_workspace'
+2018-01-30 13:33:52,522 ERROR exception 6357 Internal Server Error: /dashboard/entry/add/main/trigger_1x1/ws/new_workspace/pos/1/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/dash/views.py", line 304, in dispatch
+    return super(AddDashboardEntry, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 248, in dispatch
+    response = super(WizardView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 309, in post
+    return self.render_done(form, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/formtools/wizard/views.py", line 365, in render_done
+    done_response = self.done(final_forms.values(), form_dict=final_forms, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 449, in done
+    layout_uid = workspace.layout_uid
+AttributeError: 'str' object has no attribute 'layout_uid'
+2018-01-30 13:39:48,209 ERROR exception 7793 Internal Server Error: /dashboard/edit/new_workspace/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 232, in edit_dashboard
+    return render(request, template_name, context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/dash/base.py", line 556, in render_for_edit
+    return render_to_string(self.get_edit_template_name(), context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/home/adrian/skyfolk/dash/base.py", line 1152, in render
+    render = widget.render(request=request)
+  File "/home/adrian/skyfolk/dash/contrib/plugins/service/dash_widgets.py", line 27, in render
+    consumer = apps.get_model(trigger.consumer.name)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/apps/registry.py", line 198, in get_model
+    app_label, model_name = app_label.split('.')
+AttributeError: 'ServicesActivated' object has no attribute 'split'

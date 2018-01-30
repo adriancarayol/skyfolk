@@ -2,6 +2,8 @@
 # coding: utf-8
 from __future__ import unicode_literals
 # django
+from concurrent.futures import ThreadPoolExecutor
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db.models import Q
@@ -34,10 +36,8 @@ class Command(BaseCommand):
             provider__name__status=True,
             consumer__name__status=True,
         ).select_related('consumer__name', 'provider__name')
-        try:
-            with Pool(processes=settings.DJANGO_TH.get('processes')) as pool:
-                p = Pub()
-                result = pool.map_async(p.publishing, trigger)
-                result.get(timeout=60)
-        except TimeoutError as e:
-            logger.warning(e)
+
+        with ThreadPoolExecutor(max_workers=settings.DJANGO_TH.get('processes')) as executor:
+            p = Pub()
+            for t in trigger:
+                executor.submit(p.publishing, t)

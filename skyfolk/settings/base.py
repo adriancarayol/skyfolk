@@ -364,7 +364,6 @@ NOTIFICATIONS_USE_JSONFIELD = True
 
 ADMINS = (
     ('Adrian Carayol', 'adriancarayol@gmail.com'),
-    ('Gabriel Fernandez', 'gabofer82@gmail.com'),
     ('lostcitizen', 'lostcitizen@gmail.com'),
 )
 # Para emails al recibir nuevo feedback

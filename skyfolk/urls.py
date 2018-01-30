@@ -104,16 +104,16 @@ urlpatterns = [
     # ****************************************
     # * trigger
     # ****************************************
-    url(r'^th/trigger/delete/(?P<pk>\d+)$', TriggerDeleteView.as_view(), name='delete_trigger'),
-    url(r'^th/trigger/edit/(?P<pk>\d+)$', TriggerUpdateView.as_view(), name='edit_trigger'),
-    url(r'^th/trigger/editprovider/(?P<trigger_id>\d+)$', trigger_edit, {'edit_what': 'Provider'},
-        name='edit_provider'),
-    url(r'^th/trigger/editconsumer/(?P<trigger_id>\d+)$', trigger_edit, {'edit_what': 'Consumer'},
-        name='edit_consumer'),
-    url(r'^th/trigger/edit/thanks', TriggerEditedTemplateView.as_view(), name="trigger_edit_thanks"),
-    url(r'^th/trigger/delete/thanks', TriggerDeletedTemplateView.as_view(), name="trigger_delete_thanks"),
-    url(r'^th/trigger/onoff/(?P<trigger_id>\d+)$', trigger_on_off, name="trigger_on_off"),
-    url(r'^th/trigger/all/(?P<switch>(on|off))$', trigger_switch_all_to, name="trigger_switch_all_to"),
+    # url(r'^th/trigger/delete/(?P<pk>\d+)$', TriggerDeleteView.as_view(), name='delete_trigger'),
+    # url(r'^th/trigger/edit/(?P<pk>\d+)$', TriggerUpdateView.as_view(), name='edit_trigger'),
+    # url(r'^th/trigger/editprovider/(?P<trigger_id>\d+)$', trigger_edit, {'edit_what': 'Provider'},
+    #     name='edit_provider'),
+    # url(r'^th/trigger/editconsumer/(?P<trigger_id>\d+)$', trigger_edit, {'edit_what': 'Consumer'},
+    #    name='edit_consumer'),
+    # url(r'^th/trigger/edit/thanks', TriggerEditedTemplateView.as_view(), name="trigger_edit_thanks"),
+    # url(r'^th/trigger/delete/thanks', TriggerDeletedTemplateView.as_view(), name="trigger_delete_thanks"),
+    # url(r'^th/trigger/onoff/(?P<trigger_id>\d+)$', trigger_on_off, name="trigger_on_off"),
+    # url(r'^th/trigger/all/(?P<switch>(on|off))$', trigger_switch_all_to, name="trigger_switch_all_to"),
     # ****************************************
     # * service
     # ****************************************

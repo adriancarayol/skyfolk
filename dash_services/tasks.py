@@ -1,21 +1,17 @@
 from celery.utils.log import get_task_logger
-from django.contrib.auth.models import User
 from skyfolk.celery import app
 from django.conf import settings
-import concurrent.futures
 from dash_services.models import TriggerService
 from dash_services.read import Read
 from dash_services.publish import Pub
 from django.db.models import Q
-from celery import group
+from concurrent.futures import ThreadPoolExecutor
 
 logger = get_task_logger(__name__)
 
 
 @app.task(name='tasks.read_services', ignore_result=True)
 def read_services():
-    help = 'Trigger all the services and put them in cache'
-
     from django.db import connection
     connection.close()
     failed_tries = settings.DJANGO_TH.get('failed_tries', 10)
@@ -27,15 +23,15 @@ def read_services():
         provider__name__status=True,
         consumer__name__status=True,
     ).select_related('consumer__name', 'provider__name')
-     
-    for t in trigger:
+
+    with ThreadPoolExecutor(max_workers=settings.DJANGO_TH.get('processes')) as executor:
         r = Read()
-        result = r.reading(t)
+        for t in trigger:
+            executor.submit(r.reading, t)
+
 
 @app.task(name="tasks.publish_services", ignore_result=True)
 def publish_services():
-    help = 'Trigger all the services and publish the data coming from the cache'
-
     from django.db import connection
     connection.close()
     failed_tries = settings.DJANGO_TH.get('failed_tries', 10)
@@ -47,10 +43,11 @@ def publish_services():
         provider__name__status=True,
         consumer__name__status=True,
     ).select_related('consumer__name', 'provider__name')
-    
-    for t in trigger:
+
+    with ThreadPoolExecutor(max_workers=settings.DJANGO_TH.get('processes')) as executor:
         p = Pub()
-        result = p.publishing(t)
+        for t in trigger:
+            executor.submit(p.publishing, t)
 
 
 @app.task(name="tasks.recycle_services", ignore_result=True)
