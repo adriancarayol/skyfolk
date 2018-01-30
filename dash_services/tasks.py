@@ -26,8 +26,8 @@ def read_services():
 
     with ThreadPoolExecutor(max_workers=settings.DJANGO_TH.get('processes')) as executor:
         r = Read()
-        for t in trigger:
-            executor.submit(r.reading, t)
+        for t, result in zip(trigger, executor.map(r.reading, trigger, timeout=60)):
+            logger.info('Command read for trigger: {}'.format(t))
 
 
 @app.task(name="tasks.publish_services", ignore_result=True)
@@ -46,8 +46,8 @@ def publish_services():
 
     with ThreadPoolExecutor(max_workers=settings.DJANGO_TH.get('processes')) as executor:
         p = Pub()
-        for t in trigger:
-            executor.submit(p.publishing, t)
+        for t, result in zip(trigger, executor.map(p.publishing, trigger, timeout=60)):
+            logger.info('Command publish for trigger: {}'.format(t))
 
 
 @app.task(name="tasks.recycle_services", ignore_result=True)

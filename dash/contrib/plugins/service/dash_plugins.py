@@ -59,7 +59,6 @@ class BaseTriggerPlugin(BaseDashboardPlugin):
 
 sizes = (
     (1, 1),
-    (2, 2)
 )
 
 plugin_factory(BaseTriggerPlugin, 'trigger', sizes)

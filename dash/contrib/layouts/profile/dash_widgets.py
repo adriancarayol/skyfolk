@@ -1,5 +1,4 @@
 from ....contrib.plugins.url.dash_widgets import (
-    BaseBookmarkWidget,
     URL1x1Widget,
 )
 

@@ -682,7 +682,7 @@ def add_dashboard_entry(request,
                         'dash.edit_dashboard', workspace=obj.workspace.slug
                     )
                 else:
-                    return redirect('dash.edit_dashboard')
+                    return redirect('user_profile:profile', username=request.user.username)
 
         # If POST but data invalid, show the form with errors.
         else:

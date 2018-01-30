@@ -10,6 +10,7 @@ from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
 from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
 from ....contrib.plugins.weather.dash_widgets import BaseWeatherWidget
 from ....contrib.plugins.service.dash_widgets import BaseTriggerWidget
+from ....contrib.plugins.poll.dash_widgets import BasePollWidget
 
 from .dash_widgets import (
     URL1x1ProfileMainWidget,
@@ -141,4 +142,20 @@ plugin_widget_factory(BaseTriggerWidget,
                       'profile',
                       'main',
                       'trigger',
+                      main_sizes)
+
+
+# **************************************************************************
+# ***************** Registering the widgets for Poll plugin ***************
+# **************************************************************************
+
+
+main_sizes = (
+    (1, 1),
+)
+
+plugin_widget_factory(BasePollWidget,
+                      'profile',
+                      'main',
+                      'poll',
                       main_sizes)

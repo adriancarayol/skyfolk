@@ -11,12 +11,12 @@ from django.db.models import Q
 from dash_services.models import TriggerService
 from dash_services.publish import Pub
 from logging import getLogger
+
 # create logger
 logger = getLogger('django_th.trigger_happy')
 
 
 class Command(BaseCommand):
-
     help = 'Trigger all the services and publish the data coming from the cache'
 
     def handle(self, *args, **options):
@@ -37,5 +37,5 @@ class Command(BaseCommand):
 
         with ThreadPoolExecutor(max_workers=settings.DJANGO_TH.get('processes')) as executor:
             p = Pub()
-            for t in trigger:
-                executor.submit(p.publishing, t)
+            for t, result in zip(trigger, executor.map(p.publishing, trigger, timeout=60)):
+                logger.info('Command publish for trigger: {}'.format(t))
