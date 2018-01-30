@@ -10,11 +10,9 @@ from django.db.models import Q
 # trigger happy
 from dash_services.models import TriggerService
 from dash_services.publish import Pub
-
 from logging import getLogger
-from multiprocessing import Pool, TimeoutError
 # create logger
-logger = getLogger('skyfolk.trigger_happy')
+logger = getLogger('django_th.trigger_happy')
 
 
 class Command(BaseCommand):

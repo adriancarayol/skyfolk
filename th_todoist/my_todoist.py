@@ -13,7 +13,6 @@ from dash_services.services.services import ServicesMgr
 """
     handle process with todoist
     put the following in settings.py
-
     TH_TODOIST = {
         'client_id': 'abcdefghijklmnopqrstuvwxyz',
         'client_secret': 'abcdefghijklmnopqrstuvwxyz',
@@ -51,14 +50,8 @@ class ServiceTodoist(ServicesMgr):
     def read_data(self, **kwargs):
         """
             get the data from the service
-            as the pocket service does not have any date
-            in its API linked to the note,
-            add the triggered date to the dict data
-            thus the service will be triggered when data will be found
-
             :param kwargs: contain keyword args : trigger_id at least
             :type kwargs: dict
-
             :rtype: list
         """
         trigger_id = kwargs.get('trigger_id')
@@ -68,20 +61,16 @@ class ServiceTodoist(ServicesMgr):
         items = self.todoist.sync()
         try:
             for item in items.get('items'):
-                date_added = arrow.get(item.get('date_added'),
-                                       'ddd DD MMM YYYY HH:mm:ss ZZ')
+                date_added = arrow.get(item.get('date_added'), 'ddd DD MMM YYYY HH:mm:ss ZZ')
                 if date_added > date_triggered:
                     for project in items.get('projects'):
                         if item.get('project_id') == project.get('id'):
                             project_name = project.get('name')
                     title = 'From TodoIst Project {0}:'.format(project_name)
-                    data.append({'title': title,
-                                 'content': item.get('content')})
+                    data.append({'title': title, 'content': item.get('content')})
 
                     # digester
-                    self.send_digest_event(trigger_id,
-                                           title,
-                                           '')
+                    self.send_digest_event(trigger_id, title, '')
 
             cache.set('th_todoist_' + str(trigger_id), data)
         except AttributeError:
@@ -99,8 +88,7 @@ class ServiceTodoist(ServicesMgr):
             :return: the status of the save statement
             :rtype: boolean
         """
-        title, content = super(ServiceTodoist, self).save_data(trigger_id,
-                                                               **data)
+        title, content = super(ServiceTodoist, self).save_data(trigger_id, **data)
 
         if self.token:
             if title or content or data.get('link'):
@@ -114,7 +102,6 @@ class ServiceTodoist(ServicesMgr):
             else:
                 status = False
         else:
-            logger.critical("no token or link provided for "
-                            "trigger ID {} ".format(trigger_id))
+            logger.critical("no token or link provided for trigger ID {} ".format(trigger_id))
             status = False
         return status

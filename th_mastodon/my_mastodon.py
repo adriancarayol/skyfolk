@@ -5,13 +5,12 @@ import arrow
 from django.conf import settings
 from django.core.cache import caches
 from django.shortcuts import reverse
-from django.utils import html
 from django.utils.translation import ugettext as _
 
 # django_th classes
 from dash_services.models import update_result, UserService
 from dash_services.services.services import ServicesMgr
-from dash_services.tools import download_image
+from dash_services.tools import download_image, get_tags, limit_content
 
 from logging import getLogger
 
@@ -40,7 +39,6 @@ class ServiceMastodon(ServicesMgr):
     def read_data(self, **kwargs):
         """
             get the data from the service
-
             :param kwargs: contain keyword args : trigger_id at least
             :type kwargs: dict
             :rtype: list
@@ -55,7 +53,6 @@ class ServiceMastodon(ServicesMgr):
         def _get_toots(toot_api, toot_obj, search):
             """
                 get the toots from mastodon and return the filters to use
-
                 :param toot_obj: from Mastodon model
                 :param search: filter used for MastodonAPI.search()
                 :type toot_obj: Object ServiceMastodon
@@ -91,12 +88,10 @@ class ServiceMastodon(ServicesMgr):
             return search, statuses
 
         if self.token is not None:
-            kw = {'app_label': 'th_mastodon', 'model_name': 'Mastodon',
-                  'trigger_id': trigger_id}
+            kw = {'app_label': 'th_mastodon', 'model_name': 'Mastodon', 'trigger_id': trigger_id}
             toot_obj = super(ServiceMastodon, self).read_data(**kw)
 
-            us = UserService.objects.get(token=self.token,
-                                         name='ServiceMastodon')
+            us = UserService.objects.get(token=self.token, name='ServiceMastodon')
             try:
                 toot_api = MastodonAPI(
                     client_id=us.client_id,
@@ -159,39 +154,28 @@ class ServiceMastodon(ServicesMgr):
 
     def save_data(self, trigger_id, **data):
         """
-            get the data from the service
-
-            :param trigger_id: id of the trigger
-            :params data, dict
-            :rtype: dict
+            let's save the data
+            :param trigger_id: trigger ID from which to save data
+            :param data: the data to check to be used and save
+            :type trigger_id: int
+            :type data:  dict
+            :return: the status of the save statement
+            :rtype: boolean
         """
-        title, content = super(ServiceMastodon, self).save_data(
-            trigger_id, **data)
-
+        title, content = super(ServiceMastodon, self).save_data(trigger_id, **data)
         # check if we have a 'good' title
         if self.title_or_content(title):
-
-            content = str("{title} {link}").format(title=title,
-                                                   link=data.get('link'))
-            content += self.get_tags(trigger_id)
+            content = str("{title} {link}").format(title=title, link=data.get('link'))
+            content += get_tags(Mastodon, trigger_id)
         # if not then use the content
         else:
-            content += " " + data.get('link')
-            content += " " + self.get_tags(trigger_id)
-
+            content += " " + data.get('link') + " " + get_tags(Mastodon, trigger_id)
         content = self.set_mastodon_content(content)
 
-        us = UserService.objects.get(user=self.user,
-                                     token=self.token,
-                                     name='ServiceMastodon')
-
+        us = UserService.objects.get(user=self.user, token=self.token, name='ServiceMastodon')
         try:
-            toot_api = MastodonAPI(
-                    client_id=us.client_id,
-                    client_secret=us.client_secret,
-                    access_token=self.token,
-                    api_base_url=us.host
-            )
+            toot_api = MastodonAPI(client_id=us.client_id, client_secret=us.client_secret, access_token=self.token,
+                                   api_base_url=us.host)
         except ValueError as e:
             logger.error(e)
             status = False
@@ -206,7 +190,6 @@ class ServiceMastodon(ServicesMgr):
                     # upload the media first
                     media_ids = toot_api.media_post(media_file=media)
                     media_ids = [media_ids]
-
             toot_api.status_post(content, media_ids=media_ids)
 
             status = True
@@ -215,28 +198,6 @@ class ServiceMastodon(ServicesMgr):
             status = False
             update_result(trigger_id, msg=inst, status=status)
         return status
-
-    def get_tags(self, trigger_id):
-        """
-        get the tags if any
-        :param trigger_id: the id of the related trigger
-        :return: tags string
-        """
-
-        # get the Mastodon data of this trigger
-        trigger = Mastodon.objects.get(trigger_id=trigger_id)
-
-        tags = ''
-
-        if trigger.tag is not None:
-            # is there several tag ?
-            tags = ["#" + tag.strip() for tag in trigger.tag.split(',')
-                    ] if ',' in trigger.tag else "#" + trigger.tag
-
-            tags = str(','.join(tags)) if isinstance(tags, list) else tags
-            tags = ' ' + tags
-
-        return tags
 
     def title_or_content(self, title):
         """
@@ -276,9 +237,7 @@ class ServiceMastodon(ServicesMgr):
         :param content:
         :return:
         """
-        content = html.strip_tags(content)
-
-        return content[:560] if len(content) > 560 else content
+        return limit_content(content, 560)
 
     def auth(self, request):
         """

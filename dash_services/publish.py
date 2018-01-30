@@ -94,7 +94,7 @@ class Pub(object):
 
             to_update = True
 
-        return to_update, status
+        return to_update, bool(status)
 
     def publishing(self, service):
         """
@@ -119,10 +119,14 @@ class Pub(object):
         data = self.provider(service)
 
         count_new_data = len(data) if data else 0
+
         if count_new_data > 0:
             to_update, status = self.consumer(service, data, to_update, status)
-            # let's log
+
+        # let's log
+
         self.log_update(service, to_update, status, count_new_data)
+
         # let's update
         if to_update and status:
             self.update_trigger(service)

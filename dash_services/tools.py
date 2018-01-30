@@ -4,6 +4,7 @@ import datetime
 
 from django.conf import settings
 from django.core.mail import send_mail, mail_admins
+from django.utils import html
 
 import importlib
 import time
@@ -42,9 +43,7 @@ def get_service(service, model_form='models', form_name=''):
         :type form_name: string
         :return: the object of the spotted Class.
         :rtype: object
-
         :Example:
-
         class_name could be :
             th_rss.models
             th_rss.forms
@@ -109,7 +108,6 @@ def warn_user_and_admin(consumer_provider, service):
 
 def download_image(url):
     """
-
     :param url: url of the image to download
     :return: local_filename the name of the file in the cache
     """
@@ -124,6 +122,25 @@ def download_image(url):
             if chunk:
                 f.write(chunk)
     return local_filename
+
+
+def get_tags(model, trigger_id):
+    """
+    get the tags if any
+    :param trigger_id: the id of the related trigger
+    :return: tags string
+    """
+    # get the data of this trigger
+    trigger = model.objects.get(trigger_id=trigger_id)
+
+    tags = ''
+    if len(trigger.tag) > 0:
+        # is there several tag ?
+        tags = ["#" + tag.strip() for tag in trigger.tag.split(',')]
+        tags = str(','.join(tags)) if isinstance(tags, list) else tags
+        tags = ' ' + tags
+    return tags
+
 
 def limit_content(content, limit):
     """

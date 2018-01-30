@@ -2,8 +2,8 @@
 # add here the call of any native lib of python like datetime etc.
 import arrow
 # django classes
-from django.core.urlresolvers import reverse
 from django.core.cache import caches
+from django.urls import reverse
 # django_th classes
 from dash_services.services.services import ServicesMgr
 from dash_services.html_entities import HtmlEntities
@@ -20,7 +20,6 @@ from wallabag_api.wallabag import Wallabag as Wall
 """
     handle process with wallabag
     put the following in settings.py
-
     TH_SERVICES = (
         ...
         'th_wallabag.my_wallabag.ServiceWallabag',
@@ -73,10 +72,8 @@ class ServiceWallabag(ServicesMgr):
             in its API linked to the note,
             add the triggered date to the dict data
             thus the service will be triggered when data will be found
-
             :param kwargs: contain keyword args : trigger_id at least
             :type kwargs: dict
-
             :rtype: list
         """
         self.date_triggered = arrow.get(kwargs.get('date_triggered'))
@@ -149,14 +146,11 @@ class ServiceWallabag(ServicesMgr):
             wall = self.wall()
             if wall is not False:
                 try:
-                    wall.post_entries(url=data.get('link').encode(),
-                                      title=title,
-                                      tags=(tags.lower()))
+                    wall.post_entries(url=data.get('link').encode(), title=title, tags=(tags.lower()))
                     logger.debug('wallabag {} created'.format(data.get('link')))
                     status = True
                 except Exception as e:
-                    logger.critical('issue with something else that a token'
-                                    ' link ? : {}'.format(data.get('link')))
+                    logger.critical('issue with something else that a token link ? : {}'.format(data.get('link')))
                     logger.critical(e)
                     update_result(self.trigger_id, msg=e, status=False)
                     status = False
@@ -167,7 +161,6 @@ class ServiceWallabag(ServicesMgr):
     def save_data(self, trigger_id, **data):
         """
             let's save the data
-
             :param trigger_id: trigger ID from which to save data
             :param data: the data to check to be used and save
             :type trigger_id: int
@@ -197,7 +190,6 @@ class ServiceWallabag(ServicesMgr):
             :param request: request object
             :return: callback url
             :rtype: string that contains the url to redirect after auth
-
         """
         service = UserService.objects.get(
             user=request.user, name='ServiceWallabag')

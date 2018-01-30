@@ -8,6 +8,7 @@ from django.core.cache import caches
 # django_th classes
 from dash_services.services.services import ServicesMgr
 from dash_services.models import update_result, UserService
+from dash_services.tools import get_tags, limit_content
 
 from logging import getLogger
 
@@ -19,12 +20,10 @@ from twython import Twython, TwythonAuthError, TwythonRateLimitError
 """
     handle process with twitter
     put the following in settings.py
-
     TH_TWITTER = {
         'consumer_key': 'abcdefghijklmnopqrstuvwxyz',
         'consumer_secret': 'abcdefghijklmnopqrstuvwxyz',
     }
-
 """
 logger = getLogger('django_th.trigger_happy')
 cache = caches['django_th']
@@ -36,7 +35,6 @@ class ServiceTwitter(ServicesMgr):
     """
     def __init__(self, token=None, **kwargs):
         """
-
         :param token:
         :param kwargs:
         """
@@ -60,7 +58,6 @@ class ServiceTwitter(ServicesMgr):
     def read_data(self, **kwargs):
         """
             get the data from the service
-
             :param kwargs: contain keyword args : trigger_id at least
             :type kwargs: dict
             :rtype: list
@@ -78,7 +75,6 @@ class ServiceTwitter(ServicesMgr):
             """
                 get the tweets from twitter and return the filters to use :
                 search and count
-
                 :param twitter_obj: from Twitter model
                 :param search: filter used for twython.search() or
                 twython.get_user_timeline())
@@ -91,12 +87,9 @@ class ServiceTwitter(ServicesMgr):
 
             """
                 explanations about statuses :
-                when we want to track the tweet of a screen
-                statuses contain all of them
-                when we want to track all the tweet matching a tag
-                statuses contain statuses + metadata array
-                this is why we need to do
-                statuses = statuses['statuses']
+                when we want to track the tweet of a screen 'statuses' contain all of them
+                when we want to track all the tweet matching a tag 'statuses' contain statuses + metadata array
+                this is why we need to do statuses = statuses['statuses']
                 to be able to handle the result as for screen_name
             """
 
@@ -138,9 +131,7 @@ class ServiceTwitter(ServicesMgr):
             return count, search, statuses
 
         if self.token is not None:
-            kw = {'app_label': 'th_twitter',
-                  'model_name': 'Twitter',
-                  'trigger_id': trigger_id}
+            kw = {'app_label': 'th_twitter', 'model_name': 'Twitter', 'trigger_id': trigger_id}
             twitter_obj = super(ServiceTwitter, self).read_data(**kw)
 
             # https://dev.twitter.com/rest/public/timelines
@@ -173,28 +164,22 @@ class ServiceTwitter(ServicesMgr):
                         screen_name = s['user']['screen_name']
                         # get the text of the tweet + url to this one
                         if twitter_obj.fav:
-                            url = twitter_fav_url.format(screen_name,
-                                                         s['id_str'])
+                            url = twitter_fav_url.format(screen_name, s['id_str'])
                             title = _('Tweet Fav from @{}'.format(screen_name))
                         else:
-                            url = twitter_status_url.format(screen_name,
-                                                            s['id_str'])
+                            url = twitter_status_url.format(screen_name, s['id_str'])
                             title = _('Tweet from @{}'.format(screen_name))
                         # Wed Aug 29 17:12:58 +0000 2012
-                        my_date = arrow.get(s['created_at'],
-                                            'ddd MMM DD HH:mm:ss Z YYYY')
+                        my_date = arrow.get(s['created_at'], 'ddd MMM DD HH:mm:ss Z YYYY')
                         published = arrow.get(my_date).to(settings.TIME_ZONE)
-                        if date_triggered is not None and \
-                           published is not None and \
-                           now >= published >= date_triggered:
+                        if date_triggered is not None and published is not None and now >= published >= date_triggered:
                             if s.get('extended_entities'):
                                 # get a media
                                 extended_entities = s['extended_entities']
                                 if extended_entities.get('media'):
                                     medias = extended_entities.get('media')
                                     for media in medias:
-                                        text = s['text'] + ' ' + \
-                                               media.get('media_url_https')
+                                        text = s['text'] + ' ' + media.get('media_url_https')
                             else:
                                 text = s['text']
 
@@ -214,7 +199,6 @@ class ServiceTwitter(ServicesMgr):
     def save_data(self, trigger_id, **data):
         """
             let's save the data
-
             :param trigger_id: trigger ID from which to save data
             :param data: the data to check to be used and save
             :type trigger_id: int
@@ -224,19 +208,15 @@ class ServiceTwitter(ServicesMgr):
         """
         status = False
         # set the title and content of the data
-        title, content = super(ServiceTwitter, self).save_data(
-            trigger_id, **data)
+        title, content = super(ServiceTwitter, self).save_data(trigger_id, **data)
 
         if data.get('link') and len(data.get('link')) > 0:
             # remove html tag if any
             content = html.strip_tags(content)
 
             if self.title_or_content(title):
-
-                content = str("{title} {link}").format(
-                    title=title, link=data.get('link'))
-
-                content += self.get_tags(trigger_id)
+                content = str("{title} {link}").format(title=title, link=data.get('link'))
+                content += get_tags(Twitter, trigger_id)
             else:
                 content = self.set_twitter_content(content)
 
@@ -248,28 +228,6 @@ class ServiceTwitter(ServicesMgr):
                 update_result(trigger_id, msg=inst, status=False)
                 status = False
         return status
-
-    def get_tags(self, trigger_id):
-        """
-        get the tags if any
-        :param trigger_id: the id of the related trigger
-        :return: tags string
-        """
-
-        # get the Twitter data of this trigger
-        trigger = Twitter.objects.get(trigger_id=trigger_id)
-
-        tags = ''
-
-        if len(trigger.tag) > 0:
-            # is there several tag ?
-            tags = ["#" + tag.strip() for tag in trigger.tag.split(',')
-                    ] if ',' in trigger.tag else "#" + trigger.tag
-
-            tags = str(','.join(tags)) if isinstance(tags, list) else tags
-            tags = ' ' + tags
-
-        return tags
 
     def auth(self, request):
         """
@@ -333,6 +291,4 @@ class ServiceTwitter(ServicesMgr):
         :param content:
         :return:
         """
-        content = html.strip_tags(content)
-
-        return content[:140] if len(content) > 140 else content
+        return limit_content(content, 280)

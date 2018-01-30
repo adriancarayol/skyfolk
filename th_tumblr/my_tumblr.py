@@ -12,15 +12,13 @@ from pytumblr import TumblrRestClient
 """
     handle process with tumblr
     put the following in th_settings.py
-
     TH_TUMBLR = {
         'consumer_key': 'abcdefghijklmnopqrstuvwxyz',
         'consumer_secret': 'abcdefghijklmnopqrstuvwxyz',
-
     }
 """
 
-logger = getLogger('skyfolk.trigger_happy')
+logger = getLogger('django_th.trigger_happy')
 cache = caches['django_th']
 
 
@@ -30,7 +28,6 @@ class ServiceTumblr(ServicesMgr):
     """
     def __init__(self, token=None, **kwargs):
         """
-
         :param token:
         :param kwargs:
         """
@@ -43,7 +40,6 @@ class ServiceTumblr(ServicesMgr):
         self.token = token
         self.service = 'ServiceTumblr'
         self.oauth = 'oauth1'
-        
         if self.token is not None:
             token_key, token_secret = self.token.split('#TH#')
 
@@ -59,14 +55,15 @@ class ServiceTumblr(ServicesMgr):
             in its API linked to the note,
             add the triggered date to the dict data
             thus the service will be triggered when data will be found
-
             :param kwargs: contain keyword args : trigger_id at least
             :type kwargs: dict
-
             :rtype: list
         """
         trigger_id = kwargs.get('trigger_id')
         data = list()
+        kwargs['model_name'] = 'Tumblr'
+        kwargs['app_label'] = 'th_tumblr'
+        super(ServiceTumblr, self).read_data(**kwargs)
         cache.set('th_tumblr_' + str(trigger_id), data)
         return data
 
@@ -82,8 +79,7 @@ class ServiceTumblr(ServicesMgr):
         """
         from th_tumblr.models import Tumblr
 
-        title, content = super(ServiceTumblr, self).save_data(trigger_id,
-                                                              **data)
+        title, content = super(ServiceTumblr, self).save_data(trigger_id, **data)
 
         # get the data of this trigger
         trigger = Tumblr.objects.get(trigger_id=trigger_id)

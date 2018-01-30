@@ -4,8 +4,7 @@ import hashlib
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from dash_services.models import TriggerService
-from dash_services.services import default_provider
+from dash_services.api.consumer import save_data
 
 from th_taiga.models import Taiga
 
@@ -34,7 +33,6 @@ class Epic(TaigaDomain):
 
     def create(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -45,7 +43,6 @@ class Epic(TaigaDomain):
 
     def change(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -56,7 +53,6 @@ class Epic(TaigaDomain):
 
     def delete(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -70,9 +66,7 @@ class Issue(TaigaDomain):
 
     def create(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
-        :param action: craete/change/delete
         :param data: data to return
         :return: data
         """
@@ -82,9 +76,7 @@ class Issue(TaigaDomain):
 
     def change(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
-        :param action: craete/change/delete
         :param data: data to return
         :return: data
         """
@@ -94,9 +86,7 @@ class Issue(TaigaDomain):
 
     def delete(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
-        :param action: craete/change/delete
         :param data: data to return
         :return: data
         """
@@ -109,7 +99,6 @@ class UserStory(TaigaDomain):
 
     def create(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -121,7 +110,6 @@ class UserStory(TaigaDomain):
 
     def change(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -132,7 +120,6 @@ class UserStory(TaigaDomain):
 
     def delete(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -145,7 +132,6 @@ class UserStory(TaigaDomain):
 class Task(TaigaDomain):
     def create(self,  taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -156,7 +142,6 @@ class Task(TaigaDomain):
 
     def change(self,  taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -167,7 +152,6 @@ class Task(TaigaDomain):
 
     def delete(self,  taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -181,7 +165,6 @@ class WikiPage(TaigaDomain):
 
     def create(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -192,7 +175,6 @@ class WikiPage(TaigaDomain):
 
     def change(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -203,7 +185,6 @@ class WikiPage(TaigaDomain):
 
     def delete(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -217,7 +198,6 @@ class RelatedUserStory(TaigaDomain):
 
     def create(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -228,7 +208,6 @@ class RelatedUserStory(TaigaDomain):
 
     def delete(self, taiga_obj, data):
         """
-
         :param taiga_obj: taiga object
         :param data: data to return
         :return: data
@@ -261,32 +240,6 @@ def data_filter(trigger_id, **data):
     return data
 
 
-def consumer(trigger_id, data):
-    """
-        call the consumer and handle the data
-        :param trigger_id:
-        :param data:
-        :return:
-    """
-    status = True
-    # consumer - the service which uses the data
-    default_provider.load_services()
-    service = TriggerService.objects.get(id=trigger_id)
-
-    service_consumer = default_provider.get_service(
-        str(service.consumer.name.name))
-    kwargs = {'user': service.user}
-
-    data = data_filter(trigger_id, **data)
-    if len(data) > 0:
-
-        getattr(service_consumer, '__init__')(service.consumer.token,
-                                              **kwargs)
-        status = getattr(service_consumer, 'save_data')(service.id, **data)
-
-    return status
-
-
 def verify_signature(data, key, signature):
     mac = hmac.new(key.encode("utf-8"), msg=data, digestmod=hashlib.sha1)
     return mac.hexdigest() == signature
@@ -297,8 +250,7 @@ def taiga(request, trigger_id, key):
     signature = request.META.get('HTTP_X_TAIGA_WEBHOOK_SIGNATURE')
     # check that the data are ok with the provided signature
     if verify_signature(request._request.body, key, signature):
-        status = consumer(trigger_id, request.data)
-        if status:
-            return Response({"message": "Success"})
-        else:
-            return Response({"message": "Failed!"})
+        data = data_filter(trigger_id, **request.data)
+        status = save_data(trigger_id, data)
+        return Response({"message": "Success"}) if status else Response({"message": "Failed!"})
+    Response({"message": "Bad request"})

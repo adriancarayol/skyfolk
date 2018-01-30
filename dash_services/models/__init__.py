@@ -15,7 +15,7 @@ from dash_services.tools import warn_user_and_admin
 
 from logging import getLogger
 
-logger = getLogger('skyfolk.trigger_happy')
+logger = getLogger('django_th.trigger_happy')
 
 
 class ServicesActivated(models.Model):
@@ -62,12 +62,12 @@ class UserService(models.Model):
         (NONE, _('None'))
     )
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     token = models.CharField(max_length=255, blank=True)
-    name = models.ForeignKey(ServicesActivated, to_field='name', related_name='+')
+    name = models.ForeignKey(ServicesActivated, to_field='name', related_name='+', on_delete=models.CASCADE)
     username = models.CharField(_('username'), max_length=255, default='', blank=True)
     password = models.CharField(_('password'), max_length=128, default='', blank=True)
-    host = models.CharField(_('host'), max_length=255, default='', blank=True)
+    host = models.URLField(_('host'), default='', blank=True)
     client_id = models.CharField(_('client id'), max_length=255, default='', blank=True)
     client_secret = models.CharField(_('client secret'), max_length=255, default='', blank=True)
     duration = models.CharField(max_length=1, choices=DURATION, default=NONE)
@@ -90,10 +90,10 @@ class TriggerService(models.Model):
     """
         TriggerService
     """
-    provider = models.ForeignKey(UserService, related_name='+', blank=True)
-    consumer = models.ForeignKey(UserService, related_name='+', blank=True)
+    provider = models.ForeignKey(UserService, related_name='+', blank=True, on_delete=models.CASCADE)
+    consumer = models.ForeignKey(UserService, related_name='+', blank=True, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_created = models.DateField(auto_now_add=True)
     date_triggered = models.DateTimeField(null=True)
     status = models.BooleanField(default=False)
@@ -126,7 +126,7 @@ class Digest(models.Model):
     """
     Digest service to store the data from other service
     """
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=600)
     link = models.URLField()
     duration = models.CharField(max_length=1)
@@ -155,30 +155,37 @@ def update_result(trigger_id, msg, status):
     :param status: status of the handling of the current trigger
     :return:
     """
+    service = TriggerService.objects.get(id=trigger_id)
     # if status is True, reset *_failed counter
+    print(isinstance(status, bool))
     if status:
-        service = TriggerService.objects.get(id=trigger_id)
-
-        TriggerService.objects.filter(id=trigger_id).update(result=msg, date_result=now(), provider_failed=0,
-                                                            consumer_failed=0, counter_ok=service.counter_ok + 1)
-        UserService.objects.filter(user=service.user, name=service.consumer.name).update(
-            counter_ok=service.counter_ok + 1)
+        provider_failed = 0
+        consumer_failed = 0
+        counter_ok = service.counter_ok + 1
+        counter_ko = service.counter_ko
     # otherwise, add 1 to the consumer_failed
     else:
-        service = TriggerService.objects.get(id=trigger_id)
-        failed = service.consumer_failed + 1
+        provider_failed = service.provider_failed
+        consumer_failed = service.consumer_failed + 1
+        counter_ok = service.counter_ko
+        counter_ko = service.counter_ko + 1
 
-        UserService.objects.filter(user=service.user, name=service.consumer.name).update(
-            counter_ko=service.counter_ko + 1)
-
-        if failed > settings.DJANGO_TH.get('failed_tries', 5):
-            TriggerService.objects.filter(id=trigger_id).update(result=msg, date_result=now(), status=False,
-                                                                counter_ko=service.counter_ko + 1)
-        else:
-            TriggerService.objects.filter(id=trigger_id).update(result=msg, date_result=now(), consumer_failed=failed,
-                                                                counter_ko=service.counter_ko + 1)
+        status = False if consumer_failed > settings.DJANGO_TH.get('failed_tries', 5) else True
 
         warn_user_and_admin('consumer', service)
+
+    TriggerService.objects.filter(id=trigger_id).update(
+        result=msg,
+        date_result=now(),
+        provider_failed=provider_failed,
+        consumer_failed=consumer_failed,
+        counter_ok=counter_ok,
+        counter_ko=counter_ko,
+        status=status)
+
+    UserService.objects.filter(user=service.user, name=service.consumer.name).update(
+        counter_ok=counter_ok,
+        counter_ko=counter_ko)
 
 
 def th_create_user_profile(sender, instance, created, **kwargs):
@@ -186,22 +193,18 @@ def th_create_user_profile(sender, instance, created, **kwargs):
     # need any third party auth
     user = instance
     if user.last_login is None:
-        services = ('ServiceRss', 'ServicePelican', )
-        for service in services:
-            if any(service in s for s in settings.TH_SERVICES):
-                try:
-                    sa = ServicesActivated.objects.get(name=service)
-                    UserService.objects.get_or_create(user=user, name=sa)
-                except ObjectDoesNotExist:
-                    logger.debug("A new user %s has been connected but %s "
-                                 "could not be added to his services because "
-                                 "the service is present in TH_SERVICES but not"
-                                 " activated from the Admin Panel" %
-                                 (user, service))
+        for service in settings.SERVICES_NEUTRAL:
+            try:
+                sa = ServicesActivated.objects.get(name=service)
+                UserService.objects.get_or_create(user=user, name=sa)
+            except ObjectDoesNotExist:
+                logger.debug("A new user %s has been connected but %s "
+                             "could not be added to his services because "
+                             "the service is present in th_settings.py file but not"
+                             " activated from the Admin Panel" % (user, service))
 
 
-post_save.connect(th_create_user_profile, sender=User,
-                  dispatch_uid="create_user_profile")
+post_save.connect(th_create_user_profile, sender=User, dispatch_uid="create_user_profile")
 
 
 @receiver(digest_event)
