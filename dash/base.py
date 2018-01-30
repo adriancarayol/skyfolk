@@ -528,8 +528,10 @@ class BaseDashboardPlaceholder(object):
         """
         empty_cells = []
         position = 1
-        positions = models.DashboardEntry.objects.filter(placeholder_uid=self.uid).values_list('position', flat=True)
-
+        positions = models.DashboardEntry.objects.filter(placeholder_uid=self.uid, user=self.request.user,
+                                                         layout_uid=self.layout.uid,
+                                                         workspace__name=self.workspace).values_list(
+            'position', flat=True)
         for row in range(1, self.rows + 1):
             for col in range(1, self.cols + 1):
                 if position not in positions:
@@ -574,9 +576,9 @@ class BaseDashboardPlaceholder(object):
     def widget_inner_width(self, cols):
         """The inner width of the widget to be rendered."""
         return (
-            (self.get_cell_width() * cols) -
-            self.cell_margin_left -
-            self.cell_margin_right
+                (self.get_cell_width() * cols) -
+                self.cell_margin_left -
+                self.cell_margin_right
         )
 
     def widget_inner_height(self, rows):
@@ -585,9 +587,9 @@ class BaseDashboardPlaceholder(object):
         :return int:
         """
         return (
-            (self.get_cell_height() * rows) -
-            self.cell_margin_top -
-            self.cell_margin_bottom
+                (self.get_cell_height() * rows) -
+                self.cell_margin_top -
+                self.cell_margin_bottom
         )
 
     @property
@@ -1383,14 +1385,14 @@ class BaseDashboardPluginWidget(object):
     def __init__(self, plugin):
         assert self.layout_uid and self.layout_uid == plugin.layout.uid
         assert (
-            self.placeholder_uid
-            and
-            self.placeholder_uid in plugin.layout.placeholder_uids
+                self.placeholder_uid
+                and
+                self.placeholder_uid in plugin.layout.placeholder_uids
         )
         assert (
-            self.plugin_uid
-            and
-            self.plugin_uid in get_registered_plugin_uids()
+                self.plugin_uid
+                and
+                self.plugin_uid in get_registered_plugin_uids()
         )
         assert hasattr(self, 'render') and callable(self.render)
         assert self.cols
@@ -1445,10 +1447,10 @@ class BaseDashboardPluginWidget(object):
         """
         return (
             (
-                self.cols * self.plugin.placeholder.get_cell_width()
+                    self.cols * self.plugin.placeholder.get_cell_width()
             ) + delta_width,
             (
-                self.rows * self.plugin.placeholder.get_cell_height()
+                    self.rows * self.plugin.placeholder.get_cell_height()
             ) + delta_height
         )
 
@@ -1640,9 +1642,9 @@ plugin_widget_registry = PluginWidgetRegistry()
 def ensure_autodiscover():
     """Ensure that plugins are auto-discovered."""
     if not (
-                    plugin_registry._registry and
-                    layout_registry._registry and
-                plugin_widget_registry._registry
+            plugin_registry._registry and
+            layout_registry._registry and
+            plugin_widget_registry._registry
     ):
         autodiscover()
 

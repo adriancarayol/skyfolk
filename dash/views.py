@@ -349,9 +349,6 @@ class AddDashboardEntry(SessionWizardView):
         context = super().get_context_data(form, **kwargs)
         dashboard_settings = get_or_create_dashboard_settings(self.request.user)
         workspace = self.kwargs.get('workspace', None)
-        placeholder_uid = self.kwargs.get('placeholder_uid', None)
-        plugin_uid = self.kwargs.get('plugin_uid', None)
-        position = self.kwargs.get('position', None)
 
         if workspace:
             workspace_slug = slugify_workspace(workspace)
@@ -386,6 +383,10 @@ class AddDashboardEntry(SessionWizardView):
 
         context['layout'] = layout
         context['dashboard_settings'] = dashboard_settings
+
+        if self.steps.current == '0':
+            user_services = UserService.objects.filter(user=self.request.user).count()
+            context['user_services'] = user_services
 
         template_name_ajax = 'dash/add_dashboard_entry_ajax.html'
 
@@ -444,6 +445,24 @@ class AddDashboardEntry(SessionWizardView):
         placeholder_uid = self.kwargs.get('placeholder_uid', None)
         plugin_uid = self.kwargs.get('plugin_uid', None)
         position = self.kwargs.get('position', None)
+
+        if workspace:
+            workspace_slug = slugify_workspace(workspace)
+            filters = {
+                'slug': workspace_slug,
+                'user': self.request.user,
+            }
+            if not dashboard_settings.allow_different_layouts:
+                filters.update({
+                    'layout_uid': dashboard_settings.layout_uid,
+                })
+            try:
+                workspace = DashboardWorkspace._default_manager.get(**filters)
+            except ObjectDoesNotExist as e:
+                if dashboard_settings.allow_different_layouts:
+                    message = _('The workspace with slug "{0}" was not found.'
+                                '').format(workspace_slug)
+
         if dashboard_settings.allow_different_layouts and workspace:
             layout_uid = workspace.layout_uid
         else:
@@ -1030,9 +1049,40 @@ def plugin_widgets(request,
     :return django.http.HttpResponse:
     """
     # Getting dashboard settings for the user. Then get users' layout.
+
     dashboard_settings = get_or_create_dashboard_settings(request.user)
+
+    if workspace:
+        workspace_slug = slugify_workspace(workspace)
+        filters = {
+            'slug': workspace_slug,
+            'user': request.user,
+        }
+        if not dashboard_settings.allow_different_layouts:
+            filters.update({
+                'layout_uid': dashboard_settings.layout_uid,
+            })
+        try:
+            workspace = DashboardWorkspace._default_manager.get(**filters)
+        except ObjectDoesNotExist as e:
+            if dashboard_settings.allow_different_layouts:
+                message = _('The workspace with slug "{0}" was not found.'
+                            '').format(workspace_slug)
+            else:
+                message = _(
+                    'The workspace with slug "{0}" does not belong to '
+                    'layout "{1}".'
+                ).format(workspace_slug, dashboard_settings.layout_uid)
+            messages.info(request, message)
+            return redirect('dash.edit_dashboard')
+
+    if dashboard_settings.allow_different_layouts and workspace:
+        layout_uid = workspace.layout_uid
+    else:
+        layout_uid = dashboard_settings.layout_uid
+
     layout = get_layout(
-        layout_uid=dashboard_settings.layout_uid,
+        layout_uid=layout_uid,
         as_instance=True
     )
 
@@ -1279,8 +1329,8 @@ def delete_dashboard_workspace(request, workspace_id,
     # Check if user trying to edit the dashboard workspace actually owns it
     # and then delete the workspace.
     if (
-                        request.method == 'POST'
-                and 'delete' in request.POST is None
+            request.method == 'POST'
+            and 'delete' in request.POST is None
             and request.POST.get('next', None)
     ):
         return redirect(request.POST.get('next'))

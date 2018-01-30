@@ -1,6 +1,7 @@
 # coding: utf-8
 import re
 from tidylib import tidy_document
+from xml.parsers.expat import ExpatError
 from xml.dom.minidom import parseString
 
 
@@ -11,13 +12,16 @@ def sanitize(html):
     document, errors = tidy_document(
         html, options={"output-xhtml": 1, "force-output": 1})
 
-    parsed_dom = parseString(document)
-    document_element = parsed_dom.documentElement
-    remove_prohibited_elements(document_element)
-    remove_prohibited_attributes(document_element)
-    body = document_element.getElementsByTagName("body")[0]
-    body.tagName = "en-note"
-    return body.toxml()
+    try:
+        parsed_dom = parseString(document)
+        document_element = parsed_dom.documentElement
+        remove_prohibited_elements(document_element)
+        remove_prohibited_attributes(document_element)
+        body = document_element.getElementsByTagName("body")[0]
+        body.tagName = "en-note"
+        return body.toxml()
+    except ExpatError:
+        return ''
 
 
 def remove_prohibited_elements(document_element):
@@ -30,7 +34,7 @@ def remove_prohibited_elements(document_element):
         "ilayer", "input", "isindex", "label", "layer", "legend", "link",
         "marquee", "menu", "meta", "noframes", "noscript", "object",
         "optgroup", "option", "param", "plaintext", "script", "select",
-        "style", "textarea", "xml", 'wbr']
+        "style", "textarea", "xml", 'wbr', 'figure', 'canvas', 'aside']
     for tag_name in prohibited_tag_names:
         remove_prohibited_element(tag_name, document_element)
 
@@ -48,8 +52,9 @@ def remove_prohibited_element(tag_name, document_element):
 def filter_term(att):
     if att.startswith("on") or \
        att.startswith("data-") or \
-       att in ["id", "class", "accesskey", "data", "dynsrc", "tabindex",
-               "frame", "rules", "width", "trbidi", "imageanchor"]:
+       att in ["pid", "id", "class", "accesskey", "data", "dynsrc", "tabindex", 'srcset',
+               "frame", "rules", "width", "trbidi", "imageanchor", "sizes", "property",
+               "typeof", "pid", "aria-hidden"]:
         return True
 
 

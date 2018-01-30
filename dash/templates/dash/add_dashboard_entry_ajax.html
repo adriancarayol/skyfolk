@@ -7,26 +7,31 @@
     </div>
 
     <div class="content-body">
-        <form method="post" action="{{ request.path }}" enctype="multipart/form-data"
-              class="form-horizontal">{% csrf_token %}
-            {{ wizard.management_form }}
-            {% if wizard.form.forms %}
-                {{ wizard.form.management_form }}
-                {% for form in wizard.form.forms %}
-                    {{ form }}
-                {% endfor %}
-            {% else %}
-                {{ wizard.form }}
-            {% endif %}
+        {% if user_services and user_services < 2 %}
+            <p>¡Necesitas al menos dos servicios activos para crear un trigger!</p>
+            <p><a href="{% url 'user_services' %}">Activar servicios</a></p>
+        {% else %}
+            <form method="post" action="{{ request.path }}" enctype="multipart/form-data"
+                  class="form-horizontal">{% csrf_token %}
+                {{ wizard.management_form }}
+                {% if wizard.form.forms %}
+                    {{ wizard.form.management_form }}
+                    {% for form in wizard.form.forms %}
+                        {{ form }}
+                    {% endfor %}
+                {% else %}
+                    {{ wizard.form }}
+                {% endif %}
 
-            {% if wizard.steps.prev %}
-                <button name="wizard_goto_step" type="submit"
-                        value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
-                <button name="wizard_goto_step" type="submit"
-                        value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
-            {% endif %}
-            <input type="submit" value="{% trans "submit" %}"/>
-            {% include "dash/snippets/plugin_help_text.html" %}
-        </form>
+                {% if wizard.steps.prev %}
+                    <button name="wizard_goto_step" type="submit"
+                            value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+                    <button name="wizard_goto_step" type="submit"
+                            value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+                {% endif %}
+                <input type="submit" value="{% trans "submit" %}"/>
+                {% include "dash/snippets/plugin_help_text.html" %}
+            </form>
+        {% endif %}
     </div>
 </div>

@@ -103,10 +103,6 @@ def create_user_profile(sender, instance, created, **kwargs):
         except Exception as e:
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
-    try:
-        instance.profile.save()
-    except Profile.DoesNotExist:
-        Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
@@ -133,11 +129,6 @@ def save_user_profile(sender, instance, created, **kwargs):
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
             logger.info("POST_SAVE : Saving UserProfile, User : %s" % instance)
-    else:
-        try:
-            instance.profile.save()
-        except Profile.DoesNotExist:
-            Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=LikeProfile)

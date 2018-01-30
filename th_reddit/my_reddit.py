@@ -16,7 +16,6 @@ from praw import Reddit as RedditApi
 
 from th_reddit.models import Reddit
 
-
 """
 put the following in settings.py
 TH_REDDIT_KEY = {
@@ -40,6 +39,7 @@ class ServiceReddit(ServicesMgr):
     """
         service Reddit
     """
+
     def __init__(self, token=None, **kwargs):
         super(ServiceReddit, self).__init__(token, **kwargs)
         self.consumer_key = settings.TH_REDDIT_KEY['client_id']
@@ -76,13 +76,13 @@ class ServiceReddit(ServicesMgr):
             created = arrow.get(submission.created).to(settings.TIME_ZONE)
 
             if date_triggered is not None and created is not None \
-                and created >= date_triggered and not submission.is_self and trigger.share_link:
+                    and created <= date_triggered and not submission.is_self:
                 body = submission.selftext if submission.selftext else submission.url
                 data.append({'title': title, 'content': body})
                 self.send_digest_event(trigger_id, title, '')
 
         cache.set('th_reddit_' + str(trigger_id), data)
-        print(data)
+
         return data
 
     def save_data(self, trigger_id, **data):

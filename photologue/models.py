@@ -674,7 +674,11 @@ class Video(models.Model):
 
     def save(self, created=True, *args, **kwargs):
         if created:
-            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
+            self.slug = orig = slugify(str(self.owner_id) + self.name)
+            for x in itertools.count(1):
+                if not Video.objects.filter(slug=self.slug).exists():
+                    break
+                self.slug = '%s-%d' % (orig, x)
         super(Video, self).save(*args, **kwargs)
 
     def get_previous_in_gallery(self):

@@ -49,7 +49,7 @@
                             <div class="col l12 m12 s12 tags-content">
                                 {% for tag in object.tags.all %}
                                     <blockquote><a
-                                            href="{% url 'photologue:collection-list' photo.owner.username tag.name %}">{{ tag.name }}</a>
+                                            href="{% url 'photologue:collection-list' photo.owner.username tag.slug %}">{{ tag.name }}</a>
                                     </blockquote>
                                 {% endfor %}
                             </div>

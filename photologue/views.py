@@ -67,11 +67,11 @@ def collection_list(request, username,
     print('>>>>>>> TAGNAME {}'.format(tag_slug))
     if user.username == username:
         photos = Photo.objects.filter(owner__username=username,
-                                      tags__name__exact=tag_slug)
+                                      tags__slug=tag_slug)
         videos = Video.objects.filter(owner__username=username, tags__slug=tag_slug)
     else:
         photos = Photo.objects.filter(owner__username=username,
-                                      tags__name__exact=tag_slug, is_public=True)
+                                      tags__slug=tag_slug, is_public=True)
         videos = Video.objects.filter(owner__username=username, tags__slug=tag_slug, is_public=True)
 
     items = list(

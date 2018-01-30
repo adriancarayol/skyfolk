@@ -124,3 +124,13 @@ def download_image(url):
             if chunk:
                 f.write(chunk)
     return local_filename
+
+def limit_content(content, limit):
+    """
+    :param content: the content
+    :param limit: limit of the content
+    :return: content resized or not
+    """
+    content = html.strip_tags(content)
+
+    return content[:limit] if len(content) > limit else content

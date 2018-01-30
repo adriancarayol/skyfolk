@@ -8,41 +8,39 @@ from django.core.cache import caches
 # django_th classes
 from dash_services.services.services import ServicesMgr
 from dash_services.models import UserService, ServicesActivated, update_result
+from dash_services.tools import limit_content
 
 # evernote API
 import evernote
 from evernote.api.client import EvernoteClient
 import evernote.edam.type.ttypes as Types
 from evernote.edam.error.ttypes import EDAMSystemException, EDAMUserException
-from evernote.edam.error.ttypes import EDAMErrorCode
 
 from logging import getLogger
 
+from th_evernote.evernote_exception import error
 from th_evernote.evernote_mgr import EvernoteMgr
 from th_evernote.models import Evernote
 from th_evernote.sanitize import sanitize
 
+logger = getLogger('django_th.trigger_happy')
+cache = caches['django_th']
+
 """
     handle process with evernote
     put the following in settings.py
-
     TH_EVERNOTE = {
         'sandbox': True,
         'consumer_key': 'abcdefghijklmnopqrstuvwxyz',
         'consumer_secret': 'abcdefghijklmnopqrstuvwxyz',
     }
     sanbox set to True to make your test and False for production purpose
-
     TH_SERVICES = (
         ...
         'th_evernote.my_evernote.ServiceEvernote',
         ...
     )
 """
-
-logger = getLogger('django_th.trigger_happy')
-
-cache = caches['django_th']
 
 
 class ServiceEvernote(ServicesMgr):
@@ -75,10 +73,8 @@ class ServiceEvernote(ServicesMgr):
     def read_data(self, **kwargs):
         """
             get the data from the service
-
             :param kwargs: contain keyword args : trigger_id at least
             :type kwargs: dict
-
             :rtype: list
         """
         date_triggered = kwargs.get('date_triggered')
@@ -128,23 +124,14 @@ class ServiceEvernote(ServicesMgr):
         data = []
 
         note_store = self.client.get_note_store()
-        our_note_list = note_store.\
-            findNotesMetadata(self.token, evernote_filter,
-                              0, 100, EvernoteMgr.set_evernote_spec())
+        our_note_list = note_store.findNotesMetadata(self.token, evernote_filter, 0, 100,
+                                                     EvernoteMgr.set_evernote_spec())
 
         for note in our_note_list.notes:
-            whole_note = note_store.getNote(self.token,
-                                            note.guid,
-                                            True,
-                                            True,
-                                            False,
-                                            False)
+            whole_note = note_store.getNote(self.token, note.guid, True, True, False, False)
             content = self._cleaning_content(whole_note.content)
-            data.append(
-                {'title': note.title,
-                 'my_date': arrow.get(note.created),
-                 'link': whole_note.attributes.sourceURL,
-                 'content': content})
+            data.append({'title': note.title, 'my_date': arrow.get(note.created),
+                         'link': whole_note.attributes.sourceURL, 'content': content})
 
         return data
 
@@ -154,7 +141,6 @@ class ServiceEvernote(ServicesMgr):
             don't want to handle empty title nor content
             otherwise this will produce an Exception by
             the Evernote's API
-
             :param trigger_id: trigger ID from which to save data
             :param data: the data to check to be used and save
             :type trigger_id: int
@@ -163,9 +149,7 @@ class ServiceEvernote(ServicesMgr):
             :rtype: boolean
         """
         # set the title and content of the data
-        title, content = super(ServiceEvernote, self).save_data(trigger_id,
-                                                                **data)
-
+        title, content = super(ServiceEvernote, self).save_data(trigger_id, **data)
         # get the evernote data of this trigger
         trigger = Evernote.objects.get(trigger_id=trigger_id)
         # initialize notestore process
@@ -178,12 +162,11 @@ class ServiceEvernote(ServicesMgr):
             # its footer
             content = self._footer(trigger, data, content)
             # its title
-            note.title = title if len(title) <= 255 else title[:255]
+            note.title = limit_content(title, 255)
             # its content
             note = self._content(note, content)
             # create a note
-            return EvernoteMgr.create_note(note_store, note,
-                                           trigger_id, data)
+            return EvernoteMgr.create_note(note_store, note, trigger_id, data)
         else:
             # so its note an evernote object, so something wrong happens
             return note_store
@@ -193,23 +176,7 @@ class ServiceEvernote(ServicesMgr):
             note_store = self.client.get_note_store()
             return note_store
         except EDAMSystemException as e:
-            # rate limit reach have to wait 1 hour !
-            if e.errorCode == EDAMErrorCode.RATE_LIMIT_REACHED:
-                sentence = "Rate limit reached {code}\n" \
-                            "Retry your request in {msg} seconds\n" \
-                            "Data set to cache again until" \
-                            " limit reached".format(code=e.errorCode,
-                                                    msg=e.rateLimitDuration)
-                logger.warning(sentence)
-                cache.set('th_evernote_' + str(trigger_id),
-                          data,
-                          version=2)
-                update_result(trigger_id, msg=sentence, status=True)
-                return True
-            else:
-                logger.critical(e)
-                update_result(trigger_id, msg=e, status=False)
-                return False
+            return error(trigger_id, data, e)
         except Exception as e:
             logger.critical(e)
             update_result(trigger_id, msg=e, status=False)
@@ -218,28 +185,22 @@ class ServiceEvernote(ServicesMgr):
     @staticmethod
     def _notebook(trigger, note_store):
         """
-        :param trigger: trigger object
+        :param trigger: trigger object
         :param note_store: note_store object
         :return: note object
         """
         note = Types.Note()
         if trigger.notebook:
             # get the notebookGUID ...
-            notebook_id = EvernoteMgr.get_notebook(note_store,
-                                                   trigger.notebook)
+            notebook_id = EvernoteMgr.get_notebook(note_store, trigger.notebook)
             # create notebookGUID if it does not exist then return its id
-            note.notebookGuid = EvernoteMgr.set_notebook(note_store,
-                                                         trigger.notebook,
-                                                         notebook_id)
+            note.notebookGuid = EvernoteMgr.set_notebook(note_store, trigger.notebook, notebook_id)
 
             if trigger.tag:
                 # ... and get the tagGUID if a tag has been provided
-                tag_id = EvernoteMgr.get_tag(note_store,
-                                             trigger.tag)
+                tag_id = EvernoteMgr.get_tag(note_store, trigger.tag)
                 if tag_id is False:
-                    tag_id = EvernoteMgr.set_tag(note_store,
-                                                 trigger.tag,
-                                                 tag_id)
+                    tag_id = EvernoteMgr.set_tag(note_store, trigger.tag, tag_id)
                     # set the tag to the note if a tag has been provided
                     if tag_id:
                         note.tagGuids = tag_id
@@ -290,7 +251,6 @@ class ServiceEvernote(ServicesMgr):
     @staticmethod
     def set_note_filter(filter_string):
         """
-
         :param filter_string:
         :return: note filter object
         """
@@ -301,28 +261,20 @@ class ServiceEvernote(ServicesMgr):
             get the token from evernote
         """
         if token:
-            return EvernoteClient(
-                token=token,
-                sandbox=self.sandbox)
+            return EvernoteClient(token=token, sandbox=self.sandbox)
         else:
-            return EvernoteClient(
-                consumer_key=self.consumer_key,
-                consumer_secret=self.consumer_secret,
-                sandbox=self.sandbox)
+            return EvernoteClient(consumer_key=self.consumer_key, consumer_secret=self.consumer_secret,
+                                  sandbox=self.sandbox)
 
     def auth(self, request):
         """
             let's auth the user to the Service
         """
         client = self.get_evernote_client()
-        request_token = client.get_request_token(
-            self.callback_url(request))
-
+        request_token = client.get_request_token(self.callback_url(request))
         # Save the request token information for later
         request.session['oauth_token'] = request_token['oauth_token']
-        request.session['oauth_token_secret'] = request_token[
-            'oauth_token_secret']
-
+        request.session['oauth_token_secret'] = request_token['oauth_token_secret']
         # Redirect the user to the Evernote authorization URL
         # return the URL string which will be used by redirect()
         # from the calling func
@@ -339,15 +291,10 @@ class ServiceEvernote(ServicesMgr):
             # from the UserServiceCreateView now we update the same
             # object to the database so :
             # 1) we get the previous object
-            us = UserService.objects.get(
-                user=request.user,
-                name=ServicesActivated.objects.get(name='ServiceEvernote'))
+            us = UserService.objects.get(user=request.user, name=ServicesActivated.objects.get(name='ServiceEvernote'))
             # 2) then get the token
-            us.token = client.get_access_token(
-                request.session['oauth_token'],
-                request.session['oauth_token_secret'],
-                request.GET.get('oauth_verifier', '')
-            )
+            us.token = client.get_access_token(request.session['oauth_token'], request.session['oauth_token_secret'],
+                                               request.GET.get('oauth_verifier', ''))
             # 3) and save everything
             us.save()
         except KeyError:

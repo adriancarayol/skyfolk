@@ -2,6 +2,7 @@ from django.template.loader import render_to_string
 from dash_services.models import TriggerService
 from th_rss.models import Rss
 from django.core.cache import caches
+from django.apps import apps
 from ....base import BaseDashboardPluginWidget
 
 __all__ = (
@@ -9,6 +10,7 @@ __all__ = (
     'Trigger1x1Widget',
     'Trigger2x2Widget',
 )
+
 
 # **********************************************************************
 # ************************* Base URL widget plugin *********************
@@ -22,13 +24,13 @@ class BaseTriggerWidget(BaseDashboardPluginWidget):
         """Render."""
         trigger = TriggerService.objects.get(pk=self.plugin.data.trigger)
         provider = trigger.provider.name.name.split('Service')[1].lower()
-        rss = Rss.objects.get(trigger_id=self.plugin.data.trigger)
         cache = caches['django_th']
         pattern = 'th_{provider}_{id}'.format(provider=provider,
-                                                  id=rss.trigger_id)
+                                              id=trigger.id)
 
         context = {'plugin': self.plugin, 'results': cache.get(pattern)}
         return render_to_string('service/render.html', context)
+
 
 # **********************************************************************
 # ************************** Specific widgets **************************
