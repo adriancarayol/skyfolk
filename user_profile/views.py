@@ -188,7 +188,7 @@ def fill_profile_dashboard(request, user, username, context):
 
     layout.collect_widget_media(dashboard_entries)
 
-    context['css'] = layout.get_css(placeholders)
+    context['js'] = layout.get_media_js()
     context['layout'] = layout
     context['dashboard_settings'] = dashboard_settings
     context['placeholders'] = placeholders

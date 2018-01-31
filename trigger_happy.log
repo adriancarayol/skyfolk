@@ -60,3 +60,324 @@ Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
     return Database.Cursor.execute(self, query, params)
 django.db.utils.IntegrityError: UNIQUE constraint failed: dash_contrib_plugins_poll_pollresponse.user_id, dash_contrib_plugins_poll_pollresponse.poll_id
+2018-01-31 17:38:22,770 ERROR exception 12142 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 348, in profile_view
+    fill_profile_dashboard(request, user_profile, username, context)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 191, in fill_profile_dashboard
+    context['js'] = layout.get_media_js(placeholders)
+TypeError: get_media_js() takes 1 positional argument but 2 were given
+2018-01-31 18:28:57,874 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:37,612 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:39,128 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:39,519 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:39,714 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:39,910 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:40,062 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:40,234 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:40,391 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:40,534 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:29:40,664 ERROR exception 27688 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:33:24,337 ERROR exception 31404 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:33:52,861 ERROR exception 31404 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:34:13,046 ERROR exception 31404 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:34:15,386 ERROR exception 31404 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
+    return profile_view_ajax(request, user_profile, node_profile=n)
+  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
+    raise ViewDoesNotExist('Parametro QS no encontrado')
+django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
+2018-01-31 18:40:02,466 ERROR exception 1292 Internal Server Error: /dashboard/entry/poll/response/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/contrib/plugins/poll/views.py", line 45, in submit_poll_response
+    data['value_of_no'] = value_of_no[0],
+TypeError: 'int' object is not subscriptable

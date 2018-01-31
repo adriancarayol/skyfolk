@@ -19,8 +19,13 @@ __all__ = (
 class BasePollWidget(BaseDashboardPluginWidget):
     """Base video plugin widget."""
 
-    media_css = (
-        'css/dash_plugin_video.css',
+    # media_css = (
+    #     'css/dash_plugin_video.css',
+    # )
+
+    media_js = (
+        'js/dash_plugin_poll.js',
+        'js/Chart.bundle.min.js',
     )
 
     def render(self, request=None):
