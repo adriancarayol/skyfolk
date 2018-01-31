@@ -14,10 +14,11 @@ __all__ = (
     'get_dash_workspaces',
     'has_edit_dashboard_permissions'
     'render_auth_link',
+    'render_plugin_view',
 )
 
-
 register = Library()
+
 
 # *****************************************************************************
 # *****************************************************************************
@@ -134,8 +135,8 @@ def get_dash_workspaces(parser, token):
 
     if len(bits) not in (1, 2, 3, 4):
         raise TemplateSyntaxError(
-                "Invalid syntax for {0}. Incorrect number "
-                "of arguments.".format(bits[0])
+            "Invalid syntax for {0}. Incorrect number "
+            "of arguments.".format(bits[0])
         )
 
     if 4 == len(bits):
@@ -206,6 +207,7 @@ register.inclusion_tag('dash/snippets/render_auth_link.html',
                        takes_context=True)(render_auth_link)
 register.inclusion_tag('dash/snippets/render_auth_link.html',
                        takes_context=True)(render_logout_link)
+
 
 # *****************************************************************************
 # *****************************************************************************
@@ -281,9 +283,9 @@ def has_edit_dashboard_permissions(parser, token):
 
     if len(bits) not in (1, 3):
         raise TemplateSyntaxError(
-                "Invalid syntax for {0}. Incorrect number of "
-                "arguments.".format(bits[0])
-                )
+            "Invalid syntax for {0}. Incorrect number of "
+            "arguments.".format(bits[0])
+        )
 
     if 3 == len(bits):
         as_var = bits[-1]
@@ -292,6 +294,7 @@ def has_edit_dashboard_permissions(parser, token):
         as_var = None
 
     return HasEditDashboardPermissionsNode(as_var=as_var)
+
 
 # *****************************************************************************
 # *****************************************************************************
@@ -382,3 +385,12 @@ def get_form_field_type(parser, token):
     field = parser.compile_filter(bits[1])
 
     return GetFormFieldTypeNode(field=field, as_var=as_var)
+
+
+@register.simple_tag(takes_context=True)
+def render_plugin_view(context, plugin):
+    try:
+        request = context['request']
+    except KeyError:
+        return 'Error al mostrar la información del widget'
+    return plugin.render(request=request)

@@ -1,8 +1,6 @@
 from django.template.loader import render_to_string
 from dash_services.models import TriggerService
-from th_rss.models import Rss
 from django.core.cache import caches
-from django.apps import apps
 from ....base import BaseDashboardPluginWidget
 
 __all__ = (

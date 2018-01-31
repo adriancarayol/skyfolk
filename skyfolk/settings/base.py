@@ -293,7 +293,7 @@ TEMPLATES = [
 ]
 
 # rabbitmq
-# TODO: Usar rabbitmq cuando se haya solucionado el problema de cerre de conexion...
+# TODO: Usar rabbitmq cuando se haya solucionado el problema de cierre de conexion...
 # RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 
 # rabbitmq_url = 'amqp://guest:guest@{rabbit_host}/%2F?heartbeat=15'.format(rabbit_host=RABBIT_HOSTNAME)

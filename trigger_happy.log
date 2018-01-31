@@ -1,108 +1,10 @@
-2018-01-30 21:59:32,172 ERROR exception 10516 Internal Server Error: /accounts/login/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
-    return bound_func(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
-    return view(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
-    return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 133, in dispatch
-    return super(LoginView, self).dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 79, in dispatch
-    **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 102, in post
-    response = self.form_valid(form)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 146, in form_valid
-    return form.login(self.request, redirect_url=success_url)
-  File "/home/adrian/skyfolk/user_profile/forms.py", line 33, in login
-    user_profile = NodeProfile.nodes.get(user_id=self.user.id)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/match.py", line 507, in get
-    result = self.query_cls(self).build_ast()._execute()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/match.py", line 411, in _execute
-    results, _ = db.cypher_query(query, self._query_params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 28, in wrapper
-    return func(self, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 90, in cypher_query
-    self.set_connection(self.url)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 61, in set_connection
-    max_pool_size=config.MAX_POOL_SIZE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 112, in driver
-    return driver_class(uri, **config)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/direct.py", line 63, in __init__
-    pool.acquire()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/direct.py", line 44, in acquire
-    raise ServiceUnavailable("Cannot acquire connection to {!r}".format(self.address))
-neo4j.exceptions.ServiceUnavailable: Cannot acquire connection to Address(host='localhost', port=7687)
-2018-01-30 21:59:33,293 ERROR exception 10516 Internal Server Error: /accounts/login/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
-    return bound_func(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
-    return view(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
-    return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 133, in dispatch
-    return super(LoginView, self).dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 79, in dispatch
-    **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 102, in post
-    response = self.form_valid(form)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 146, in form_valid
-    return form.login(self.request, redirect_url=success_url)
-  File "/home/adrian/skyfolk/user_profile/forms.py", line 33, in login
-    user_profile = NodeProfile.nodes.get(user_id=self.user.id)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/match.py", line 507, in get
-    result = self.query_cls(self).build_ast()._execute()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/match.py", line 411, in _execute
-    results, _ = db.cypher_query(query, self._query_params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 28, in wrapper
-    return func(self, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 90, in cypher_query
-    self.set_connection(self.url)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 61, in set_connection
-    max_pool_size=config.MAX_POOL_SIZE)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 112, in driver
-    return driver_class(uri, **config)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/direct.py", line 63, in __init__
-    pool.acquire()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/direct.py", line 44, in acquire
-    raise ServiceUnavailable("Cannot acquire connection to {!r}".format(self.address))
-neo4j.exceptions.ServiceUnavailable: Cannot acquire connection to Address(host='localhost', port=7687)
-2018-01-31 00:16:04,280 ERROR exception 9099 Internal Server Error: /dashboard/entry/delete/20/
+2018-01-31 13:49:42,068 ERROR exception 24604 Internal Server Error: /dashboard/entry/poll/response/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
     return self.cursor.execute(sql, params)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
     return Database.Cursor.execute(self, query, params)
-sqlite3.OperationalError: database is locked
+sqlite3.IntegrityError: UNIQUE constraint failed: dash_contrib_plugins_poll_pollresponse.user_id, dash_contrib_plugins_poll_pollresponse.poll_id
 
 The above exception was the direct cause of the following exception:
 
@@ -119,20 +21,32 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1007, in delete_dashboard_entry
-    obj.delete()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 974, in delete
-    return collector.delete()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/deletion.py", line 302, in delete
-    count = query.delete_batch(pk_list, self.using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/subqueries.py", line 45, in delete_batch
-    num_deleted += self.do_query(self.get_meta().db_table, self.where, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/subqueries.py", line 28, in do_query
-    cursor = self.get_compiler(using).execute_sql(CURSOR)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
-    raise original_exception
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 884, in execute_sql
+  File "/home/adrian/skyfolk/dash/contrib/plugins/poll/views.py", line 24, in submit_poll_response
+    PollResponse.objects.create(poll_id=poll_id, user=request.user, options=options)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 394, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/adrian/skyfolk/dash/contrib/plugins/poll/models.py", line 17, in save
+    super(PollResponse, self).save(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 838, in save_base
+    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 924, in _save_table
+    result = self._do_insert(cls._base_manager, using, fields, update_pk, raw)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 963, in _do_insert
+    using=using, raw=raw)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 1076, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1107, in execute_sql
     cursor.execute(sql, params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/debug_toolbar/panels/sql/tracking.py", line 164, in execute
+    return self._record(self.cursor.execute, sql, params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/debug_toolbar/panels/sql/tracking.py", line 106, in _record
+    return method(sql, params)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 80, in execute
     return super(CursorDebugWrapper, self).execute(sql, params)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
@@ -145,54 +59,4 @@ Traceback (most recent call last):
     return self.cursor.execute(sql, params)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
     return Database.Cursor.execute(self, query, params)
-django.db.utils.OperationalError: database is locked
-2018-01-31 00:16:08,354 ERROR exception 9099 Internal Server Error: /dashboard/entry/delete/20/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
-    return self.cursor.execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
-    return Database.Cursor.execute(self, query, params)
-sqlite3.OperationalError: database is locked
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1007, in delete_dashboard_entry
-    obj.delete()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 974, in delete
-    return collector.delete()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/deletion.py", line 302, in delete
-    count = query.delete_batch(pk_list, self.using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/subqueries.py", line 45, in delete_batch
-    num_deleted += self.do_query(self.get_meta().db_table, self.where, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/subqueries.py", line 28, in do_query
-    cursor = self.get_compiler(using).execute_sql(CURSOR)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
-    raise original_exception
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 884, in execute_sql
-    cursor.execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 80, in execute
-    return super(CursorDebugWrapper, self).execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
-    return self.cursor.execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/utils.py", line 94, in __exit__
-    six.reraise(dj_exc_type, dj_exc_value, traceback)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/six.py", line 685, in reraise
-    raise value.with_traceback(tb)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
-    return self.cursor.execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
-    return Database.Cursor.execute(self, query, params)
-django.db.utils.OperationalError: database is locked
+django.db.utils.IntegrityError: UNIQUE constraint failed: dash_contrib_plugins_poll_pollresponse.user_id, dash_contrib_plugins_poll_pollresponse.poll_id

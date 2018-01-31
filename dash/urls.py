@@ -21,11 +21,7 @@ from .views import (
     update_entry_info,
 )
 
-__title__ = 'dash.urls'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('urlpatterns',)
+from .contrib.plugins.poll.views import submit_poll_response
 
 urlpatterns = [
     # Paste dashboard entry
@@ -176,4 +172,8 @@ urlpatterns = [
     url(_(r'^$'),
         view=dashboard,
         name='dash.dashboard'),
+
+    url(_(r'^entry/poll/response/$'),
+        view=submit_poll_response,
+        name='dash.response_dashboard_entry'),
 ]

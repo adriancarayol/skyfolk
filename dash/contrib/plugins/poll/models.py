@@ -1,13 +1,19 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-
-
-class Poll(models.Model):
-    pub_date = models.DateTimeField(auto_now_add=True)
+from ....models import DashboardEntry
 
 
 class PollResponse(models.Model):
     user = models.ForeignKey(User)
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    poll = models.ForeignKey(DashboardEntry, on_delete=models.CASCADE)
     options = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('user', 'poll')
+
+    def save(self, *args, **kwargs):
+
+        if self.poll.plugin_uid.split('_')[0] == 'poll':
+            super(PollResponse, self).save(*args, **kwargs)
+        else:
+            raise Exception("It has to be Poll plugin")
