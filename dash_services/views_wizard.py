@@ -2,7 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.utils.decorators import method_decorator
 
 from dash_services.models import TriggerService, UserService
@@ -155,4 +155,4 @@ def finalcallback(request, **kwargs):
     # and redirect to the external service page
     # to auth the application django-th to access to the user
     # account details
-    return render_to_response(lets_callback(request))
+    return render(request, lets_callback(request))

@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from dash import models
 from nine.versions import DJANGO_GTE_1_8
-
+from .constants import MAX_SIZE_COLS
 from .discover import autodiscover
 from .exceptions import LayoutDoesNotExist, InvalidRegistryItemType
 from .helpers import iterable_to_dict, uniquify_sequence, safe_text
@@ -532,13 +532,22 @@ class BaseDashboardPlaceholder(object):
                                                          layout_uid=self.layout.uid,
                                                          workspace__name=self.workspace).values_list(
             'position', flat=True)
-        for row in range(1, self.rows + 1):
-            for col in range(1, self.cols + 1):
-                if position not in positions:
-                    empty_cells.append(
-                        ('col-{0} row-{1}'.format(col, row), position)
-                    )
-                position += 1
+
+        total_cols = self.rows * self.cols
+        if self.layout.uid == 'profile':
+            size_col = 12
+        else:
+            size_col = int(MAX_SIZE_COLS / self.rows)
+            if size_col < 1:
+                size_col = 1
+
+        for col in range(1, total_cols + 1):
+            if position not in positions:
+                empty_cells.append(
+                    ('col s{0}'.format(size_col), position)
+                )
+            position += 1
+
         return empty_cells
 
     def render_for_edit(self):
@@ -875,21 +884,6 @@ class BaseDashboardPlugin(object):
         """HTML id."""
         return self._html_id
 
-    def get_position(self):
-        """Get the exact position of the plugin widget in the placeholder (row
-        number, col number).
-
-        :return tuple: Tuple of row and col numbers.
-        """
-        col = self.position % self.placeholder.cols
-        row = int(
-            self.position / self.placeholder.cols
-        ) + (1 if col > 0 else 0)
-        if col == 0:
-            col = self.placeholder.cols
-
-        return row, col
-
     @property  # Comment the @property out if something goes wrong.
     def html_class(self):
         """HTML class.
@@ -911,12 +905,14 @@ class BaseDashboardPlugin(object):
                 )
             ]
 
-            html_class.append('width-{0}'.format(widget.cols))
-            html_class.append('height-{0}'.format(widget.rows))
+            if self.layout.uid == 'profile':
+                size_col = 12
+            else:
+                size_col = int(MAX_SIZE_COLS / self.placeholder.rows)
+                if size_col < 1:
+                    size_col = 1
 
-            row, col = self.get_position()
-            html_class.append('row-{0}'.format(row))
-            html_class.append('col-{0}'.format(col))
+            html_class.append('col s{0}'.format(size_col))
 
             return ' '.join(html_class)
         except Exception as err:

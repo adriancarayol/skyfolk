@@ -4,7 +4,7 @@
         <div class="row">
             {% for ws in workspaces %}
                 <div class="col s4">
-                    <div class="card z-depth-2{% if ws == current_workspace %} blue{% endif %}">
+                    <div class="card z-depth-2">
                         <div class="row">
                             <a href="{% if edit_mode %}{% url 'dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash.dashboard' ws.slug %}{% endif %}"
                                title="{{ ws.name }}">
@@ -16,8 +16,7 @@
                         </div>
                         <div class="divider"></div>
                         <div class="row">
-                            <span>Layout: </span>
-                            <span>{{ ws.layout_uid }}</span>
+                            <p class="flow-text">{{ ws.layout_uid }}</p>
                         </div>
                     </div>
                 </div>

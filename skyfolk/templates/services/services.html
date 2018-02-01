@@ -9,22 +9,13 @@
         <div class="row">
             <div class="col s12">
                 {% if user.is_authenticated %}
-                    <h2>My Services</h2>
-                    {% if messages %}
-                        <div class="alert alert-success" role="alert">
-                            <ul class="messages">
-                                {% for message in messages %}
-                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
+                    <h2>Mis servicios</h2>
                     {% if services_list %}
                         <div class="row">
-                            <h3>Services activated</h3>
+                            <h3>Servicios activos</h3>
                             {% for service in services_list %}
-                                <div class="col m4 card z-depth-2">
-                                    <div class="thumbnail">
+                                <div class="col m4">
+                                    <div class="card z-depth-2 thumbnail">
                                         <div class="caption">
                                             <h4 data-toggle="tooltip" title="{{ service.name.description }}">
                                                 {{ service.name|service_readable|safe|escape }} <i
@@ -64,6 +55,7 @@
                             {% endfor %}
                         </div>
                     {% endif %}
+                    <div class="divider"></div>
                     {% if service_list_remaining %}
                         <div class="row">
                             <h3>Services available</h3>

@@ -26,7 +26,8 @@ class BaseTriggerWidget(BaseDashboardPluginWidget):
         pattern = 'th_{provider}_{id}'.format(provider=provider,
                                               id=trigger.id)
 
-        context = {'plugin': self.plugin, 'results': cache.get(pattern)}
+        context = {'plugin': self.plugin, 'results': cache.get(pattern), 'trigger': trigger}
+
         return render_to_string('service/render.html', context)
 
 

@@ -33,7 +33,7 @@ class ProfileLayout(BaseDashboardLayout):
     cell_units = '%'
     media_css = (
         'css/dash_dotted_borders.css',
-        'profile/css/dash_layout_android.css',
+        'css/dash_layout_profile.css',
     )
     # media_js = ('js/dash_layout_android.js',)
 

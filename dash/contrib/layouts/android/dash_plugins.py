@@ -12,7 +12,6 @@ from ....contrib.plugins.weather.dash_widgets import BaseWeatherWidget
 from ....contrib.plugins.service.dash_widgets import BaseTriggerWidget
 
 from .dash_widgets import (
-    BaseBookmarkAndroidWidget,
     URL1x1AndroidMainWidget,
     URL1x1AndroidShortcutWidget,
 )
@@ -35,13 +34,9 @@ __license__ = 'GPL 2.0/LGPL 2.1'
 
 main_sizes = (
     (1, 1),
-    (1, 2),
-    (2, 1),
-    (3, 3),
 )
 shortcut_sizes = (
     (1, 1),
-    (1, 2),
 )
 plugin_widget_factory(BaseDummyWidget,
                       'android',
@@ -61,10 +56,6 @@ plugin_widget_factory(BaseDummyWidget,
 
 main_sizes = (
     (1, 1),
-    (2, 2),
-    (2, 3),
-    (3, 2),
-    (3, 3),
 )
 plugin_widget_factory(BaseImageWidget,
                       'android',
@@ -78,9 +69,7 @@ plugin_widget_factory(BaseImageWidget,
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
-    (4, 5),
+    (1, 1),
 )
 shortcut_sizes = (
     (1, 1),
@@ -102,8 +91,7 @@ plugin_widget_factory(BaseMemoWidget,
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
+    (1, 1),
 )
 plugin_widget_factory(BaseTinyMCEMemoWidget,
                       'android',
@@ -117,8 +105,7 @@ plugin_widget_factory(BaseTinyMCEMemoWidget,
 
 
 main_sizes = (
-    (2, 3),
-    (3, 3),
+    (1, 1),
 )
 plugin_widget_factory(BaseReadRSSFeedWidget,
                       'android',
@@ -140,10 +127,7 @@ plugin_widget_registry.register(URL1x1AndroidShortcutWidget)
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
+    (1, 1),
 )
 plugin_widget_factory(BaseVideoWidget,
                       'android',
@@ -158,10 +142,7 @@ plugin_widget_factory(BaseVideoWidget,
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
+    (1, 1),
 )
 plugin_widget_factory(BaseTriggerWidget,
                       'android',
@@ -175,35 +156,10 @@ plugin_widget_factory(BaseTriggerWidget,
 
 
 main_sizes = (
-    (2, 2),
-    (3, 3),
+    (1, 1),
 )
 plugin_widget_factory(BaseWeatherWidget,
                       'android',
                       'main',
                       'weather',
                       main_sizes)
-
-# **************************************************************************
-# *************** Registering the widgets for Bookmark plugin ***************
-# **************************************************************************
-
-
-main_sizes = (
-    (1, 1),
-    # (2, 2),
-)
-shortcut_sizes = (
-    (1, 1),
-    # (2, 2),
-)
-plugin_widget_factory(BaseBookmarkAndroidWidget,
-                      'android',
-                      'main',
-                      'bookmark',
-                      main_sizes)
-plugin_widget_factory(BaseBookmarkAndroidWidget,
-                      'android',
-                      'shortcut',
-                      'bookmark',
-                      shortcut_sizes)

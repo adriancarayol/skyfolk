@@ -18,6 +18,3 @@ class URL1x1ProfileMainWidget(URL1x1Widget):
 
     layout_uid = 'profile'
     placeholder_uid = 'main'
-    media_css = (
-        'css/dash_plugin_url_android.css',
-    )

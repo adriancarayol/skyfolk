@@ -13,7 +13,7 @@ class BasePollPlugin(BaseDashboardPlugin):
     """Base Video plugin."""
 
     name = _("Poll")
-    group = _("Skyfolk")
+    group = _("Polls")
     form = PollForm
     html_classes = []
 

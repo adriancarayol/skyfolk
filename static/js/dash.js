@@ -5,7 +5,7 @@
     Description:
         Django-dash main scripts.
 */
-;
+
 $(document).ready(function() {
     var onLightboxOpen = function() {
         $('.submenu').hide();
@@ -13,6 +13,7 @@ $(document).ready(function() {
 
     var onLightboxAddPluginOpen = function() {
         $('.submenu').hide();
+         $('select').material_select();
         $( "#accordion" ).accordion({heightStyle: "content"});
     };
 

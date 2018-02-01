@@ -74,7 +74,6 @@ THIRD_PARTY_APPS = (
     'dash',
     'dash.contrib.layouts.android',
     'dash.contrib.layouts.profile',
-    'dash.contrib.layouts.windows8',
     'dash.contrib.plugins.dummy',
     'dash.contrib.plugins.service',
     'dash.contrib.plugins.image',

@@ -168,11 +168,6 @@ urlpatterns = [
         view=update_entry_info,
         name='dash.update_dashobard_entry'),
 
-    # View default dashboard (no workspace selected == default workspace used).
-    url(_(r'^$'),
-        view=dashboard,
-        name='dash.dashboard'),
-
     url(_(r'^entry/poll/response/$'),
         view=submit_poll_response,
         name='dash.response_dashboard_entry'),

@@ -6,9 +6,8 @@ from django.views.generic import TemplateView
 
 from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
 
-from dash_services.views import TriggerListView, TriggerDeleteView, TriggerUpdateView, TriggerEditedTemplateView
-from dash_services.views import TriggerDeletedTemplateView
-from dash_services.views_fbv import logout_view, trigger_switch_all_to, trigger_edit, trigger_on_off
+from dash_services.views import TriggerListView
+from dash_services.views_fbv import logout_view
 from dash_services.views_fbv import service_related_triggers_switch_to
 
 from dash_services.views_userservices import UserServiceListView, UserServiceCreateView, UserServiceUpdateView
@@ -95,12 +94,12 @@ urlpatterns = [
     # ****************************************
     # trigger happy module
     # ****************************************
-    url(r'^th/$', TriggerListView.as_view(), name='base'),
-    url(r'^th/trigger/filter_by/(?P<trigger_filtered_by>[a-zA-Z]+)$', TriggerListView.as_view(),
-        name='trigger_filter_by'),
-    url(r'^th/trigger/order_by/(?P<trigger_ordered_by>[a-zA-Z_]+)$', TriggerListView.as_view(),
-        name='trigger_order_by'),
-    url(r'^th/trigger/$', TriggerListView.as_view(), name='home'),
+    # url(r'^th/$', TriggerListView.as_view(), name='base'),
+    # url(r'^th/trigger/filter_by/(?P<trigger_filtered_by>[a-zA-Z]+)$', TriggerListView.as_view(),
+    #     name='trigger_filter_by'),
+    # url(r'^th/trigger/order_by/(?P<trigger_ordered_by>[a-zA-Z_]+)$', TriggerListView.as_view(),
+    #     name='trigger_order_by'),
+    # url(r'^th/trigger/$', TriggerListView.as_view(), name='home'),
     # ****************************************
     # * trigger
     # ****************************************

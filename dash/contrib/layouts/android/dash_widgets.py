@@ -34,17 +34,3 @@ class URL1x1AndroidShortcutWidget(URL1x1AndroidMainWidget):
     """URL plugin widget for Android layout (placeholder `shortcuts`)."""
 
     placeholder_uid = 'shortcuts'
-
-
-# *********************************************************
-# *********************************************************
-# *********************** Bookmark widgets ****************
-# *********************************************************
-# *********************************************************
-
-class BaseBookmarkAndroidWidget(BaseBookmarkWidget):
-    """Base Bookmark plugin widget for Android layout."""
-
-    media_css = (
-        'css/dash_plugin_bookmark_android.css',
-    )
