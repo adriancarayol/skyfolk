@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,oBAAoB;EAClB,OAAO,EAAE,YAAY",
+"sources": ["../sass/dashboard.sass"],
+"names": [],
+"file": "dashboard.css"
+}
