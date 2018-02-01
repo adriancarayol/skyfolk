@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block site-title %}{{ dashboard_settings.title }}{% endblock site-title %}
+{% block title %}<title>Skyfolk // {{ dashboard_settings.title }}.</title>{% endblock title %}
 
 {% block layout-stylesheets %}
 {% for css_file in layout.get_media_css %}

@@ -50,15 +50,18 @@ Base para la interfaz en comun de todos los usuarios.
     {% block extra-css %}{% endblock %}
     {% block include_files %}
     {% endblock %}
+    {% block dashboard_files %}
+    {% endblock %}
 </head>
 <body>
-
     {% block barra_navegacion %}
     {% include "account/base-header.html" %}
     {% comment %} Para el feedback {% endcomment %}
     <button type="button" id="feedback-btn" class="btn right red lighten-3 black-text">
         Feedback <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
     </button>
+    {% endblock %}
+    {% block dashboard_content %}
     {% endblock %}
     {% block content %}
     <!-- Contenido de cada pagina por separado -->

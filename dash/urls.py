@@ -14,7 +14,7 @@ from .views import (
     delete_dashboard_entry,
     delete_dashboard_workspace,
     edit_dashboard,
-    edit_dashboard_settings,
+    # edit_dashboard_settings,
     edit_dashboard_workspace,
     paste_dashboard_entry,
     plugin_widgets,
@@ -159,9 +159,9 @@ urlpatterns = [
         name='dash.dashboard'),
 
     # Edit dashboard settings.
-    url(_(r'^settings/edit/$'),
-        view=edit_dashboard_settings,
-        name='dash.edit_dashboard_settings'),
+    # url(_(r'^settings/edit/$'),
+    #     view=edit_dashboard_settings,
+    #     name='dash.edit_dashboard_settings'),
 
     # Update dashboard entry
     url(_(r'^entry/update/$'), 

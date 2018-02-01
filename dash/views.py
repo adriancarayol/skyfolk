@@ -70,7 +70,7 @@ else:
 
 
 @login_required
-def dashboard(request, workspace=None):
+def dashboard(request, workspace):
     """Dashboard.
 
     :param django.http.HttpRequest request:
@@ -112,7 +112,7 @@ def dashboard(request, workspace=None):
                 workspace
             )
         messages.info(request, msg)
-        return redirect('dash.edit_dashboard')
+        return redirect('user_profile:profile', username=request.user.username)
 
     # Getting the (frozen) queryset.
     dashboard_entries = DashboardEntry._default_manager \
@@ -152,7 +152,7 @@ def dashboard(request, workspace=None):
 
 
 @login_required
-def edit_dashboard(request, workspace=None):
+def edit_dashboard(request, workspace):
     """Edit dashboard.
 
     :param django.http.HttpRequest request:
@@ -191,7 +191,7 @@ def edit_dashboard(request, workspace=None):
             _('The workspace with slug "{0}" does '
               'not belong to layout "{1}".').format(workspace, layout.name)
         )
-        return redirect('dash.edit_dashboard')
+        return redirect('user_profile:profile', username=request.user.username)
 
     # Getting the (frozen) queryset.
     dashboard_entries = DashboardEntry._default_manager \
@@ -275,7 +275,7 @@ class AddDashboardEntry(SessionWizardView):
                         'layout "{1}".'
                     ).format(workspace_slug, self.dashboard_settings.layout_uid)
                 messages.info(self.request, message)
-                return redirect('dash.edit_dashboard')
+                return redirect('user_profile:profile', username=self.request.user.username)
         else:
             workspace = None
 
@@ -372,7 +372,7 @@ class AddDashboardEntry(SessionWizardView):
                         'layout "{1}".'
                     ).format(workspace_slug, self.dashboard_settings.layout_uid)
                 messages.info(self.request, message)
-                return redirect('dash.edit_dashboard')
+                return redirect('user_profile:profile', username=self.request.user.username)
 
         if dashboard_settings.allow_different_layouts and workspace:
             layout_uid = workspace.layout_uid
@@ -582,7 +582,7 @@ def add_dashboard_entry(request,
                     'layout "{1}".'
                 ).format(workspace_slug, dashboard_settings.layout_uid)
             messages.info(request, message)
-            return redirect('dash.edit_dashboard')
+            return redirect('user_profile:profile', username=request.user.username)
 
     if dashboard_settings.allow_different_layouts and workspace:
         layout_uid = workspace.layout_uid
@@ -695,7 +695,7 @@ def add_dashboard_entry(request,
     # If plugin is not configurable, it's just saved as is.
     else:
         obj.save()
-        return redirect('dash.edit_dashboard')
+        return redirect('user_profile:profile', username=request.user.username)
 
     if layout.add_dashboard_entry_ajax_template_name:
         template_name_ajax = layout.add_dashboard_entry_ajax_template_name
@@ -880,7 +880,7 @@ class EditDashboardEntry(SessionWizardView):
 
         self.obj.save()
 
-        return redirect('dash.edit_dashboard')
+        return redirect('user_profile:profile', username=request.user.username)
 
 
 @login_required
@@ -1074,7 +1074,7 @@ def plugin_widgets(request,
                     'layout "{1}".'
                 ).format(workspace_slug, dashboard_settings.layout_uid)
             messages.info(request, message)
-            return redirect('dash.edit_dashboard')
+            return redirect('user_profile:profile', username=request.user.username)
 
     if dashboard_settings.allow_different_layouts and workspace:
         layout_uid = workspace.layout_uid
@@ -1369,7 +1369,7 @@ def delete_dashboard_workspace(request, workspace_id,
                 _('The dashboard workspace "{0}" was deleted '
                   'successfully.').format(workspace_name)
             )
-            return redirect('dash.edit_dashboard')
+            return redirect('user_profile:profile', username=request.user.username)
 
         if request.POST.get('next', None):
             return redirect(request.POST.get('next'))
@@ -1448,57 +1448,57 @@ def dashboard_workspaces(request,
 # ***************************************************************************
 # ***************************************************************************
 
-
-@login_required
-def edit_dashboard_settings(request,
-                            template_name='dash/edit_dashboard_settings.html',
-                            template_name_ajax='dash/edit_dashboard_settings_'
-                                               'ajax.html'):
-    """Edit dashboard settings.
-
-    :param django.http.HttpRequest request:
-    :param string template_name:
-    :param string template_name_ajax: Template used for AJAX calls.
-    :return django.http.HttpResponse:
-    """
-    # Getting dashboard settings for the user. Then get users' layout.
-    dashboard_settings = get_or_create_dashboard_settings(request.user)
-    layout = get_layout(
-        layout_uid=dashboard_settings.layout_uid, as_instance=True
-    )
-
-    if request.method == 'POST':
-        form = DashboardSettingsForm(
-            data=request.POST,
-            files=request.FILES,
-            instance=dashboard_settings
-        )
-        if form.is_valid():
-            form.save(commit=False)
-            dashboard_settings.user = request.user
-            dashboard_settings.save()
-            messages.info(request, _('Dashboard settings were edited '
-                                     'successfully.'))
-            return redirect('dash.edit_dashboard')
-
-    else:
-        form = DashboardSettingsForm(instance=dashboard_settings)
-
-    if request.is_ajax():
-        template_name = template_name_ajax
-
-    context = {
-        'layout': layout,
-        'form': form,
-        'dashboard_settings': dashboard_settings
-    }
-
-    if versions.DJANGO_GTE_1_10:
-        return render(request, template_name, context)
-    else:
-        return render_to_response(
-            template_name, context, context_instance=RequestContext(request)
-        )
+#TODO: Permitir cambiar la distribucion del dashboard por el usuario
+# @login_required
+# def edit_dashboard_settings(request,
+#                             template_name='dash/edit_dashboard_settings.html',
+#                             template_name_ajax='dash/edit_dashboard_settings_'
+#                                                'ajax.html'):
+#     """Edit dashboard settings.
+#
+#     :param django.http.HttpRequest request:
+#     :param string template_name:
+#     :param string template_name_ajax: Template used for AJAX calls.
+#     :return django.http.HttpResponse:
+#     """
+#     # Getting dashboard settings for the user. Then get users' layout.
+#     dashboard_settings = get_or_create_dashboard_settings(request.user)
+#     layout = get_layout(
+#         layout_uid=dashboard_settings.layout_uid, as_instance=True
+#     )
+#
+#     if request.method == 'POST':
+#         form = DashboardSettingsForm(
+#             data=request.POST,
+#             files=request.FILES,
+#             instance=dashboard_settings
+#         )
+#         if form.is_valid():
+#             form.save(commit=False)
+#             dashboard_settings.user = request.user
+#             dashboard_settings.save()
+#             messages.info(request, _('Dashboard settings were edited '
+#                                      'successfully.'))
+#             return redirect('user_profile:profile', username=request.user.username)
+#
+#     else:
+#         form = DashboardSettingsForm(instance=dashboard_settings)
+#
+#     if request.is_ajax():
+#         template_name = template_name_ajax
+#
+#     context = {
+#         'layout': layout,
+#         'form': form,
+#         'dashboard_settings': dashboard_settings
+#     }
+#
+#     if versions.DJANGO_GTE_1_10:
+#         return render(request, template_name, context)
+#     else:
+#         return render_to_response(
+#             template_name, context, context_instance=RequestContext(request)
+#         )
 
 
 @login_required
@@ -1513,7 +1513,7 @@ def clone_dashboard_workspace(request, workspace_id):
         if redirect_to:
             return redirect(redirect_to)
         else:
-            return redirect('dash.edit_dashboard')
+            return redirect('user_profile:profile', username=request.user.username)
 
     if not (workspace.is_clonable or request.user.pk == workspace.user.pk):
         messages.info(request, _("You are not allowed to clone the given "
@@ -1521,7 +1521,7 @@ def clone_dashboard_workspace(request, workspace_id):
         if redirect_to:
             return redirect(redirect_to)
         else:
-            return redirect('dash.edit_dashboard')
+            return redirect('user_profile:profile', username=request.user.username)
 
     cloned_workspace = clone_workspace(workspace, request.user)
 
@@ -1558,7 +1558,7 @@ def clone_dashboard_workspace(request, workspace_id):
                         layout.name,
                         cloned_workspace_layout.name))
         )
-        return redirect('dash.edit_dashboard')
+        return redirect('user_profile:profile', username=request.user.username)
 
 
 # ***************************************************************************
@@ -1593,7 +1593,7 @@ def cut_dashboard_entry(request, entry_id):
     if workspace and workspace.slug:
         return redirect('dash.edit_dashboard', workspace=workspace.slug)
     else:
-        return redirect('dash.edit_dashboard')
+        return redirect('user_profile:profile', username=request.user.username)
 
 
 @login_required
@@ -1677,7 +1677,7 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
     if workspace:
         return redirect('dash.edit_dashboard', workspace=workspace)
     else:
-        return redirect('dash.edit_dashboard')
+        return redirect('user_profile:profile', username=request.user.username)
 
 
 @login_required
