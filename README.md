@@ -12,6 +12,8 @@ rabbitmq:latest
 ffmpeg:latest
 postgresql:latest
 neo4j:latest
+tidy:latest
+pandoc:latest
 ```
 Tras esto, podemos instalar los requerimentos de la siguiente forma:
 ```

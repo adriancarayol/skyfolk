@@ -33,3 +33,4 @@ kibana/
 tmp/
 celerybeat.pid
 ./static/
+*.log

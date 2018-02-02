@@ -18,11 +18,10 @@ def submit_poll_response(request):
     if request.POST:
         if form.is_valid():
             poll_id = form.cleaned_data['pk']
-
             if '_positive' == request.POST.get('submit', None):
                 options = True
                 valid_form = True
-            elif '_negative' in request.POST.get('submit', None):
+            elif '_negative' == request.POST.get('submit', None):
                 options = False
                 valid_form = True
 
@@ -34,7 +33,7 @@ def submit_poll_response(request):
                         PollResponse.objects.filter(poll_id=poll_id, user=request.user).update(options=options)
                     else:
                         PollResponse.objects.create(poll_id=poll_id, user=request.user, options=options)
-                except IntegrityError:
+                except (IntegrityError, PollResponse.DoestNotExist) as e:
                     valid_form = False
 
             if valid_form:

@@ -562,3 +562,84 @@ Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
 TypeError: dashboard() missing 1 required positional argument: 'workspace'
+2018-02-02 15:33:00,103 ERROR exception 11282 Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 133, in dispatch
+    return super(LoginView, self).dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 79, in dispatch
+    **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 102, in post
+    response = self.form_valid(form)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/allauth/account/views.py", line 146, in form_valid
+    return form.login(self.request, redirect_url=success_url)
+  File "/home/adrian/skyfolk/user_profile/forms.py", line 33, in login
+    user_profile = NodeProfile.nodes.get(user_id=self.user.id)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/match.py", line 507, in get
+    result = self.query_cls(self).build_ast()._execute()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/match.py", line 411, in _execute
+    results, _ = db.cypher_query(query, self._query_params)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 27, in wrapper
+    self.set_connection(config.DATABASE_URL)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neomodel/util.py", line 61, in set_connection
+    max_pool_size=config.MAX_POOL_SIZE)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/api.py", line 112, in driver
+    return driver_class(uri, **config)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/direct.py", line 63, in __init__
+    pool.acquire()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/neo4j/v1/direct.py", line 44, in acquire
+    raise ServiceUnavailable("Cannot acquire connection to {!r}".format(self.address))
+neo4j.exceptions.ServiceUnavailable: Cannot acquire connection to Address(host='localhost', port=7687)
+2018-02-02 15:34:07,433 ERROR exception 11282 Internal Server Error: /dashboard/entry/poll/response/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/contrib/plugins/poll/views.py", line 25, in submit_poll_response
+    elif '_negative' in request.POST.get('submit', None):
+TypeError: argument of type 'NoneType' is not iterable
+2018-02-02 15:35:52,023 ERROR exception 13007 Internal Server Error: /dashboard/entry/poll/response/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/contrib/plugins/poll/views.py", line 25, in submit_poll_response
+    elif '_negative' in request.POST.get('submit', None):
+TypeError: argument of type 'NoneType' is not iterable
