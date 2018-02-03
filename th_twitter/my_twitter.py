@@ -211,14 +211,13 @@ class ServiceTwitter(ServicesMgr):
         title, content = super(ServiceTwitter, self).save_data(trigger_id, **data)
 
         if data.get('link') and len(data.get('link')) > 0:
-            # remove html tag if any
-            content = html.strip_tags(content)
-
             if self.title_or_content(title):
                 content = str("{title} {link}").format(title=title, link=data.get('link'))
                 content += get_tags(Twitter, trigger_id)
-            else:
-                content = self.set_twitter_content(content)
+        elif content:
+            # remove html tag if any
+            content = html.strip_tags(content)
+            content = self.set_twitter_content(content)
 
             try:
                 self.twitter_api.update_status(status=content)
@@ -227,6 +226,7 @@ class ServiceTwitter(ServicesMgr):
                 logger.critical("Twitter ERR {}".format(inst))
                 update_result(trigger_id, msg=inst, status=False)
                 status = False
+
         return status
 
     def auth(self, request):

@@ -9,46 +9,63 @@
         <div class="row">
             <div class="col s12">
                 {% if user.is_authenticated %}
-                    <h2>Mis servicios</h2>
+                    <div class="row">
+                        <h2 class="center">Mis servicios</h2>
+                    </div>
                     {% if services_list %}
                         <div class="row">
                             <h3>Servicios activos</h3>
                             {% for service in services_list %}
                                 <div class="col m4">
                                     <div class="card z-depth-2 thumbnail">
-                                        <div class="caption">
-                                            <h4 data-toggle="tooltip" title="{{ service.name.description }}">
-                                                {{ service.name|service_readable|safe|escape }} <i
-                                                    class="fa fa-{{ service.name|service_readable_class|lower }}"
-                                                    aria-hidden="true"></i></h4>
-                                            <p>
-                                                {% if service.name.auth_required == True %}
-                                                    <a class="btn btn-xs btn-warning" role="button"
-                                                       href="{% url 'renew_service' service.name.id %}"
-                                                       title="{% trans 'Renew this service ?' %}"><span
-                                                            class="material-icons">autorenew</span></a>
-                                                {% endif %}
-                                                <a class="btn btn-xs btn-info" role="button"
-                                                   href="{% url 'edit_service' service.id %}"
-                                                   title="{% trans 'Edit this service' %}"><span
-                                                        class="material-icons">edit</span></a>
-                                                <a class="btn btn-xs btn-success" role="button"
-                                                   href="{% url 'service_related_triggers_switch_to' service.pk 'off' %}"
-                                                   title="{% trans 'Disable all the triggers of this service' %}"><span
-                                                        class="material-icons">pause_circle_filled</span></a>
-                                                <a class="btn btn-xs btn-info" role="button"
-                                                   href="{% url 'service_related_triggers_switch_to' service.pk 'on' %}"
-                                                   title="{% trans 'Enable all the triggers of this service' %}"><span
-                                                        class="material-icons">play_circle_filled</span></a>
-                                                <a class="btn btn-xs btn-danger" role="button"
-                                                   href="{% url 'delete_service' service.id %}"
-                                                   title="{% trans 'Delete this service ?' %}"><span
-                                                        class="material-icons">remove</span></a>
-                                                <br>
-                                                <span class="x">{{ service.counter_ok }}</span> {% trans "ran successfully" %}
-                                                -
-                                                <span class="x">{{ service.counter_ko }}</span> {% trans "failed" %}
-                                            </p>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <h4 class="tooltipped" data-position="bottom" data-delay="50"
+                                                    data-tooltip="{{ service.name.description }}"
+                                                    data-toggle="tooltip" title="{{ service.name.description }}">
+                                                    {{ service.name|service_readable|safe|escape }}</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col s12">
+                                                <p>
+                                                    {% if service.name.auth_required == True %}
+                                                        <a class="waves-effect waves-light btn white blue-text"
+                                                           role="button"
+                                                           href="{% url 'renew_service' service.name.id %}"
+                                                           title="{% trans 'Renew this service ?' %}"><span
+                                                                class="material-icons">autorenew</span></a>
+                                                    {% endif %}
+                                                    <a class="waves-effect waves-light btn white black-text"
+                                                       role="button"
+                                                       href="{% url 'edit_service' service.id %}"
+                                                       title="{% trans 'Edit this service' %}"><span
+                                                            class="material-icons">edit</span></a>
+                                                    <a class="waves-effect waves-light btn white orange-text"
+                                                       role="button"
+                                                       href="{% url 'service_related_triggers_switch_to' service.pk 'off' %}"
+                                                       title="{% trans 'Disable all the triggers of this service' %}"><span
+                                                            class="material-icons">pause_circle_filled</span></a>
+                                                    <a class="waves-effect waves-light btn white green-text"
+                                                       role="button"
+                                                       href="{% url 'service_related_triggers_switch_to' service.pk 'on' %}"
+                                                       title="{% trans 'Enable all the triggers of this service' %}"><span
+                                                            class="material-icons">play_circle_filled</span></a>
+                                                    <a class="waves-effect waves-light btn white red-text" role="button"
+                                                       href="{% url 'delete_service' service.id %}"
+                                                       title="{% trans 'Delete this service ?' %}"><span
+                                                            class="material-icons">remove</span></a>
+                                                </p>
+                                            </div>
+                                            <div class="col s12">
+                                                <p>
+                                                    <span><i class="material-icons">done</i></span>
+                                                    <span>{{ service.counter_ok }} {% trans "ran successfully" %}</span>
+                                                    -
+                                                    <span><i class="material-icons">error</i></span>
+                                                    <span>{{ service.counter_ko }} {% trans "failed" %}</span>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -64,9 +81,7 @@
                                     <a class="thumbnail" title="add this service"
                                        href="{% url 'add_service' service.name %}">
                                         <h4 data-toggle="tooltip" title="{{ service.description }}">
-                                            {{ service|service_readable|safe|escape }} <i
-                                                class="fa fa-{{ service|service_readable_class|lower }}"
-                                                aria-hidden="true"></i>
+                                            {{ service|service_readable|safe|escape }}
                                         </h4>
                                         <p>
                                             <span class="glyphicon glyphicon-repeat icon-white"></span>
@@ -84,4 +99,10 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('.tooltipped').tooltip({delay: 50});
+        });
+
+    </script>
 {% endblock %}

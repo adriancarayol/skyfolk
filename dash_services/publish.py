@@ -85,13 +85,11 @@ class Pub(object):
         kwargs = {'user': service.user}
         getattr(service_consumer, '__init__')(service.consumer.token, **kwargs)
         instance = getattr(service_consumer, 'save_data')
-
         # 2) for each one
         for d in data:
             d['userservice_id'] = service.consumer.id
             # the consumer will save the data and return if success or not
             status = instance(service.id, **d)
-
             to_update = True
 
         return to_update, bool(status)

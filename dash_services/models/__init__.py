@@ -157,7 +157,6 @@ def update_result(trigger_id, msg, status):
     """
     service = TriggerService.objects.get(id=trigger_id)
     # if status is True, reset *_failed counter
-    print(isinstance(status, bool))
     if status:
         provider_failed = 0
         consumer_failed = 0
