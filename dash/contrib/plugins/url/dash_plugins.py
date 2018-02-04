@@ -33,7 +33,7 @@ class BaseURLPlugin(BaseDashboardPlugin):
         """
         html_class = super(BaseURLPlugin, self).html_class
         if self.data.image:
-            html_class += ' iconic-url'
+            html_class += 'material-icons'
         return html_class
 
 # ****************************************************************************

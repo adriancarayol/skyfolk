@@ -23,21 +23,6 @@ from .dash_widgets import (
 # **************************************************************************
 
 # **************************************************************************
-# ******************* Registering widgets for Dummy plugin *****************
-# **************************************************************************
-
-
-main_sizes = (
-    (1, 1),
-)
-
-plugin_widget_factory(BaseDummyWidget,
-                      'profile',
-                      'main',
-                      'dummy',
-                      main_sizes)
-
-# **************************************************************************
 # ******************* Registering widgets for Image plugin *****************
 # **************************************************************************
 
@@ -123,6 +108,7 @@ plugin_widget_factory(BaseVideoWidget,
 main_sizes = (
     (1, 1),
 )
+
 plugin_widget_factory(BaseWeatherWidget,
                       'profile',
                       'main',

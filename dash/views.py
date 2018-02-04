@@ -880,7 +880,7 @@ class EditDashboardEntry(SessionWizardView):
 
         self.obj.save()
 
-        return redirect('user_profile:profile', username=request.user.username)
+        return redirect('user_profile:profile', username=self.request.user.username)
 
 
 @login_required
@@ -1448,7 +1448,7 @@ def dashboard_workspaces(request,
 # ***************************************************************************
 # ***************************************************************************
 
-#TODO: Permitir cambiar la distribucion del dashboard por el usuario
+# TODO: Permitir cambiar la distribucion del dashboard por el usuario
 # @login_required
 # def edit_dashboard_settings(request,
 #                             template_name='dash/edit_dashboard_settings.html',

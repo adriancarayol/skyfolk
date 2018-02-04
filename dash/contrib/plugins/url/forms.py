@@ -37,8 +37,7 @@ class URLForm(forms.Form, DashboardPluginFormBase):
 
     title = forms.CharField(label=_("Title"), required=True)
     url = forms.URLField(label=_("URL"), required=True)
-    external = forms.BooleanField(label=_("External?"),
-                                  required=False,
+    external = forms.BooleanField(required=False,
                                   initial=False,
                                   widget=BooleanRadioSelect)
     image = forms.ChoiceField(label=_("Image"),

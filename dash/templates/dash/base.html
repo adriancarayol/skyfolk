@@ -33,8 +33,12 @@
                     <ul class="dashboard_menu">
                         {% if edit_mode %}
                             <li class="menu-item">
-                                <a href="{% if current_workspace %}{% url 'dash.dashboard' current_workspace.slug %}{% else %}{% url 'dash.dashboard' %}{% endif %}"
-                                   class="waffes-effect waves-light btn white black-text menu-dashboard-home" title="{% trans 'View dashboard' %}">
+                                <a href="
+
+
+                                        {% if current_workspace %}{% url 'dash.dashboard' current_workspace.slug %}{% else %}{% url 'dash.dashboard' %}{% endif %}"
+                                   class="waffes-effect waves-light btn white black-text menu-dashboard-home"
+                                   title="{% trans 'View dashboard' %}">
                                     <span class="material-icons">remove_red_eye</span>
                                 </a>
                             </li>
@@ -42,7 +46,10 @@
                             {% has_edit_dashboard_permissions as has_edit_dashboard_permissions %}
                             {% if has_edit_dashboard_permissions and current_workspace %}
                                 <li class="menu-item">
-                                    <a href="{% if current_workspace %}{% url 'dash.edit_dashboard' current_workspace.slug %}{% endif %}"
+                                    <a href="
+
+
+                                            {% if current_workspace %}{% url 'dash.edit_dashboard' current_workspace.slug %}{% endif %}"
                                        class="waffes-effect waves-light btn white black-text"
                                        title="{% trans 'Edit dashboard' %}">
                                         <span class="material-icons">settings</span>
@@ -110,20 +117,27 @@
                     <div class="row">
                         <div class="col s12">
                             <div>
-                                {% for ws in workspaces %}
-                                    <div class="col s3">
-                                        <div class="card {% if ws == current_workspace %}grey lighten-1{% endif %}">
-                                            <a href="{% if edit_mode %}{% url 'dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash.dashboard' ws.slug %}{% endif %}"
-                                           title="Workspace {{ ws.name }}">
-                                            <p class="flow-text">
-                                                <span class="material-icons">dashboard</span>
-                                                <span>{{ ws.name }}</span> -
-                                                <span>{{ ws.layout_uid }}</span>
-                                            </p>
-                                        </a>
+                                <ul class="collapsible" data-collapsible="accordion">
+                                    <li>
+                                        <div class="collapsible-header">{{ workspaces|length }} Workspaces</div>
+                                        <div class="collapsible-body">
+                                            {% for ws in workspaces %}
+                                                <div class="col s3">
+                                                    <div class="card {% if ws == current_workspace %}grey lighten-1{% endif %}">
+                                                        <a href="{% if edit_mode %}{% url 'dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash.dashboard' ws.slug %}{% endif %}"
+                                                           title="Workspace {{ ws.name }}">
+                                                            <p class="flow-text">
+                                                                <span class="material-icons">dashboard</span>
+                                                                <span>{{ ws.name }}</span> -
+                                                                <span>{{ ws.layout_uid }}</span>
+                                                            </p>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                    </div>
-                                {% endfor %}
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -149,4 +163,9 @@
 
     {% block layout-javascripts %}
     {% endblock layout-javascripts %}
+    <script>
+    $(document).ready(function(){
+    $('.collapsible').collapsible();
+  });
+    </script>
 {% endblock dashboard_content %}

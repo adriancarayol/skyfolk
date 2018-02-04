@@ -1,6 +1,5 @@
 from ....base import plugin_widget_registry
 from ....factory import plugin_widget_factory
-from ....contrib.plugins.dummy.dash_widgets import BaseDummyWidget
 from ....contrib.plugins.image.dash_widgets import BaseImageWidget
 from ....contrib.plugins.memo.dash_widgets import (
     BaseMemoWidget,
@@ -26,28 +25,6 @@ __license__ = 'GPL 2.0/LGPL 2.1'
 # ************************** Registering the widgets ***********************
 # **************************************************************************
 # **************************************************************************
-
-# **************************************************************************
-# ******************* Registering widgets for Dummy plugin *****************
-# **************************************************************************
-
-
-main_sizes = (
-    (1, 1),
-)
-shortcut_sizes = (
-    (1, 1),
-)
-plugin_widget_factory(BaseDummyWidget,
-                      'android',
-                      'main',
-                      'dummy',
-                      main_sizes)
-plugin_widget_factory(BaseDummyWidget,
-                      'android',
-                      'shortcut',
-                      'dummy',
-                      shortcut_sizes)
 
 # **************************************************************************
 # ******************* Registering widgets for Image plugin *****************

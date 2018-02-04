@@ -2,32 +2,44 @@
 
 <div class="generic-content-wrapper">
     <div class="wrapper-bg"></div>
-    <div class="hero-unit-small">
-        <h2 class="content-title">{% trans "Widgets" %}</h2>
+    <div class="row">
+        <h2>Añadir nuevo widget.</h2>
     </div>
 
-    <div class="content-body">
+    <div class="row">
         {% if paste_from_clipboard_url %}
-        <div class="paste-from-clipboard">
-            <a href="{{ paste_from_clipboard_url }}">
-                <span class="iconic icon-paste"></span>
-                <span class="textonic">{% trans "Paste from clipboard" %}</span>
-            </a>
-        </div>
-        {% endif %}
-        <div id="accordion">
-            {% for group,widgets in grouped_widgets.items %}
-            <h3>{{ group }}</h3>
-            <div>
-                <ul class="content-listing widgets unstyled">
-                {% for uid, name, url in widgets %}
-                    <li>
-                        <a href="{{ url }}" class="widget widget-{{ uid }}">{{ name }}</a>
-                    </li>
-                {% endfor %}
-                </ul>
+            <div class="paste-from-clipboard">
+                <a href="{{ paste_from_clipboard_url }}">
+                    <span class="iconic icon-paste"></span>
+                    <span class="textonic">{% trans "Paste from clipboard" %}</span>
+                </a>
             </div>
+        {% endif %}
+        <div class="divider"></div>
+        <ul class="collapsible" data-collapsible="accordion">
+            {% for group,widgets in grouped_widgets.items %}
+                <li>
+                    <div class="collapsible-header"><span class="flow-text">{{ group }}</span></div>
+                    <div class="collapsible-body">
+                        <div class="row">
+                            <ul class="content-listing widgets unstyled">
+                                {% for uid, name, url in widgets %}
+                                    <div class="col s12">
+                                        <li>
+                                            <a class="flow-text" href="{{ url }}" class="widget widget-{{ uid }}">{{ name }}</a>
+                                        </li>
+                                    </div>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('.collapsible').collapsible();
+    });
+</script>

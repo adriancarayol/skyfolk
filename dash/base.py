@@ -474,7 +474,7 @@ class BaseDashboardPlaceholder(object):
     @property
     def primary_html_class(self):
         """Primary HTML class."""
-        return 'placeholder-{0}'.format(self.uid)
+        return 'row placeholder-{0}'.format(self.uid)
 
     @property
     def html_class(self):
@@ -544,7 +544,7 @@ class BaseDashboardPlaceholder(object):
         for col in range(1, total_cols + 1):
             if position not in positions:
                 empty_cells.append(
-                    ('col s{0}'.format(size_col), position)
+                    ('col s{0} l{1}'.format(MAX_SIZE_COLS, size_col), position)
                 )
             position += 1
 
@@ -912,7 +912,7 @@ class BaseDashboardPlugin(object):
                 if size_col < 1:
                     size_col = 1
 
-            html_class.append('col s{0}'.format(size_col))
+            html_class.append('col s{0} l{1}'.format(MAX_SIZE_COLS, size_col))
 
             return ' '.join(html_class)
         except Exception as err:
