@@ -5,7 +5,9 @@
         <div id="{{ plugin.html_id }}" class="plugin {{ plugin.html_class }}">
             <div class="plugin-content-wrapper">
                 {% with plugin.render as rendered %}
-                    {% if rendered %}{{ rendered }}{% endif %}
+                    {% if rendered %}
+                    	{{ rendered }}
+                    {% endif %}
                 {% endwith %}
             </div>
         </div>

@@ -6,12 +6,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.views.generic import ListView
 from neomodel import db
-
-from photologue.models import Photo
+from dash.models import DashboardEntry
+from photologue.models import Photo, Video
 from publications.models import Publication
 from user_profile.models import Profile, RelationShipProfile, BLOCK
 from user_profile.node_models import NodeProfile
-
+from dash.base import get_layout
 
 class News(ListView):
     template_name = "account/base_news.html"
@@ -107,23 +107,78 @@ class News(ListView):
             photos = Photo.objects.filter(
                 Q(owner__profile__privacity='A') & Q(is_public=True)).order_by('-date_added')[offset:limit]
 
+        # Videos de seguidos + favoritos + recomendados
+        try:
+            videos = Video.objects.filter(((Q(owner__profile__in=following)
+                                            | Q(owner_id__in=pk_list)) & ~Q(
+                owner__profile__in=users_not_blocked_me)) & Q(is_public=True)).select_related(
+                'owner').prefetch_related('tags').order_by('-date_added').distinct()[offset:limit]
+        except Video.DoesNotExist:
+            videos = Video.objects.filter(
+                Q(owner__profile__privacity='A') & Q(is_public=True)).order_by('-date_added')[offset:limit]
+
+        # Widgets de seguidos + favoritos + recomendados
+        layout = get_layout(layout_uid='profile', as_instance=True)
+
+        try:
+            entries_q = Q(user__in=pk_list, layout_uid='profile', workspace=None) & ~Q(user__profile__in=users_not_blocked_me)
+
+            dashboard_entries = DashboardEntry._default_manager \
+                .filter(entries_q) \
+                .select_related('workspace', 'user') \
+                .order_by('placeholder_uid', 'position')[offset:limit]
+
+            placeholders = layout.get_placeholder_instances(dashboard_entries,
+                                                    request=self.request)
+        except Exception as e:
+            entries_q = Q(user__profile__privacity='A') & Q(layout_uid='profile', workspace=None)
+
+            dashboard_entries = DashboardEntry._default_manager \
+                .filter(entries_q) \
+                .select_related('workspace', 'user') \
+                .order_by('placeholder_uid', 'position')[offset:limit]
+
+            placeholders = layout.get_placeholder_instances(dashboard_entries,
+                                                    request=self.request)
+
+
+        for p in placeholders:
+            print('Placeholder: {}'.format(dir(p)))
+
         extended_list = []
 
-        if len(photos) <= 0 or len(publications) <= 0:
+        if len(photos) <= 0 or len(publications) <= 0 or len(videos) <= 0:
             extended_list = [u.user_id for u in self.get_recommendation_users(offset, limit)]
 
         if len(photos) <= 0:
             photos = Photo.objects.filter(owner_id__in=extended_list)[offset:limit]
 
+        if len(videos) <= 0:
+            videos = Video.objects.filter(owner_id__in=extended_list)[offset:limit]
+
         if len(publications) <= 0:
             publications = Publication.objects.filter(board_owner_id__in=extended_list)[offset:limit]
 
-        result_list = list(chain.from_iterable([filter(None, zipped) for zipped in zip_longest(publications, photos)]))
+        if len(placeholders) <= 0:
+            entries_q = Q(user_id__in=extended_list) & Q(layout_uid='profile', workspace=None)
+            dashboard_entries = DashboardEntry._default_manager \
+                .filter(entries_q) \
+                .select_related('workspace', 'user') \
+                .order_by('placeholder_uid', 'position')[offset:limit]
+
+            placeholders = layout.get_placeholder_instances(dashboard_entries,
+                                                    request=self.request)
+
+        result_list = list(chain.from_iterable([filter(None, zipped) for zipped in \
+            zip_longest(publications, photos, videos, placeholders)]))
 
         total_pubs = len(publications)
         total_photos = len(photos)
+        total_videos = len(videos) 
+        total_placeholders = len(placeholders)
 
-        if total_pubs >= 25 or total_photos >= 25:
+        if total_pubs >= 25 or total_photos >= 25 or \
+            total_videos >= 25 or total_placeholders >= 25:
             self.pagination = current_page + 1
         else:
             self.pagination = None

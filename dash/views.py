@@ -1801,8 +1801,6 @@ def public_dashboard(request,
 
     # logger.debug(dashboard_entries)
 
-    print(dashboard_entries)
-
     placeholders = layout.get_placeholder_instances(dashboard_entries,
                                                     request=request)
     layout.collect_widget_media(dashboard_entries)
