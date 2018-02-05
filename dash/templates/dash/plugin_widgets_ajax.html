@@ -10,8 +10,8 @@
         {% if paste_from_clipboard_url %}
             <div class="paste-from-clipboard">
                 <a href="{{ paste_from_clipboard_url }}">
-                    <span class="iconic icon-paste"></span>
-                    <span class="textonic">{% trans "Paste from clipboard" %}</span>
+                    <span class="material-icons">content_paste</span>
+                    <span>{% trans "Paste from clipboard" %}</span>
                 </a>
             </div>
         {% endif %}
@@ -22,13 +22,11 @@
                     <div class="collapsible-header"><span class="flow-text">{{ group }}</span></div>
                     <div class="collapsible-body">
                         <div class="row">
-                            <ul class="content-listing widgets unstyled">
+                            <ul class="collection">
                                 {% for uid, name, url in widgets %}
-                                    <div class="col s12">
-                                        <li>
-                                            <a class="flow-text" href="{{ url }}" class="widget widget-{{ uid }}">{{ name }}</a>
-                                        </li>
-                                    </div>
+                                    <li>
+                                        <a class="collection-item" href="{{ url }}" class="widget widget-{{ uid }}">{{ name }}</a>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         </div>

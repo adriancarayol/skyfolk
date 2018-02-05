@@ -33,10 +33,7 @@
                     <ul class="dashboard_menu">
                         {% if edit_mode %}
                             <li class="menu-item">
-                                <a href="
-
-
-                                        {% if current_workspace %}{% url 'dash.dashboard' current_workspace.slug %}{% else %}{% url 'dash.dashboard' %}{% endif %}"
+                                <a href="{% if current_workspace %}{% url 'dash.dashboard' current_workspace.slug %}{% else %}{% url 'dash.dashboard' %}{% endif %}"
                                    class="waffes-effect waves-light btn white black-text menu-dashboard-home"
                                    title="{% trans 'View dashboard' %}">
                                     <span class="material-icons">remove_red_eye</span>
@@ -46,10 +43,7 @@
                             {% has_edit_dashboard_permissions as has_edit_dashboard_permissions %}
                             {% if has_edit_dashboard_permissions and current_workspace %}
                                 <li class="menu-item">
-                                    <a href="
-
-
-                                            {% if current_workspace %}{% url 'dash.edit_dashboard' current_workspace.slug %}{% endif %}"
+                                    <a href="{% if current_workspace %}{% url 'dash.edit_dashboard' current_workspace.slug %}{% endif %}"
                                        class="waffes-effect waves-light btn white black-text"
                                        title="{% trans 'Edit dashboard' %}">
                                         <span class="material-icons">settings</span>
@@ -57,7 +51,7 @@
                                 </li>
                             {% endif %}
                         {% endif %}
-                        {% if 'dash.add_dashboardworkspace' in perms %}
+                        
                             <li class="menu-item">
                                 <a href="{% url 'dash.create_dashboard_workspace' %}"
                                    class="waffes-effect waves-light btn white black-text menu-dashboard-create-workspace"
@@ -65,9 +59,9 @@
                                     <span class="material-icons">add</span>
                                 </a>
                             </li>
-                        {% endif %}
+                        
                         {% if current_workspace %}
-                            {% if 'dash.change_dashboardworkspace' in perms %}
+                            
                                 <li class="menu-item">
                                     <a href="{% url 'dash.edit_dashboard_workspace' current_workspace.pk %}"
                                        class="waffes-effect waves-light btn white black-text menu-dashboard-edit-workspace"
@@ -75,9 +69,9 @@
                                         <span class="material-icons">edit</span>
                                     </a>
                                 </li>
-                            {% endif %}
+                            
 
-                            {% if 'dash.add_dashboardworkspace' in perms and 'dash.add_dashboardentry' in perms %}
+                            
                                 <li class="menu-item">
                                     <a href="{% url 'dash.clone_dashboard_workspace' current_workspace.pk %}"
                                        class="waffes-effect waves-light btn white black-text menu-dashboard-clone-workspace"
@@ -85,9 +79,9 @@
                                         <span class="material-icons">content_copy</span>
                                     </a>
                                 </li>
-                            {% endif %}
+                            
 
-                            {% if 'dash.delete_dashboardworkspace' in perms %}
+                            
                                 <li class="menu-item">
                                     <a href="{% url 'dash.delete_dashboard_workspace' current_workspace.pk %}"
                                        class="waffes-effect waves-light btn white red-text menu-dashboard-delete-workspace"
@@ -95,7 +89,7 @@
                                         <span class="material-icons">remove</span>
                                     </a>
                                 </li>
-                            {% endif %}
+                            
                         {% endif %}
                         {% if public_dashboard_url %}
                             <li class="waffes-effect waves-light btn white black-text menu-item">

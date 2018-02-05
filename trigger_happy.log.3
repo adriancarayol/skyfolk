@@ -1,13 +1,4 @@
-2018-01-31 13:49:42,068 ERROR exception 24604 Internal Server Error: /dashboard/entry/poll/response/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
-    return self.cursor.execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
-    return Database.Cursor.execute(self, query, params)
-sqlite3.IntegrityError: UNIQUE constraint failed: dash_contrib_plugins_poll_pollresponse.user_id, dash_contrib_plugins_poll_pollresponse.poll_id
-
-The above exception was the direct cause of the following exception:
-
+2018-02-05 12:42:17,836 ERROR exception 29269 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/3/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -21,460 +12,16 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/contrib/plugins/poll/views.py", line 24, in submit_poll_response
-    PollResponse.objects.create(poll_id=poll_id, user=request.user, options=options)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 394, in create
-    obj.save(force_insert=True, using=self.db)
-  File "/home/adrian/skyfolk/dash/contrib/plugins/poll/models.py", line 17, in save
-    super(PollResponse, self).save(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
-    force_update=force_update, update_fields=update_fields)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 838, in save_base
-    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 924, in _save_table
-    result = self._do_insert(cls._base_manager, using, fields, update_pk, raw)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 963, in _do_insert
-    using=using, raw=raw)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 1076, in _insert
-    return query.get_compiler(using=using).execute_sql(return_id)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 1107, in execute_sql
-    cursor.execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/debug_toolbar/panels/sql/tracking.py", line 164, in execute
-    return self._record(self.cursor.execute, sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/debug_toolbar/panels/sql/tracking.py", line 106, in _record
-    return method(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 80, in execute
-    return super(CursorDebugWrapper, self).execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
-    return self.cursor.execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/utils.py", line 94, in __exit__
-    six.reraise(dj_exc_type, dj_exc_value, traceback)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/six.py", line 685, in reraise
-    raise value.with_traceback(tb)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
-    return self.cursor.execute(sql, params)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/backends/sqlite3/base.py", line 328, in execute
-    return Database.Cursor.execute(self, query, params)
-django.db.utils.IntegrityError: UNIQUE constraint failed: dash_contrib_plugins_poll_pollresponse.user_id, dash_contrib_plugins_poll_pollresponse.poll_id
-2018-01-31 17:38:22,770 ERROR exception 12142 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 348, in profile_view
-    fill_profile_dashboard(request, user_profile, username, context)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 191, in fill_profile_dashboard
-    context['js'] = layout.get_media_js(placeholders)
-TypeError: get_media_js() takes 1 positional argument but 2 were given
-2018-01-31 18:28:57,874 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:37,612 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:39,128 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:39,519 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:39,714 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:39,910 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:40,062 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:40,234 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:40,391 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:40,534 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:29:40,664 ERROR exception 27688 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:33:24,337 ERROR exception 31404 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:33:52,861 ERROR exception 31404 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:34:13,046 ERROR exception 31404 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:34:15,386 ERROR exception 31404 Internal Server Error: /profile/adrian/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 234, in profile_view
-    return profile_view_ajax(request, user_profile, node_profile=n)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 124, in profile_view_ajax
-    raise ViewDoesNotExist('Parametro QS no encontrado')
-django.core.exceptions.ViewDoesNotExist: Parametro QS no encontrado
-2018-01-31 18:40:02,466 ERROR exception 1292 Internal Server Error: /dashboard/entry/poll/response/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/contrib/plugins/poll/views.py", line 45, in submit_poll_response
-    data['value_of_no'] = value_of_no[0],
-TypeError: 'int' object is not subscriptable
-2018-02-01 11:16:23,800 ERROR exception 18076 Internal Server Error: /dashboard/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 151, in dashboard
-    return render(request, template_name, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
-    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 210, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
     return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
     raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'dash.edit_dashboard_settings' not found. 'dash.edit_dashboard_settings' is not a valid view function or pattern name.
-2018-02-01 11:53:30,582 ERROR exception 27856 Internal Server Error: /dashboard/
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '3'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:45:22,833 ERROR exception 30812 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -488,8 +35,16 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-TypeError: dashboard() missing 1 required positional argument: 'workspace'
-2018-02-01 12:01:51,229 ERROR exception 29503 Internal Server Error: /dashboard/
+  File "/home/adrian/skyfolk/dash/views.py", line 1147, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 210, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '1'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:46:05,039 ERROR exception 31066 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -503,8 +58,16 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-TypeError: dashboard() missing 1 required positional argument: 'workspace'
-2018-02-01 12:02:07,272 ERROR exception 29503 Internal Server Error: /dashboard/
+  File "/home/adrian/skyfolk/dash/views.py", line 1148, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 210, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '2'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:46:35,587 ERROR exception 31379 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -518,8 +81,16 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-TypeError: dashboard() missing 1 required positional argument: 'workspace'
-2018-02-01 12:05:04,684 ERROR exception 30562 Internal Server Error: /dashboard/
+  File "/home/adrian/skyfolk/dash/views.py", line 1145, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 210, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '2'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:48:00,186 ERROR exception 32134 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -533,8 +104,16 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-TypeError: dashboard() missing 1 required positional argument: 'workspace'
-2018-02-01 12:07:44,324 ERROR exception 30562 Internal Server Error: /dashboard/edit/
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 210, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '1'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:49:08,072 ERROR exception 32439 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -548,8 +127,16 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-TypeError: edit_dashboard() missing 1 required positional argument: 'workspace'
-2018-02-01 12:08:32,942 ERROR exception 30562 Internal Server Error: /dashboard/edit/
+  File "/home/adrian/skyfolk/dash/views.py", line 1147, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 210, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '1'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:49:53,600 ERROR exception 475 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -563,8 +150,10 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-TypeError: edit_dashboard() missing 1 required positional argument: 'workspace'
-2018-02-01 12:08:47,554 ERROR exception 30562 Internal Server Error: /dashboard/
+  File "/home/adrian/skyfolk/dash/views.py", line 1103, in plugin_widgets
+    workspace__slug=workspace.slug
+TypeError: build_cells_matrix() got an unexpected keyword argument 'workspace__slug'
+2018-02-05 12:49:55,394 ERROR exception 475 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -578,8 +167,10 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-TypeError: dashboard() missing 1 required positional argument: 'workspace'
-2018-02-01 12:10:01,744 ERROR exception 30562 Internal Server Error: /dashboard/edit/
+  File "/home/adrian/skyfolk/dash/views.py", line 1103, in plugin_widgets
+    workspace__slug=workspace.slug
+TypeError: build_cells_matrix() got an unexpected keyword argument 'workspace__slug'
+2018-02-05 12:55:02,176 ERROR exception 2812 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -593,8 +184,16 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-TypeError: edit_dashboard() missing 1 required positional argument: 'workspace'
-2018-02-01 12:29:22,453 ERROR exception 505 Internal Server Error: /dashboard/workspaces/
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 210, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '2'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:56:39,686 ERROR exception 3520 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/1/
 Traceback (most recent call last):
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -608,84 +207,390 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/dash/views.py", line 1438, in dashboard_workspaces
-    return render(request, template_name, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
-    return template.render(context, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 154, in render
-    compiled_parent = self.get_parent(context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 151, in get_parent
-    return self.find_template(parent, context)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 131, in find_template
-    template_name, skip=history,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 136, in find_template
-    name, template_dirs=dirs, skip=skip,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loaders/base.py", line 44, in get_template
-    contents, origin, origin.template_name, self.engine,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 191, in __init__
-    self.nodelist = self.compile_nodelist()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 230, in compile_nodelist
-    return parser.parse()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 515, in parse
-    raise self.error(token, e)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 513, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 255, in do_block
-    nodelist = parser.parse(('endblock',))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 515, in parse
-    raise self.error(token, e)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 513, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 255, in do_block
-    nodelist = parser.parse(('endblock',))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 515, in parse
-    raise self.error(token, e)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 513, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 251, in do_block
-    raise TemplateSyntaxError("'%s' tag with name '%s' appears more than once" % (bits[0], block_name))
-django.template.exceptions.TemplateSyntaxError: 'block' tag with name 'content' appears more than once
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 211, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '1'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:57:22,186 ERROR exception 3912 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/1/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 212, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '1'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:59:01,344 ERROR exception 4695 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 212, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': "Android's", 'position': '2'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 12:59:03,010 ERROR exception 4695 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/1/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 212, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': "Android's", 'position': '1'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:05:25,890 ERROR exception 7187 Internal Server Error: /dashboard/entry/add/main/video_1x1/ws/androids/pos/2/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/dash/views.py", line 313, in dispatch
+    workspace=self.workspace.slug,
+AttributeError: 'str' object has no attribute 'slug'
+2018-02-05 13:06:05,900 ERROR exception 7396 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/3/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1135, in plugin_widgets
+    kwargs=kwargs
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.paste_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'position': '3', 'workspace': <DashboardWorkspace: Android's>}' not found. 2 pattern(s) tried: ['dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:06:11,669 ERROR exception 7396 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1135, in plugin_widgets
+    kwargs=kwargs
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.paste_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'position': '2', 'workspace': <DashboardWorkspace: Android's>}' not found. 2 pattern(s) tried: ['dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:06:21,272 ERROR exception 7666 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1135, in plugin_widgets
+    kwargs=kwargs
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.paste_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'position': '2', 'workspace': <DashboardWorkspace: Android's>}' not found. 2 pattern(s) tried: ['dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:06:22,906 ERROR exception 7666 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1135, in plugin_widgets
+    kwargs=kwargs
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.paste_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'position': '2', 'workspace': <DashboardWorkspace: Android's>}' not found. 2 pattern(s) tried: ['dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:07:29,706 ERROR exception 8135 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/2/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1135, in plugin_widgets
+    kwargs=kwargs
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.paste_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'position': '2', 'workspace': <DashboardWorkspace: Android's>}' not found. 2 pattern(s) tried: ['dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:07:40,482 ERROR exception 8271 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/3/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 212, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '3'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:07:56,042 ERROR exception 8406 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/3/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1144, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 212, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '3'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:08:37,432 ERROR exception 8764 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/3/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 212, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '3'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:09:14,825 ERROR exception 9203 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/5/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1146, in plugin_widgets
+    occupied_cells=occupied_cells
+  File "/home/adrian/skyfolk/dash/utils.py", line 210, in get_widgets
+    reverse('dash.add_dashboard_entry', kwargs=kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.add_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'plugin_uid': 'trigger_1x1', 'workspace': <DashboardWorkspace: Android's>, 'position': '5'}' not found. 4 pattern(s) tried: ['dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/$', 'dashboard/entry/add/(?P<placeholder_uid>[\\w_]+)/(?P<plugin_uid>[\\w_\\-]+)/ws/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:09:34,505 ERROR exception 9465 Internal Server Error: /dashboard/entry/paste/main/androids/pos/5/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1682, in paste_dashboard_entry
+    return redirect('dash.edit_dashboard', workspace=workspace.slug)
+AttributeError: 'str' object has no attribute 'slug'
+2018-02-05 13:09:48,034 ERROR exception 9607 Internal Server Error: /dashboard/entry/paste/main/androids/pos/5/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1682, in paste_dashboard_entry
+    return redirect('dash.edit_dashboard', workspace=workspace.slug)
+AttributeError: 'str' object has no attribute 'slug'
+2018-02-05 13:09:53,015 ERROR exception 9607 Internal Server Error: /dashboard/plugin-widgets/main/androids/pos/3/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1135, in plugin_widgets
+    kwargs=kwargs
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dash.paste_dashboard_entry' with keyword arguments '{'placeholder_uid': 'main', 'position': '3', 'workspace': <DashboardWorkspace: Android's>}' not found. 2 pattern(s) tried: ['dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/pos/(?P<position>\\d+)/$', 'dashboard/entry/paste/(?P<placeholder_uid>[\\w_]+)/(?P<workspace>[\\w_\\-]+)/pos/(?P<position>\\d+)/$']
+2018-02-05 13:11:26,195 ERROR exception 9854 Internal Server Error: /dashboard/entry/paste/main/androids/pos/4/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1682, in paste_dashboard_entry
+    return redirect('dash.edit_dashboard', workspace=workspace.slug)
+AttributeError: 'str' object has no attribute 'slug'
+2018-02-05 13:26:35,436 ERROR exception 13202 Internal Server Error: /dashboard/plugin-widgets/main/pos/1/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/dash/views.py", line 1144, in plugin_widgets
+    workspace=workspace.slug,
+AttributeError: 'NoneType' object has no attribute 'slug'

@@ -19,6 +19,7 @@ from .views import (
     paste_dashboard_entry,
     plugin_widgets,
     update_entry_info,
+    public_dashboard,
 )
 
 from .contrib.plugins.poll.views import submit_poll_response
@@ -171,4 +172,9 @@ urlpatterns = [
     url(_(r'^entry/poll/response/$'),
         view=submit_poll_response,
         name='dash.response_dashboard_entry'),
+
+    # public dashboard
+    url(r'^(?P<username>[\w-]+)/(?P<workspace>[\w_\-]+)/$',
+        view=public_dashboard,
+        name='dash.public_dashboard'),
 ]

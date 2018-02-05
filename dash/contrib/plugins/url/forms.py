@@ -39,7 +39,8 @@ class URLForm(forms.Form, DashboardPluginFormBase):
     url = forms.URLField(label=_("URL"), required=True)
     external = forms.BooleanField(required=False,
                                   initial=False,
-                                  widget=BooleanRadioSelect)
+                                  label=_("¿La URL es externa?"),
+                                  widget=forms.CheckboxInput(attrs={'id': 'external_url'}))
     image = forms.ChoiceField(label=_("Image"),
                               required=False,
                               choices=IMAGE_CHOICES_WITH_EMPTY_OPTION)

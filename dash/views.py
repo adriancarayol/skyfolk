@@ -1,4 +1,5 @@
 import os
+import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -12,7 +13,7 @@ from nine import versions
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseRedirect
 from django.conf import settings
-
+from django.db.models import Q
 from dash_services.forms.wizard import ConsumerForm
 from dash_services.models import UserService, TriggerService
 from dash_services.tools import class_for_name, get_service
@@ -39,7 +40,7 @@ from .helpers import (
     slugify_workspace,
 )
 from .models import DashboardEntry, DashboardWorkspace
-from .settings import RAISE_EXCEPTION_WHEN_PERMISSIONS_INSUFFICIENT
+from .settings import RAISE_EXCEPTION_WHEN_PERMISSIONS_INSUFFICIENT, AUTH_LOGIN_URL_NAME, AUTH_LOGOUT_URL_NAME
 from .utils import (
     build_cells_matrix,
     clone_workspace,
@@ -49,6 +50,7 @@ from .utils import (
     get_user_plugins,
     get_widgets,
     get_workspaces,
+    get_dashboard_settings,
 )
 from django.http import JsonResponse
 from .json_package import json
@@ -61,6 +63,8 @@ else:
     from django.core.urlresolvers import reverse
     from django.shortcuts import render_to_response
 
+
+logger = logging.getLogger(__name__)
 
 # ***************************************************************************
 # ***************************************************************************
@@ -558,6 +562,7 @@ def add_dashboard_entry(request,
     :return django.http.HttpResponse:
     """
     # Getting dashboard settings for the user. Then get users' layout.
+
     dashboard_settings = get_or_create_dashboard_settings(request.user)
 
     if workspace:
@@ -1049,7 +1054,6 @@ def plugin_widgets(request,
     :return django.http.HttpResponse:
     """
     # Getting dashboard settings for the user. Then get users' layout.
-
     dashboard_settings = get_or_create_dashboard_settings(request.user)
 
     if workspace:
@@ -1124,7 +1128,7 @@ def plugin_widgets(request,
                 'position': position
             }
             if workspace:
-                kwargs.update({'workspace': workspace})
+                kwargs.update({'workspace': workspace.slug})
 
             paste_from_clipboard_url = reverse(
                 'dash.paste_dashboard_entry',
@@ -1137,7 +1141,7 @@ def plugin_widgets(request,
             layout,
             placeholder,
             request.user,
-            workspace=workspace,
+            workspace=workspace.slug if workspace and workspace.slug else None,
             position=position,
             occupied_cells=occupied_cells
         ),
@@ -1642,10 +1646,37 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
     """
     # Getting dashboard settings for the user. Then get users' layout.
     dashboard_settings = get_or_create_dashboard_settings(request.user)
-    layout = get_layout(
-        layout_uid=dashboard_settings.layout_uid,
-        as_instance=True
-    )
+
+    if workspace:
+        workspace_slug = slugify_workspace(workspace)
+        filters = {
+            'slug': workspace_slug,
+            'user': request.user,
+        }
+        if not dashboard_settings.allow_different_layouts:
+            filters.update({
+                'layout_uid': dashboard_settings.layout_uid,
+            })
+        try:
+            workspace = DashboardWorkspace._default_manager.get(**filters)
+        except ObjectDoesNotExist as e:
+            if dashboard_settings.allow_different_layouts:
+                message = _('The workspace with slug "{0}" was not found.'
+                            '').format(workspace_slug)
+            else:
+                message = _(
+                    'The workspace with slug "{0}" does not belong to '
+                    'layout "{1}".'
+                ).format(workspace_slug, dashboard_settings.layout_uid)
+            messages.info(request, message)
+            return redirect('user_profile:profile', username=request.user.username)
+
+    if dashboard_settings.allow_different_layouts and workspace:
+        layout_uid = workspace.layout_uid
+    else:
+        layout_uid = dashboard_settings.layout_uid
+
+    layout = get_layout(layout_uid=layout_uid, as_instance=True)
 
     try:
         plugin_uid, success = paste_entry_from_clipboard(
@@ -1657,6 +1688,7 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
         )
     except Exception as err:
         plugin_uid, success = str(err), False
+
 
     if plugin_uid and success:
         plugin = plugin_registry.get(plugin_uid)
@@ -1675,7 +1707,7 @@ def paste_dashboard_entry(request, placeholder_uid, position, workspace=None):
         )
 
     if workspace:
-        return redirect('dash.edit_dashboard', workspace=workspace)
+        return redirect('dash.edit_dashboard', workspace=workspace.slug)
     else:
         return redirect('user_profile:profile', username=request.user.username)
 
@@ -1695,3 +1727,121 @@ def update_entry_info(request):
             'plugin_uid': '0000'
         }
         return JsonResponse(data)
+
+def public_dashboard(request,
+                     username,
+                     workspace=None,
+                     template_name='public_dashboard/public_dashboard.html'):
+    """Public dashboard.
+
+    :param django.http.HttpRequest request:
+    :param string username:
+    :param string workspace: Workspace slug.
+    :param string template_name:
+    :return django.http.HttpResponse:
+    """
+    # Getting dashboard settings for the user. Then get users' layout.
+    dashboard_settings = get_dashboard_settings(username)
+    user = dashboard_settings.user
+
+    if not dashboard_settings:
+        raise Http404
+
+    if workspace:
+        workspace_slug = slugify_workspace(workspace)
+
+        filters = {
+            'slug': workspace_slug,
+            'user': user,
+        }
+        if not dashboard_settings.allow_different_layouts:
+            filters.update({
+                'layout_uid': dashboard_settings.layout_uid,
+            })
+        try:
+            workspace = DashboardWorkspace._default_manager.get(**filters)
+        except ObjectDoesNotExist as e:
+            if dashboard_settings.allow_different_layouts:
+                message = _('The workspace with slug "{0}" was not found.'
+                            '').format(workspace_slug)
+            messages.info(request, message)
+            return redirect('user_profile:profile', username=username)
+
+    if dashboard_settings.allow_different_layouts and workspace:
+        layout_uid = workspace.layout_uid
+    else:
+        layout_uid = dashboard_settings.layout_uid
+
+    layout = get_layout(layout_uid=layout_uid, as_instance=True)
+
+    # Getting the list of plugins that user is allowed to use.
+    registered_plugins = get_user_plugins(user)
+    user_plugin_uids = [uid for uid, repr in registered_plugins]
+
+    logger.debug(user_plugin_uids)
+
+    # A complex query required. All entries shall be taken from default
+    # dashboard (no workspace) and joined with all entries of workspaces
+    # set to be public. Getting the (frozen) queryset.
+    if workspace:
+        entries_q = Q(
+            user=user,
+            layout_uid=layout.uid,
+            workspace__slug=workspace.slug,
+            workspace__is_public=True,
+            plugin_uid__in=user_plugin_uids
+        )
+    else:
+        entries_q = Q(user=user, layout_uid=layout.uid, workspace=None)
+
+    dashboard_entries = DashboardEntry._default_manager \
+        .filter(entries_q) \
+        .select_related('workspace', 'user') \
+        .order_by('placeholder_uid', 'position')[:]
+
+    # logger.debug(dashboard_entries)
+
+    print(dashboard_entries)
+
+    placeholders = layout.get_placeholder_instances(dashboard_entries,
+                                                    request=request)
+    layout.collect_widget_media(dashboard_entries)
+
+    context = {
+        'placeholders': placeholders,
+        'placeholders_dict': iterable_to_dict(
+            placeholders,
+            key_attr_name='uid'
+        ),
+        'css': layout.get_css(placeholders),
+        'layout': layout,
+        'user': user,
+        'master_template': layout.get_view_template_name(
+            request,
+            origin='dash.public_dashboard'
+        ),
+        'dashboard_settings': dashboard_settings,
+        'AUTH_LOGIN_URL_NAME': AUTH_LOGIN_URL_NAME,
+        'AUTH_LOGOUT_URL_NAME': AUTH_LOGOUT_URL_NAME,
+    }
+
+    workspaces = get_workspaces(user, layout.uid, workspace.name, public=True)
+
+    # If workspace with slug given is not found in the list of workspaces
+    # redirect to the default dashboard.
+    if workspaces['current_workspace_not_found']:
+        messages.info(
+            request,
+            _('The workspace with slug "{0}" does not exist.'
+              '').format(workspace)
+        )
+        return redirect('user_profile:profile', username=username)
+
+    context.update(workspaces)
+
+    if versions.DJANGO_GTE_1_10:
+        return render(request, template_name, context)
+    else:
+        return render_to_response(
+            template_name, context, context_instance=RequestContext(request)
+        )

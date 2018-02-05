@@ -32,7 +32,7 @@
             {% if workspaces %}
             <ul class="workspaces">
                 <li class="menu-item{% if not current_workspace %} active{% endif %}">
-                    <a href="{% url 'dash.public_dashboard' user.username %}" title="{% trans 'Default' %}">
+                    <a href="{% url 'user_profile:profile' user.username %}" title="{% trans 'Default' %}">
                         <span class="iconic {% if not current_workspace %}icon-circle{% else %}icon-circle-blank{% endif %}"></span>
                     </a>
                 </li>

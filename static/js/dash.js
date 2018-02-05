@@ -13,8 +13,7 @@ $(document).ready(function() {
 
     var onLightboxAddPluginOpen = function() {
         $('.submenu').hide();
-         $('select').material_select();
-        $( "#accordion" ).accordion({heightStyle: "content"});
+        $('select').material_select();
     };
 
     // By concept (we don't want to load things in an iframe), we only show shortcut views in AJAX overlays.

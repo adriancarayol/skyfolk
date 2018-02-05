@@ -32,8 +32,6 @@ class BaseURLPlugin(BaseDashboardPlugin):
         If plugin has an image, we add a class ``iconic`` to it.
         """
         html_class = super(BaseURLPlugin, self).html_class
-        if self.data.image:
-            html_class += 'material-icons'
         return html_class
 
 # ****************************************************************************
