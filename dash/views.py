@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
@@ -17,6 +17,7 @@ from django.db.models import Q
 from dash_services.forms.wizard import ConsumerForm
 from dash_services.models import UserService, TriggerService
 from dash_services.tools import class_for_name, get_service
+from user_profile.models import Profile
 from .base import (
     get_layout,
     plugin_registry,
@@ -1741,6 +1742,19 @@ def public_dashboard(request,
     :return django.http.HttpResponse:
     """
     # Getting dashboard settings for the user. Then get users' layout.
+
+    try:
+        n = Profile.objects.get(user__username=username)
+        m = Profile.objects.get(user_id=request.user.id)
+    except Profile.DoesNotExist:
+        raise Http404
+
+    # Privacidad del usuario
+    privacity = n.is_visible(m)
+
+    if privacity != ('all' or None):
+        return HttpResponseForbidden("No tienes permiso para visitar este workspace.")
+
     dashboard_settings = get_dashboard_settings(username)
     user = dashboard_settings.user
 

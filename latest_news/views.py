@@ -20,6 +20,7 @@ class News(ListView):
     def __init__(self, *args, **kwargs):
         super(News, self).__init__(*args, **kwargs)
         self.pagination = None
+        self.layout = get_layout(layout_uid='profile', as_instance=True)
 
     def get_affinity_users(self):
         """
@@ -118,17 +119,18 @@ class News(ListView):
                 Q(owner__profile__privacity='A') & Q(is_public=True)).order_by('-date_added')[offset:limit]
 
         # Widgets de seguidos + favoritos + recomendados
-        layout = get_layout(layout_uid='profile', as_instance=True)
 
         try:
-            entries_q = Q(user__in=pk_list, layout_uid='profile', workspace=None) & ~Q(user__profile__in=users_not_blocked_me)
+            entries_q = (Q(user__in=pk_list) | Q(user__profile__in=following)) \
+                & Q(layout_uid='profile', workspace=None) \
+                & ~Q(user__profile__in=users_not_blocked_me)
 
             dashboard_entries = DashboardEntry._default_manager \
                 .filter(entries_q) \
                 .select_related('workspace', 'user') \
                 .order_by('placeholder_uid', 'position')[offset:limit]
 
-            placeholders = layout.get_placeholder_instances(dashboard_entries,
+            placeholders = self.layout.get_placeholder_instances(dashboard_entries,
                                                     request=self.request)
         except Exception as e:
             entries_q = Q(user__profile__privacity='A') & Q(layout_uid='profile', workspace=None)
@@ -138,16 +140,14 @@ class News(ListView):
                 .select_related('workspace', 'user') \
                 .order_by('placeholder_uid', 'position')[offset:limit]
 
-            placeholders = layout.get_placeholder_instances(dashboard_entries,
+            placeholders = self.layout.get_placeholder_instances(dashboard_entries,
                                                     request=self.request)
 
-
-        for p in placeholders:
-            print('Placeholder: {}'.format(dir(p)))
-
+        self.layout.collect_widget_media(dashboard_entries)
+        
         extended_list = []
 
-        if len(photos) <= 0 or len(publications) <= 0 or len(videos) <= 0:
+        if len(photos) <= 0 or len(publications) <= 0 or len(videos) <= 0 or len(placeholders) <= 0:
             extended_list = [u.user_id for u in self.get_recommendation_users(offset, limit)]
 
         if len(photos) <= 0:
@@ -166,7 +166,7 @@ class News(ListView):
                 .select_related('workspace', 'user') \
                 .order_by('placeholder_uid', 'position')[offset:limit]
 
-            placeholders = layout.get_placeholder_instances(dashboard_entries,
+            placeholders = self.layout.get_placeholder_instances(dashboard_entries,
                                                     request=self.request)
 
         result_list = list(chain.from_iterable([filter(None, zipped) for zipped in \
@@ -194,6 +194,7 @@ class News(ListView):
             context['follows'] = [u.id for u in mix]
         context['pagination'] = self.pagination
         context['component'] = 'recommendations.js'
+        context['js'] = self.layout.get_media_js()
         return context
 
 

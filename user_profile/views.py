@@ -300,13 +300,13 @@ def profile_view(request, username,
     # Recuperamos el numero de seguidores
     try:
         num_followers = RelationShipProfile.objects.get_total_followers(n.id)
-    except Exception:
+    except Exception as e:
         num_followers = 0
 
     # Recuperamos el numero de seguidos y la lista de seguidos
     try:
         num_follows = RelationShipProfile.objects.get_total_following(n.id)
-    except Exception:
+    except Exception as e:
         num_follows = 0
 
     # Recuperamos el numero de contenido multimedia que tiene el perfil

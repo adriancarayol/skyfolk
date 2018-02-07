@@ -43,7 +43,7 @@ class RelationShipProfileManager(models.Manager):
         :return: Total following
         """
         qs = self.get_queryset()
-        return qs.filter(from_profile=profile_id).count()
+        return qs.filter(from_profile=profile_id, type=FOLLOWING).count()
 
     def get_total_followers(self, profile_id):
         """
@@ -52,7 +52,7 @@ class RelationShipProfileManager(models.Manager):
         :return: Total followers
         """
         qs = self.get_queryset()
-        return qs.filter(to_profile=profile_id).count()
+        return qs.filter(to_profile=profile_id, type=FOLLOWING).count()
 
     def is_follow(self, to_profile, from_profile):
         """
