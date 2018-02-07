@@ -18,8 +18,8 @@ __all__ = ('BaseMemoPlugin', 'BaseTinyMCEMemoPlugin',)
 class BaseMemoPlugin(BaseDashboardPlugin):
     """Base memo plugin."""
 
-    name = _("Memo")
-    group = _("Memo")
+    name = _("Notas")
+    group = _("Nota")
     form = MemoForm
 
 

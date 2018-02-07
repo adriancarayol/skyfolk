@@ -5,38 +5,52 @@
             <div class="wrapper-bg"></div>
             <div class="hero-unit-small">
                 <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Add {{ plugin_name }} to
-                    Dashboard{% endblocktrans %}</h2>
+                Dashboard{% endblocktrans %}</h2>
             </div>
         </div>
         <div class="col l4 s12 offset-l4">
             {% if user_services and user_services < 2 %}
-                <p>¡Necesitas al menos dos servicios activos para crear un trigger!</p>
-                <p><a href="{% url 'user_services' %}">Activar servicios</a></p>
+            <p>¡Necesitas al menos dos servicios activos para crear un trigger!</p>
+            <p><a href="{% url 'user_services' %}">Activar servicios</a></p>
             {% else %}
-                <form method="post" action="{{ request.path }}" enctype="multipart/form-data"
-                      class="form-horizontal">{% csrf_token %}
-                    {{ wizard.management_form }}
-                    {% if wizard.form.forms %}
-                        {{ wizard.form.management_form }}
-                        {% for form in wizard.form.forms %}
-                            {{ form }}
-                        {% endfor %}
-                    {% else %}
-                        {{ wizard.form }}
-                    {% endif %}
-
-                    {% if wizard.steps.prev %}
-                        <button name="wizard_goto_step" type="submit"
-                                class="btn blue left"
-                                value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
-                        <button name="wizard_goto_step" type="submit"
-                                class="btn blue left"
-                                value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
-                    {% endif %}
-                    <input class="btn blue right" type="submit" value="{% trans "submit" %}"/>
-                    {% include "dash/snippets/plugin_help_text.html" %}
-                </form>
+            <form method="post" action="{{ request.path }}" enctype="multipart/form-data"
+            class="form-horizontal">{% csrf_token %}
+            {{ wizard.management_form }}
+            {% if wizard.form.forms %}
+                {{ wizard.form.management_form }}
+            {% for form in wizard.form.forms %}
+                {{ form }}
+            {% endfor %}
+            {% else %}
+                {% for hidden_field in wizard.form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+                {% endfor %}
+                {% for field in wizard.form.visible_fields %}
+                <div class="row">
+                    <div class="input-field col s12">
+                        {{ field.errors }}
+                        {% if field.help_text %}
+                        <small>{{ field.help_text }}</small>
+                        {% endif %}
+                        {{ field }}
+                        {{ field.label_tag }}
+                    </div>
+                </div>
+                {% endfor %}
             {% endif %}
-        </div>
+            {% if wizard.steps.prev %}
+            <button name="wizard_goto_step" type="submit"
+            class="btn blue left"
+            value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+            <button name="wizard_goto_step" type="submit"
+            class="btn blue left"
+            value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+            {% endif %}
+            <input class="btn blue right" type="submit" value="{% trans "submit" %}"/>
+            {% include "dash/snippets/plugin_help_text.html" %}
+        </form>
+        {% endif %}
     </div>
+</div>
 </div>
