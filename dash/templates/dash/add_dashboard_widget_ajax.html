@@ -3,42 +3,42 @@
     <div class="row">
         <div class="col l4 s12 offset-l4">
             <div class="wrapper-bg"></div>
-            <div class="hero-unit-small">
+            <div class="hero-unit-small center">
                 <h2 class="content-title">{% blocktrans with plugin.name as plugin_name %}Add {{ plugin_name }} to
-                Dashboard{% endblocktrans %}</h2>
+                    Dashboard{% endblocktrans %}</h2>
             </div>
         </div>
         <div class="col l4 s12 offset-l4">
-            <form method="post" action="{{ request.path }}" enctype="multipart/form-data" class="form-horizontal">
-                {% csrf_token %}
-                <ul class="content-listing generic-form">
-                    {% comment %}
-                    {% include layout.form_snippet_template_name %}
-                    {% endcomment %}
-                    {% for hidden_field in form.hidden_fields %}
-                    {{ hidden_field.errors }}
-                    {{ hidden_field }}
-                    {% endfor %}
-                    {% for field in form.visible_fields %}
-                    <div class="row">
-                        <div class="input-field col s12">
-                            {{ field.errors }}
-                            {% if field.help_text %}
-                            <small>{{ field.help_text }}</small>
-                            {% endif %}
-                            {{ field }}
-                            {{ field.label_tag }}
+            <div class="card">
+                <form method="post" action="{{ request.path }}" enctype="multipart/form-data" class="form-horizontal">
+                    {% csrf_token %}
+                    <ul class="content-listing generic-form">
+                        {% comment %}
+                        {% include layout.form_snippet_template_name %}
+                        {% endcomment %}
+                        {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field.errors }}
+                        {{ hidden_field }}
+                        {% endfor %}
+                        {% for field in form.visible_fields %}
+                        <div class="row">
+                            <div class="input-field col s12">
+                                {{ field.errors }}
+                                {% if field.help_text %}
+                                <small>{{ field.help_text }}</small>
+                                {% endif %}
+                                {{ field }}
+                                {{ field.label_tag }}
+                            </div>
                         </div>
-                    </div>
-                    {% endfor %}
-                    <li class="buttons control-group">
-                        <div class="right">
-                            <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                        {% endfor %}
+                        <div class="row">
+                            <button type="submit" class="btn blue white-text right">{% trans "Add" %}</button>
                         </div>
-                    </li>
-                    {% include "dash/snippets/plugin_help_text.html" %}
-                </ul>
-            </form>
+                        {% include "dash/snippets/plugin_help_text.html" %}
+                    </ul>
+                </form>
+            </div>
         </div>
     </div>
 </div>

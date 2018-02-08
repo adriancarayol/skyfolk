@@ -69,14 +69,14 @@ class ServiceReddit(ServicesMgr):
         trigger = Reddit.objects.get(trigger_id=trigger_id)
         date_triggered = arrow.get(kwargs.get('date_triggered'))
         data = list()
-        submissions = self.reddit.subreddit(trigger.subreddit).top('day')
+        submissions = self.reddit.subreddit(trigger.subreddit).new()
 
         for submission in submissions:
             title = 'From Reddit ' + submission.title
             created = arrow.get(submission.created).to(settings.TIME_ZONE)
 
             if date_triggered is not None and created is not None \
-                    and created <= date_triggered and not submission.is_self:
+                    and created >= date_triggered and not submission.is_self:
                 body = submission.selftext if submission.selftext else submission.url
                 data.append({'title': title, 'content': body})
                 self.send_digest_event(trigger_id, title, '')
@@ -102,15 +102,22 @@ class ServiceReddit(ServicesMgr):
         if self.token:
             trigger = Reddit.objects.get(trigger_id=trigger_id)
             if trigger.share_link:
-                status = self.reddit.subreddit(trigger.subreddit).submit(title=title, url=content)
+                try:
+                    status = self.reddit.subreddit(trigger.subreddit).submit(title=title, url=content)
+                except Exception as e:
+                    logger.critical("Reddit ERR {}".format(e))
             else:
-                status = self.reddit.subreddit(trigger.subreddit).submit(title=title, selftext=content)
+                try:
+                    status = self.reddit.subreddit(trigger.subreddit).submit(title=title, selftext=content)
+                except Exception as e:
+                    logger.critical("Reddit ERR {}".format(e))
             sentence = str('reddit submission {} created').format(title)
             logger.debug(sentence)
         else:
             msg = "no token or link provided for trigger ID {} ".format(trigger_id)
             logger.critical(msg)
             update_result(trigger_id, msg=msg, status=False)
+
         return status
 
     def auth(self, request):
