@@ -132,11 +132,11 @@ plugin_widget_factory(BaseTriggerWidget,
 # **************************************************************************
 
 
-main_sizes = (
-    (1, 1),
-)
-plugin_widget_factory(BaseWeatherWidget,
-                      'android',
-                      'main',
-                      'weather',
-                      main_sizes)
+# main_sizes = (
+#    (1, 1),
+#)
+# plugin_widget_factory(BaseWeatherWidget,
+ #                     'android',
+ #                     'main',
+ #                    'weather',
+ #                     main_sizes)
