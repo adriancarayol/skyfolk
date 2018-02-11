@@ -6,7 +6,7 @@
 Necesitamos tener el siguiente software instalado en el ordenador:
 A continuación se muestra <software:version_a_instalar>
 ```
-elasticsearch: 2.3.1
+elasticsearch: 2.3.1 (https://www.elastic.co/downloads/past-releases/elasticsearch-2-4-6)
 redis:latest
 rabbitmq:latest
 ffmpeg:latest
@@ -17,7 +17,16 @@ pandoc:latest
 ```
 Tras esto, podemos instalar los requerimentos de la siguiente forma:
 ```
+apt install python python-dev python-pip python-virtualenv build-essential
 pip install -r requeriments/develop.txt
+```
+Para cambiar el password de neo4j, introducimos el siguiente comando:
+```
+curl -H "Content-Type: application/json" -X POST -d '{"password":"NUEVA_PASSWORD"}' -u neo4j:neo4j http://localhost:7474/user/neo4j/password
+```
+Comprobamos también que estén TODOS los servicios activos con el comando:
+```
+systemctl status service
 ```
 Según el entorno de desarrollo, hay unas variables de entorno definidas, por ejemplo, en settings/base.py
 REDIS coge el host a partir de una variable de entorno, al igual que RabbitMQ en skyfolk/celeryconf.py, o en settings/pre.py

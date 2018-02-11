@@ -48,7 +48,7 @@ MEDIA_URL = '/media/'
 INVITATIONS_INVITATION_ONLY = True
 
 # ELASTICSEARCH CONFIGURATION
-ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
+ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
 
 HAYSTACK_CONNECTIONS = {
     'default': {
