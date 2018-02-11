@@ -45,24 +45,24 @@ app.conf.beat_schedule = {
     },
     'read_services': {
         'task': 'tasks.read_services',
-        'schedule': crontab(),
+        'schedule': crontab('*/10'),
         'options': {'queue': 'low'}
     },
     'publish_services': {
         'task': 'tasks.publish_services',
-        'schedule': crontab(),
+        'schedule': crontab('*/15'),
         'options': {'queue': 'low'}
     },
     'recycle_services': {
         'task': 'tasks.recycle_services',
-        'schedule': crontab(),
+        'schedule': crontab('*/40'),
         'options': {'queue': 'low'}
     }
 }
 
 """
 Celery tiene problemas a la hora de descubrir
-subaplicaciones dentro de aplicaciones, 
+subaplicaciones dentro de aplicaciones,
 por ejemplo 'dash.contrib.layouts.profile'
 es necesario llamar a setup() para cargar
 la configuracion de las aplicaciones necesaria
