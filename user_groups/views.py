@@ -100,6 +100,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                             g.members.connect(n)
                             if tags:
                                 for tag in tags:
+                                    group.tags.add(tag)
                                     interest = TagProfile.nodes.get_or_none(title=tag)
                                     if not interest:
                                         interest = TagProfile(title=tag).save()

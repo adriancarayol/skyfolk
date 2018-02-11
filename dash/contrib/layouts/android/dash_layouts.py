@@ -35,7 +35,7 @@ class AndroidLayout(BaseDashboardLayout):
     """Android layout."""
 
     uid = 'android'
-    name = 'Android'
+    name = 'Skyspace'
     view_template_name = 'android/view_layout.html'
     edit_template_name = 'android/edit_layout.html'
     placeholders = [AndroidMainPlaceholder, AndroidShortcutsPlaceholder]

@@ -1,10 +1,12 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from .helpers import handle_uploaded_file
-from .settings import FIT_METHODS_CHOICES, DEFAULT_FIT_METHOD
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
+
+from .helpers import handle_uploaded_file
+from .settings import FIT_METHODS_CHOICES, DEFAULT_FIT_METHOD
+
 
 __title__ = 'dash.contrib.plugins.image.forms'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

@@ -2,47 +2,70 @@
 
 {% load i18n %}
 
-{% block page-title %}{% if current_workspace %}{{ current_workspace.name }}{% else %}{% trans "Default" %}{% endif %} - {% trans "Public dashboard" %}{% endblock page-title %}
-
-{% block site-title %}{{ dashboard_settings.title }}{% endblock site-title %}
+{% block title %}<title>Skyfolk // {% if current_workspace %}{{ current_workspace.name }}{% else %}{% trans "Default" %}{% endif %} - {% trans "Public dashboard" %}</title>{% endblock title %}
 
 {% block top-nav-menu-wrapper %}
-    {% if current_workspace.is_clonable %}
-                {% if 'dash.add_dashboardworkspace' in perms and 'dash.add_dashboardentry' in perms %}
-            <ul class="menu nav">
-                <li class="menu-item">
-                    <a href="javascript:;" class="menu-dashboard-settings" title="{% trans 'Menu' %}">
-                        <span class="iconic icon-reorder icon-2x"></span>
-                    </a>
-                    <ul class="submenu">
-                        <li class="sub-menu-item">
-                            <a href="{% url 'dash.clone_dashboard_workspace' current_workspace.pk %}" class="menu-dashboard-clone-workspace" title="{% trans 'Clone this workspace' %}">
-                                <span class="iconic icon-copy" title="{% trans 'Clone this workspace' %}"></span>
-                                <span class="textonic">{% trans 'Clone this workspace' %}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-                {% endif %}
-    {% endif %}
+{% if current_workspace.is_clonable %}
+<ul class="menu nav">
+    <li class="menu-item">
+        <a href="javascript:;" class="menu-dashboard-settings" title="{% trans 'Menu' %}">
+            <span class="iconic icon-reorder icon-2x"></span>
+        </a>
+        <ul class="submenu">
+            <li class="sub-menu-item">
+                <a href="{% url 'dash.clone_dashboard_workspace' current_workspace.pk %}" class="menu-dashboard-clone-workspace" title="{% trans 'Clone this workspace' %}">
+                    <span class="iconic icon-copy" title="{% trans 'Clone this workspace' %}"></span>
+                    <span class="textonic">{% trans 'Clone this workspace' %}</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+</ul>
+{% endif %}
 {% endblock top-nav-menu-wrapper %}
-
 {% block workspaces-wrapper %}
-            {% if workspaces %}
-            <ul class="workspaces">
-                <li class="menu-item{% if not current_workspace %} active{% endif %}">
-                    <a href="{% url 'dash.public_dashboard' user.username %}" title="{% trans 'Default' %}">
-                        <span class="iconic {% if not current_workspace %}icon-circle{% else %}icon-circle-blank{% endif %}"></span>
-                    </a>
+{% if workspaces %}
+<div class="divider"></div>
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div>
+                <ul class="collapsible" data-collapsible="accordion">
+                    <li>
+                        <div class="collapsible-header">{{ workspaces|length }} Workspaces</div>
+                        <div class="collapsible-body">
+                            {% for ws in workspaces %}
+                            <div class="col s3">
+                                <div class="card {% if ws == current_workspace %}grey lighten-1{% endif %}">
+                                    <a href="{% url 'dash.public_dashboard' user.username ws.slug %}"
+                                    title="Workspace {{ ws.name }}">
+                                    <p class="flow-text">
+                                        <span class="material-icons">dashboard</span>
+                                        <span>{{ ws.name }}</span> -
+                                        <span>{{ ws.layout_uid }}</span>
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </li>
-                {% for ws in workspaces %}
-                <li class="menu-item{% if ws == current_workspace %} active{% endif %}">
-                    <a href="{% url 'dash.public_dashboard' user.username ws.slug %}" title="{{ ws.name }}">
-                        <span class="iconic {% if ws == current_workspace %}icon-circle{% else %}icon-circle-blank{% endif %}"></span>
-                    </a>
-                </li>
-                {% endfor %}
             </ul>
-            {% endif %}
+        </div>
+    </div>
+</div>
+</div>
+<div class="divider"></div>
+{% endif %}
 {% endblock workspaces-wrapper %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% for placeholder in placeholders %}
+                <div id="{{ placeholder.html_id }}" class="placeholder {{ placeholder.html_class }}">
+                    {{ placeholder.render_for_view|safe }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

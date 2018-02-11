@@ -2,12 +2,16 @@
 
 {% load i18n %}
 
-{% block page-title %}{% if current_workspace %}{{ current_workspace.name }} - {% endif %}{% trans 'Dashboard' %}{% endblock %}
-
+{% block page-title %}{% if current_workspace %}{{ current_workspace.name }} - {% endif %}
+    {% trans 'Dashboard' %}{% endblock %}
 {% block content %}
-    {% for placeholder in placeholders %}
-    <div id="{{ placeholder.html_id }}" class="placeholder {{ placeholder.html_class }}">
-        {{ placeholder.render_for_view|safe }}
+    <div class="container">
+        <div class="row">
+            {% for placeholder in placeholders %}
+                <div id="{{ placeholder.html_id }}" class="placeholder {{ placeholder.html_class }}">
+                    {{ placeholder.render_for_view|safe }}
+                </div>
+            {% endfor %}
+        </div>
     </div>
-    {% endfor %}
 {% endblock content %}

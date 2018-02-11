@@ -336,7 +336,7 @@ $(function () {
     });
     $('.theme').on('click', '.reply_theme', function () {
         var id_ = $(this).closest('.theme').data('id');
-        $("#caja-comentario-" + id_).toggle();
+        $("#caja-theme-" + id_).toggle();
     });
 
     $('.theme-publications').on('click', '.reply-comment', function () {

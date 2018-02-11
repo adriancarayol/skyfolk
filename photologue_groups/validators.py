@@ -51,7 +51,7 @@ def valid_image_size(image, max_size=settings.BACK_IMAGE_DEFAULT_SIZE):
 
 def image_exists(url):
     try:
-        r = requests.head(url)
+        r = requests.head(url, headers={'User-Agent': 'Mozilla/5.0'})
     except:
         return False
 

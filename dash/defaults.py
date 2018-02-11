@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext
+
 __title__ = 'dash.defaults'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
 __copyright__ = '2013-2017 Artur Barseghyan'
@@ -28,7 +30,7 @@ def gettext(val):
 # If set to True, plugins would be only accessible by the white-listed user(s)
 # or group(s). If set to False, all users have the same access rights to all
 # plugins.
-RESTRICT_PLUGIN_ACCESS = True
+RESTRICT_PLUGIN_ACCESS = False
 
 # If set to True, exceptions are raised when user has insufficient permissions.
 RAISE_EXCEPTION_WHEN_PERMISSIONS_INSUFFICIENT = True
@@ -74,4 +76,8 @@ WAIT_AT_TEST_END = 4
 # data.
 PLUGIN_CLIPBOARD_KEY = 'dash_plugin_clipboard'
 
-DEBUG = False
+# Login URL names for resolving login and logout views. Defaults work
+# for django-registration package, which you would likely be using, but you
+# may override it in settings with whatever is suitable for you.
+AUTH_LOGIN_URL_NAME = 'auth_login'
+AUTH_LOGOUT_URL_NAME = 'auth_logout'

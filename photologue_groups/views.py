@@ -40,7 +40,7 @@ from user_groups.models import UserGroups
 @page_template("photologue/photo_gallery_page.html")
 def collection_list(request, slug,
                     tag_slug,
-                    template='photologue/photo_gallery.html',
+                    template='photologue_groups/photo_gallery.html',
                     extra_context=None):
     """
     Busca fotografias con tags muy parecidos o iguales
@@ -66,7 +66,7 @@ def collection_list(request, slug,
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
     photos = PhotoGroup.objects.filter(group=group,
-                                       tags__name__exact=tag_slug)
+                                       tags__slug=tag_slug)
     videos = VideoGroup.objects.filter(group=group, tags__slug=tag_slug)
 
     items = list(
@@ -262,6 +262,19 @@ def crop_image(obj, request):
 
     im = Image.open(image)
     fill_color = (255, 255, 255, 0)
+
+    try:
+        im.seek(1)
+    except EOFError:
+        is_animated = False
+    else:
+        is_animated = True
+
+    if is_animated:
+        obj.image = image
+        return
+
+    im.seek(0)
     if im.mode in ('RGBA', 'LA'):
         background = Image.new(im.mode[:-1], im.size, fill_color)
         background.paste(im, im.split()[-1])

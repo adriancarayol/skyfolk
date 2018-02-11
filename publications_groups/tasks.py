@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.template.loader import render_to_string
-
+from celery import shared_task
 from notifications.models import Notification
 
 import publications_groups

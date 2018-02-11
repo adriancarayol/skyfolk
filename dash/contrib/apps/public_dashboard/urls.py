@@ -16,7 +16,7 @@ urlpatterns = [
         name='dash.public_dashboard'),
 
     # View public dashboard (no workspace selected == default workspace used).
-    url(r'^(?P<username>[\w_\-]+)/$',
-        view=public_dashboard,
-        name='dash.public_dashboard'),
+    #url(r'^(?P<username>[\w_\-]+)/$',
+    #    view=public_dashboard,
+    #    name='dash.public_dashboard'),
 ]

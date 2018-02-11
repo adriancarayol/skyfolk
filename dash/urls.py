@@ -1,8 +1,10 @@
+from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
 from django.conf.urls import url
 from django.utils.translation import ugettext_lazy as _
 
 from .views import (
-    add_dashboard_entry,
+    AddDashboardEntry,
+    EditDashboardEntry,
     clone_dashboard_workspace,
     copy_dashboard_entry,
     create_dashboard_workspace,
@@ -12,19 +14,15 @@ from .views import (
     delete_dashboard_entry,
     delete_dashboard_workspace,
     edit_dashboard,
-    edit_dashboard_entry,
-    edit_dashboard_settings,
+    # edit_dashboard_settings,
     edit_dashboard_workspace,
     paste_dashboard_entry,
     plugin_widgets,
+    update_entry_info,
+    public_dashboard,
 )
 
-__title__ = 'dash.urls'
-__author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
-__copyright__ = '2013-2017 Artur Barseghyan'
-__license__ = 'GPL 2.0/LGPL 2.1'
-__all__ = ('urlpatterns',)
-
+from .contrib.plugins.poll.views import submit_poll_response
 
 urlpatterns = [
     # Paste dashboard entry
@@ -49,24 +47,44 @@ urlpatterns = [
     # Add dashboard entry.
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'ws/(?P<workspace>[\w_\-]+)/pos/(?P<position>\d+)/$'),
-        view=add_dashboard_entry,
+        view=AddDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'ws/(?P<workspace>[\w_\-]+)/$'),
-        view=add_dashboard_entry,
+        view=AddDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/(?P<plugin_uid>[\w_\-]+)/'
           r'pos/(?P<position>\d+)/$'),
-        view=add_dashboard_entry,
+        view=AddDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.add_dashboard_entry'),
     url(_(r'^entry/add/(?P<placeholder_uid>[\w_]+)/'
           r'(?P<plugin_uid>[\w_\-]+)/$'),
-        view=add_dashboard_entry,
+        view=AddDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.add_dashboard_entry'),
 
     # Edit dashboard entry.
     url(_(r'^entry/edit/(?P<entry_id>\d+)/$'),
-        view=edit_dashboard_entry,
+        view=EditDashboardEntry.as_view([ProviderForm,
+                                        DummyForm,
+                                        ConsumerForm,
+                                        DummyForm,
+                                        ServicesDescriptionForm]),
         name='dash.edit_dashboard_entry'),
 
     # Delete dashboard entry.
@@ -142,12 +160,21 @@ urlpatterns = [
         name='dash.dashboard'),
 
     # Edit dashboard settings.
-    url(_(r'^settings/edit/$'),
-        view=edit_dashboard_settings,
-        name='dash.edit_dashboard_settings'),
+    # url(_(r'^settings/edit/$'),
+    #     view=edit_dashboard_settings,
+    #     name='dash.edit_dashboard_settings'),
 
-    # View default dashboard (no workspace selected == default workspace used).
-    url(_(r'^$'),
-        view=dashboard,
-        name='dash.dashboard'),
+    # Update dashboard entry
+    url(_(r'^entry/update/$'), 
+        view=update_entry_info,
+        name='dash.update_dashobard_entry'),
+
+    url(_(r'^entry/poll/response/$'),
+        view=submit_poll_response,
+        name='dash.response_dashboard_entry'),
+
+    # public dashboard
+    url(r'^(?P<username>[\w-]+)/(?P<workspace>[\w_\-]+)/$',
+        view=public_dashboard,
+        name='dash.public_dashboard'),
 ]

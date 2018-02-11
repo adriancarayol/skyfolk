@@ -85,19 +85,26 @@ $followcolor: #64b5f6
   border-radius: 0.3rem
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2)
   margin-bottom: 1em
+  word-wrap: break-word
 
 /* Ventana para las opciones de cada pin */
 
 .ventana-pin
   width: 100%
-  height: auto
+  height: 30px
+  line-height: 30px
   display: none
   border-radius: 3px
+  clear: both
 
 .ventana-pin a
   float: right
   font-size: 17px
   margin-right: 14px
+  text-decoration: none
+  color: white
+  &:hover
+    opacity: 0.8
 
 .body-inConf
   background-color: #e6e6e6
@@ -1290,15 +1297,32 @@ ul.table > li
     left: 270px
     top: 147px
 
+.wrapper .widget-wr .widget-item
+  display: block
+  box-shadow: 0 0 10px #ddd
+  padding: 10px
+
+.wrapper .widget-wr .widget-title
+  color: #fff
+
+.wrapper .widget-wr .widget-controls button
+  vertical-align: middle
+
+.wrapper .widget-wr .widget-controls button:hover > i
+  -webkit-transform: rotate(45deg)
+  transform: rotate(45deg)
+  -webkit-transition-duration: 0.1s
+  -webkit-transition-timing-function: ease-in
+  transition-duration: 0.1s
+  transition-timing-function: ease-in
 /* WIDGET ENCUESTA */
 .stock .wrapper
   margin-top: 0
-  height: 457px
 
 .wrapper .widget-wr
-  background-color: #eeeeee
+  background-color: #fff
   width: 100%
-  height: 100%
+  max-height: 100%
   position: relative
   display: block
   margin: auto
@@ -1523,3 +1547,31 @@ span
     background: #81d4fa
     &:hover
       background: rgba(48, 164, 209, 0.3)
+
+
+.placeholder
+  overflow: hidden
+  margin: 0
+  padding: 0
+
+.placeholder .empty-widget-cell
+  position: relative
+  overflow: hidden
+  margin: 0
+  padding: 0
+  border-bottom: 3px solid #000
+  z-index: 1
+  background-color: #fff
+
+.placeholder .empty-widget-cell .add-plugin span
+  z-index: 0
+  display: block
+  margin: 30% auto 0 auto
+  width: 100%
+  text-align: center
+  &:hover
+    opacity: 0.8
+
+.placeholder .plugin iframe
+  width: 100%
+  min-height: 300px

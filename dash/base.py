@@ -10,8 +10,9 @@ from django.forms import ModelForm
 from django.http import Http404
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
+from dash import models
 from nine.versions import DJANGO_GTE_1_8
-
+from .constants import MAX_SIZE_COLS
 from .discover import autodiscover
 from .exceptions import LayoutDoesNotExist, InvalidRegistryItemType
 from .helpers import iterable_to_dict, uniquify_sequence, safe_text
@@ -406,7 +407,7 @@ class BaseDashboardLayout(object):
             'placeholders_dict': iterable_to_dict(placeholders,
                                                   key_attr_name='uid'),
             'request': request,
-            'css':  self.get_css(placeholders)
+            'css': self.get_css(placeholders)
         }
         return render_to_string(self.get_edit_template_name(request), context)
 
@@ -443,6 +444,7 @@ class BaseDashboardPlaceholder(object):
     cell_margin_left = 0
     view_template_name = ''
     edit_template_name = ''
+    workspace = None
     html_classes = []
 
     def __init__(self, layout):
@@ -472,7 +474,7 @@ class BaseDashboardPlaceholder(object):
     @property
     def primary_html_class(self):
         """Primary HTML class."""
-        return 'placeholder-{0}'.format(self.uid)
+        return 'row placeholder-{0}'.format(self.uid)
 
     @property
     def html_class(self):
@@ -526,12 +528,26 @@ class BaseDashboardPlaceholder(object):
         """
         empty_cells = []
         position = 1
-        for row in range(1, self.rows + 1):
-            for col in range(1, self.cols + 1):
+        positions = models.DashboardEntry.objects.filter(placeholder_uid=self.uid, user=self.request.user,
+                                                         layout_uid=self.layout.uid,
+                                                         workspace__name=self.workspace).values_list(
+            'position', flat=True)
+
+        total_cols = self.rows * self.cols
+        if self.layout.uid == 'profile':
+            size_col = 12
+        else:
+            size_col = int(MAX_SIZE_COLS / self.rows)
+            if size_col < 1:
+                size_col = 1
+
+        for col in range(1, total_cols + 1):
+            if position not in positions:
                 empty_cells.append(
-                    ('col-{0} row-{1}'.format(col, row), position)
+                    ('col s{0} l{1}'.format(MAX_SIZE_COLS, size_col), position)
                 )
-                position += 1
+            position += 1
+
         return empty_cells
 
     def render_for_edit(self):
@@ -554,8 +570,8 @@ class BaseDashboardPlaceholder(object):
         :return int:
         """
         return self.cell_margin_left + \
-            self.cell_margin_right + \
-            self.cell_width
+               self.cell_margin_right + \
+               self.cell_width
 
     def get_cell_height(self):
         """Get a single cell height, with respect to margins.
@@ -563,15 +579,15 @@ class BaseDashboardPlaceholder(object):
         :return int:
         """
         return self.cell_margin_top + \
-            self.cell_margin_bottom + \
-            self.cell_height
+               self.cell_margin_bottom + \
+               self.cell_height
 
     def widget_inner_width(self, cols):
         """The inner width of the widget to be rendered."""
         return (
-            (self.get_cell_width() * cols) -
-            self.cell_margin_left -
-            self.cell_margin_right
+                (self.get_cell_width() * cols) -
+                self.cell_margin_left -
+                self.cell_margin_right
         )
 
     def widget_inner_height(self, rows):
@@ -580,9 +596,9 @@ class BaseDashboardPlaceholder(object):
         :return int:
         """
         return (
-            (self.get_cell_height() * rows) -
-            self.cell_margin_top -
-            self.cell_margin_bottom
+                (self.get_cell_height() * rows) -
+                self.cell_margin_top -
+                self.cell_margin_bottom
         )
 
     @property
@@ -608,6 +624,7 @@ class BaseDashboardPlaceholder(object):
 
         :return string:
         """
+
         def placeholder_width():
             """Placeholder width.
 
@@ -867,21 +884,6 @@ class BaseDashboardPlugin(object):
         """HTML id."""
         return self._html_id
 
-    def get_position(self):
-        """Get the exact position of the plugin widget in the placeholder (row
-        number, col number).
-
-        :return tuple: Tuple of row and col numbers.
-        """
-        col = self.position % self.placeholder.cols
-        row = int(
-            self.position / self.placeholder.cols
-        ) + (1 if col > 0 else 0)
-        if col == 0:
-            col = self.placeholder.cols
-
-        return row, col
-
     @property  # Comment the @property out if something goes wrong.
     def html_class(self):
         """HTML class.
@@ -903,12 +905,14 @@ class BaseDashboardPlugin(object):
                 )
             ]
 
-            html_class.append('width-{0}'.format(widget.cols))
-            html_class.append('height-{0}'.format(widget.rows))
+            if self.layout.uid == 'profile':
+                size_col = 12
+            else:
+                size_col = int(MAX_SIZE_COLS / self.placeholder.rows)
+                if size_col < 1:
+                    size_col = 1
 
-            row, col = self.get_position()
-            html_class.append('row-{0}'.format(row))
-            html_class.append('col-{0}'.format(col))
+            html_class.append('col s{0} l{1}'.format(MAX_SIZE_COLS, size_col))
 
             return ' '.join(html_class)
         except Exception as err:
@@ -1122,7 +1126,7 @@ class BaseDashboardPlugin(object):
             PluginWidgetRegistry.namify(self.layout.uid,
                                         self.placeholder.uid,
                                         self.uid)
-            )
+        )
 
         if not as_instance:
             return widget_cls
@@ -1337,6 +1341,7 @@ class MetaBaseDashboardPluginWidget(type):
 
 class ClassProperty(property):
     """Class property."""
+
     def __get__(self, cls, owner):
         return classmethod(self.fget).__get__(None, owner)()
 
@@ -1376,14 +1381,14 @@ class BaseDashboardPluginWidget(object):
     def __init__(self, plugin):
         assert self.layout_uid and self.layout_uid == plugin.layout.uid
         assert (
-            self.placeholder_uid
-            and
-            self.placeholder_uid in plugin.layout.placeholder_uids
+                self.placeholder_uid
+                and
+                self.placeholder_uid in plugin.layout.placeholder_uids
         )
         assert (
-            self.plugin_uid
-            and
-            self.plugin_uid in get_registered_plugin_uids()
+                self.plugin_uid
+                and
+                self.plugin_uid in get_registered_plugin_uids()
         )
         assert hasattr(self, 'render') and callable(self.render)
         assert self.cols
@@ -1438,10 +1443,10 @@ class BaseDashboardPluginWidget(object):
         """
         return (
             (
-                self.cols * self.plugin.placeholder.get_cell_width()
+                    self.cols * self.plugin.placeholder.get_cell_width()
             ) + delta_width,
             (
-                self.rows * self.plugin.placeholder.get_cell_height()
+                    self.rows * self.plugin.placeholder.get_cell_height()
             ) + delta_height
         )
 
@@ -1633,9 +1638,9 @@ plugin_widget_registry = PluginWidgetRegistry()
 def ensure_autodiscover():
     """Ensure that plugins are auto-discovered."""
     if not (
-        plugin_registry._registry and
-        layout_registry._registry and
-        plugin_widget_registry._registry
+            plugin_registry._registry and
+            layout_registry._registry and
+            plugin_widget_registry._registry
     ):
         autodiscover()
 

@@ -1,26 +1,26 @@
 {% load i18n %}
-<div class="generic-content-wrapper">
-    <div class="wrapper-bg"></div>
-    <div class="hero-unit-small">
-        <h2 class="content-title">{% trans "Dashboard workspaces" %}</h2>
-    </div>
-
-    <div class="content-body">
-        <ul class="content-listing workspaces">
-            <li class="entry{% if not current_workspace %} active{% endif %}">
-                <a href="{% if edit_mode %}{% url 'dash.edit_dashboard' %}{% else %}{% url 'dash.dashboard' %}{% endif %}" title="{% trans 'Default' %}">
-                    <span class="iconic {% if not current_workspace %}icon-circle{% else %}icon-circle-blank{% endif %}"></span>
-                    <span class="textonic">{% trans "Default" %}</span>
-                </a>
-            </li>
+{% block content %}
+    <div class="container">
+        <div class="row">
             {% for ws in workspaces %}
-            <li class="entry{% if ws == current_workspace %} active{% endif %}">
-                <a href="{% if edit_mode %}{% url 'dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash.dashboard' ws.slug %}{% endif %}" title="{{ ws.name }}">
-                    <span class="iconic {% if ws == current_workspace %}icon-circle{% else %}icon-circle-blank{% endif %}"></span>
-                    <span class="textonic">{{ ws.name }}</span>
-                </a>
-            </li>
+                <div class="col s4">
+                    <div class="card z-depth-2">
+                        <div class="row">
+                            <a href="{% if edit_mode %}{% url 'dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash.dashboard' ws.slug %}{% endif %}"
+                               title="{{ ws.name }}">
+                                <span class="material-icons" title="Privado">{% if not ws.is_public %}
+                                    lock{% endif %}</span>
+                                <span class="material-icons">{% if not ws.is_clonable %}content_copy{% endif %}</span>
+                                <span class="flow-text" title="Puede copiarse">Workspace: {{ ws.name }}</span>
+                            </a>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="row">
+                            <p class="flow-text">{{ ws.layout_uid }}</p>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     </div>
-</div>
+{% endblock %}

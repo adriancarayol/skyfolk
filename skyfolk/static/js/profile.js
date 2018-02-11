@@ -295,6 +295,12 @@ $(document).ready(function () {
 
         });
     });
+
+    $('.widget-controls').on('click', '.update-plugin', function(e) {
+        e.preventDefault();
+        var plugin_uid = $(this).data('id');
+        AJAX_update_entry_info(plugin_uid);
+    });
 }); // END DOCUMENT READY */
 
 /*PETICION AJAX PARA 'I LIKE' DEL PERFIL*/
@@ -762,4 +768,21 @@ function AJAX_remove_bloq() {
             // alert(rs.responseText + " " + e);
         }
     });
+}
+
+function AJAX_update_entry_info(plugin_uid) {
+    $.ajax({
+        type: 'POST',
+        url: '/dashboard/entry/update/',
+        data: {
+            'plugin_uid': plugin_uid,
+            'csrfmiddlewaretoken': csrftoken
+        },
+        dataType: 'json',
+        success: function (data) {
+            alert(data.plugin_uid);
+        }, error: function(rs , e) {
+            alert('ERROR');
+        }
+    })
 }

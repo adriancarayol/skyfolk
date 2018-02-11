@@ -43,7 +43,7 @@ class RelationShipProfileManager(models.Manager):
         :return: Total following
         """
         qs = self.get_queryset()
-        return qs.filter(from_profile=profile_id).count()
+        return qs.filter(from_profile=profile_id, type=FOLLOWING).count()
 
     def get_total_followers(self, profile_id):
         """
@@ -52,7 +52,7 @@ class RelationShipProfileManager(models.Manager):
         :return: Total followers
         """
         qs = self.get_queryset()
-        return qs.filter(to_profile=profile_id).count()
+        return qs.filter(to_profile=profile_id, type=FOLLOWING).count()
 
     def is_follow(self, to_profile, from_profile):
         """
@@ -186,8 +186,8 @@ class Profile(models.Model):
             try:
                 with transaction.atomic(using='default'):
                     self.is_first_login = False
-                    Award.objects.create(user=self.user, badge=Badge.objects.get(slug='new-account'))
-                    self.save()
+                    Award.objects.get_or_create(user=self.user, badge=Badge.objects.get(slug='new-account'))
+                    self.save(update_fields=['is_first_login'])
             except Exception as e:
                 logger.info(e)
 

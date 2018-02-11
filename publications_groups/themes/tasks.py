@@ -13,7 +13,6 @@ from django.urls import reverse_lazy
 
 from notifications.models import Notification
 
-import publications_groups
 from publications.utils import convert_video_to_mp4
 from skyfolk.celery import app
 from user_profile.utils import notification_channel
