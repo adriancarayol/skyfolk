@@ -22,11 +22,13 @@ django-appconf==1.0.2
 django-autoslug==1.9.3
 django-celery-results==1.0.1
 django-el-pagination==3.1.0
+django-extensions==1.9.0
 django-emoji==2.2.0
 django-localeurl==2.0.2
 django-model-utils==3.0.0
 django-slim==0.7.5
 django-sortedm2m==1.5.0
+django-debug-toolbar
 django-taggit==0.22.1
 django-tinymce==2.6.0
 djangorestframework==3.7.3
