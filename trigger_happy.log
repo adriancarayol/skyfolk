@@ -83,3 +83,129 @@ Traceback (most recent call last):
   File "/home/adrian/skyfolk/dash/base.py", line 1737, in get_layout
     _("Layout `{0}` does not exist!").format(layout_uid)
 dash.exceptions.LayoutDoesNotExist: ¡Disposición `android` no existe!
+2018-02-12 17:34:55,910 ERROR exception 9 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django_redis/cache.py", line 33, in _decorator
+    return method(self, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django_redis/cache.py", line 82, in get
+    client=client)
+  File "/usr/local/lib/python3.6/site-packages/django_redis/client/default.py", line 203, in get
+    raise ConnectionInterrupted(connection=client, parent=e)
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 111 connecting to localhost:6379. Connection refused.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/user_profile/views.py", line 349, in profile_view
+    return render(request, template, context)
+  File "/usr/local/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 1040, in render
+    output = self.filter_expression.resolve(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/code/dash/base.py", line 565, in render_for_edit
+    return render_to_string(self.get_edit_template_name(), context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 527, in render
+    six.iteritems(self.extra_context)}
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 526, in <dictcomp>
+    values = {key: val.resolve(context) for key, val in
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 708, in resolve
+    obj = self.var.resolve(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 849, in resolve
+    value = self._resolve_lookup(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 911, in _resolve_lookup
+    current = current()
+  File "/code/dash/base.py", line 1148, in render
+    render = widget.render(request=request)
+  File "/code/dash/contrib/plugins/service/dash_widgets.py", line 29, in render
+    context = {'plugin': self.plugin, 'results': cache.get(pattern), 'trigger': trigger}
+  File "/usr/local/lib/python3.6/site-packages/django_redis/cache.py", line 40, in _decorator
+    raise e.parent
+  File "/usr/local/lib/python3.6/site-packages/django_redis/client/default.py", line 201, in get
+    value = client.get(key)
+  File "/usr/local/lib/python3.6/site-packages/redis/client.py", line 976, in get
+    return self.execute_command('GET', name)
+  File "/usr/local/lib/python3.6/site-packages/redis/client.py", line 673, in execute_command
+    connection.send_command(*args)
+  File "/usr/local/lib/python3.6/site-packages/redis/connection.py", line 610, in send_command
+    self.send_packed_command(self.pack_command(*args))
+  File "/usr/local/lib/python3.6/site-packages/redis/connection.py", line 585, in send_packed_command
+    self.connect()
+  File "/usr/local/lib/python3.6/site-packages/redis/connection.py", line 489, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 111 connecting to localhost:6379. Connection refused.

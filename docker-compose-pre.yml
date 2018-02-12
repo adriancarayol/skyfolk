@@ -1,64 +1,6 @@
-version: '3'
+version: '2'
 
-services:   
-  mail:
-    image: tvial/docker-mailserver:latest
-    hostname: mail
-    domainname: skyfolk.net
-    container_name: mail
-    restart: always
-    ports:
-      - "25:25"
-      - "143:143"
-      - "587:587"
-      - "993:993"
-    volumes:
-      - maildata:/var/mail
-      - mailstate:/var/mail-state
-      - ./config/:/tmp/docker-mailserver/
-    environment:
-      - ENABLE_SPAMASSASSIN=1
-      - ENABLE_CLAMAV=1
-      - ENABLE_FAIL2BAN=1
-      - ENABLE_POSTGREY=1
-      - ONE_DIR=1
-      - DMS_DEBUG=0
-      - ENABLE_LDAP=1
-      - LDAP_SERVER_HOST=skyfolk.net
-      - LDAP_SEARCH_BASE=ou=people,dc=localhost,dc=localdomain
-      - LDAP_BIND_DN=cn=admin,dc=localhost,dc=localdomain
-      - LDAP_BIND_PW=admin
-      - LDAP_QUERY_FILTER_USER="(&(mail=%s)(mailEnabled=TRUE))"
-      - LDAP_QUERY_FILTER_GROUP="(&(mailGroupMember=%s)(mailEnabled=TRUE))"
-      - LDAP_QUERY_FILTER_ALIAS="(&(mailAlias=%s)(mailEnabled=TRUE))"
-      - DOVECOT_PASS_FILTER="(&(objectClass=PostfixBookMailAccount)(uniqueIdentifier=%n))"
-      - DOVECOT_USER_FILTER="(&(objectClass=PostfixBookMailAccount)(uniqueIdentifier=%n))"
-      - ENABLE_SASLAUTHD=1
-      - SASLAUTHD_MECHANISMS=ldap
-      - SASLAUTHD_LDAP_SERVER=ldap
-      - SASLAUTHD_LDAP_BIND_DN=cn=admin,dc=localhost,dc=localdomain
-      - SASLAUTHD_LDAP_PASSWORD=admin
-      - SASLAUTHD_LDAP_SEARCH_BASE=ou=people,dc=localhost,dc=localdomain
-      - POSTMASTER_ADDRESS=postmaster@localhost.localdomain 
-    cap_add:
-      - NET_ADMIN
-      - SYS_PTRACE
-    networks:
-      - webnet
-  nginx:
-    image: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - .:/code
-      - /tmp:/tmp
-      - ./config/nginx:/etc/nginx/conf.d
-    environment:
-      - NGINX_PORT=80
-    depends_on:
-      - web
-    networks:
-      - webnet
+services:    
   # Redis
   redis:
     image: redis:4.0
@@ -69,7 +11,8 @@ services:
     
   # elasticsearch
   elasticsearch:
-    image: elasticsearch:2.4.2
+    image: elasticsearch:2.4.6
+    container_name: elasticsearch1
     ports:
       - "9200:9200"
     volumes:
@@ -93,7 +36,7 @@ services:
   # RabbitMQ
   rabbit:
     hostname: rabbit
-    image: rabbitmq:3.6.12
+    image: rabbitmq:latest
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -107,7 +50,7 @@ services:
   # nodo 2
   rabbit_2:
     hostname: rabbit_2
-    image: rabbitmq:3.6.12
+    image: rabbitmq:latest
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -134,6 +77,8 @@ services:
     depends_on:
       - rabbit
     restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
   # Django web server
   web:
     env_file:
@@ -147,9 +92,7 @@ services:
       - .:/code  # mount current directory inside container
       - /tmp:/tmp
     ports:
-      - "8000:8000"
-    extra_hosts:
-      - "database:45.55.57.214"
+        - "8000:8000"
     networks:
       - webnet
     depends_on:
@@ -157,6 +100,8 @@ services:
     networks:
       - webnet
     restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
   # Celery worker
   celery_worker:
     env_file:
@@ -170,11 +115,11 @@ services:
       - /tmp:/tmp
     networks:
       - webnet
-    extra_hosts:
-      - "database:45.55.57.214"
     depends_on:
       - web
     restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
   celery_beat:
     env_file:
       - web-pre-variables.env
@@ -185,13 +130,13 @@ services:
     volumes:
       - .:/code
       - /tmp:/tmp
-    extra_hosts:
-      - "database:45.55.57.214"
     networks:
       - webnet
     depends_on:
       - web
     restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
 
 volumes:
   maildata:
