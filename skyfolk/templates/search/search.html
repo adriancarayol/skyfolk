@@ -16,7 +16,7 @@ Template para las busquedas
         }
 
         .grid-item {
-            width: 300px;
+            width: 350px;
             margin-bottom: 10px;
             float: left;
         }
@@ -212,7 +212,7 @@ Template para las busquedas
                                         </div>
                                     {% endif %}
                                     {% if item.thumbnail %}
-                                        <img class="lazyload" data-src="{{ item.thumbnail.url }}"
+                                        <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
                                              alt="{{ item.name }}" title="{{ item.name }}"
                                              onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
                                         {% else %}
@@ -382,7 +382,7 @@ Template para las busquedas
                                         </div>
                                     {% endif %}
                                     {% if item.thumbnail %}
-                                        <img class="lazyload" data-src="{{ item.thumbnail.url }}"
+                                        <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
                                              alt="{{ item.name }}" title="{{ item.name }}"
                                              onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
                                         {% else %}
@@ -441,8 +441,8 @@ Template para las busquedas
 
         var $grid = $('.grid').masonry({
             itemSelector: '.grid-item',
-            columnWidth: 300,
-            gutter: 10,
+            columnWidth: 350,
+            gutter: 20,
             fitWidth: true,
             initLayout: false,
             horizontalOrder: true,
