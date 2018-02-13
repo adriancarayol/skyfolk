@@ -1,9 +1,15 @@
 import environ
+import os
 
 ROOT_DIR = environ.Path(__file__) - 1
 APPS_DIR = ROOT_DIR.path('skyfolk')
 env = environ.Env()
-env_file = str(ROOT_DIR.path('.env'))
+
+if os.environ['DJANGO_SETTINGS_MODULE'] == 'skyfolk.settings.develop':
+    env_file = str(ROOT_DIR.path('develop.env'))
+else:
+    env_file = str(ROOT_DIR.path('.env'))
+
 # print('Loading : {}'.format(env_file))
 env.read_env(env_file)
 # print('The .env file has been loaded. See settings.py for more information')

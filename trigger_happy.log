@@ -1,150 +1,339 @@
-2018-02-13 12:22:27,457 ERROR exception 10 Internal Server Error: /user-search/videos/
+2018-02-13 19:03:52,375 ERROR exception 9 Internal Server Error: /th/callbacktwitter/
 Traceback (most recent call last):
   File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
-    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
-  File "/usr/local/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
-    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
-  File "/usr/local/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('adrian', '')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
-2018-02-13 12:25:49,130 ERROR exception 10 Internal Server Error: /user-search/videos/
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/code/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/code/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/code/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/code/dash_services/services/services.py", line 208, in callback_oauth1
+    access_token = kwargs.get('access_token')
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:03:53,176 ERROR exception 9 Internal Server Error: /th/callbacktwitter/
 Traceback (most recent call last):
   File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
   File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
   File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
-    result = block.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
-    return nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
-    nodelist.append(node.render_annotated(context))
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
-    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
-  File "/usr/local/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
-    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
-  File "/usr/local/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('adrian', 'en la puta boca')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/code/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/code/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/code/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/code/dash_services/services/services.py", line 208, in callback_oauth1
+    access_token = kwargs.get('access_token')
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:03:53,768 ERROR exception 9 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/code/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/code/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/code/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/code/dash_services/services/services.py", line 208, in callback_oauth1
+    access_token = kwargs.get('access_token')
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:06:25,032 ERROR exception 16803 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 206, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], request.GET.get('oauth_verifier', ''))
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:07:01,723 ERROR exception 17203 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 207, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], request.GET.get('oauth_verifier', ''))
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:07:27,531 ERROR exception 17377 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 208, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], request.GET.get('oauth_verifier', ''))
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:07:50,942 ERROR exception 17550 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 208, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], request.GET.get('oauth_verifier', ''))
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:08:21,388 ERROR exception 17718 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 207, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], request.GET.get('oauth_verifier', ''))
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:08:23,086 ERROR exception 17718 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 207, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], request.GET.get('oauth_verifier', ''))
+TypeError: get_access_token() missing 1 required positional argument: 'oauth_verifier'
+2018-02-13 19:08:47,705 ERROR exception 17922 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 207, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], request.GET.get('oauth_verifier', ''), '')
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 276, in get_access_token
+    access_token = twitter.get_authorized_tokens(oauth_verifier)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/twython/api.py", line 379, in get_authorized_tokens
+    ken'), error_code=response.status_code)
+twython.exceptions.TwythonError: Twitter API returned a 401 (Unauthorized), Invalid / expired To             ken
+2018-02-13 19:09:00,519 ERROR exception 17922 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 207, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], request.GET.get('oauth_verifier', ''), '')
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 276, in get_access_token
+    access_token = twitter.get_authorized_tokens(oauth_verifier)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/twython/api.py", line 379, in get_authorized_tokens
+    ken'), error_code=response.status_code)
+twython.exceptions.TwythonError: Twitter API returned a 401 (Unauthorized), Invalid / expired To             ken
+2018-02-13 19:10:12,194 ERROR exception 18300 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 207, in callback_oauth1
+    access_token = self.get_access_token(request.session['oauth_token'], '', request.GET.get('oauth_verifier', ''))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 276, in get_access_token
+    access_token = twitter.get_authorized_tokens(oauth_verifier)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/twython/api.py", line 379, in get_authorized_tokens
+    ken'), error_code=response.status_code)
+twython.exceptions.TwythonError: Twitter API returned a 401 (Unauthorized), Invalid / expired To             ken
+2018-02-13 19:11:50,817 ERROR exception 18913 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 507, in parse
+    compile_func = self.tags[command]
+KeyError: 'trans'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 67, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader.py", line 21, in get_template
+    return engine.get_template(template_name)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 39, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 162, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/engine.py", line 136, in find_template
+    name, template_dirs=dirs, skip=skip,
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loaders/base.py", line 44, in get_template
+    contents, origin, origin.template_name, self.engine,
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 191, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 230, in compile_nodelist
+    return parser.parse()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 515, in parse
+    raise self.error(token, e)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 513, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 255, in do_block
+    nodelist = parser.parse(('endblock',))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 509, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 565, in invalid_block_tag
+    get_text_list(["'%s'" % p for p in parse_until], 'or'),
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 1: 'trans', expected 'endblock'. Did you forget to register or load this tag?
+2018-02-13 19:12:39,027 ERROR exception 18913 Internal Server Error: /th/callbacktwitter/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/dash_services/views_wizard.py", line 158, in finalcallback
+    return render(request, lets_callback(request))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 255, in callback
+    return super(ServiceTwitter, self).callback(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 185, in callback
+    token = self.callback_oauth1(request, **kwargs)
+  File "/home/adrian/skyfolk/dash_services/services/services.py", line 208, in callback_oauth1
+    request.GET.get('oauth_verifier', ''))
+  File "/home/adrian/skyfolk/th_twitter/my_twitter.py", line 276, in get_access_token
+    access_token = twitter.get_authorized_tokens(oauth_verifier)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/twython/api.py", line 379, in get_authorized_tokens
+    ken'), error_code=response.status_code)
+twython.exceptions.TwythonError: Twitter API returned a 401 (Unauthorized), Invalid / expired To             ken
