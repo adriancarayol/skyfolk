@@ -15,10 +15,11 @@ def get_env_variable(var_name):
 # Eliminar except
 try:
     SECRET_KEY = get_env_variable('SECRET_KEY')
-except:
+except Exception:
     SECRET_KEY = '0)3c4u$y^+3&tx=rsgqsnr!=r5nl%j)w401o#86v97w%2v$99#'
 
-DEBUG = True
+DEBUG = False
+COMPRESS_OFFLINE = True
 
 DATABASES = {
     'default': {
@@ -37,7 +38,6 @@ NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@45
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-ALLOWED_HOSTS = ALLOWED_HOSTS + ['45.55.57.214']
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # STATIC_ROOT = '/var/www/skyfolk/static/pre/static'
