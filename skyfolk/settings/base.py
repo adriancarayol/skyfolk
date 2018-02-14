@@ -60,7 +60,6 @@ THIRD_PARTY_APPS = (
     'th_github',
     'th_instapush',
     'th_mastodon',
-    'th_pelican',
     'th_pocket',
     'th_pushbullet',
     'th_reddit',
