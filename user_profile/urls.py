@@ -6,6 +6,8 @@ from user_profile import views as user_profile_views
 urlpatterns = [
     url(r'^profile/(?P<username>[\w-]+)/$', user_profile_views.profile_view,
         name='profile'),
+    url(r'^salad/$', user_profile_views.UserLikeContent.as_view(),
+        name="salad_user_content"),
     # url(r'^user-search/$', user_profile_views.search),
     url(r'^user-search/$',
         user_profile_views.SearchUsuarioView.as_view(),

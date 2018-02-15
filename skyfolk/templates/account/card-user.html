@@ -110,8 +110,8 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     </li>
                     <li class="info-trof" title="Logros de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">save</i>
                     </li>
-                    {% if user.username == user_profile.username %}
-                    <li class="info-content" title="Mis publicaciones"><i class="material-icons">favorite</i></li>
+                    {% if user_profile == request.user %}
+                        <li title="Mi contenido" onclick="location.href='{% url "user_profile:salad_user_content" %}'"><i class="material-icons">bookmark</i></li>
                     {% endif %}
                 </ul>
             </div>
