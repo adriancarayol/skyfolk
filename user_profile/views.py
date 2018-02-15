@@ -1401,7 +1401,7 @@ class SearchUsuarioView(SearchView):
                                                                                board_owner__profile__in=following) | SQ(
                                                                                board_owner__profile__in=followers))
                                                                        ) | SQ(board_owner__profile__privacity='A')))))) \
-                .select_related('author').prefetch_related('images')
+                .select_related('author').prefetch_related('images').filter(deleted=False)
         ).load_all_queryset(
             Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
                                         ((~SQ(owner__profile__privacity='N') & ~SQ(

@@ -169,7 +169,7 @@ Template para las busquedas
                         </div>
                     {% elif item.model_name == 'photo' %}
                         <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
-                             data-tooltip="{{ item.caption|truncatechars:"150" }}">
+                             data-tooltip="{{ item.description|truncatechars:"150" }}">
                             <div class="container-image">
                                 <div class="principal-content">
                                     {% if item.tags %}
@@ -200,7 +200,7 @@ Template para las busquedas
                         </div>
                     {% elif item.model_name == 'video' %}
                         <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
-                             data-tooltip="{{ item.caption|truncatechars:"150" }}">
+                             data-tooltip="{{ item.description|truncatechars:"150" }}">
                             <div class="container-image">
                                 <div class="principal-content">
                                     {% if item.tags %}
@@ -291,7 +291,7 @@ Template para las busquedas
                     <div class="col s12">
                         <div style="cursor: default" class="name-friend">
                             <a href="{% url "user_groups:group-profile" groupname=item.slug %}">{{ item.name }}</a>
-                            <p class="truncate">{{ item.description|truncatechars:100 }}</p>
+                            <p class="truncate">{{ item.description|truncatechars:"100" }}</p>
                         </div>
                     </div>
                 </div>
@@ -335,7 +335,7 @@ Template para las busquedas
             <div class="grid row">
                 {% for item in object_list %}
                     <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
-                         data-tooltip="{{ item.description }}">
+                         data-tooltip="{{ item.description|truncatechars:"150" }}">
                         <div class="container-image">
                             <div class="principal-content">
                                 {% if item.tags %}
@@ -370,7 +370,7 @@ Template para las busquedas
             <div class="grid row">
                 {% for item in object_list %}
                     <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
-                             data-tooltip="{{ item.caption|truncatechars:"150" }}">
+                             data-tooltip="{{ item.description|truncatechars:"150" }}">
                             <div class="container-image">
                                 <div class="principal-content">
                                     {% if item.tags %}
