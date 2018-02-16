@@ -1,6 +1,26 @@
 version: '2'
 
 services:    
+  # nginx
+  nginx:
+    image: nginx:latest
+    container_name: ng01
+    restart: always
+    ports:
+        - "8000:8000"
+    volumes:
+        - .:/code  # mount current directory inside container
+        - ./config:/etc/nginx/conf.d
+        - ./static:/static
+        - /tmp:/tmp
+    depends_on:
+        - web
+        - webworker
+    networks:
+        - webnet
+    extra_hosts:
+        - "cluster:172.17.0.1"
+
   # Redis
   redis:
     image: redis:4.0
@@ -91,8 +111,10 @@ services:
     volumes:
       - .:/code  # mount current directory inside container
       - /tmp:/tmp
-    ports:
-        - "8000:8000"
+      - ./static:/static
+    expose:
+        - "8000"
+        - "25"
     networks:
       - webnet
     depends_on:
@@ -137,12 +159,6 @@ services:
     restart: always
     extra_hosts:
         - "cluster:172.17.0.1"
-
-volumes:
-  maildata:
-    driver: local
-  mailstate:
-    driver: local
 
 networks:
   webnet:

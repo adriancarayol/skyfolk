@@ -4,6 +4,7 @@ sleep 10
 
 # su -m skyfolk -c "command"
 ls -lra /root/.imageio
+su -m skyfolk -c "python manage.py compress"
 su -m skyfolk -c "python manage.py collectstatic --noinput"
 su -m skyfolk -c "python manage.py install_labels"
 su -m skyfolk -c "python manage.py makemigrations"
