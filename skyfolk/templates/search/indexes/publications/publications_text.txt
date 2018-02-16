@@ -2,6 +2,7 @@
 {{ object.author.username }}
 {{ object.content }}
 {{ object.pub_date }}
+{{ object.delete }}
 {% for tag in object.tags.all %}
     {{ tag.name }}
 {% endfor %}

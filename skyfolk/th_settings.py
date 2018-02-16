@@ -1,9 +1,15 @@
 import environ
+import os
 
 ROOT_DIR = environ.Path(__file__) - 1
 APPS_DIR = ROOT_DIR.path('skyfolk')
 env = environ.Env()
-env_file = str(ROOT_DIR.path('.env'))
+
+if os.environ['DJANGO_SETTINGS_MODULE'] == 'skyfolk.settings.develop':
+    env_file = str(ROOT_DIR.path('develop.env'))
+else:
+    env_file = str(ROOT_DIR.path('.env'))
+
 # print('Loading : {}'.format(env_file))
 env.read_env(env_file)
 # print('The .env file has been loaded. See settings.py for more information')
@@ -41,7 +47,6 @@ TH_SERVICES = (
     'th_github.my_github.ServiceGithub',
     'th_instapush.my_instapush.ServiceInstapush',
     'th_mastodon.my_mastodon.ServiceMastodon',
-    'th_pelican.my_pelican.ServicePelican',
     'th_pocket.my_pocket.ServicePocket',
     'th_pushbullet.my_pushbullet.ServicePushbullet',
     'th_rss.my_rss.ServiceRss',
@@ -111,8 +116,6 @@ TH_REDDIT_KEY = {
     'user_agent': env.str('TH_REDDIT_USER_AGENT', ''),
 }
 
-TH_PELICAN_AUTHOR = env.str('TH_PELICAN_AUTHOR', 'FoxMaSk')
-
 # list of services that require the auth of the service
 SERVICES_AUTH = ('ServiceEvernote', 'ServiceGithub', 'ServicePocket',
                  'ServicePushbullet', 'ServiceReddit', 'ServiceSlack',
@@ -126,4 +129,4 @@ SERVICES_WITH_TOKEN = ('ServiceInstapush',)
 SERVICES_HOSTED_WITH_AUTH = ('ServiceMastodon', 'ServiceWallabag',)
 
 # list of services that require nothing
-SERVICES_NEUTRAL = ('ServicePelican', 'ServiceRss',)
+SERVICES_NEUTRAL = ('ServiceRss',)

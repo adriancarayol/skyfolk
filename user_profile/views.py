@@ -1,11 +1,11 @@
 import json
 import logging
-
+import numpy as np
 from allauth.account.views import PasswordChangeView, EmailView
 from dash.helpers import iterable_to_dict
-
+from user_groups.models import LikeGroup
 from dash.models import DashboardEntry
-
+from itertools import chain, zip_longest
 from dash.base import get_layout
 
 from dash.utils import get_user_plugins, get_or_create_dashboard_settings, get_workspaces, get_public_dashboard_url, \
@@ -1401,7 +1401,7 @@ class SearchUsuarioView(SearchView):
                                                                                board_owner__profile__in=following) | SQ(
                                                                                board_owner__profile__in=followers))
                                                                        ) | SQ(board_owner__profile__privacity='A')))))) \
-                .select_related('author').prefetch_related('images')
+                .select_related('author').prefetch_related('images').filter(deleted=False)
         ).load_all_queryset(
             Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
                                         ((~SQ(owner__profile__privacity='N') & ~SQ(
@@ -1563,3 +1563,50 @@ class NotificationSettingsView(AjaxableResponseMixin, UpdateView):
         instance = form.save(commit=False)
         instance.user = self.request.user
         return super(NotificationSettingsView, self).form_valid(form)
+
+class UserLikeContent(TemplateView):
+    """
+    Like user content show here
+    """
+    template_name = "user_profile/user_content.html"
+
+    def __init__(self, *args, **kwargs):
+        super(UserLikeContent, self).__init__(*args, **kwargs)
+        self.pagination = None
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserLikeContent, self).dispatch(request, *args, **kwargs)
+
+    def get_like_content(self):
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
+        limit = 25 * current_page
+        offset = limit - 25
+
+        user = self.request.user
+        publications = Publication.objects.filter(user_give_me_like__id__exact=user.id) \
+                                            .select_related('author') \
+                                            .prefetch_related('images')[offset:limit]
+        users = LikeProfile.objects.filter(from_profile__user=user).select_related('to_profile__user')[offset:limit]
+        groups = LikeGroup.objects.filter(from_like=user).select_related('to_like')[offset:limit]
+
+        mixed = list(sorted(chain.from_iterable([filter(None, zipped) for zipped in
+                                                 zip_longest(publications, users, groups)]),
+                            key=lambda objects: objects.created, reverse=True))
+
+        total_pubs = np.size(publications)
+        total_users = np.size(users)
+        total_groups = np.size(groups)
+
+        if total_pubs >= 25 or total_users >= 25 or total_groups >= 25:
+            self.pagination = current_page + 1
+        else:
+            self.pagination = None
+
+        return mixed
+
+    def get_context_data(self, **kwargs):
+        context = super(UserLikeContent, self).get_context_data(**kwargs)
+        context['mixed'] = self.get_like_content()
+        context['pagination'] = self.pagination
+        return context

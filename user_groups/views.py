@@ -622,7 +622,7 @@ class ProfileGroups(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = "groups/list_group_profile.html"
     pagination_class = 'rest_framework.pagination.CursorPagination'
-
+    
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id=kwargs.pop('user_id'))
 
@@ -636,7 +636,8 @@ class ProfileGroups(APIView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-        queryset = UserGroups.objects.filter(group_ptr__in=user.groups.all()).annotate(members=Count('group_ptr__user'))
+        queryset = UserGroups.objects.filter(group_ptr__in=user.groups.all()).annotate(members=Count('group_ptr__user')) \
+            .order_by('-created')
 
         paginator = Paginator(queryset, 12)  # Show 25 contacts per page
 

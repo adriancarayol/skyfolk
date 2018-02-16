@@ -33,9 +33,6 @@ $(document).ready(function() {
         $.getJSON($(this).attr('href'), function(data) {
             if (data.success) {
                 el.closest('.plugin').remove();
-                alert('remove');
-            } else {
-                alert('failed');
             }
         });
         return false;
