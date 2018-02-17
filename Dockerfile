@@ -15,8 +15,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 # Install numpy using system package manager
 RUN apt-get -y update && apt-get -y install libav-tools imagemagick libopencv-dev python-opencv
 
-# Install sendmail
-RUN apt-get -y install sendmail
 # Install some special fonts we use in testing, etc..
 RUN apt-get -y install fonts-liberation
 

@@ -1,711 +1,4 @@
-2018-02-15 23:38:35,406 ERROR exception 14758 Internal Server Error: /search/autocomplete/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 1339, in autocomplete
-    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/query.py", line 363, in models
-    if model not in connections[self.query._using].get_unified_index().get_indexed_models():
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 305, in get_indexed_models
-    return list(self.get_indexes().keys())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 299, in get_indexes
-    self.build()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 222, in build
-    indexes = self.collect_indexes()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 191, in collect_indexes
-    search_index_module = importlib.import_module("%s.search_indexes" % app_mod.__name__)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 678, in exec_module
-  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
-  File "/home/adrian/skyfolk/publications/search_indexes.py", line 6, in <module>
-    class PublicationIndex(indexes.RealTimeSearchIndex, indexes.Indexable):
-AttributeError: module 'haystack.indexes' has no attribute 'RealTimeSearchIndex'
-2018-02-15 23:38:35,583 ERROR exception 14758 Internal Server Error: /search/autocomplete/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 1339, in autocomplete
-    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/query.py", line 363, in models
-    if model not in connections[self.query._using].get_unified_index().get_indexed_models():
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 305, in get_indexed_models
-    return list(self.get_indexes().keys())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 299, in get_indexes
-    self.build()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 222, in build
-    indexes = self.collect_indexes()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 191, in collect_indexes
-    search_index_module = importlib.import_module("%s.search_indexes" % app_mod.__name__)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 678, in exec_module
-  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
-  File "/home/adrian/skyfolk/publications/search_indexes.py", line 6, in <module>
-    class PublicationIndex(indexes.RealTimeSearchIndex, indexes.Indexable):
-AttributeError: module 'haystack.indexes' has no attribute 'RealTimeSearchIndex'
-2018-02-15 23:38:35,641 ERROR exception 14758 Internal Server Error: /search/autocomplete/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 1339, in autocomplete
-    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/query.py", line 363, in models
-    if model not in connections[self.query._using].get_unified_index().get_indexed_models():
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 305, in get_indexed_models
-    return list(self.get_indexes().keys())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 299, in get_indexes
-    self.build()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 222, in build
-    indexes = self.collect_indexes()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 191, in collect_indexes
-    search_index_module = importlib.import_module("%s.search_indexes" % app_mod.__name__)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 678, in exec_module
-  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
-  File "/home/adrian/skyfolk/publications/search_indexes.py", line 6, in <module>
-    class PublicationIndex(indexes.RealTimeSearchIndex, indexes.Indexable):
-AttributeError: module 'haystack.indexes' has no attribute 'RealTimeSearchIndex'
-2018-02-15 23:38:36,386 ERROR exception 14758 Internal Server Error: /search/autocomplete/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 1339, in autocomplete
-    sqs = SearchQuerySet().models(Profile).filter(SQ(username=q) | SQ(firstname=q) | SQ(lastname=q))[:7]
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/query.py", line 363, in models
-    if model not in connections[self.query._using].get_unified_index().get_indexed_models():
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 305, in get_indexed_models
-    return list(self.get_indexes().keys())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 299, in get_indexes
-    self.build()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 222, in build
-    indexes = self.collect_indexes()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 191, in collect_indexes
-    search_index_module = importlib.import_module("%s.search_indexes" % app_mod.__name__)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 678, in exec_module
-  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
-  File "/home/adrian/skyfolk/publications/search_indexes.py", line 6, in <module>
-    class PublicationIndex(indexes.RealTimeSearchIndex, indexes.Indexable):
-AttributeError: module 'haystack.indexes' has no attribute 'RealTimeSearchIndex'
-2018-02-15 23:38:36,446 ERROR exception 14758 Internal Server Error: /user-search/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
-    return bound_func(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
-    return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 1354, in dispatch
-    return super(SearchUsuarioView, self).dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/generic_views.py", line 120, in get
-    form = self.get_form(form_class)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/edit.py", line 45, in get_form
-    return form_class(**self.get_form_kwargs())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/generic_views.py", line 65, in get_form_kwargs
-    kwargs.update({'searchqueryset': self.get_queryset()})
-  File "/home/adrian/skyfolk/user_profile/views.py", line 1463, in get_queryset
-    return queryset.filter(content=q).models(*models)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/query.py", line 363, in models
-    if model not in connections[self.query._using].get_unified_index().get_indexed_models():
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 305, in get_indexed_models
-    return list(self.get_indexes().keys())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 299, in get_indexes
-    self.build()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 222, in build
-    indexes = self.collect_indexes()
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/utils/loading.py", line 191, in collect_indexes
-    search_index_module = importlib.import_module("%s.search_indexes" % app_mod.__name__)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-  File "<frozen importlib._bootstrap>", line 994, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 971, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 955, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 665, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 678, in exec_module
-  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
-  File "/home/adrian/skyfolk/publications/search_indexes.py", line 6, in <module>
-    class PublicationIndex(indexes.RealTimeSearchIndex, indexes.Indexable):
-AttributeError: module 'haystack.indexes' has no attribute 'RealTimeSearchIndex'
-2018-02-15 23:52:47,549 ERROR exception 18917 Internal Server Error: /user-search/
-Traceback (most recent call last):
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
-    return bound_func(*args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
-    return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 1354, in dispatch
-    return super(SearchUsuarioView, self).dispatch(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/generic_views.py", line 120, in get
-    form = self.get_form(form_class)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/edit.py", line 45, in get_form
-    return form_class(**self.get_form_kwargs())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/haystack/generic_views.py", line 65, in get_form_kwargs
-    kwargs.update({'searchqueryset': self.get_queryset()})
-  File "/home/adrian/skyfolk/user_profile/views.py", line 1404, in get_queryset
-    .select_related('author').prefetch_related('images').filter(delete=False)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1154, in build_filter
-    lookups, parts, reffed_expression = self.solve_lookup_type(arg)
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1034, in solve_lookup_type
-    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
-  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1352, in names_to_path
-    "Choices are: %s" % (name, ", ".join(available)))
-django.core.exceptions.FieldError: Cannot resolve keyword 'delete' into field. Choices are: author, author_id, board_owner, board_owner_id, content, created, deleted, event_type, extra_content, id, images, level, lft, parent, parent_id, publication, reply, rght, shared_group_publication, shared_group_publication_id, shared_publication, shared_publication_id, tagged_items, tags, tree_id, user_give_me_hate, user_give_me_like, videos
-2018-02-16 16:50:43,655 ERROR exception 9 Internal Server Error: /
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
-    return self.render_compressed(context, self.kind, self.mode, forced=forced)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
-    return self.render_offline(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
-    'is the original content:\n\n%s' % (key, original_content))
-compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f5202faa6b582f40497cab6443776b98347e47a8b153203d7c6f654c46355c31" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
-
-
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/login-signup.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection">
-        <style>
-            .progress {
-                margin: 0 !important;
-            }
-        </style>
-    
-2018-02-16 16:50:45,003 ERROR exception 9 Internal Server Error: /
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
-    return self.render_compressed(context, self.kind, self.mode, forced=forced)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
-    return self.render_offline(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
-    'is the original content:\n\n%s' % (key, original_content))
-compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f5202faa6b582f40497cab6443776b98347e47a8b153203d7c6f654c46355c31" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
-
-
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/login-signup.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection">
-        <style>
-            .progress {
-                margin: 0 !important;
-            }
-        </style>
-    
-2018-02-16 16:51:06,614 ERROR exception 9 Internal Server Error: /
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
-    return self.render_compressed(context, self.kind, self.mode, forced=forced)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
-    return self.render_offline(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
-    'is the original content:\n\n%s' % (key, original_content))
-compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f5202faa6b582f40497cab6443776b98347e47a8b153203d7c6f654c46355c31" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
-
-
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/login-signup.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection">
-        <style>
-            .progress {
-                margin: 0 !important;
-            }
-        </style>
-    
-2018-02-16 16:52:16,885 ERROR exception 9 Internal Server Error: /
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
-    return self.render_compressed(context, self.kind, self.mode, forced=forced)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
-    return self.render_offline(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
-    'is the original content:\n\n%s' % (key, original_content))
-compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f5202faa6b582f40497cab6443776b98347e47a8b153203d7c6f654c46355c31" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
-
-
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/login-signup.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection">
-        <style>
-            .progress {
-                margin: 0 !important;
-            }
-        </style>
-    
-2018-02-16 16:52:43,032 ERROR exception 9 Internal Server Error: /
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
-    return self.render_compressed(context, self.kind, self.mode, forced=forced)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
-    return self.render_offline(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
-    'is the original content:\n\n%s' % (key, original_content))
-compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f5202faa6b582f40497cab6443776b98347e47a8b153203d7c6f654c46355c31" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
-
-
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/login-signup.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection">
-        <style>
-            .progress {
-                margin: 0 !important;
-            }
-        </style>
-    
-2018-02-16 16:53:55,220 ERROR exception 9 Internal Server Error: /
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
-    return self.render_compressed(context, self.kind, self.mode, forced=forced)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
-    return self.render_offline(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
-    'is the original content:\n\n%s' % (key, original_content))
-compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f5202faa6b582f40497cab6443776b98347e47a8b153203d7c6f654c46355c31" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
-
-
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/login-signup.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection">
-        <style>
-            .progress {
-                margin: 0 !important;
-            }
-        </style>
-    
-2018-02-16 16:53:56,108 ERROR exception 9 Internal Server Error: /
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
-    return self.render_compressed(context, self.kind, self.mode, forced=forced)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
-    return self.render_offline(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
-    'is the original content:\n\n%s' % (key, original_content))
-compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f5202faa6b582f40497cab6443776b98347e47a8b153203d7c6f654c46355c31" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
-
-
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/login-signup.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection">
-        <style>
-            .progress {
-                margin: 0 !important;
-            }
-        </style>
-    
-2018-02-16 16:55:31,587 ERROR exception 9 Internal Server Error: /
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
-    response = response.render()
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
-    self.content = self.rendered_content
-  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
-    content = template.render(context, self._request)
-  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
-    return self.template.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
-    return self._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
-    return compiled_parent._render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
-    return self.nodelist.render(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
-    bit = node.render_annotated(context)
-  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
-    return self.render(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
-    return self.render_compressed(context, self.kind, self.mode, forced=forced)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
-    return self.render_offline(context)
-  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
-    'is the original content:\n\n%s' % (key, original_content))
-compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "f5202faa6b582f40497cab6443776b98347e47a8b153203d7c6f654c46355c31" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
-
-
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-        <link rel="stylesheet" type="text/css" href="/static/css/login-signup.css">
-        <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection">
-        <style>
-            .progress {
-                margin: 0 !important;
-            }
-        </style>
-    
-2018-02-16 17:34:37,474 ERROR exception 9 Internal Server Error: /accounts/login/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
-    return bound_func(*args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
-    return view(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
-    return func.__get__(self, type(self))(*args2, **kwargs2)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 133, in dispatch
-    return super(LoginView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 79, in dispatch
-    **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 102, in post
-    response = self.form_valid(form)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 146, in form_valid
-    return form.login(self.request, redirect_url=success_url)
-  File "/code/user_profile/forms.py", line 57, in login
-    fail_silently=False,
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/__init__.py", line 62, in send_mail
-    return mail.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 64, in open
-    self.connection = self.connection_class(self.host, self.port, **connection_params)
-  File "/usr/local/lib/python3.6/smtplib.py", line 251, in __init__
-    (code, msg) = self.connect(host, port)
-  File "/usr/local/lib/python3.6/smtplib.py", line 336, in connect
-    self.sock = self._get_socket(host, port, self.timeout)
-  File "/usr/local/lib/python3.6/smtplib.py", line 307, in _get_socket
-    self.source_address)
-  File "/usr/local/lib/python3.6/socket.py", line 704, in create_connection
-    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
-  File "/usr/local/lib/python3.6/socket.py", line 745, in getaddrinfo
-    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
-socket.gaierror: [Errno -2] Name or service not known
-2018-02-16 17:34:58,039 ERROR exception 9 Internal Server Error: /accounts/login/
+2018-02-16 17:35:07,248 ERROR exception 9 Internal Server Error: /accounts/login/
 Traceback (most recent call last):
   File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
@@ -766,3 +59,792 @@ Traceback (most recent call last):
   File "/usr/local/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 407, in __get__
     self.related.get_accessor_name()
 django.db.models.fields.related_descriptors.RelatedObjectDoesNotExist: User has no profile.
+2018-02-16 17:35:10,047 ERROR exception 9 Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 133, in dispatch
+    return super(LoginView, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 79, in dispatch
+    **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 102, in post
+    response = self.form_valid(form)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 146, in form_valid
+    return form.login(self.request, redirect_url=success_url)
+  File "/code/user_profile/forms.py", line 72, in login
+    return super(CustomLoginForm, self).login(request=request, redirect_url=redirect_url)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/forms.py", line 177, in login
+    redirect_url=redirect_url)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/utils.py", line 155, in perform_login
+    adapter.login(request, user)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 388, in login
+    django_login(request, user)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/__init__.py", line 160, in login
+    user_logged_in.send(sender=user.__class__, request=request, user=user)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/models.py", line 25, in update_last_login
+    user.save(update_fields=['last_login'])
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/base_user.py", line 80, in save
+    super(AbstractBaseUser, self).save(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 848, in save_base
+    update_fields=update_fields, raw=raw, using=using,
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/code/user_profile/signals.py", line 107, in create_user_profile
+    instance.profile.save()
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 407, in __get__
+    self.related.get_accessor_name()
+django.db.models.fields.related_descriptors.RelatedObjectDoesNotExist: User has no profile.
+2018-02-16 17:35:12,188 ERROR exception 9 Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 133, in dispatch
+    return super(LoginView, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 79, in dispatch
+    **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 102, in post
+    response = self.form_valid(form)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 146, in form_valid
+    return form.login(self.request, redirect_url=success_url)
+  File "/code/user_profile/forms.py", line 72, in login
+    return super(CustomLoginForm, self).login(request=request, redirect_url=redirect_url)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/forms.py", line 177, in login
+    redirect_url=redirect_url)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/utils.py", line 155, in perform_login
+    adapter.login(request, user)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 388, in login
+    django_login(request, user)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/__init__.py", line 160, in login
+    user_logged_in.send(sender=user.__class__, request=request, user=user)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/models.py", line 25, in update_last_login
+    user.save(update_fields=['last_login'])
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/base_user.py", line 80, in save
+    super(AbstractBaseUser, self).save(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 848, in save_base
+    update_fields=update_fields, raw=raw, using=using,
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/code/user_profile/signals.py", line 107, in create_user_profile
+    instance.profile.save()
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 407, in __get__
+    self.related.get_accessor_name()
+django.db.models.fields.related_descriptors.RelatedObjectDoesNotExist: User has no profile.
+2018-02-16 17:35:21,138 ERROR exception 9 Internal Server Error: /admin/login/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 393, in login
+    return LoginView.as_view(**defaults)(request)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/views.py", line 90, in dispatch
+    return super(LoginView, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/edit.py", line 183, in post
+    return self.form_valid(form)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/views.py", line 119, in form_valid
+    auth_login(self.request, form.get_user())
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/__init__.py", line 160, in login
+    user_logged_in.send(sender=user.__class__, request=request, user=user)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/models.py", line 25, in update_last_login
+    user.save(update_fields=['last_login'])
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/base_user.py", line 80, in save
+    super(AbstractBaseUser, self).save(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 848, in save_base
+    update_fields=update_fields, raw=raw, using=using,
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/code/user_profile/signals.py", line 107, in create_user_profile
+    instance.profile.save()
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 407, in __get__
+    self.related.get_accessor_name()
+django.db.models.fields.related_descriptors.RelatedObjectDoesNotExist: User has no profile.
+2018-02-16 17:36:15,045 ERROR exception 9 Internal Server Error: /admin/login/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 393, in login
+    return LoginView.as_view(**defaults)(request)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/views.py", line 90, in dispatch
+    return super(LoginView, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/edit.py", line 183, in post
+    return self.form_valid(form)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/views.py", line 119, in form_valid
+    auth_login(self.request, form.get_user())
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/__init__.py", line 160, in login
+    user_logged_in.send(sender=user.__class__, request=request, user=user)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/models.py", line 25, in update_last_login
+    user.save(update_fields=['last_login'])
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/base_user.py", line 80, in save
+    super(AbstractBaseUser, self).save(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 848, in save_base
+    update_fields=update_fields, raw=raw, using=using,
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/code/user_profile/signals.py", line 107, in create_user_profile
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 407, in __get__
+    self.related.get_accessor_name()
+django.db.models.fields.related_descriptors.RelatedObjectDoesNotExist: User has no profile.
+2018-02-16 17:36:28,137 ERROR exception 9 Internal Server Error: /admin/login/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 393, in login
+    return LoginView.as_view(**defaults)(request)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/views.py", line 90, in dispatch
+    return super(LoginView, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/edit.py", line 183, in post
+    return self.form_valid(form)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/views.py", line 119, in form_valid
+    auth_login(self.request, form.get_user())
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/__init__.py", line 160, in login
+    user_logged_in.send(sender=user.__class__, request=request, user=user)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/models.py", line 25, in update_last_login
+    user.save(update_fields=['last_login'])
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/base_user.py", line 80, in save
+    super(AbstractBaseUser, self).save(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 848, in save_base
+    update_fields=update_fields, raw=raw, using=using,
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/code/user_profile/signals.py", line 107, in create_user_profile
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/fields/related_descriptors.py", line 407, in __get__
+    self.related.get_accessor_name()
+django.db.models.fields.related_descriptors.RelatedObjectDoesNotExist: User has no profile.
+2018-02-17 00:55:59,464 ERROR exception 9 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/user_profile/views.py", line 349, in profile_view
+    return render(request, template, context)
+  File "/usr/local/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
+    return self.render_compressed(context, self.kind, self.mode, forced=forced)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
+    return self.render_offline(context)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
+    'is the original content:\n\n%s' % (key, original_content))
+compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "ca61681a3b49882b65a28e9c8d36a39af74983c833b02fee7ca4b5a6f5346177" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
+
+
+                <script type="text/javascript">
+                    $('#tab-container').easytabs({
+                        defaultTab: "#li-tab-comentarios",
+                        animate: true,
+                        animationSpeed: "fast",
+                        updateHash: false
+                    });
+
+                    var infinite = new Waypoint.Infinite({
+                        element: $('#list-publications'),
+                        offset: 'bottom-in-view',
+                        onBeforePageLoad: function () {
+                            $('.loading_skyline').show();
+                        },
+                        onAfterPageLoad: function () {
+                            $('.loading_skyline').hide();
+                        }
+                    });
+
+                    var submitFollowed = false;
+                    $('#tab-container')
+                        .bind('easytabs:after', function (evt, tab, panel, data) {
+                            if (tab[0].text.toLowerCase() === 'seguidos') {
+                                if (submitFollowed) return;
+                                submitFollowed = true;
+                                $.get("?page=1&qs=following", function (data, status) {
+                                    var $load_following = $('.load_following');
+                                    $load_following.show();
+                                    $('.followed-container').html($(data));
+                                    $load_following.hide();
+                                }).always(function () {
+                                    submitFollowed = true;
+                                });
+                            } else if (tab[0].text.toLowerCase() === 'skyline') {
+                            }
+                        });
+
+                </script>
+
+                
+                    <script>
+                        $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
+                    </script>
+                
+                <script src="/static/js/socket.js"></script>
+                <script>
+                    UTILS.init([1]);
+                    UTILS.conn_socket();
+                </script>
+                
+                
+                    <script>
+                        function addItemToFriendList(name, lastname, username, avatar_url) {
+                            $("#tab-amigos").find("ul").append('<li>' + avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
+                        }
+                    </script>
+                
+            
+2018-02-17 00:58:23,748 ERROR exception 9 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/user_profile/views.py", line 349, in profile_view
+    return render(request, template, context)
+  File "/usr/local/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
+    return self.render_compressed(context, self.kind, self.mode, forced=forced)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
+    return self.render_offline(context)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
+    'is the original content:\n\n%s' % (key, original_content))
+compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "ca61681a3b49882b65a28e9c8d36a39af74983c833b02fee7ca4b5a6f5346177" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
+
+
+                <script type="text/javascript">
+                    $('#tab-container').easytabs({
+                        defaultTab: "#li-tab-comentarios",
+                        animate: true,
+                        animationSpeed: "fast",
+                        updateHash: false
+                    });
+
+                    var infinite = new Waypoint.Infinite({
+                        element: $('#list-publications'),
+                        offset: 'bottom-in-view',
+                        onBeforePageLoad: function () {
+                            $('.loading_skyline').show();
+                        },
+                        onAfterPageLoad: function () {
+                            $('.loading_skyline').hide();
+                        }
+                    });
+
+                    var submitFollowed = false;
+                    $('#tab-container')
+                        .bind('easytabs:after', function (evt, tab, panel, data) {
+                            if (tab[0].text.toLowerCase() === 'seguidos') {
+                                if (submitFollowed) return;
+                                submitFollowed = true;
+                                $.get("?page=1&qs=following", function (data, status) {
+                                    var $load_following = $('.load_following');
+                                    $load_following.show();
+                                    $('.followed-container').html($(data));
+                                    $load_following.hide();
+                                }).always(function () {
+                                    submitFollowed = true;
+                                });
+                            } else if (tab[0].text.toLowerCase() === 'skyline') {
+                            }
+                        });
+
+                </script>
+
+                
+                    <script>
+                        $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
+                    </script>
+                
+                <script src="/static/js/socket.js"></script>
+                <script>
+                    UTILS.init([1]);
+                    UTILS.conn_socket();
+                </script>
+                
+                
+                    <script>
+                        function addItemToFriendList(name, lastname, username, avatar_url) {
+                            $("#tab-amigos").find("ul").append('<li>' + avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
+                        }
+                    </script>
+                
+            
+2018-02-17 00:58:34,826 ERROR exception 9 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/user_profile/views.py", line 349, in profile_view
+    return render(request, template, context)
+  File "/usr/local/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
+    return self.render_compressed(context, self.kind, self.mode, forced=forced)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
+    return self.render_offline(context)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
+    'is the original content:\n\n%s' % (key, original_content))
+compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "ca61681a3b49882b65a28e9c8d36a39af74983c833b02fee7ca4b5a6f5346177" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
+
+
+                <script type="text/javascript">
+                    $('#tab-container').easytabs({
+                        defaultTab: "#li-tab-comentarios",
+                        animate: true,
+                        animationSpeed: "fast",
+                        updateHash: false
+                    });
+
+                    var infinite = new Waypoint.Infinite({
+                        element: $('#list-publications'),
+                        offset: 'bottom-in-view',
+                        onBeforePageLoad: function () {
+                            $('.loading_skyline').show();
+                        },
+                        onAfterPageLoad: function () {
+                            $('.loading_skyline').hide();
+                        }
+                    });
+
+                    var submitFollowed = false;
+                    $('#tab-container')
+                        .bind('easytabs:after', function (evt, tab, panel, data) {
+                            if (tab[0].text.toLowerCase() === 'seguidos') {
+                                if (submitFollowed) return;
+                                submitFollowed = true;
+                                $.get("?page=1&qs=following", function (data, status) {
+                                    var $load_following = $('.load_following');
+                                    $load_following.show();
+                                    $('.followed-container').html($(data));
+                                    $load_following.hide();
+                                }).always(function () {
+                                    submitFollowed = true;
+                                });
+                            } else if (tab[0].text.toLowerCase() === 'skyline') {
+                            }
+                        });
+
+                </script>
+
+                
+                    <script>
+                        $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
+                    </script>
+                
+                <script src="/static/js/socket.js"></script>
+                <script>
+                    UTILS.init([1]);
+                    UTILS.conn_socket();
+                </script>
+                
+                
+                    <script>
+                        function addItemToFriendList(name, lastname, username, avatar_url) {
+                            $("#tab-amigos").find("ul").append('<li>' + avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
+                        }
+                    </script>
+                
+            
+2018-02-17 00:58:35,950 ERROR exception 9 Internal Server Error: /profile/adrian/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/user_profile/views.py", line 349, in profile_view
+    return render(request, template, context)
+  File "/usr/local/lib/python3.6/site-packages/django/shortcuts.py", line 30, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 199, in _render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 131, in render
+    return self.render_compressed(context, self.kind, self.mode, forced=forced)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 90, in render_compressed
+    return self.render_offline(context)
+  File "/usr/local/lib/python3.6/site-packages/compressor/templatetags/compress.py", line 75, in render_offline
+    'is the original content:\n\n%s' % (key, original_content))
+compressor.exceptions.OfflineGenerationError: You have offline compression enabled but key "ca61681a3b49882b65a28e9c8d36a39af74983c833b02fee7ca4b5a6f5346177" is missing from offline manifest. You may need to run "python manage.py compress". Here is the original content:
+
+
+                <script type="text/javascript">
+                    $('#tab-container').easytabs({
+                        defaultTab: "#li-tab-comentarios",
+                        animate: true,
+                        animationSpeed: "fast",
+                        updateHash: false
+                    });
+
+                    var infinite = new Waypoint.Infinite({
+                        element: $('#list-publications'),
+                        offset: 'bottom-in-view',
+                        onBeforePageLoad: function () {
+                            $('.loading_skyline').show();
+                        },
+                        onAfterPageLoad: function () {
+                            $('.loading_skyline').hide();
+                        }
+                    });
+
+                    var submitFollowed = false;
+                    $('#tab-container')
+                        .bind('easytabs:after', function (evt, tab, panel, data) {
+                            if (tab[0].text.toLowerCase() === 'seguidos') {
+                                if (submitFollowed) return;
+                                submitFollowed = true;
+                                $.get("?page=1&qs=following", function (data, status) {
+                                    var $load_following = $('.load_following');
+                                    $load_following.show();
+                                    $('.followed-container').html($(data));
+                                    $load_following.hide();
+                                }).always(function () {
+                                    submitFollowed = true;
+                                });
+                            } else if (tab[0].text.toLowerCase() === 'skyline') {
+                            }
+                        });
+
+                </script>
+
+                
+                    <script>
+                        $('#menu-hr').find('li:nth-child(1)').css('background-color', 'rgba(0,0,0,0.1)');
+                    </script>
+                
+                <script src="/static/js/socket.js"></script>
+                <script>
+                    UTILS.init([1]);
+                    UTILS.conn_socket();
+                </script>
+                
+                
+                    <script>
+                        function addItemToFriendList(name, lastname, username, avatar_url) {
+                            $("#tab-amigos").find("ul").append('<li>' + avatar_url + '<a>' + name + ' ' + lastname + ' (' + username + ')</a></li>');
+                        }
+                    </script>
+                
+            

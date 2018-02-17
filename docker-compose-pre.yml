@@ -11,7 +11,7 @@ services:
     volumes:
         - .:/code  # mount current directory inside container
         - ./config:/etc/nginx/conf.d
-        - ./static:/static
+        - ./skyfolk/static:/static
         - /tmp:/tmp
     depends_on:
         - web
@@ -111,7 +111,7 @@ services:
     volumes:
       - .:/code  # mount current directory inside container
       - /tmp:/tmp
-      - ./static:/static
+      - ./skyfolk/static:/static
     expose:
         - "8000"
         - "25"

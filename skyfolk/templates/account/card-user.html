@@ -97,7 +97,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     <h1 id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.username }}">
                         @{{ user_profile.username }}</h1>
                     <h3 class="info-user-name_last">{{ user_profile.first_name }} {{ user_profile.last_name }}</h3>
-                    <h4 class="info-user-ciudad"><i class="material-icons">my_location</i> Mi ciudad</h4>
                     <h4 class="info-user-stats">Seguidores: {{ followers }}</h4>
                     <h4 class="info-user-stats">Seguidos: {{ following }} </h4>
                     <h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>
