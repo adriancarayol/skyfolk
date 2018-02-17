@@ -349,3 +349,52 @@ compressor.exceptions.OfflineGenerationError: You have offline compression enabl
                     </script>
                 
             
+2018-02-17 01:55:05,110 ERROR exception 9 Internal Server Error: /config/email/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
+    return super(EmailView, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
+    res = self._action_send(request)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
+    email_address.send_confirmation(request)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
+    confirmation.send(request, signup=signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
+    get_adapter(request).send_confirmation_mail(request, self, signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
+    ctx)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
+    msg.send()
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
+    return self.get_connection(fail_silently).send_messages([self])
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
+    new_conn_created = self.open()
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 64, in open
+    self.connection = self.connection_class(self.host, self.port, **connection_params)
+  File "/usr/local/lib/python3.6/smtplib.py", line 251, in __init__
+    (code, msg) = self.connect(host, port)
+  File "/usr/local/lib/python3.6/smtplib.py", line 336, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+  File "/usr/local/lib/python3.6/smtplib.py", line 307, in _get_socket
+    self.source_address)
+  File "/usr/local/lib/python3.6/socket.py", line 704, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "/usr/local/lib/python3.6/socket.py", line 745, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
