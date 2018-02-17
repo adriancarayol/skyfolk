@@ -159,8 +159,8 @@ EXTERNAL_LOGOUT_URL = None
 # CONFIG E-MAIL
 EMAIL_HOST = 'mail'
 EMAIL_PORT = 25
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER='no-reply@skyfolk.net'
+EMAIL_HOST_PASSWORD='un!x322@'
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'skyfolk <no-reply@skyfolk.net>'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

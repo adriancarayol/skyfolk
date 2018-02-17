@@ -1,6 +1,35 @@
 version: '2'
 
 services:    
+  mail:
+    image: tvial/docker-mailserver:latest
+    hostname: mail
+    domainname: skyfolk.net
+    container_name: mail
+    restart: always
+    networks:
+      - webnet
+    ports:
+      - "25:25"
+      - "143:143"
+      - "587:587"
+      - "993:993"
+    volumes:
+      - maildata:/var/mail
+      - mailstate:/var/mail-state
+      - ./config/config/:/tmp/docker-mailserver/
+    environment:
+      - SMTP_ONLY=0
+      - ENABLE_SPAMASSASSIN=1
+      - ENABLE_CLAMAV=1
+      - ENABLE_FAIL2BAN=1
+      - ENABLE_POSTGREY=1
+      - ONE_DIR=1
+      - DMS_DEBUG=0
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+
   # nginx
   nginx:
     image: nginx:latest
@@ -67,21 +96,7 @@ services:
     restart: always
     networks:
       - webnet
-  # nodo 2
-  rabbit_2:
-    hostname: rabbit_2
-    image: rabbitmq:latest
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-      - RABBITMQ_ERLANG_COOKIE='secret_cookie' 
-    ports:
-      - "5673:5672"  # we forward this port because it's useful for debugging
-      - "15673:15672"  # here, we can access rabbitmq management plugin
-    restart: always
-    networks:
-      - webnet
-
+  
   webworker:
     build:
       context: .
@@ -114,7 +129,6 @@ services:
       - ./skyfolk/static:/static
     expose:
         - "8000"
-        - "25"
     networks:
       - webnet
     depends_on:
@@ -159,6 +173,13 @@ services:
     restart: always
     extra_hosts:
         - "cluster:172.17.0.1"
+
+
+volumes:
+  maildata:
+    driver: local
+  mailstate:
+    driver: local
 
 networks:
   webnet:
