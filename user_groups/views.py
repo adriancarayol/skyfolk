@@ -96,7 +96,7 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                             g = NodeGroup(group_id=group.id,
                                           title=group.name).save()
                             n = NodeProfile.nodes.get(user_id=user.id)
-                            group.user_set.add(user)
+                            group.users.add(user)
                             g.members.connect(n)
                             if tags:
                                 for tag in tags:
@@ -146,7 +146,7 @@ class UserGroupList(ListView):
         return [y for x in results for y in x]
 
     def get_queryset(self):
-        return UserGroups.objects.filter(group_ptr__in=self.request.user.groups.all())
+        return UserGroups.objects.filter(id__in=self.request.user.user_groups.all())
 
 
 @user_can_view_group
@@ -338,7 +338,7 @@ def follow_group(request):
                     try:
                         with transaction.atomic(using="default"):
                             with db.transaction:
-                                group.user_set.add(user)
+                                group.users.add(user)
                                 return JsonResponse({
                                     'response': "user_add"
                                 })
@@ -404,7 +404,7 @@ def unfollow_group(request):
                 try:
                     with transaction.atomic(using="default"):
                         with db.transaction:
-                            group.user_set.remove(user)
+                            group.users.remove(user)
                             remove_perm('can_publish', user, group)
                     return HttpResponse(json.dumps("user_unfollow"), content_type='application/javascript')
                 except (ObjectDoesNotExist, IntegrityError) as e:
@@ -467,7 +467,7 @@ class FollowersGroup(ListView):
 
     def get_queryset(self):
         self.group = UserGroups.objects.get(slug=self.kwargs['groupname'])
-        return self.group.user_set.all()
+        return self.group.users.all()
 
     def get_context_data(self, **kwargs):
         context = super(FollowersGroup, self).get_context_data(**kwargs)
@@ -535,7 +535,7 @@ class RespondGroupRequest(View):
                     with transaction.atomic(using="default"):
                         with db.transaction:
                             request_group.delete()
-                            group.user_set.add(user)
+                            group.users.add(user)
                             g.members.connect(n)
                             notify.send(user, actor=user.username,
                                         recipient=request_group.emitter,
@@ -608,7 +608,7 @@ class KickMemberGroup(View):
         if user.has_perm('kick_member', group):
             with transaction.atomic(using="default"):
                 with db.transaction:
-                    group.user_set.remove(user_to_kick)
+                    group.users.remove(user_to_kick)
 
             response = 'kicked'
 
@@ -622,7 +622,7 @@ class ProfileGroups(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = "groups/list_group_profile.html"
     pagination_class = 'rest_framework.pagination.CursorPagination'
-    
+
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id=kwargs.pop('user_id'))
 
@@ -636,7 +636,7 @@ class ProfileGroups(APIView):
         if privacity and privacity != 'all':
             return HttpResponseForbidden()
 
-        queryset = UserGroups.objects.filter(group_ptr__in=user.groups.all()).annotate(members=Count('group_ptr__user')) \
+        queryset = UserGroups.objects.filter(id__in=user.user_groups.all()).annotate(members=Count('users')) \
             .order_by('-created')
 
         paginator = Paginator(queryset, 12)  # Show 25 contacts per page
@@ -671,12 +671,12 @@ class CreateGroupThemeView(AjaxableResponseMixin, CreateView):
         instance.owner = self.request.user
         board_group = form.cleaned_data['board_group']
         try:
-            group = UserGroups.objects.get(group_ptr=board_group)
+            group = UserGroups.objects.get(id=board_group.id)
         except ObjectDoesNotExist:
             raise Http404
 
         if not group.is_public:
-            is_member = self.request.user.groups.filter(id=board_group.id).exists()
+            is_member = self.request.user.user_groups.filter(id=board_group.id).exists()
             if not is_member:
                 return super(CreateGroupThemeView, self).form_invalid(form)
             else:
@@ -705,7 +705,7 @@ class AddLikeTheme(View):
         group = UserGroups.objects.get(id=theme.board_group_id)
 
         if not group.is_public:
-            is_member = user.groups.filter(id=theme.board_group_id).exists()
+            is_member = user.user_groups.filter(id=theme.board_group_id).exists()
             if not is_member:
                 return HttpResponseForbidden()
 
@@ -752,7 +752,7 @@ class AddHateTheme(View):
         group = UserGroups.objects.get(id=theme.board_group_id)
 
         if not group.is_public:
-            is_member = user.groups.filter(id=theme.board_group_id).exists()
+            is_member = user.user_groups.filter(id=theme.board_group_id).exists()
             if not is_member:
                 return HttpResponseForbidden()
 
