@@ -14,11 +14,7 @@ def get_env_variable(var_name):
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
 
-# Eliminar except
-try:
-    SECRET_KEY = get_env_variable('SECRET_KEY')
-except Exception:
-    SECRET_KEY = '0)3c4u$y^+3&tx=rsgqsnr!=r5nl%j)w401o#86v97w%2v$99#'
+SECRET_KEY = get_env_variable('SECRET_KEY')
 
 ALLOWED_HOSTS += ['0.0.0.0', ]
 
