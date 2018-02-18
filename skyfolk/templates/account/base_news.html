@@ -341,12 +341,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {% else %}
+                                    {% elif item|classname == 'ProfileMainPlaceholder' %}
+                                        {% if item.dashboard_entries|length %}
                                         <div class="grid-item grid-item--width2 infinite-item">
                                             <div class="col s12">
                                                 {{ item.render_for_view|safe }}
                                             </div>
                                         </div>
+                                        {% endif %}
                                     {% endif %}
                                     {% endfor %}
                                 </div>

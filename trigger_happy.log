@@ -1,745 +1,152 @@
-2018-02-17 15:36:01,357 ERROR exception 9 Internal Server Error: /config/email/
+2018-02-18 02:08:42,793 ERROR exception 24828 Internal Server Error: /inicio/
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
     return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
     return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 64, in open
-    self.connection = self.connection_class(self.host, self.port, **connection_params)
-  File "/usr/local/lib/python3.6/smtplib.py", line 251, in __init__
-    (code, msg) = self.connect(host, port)
-  File "/usr/local/lib/python3.6/smtplib.py", line 336, in connect
-    self.sock = self._get_socket(host, port, self.timeout)
-  File "/usr/local/lib/python3.6/smtplib.py", line 307, in _get_socket
-    self.source_address)
-  File "/usr/local/lib/python3.6/socket.py", line 724, in create_connection
-    raise err
-  File "/usr/local/lib/python3.6/socket.py", line 713, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [Errno 111] Connection refused
-2018-02-17 15:36:02,395 ERROR exception 9 Internal Server Error: /config/email/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/list.py", line 160, in get
+    self.object_list = self.get_queryset()
+  File "/home/adrian/skyfolk/latest_news/views.py", line 149, in get_queryset
+    print(p.plugin)
+AttributeError: 'ProfileMainPlaceholder' object has no attribute 'plugin'
+2018-02-18 02:15:15,645 ERROR exception 26172 Internal Server Error: /inicio/
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 64, in open
-    self.connection = self.connection_class(self.host, self.port, **connection_params)
-  File "/usr/local/lib/python3.6/smtplib.py", line 251, in __init__
-    (code, msg) = self.connect(host, port)
-  File "/usr/local/lib/python3.6/smtplib.py", line 336, in connect
-    self.sock = self._get_socket(host, port, self.timeout)
-  File "/usr/local/lib/python3.6/smtplib.py", line 307, in _get_socket
-    self.source_address)
-  File "/usr/local/lib/python3.6/socket.py", line 724, in create_connection
-    raise err
-  File "/usr/local/lib/python3.6/socket.py", line 713, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [Errno 111] Connection refused
-2018-02-17 15:36:15,515 ERROR exception 9 Internal Server Error: /config/email/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/dash/templatetags/dash_tags.py", line 44, in render
+    plugin = dashboard_entry.get_plugin(request=request)
+AttributeError: 'ProfileMainPlaceholder' object has no attribute 'get_plugin'
+2018-02-18 02:15:19,587 ERROR exception 26172 Internal Server Error: /inicio/
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 64, in open
-    self.connection = self.connection_class(self.host, self.port, **connection_params)
-  File "/usr/local/lib/python3.6/smtplib.py", line 251, in __init__
-    (code, msg) = self.connect(host, port)
-  File "/usr/local/lib/python3.6/smtplib.py", line 336, in connect
-    self.sock = self._get_socket(host, port, self.timeout)
-  File "/usr/local/lib/python3.6/smtplib.py", line 307, in _get_socket
-    self.source_address)
-  File "/usr/local/lib/python3.6/socket.py", line 724, in create_connection
-    raise err
-  File "/usr/local/lib/python3.6/socket.py", line 713, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [Errno 111] Connection refused
-2018-02-17 15:36:16,815 ERROR exception 9 Internal Server Error: /config/email/
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/home/adrian/skyfolk/dash/templatetags/dash_tags.py", line 44, in render
+    plugin = dashboard_entry.get_plugin(request=request)
+AttributeError: 'ProfileMainPlaceholder' object has no attribute 'get_plugin'
+2018-02-18 02:39:42,519 ERROR exception 32223 Internal Server Error: /inicio/
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
     return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
     return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
     return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 64, in open
-    self.connection = self.connection_class(self.host, self.port, **connection_params)
-  File "/usr/local/lib/python3.6/smtplib.py", line 251, in __init__
-    (code, msg) = self.connect(host, port)
-  File "/usr/local/lib/python3.6/smtplib.py", line 336, in connect
-    self.sock = self._get_socket(host, port, self.timeout)
-  File "/usr/local/lib/python3.6/smtplib.py", line 307, in _get_socket
-    self.source_address)
-  File "/usr/local/lib/python3.6/socket.py", line 724, in create_connection
-    raise err
-  File "/usr/local/lib/python3.6/socket.py", line 713, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [Errno 111] Connection refused
-2018-02-17 15:36:17,911 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 64, in open
-    self.connection = self.connection_class(self.host, self.port, **connection_params)
-  File "/usr/local/lib/python3.6/smtplib.py", line 251, in __init__
-    (code, msg) = self.connect(host, port)
-  File "/usr/local/lib/python3.6/smtplib.py", line 336, in connect
-    self.sock = self._get_socket(host, port, self.timeout)
-  File "/usr/local/lib/python3.6/smtplib.py", line 307, in _get_socket
-    self.source_address)
-  File "/usr/local/lib/python3.6/socket.py", line 724, in create_connection
-    raise err
-  File "/usr/local/lib/python3.6/socket.py", line 713, in create_connection
-    sock.connect(sa)
-ConnectionRefusedError: [Errno 111] Connection refused
-2018-02-17 15:36:22,777 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:36:24,380 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:36:25,313 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:36:26,236 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:36:26,941 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:36:27,671 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:36:28,433 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:36:29,564 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:36:30,464 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 697, in login
-    "SMTP AUTH extension not supported by server.")
-smtplib.SMTPNotSupportedError: SMTP AUTH extension not supported by server.
-2018-02-17 15:40:24,485 ERROR exception 10 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 730, in login
-    raise last_exception
-  File "/usr/local/lib/python3.6/smtplib.py", line 721, in login
-    initial_response_ok=initial_response_ok)
-  File "/usr/local/lib/python3.6/smtplib.py", line 642, in auth
-    raise SMTPAuthenticationError(code, resp)
-smtplib.SMTPAuthenticationError: (535, b'5.7.8 Error: authentication failed: UGFzc3dvcmQ6')
-2018-02-17 15:46:11,524 ERROR exception 10 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 104, in send_messages
-    new_conn_created = self.open()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 71, in open
-    self.connection.login(force_str(self.username), force_str(self.password))
-  File "/usr/local/lib/python3.6/smtplib.py", line 730, in login
-    raise last_exception
-  File "/usr/local/lib/python3.6/smtplib.py", line 721, in login
-    initial_response_ok=initial_response_ok)
-  File "/usr/local/lib/python3.6/smtplib.py", line 642, in auth
-    raise SMTPAuthenticationError(code, resp)
-smtplib.SMTPAuthenticationError: (421, b'4.4.2 mail.skyfolk.net Error: timeout exceeded')
-2018-02-17 15:58:29,724 ERROR exception 9 Internal Server Error: /config/email/
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
-    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
-  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 378, in dispatch
-    return super(EmailView, self).dispatch(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
-    return handler(request, *args, **kwargs)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 405, in post
-    res = self._action_send(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 433, in _action_send
-    email_address.send_confirmation(request)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
-    confirmation.send(request, signup=signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
-    get_adapter(request).send_confirmation_mail(request, self, signup)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
-    ctx)
-  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
-    msg.send()
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
-    return self.get_connection(fail_silently).send_messages([self])
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 111, in send_messages
-    sent = self._send(message)
-  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 127, in _send
-    self.connection.sendmail(from_email, recipients, message.as_bytes(linesep='\r\n'))
-  File "/usr/local/lib/python3.6/smtplib.py", line 881, in sendmail
-    raise SMTPRecipientsRefused(senderrs)
-smtplib.SMTPRecipientsRefused: {'adriancarayol@gmail.com': (451, b'4.3.5 <no-reply@skyfolk.net>: Sender address rejected: Server configuration error')}
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/generic/list.py", line 160, in get
+    self.object_list = self.get_queryset()
+  File "/home/adrian/skyfolk/latest_news/views.py", line 150, in get_queryset
+    print(p.render)
+AttributeError: 'ProfileMainPlaceholder' object has no attribute 'render'

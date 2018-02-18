@@ -91,6 +91,7 @@ class RelationShipProfile(models.Model):
 class LikeProfile(models.Model):
     to_profile = models.ForeignKey('Profile', related_name="to_like", db_index=True)
     from_profile = models.ForeignKey('Profile', related_name="from_like", db_index=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         unique_together = ('to_profile', 'from_profile')

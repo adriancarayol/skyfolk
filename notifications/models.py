@@ -12,6 +12,7 @@ from avatar.models import Avatar
 from avatar.templatetags.avatar_tags import avatar
 from mailer.handler import notify_via_email
 from user_profile.utils import notification_channel
+from django.utils.text import Truncator
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey

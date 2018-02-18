@@ -34,7 +34,7 @@ class ImageForm(forms.Form, DashboardPluginFormBase):
     show_link = forms.BooleanField(label=_("Show link?"),
                                    required=False,
                                    initial=True,
-                                   widget=BooleanRadioSelect)
+                                   )
 
     def save_plugin_data(self, request=None):
         """Saving the plugin data and moving the file."""

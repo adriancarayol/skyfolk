@@ -144,7 +144,8 @@ class News(ListView):
                                                     request=self.request)
 
         self.layout.collect_widget_media(dashboard_entries)
-        
+
+
         extended_list = []
 
         if len(photos) <= 0 or len(publications) <= 0 or len(videos) <= 0 or len(placeholders) <= 0:
@@ -174,7 +175,7 @@ class News(ListView):
 
         total_pubs = len(publications)
         total_photos = len(photos)
-        total_videos = len(videos) 
+        total_videos = len(videos)
         total_placeholders = len(placeholders)
 
         if total_pubs >= 25 or total_photos >= 25 or \
