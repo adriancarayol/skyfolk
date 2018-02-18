@@ -33,3 +33,4 @@ tmp/
 static/
 *.log
 publications/tests/tests.py
+config/config
