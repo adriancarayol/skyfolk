@@ -1,15 +1,14 @@
 FROM python:3.6
 
 ENV PYTHONUNBUFFERED 1
-ENV DJANGO_SETTINGS_MODULE=skyfolk.settings.pre
 
 RUN mkdir /code
 
 WORKDIR /code
 
-ADD requirements/develop.txt /code/
+ADD requirements/pre.txt /code/
 
-RUN pip install -r develop.txt
+RUN pip install -r pre.txt
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 
@@ -22,6 +21,8 @@ RUN apt-get -y install fonts-liberation
 RUN apt-get install -y locales && \
     locale-gen C.UTF-8 && \
     /usr/sbin/update-locale LANG=C.UTF-8
+
+RUN apt-get install -y tidy pandoc
 
 ENV LC_ALL C.UTF-8
 
@@ -53,5 +54,3 @@ RUN usermod -a -G skyfolk root
 RUN cat /etc/ImageMagick-6/policy.xml | sed 's/none/read,write/g'> /etc/ImageMagick-6/policy.xml
 
 VOLUME /root
-
-

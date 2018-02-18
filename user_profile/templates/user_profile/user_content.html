@@ -1,0 +1,163 @@
+{% extends "account/base_interface.html" %}
+{% load app_filters avatar_tags static humanize compress %}
+{% block title %} <title>Skyfolk / Mi ensalada de frutas.</title> {% endblock %}
+
+{% block extra-css %}
+    {% compress css %}
+        <link type="text/css" rel="stylesheet" href="{% static "css/amigos.css" %}">
+        <link type="text/css" rel="stylesheet" href="{% static "css/search_advanced.css" %}">
+        <link type="text/css" rel="stylesheet" href="{% static "css/news.css" %}">
+    {% endcompress %}
+{% endblock %}
+
+{% block include_files %}
+    <!-- Estilos para la galeria de fotos -->
+    <style>
+        .grid {
+            margin: 0 auto;
+        }
+
+        .grid-item {
+            width: 350px;
+            margin-bottom: 10px;
+            float: left;
+        }
+
+        .photo-date {
+            display: initial;
+        }
+
+        .grid-item .img {
+            border-radius: 3px;
+            box-shadow: 0 1px 5px #1e88e5;
+        }
+
+        .grid-item .img > img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row"></div>
+        <div class="grid row">
+            {% for item in mixed %}
+                {% if item|classname == 'Publication' %}
+                    <div class="grid-item infinite-item">
+                        <div class="col s12" style="box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);">
+                            <div class="col s3 img">
+                                {% avatar item.author %}
+                            </div>
+                            <div class="col l9 m9 s8 author">
+                                <div class="row">
+                                        <span><a
+                                                href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.author.first_name }} {{ item.author.last_name }}</i></span>
+                                    <span><a href="/publication/{{ item.id }}" title="Ver publicación"><i
+                                            class="material-icons md-18 right"
+                                            aria-hidden="true">open_in_new</i></a></span>
+                                    <p><i class="pub-date">{{ item.created|naturaltime }}</i></p>
+                                </div>
+                                <div class="row" style="word-wrap: break-word;">
+                                    <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
+                                    <br>
+                                    {% for i in item.images.all %}
+                                        <div class="col s12">
+                                            <img src="{{ i.image.url }}" alt="{{ item.author }}" width="100%"
+                                                 height="100%"/>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% elif item|classname == 'LikeProfile' %}
+                    <div class="grid-item infinite-item">
+                        <div class="personal-card">
+                            <div class="header">
+                                {% if item.to_profile.back_image %}
+                                    <img class="back-profile-user" src="{{ item.to_profile.back_image.url }}">
+                                {% else %}
+                                    <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
+                                {% endif %}
+                                <i class="material-icons like-him">person</i>
+                                <div class="bg-user">
+                                    <div onclick="location.href='/profile/{{ item.to_profile.user }}'"
+                                         class="profile-user-bg">{% avatar item.to_profile.user %}</div>
+                                </div>
+                            </div>
+                            <div class="col s12">
+                                <div style="cursor: default" class="name-friend">
+                                    <a href="{% url "user_profile:profile" username=item.to_profile.user %}">@{{ item.to_profile.user }}</a>
+                                    <p>{{ item.to_profile.firstname }} {{ item.to_profile.lastname }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% elif item|classname == 'LikeGroup' %}
+                    <div class="grid-item infinite-item">
+                        <div class="personal-card">
+                            <div class="header">
+                                {% if item.to_like.back_image %}
+                                    <img class="back-profile-user" src="{{ item.to_like.back_image.url }}">
+                                {% else %}
+                                    <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
+                                {% endif %}
+                                <i class="material-icons like-him">group</i>
+                                <div class="bg-user">
+                                    <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.to_like.slug %}'"
+                                         class="profile-user-bg"><img src="
+                                            {% if item.to_like.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
+                                                                      alt="Imagen de {{ item.to_like.name }}"
+                                                                      title="Imagen de {{ item.to_like.name }}"/></div>
+                                </div>
+                            </div>
+                            <div class="col s12">
+                                <div style="cursor: default" class="name-friend">
+                                    <a href="{% url "user_groups:group-profile" groupname=item.to_like.slug %}">{{ item.to_like.name }}</a>
+                                    <p class="truncate">{{ item.to_like.description|truncatechars:100 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% if pagination %}
+            <a class="infinite-more-link" href="?page={{ pagination }}">More</a>
+        {% endif %}
+        <div class="progress load-feed" style="display: none">
+            <div class="indeterminate blue darken-1"></div>
+        </div>
+    </div>
+    <script src="{{ STATIC_URL }}js/imagesloaded.pkgd.min.js"></script>
+    <script>
+        var infinite = new Waypoint.Infinite({
+            element: $('.grid'),
+            offset: 'bottom-in-view',
+            onBeforePageLoad: function () {
+                $('.loading_search').show();
+            },
+            onAfterPageLoad: function () {
+                $('.loading_search').hide();
+                $grid.imagesLoaded().progress(function () {
+                    $grid.masonry('reloadItems');
+                    $grid.masonry('layout');
+                });
+            }
+        });
+
+        var $grid = $('.grid').masonry({
+            itemSelector: '.grid-item',
+            columnWidth: 350,
+            gutter: 20,
+            fitWidth: true,
+            initLayout: false,
+            horizontalOrder: true,
+            transitionDuration: '0.3s'
+        });
+        $grid.imagesLoaded().progress(function () {
+            $grid.masonry('layout');
+        })
+    </script>
+{% endblock %}

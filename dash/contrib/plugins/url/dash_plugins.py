@@ -1,10 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 
-from .forms import URLForm, BookmarkForm
-from .models import Bookmark
 from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
+
+from .forms import URLForm, BookmarkForm
+from .models import Bookmark
 
 __title__ = 'dash.contrib.plugins.image.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -31,8 +32,6 @@ class BaseURLPlugin(BaseDashboardPlugin):
         If plugin has an image, we add a class ``iconic`` to it.
         """
         html_class = super(BaseURLPlugin, self).html_class
-        if self.data.image:
-            html_class += ' iconic-url'
         return html_class
 
 # ****************************************************************************

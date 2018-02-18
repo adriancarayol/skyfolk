@@ -170,6 +170,7 @@ def paste_entry_from_clipboard(request,
         and (error message, boolean False) on failure.
     """
     clipboard_plugin_data = get_plugin_data_from_clipboard(request, layout.uid)
+
     if not clipboard_plugin_data:
         return _("Clipboard is empty!"), False
 

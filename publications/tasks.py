@@ -6,7 +6,7 @@ from celery.utils.log import get_task_logger
 from channels import Group as Channel_group
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
-
+from celery import shared_task
 from publications.models import Publication, PublicationDeleted
 from publications_gallery.models import PublicationPhoto
 from skyfolk.celery import app
@@ -17,7 +17,6 @@ from notifications.models import Notification
 from django.db import IntegrityError
 
 logger = get_task_logger(__name__)
-
 
 @app.task(name='tasks.clean_deleted_publications')
 def clean_deleted_publications():
@@ -58,7 +57,6 @@ def clean_deleted_publications():
             publication.extra_content.delete()
         publication.delete()
 
-
 @app.task(name='tasks.clean_deleted_photo_publications')
 def clean_deleted_photo_publications():
     logger.info('Finding deleted publications...')
@@ -88,7 +86,6 @@ def clean_deleted_photo_publications():
             logger.info('Image deleted')
         publication.delete()
         logger.info("Publication safe deleted {}".format(pub.id))
-
 
 @app.task(ignore_result=True, name='tasks.process_video')
 def process_video_publication(file, publication_id, filename, user_id=None,

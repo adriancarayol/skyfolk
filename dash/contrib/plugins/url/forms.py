@@ -1,10 +1,11 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Bookmark
-from .settings import IMAGE_CHOICES_WITH_EMPTY_OPTION
 from ....base import DashboardPluginFormBase
 from ....widgets import BooleanRadioSelect
+
+from .settings import IMAGE_CHOICES_WITH_EMPTY_OPTION
+from .models import Bookmark
 
 __title__ = 'dash.contrib.plugins.url.forms'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -36,10 +37,10 @@ class URLForm(forms.Form, DashboardPluginFormBase):
 
     title = forms.CharField(label=_("Title"), required=True)
     url = forms.URLField(label=_("URL"), required=True)
-    external = forms.BooleanField(label=_("External?"),
-                                  required=False,
+    external = forms.BooleanField(required=False,
                                   initial=False,
-                                  widget=BooleanRadioSelect)
+                                  label=_("¿La URL es externa?"),
+                                  widget=forms.CheckboxInput(attrs={'id': 'external_url'}))
     image = forms.ChoiceField(label=_("Image"),
                               required=False,
                               choices=IMAGE_CHOICES_WITH_EMPTY_OPTION)

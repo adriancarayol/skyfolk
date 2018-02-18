@@ -8,10 +8,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
 <div class="row">
     <div class="col l12 m12 s12">
         <div class="user-card card">
-            <div class="ventana-pin">
-                <a><i class="material-icons">remove</i></a>
-                <a><i class="material-icons">flip_to_front</i></a>
-            </div>
             <div class="row">
                 <div class="user-avatar" style="background: {% if user_profile.profile.back_image %}
                     url({{ user_profile.profile.back_image.url }})
@@ -101,7 +97,6 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     <h1 id="info-user-name-profile" class="info-user-name" data-id="{{ user_profile.username }}">
                         @{{ user_profile.username }}</h1>
                     <h3 class="info-user-name_last">{{ user_profile.first_name }} {{ user_profile.last_name }}</h3>
-                    <h4 class="info-user-ciudad"><i class="material-icons">my_location</i> Mi ciudad</h4>
                     <h4 class="info-user-stats">Seguidores: {{ followers }}</h4>
                     <h4 class="info-user-stats">Seguidos: {{ following }} </h4>
                     <h4 class="info-user-stats">Activo hace: {{ user_profile.profile.last_seen|timesince }}</h4>
@@ -114,8 +109,8 @@ Pin de usuario, donde se muestra avatar, nombre, imagen de perfil (en profile.ht
                     </li>
                     <li class="info-trof" title="Logros de {{ user_profile.username }}" data-id="{{ user_profile.id }}"><i class="material-icons">save</i>
                     </li>
-                    {% if user.username == user_profile.username %}
-                    <li class="info-content" title="Mis publicaciones"><i class="material-icons">favorite</i></li>
+                    {% if user_profile == request.user %}
+                        <li title="Mi contenido" onclick="location.href='{% url "user_profile:salad_user_content" %}'"><i class="material-icons">bookmark</i></li>
                     {% endif %}
                 </ul>
             </div>

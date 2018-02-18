@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}<title>Skyfolk // {% trans "My Trigger" %}</title>{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col s12" id="trigger-content">
+		<p style="color:green">
+		{% trans "Congratulations, you have successfully authorized this application to access your Reddit account!" %}
+		</p> 
+		</div>
+	</div>
+</div>
+{% endblock %}

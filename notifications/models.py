@@ -12,6 +12,7 @@ from avatar.models import Avatar
 from avatar.templatetags.avatar_tags import avatar
 from mailer.handler import notify_via_email
 from user_profile.utils import notification_channel
+from django.utils.text import Truncator
 
 if StrictVersion(get_version()) >= StrictVersion('1.8.0'):
     from django.contrib.contenttypes.fields import GenericForeignKey
@@ -178,7 +179,7 @@ class Notification(models.Model):
 
     """
     LEVELS = Choices('success', 'info', 'warning', 'error')
-    level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=20)
+    level = models.CharField(choices=LEVELS, default=LEVELS.info, max_length=255)
 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, related_name='notifications')
     unread = models.BooleanField(default=True, blank=False)

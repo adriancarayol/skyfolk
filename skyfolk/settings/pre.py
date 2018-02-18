@@ -2,6 +2,8 @@ import os
 from django.core.exceptions import ImproperlyConfigured
 from .base import *
 
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 
 # Cargamos SECRET_KEY
 def get_env_variable(var_name):
@@ -15,10 +17,14 @@ def get_env_variable(var_name):
 # Eliminar except
 try:
     SECRET_KEY = get_env_variable('SECRET_KEY')
-except:
+except Exception:
     SECRET_KEY = '0)3c4u$y^+3&tx=rsgqsnr!=r5nl%j)w401o#86v97w%2v$99#'
 
+ALLOWED_HOSTS += ['0.0.0.0', ]
+
 DEBUG = True
+COMPRESS_ENABLED = False
+COMPRESS_OFFLINE = False
 
 DATABASES = {
     'default': {
@@ -26,20 +32,19 @@ DATABASES = {
         'NAME': os.environ.get('DB_ENV_DB', 'skyfolk_pre_db'),
         'USER': os.environ.get('DB_ENV_POSTGRES_USER', 'skyfolk_pre'),
         'PASSWORD': os.environ.get('DB_ENV_POSTGRES_PASSWORD', 'gDFgg$G=4h_%H'),
-        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', '45.55.57.214'),
-        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', '5433'),
+        'HOST': os.environ.get('DB_PORT_5432_TCP_ADDR', 'localhost'),
+        'PORT': os.environ.get('DB_PORT_5432_TCP_PORT', '5432'),
     }
 }
 # NEO4J config
-NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@45.55.57.214:7687')
+NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
 
 # ACCOUNT SETTINGS FOR PRE
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-ALLOWED_HOSTS = ALLOWED_HOSTS + ['45.55.57.214']
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # STATIC_ROOT = '/var/www/skyfolk/static/pre/static'
 MEDIA_ROOT = os.path.join(BASE_DIR, "skyfolk/media")
 MEDIA_URL = '/media/'
@@ -48,7 +53,7 @@ MEDIA_URL = '/media/'
 INVITATIONS_INVITATION_ONLY = True
 
 # ELASTICSEARCH CONFIGURATION
-ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'elasticsearch1')
+ELASTIC_URL = os.environ.get('ELASTICSEARCH_URL', 'localhost')
 
 HAYSTACK_CONNECTIONS = {
     'default': {

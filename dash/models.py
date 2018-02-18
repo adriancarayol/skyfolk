@@ -1,11 +1,14 @@
 import logging
 
 from autoslug import AutoSlugField
+
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 from nine import versions
+
 from six import python_2_unicode_compatible
 
 from .base import (
@@ -13,8 +16,8 @@ from .base import (
     get_registered_plugins,
     plugin_registry,
 )
-from .fields import OrderField
 from .helpers import slugify_workspace
+from .fields import OrderField
 
 if versions.DJANGO_GTE_1_10:
     from django.urls import reverse
@@ -55,7 +58,7 @@ class DashboardSettings(models.Model):
     title = models.CharField(_("Title"), max_length=255)
     allow_different_layouts = models.BooleanField(
         _("Allow different layouts per workspace?"),
-        default=False,
+        default=True,
         help_text=_("Allows you to use different layouts for each workspace.")
     )
     is_public = models.BooleanField(
@@ -118,6 +121,9 @@ class DashboardWorkspace(models.Model):
         verbose_name = _("Dashboard workspace")
         verbose_name_plural = _("Dashboard workspaces")
         unique_together = (('user', 'slug'), ('user', 'name'),)
+        permissions = (
+            ('view_workspace', 'View workspace'),
+        )
 
     def __str__(self):
         return self.name
@@ -175,7 +181,7 @@ class DashboardEntry(models.Model):
         - `layout_uid` (str): Layout to which the entry belongs to.
         - `placeholder_uid` (str): Placeholder to which the entry belongs to.
         - `plugin_uid` (str): Plugin name.
-        - `plugin_data` (str): JSON formatted string with plugin data.
+        - `plugin_data` (str): JSON formatted string with plugin data. (Point to trigger results)
         - `position` (int): Entry position.
     """
     user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User"))
@@ -195,6 +201,9 @@ class DashboardEntry(models.Model):
         """Meta."""
         verbose_name = _("Dashboard entry")
         verbose_name_plural = _("Dashboard entries")
+        permissions = (
+            ('copy_entry', 'Copy Entry'),
+        )
 
     def __str__(self):
         return "{0} plugin for user {1}".format(self.plugin_uid, self.user)

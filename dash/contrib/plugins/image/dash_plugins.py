@@ -1,9 +1,10 @@
 from django.utils.translation import ugettext_lazy as _
 
-from .forms import ImageForm
-from .helpers import delete_file, clone_file
 from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
+
+from .forms import ImageForm
+from .helpers import delete_file, clone_file
 
 __title__ = 'dash.contrib.plugins.image.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

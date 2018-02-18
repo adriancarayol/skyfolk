@@ -1,11 +1,3 @@
-/*
-    Document   : dash.js
-    Created on : Aug 18, 2013, 1:24:11 PM
-    Author     : Artur Barseghyan (artur.barseghyan@gmail.com)
-    Description:
-        Django-dash main scripts.
-*/
-;
 $(document).ready(function() {
     var onLightboxOpen = function() {
         $('.submenu').hide();
@@ -13,7 +5,7 @@ $(document).ready(function() {
 
     var onLightboxAddPluginOpen = function() {
         $('.submenu').hide();
-        $( "#accordion" ).accordion({heightStyle: "content"});
+        $('select').material_select();
     };
 
     // By concept (we don't want to load things in an iframe), we only show shortcut views in AJAX overlays.
@@ -40,7 +32,7 @@ $(document).ready(function() {
         var el = $(this);
         $.getJSON($(this).attr('href'), function(data) {
             if (data.success) {
-                el.parent('.plugin').remove();
+                el.closest('.plugin').remove();
             }
         });
         return false;

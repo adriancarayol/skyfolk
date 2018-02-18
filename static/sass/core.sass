@@ -79,12 +79,15 @@ table
 .material-icons.blue1e88e5
   color: #1e88e5
   font-style: normal
-.input-field input[type=text]:focus + label
-  color: #64b5f6 !important
-
-.input-field input[type=text]:focus
-  border-bottom: 1px solid #64b5f6 !important
-  box-shadow: 0 1px 0 0 #64b5f6 !important
+.input-field 
+  input[type=text]:focus + label
+  input[type=url]:focus + label
+    color: #64b5f6 !important
+.input-field
+  input[type=text]:focus
+  input[type=url]:focus
+    border-bottom: 1px solid #64b5f6 !important
+    box-shadow: 0 1px 0 0 #64b5f6 !important
 
 .input-field .active
   color: #64b5f6 !important

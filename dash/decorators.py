@@ -1,5 +1,5 @@
-from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import user_passes_test
 
 __title__ = 'dash.decorators'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'

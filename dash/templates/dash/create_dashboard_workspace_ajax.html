@@ -1,21 +1,44 @@
 {% load i18n %}
 <div class="generic-content-wrapper">
     <div class="wrapper-bg"></div>
-    <div class="hero-unit-small">
-        <h2 class="content-title">{% trans "Add dashboard workspace" %}</h2>
+    <div class="row hero-unit-small">
+        <h4 class="center">{% trans "Add dashboard workspace" %}</h4>
     </div>
-
-    <div class="content-body">
+    <div class="row content-body">
         <form method="post" action="{% url 'dash.create_dashboard_workspace' %}" enctype="multipart/form-data" class="form-horizontal">
             {% csrf_token %}
+            {{ form.non_field_errors }}
             <ul class="content-listing generic-form">
+                {% comment %}
                 {% include layout.form_snippet_template_name %}
+                {% endcomment %}
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                    {{ hidden_field }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
+                    <div class="row">
+                        <div class="input-field col s12">
+                            {{ field.errors }}
+                            {% if field.help_text %}
+                                <small>{{ field.help_text }}</small>
+                            {% endif %}
+                            {{ field }}
+                            {{ field.label_tag }}
+                        </div>
+                    </div>
+                {% endfor %}
                 <li class="buttons control-group">
-                    <div class="controls">
-                        <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+                    <div class="right">
+                        <button type="submit" class="btn blue">{% trans "Add" %}</button>
                     </div>
                 </li>
             </ul>
         </form>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+</script>

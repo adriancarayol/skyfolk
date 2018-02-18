@@ -35,6 +35,8 @@ class DashboardWorkspaceForm(forms.ModelForm):
         different_layouts = kwargs.pop('different_layouts', False)
         super(DashboardWorkspaceForm, self).__init__(*args, **kwargs)
         self.fields['user'].widget = forms.widgets.HiddenInput()
+        self.fields['name'].widget = forms.TextInput(attrs={'id': 'workspace_name'})
+        self.fields['is_public'].widget = forms.CheckboxInput(attrs={'id': 'workspace_is_public'})
 
         if not different_layouts:
             self.fields['layout_uid'].widget = forms.widgets.HiddenInput()
@@ -42,7 +44,7 @@ class DashboardWorkspaceForm(forms.ModelForm):
 
 class DashboardSettingsForm(forms.ModelForm):
     """Dashboard settings form."""
-
+    """No se utiliza"""
     class Meta(object):
         """Meta."""
 
@@ -54,6 +56,7 @@ class DashboardSettingsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DashboardSettingsForm, self).__init__(*args, **kwargs)
         self.fields['user'].widget = forms.widgets.HiddenInput()
+        self.fields['is_public'].widget = forms.CheckboxInput(attrs={'id': 'dashboard_is_public'})
 
 
 class BulkChangeDashboardPluginsForm(forms.ModelForm):

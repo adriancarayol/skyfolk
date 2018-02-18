@@ -4,13 +4,14 @@ import os
 import tempfile
 import unicodedata
 import uuid
+import itertools
 from datetime import datetime
 from importlib import import_module
 from inspect import isclass
 from io import BytesIO
 from os.path import splitext
 from urllib.parse import urlparse
-
+from django.utils.text import slugify
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
@@ -26,7 +27,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
-from uuslug import uuslug
 from photologue.models import ImageModel
 from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 from user_groups.models import UserGroups
@@ -227,7 +227,11 @@ class PhotoGroup(ImageModel):
 
     def save(self, created=True, *args, **kwargs):
         if created:
-            self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
+            self.slug = orig = slugify(str(self.owner_id) + self.title)
+            for x in itertools.count(1):
+                if not PhotoGroup.objects.filter(slug=self.slug).exists():
+                    break
+                self.slug = '%s-%d' % (orig, x)
             self.get_remote_image()
 
         super(PhotoGroup, self).save(*args, **kwargs)

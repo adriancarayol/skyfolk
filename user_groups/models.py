@@ -1,10 +1,11 @@
 # encoding:utf-8
+import itertools
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.text import slugify
-from uuslug import uuslug
+from taggit.managers import TaggableManager
 
 from notifications.models import Notification
 
@@ -49,6 +50,7 @@ class UserGroups(Group):
     avatar = models.ImageField(upload_to=group_avatar_path, null=True, blank=True)
     back_image = models.ImageField(upload_to=group_back_image_path, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
+    tags = TaggableManager(blank=True)
 
     class Meta:
         permissions = (
@@ -88,7 +90,11 @@ class GroupTheme(models.Model):
         ordering = ('-created', )
 
     def save(self, *args, **kwargs):
-        self.slug = uuslug(self.title, instance=self)
+        self.slug = orig = slugify(str(self.owner_id) + self.title)
+        for x in itertools.count(1):
+            if not GroupTheme.objects.filter(slug=self.slug).exists():
+                break
+            self.slug = '%s-%d' % (orig, x)
         super(GroupTheme, self).save(*args, **kwargs)
 
     @property
@@ -99,6 +105,7 @@ class GroupTheme(models.Model):
 class LikeGroupTheme(models.Model):
     theme = models.ForeignKey(GroupTheme, related_name='like_theme')
     by_user = models.ForeignKey(User)
+    created = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         unique_together = ('theme', 'by_user')

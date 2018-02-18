@@ -1,38 +1,6 @@
 version: '2'
 
-services:   
-  # PostgreSQL database
-  db:
-    image: postgres:9.6.5
-    hostname: db
-    environment:
-      - POSTGRES_USER=skyfolk_pre
-      - POSTGRES_PASSWORD=gDFgg$$G=4h_%H
-      - POSTGRES_DB=skyfolk_pre_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - "dbdata:/var/lib/postgresql/data"
-    restart: always
-    networks:
-      - webnet
-
-  # Neo4j datbase
-  neo4j:
-    image: neo4j:latest
-    environment:
-      - NEO4J_AUTH=neo4j/1518
-      - NEO4J_HEAP_MEMORY=2048
-      - NEO4J_CACHE_MEMORY=1G 
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-    volumes:
-      - "./db/dbms:/var/lib/neo4j/data"
-    restart: always
-    networks:
-      - webnet
-
+services:    
   # Redis
   redis:
     image: redis:4.0
@@ -43,7 +11,8 @@ services:
     
   # elasticsearch
   elasticsearch:
-    image: elasticsearch:2.4.2
+    image: elasticsearch:2.4.6
+    container_name: elasticsearch1
     ports:
       - "9200:9200"
     volumes:
@@ -67,7 +36,7 @@ services:
   # RabbitMQ
   rabbit:
     hostname: rabbit
-    image: rabbitmq:3.6.12
+    image: rabbitmq:latest
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -75,6 +44,20 @@ services:
     ports:
       - "5672:5672"  # we forward this port because it's useful for debugging
       - "15672:15672"  # here, we can access rabbitmq management plugin
+    restart: always
+    networks:
+      - webnet
+  # nodo 2
+  rabbit_2:
+    hostname: rabbit_2
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie' 
+    ports:
+      - "5673:5672"  # we forward this port because it's useful for debugging
+      - "15673:15672"  # here, we can access rabbitmq management plugin
     restart: always
     networks:
       - webnet
@@ -92,10 +75,10 @@ services:
     networks:
       - webnet
     depends_on:
-      - db
-      - neo4j
       - rabbit
     restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
   # Django web server
   web:
     env_file:
@@ -109,16 +92,16 @@ services:
       - .:/code  # mount current directory inside container
       - /tmp:/tmp
     ports:
-      - "8000:8000"
+        - "8000:8000"
     networks:
       - webnet
     depends_on:
-      - db
-      - neo4j
       - rabbit
     networks:
       - webnet
     restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
   # Celery worker
   celery_worker:
     env_file:
@@ -135,6 +118,8 @@ services:
     depends_on:
       - web
     restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
   celery_beat:
     env_file:
       - web-variables.env
@@ -150,9 +135,13 @@ services:
     depends_on:
       - web
     restart: always
+    extra_hosts:
+        - "cluster:172.17.0.1"
 
 volumes:
-  dbdata:
+  maildata:
+    driver: local
+  mailstate:
     driver: local
 
 networks:

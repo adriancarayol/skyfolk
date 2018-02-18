@@ -24,7 +24,7 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
         return Photo
 
     def prepare_tags(self, obj):
-        return [tag.name for tag in obj.tags.all()]
+        return [tag.slug for tag in obj.tags.all()]
 
     def prepare_avatar(self, obj):
         return avatar_url(obj.owner)
@@ -49,7 +49,7 @@ class VideoIndex(indexes.SearchIndex, indexes.Indexable):
         return Video
 
     def prepare_tags(self, obj):
-        return [tag.name for tag in obj.tags.all()]
+        return [tag.slug for tag in obj.tags.all()]
 
     def prepare_avatar(self, obj):
         return avatar_url(obj.owner)

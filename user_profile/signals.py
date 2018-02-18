@@ -7,10 +7,12 @@ from django.db import transaction
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from neomodel import db
-
+from dash.models import DashboardSettings
 from publications.models import Publication
-from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK
+from .models import Profile, RelationShipProfile, NotificationSettings, BLOCK, \
+    LikeProfile
 from user_profile.node_models import NodeProfile
+from notifications.signals import notify
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -93,16 +95,15 @@ def create_user_profile(sender, instance, created, **kwargs):
                 with db.transaction:
                     Profile.objects.create(user=instance)
                     NotificationSettings.objects.create(user=instance)
+                    DashboardSettings.objects.create(user=instance, title="Profile", layout_uid="profile",
+                                                                 is_public=True)
                     NodeProfile(user_id=instance.id, title=instance.username,
                                 first_name=instance.first_name, last_name=instance.last_name).save()
             logger.info("POST_SAVE : Create UserProfile, User : %s" % instance)
         except Exception as e:
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
-    try:
-        instance.profile.save()
-    except Profile.DoesNotExist:
-        Profile.objects.create(user=instance)
+
 
 
 @receiver(post_save, sender=User)
@@ -117,10 +118,11 @@ def save_user_profile(sender, instance, created, **kwargs):
                 with db.transaction:
                     node = NodeProfile.nodes.get_or_none(user_id=instance.id)
                     if not node:
-                        Profile.objects.create(user=instance)
-                        NotificationSettings.objects.create(user=instance)
                         NodeProfile(user_id=instance.id, title=instance.username,
                                     first_name=instance.first_name, last_name=instance.last_name).save()
+                    Profile.objects.get_or_create(user=instance)
+                    NotificationSettings.objects.get_or_create(user=instance)
+                    DashboardSettings.objects.get_or_create(user=instance, title="Profile", layout_uid="profile", is_public=True)
                     logger.info(
                         "POST_SAVE : Usuario: %s ha iniciado sesion correctamente" % instance.username
                     )
@@ -128,11 +130,41 @@ def save_user_profile(sender, instance, created, **kwargs):
             logger.info(
                 "POST_SAVE : No se pudo crear la instancia UserProfile/NodeProfile para el user : %s" % instance)
             logger.info("POST_SAVE : Saving UserProfile, User : %s" % instance)
-    else:
-        try:
-            instance.profile.save()
-        except Profile.DoesNotExist:
-            Profile.objects.create(user=instance)
+
+    # Saving profile instance
+    try:
+        instance.profile.save()
+    except Profile.DoesNotExist:
+        pass
+
+@receiver(post_save, sender=LikeProfile)
+def handle_new_like(sender, instance, created, **kwargs):
+    n = NodeProfile.nodes.get(user_id=instance.from_profile.user_id)
+    m = NodeProfile.nodes.get(user_id=instance.to_profile.user_id)
+
+    n.like.connect(m)
+    rel = n.follow.relationship(m)
+    if rel:
+        rel.weight = rel.weight + 10
+        rel.save()
+
+    notify.send(instance.from_profile.user, actor=instance.from_profile.user.username,
+                recipient=instance.to_profile.user,
+                description="@{0} ha dado like a tu perfil.".format(instance.from_profile.user.username),
+                verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
+                    instance.from_profile.user.username, instance.from_profile.user.username), level='like_profile')
+
+
+@receiver(post_delete, sender=LikeProfile)
+def handle_delete_like(sender, instance, *args, **kwargs):
+    n = NodeProfile.nodes.get(user_id=instance.from_profile.user_id)
+    m = NodeProfile.nodes.get(user_id=instance.to_profile.user_id)
+
+    n.like.disconnect(m)
+    rel = n.follow.relationship(m)
+    if rel:
+        rel.weight = rel.weight - 10
+        rel.save()
 
 
 def handle_login(sender, user, request, **kwargs):

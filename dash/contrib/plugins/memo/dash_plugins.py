@@ -1,8 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
 
-from .forms import MemoForm, TinyMCEMemoForm
 from ....base import BaseDashboardPlugin
 from ....factory import plugin_factory
+from .forms import MemoForm, TinyMCEMemoForm
 
 __title__ = 'dash.contrib.plugins.memo.dash_plugins'
 __author__ = 'Artur Barseghyan <artur.barseghyan@gmail.com>'
@@ -18,8 +18,8 @@ __all__ = ('BaseMemoPlugin', 'BaseTinyMCEMemoPlugin',)
 class BaseMemoPlugin(BaseDashboardPlugin):
     """Base memo plugin."""
 
-    name = _("Memo")
-    group = _("Memo")
+    name = _("Notas")
+    group = _("Nota")
     form = MemoForm
 
 

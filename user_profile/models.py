@@ -43,7 +43,7 @@ class RelationShipProfileManager(models.Manager):
         :return: Total following
         """
         qs = self.get_queryset()
-        return qs.filter(from_profile=profile_id).count()
+        return qs.filter(from_profile=profile_id, type=FOLLOWING).count()
 
     def get_total_followers(self, profile_id):
         """
@@ -52,7 +52,7 @@ class RelationShipProfileManager(models.Manager):
         :return: Total followers
         """
         qs = self.get_queryset()
-        return qs.filter(to_profile=profile_id).count()
+        return qs.filter(to_profile=profile_id, type=FOLLOWING).count()
 
     def is_follow(self, to_profile, from_profile):
         """
@@ -87,6 +87,14 @@ class RelationShipProfile(models.Model):
     class Meta:
         unique_together = ('to_profile', 'from_profile')
 
+
+class LikeProfile(models.Model):
+    to_profile = models.ForeignKey('Profile', related_name="to_like", db_index=True)
+    from_profile = models.ForeignKey('Profile', related_name="from_like", db_index=True)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        unique_together = ('to_profile', 'from_profile')
 
 class Profile(models.Model):
     """
@@ -179,8 +187,8 @@ class Profile(models.Model):
             try:
                 with transaction.atomic(using='default'):
                     self.is_first_login = False
-                    Award.objects.create(user=self.user, badge=Badge.objects.get(slug='new-account'))
-                    self.save()
+                    Award.objects.get_or_create(user=self.user, badge=Badge.objects.get(slug='new-account'))
+                    self.save(update_fields=['is_first_login'])
             except Exception as e:
                 logger.info(e)
 

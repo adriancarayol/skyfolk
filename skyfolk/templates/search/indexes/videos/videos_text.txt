@@ -5,7 +5,7 @@
 {{ object.pub_date }}
 {{ object.slug }}
 {{ object.video }}
-{{ object.description }}
+{{ object.caption }}
 {% for tag in object.tags.all %}
     {{ tag.name }}
 {% endfor %}

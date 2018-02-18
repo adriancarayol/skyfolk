@@ -2,6 +2,7 @@ import logging
 import os
 import unicodedata
 import uuid
+import itertools
 from datetime import datetime
 from importlib import import_module
 from inspect import isclass
@@ -23,8 +24,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
-from uuslug import uuslug
-
+from django.utils.text import slugify
 from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 from .tasks import generate_thumbnails, generate_video_thumbnail
 from .validators import validate_file_extension, validate_video, validate_extension, image_exists, valid_image_mimetype, \
@@ -494,15 +494,20 @@ class Photo(ImageModel):
 
     def save(self, created=True, *args, **kwargs):
         if created:
-            self.slug = uuslug(str(self.owner_id) + self.title, instance=self)
+            self.slug = orig = slugify(str(self.owner_id) + self.title)
+            for x in itertools.count(1):
+                if not Photo.objects.filter(slug=self.slug).exists():
+                    break
+                self.slug = '%s-%d' % (orig, x)
             self.get_remote_image()
+
         super(Photo, self).save(*args, **kwargs)
 
     def get_remote_image(self):
         """
         Obtiene la url introducida por el usuario
         """
-
+        
         if not self.url_image:
             return
 
@@ -669,7 +674,11 @@ class Video(models.Model):
 
     def save(self, created=True, *args, **kwargs):
         if created:
-            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
+            self.slug = orig = slugify(str(self.owner_id) + self.name)
+            for x in itertools.count(1):
+                if not Video.objects.filter(slug=self.slug).exists():
+                    break
+                self.slug = '%s-%d' % (orig, x)
         super(Video, self).save(*args, **kwargs)
 
     def get_previous_in_gallery(self):

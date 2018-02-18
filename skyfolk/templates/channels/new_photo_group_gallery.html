@@ -8,7 +8,7 @@
                 <div class="tags-content">
                     {% for tag in photo.tags.all %}
                         <blockquote
-                                onclick="location.href='{% url 'photologue_groups:collection-list' photo.owner.username tag.name %}'">{{ tag.name }}</blockquote>
+                                onclick="location.href='{% url 'photologue_groups:collection-list' photo.owner.username tag.slug %}'">{{ tag.name }}</blockquote>
                     {% endfor %}
                 </div>
             {% endif %}

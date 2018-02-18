@@ -1,7 +1,15 @@
 import json
 import logging
-
+import numpy as np
 from allauth.account.views import PasswordChangeView, EmailView
+from dash.helpers import iterable_to_dict
+from user_groups.models import LikeGroup
+from dash.models import DashboardEntry
+from itertools import chain, zip_longest
+from dash.base import get_layout
+
+from dash.utils import get_user_plugins, get_or_create_dashboard_settings, get_workspaces, get_public_dashboard_url, \
+    get_dashboard_settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, ViewDoesNotExist
@@ -24,20 +32,20 @@ from haystack.query import SearchQuerySet, SQ, RelatedSearchQuerySet
 from neomodel import db
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer
-
+from django.http import Http404
 from avatar.templatetags.avatar_tags import avatar, avatar_url
 from notifications.models import Notification
 from notifications.signals import notify
 from photologue.models import Photo, Video
 from publications.forms import PublicationForm, PublicationEdit, SharedPublicationForm
-from publications.models import Publication, PublicationVideo
+from publications.models import Publication
 from user_groups.models import UserGroups
 from user_profile.decorators import user_can_view_profile_info
 from user_profile.forms import AdvancedSearchForm
 from user_profile.forms import ProfileForm, UserForm, \
     SearchForm, PrivacityForm, DeactivateUserForm, ThemesForm
 from user_profile.models import Request, Profile, \
-    RelationShipProfile, FOLLOWING, NotificationSettings, BLOCK
+    RelationShipProfile, FOLLOWING, NotificationSettings, BLOCK, LikeProfile
 from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .serializers import UserSerializer
@@ -155,6 +163,46 @@ def profile_view_ajax(request, user_profile, node_profile=None):
     return render(request, template_name=template, context=context)
 
 
+def fill_profile_dashboard(request, user, username, context):
+    dashboard_settings = get_dashboard_settings(username)
+
+    if dashboard_settings:
+        layout = get_layout(layout_uid=dashboard_settings.layout_uid,
+                            as_instance=True)
+    else:
+        raise Http404
+
+    registered_plugins = get_user_plugins(user)
+    user_plugin_uids = [uid for uid, repr in registered_plugins]
+    logging.debug(user_plugin_uids)
+
+    entries_q = Q(user=user, layout_uid=layout.uid, workspace=None)
+
+    dashboard_entries = DashboardEntry._default_manager \
+                            .filter(entries_q) \
+                            .select_related('workspace', 'user') \
+                            .order_by('placeholder_uid', 'position')[:]
+
+    placeholders = layout.get_placeholder_instances(dashboard_entries,
+                                                    request=request)
+
+    layout.collect_widget_media(dashboard_entries)
+
+    context['js'] = layout.get_media_js()
+    context['layout'] = layout
+    context['dashboard_settings'] = dashboard_settings
+    context['placeholders'] = placeholders
+    context['placeholders_dict'] = iterable_to_dict(placeholders, key_attr_name='uid')
+
+    workspaces = get_workspaces(user, layout.uid, None, public=True)
+
+    context.update(workspaces)
+
+    context.update(
+        {'public_dashboard_url': get_public_dashboard_url(dashboard_settings)}
+    )
+
+
 @login_required(login_url='/')
 def profile_view(request, username,
                  template="account/profile.html"):
@@ -189,15 +237,11 @@ def profile_view(request, username,
     context['privacity'] = privacity
 
     # Recuperamos si el perfil es gustado.
-    try:
-        node_m = NodeProfile.nodes.get(user_id=user.id)
-    except Exception as e:
-        node_m = None
-        logging.info(e)
 
-    if node_m and user.username != username:
+
+    if user.username != username:
         try:
-            liked = node_m.has_like(to_like=user_profile.id)
+            liked = LikeProfile.objects.filter(to_profile__user__username=username, from_profile__user=user).exists()
         except Exception:
             liked = False
     else:
@@ -205,11 +249,10 @@ def profile_view(request, username,
 
     # Recuperamos el numero total de likes
     total_likes = 0
-    if node_m:
-        try:
-            total_likes = node_m.count_likes()
-        except Exception as e:
-            logging.info(e)
+    try:
+        total_likes = LikeProfile.objects.filter(to_profile__user__username=user.username).count()
+    except Exception as e:
+        logging.info(e)
 
     # Comprobamos si el perfil esta bloqueado
     isBlocked = False
@@ -257,13 +300,13 @@ def profile_view(request, username,
     # Recuperamos el numero de seguidores
     try:
         num_followers = RelationShipProfile.objects.get_total_followers(n.id)
-    except Exception:
+    except Exception as e:
         num_followers = 0
 
     # Recuperamos el numero de seguidos y la lista de seguidos
     try:
         num_follows = RelationShipProfile.objects.get_total_following(n.id)
-    except Exception:
+    except Exception as e:
         num_follows = 0
 
     # Recuperamos el numero de contenido multimedia que tiene el perfil
@@ -300,6 +343,8 @@ def profile_view(request, username,
     context['publications'] = publications
     context['component'] = 'publications.js'
     context['friend_page'] = 1
+
+    fill_profile_dashboard(request, user_profile, username, context)
 
     return render(request, template, context)
 
@@ -584,39 +629,31 @@ def like_profile(request):
         user = request.user
         slug = request.POST.get('slug', None)
 
-        actual_profile = get_object_or_404(User,
-                                           id=slug)
-        n = NodeProfile.nodes.get(user_id=user.id)
-        m = NodeProfile.nodes.get(user_id=slug)
+        try:
+            n = Profile.objects.get(user_id=user.id)
+            m = Profile.objects.get(user_id=slug)
+        except Profile.DoesNotExist:
+            raise Http404
 
-        if n.like.is_connected(m):
-            n.like.disconnect(NodeProfile.nodes.get(user_id=slug))
-            rel = n.follow.relationship(m)
-            if rel:
-                rel.weight = rel.weight - 10
-                rel.save()
-            response = "nolike"
+        if LikeProfile.objects.filter(to_profile=m, from_profile=n).exists():
+            try:
+                with transaction.atomic(using="default"):
+                    with db.transaction:
+                        LikeProfile.objects.filter(to_profile=m, from_profile=n).delete()
+                response = "nolike"
+            except Exception as e:
+                pass
         else:
             try:
                 with transaction.atomic(using="default"):
                     with db.transaction:
-                        n.like.connect(NodeProfile.nodes.get(user_id=slug))
-                        rel = n.follow.relationship(m)
-                        if rel:
-                            rel.weight = rel.weight + 10
-                            rel.save()
-                        notify.send(user, actor=user.username,
-                                    recipient=actual_profile,
-                                    description="@{0} ha dado like a tu perfil.".format(user.username),
-                                    verb=u'¡<a href="/profile/%s">@%s</a> te ha dado me gusta a tu perfil!.' % (
-                                        user.username, user.username), level='like_profile')
+                        LikeProfile.objects.create(to_profile=m, from_profile=n)
                 response = "like"
             except Exception as e:
                 pass
 
-        logging.info('%s da like a %s' % (user.username, actual_profile.username))
-        logging.info('Nueva afinidad emitter: {} receiver: {}'.format(user.username, actual_profile.username))
-        logging.info("Response: " + response)
+        logging.info("Response like_function (to_like: {} from_like: {}) response = {}".format(m.user, n.user, response)
+                     )
 
     return HttpResponse(json.dumps(response), content_type='application/javascript')
 
@@ -1041,16 +1078,15 @@ def bloq_user(request):
             return HttpResponse(json.dumps(data), content_type='application/json')
 
         try:
-            n = NodeProfile.nodes.get(user_id=id_user)
-            m = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
+            n = Profile.objects.get(user_id=id_user)
+            m = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
             data = {'response': False, 'haslike': haslike}
             return HttpResponse(json.dumps(data), content_type='application/json')
 
         # Eliminar me gusta al perfil que se va a bloquear
-
-        if m.like.is_connected(n):
-            m.like.disconnect(n)
+        deleted = LikeProfile.objects.filter(from_profile=m, to_profile=n).delete()
+        if deleted:
             haslike = "liked"
 
         # Ver si hay una peticion de "seguir" pendiente
@@ -1365,7 +1401,7 @@ class SearchUsuarioView(SearchView):
                                                                                board_owner__profile__in=following) | SQ(
                                                                                board_owner__profile__in=followers))
                                                                        ) | SQ(board_owner__profile__privacity='A')))))) \
-                .select_related('author').prefetch_related('images')
+                .select_related('author').prefetch_related('images').filter(deleted=False)
         ).load_all_queryset(
             Photo, Photo.objects.filter(SQ(owner_id=self.request.user.id) |
                                         ((~SQ(owner__profile__privacity='N') & ~SQ(
@@ -1527,3 +1563,50 @@ class NotificationSettingsView(AjaxableResponseMixin, UpdateView):
         instance = form.save(commit=False)
         instance.user = self.request.user
         return super(NotificationSettingsView, self).form_valid(form)
+
+class UserLikeContent(TemplateView):
+    """
+    Like user content show here
+    """
+    template_name = "user_profile/user_content.html"
+
+    def __init__(self, *args, **kwargs):
+        super(UserLikeContent, self).__init__(*args, **kwargs)
+        self.pagination = None
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserLikeContent, self).dispatch(request, *args, **kwargs)
+
+    def get_like_content(self):
+        current_page = int(self.request.GET.get('page', '1'))  # page or 1
+        limit = 25 * current_page
+        offset = limit - 25
+
+        user = self.request.user
+        publications = Publication.objects.filter(user_give_me_like__id__exact=user.id) \
+                                            .select_related('author') \
+                                            .prefetch_related('images')[offset:limit]
+        users = LikeProfile.objects.filter(from_profile__user=user).select_related('to_profile__user')[offset:limit]
+        groups = LikeGroup.objects.filter(from_like=user).select_related('to_like')[offset:limit]
+
+        mixed = list(sorted(chain.from_iterable([filter(None, zipped) for zipped in
+                                                 zip_longest(publications, users, groups)]),
+                            key=lambda objects: objects.created, reverse=True))
+
+        total_pubs = np.size(publications)
+        total_users = np.size(users)
+        total_groups = np.size(groups)
+
+        if total_pubs >= 25 or total_users >= 25 or total_groups >= 25:
+            self.pagination = current_page + 1
+        else:
+            self.pagination = None
+
+        return mixed
+
+    def get_context_data(self, **kwargs):
+        context = super(UserLikeContent, self).get_context_data(**kwargs)
+        context['mixed'] = self.get_like_content()
+        context['pagination'] = self.pagination
+        return context

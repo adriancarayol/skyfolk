@@ -65,8 +65,8 @@ class NotificationConsumer(WebsocketConsumer):
             return
 
         try:
-            profile = NodeProfile.nodes.get(title=username)
-        except NodeProfile.DoesNotExist:
+            profile = Profile.objects.get(user__username=username)
+        except Profile.DoesNotExist:
             return
 
         return [profile.notification_channel]

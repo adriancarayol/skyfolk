@@ -3,21 +3,21 @@ venv
 .project
 .pydevproject
 skyfolk/media/
-avatars/
+avatars
 whoosh_index/
 skyfolk.sublime-project
 skyfolk.sublime-workspace
 build/
 .settings/
-.idea/
-skyfolk/media
+.idea
 Thumbs.db
 db.sqlite3
 .ropeproject/
 .externalToolBuilders/
 .metadata/
-.vscode/
+.vscode
 Web.config
+*.log
 
 # vi temp files
 *~
@@ -25,11 +25,12 @@ Web.config
 *.swo
 celerybeat-schedule
 celerybeat.pid
-geckodriver.log
 # docker files
 esdata/
 db/
 kibana/
 tmp/
-celerybeat.pid
 static/
+*.log
+publications/tests/tests.py
+config/config
