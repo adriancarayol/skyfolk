@@ -17,6 +17,7 @@ db.sqlite3
 .metadata/
 .vscode
 Web.config
+*.log
 
 # vi temp files
 *~
