@@ -157,11 +157,13 @@ EXTERNAL_LOGOUT_URL = None
 # / DJANGO ALL AUTH CONFIG
 
 # CONFIG E-MAIL
-EMAIL_HOST = 'mail'
-EMAIL_PORT = 25
-EMAIL_HOST_USER='no-reply@skyfolk.net'
-EMAIL_HOST_PASSWORD='un!x322@'
-EMAIL_USE_TLS = False
+#EMAIL_HOST = 'mail'
+EMAIL_HOST = 'localhost'
+#EMAIL_PORT = 587
+EMAIL_PORT = 35
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'skyfolk <no-reply@skyfolk.net>'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # SESSION EXPIRATION
