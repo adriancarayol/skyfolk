@@ -194,7 +194,7 @@ class PhotoGroup(ImageModel):
 
     date_added = models.DateTimeField(_('date added'),
                                       default=now)
-    
+
     tags = TaggableManager(blank=True)
 
     owner = models.ForeignKey(User, null=True, blank=True, related_name='user_group_photos')

@@ -44,7 +44,7 @@ class PublicationPhotoView(AjaxableResponseMixin, CreateView):
         photo = get_object_or_404(PhotoGroup.objects.select_related('group'), id=request.POST.get('board_photo', None))
 
         if not photo.group.is_public and self.request.user.id != photo.group.owner_id:
-            if not self.request.user.groups.filter(id=photo.group_id).exists():
+            if not self.request.user.user_groups.filter(id=photo.group_id).exists():
                 return HttpResponseForbidden("No tienes permiso para publicar en esta imágen")
 
         emitter = NodeProfile.nodes.get(user_id=self.request.user.id)
@@ -142,7 +142,7 @@ def publication_detail(request, publication_id):
                                                                                              deleted=False)
 
         if not request_pub.board_photo.group.is_public and user.id != request_pub.board_photo.group.owner_id:
-            if user.groups.filter(id=request_pub.board_photo.group_id).exists():
+            if user.user_groups.filter(id=request_pub.board_photo.group_id).exists():
                 return redirect('photologue_groups:photo-list', username=request_pub.board_photo.owner.username)
     except ObjectDoesNotExist:
         raise Http404

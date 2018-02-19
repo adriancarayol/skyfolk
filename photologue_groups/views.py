@@ -58,7 +58,7 @@ def collection_list(request, slug,
 
 
     if not group.is_public and user.id != group.owner_id:
-        is_member = user.groups.filter(id=group.group_ptr_id).exists()
+        is_member = user.user_groups.filter(id=group.id).exists()
         if not is_member:
             return redirect('user_groups:group-profile', groupname=group.slug)
 
@@ -151,7 +151,7 @@ def upload_photo(request):
             except UserGroups.DoesNotExist:
                 raise Http404
 
-            if not group.is_public and user.id != group.owner_id and not user.groups.filter(pk=pk).exists():
+            if not group.is_public and user.id != group.owner_id and not user.user_groups.filter(pk=pk).exists():
                 return HttpResponseForbidden("No tienes permiso para subir una imagen al grupo {}".format(group.name))
 
             obj = form.save(commit=False)
@@ -202,7 +202,7 @@ def upload_video(request):
             except UserGroups.DoesNotExist:
                 raise Http404
 
-            if not group.is_public and user.id != group.owner_id and not user.groups.filter(pk=pk).exists():
+            if not group.is_public and user.id != group.owner_id and not user.user_groups.filter(pk=pk).exists():
                 return HttpResponseForbidden("No tienes permiso para subir una imagen al grupo {}".format(group.name))
 
             obj = form.save(commit=False)
@@ -312,7 +312,7 @@ def upload_zip_form(request):
             except UserGroups.DoesNotExist:
                 raise Http404
 
-            if not group.is_public and user.id != group.owner_id and not user.groups.filter(id=group.id).exists():
+            if not group.is_public and user.id != group.owner_id and not user.user_groups.filter(id=group.id).exists():
                 return HttpResponseForbidden("No puedes subir una colección a este grupo.")
 
             form.save(request=request)
@@ -337,7 +337,7 @@ def delete_photo(request):
         photo_to_delete = get_object_or_404(PhotoGroup.objects.select_related('group'), id=_id)
 
         if not photo_to_delete.group.is_public and user.id != photo_to_delete.group.owner_id:
-            if not user.groups.filter(id=photo_to_delete.group.id).exists():
+            if not user.user_groups.filter(id=photo_to_delete.group.id).exists():
                 return HttpResponseForbidden("No tienes permisos para eliminar esta imagen.")
 
         if user.pk == photo_to_delete.owner_id or photo_to_delete.group.owner_id == user.pk:
@@ -372,7 +372,7 @@ def edit_photo(request, photo_id):
     photo = get_object_or_404(PhotoGroup.objects.select_related('group'), id=photo_id)
 
     if not photo.group.is_public and user.id != photo.group.owner_id:
-        if not user.groups.filter(id=photo.group.id).exists():
+        if not user.user_groups.filter(id=photo.group.id).exists():
             return HttpResponseForbidden("No tienes permisos para eliminar esta imagen.")
 
     form = EditFormPhoto(request.POST or None, instance=photo)
@@ -407,7 +407,7 @@ def edit_video(request, video_id):
     video = get_object_or_404(VideoGroup.objects.select_related('group'), id=video_id)
 
     if not video.group.is_public and user.id != video.group.owner_id:
-        if not user.groups.filter(id=video.group.id).exists():
+        if not user.user_groups.filter(id=video.group.id).exists():
             return HttpResponseForbidden("No tienes permisos para eliminar esta imagen.")
 
     form = EditFormVideo(request.POST or None, instance=video)
@@ -514,7 +514,7 @@ class PhotoDetailView(DetailView):
         user = self.request.user
 
         if not self.object.group.is_public and self.object.group.owner_id != user.id:
-            is_member = user.groups.filter(id=self.object.group.id)
+            is_member = user.user_groups.filter(id=self.object.group.id)
             if not is_member:
                 return False
 
@@ -613,7 +613,7 @@ class VideoDetailView(DetailView):
         user = self.request.user
 
         if not self.object.group.is_public and self.object.group.owner_id != user.id:
-            is_member = user.groups.filter(id=self.object.group.id)
+            is_member = user.user_groups.filter(id=self.object.group.id)
             if not is_member:
                 return False
 
@@ -632,7 +632,7 @@ def delete_video(request):
         video_to_delete = get_object_or_404(VideoGroup.objects.select_related('group'), id=_id)
 
         if not video_to_delete.group.is_public and user.id != video_to_delete.group.owner_id:
-            if not user.groups.filter(id=video_to_delete.group.id).exists():
+            if not user.user_groups.filter(id=video_to_delete.group.id).exists():
                 return HttpResponseForbidden("No tienes permisos para eliminar este video.")
 
         if user.pk == video_to_delete.owner_id or video_to_delete.group.owner_id == user.pk:

@@ -146,8 +146,7 @@ class UserGroupList(ListView):
         return [y for x in results for y in x]
 
     def get_queryset(self):
-        return UserGroups.objects.filter(id__in=self.request.user.user_groups.all())
-
+        return self.request.user.user_groups.all()
 
 @user_can_view_group
 @login_required(login_url='/')
@@ -535,7 +534,7 @@ class RespondGroupRequest(View):
                     with transaction.atomic(using="default"):
                         with db.transaction:
                             request_group.delete()
-                            group.users.add(user)
+                            group.users.add(request_group.emitter)
                             g.members.connect(n)
                             notify.send(user, actor=user.username,
                                         recipient=request_group.emitter,
