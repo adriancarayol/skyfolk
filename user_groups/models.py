@@ -1,6 +1,5 @@
 # encoding:utf-8
 import itertools
-from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -39,10 +38,12 @@ def group_themes_images(instance, filename):
     return 'group_{0}/themes/{1}'.format(instance.board_group, filename)
 
 
-class UserGroups(Group):
+class UserGroups(models.Model):
     """
         Proxy para grupos.
     """
+    name = models.CharField(max_length=255)
+    users = models.ManyToManyField(User, related_name="user_groups")
     owner = models.ForeignKey(User, related_name='owner_group')
     slug = models.SlugField(max_length=100, unique=True)
     description = models.CharField(max_length=500)

@@ -14,11 +14,7 @@ def get_env_variable(var_name):
         error_msg = "Set the %s environment variable" % var_name
         raise ImproperlyConfigured(error_msg)
 
-# Eliminar except
-try:
-    SECRET_KEY = get_env_variable('SECRET_KEY')
-except Exception:
-    SECRET_KEY = '0)3c4u$y^+3&tx=rsgqsnr!=r5nl%j)w401o#86v97w%2v$99#'
+SECRET_KEY = get_env_variable('SECRET_KEY')
 
 ALLOWED_HOSTS += ['0.0.0.0', ]
 
@@ -44,9 +40,9 @@ NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@lo
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = "/var/www/skyfolk.net/run/static/static"
 # STATIC_ROOT = '/var/www/skyfolk/static/pre/static'
-MEDIA_ROOT = os.path.join(BASE_DIR, "skyfolk/media")
+MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media"
 MEDIA_URL = '/media/'
 # MEDIA_ROOT = '/var/www/skyfolk/static/pre/media'
 # INVITATIONS ONLY EMAIL
