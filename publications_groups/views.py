@@ -51,7 +51,7 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
 
         try:
             emitter_node = NodeProfile.nodes.get(user_id=emitter.id)
-            group_node = NodeGroup.nodes.get(group_id=group.group_ptr_id)
+            group_node = NodeGroup.nodes.get(group_id=group.id)
         except (NodeProfile.DoesNotExist, NodeGroup.DoesNotExist) as e:
             raise Http404
 

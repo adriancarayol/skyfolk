@@ -49,7 +49,7 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
             form.add_error('board_theme', 'El tema especificado no existe.')
             return super(PublicationThemeView, self).form_invalid(form)
 
-        if not group.is_public and not user.groups.filter(id=group_id).exists():
+        if not group.is_public and not user.user_groups.filter(id=group_id).exists():
             form.add_error('board_theme',
                            'Para comentar en este tema debes ser miembro del grupo {0}.'.format(group.name))
             return super(PublicationThemeView, self).form_invalid(form)

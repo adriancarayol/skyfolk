@@ -89,7 +89,7 @@ def user_can_view_group_info(function):
             raise Http404
 
         if not group_profile.is_public and group_profile.owner_id != user.id:
-            is_member = user.groups.filter(id=group_profile.group_ptr_id).exists()
+            is_member = user.user_groups.filter(id=group_profile.id).exists()
             if not is_member:
                 return redirect(reverse('user_groups:group-profile', kwargs={'groupname': groupname}))
 
