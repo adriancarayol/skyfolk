@@ -37,7 +37,7 @@ class PublicationGroupGalleryPhotoConsumer(WebsocketConsumer):
         group = self.publication.board_photo.group
 
         if not group.is_public and user != group.owner_id:
-            if not user.groups.filter(id=group.group_ptr_id).exists():
+            if not user.user_groups.filter(id=group.id).exists():
                 self.message.reply_channel({'close': True})
                 return
 
@@ -93,7 +93,7 @@ class PublicationGroupGalleryVideoConsumer(WebsocketConsumer):
         group = self.publication.board_video.group
 
         if not group.is_public and user != group.owner_id:
-            if not user.groups.filter(id=group.group_ptr_id).exists():
+            if not user.user_groups.filter(id=group.id).exists():
                 self.message.reply_channel({'close': True})
                 return
 

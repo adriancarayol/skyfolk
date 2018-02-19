@@ -46,7 +46,7 @@ class GroupPublicationConsumer(WebsocketConsumer):
             return
 
         try:
-            g = UserGroups.objects.get(group_ptr_id=self.group.group_id)
+            g = UserGroups.objects.get(id=self.group.group_id)
         except UserGroups.DoesNotExist:
             self.message.reply_channel.send({'close': True})
             return
