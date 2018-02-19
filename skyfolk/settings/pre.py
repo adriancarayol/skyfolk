@@ -40,9 +40,9 @@ NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@lo
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = "/var/www/skyfolk.net/run/static/static"
 # STATIC_ROOT = '/var/www/skyfolk/static/pre/static'
-MEDIA_ROOT = os.path.join(BASE_DIR, "skyfolk/media")
+MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media"
 MEDIA_URL = '/media/'
 # MEDIA_ROOT = '/var/www/skyfolk/static/pre/media'
 # INVITATIONS ONLY EMAIL
