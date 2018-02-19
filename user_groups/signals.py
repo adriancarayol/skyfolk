@@ -42,7 +42,7 @@ def handle_delete_request(sender, instance, *args, **kwargs):
                                 action_object_content_type=ContentType.objects.get_for_model(instance)).delete()
 
 
-@receiver(m2m_changed, sender=User.groups.through)
+@receiver(m2m_changed, sender=User.user_groups.through)
 def user_group_changed_handler(sender, instance, action, **kwargs):
     if isinstance(instance, UserGroups):
         pk_set = kwargs.pop('pk_set', [])
