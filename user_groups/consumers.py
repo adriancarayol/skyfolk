@@ -87,7 +87,7 @@ class ThemeConsumer(WebsocketConsumer):
             self.message.reply_channel.send({'close': True})
             return
 
-        if not group.is_public and not user.groups.filter(id=self.theme.board_group_id).exists():
+        if not group.is_public and not user.user_groups.filter(id=self.theme.board_group_id).exists():
             self.message.reply_channel.send({'close': True})
             return
 
