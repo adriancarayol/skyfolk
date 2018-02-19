@@ -53,7 +53,7 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
             raise IntegrityError("No have permissions")
 
         if not video.group.is_public and self.request.user.id != video.group.owner_id:
-            if not self.request.user.groups.filter(id=video.group_id).exists():
+            if not self.request.user.user_groups.filter(id=video.group_id).exists():
                 return HttpResponseForbidden("No tienes permiso para publicar en esta imágen")
 
         logger.debug('POST DATA: {}'.format(request.POST))
@@ -143,7 +143,7 @@ def video_publication_detail(request, publication_id):
                                                                                            deleted=False)
 
         if not request_pub.board_video.group.is_public and user.id != request_pub.board_video.group.owner_id:
-            if user.groups.filter(id=request_pub.board_video.group_id).exists():
+            if user.user_groups.filter(id=request_pub.board_video.group_id).exists():
                 return redirect('photologue_groups:photo-list', username=request_pub.board_video.owner.username)
 
     except ObjectDoesNotExist:
