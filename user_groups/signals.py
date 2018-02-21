@@ -1,5 +1,8 @@
-import logging
 import json
+import logging
+
+from channels import Group as GroupChannel
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save, post_delete, m2m_changed
@@ -7,12 +10,11 @@ from django.dispatch import receiver
 from django.http import Http404
 from django.template.loader import render_to_string
 from guardian.shortcuts import assign_perm
-from django.contrib.auth.models import User
+
 from notifications.models import Notification
 from user_groups.node_models import NodeGroup
-from user_profile.node_models import NodeProfile
+from user_profile.node_models import NodeProfile, TagProfile
 from .models import UserGroups, RequestGroup, LikeGroup, GroupTheme
-from channels import Group as GroupChannel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -20,7 +22,9 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=UserGroups)
 def handle_new_group(sender, instance, created, **kwargs):
-    if created:  # Primera vez que se crea el usuario, creamos Perfil y Nodo
+    if created:
+        NodeGroup(group_id=instance.id,
+                  title=instance.name).save()
         assign_perm('view_notification', instance.owner, instance)
         assign_perm('can_publish', instance.owner, instance)
         assign_perm('change_description', instance.owner, instance)
@@ -29,6 +33,18 @@ def handle_new_group(sender, instance, created, **kwargs):
         assign_perm('kick_member', instance.owner, instance)
         assign_perm('ban_member', instance.owner, instance)
         assign_perm('modify_notification', instance.owner, instance)
+
+    try:
+        g = NodeGroup.nodes.get(group_id=instance.id)
+
+        for tag in instance.tags.all():
+            interest = TagProfile.nodes.get_or_none(title=tag)
+            if not interest:
+                interest = TagProfile(title=tag).save()
+            if interest:
+                g.interest.connect(interest)
+    except NodeGroup.DoesNotExist:
+        logger.warning('El grupo: {} no tiene un nodo en neo4j asociado'.format(instance))
 
 
 @receiver(post_delete, sender=UserGroups)

@@ -1,6 +1,5 @@
 import magic
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -23,9 +22,7 @@ from publications.views import logger
 from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit
 from publications_groups.models import PublicationGroup
 from user_groups.models import UserGroups
-from user_groups.node_models import NodeGroup
 from user_profile.models import RelationShipProfile, BLOCK, Profile
-from user_profile.node_models import NodeProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 from .utils import optimize_publication_media, check_num_images, check_image_property
 
@@ -47,16 +44,10 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         group = get_object_or_404(UserGroups, id=request.POST.get('board_group', None))
-        emitter = User.objects.get(id=self.request.user.id)
-
-        try:
-            emitter_node = NodeProfile.nodes.get(user_id=emitter.id)
-            group_node = NodeGroup.nodes.get(group_id=group.id)
-        except (NodeProfile.DoesNotExist, NodeGroup.DoesNotExist) as e:
-            raise Http404
+        emitter = request.user
 
         if group.owner.id != emitter.id:
-            if not group.is_public and not group_node.members.is_connected(emitter_node):
+            if not group.is_public and not group.users.filter(id=emitter.id):
                 return self.form_invalid(form=form)
 
         if form.is_valid():
@@ -66,9 +57,8 @@ class PublicationGroupView(AjaxableResponseMixin, CreateView):
                 publication.board_group_id = group.id
                 parent = publication.parent
                 if parent:
-                    author = NodeProfile.nodes.get(user_id=parent.author_id)
-
-                    if author.bloq.is_connected(emitter_node):
+                    if RelationShipProfile.objects.is_blocked(to_profile=emitter.profile,
+                                                              from_profile=parent.author.profile):
                         raise PermissionDenied('El autor de la publicación te ha bloqueado')
 
                 publication.parse_content()  # parse publication content
@@ -419,13 +409,8 @@ class PublicationGroupDetail(ListView):
         except ObjectDoesNotExist:
             raise Http404
 
-        try:
-            n = NodeProfile.nodes.get(user_id=self.request.user.id)
-            g = NodeGroup.nodes.get(group_id=self.publication.board_group_id)
-        except (NodeProfile.DoesNotExist, NodeGroup.DoesNotExist) as e:
-            raise Http404
-
-        if not self.publication.board_group.is_public and not g.members.is_connected(n):
+        if not self.publication.board_group.is_public and not self.publication.board_group.users.filter(
+                id=user.id).exists():
             return HttpResponseForbidden()
 
         shared_publications = Publication.objects.filter(shared_group_publication__id=OuterRef('pk'),
@@ -471,7 +456,8 @@ class PublicationGroupDetail(ListView):
             context['publication_id'] = self.kwargs.get('pk', None)
             context['share_publication'] = SharedPublicationForm()
         context['group_profile'] = self.publication.board_group
-        context['enable_control_pubs_btn'] = self.request.user.has_perm('delete_publication', UserGroups.objects.get(id=self.publication.board_group_id))
+        context['enable_control_pubs_btn'] = self.request.user.has_perm('delete_publication', UserGroups.objects.get(
+            id=self.publication.board_group_id))
         return context
 
 
@@ -501,15 +487,7 @@ class LoadRepliesForPublicationGroup(View):
         if group.is_public:
             pass
         else:
-            try:
-                g = NodeGroup.nodes.get(group_id=publication.board_group_id)
-            except NodeGroup.DoesNotExist:
-                raise Http404
-            try:
-                n = NodeProfile.nodes.get(user_id=user.id)
-            except NodeProfile.DoesNotExist:
-                raise Http404
-            if not g.members.is_connected(n):
+            if not group.users.filter(id=user.id).exists():
                 return HttpResponseForbidden()
 
         users_not_blocked_me = RelationShipProfile.objects.filter(

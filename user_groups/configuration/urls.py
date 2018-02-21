@@ -1,4 +1,5 @@
 from django.conf.urls import url
+
 from user_groups.configuration import views as configuration_views
 
 urlpatterns = [

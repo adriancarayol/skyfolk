@@ -1,12 +1,11 @@
+from functools import wraps
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from user_groups.models import UserGroups, RequestGroup, LikeGroup
-from user_groups.node_models import NodeGroup
-from user_profile.node_models import NodeProfile
-from functools import wraps
 
 
 def user_can_view_group(function):
@@ -20,19 +19,9 @@ def user_can_view_group(function):
         except UserGroups.DoesNotExist:
             raise Http404
 
-        try:
-            node_group = NodeGroup.nodes.get(group_id=group_profile.id)
-        except NodeGroup.DoesNotExist:
-            raise Http404
-
-        try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            raise Http404
-
         is_member = True
         if not group_profile.is_public and group_profile.owner_id != user.id:
-            if not node_group.members.is_connected(n):
+            if not group_profile.users.filter(id=user.id).exists():
                 is_member = False
 
         if not is_member:
@@ -44,11 +33,11 @@ def user_can_view_group(function):
 
             context = {
                 'group_profile': group_profile,
-                'interests': node_group.interest.match(),
+                'interests': group_profile.tags.all(),
                 'friend_request': friend_request,
                 'likes': LikeGroup.objects.filter(to_like=group_profile).count(),
                 'user_like_group': LikeGroup.objects.has_like(group_id=group_profile, user_id=user),
-                'users_in_group': len(node_group.members.all())
+                'users_in_group': group_profile.users.count()
             }
 
             return render(request, 'groups/group_profile_no_member.html', context)

@@ -1,9 +1,9 @@
 # encoding:utf-8
 import bleach
 from django import forms
+from django.conf import settings
 from django.core import validators
 from django.core.exceptions import ValidationError
-from django.conf import settings
 
 from emoji import Emoji
 from user_groups.models import GroupTheme
