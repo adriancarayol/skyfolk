@@ -103,10 +103,10 @@ def handle_delete_like(sender, instance, *args, **kwargs):
     try:
         g = NodeGroup.nodes.get(group_id=instance.to_like.id)
         n = NodeProfile.nodes.get(user_id=instance.from_like.id)
+        g.likes.disconnect(n)
     except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
-        raise ObjectDoesNotExist
+        pass
 
-    g.likes.disconnect(n)
 
 
 @receiver(post_save, sender=GroupTheme)
