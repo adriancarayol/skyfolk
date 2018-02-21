@@ -17,15 +17,15 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="row">
-                    <p class="green-text" title="Se ejecutó correctamente">
+                <div class="row center">
+                    <span class="green-text" title="Se ejecutó correctamente">
                         <span class="material-icons">done</span>
                         <span>{{ trigger.counter_ok }}</span>
-                    </p>
-                    <p class="red-text" title="Hay un error con los servicios asociado a este widget">
+                    </span>
+                    <span class="red-text" title="Hay un error con los servicios asociado a este widget">
                         <span class="material-icons">error</span>
                         <span>{{ trigger.counter_ko }}</span>
-                    </p>
+                    </span>
                 </div>
             </div>
         </div>

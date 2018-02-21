@@ -1,10 +1,7 @@
 from channels.generic.websockets import WebsocketConsumer
 
-from user_profile.node_models import NodeProfile
 from .models import PublicationGroup
 from .utils import get_channel_name
-from user_groups.models import UserGroups
-from user_groups.node_models import NodeGroup
 
 
 class GroupPublicationConsumer(WebsocketConsumer):
@@ -21,15 +18,11 @@ class GroupPublicationConsumer(WebsocketConsumer):
             return
 
         try:
-            publication_board_group = PublicationGroup.objects.values_list('board_group__id', flat=True).get(
-                id=pubid)
+            publication_board_group = PublicationGroup.objects.get(id=pubid)
         except PublicationGroup.DoesNotExist:
             return
 
-        try:
-            self.group = NodeGroup.nodes.get(group_id=publication_board_group)
-        except NodeProfile.DoesNotExist:
-            return
+        self.group = publication_board_group.board_group
 
         super(GroupPublicationConsumer, self).__init__(message, **kwargs)
 
@@ -39,21 +32,11 @@ class GroupPublicationConsumer(WebsocketConsumer):
 
     def connect(self, message, **kwargs):
         user = message.user
-        try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
 
-        try:
-            g = UserGroups.objects.get(id=self.group.group_id)
-        except UserGroups.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
-
-        if not g.is_public and not g.members.is_connected(n):
-            self.message.reply_channel({'close': True})
-            return
+        if user.id != self.group.owner_id:
+            if not self.group.is_public and not self.group.users.filter(id=user.id).exists():
+                self.message.reply_channel({'close': True})
+                return
 
         self.message.reply_channel.send({'accept': True})
 

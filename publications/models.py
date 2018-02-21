@@ -4,6 +4,7 @@ import re
 import uuid
 
 import bleach
+from bleach.linkifier import Linker
 from channels import Group as channel_group
 from django.conf import settings
 from django.contrib.auth.models import User, Group
@@ -15,7 +16,6 @@ from embed_video.fields import EmbedVideoField
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
 
-from bleach.linkifier import Linker
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.utils import validate_video, set_link_class
@@ -61,8 +61,8 @@ class PublicationBase(MPTTModel):
         (6, _("shared")),
     )
 
-    content = models.TextField(blank=False, null=True, max_length=500)
-    created = models.DateTimeField(auto_now_add=True, null=True)
+    content = models.TextField(max_length=500)
+    created = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager(blank=True)
     deleted = models.BooleanField(default=False, blank=True)
     event_type = models.IntegerField(choices=EVENT_CHOICES, default=1)
@@ -147,9 +147,7 @@ class Publication(PublicationBase):
     """
     Modelo para las publicaciones de usuario (en perfiles de usuarios)
     """
-
-    # TODO: Eliminar null=True de author...
-    author = models.ForeignKey(User, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     board_owner = models.ForeignKey(User, related_name='board_owner', db_index=True)
     user_give_me_like = models.ManyToManyField(User, blank=True,
                                                related_name='likes_me')
@@ -249,7 +247,7 @@ class PublicationDeleted(models.Model):
         (1, _("skyline")),
         (2, _("photo")),
     )
-    author = models.ForeignKey(User, null=True)
+    author = models.ForeignKey(User)
     content = models.TextField(blank=False, null=True, max_length=500)
     created = models.DateTimeField(null=True)
     type_publication = models.IntegerField(choices=TYPE_PUBLICATIONS, default=1)

@@ -7,11 +7,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.db import IntegrityError, transaction
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import IntegrityError
 from django.db import transaction
 from django.db.models import Q, Count, Case, When, Value, IntegerField, OuterRef, Subquery
-
-from django.http import HttpResponseForbidden, Http404, JsonResponse
+from django.http import HttpResponseForbidden
 from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404, HttpResponse
 from django.shortcuts import render
@@ -30,21 +30,18 @@ from rest_framework.views import APIView
 
 from notifications.models import Notification
 from notifications.signals import notify
+from publications.forms import SharedPublicationForm
 from publications.models import Publication
 from publications_groups.forms import PublicationGroupForm, GroupPublicationEdit, PublicationThemeForm
-from publications.forms import SharedPublicationForm
 from publications_groups.models import PublicationGroup
 from publications_groups.themes.models import PublicationTheme
-from user_groups.forms import GroupThemeForm, EditGroupThemeForm
+from user_groups.forms import EditGroupThemeForm
 from user_groups.models import GroupTheme, LikeGroupTheme, HateGroupTheme
 from user_profile.models import RelationShipProfile, BLOCK, Profile
-from user_profile.node_models import NodeProfile, TagProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
+from .decorators import user_can_view_group, user_can_view_group_info
 from .forms import FormUserGroup, GroupThemeForm
 from .models import UserGroups, LikeGroup, RequestGroup
-from user_groups.node_models import NodeGroup
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .decorators import user_can_view_group, user_can_view_group_info
 
 
 class UserGroupCreate(AjaxableResponseMixin, CreateView):
@@ -93,19 +90,10 @@ class UserGroupCreate(AjaxableResponseMixin, CreateView):
                     with transaction.atomic():
                         with db.transaction:
                             group.save()
-                            g = NodeGroup(group_id=group.id,
-                                          title=group.name).save()
-                            n = NodeProfile.nodes.get(user_id=user.id)
                             group.users.add(user)
-                            g.members.connect(n)
                             if tags:
                                 for tag in tags:
                                     group.tags.add(tag)
-                                    interest = TagProfile.nodes.get_or_none(title=tag)
-                                    if not interest:
-                                        interest = TagProfile(title=tag).save()
-                                    if interest:
-                                        g.interest.connect(interest)
                 except Exception as e:
                     print(e)
                     return self.form_invalid(form=form)
@@ -148,6 +136,7 @@ class UserGroupList(ListView):
     def get_queryset(self):
         return self.request.user.user_groups.all()
 
+
 @user_can_view_group
 @login_required(login_url='/')
 def group_profile(request, groupname, template='groups/group_profile.html'):
@@ -162,19 +151,9 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
     except UserGroups.DoesNotExist:
         raise Http404
 
-    try:
-        node_group = NodeGroup.nodes.get(group_id=group_profile.id)
-    except NodeGroup.DoesNotExist:
-        raise Http404
-
-    try:
-        n = NodeProfile.nodes.get(user_id=user.id)
-    except NodeProfile.DoesNotExist:
-        raise Http404
-
     is_member = False
     if group_profile.owner_id != user.id:
-        if node_group.members.is_connected(n):
+        if user.user_groups.filter(id=group_profile.id).exists():
             is_member = True
 
     is_ajax = False
@@ -272,13 +251,11 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
 
     likes = LikeGroup.objects.filter(to_like=group_profile).count()
     user_like_group = LikeGroup.objects.has_like(group_id=group_profile, user_id=user)
-    users_in_group = len(node_group.members.all())
+    users_in_group = group_profile.users.count()
 
     group_initial = {'owner': user.pk}
 
-    members = node_group.members.all()
-    list_user_id = [x.user_id for x in members]
-    user_list = User.objects.filter(id__in=list_user_id)
+    user_list = group_profile.users.all()
 
     try:
         friend_request = RequestGroup.objects.get_follow_request(
@@ -298,7 +275,7 @@ def group_profile(request, groupname, template='groups/group_profile.html'):
                'group_owner': True if user.id == group_profile.owner_id else False,
                'friend_request': friend_request,
                'enable_control_pubs_btn': user.has_perm('delete_publication', group_profile),
-               'interests': node_group.interest.match(),
+               'interests': group_profile.tags.all(),
                'share_publication': SharedPublicationForm(),
                'publication_edit': GroupPublicationEdit(),
                'theme_form': GroupThemeForm(initial={'owner': request.user, 'board_group': group_profile}),
@@ -320,13 +297,7 @@ def follow_group(request):
                                       id=group_id)
 
             if user.pk != group.owner.pk:
-                try:
-                    g = NodeGroup.nodes.get(group_id=group_id)
-                    n = NodeProfile.nodes.get(user_id=user.id)
-                except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
-                    raise Http404
-
-                created = g.members.is_connected(n)
+                created = group.users.filter(id=user.id).exists()
 
                 if created:
                     return JsonResponse({
@@ -436,8 +407,6 @@ def like_group(request):
             if not created:
                 try:
                     like.delete()
-                    NodeGroup.nodes.get(group_id=group.id).likes.disconnect(
-                        NodeProfile.nodes.get(user_id=user.id))
                 except IntegrityError as e:
                     return JsonResponse({'response': 'error'})
                 return JsonResponse({'response': 'no_like'})
@@ -526,16 +495,10 @@ class RespondGroupRequest(View):
         if request_status == 'accept':
             if user.id == group.owner_id:
                 try:
-                    g = NodeGroup.nodes.get(group_id=group.id)
-                    n = NodeProfile.nodes.get(user_id=request_group.emitter_id)
-                except (NodeGroup.DoesNotExist, NodeProfile.DoesNotExist) as e:
-                    return JsonResponse({'response': response})
-                try:
                     with transaction.atomic(using="default"):
                         with db.transaction:
                             request_group.delete()
                             group.users.add(request_group.emitter)
-                            g.members.connect(n)
                             notify.send(user, actor=user.username,
                                         recipient=request_group.emitter,
                                         description="@{0} ha aceptado tu solicitud, ahora eres miembro de {1}.".format(
@@ -853,7 +816,7 @@ class DeleteGroupTheme(DeleteView):
         group = UserGroups.objects.get(id=self.object.board_group_id)
 
         if self.object.owner_id != user.id and (
-                        user != group.owner_id and not user.has_perm('delete_publication', group)):
+                user != group.owner_id and not user.has_perm('delete_publication', group)):
             return JsonResponse(data)
 
         data['redirect_url'] = reverse('user_groups:group-profile', kwargs={'groupname': group.slug})

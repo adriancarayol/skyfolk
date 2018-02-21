@@ -15,7 +15,7 @@ from publications_groups.themes.models import PublicationTheme
 from publications_groups.themes.utils import optimize_publication_media, check_image_property
 from publications_groups.utils import check_num_images
 from user_groups.models import GroupTheme, UserGroups
-from user_profile.node_models import NodeProfile
+from user_profile.models import RelationShipProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin
 
 
@@ -55,13 +55,8 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
             return super(PublicationThemeView, self).form_invalid(form)
 
         if form.instance.parent:
-            try:
-                author = NodeProfile.nodes.get(user_id=form.instance.parent.author_id)
-                emitter_node = NodeProfile.nodes.get(user_id=user.id)
-            except NodeProfile.DoesNotExist:
-                raise Http404
-
-            if author.bloq.is_connected(emitter_node):
+            if RelationShipProfile.objects.is_blocked(to_profile=user.profile,
+                                                      from_profile=form.instance.parent.profile):
                 form.add_error('parent',
                                'El autor de la publicación te ha bloqueado.'.format(group.name))
                 return super(PublicationThemeView, self).form_invalid(form)

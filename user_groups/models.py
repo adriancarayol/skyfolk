@@ -1,5 +1,6 @@
 # encoding:utf-8
 import itertools
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
