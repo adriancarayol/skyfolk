@@ -1,9 +1,6 @@
 from channels.generic.websockets import WebsocketConsumer
-from django.http import Http404
 
-from user_profile.node_models import NodeProfile
 from .models import UserGroups, GroupTheme
-from user_groups.node_models import NodeGroup
 
 
 class GroupConsumer(WebsocketConsumer):
@@ -31,19 +28,8 @@ class GroupConsumer(WebsocketConsumer):
 
     def connect(self, message, **kwargs):
         user = message.user
-        try:
-            n = NodeProfile.nodes.get(user_id=user.id)
-        except NodeProfile.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
 
-        try:
-            g = NodeGroup.nodes.get(group_id=self.group_profile.id)
-        except NodeGroup.DoesNotExist:
-            self.message.reply_channel.send({'close': True})
-            return
-
-        if not self.group_profile.is_public and not g.members.is_connected(n):
+        if not self.group_profile.is_public and not self.group_profile.users.filter(id=user.id).exists():
             self.message.reply_channel.send({'close': True})
             return
 

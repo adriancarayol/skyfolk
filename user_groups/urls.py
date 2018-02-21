@@ -1,7 +1,6 @@
 from django.conf.urls import url, include
 
 import user_groups.views
-from publications_groups.themes import views as themes_views
 from user_groups import views as user_groups_views
 
 urlpatterns = [

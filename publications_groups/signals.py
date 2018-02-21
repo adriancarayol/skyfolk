@@ -1,5 +1,4 @@
 import logging
-import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -129,21 +128,27 @@ def notify_mentions(instance):
 
 
 def increase_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_group.owner_id)
-    # Aumentamos la fuerza de la relacion entre los usuarios
-    if n.user_id != m.user_id:
-        rel = n.follow.relationship(m)
-        if rel:
-            rel.weight = rel.weight + 1
-            rel.save()
+    try:
+        n = NodeProfile.nodes.get(user_id=instance.author.id)
+        m = NodeProfile.nodes.get(user_id=instance.board_group.owner_id)
+        # Aumentamos la fuerza de la relacion entre los usuarios
+        if n.user_id != m.user_id:
+            rel = n.follow.relationship(m)
+            if rel:
+                rel.weight = rel.weight + 1
+                rel.save()
+    except NodeProfile.DoesNotExist as e:
+        logger.warning(e)
 
 
 def decrease_affinity(instance):
-    n = NodeProfile.nodes.get(user_id=instance.author.id)
-    m = NodeProfile.nodes.get(user_id=instance.board_group.owner_id)
-    if n.user_id != m.user_id:
-        rel = n.follow.relationship(m)
-        if rel:
-            rel.weight = rel.weight - 1
-            rel.save()
+    try:
+        n = NodeProfile.nodes.get(user_id=instance.author.id)
+        m = NodeProfile.nodes.get(user_id=instance.board_group.owner_id)
+        if n.user_id != m.user_id:
+            rel = n.follow.relationship(m)
+            if rel:
+                rel.weight = rel.weight - 1
+                rel.save()
+    except NodeProfile.DoesNotExist as e:
+        logger.warning(e)
