@@ -13,7 +13,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile, File
+from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
@@ -25,9 +25,10 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from django.utils.text import slugify
+from django.db import IntegrityError, transaction
 from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 from .tasks import generate_thumbnails, generate_video_thumbnail
-from .validators import validate_file_extension, validate_video, validate_extension, image_exists, valid_image_mimetype, \
+from .validators import validate_file_extension, validate_video, image_exists, valid_image_mimetype, \
     valid_image_size
 
 # Required PIL classes may or may not be available from the root namespace
@@ -492,22 +493,26 @@ class Photo(ImageModel):
         """
         return "photos-%s" % self.pk
 
-    def save(self, created=True, *args, **kwargs):
-        if created:
-            self.slug = orig = slugify(str(self.owner_id) + self.title)
-            for x in itertools.count(1):
-                if not Photo.objects.filter(slug=self.slug).exists():
-                    break
-                self.slug = '%s-%d' % (orig, x)
-            self.get_remote_image()
+    def save(self, *args, **kwargs):
+        self.slug = orig = slugify(str(self.owner_id) + self.title)
 
-        super(Photo, self).save(*args, **kwargs)
+        for x in itertools.count(1):
+            if not Photo.objects.filter(slug=self.slug).exclude(id=self.id).exists():
+                try:
+                    self.get_remote_image()
+                    super(Photo, self).save(*args, **kwargs)
+                    break
+                except IntegrityError:
+                    if x > 50:
+                        raise Exception('Cant save image: {}'.format(self.title))
+            self.slug = '%s-%d' % (orig, x)
+
 
     def get_remote_image(self):
         """
         Obtiene la url introducida por el usuario
         """
-        
+
         if not self.url_image:
             return
 
@@ -677,9 +682,13 @@ class Video(models.Model):
             self.slug = orig = slugify(str(self.owner_id) + self.name)
             for x in itertools.count(1):
                 if not Video.objects.filter(slug=self.slug).exists():
-                    break
+                    try:
+                        super(Video, self).save(*args, **kwargs)
+                        break
+                    except IntegrityError:
+                        if x > 50:
+                            raise Exception('Cant save video: {}'.format(self.name))
                 self.slug = '%s-%d' % (orig, x)
-        super(Video, self).save(*args, **kwargs)
 
     def get_previous_in_gallery(self):
         """Find the neighbour of this photo in the supplied publications_gallery.
@@ -1066,7 +1075,7 @@ def generate_thumb(instance, created, **kwargs):
     Generamos thumbnail
     """
     if created:
-        generate_thumbnails.delay(instance=instance.pk)
+        transaction.on_commit(lambda: generate_thumbnails.delay(instance=instance.pk))
 
 
 def generate_video_thumb(instance, created, **kwargs):
@@ -1078,7 +1087,7 @@ def generate_video_thumb(instance, created, **kwargs):
     :return:
     """
     if created:
-        generate_video_thumbnail.delay(instance=instance.pk)
+        transaction.on_commit(lambda: generate_video_thumbnail.delay(instance=instance.pk))
 
 
 post_save.connect(add_default_site, sender=Photo)

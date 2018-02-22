@@ -45,6 +45,13 @@ RUN chgrp skyfolk /usr/bin/ffmpeg
 # set root owner to skyfolk group
 RUN chgrp -R skyfolk /root/
 
+RUN mkdir -p /var/www/skyfolk.net/run/static/static
+RUN mkdir -p /var/www/skyfolk.net/run/static/media
+RUN chgrp -R skyfolk /var/www
+
+RUN chmod -R g+w /var/www
+RUN chmod -R 777 /var/www
+
 RUN chmod 770 /usr/bin/ffmpeg
 RUN chmod -R 770 /root/
 

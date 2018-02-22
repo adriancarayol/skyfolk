@@ -48,9 +48,11 @@
                             </div>
                             <div class="col l12 m12 s12 tags-content">
                                 {% for tag in object.tags.all %}
+                                    {% if tag and tag.split %}
                                     <blockquote><a
                                             href="{% url 'photologue:collection-list' photo.owner.username tag.slug %}">{{ tag.name }}</a>
                                     </blockquote>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         </div>

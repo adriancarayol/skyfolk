@@ -4,4 +4,4 @@ sleep 10
 
 ls -lra /root/.imageio
 
-su -m skyfolk -c "python manage.py runworker -v2"
+python manage.py runworker -v2

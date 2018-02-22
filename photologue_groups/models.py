@@ -1,28 +1,22 @@
 import logging
-import mimetypes
 import os
-import tempfile
 import unicodedata
 import uuid
 import itertools
-from datetime import datetime
 from importlib import import_module
 from inspect import isclass
-from io import BytesIO
-from os.path import splitext
-from urllib.parse import urlparse
 from django.utils.text import slugify
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.db import IntegrityError, transaction
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile, File
+from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
-from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
-from django.utils.encoding import force_text, smart_str, filepath_to_uri
+from django.utils.encoding import force_text
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -31,7 +25,7 @@ from photologue.models import ImageModel
 from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 from user_groups.models import UserGroups
 from .tasks import generate_thumbnails, generate_video_thumbnail
-from .validators import validate_file_extension, validate_video, validate_extension, image_exists, valid_image_mimetype, \
+from .validators import validate_video, image_exists, valid_image_mimetype, \
     valid_image_size
 
 # Required PIL classes may or may not be available from the root namespace
@@ -52,8 +46,6 @@ except ImportError:
             'Photologue was unable to import the Python Imaging Library. Please confirm it`s installed and available '
             'on your current Python path.')
 
-from .utils.reflection import add_reflection
-from .utils.watermark import apply_watermark
 from .managers import PhotoQuerySet
 
 logger = logging.getLogger('photologue.models')
@@ -225,16 +217,18 @@ class PhotoGroup(ImageModel):
     def __str__(self):
         return self.title
 
-    def save(self, created=True, *args, **kwargs):
-        if created:
-            self.slug = orig = slugify(str(self.owner_id) + self.title)
-            for x in itertools.count(1):
-                if not PhotoGroup.objects.filter(slug=self.slug).exists():
+    def save(self, *args, **kwargs):
+        self.slug = orig = slugify(str(self.owner_id) + self.title)
+        for x in itertools.count(1):
+            if not PhotoGroup.objects.filter(slug=self.slug).exists():
+                try:
+                    self.get_remote_image()
+                    super(PhotoGroup, self).save(*args, **kwargs)
                     break
-                self.slug = '%s-%d' % (orig, x)
-            self.get_remote_image()
-
-        super(PhotoGroup, self).save(*args, **kwargs)
+                except IntegrityError:
+                    if x > 50:
+                        raise Exception('Cant save image: {}'.format(self.title))
+            self.slug = '%s-%d' % (orig, x)
 
     def get_remote_image(self):
         """
@@ -372,10 +366,17 @@ class VideoGroup(models.Model):
     def get_absolute_url(self):
         return reverse('photologue_groups:pl-video', args=[self.slug])
 
-    def save(self, created=True, *args, **kwargs):
-        if created:
-            self.slug = uuslug(str(self.owner_id) + self.name, instance=self)
-        super(VideoGroup, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.slug = orig = slugify(str(self.owner_id) + self.name)
+        for x in itertools.count(1):
+            if not VideoGroup.objects.filter(slug=self.slug).exists():
+                try:
+                    super(VideoGroup, self).save(*args, **kwargs)
+                    break
+                except IntegrityError:
+                    if x > 50:
+                        raise Exception('Cant save image: {}'.format(self.name))
+            self.slug = '%s-%d' % (orig, x)
 
     def get_previous_in_gallery(self):
         """Find the neighbour of this photo in the supplied publications_gallery.
@@ -413,7 +414,7 @@ def generate_thumb(instance, created, **kwargs):
     Generamos thumbnail
     """
     if created:
-        generate_thumbnails.delay(instance=instance.pk)
+        transaction.on_commit(lambda: generate_thumbnails.delay(instance=instance.pk))
 
 
 def generate_video_thumb(instance, created, **kwargs):
@@ -425,7 +426,7 @@ def generate_video_thumb(instance, created, **kwargs):
     :return:
     """
     if created:
-        generate_video_thumbnail.delay(instance=instance.pk)
+        transaction.on_commit(lambda: generate_video_thumbnail.delay(instance=instance.pk))
 
 
 # post_save.connect(add_default_site, sender=PhotoGroup)
