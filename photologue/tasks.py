@@ -73,7 +73,7 @@ def generate_thumbnails(instance):
         tempfile_io.seek(0, os.SEEK_END)
         image_file = InMemoryUploadedFile(tempfile_io, None, 'thumb.png', 'image/png', tempfile_io.tell(), None)
         photo_to_crop.thumbnail.save('thumb.png', image_file)
-        photo_to_crop.save(created=False)
+        photo_to_crop.save()
 
 
 @app.task(name='tasks.generate_video_thumbnail')

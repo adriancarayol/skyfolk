@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db.models import Count, Q, Case, When, Value, IntegerField, OuterRef, Subquery
+from django.db.models import Count, Q, Case, When, Value, IntegerField
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import QueryDict, HttpResponse
@@ -29,7 +29,6 @@ from publications_gallery.forms import PublicationPhotoForm, PublicationPhotoEdi
 from publications.forms import SharedPublicationForm
 from publications_gallery.models import PublicationPhoto, PublicationVideo
 from user_profile.models import RelationShipProfile, BLOCK, Profile
-from user_profile.node_models import NodeProfile
 from utils.forms import get_form_errors
 from .forms import UploadFormPhoto, EditFormPhoto, UploadZipForm, UploadFormVideo, EditFormVideo
 from .models import Photo, Video
@@ -132,7 +131,6 @@ class PhotoListView(AjaxListView):
 
     def get_context_data(self, **kwargs):
         context = super(PhotoListView, self).get_context_data(**kwargs)
-        user = self.request.user
         context['form'] = UploadFormPhoto()
         context['form_video'] = UploadFormVideo()
         context['form_zip'] = UploadZipForm(self.request.POST, self.request.FILES, request=self.request)
@@ -175,7 +173,6 @@ def upload_photo(request):
             if 'image' in request.FILES:
                 crop_image(obj, request)
             obj.is_public = not form.cleaned_data['is_public']
-
             obj.save()
             form.save_m2m()  # Para guardar los tags de la foto
             data = {

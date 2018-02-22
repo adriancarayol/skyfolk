@@ -13,7 +13,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
-from django.core.files.base import ContentFile, File
+from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
@@ -27,7 +27,7 @@ from taggit.managers import TaggableManager
 from django.utils.text import slugify
 from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 from .tasks import generate_thumbnails, generate_video_thumbnail
-from .validators import validate_file_extension, validate_video, validate_extension, image_exists, valid_image_mimetype, \
+from .validators import validate_file_extension, validate_video, image_exists, valid_image_mimetype, \
     valid_image_size
 
 # Required PIL classes may or may not be available from the root namespace
@@ -492,14 +492,13 @@ class Photo(ImageModel):
         """
         return "photos-%s" % self.pk
 
-    def save(self, created=True, *args, **kwargs):
-        if created:
-            self.slug = orig = slugify(str(self.owner_id) + self.title)
-            for x in itertools.count(1):
-                if not Photo.objects.filter(slug=self.slug).exists():
-                    break
-                self.slug = '%s-%d' % (orig, x)
-            self.get_remote_image()
+    def save(self, *args, **kwargs):
+        self.slug = orig = slugify(str(self.owner_id) + self.title)
+        for x in itertools.count(1):
+            if not Photo.objects.filter(slug=self.slug).exclude(id=self.id).exists():
+                break
+            self.slug = '%s-%d' % (orig, x)
+        self.get_remote_image()
 
         super(Photo, self).save(*args, **kwargs)
 
@@ -507,7 +506,7 @@ class Photo(ImageModel):
         """
         Obtiene la url introducida por el usuario
         """
-        
+
         if not self.url_image:
             return
 
