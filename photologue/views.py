@@ -63,7 +63,6 @@ def collection_list(request, username,
     form = UploadFormPhoto()
     form_zip = UploadZipForm(request.POST, request.FILES, request=request)
 
-    print('>>>>>>> TAGNAME {}'.format(tag_slug))
     if user.username == username:
         photos = Photo.objects.filter(owner__username=username,
                                       tags__slug=tag_slug)

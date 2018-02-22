@@ -1,13 +1,11 @@
 # encoding:utf-8
 import itertools
-
+from django.db import IntegrityError
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.text import slugify
 from taggit.managers import TaggableManager
-
-from notifications.models import Notification
 
 REQUEST_FOLLOWING = 1
 REQUEST_FOLLOWER = 2
@@ -95,9 +93,13 @@ class GroupTheme(models.Model):
         self.slug = orig = slugify(str(self.owner_id) + self.title)
         for x in itertools.count(1):
             if not GroupTheme.objects.filter(slug=self.slug).exists():
-                break
+                try:
+                    super(GroupTheme, self).save(*args, **kwargs)
+                    break
+                except IntegrityError:
+                    if x > 50:
+                        raise Exception('Cant save group: {}'.format(self.title))
             self.slug = '%s-%d' % (orig, x)
-        super(GroupTheme, self).save(*args, **kwargs)
 
     @property
     def theme_channel(self):
