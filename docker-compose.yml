@@ -138,12 +138,6 @@ services:
     extra_hosts:
         - "cluster:172.17.0.1"
 
-volumes:
-  maildata:
-    driver: local
-  mailstate:
-    driver: local
-
 networks:
   webnet:
     driver: bridge 

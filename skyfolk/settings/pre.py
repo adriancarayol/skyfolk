@@ -16,8 +16,6 @@ def get_env_variable(var_name):
 
 SECRET_KEY = get_env_variable('SECRET_KEY')
 
-ALLOWED_HOSTS += ['0.0.0.0', ]
-
 DEBUG = True
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False

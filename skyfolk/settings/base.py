@@ -158,7 +158,7 @@ EXTERNAL_LOGOUT_URL = None
 
 # CONFIG E-MAIL
 #EMAIL_HOST = 'mail'
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
 #EMAIL_PORT = 587
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
