@@ -75,5 +75,12 @@ nginx también está dockerizado, el archivo de configuración que coge está en
 
 Para que funcione el servidor de correo, debemos modificar el fichero /etc/postfix/main.cf:
 ```
-
+mynetworks = 172.0.0.0/8, 172.22.0.0/16
+smtpd_recipient_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 ```
+Reiniciamos el servidor postfix con:
+```
+systemctl restart postfix
+```
+Y listo.
