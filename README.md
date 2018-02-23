@@ -54,3 +54,26 @@ Para lanzar celery debemos lanzar los siguientes comandos:
 celery -A skyfolk worker -l info
 celery -A skyfolk beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
+### Lanzar con Docker
+Antes de nada, debemos desactivar los servicios de rabbitmq-server, redis-server y elasticsearch con el comando:
+```
+systemctl stop rabbitmq-server
+systemctl stop redis-server
+systemctl stop elasticsearch
+```
+Si estamos en develop, los comandos son los siguientes:
+```
+docker-compose -f docker-compose.yml build
+docker-compose -f docker-compose.yml up -d
+```
+Si estamos en pre, los comandos son los siguientes:
+```
+docker-compose -f docker-compose-pre.yml build
+docker-compose -f docker-compose-pre.yml up -d
+```
+nginx también está dockerizado, el archivo de configuración que coge está en skyfolk/conf/skyfolk.conf, que hay que configurar convenientemente para que funcione, por defecto el host es localhost, para pre/master habrá que cambiar a skyfolk.net o pre.skyfolk.net
+
+Para que funcione el servidor de correo, debemos modificar el fichero /etc/postfix/main.cf:
+```
+
+```
