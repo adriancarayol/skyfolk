@@ -908,7 +908,7 @@ class FollowersListView(ListView):
         followers_list = RelationShipProfile.objects.filter(
             to_profile__user__username=self.kwargs.get('username', None),
             type=FOLLOWING).values('from_profile_id')
-        return User.objects.filter(profile__id=followers_list).select_related(
+        return User.objects.filter(profile__in=followers_list).select_related(
             'profile')
 
     def get_context_data(self, **kwargs):
