@@ -134,7 +134,7 @@ def profile_view_ajax(request, user_profile, node_profile=None):
     elif qs == 'following':
         page = int(request.GET.get('page', 1))
         template = 'account/follow_entries.html'
-        profile = Profile.objects.values_list('id', flat=True).get(user=request.user)
+        profile = Profile.objects.values_list('id', flat=True).get(user=user_profile)
 
         following_list = RelationShipProfile.objects.filter(
             from_profile=profile,
@@ -908,7 +908,7 @@ class FollowersListView(ListView):
         followers_list = RelationShipProfile.objects.filter(
             to_profile__user__username=self.kwargs.get('username', None),
             type=FOLLOWING).values('from_profile_id')
-        return User.objects.filter(profile__id=followers_list).select_related(
+        return User.objects.filter(profile__in=followers_list).select_related(
             'profile')
 
     def get_context_data(self, **kwargs):
