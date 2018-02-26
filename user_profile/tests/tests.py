@@ -10,6 +10,7 @@ from user_profile.models import RelationShipProfile, FOLLOWING, BLOCK, \
 from publications.models import Publication
 from django.core.management import call_command
 
+
 class UserTestClass(TestCase):
     def setUp(self):
         clear_neo4j_database(db)
@@ -91,6 +92,7 @@ class RelationShipTestClass(TestCase):
     def tearDown(self):
         clear_neo4j_database(db)
 
+
 class UserContentTest(TestCase):
 
     @classmethod
@@ -98,10 +100,10 @@ class UserContentTest(TestCase):
         clear_neo4j_database(db)
         call_command('badgify_sync', 'badges', interactive=False)
         new_user = User.objects.create_user(username="foo", password="foo")
-        publications = [Publication.objects.create(author=new_user, content="FOO", board_owner=new_user) for x in range(1, 27)]
+        publications = [Publication.objects.create(author=new_user, content="FOO", board_owner=new_user) for x in
+                        range(1, 27)]
         for p in publications:
             p.user_give_me_like.add(new_user)
-
 
     def test_get_content(self):
         logged_in = self.client.login(username="foo", password="foo")
@@ -128,7 +130,6 @@ class UserContentTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['mixed']), 1)
 
-
     def tearDown(self):
         clear_neo4j_database(db)
 
@@ -144,7 +145,6 @@ class UserLikeTest(TestCase):
         self.assertIsNotNone(user_2.profile)
         self.assertIsNotNone(NodeProfile.nodes.get(title='foo1'))
         self.assertIsNotNone(NodeProfile.nodes.get(title='foo2'))
-
 
     def test_like_user(self):
         profile_1 = Profile.objects.get(user__username='foo1')

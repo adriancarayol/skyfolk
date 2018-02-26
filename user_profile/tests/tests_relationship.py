@@ -1,0 +1,66 @@
+from django.test import TestCase
+from neomodel import db, clear_neo4j_database
+from ..models import RelationShipProfile
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+
+
+class FollowUserTest(TestCase):
+    def setUp(self):
+        clear_neo4j_database(db)
+        User.objects.create_user(username='user1', password='password')
+        User.objects.create_user(username='user2', password='password')
+
+    def test_follow_user(self):
+        user_1 = User.objects.get(username='user1')
+        user_2 = User.objects.get(username='user2')
+
+        self.assertIsNotNone(user_1)
+        self.assertIsNotNone(user_2)
+        self.assertIsNotNone(user_1.profile)
+        self.assertIsNotNone(user_2.profile)
+
+        self.client.login(username='user1', password='password')
+        request = self.client.post(reverse('user_profile:request_friend'), {'slug': user_2.id})
+        self.assertEqual(request.status_code, 200)
+        relationship = RelationShipProfile.objects.get(to_profile=user_2.profile, from_profile=user_1.profile)
+        self.assertIsNotNone(relationship)
+        self.assertEqual(relationship.to_profile, user_2.profile)
+        self.assertEqual(relationship.from_profile, user_1.profile)
+
+    def test_follow_user_without_slug(self):
+        user_1 = User.objects.get(username='user1')
+        user_2 = User.objects.get(username='user2')
+
+        self.assertIsNotNone(user_1)
+        self.assertIsNotNone(user_2)
+        self.assertIsNotNone(user_1.profile)
+        self.assertIsNotNone(user_2.profile)
+
+        self.client.login(username='user1', password='password')
+        request = self.client.post(reverse('user_profile:request_friend'))
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
+                                                            from_profile=user_1.profile).count(), 0)
+
+    def test_follow_user_with_wrong_slug(self):
+        user_1 = User.objects.get(username='user1')
+        user_2 = User.objects.get(username='user2')
+
+        self.assertIsNotNone(user_1)
+        self.assertIsNotNone(user_2)
+        self.assertIsNotNone(user_1.profile)
+        self.assertIsNotNone(user_2.profile)
+
+        self.client.login(username='user1', password='password')
+        self.assertRaises(ValueError, self.client.post, path=reverse('user_profile:request_friend'),
+                          data={'slug': '1123fasf'})
+        self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
+                                                            from_profile=user_1.profile).count(), 0)
+
+    def test_remove_follow_user(self):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        clear_neo4j_database(db)
