@@ -1,665 +1,790 @@
-2018-02-26 19:01:33,547 ERROR exception 6640 Internal Server Error: /request_friend/
+2018-02-22 17:42:22,188 ERROR exception 9 Internal Server Error: /accounts/signup/
 Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 210, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 79, in dispatch
+    **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 188, in dispatch
+    **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 102, in post
+    response = self.form_valid(form)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 231, in form_valid
+    self.get_success_url())
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/utils.py", line 188, in complete_signup
+    signal_kwargs=signal_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/utils.py", line 148, in perform_login
+    send_email_confirmation(request, user, signup=signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/utils.py", line 319, in send_email_confirmation
+    signup=signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
+    confirmation.send(request, signup=signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
+    get_adapter(request).send_confirmation_mail(request, self, signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
+    ctx)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
+    msg.send()
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
+    return self.get_connection(fail_silently).send_messages([self])
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 111, in send_messages
+    sent = self._send(message)
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 127, in _send
+    self.connection.sendmail(from_email, recipients, message.as_bytes(linesep='\r\n'))
+  File "/usr/local/lib/python3.6/smtplib.py", line 881, in sendmail
+    raise SMTPRecipientsRefused(senderrs)
+smtplib.SMTPRecipientsRefused: {'holi@es.es': (454, b'4.7.1 <holi@es.es>: Relay access denied')}
+2018-02-22 17:44:32,377 ERROR exception 9 Internal Server Error: /accounts/signup/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/debug.py", line 76, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 210, in dispatch
+    return super(SignupView, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 79, in dispatch
+    **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 188, in dispatch
+    **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 102, in post
+    response = self.form_valid(form)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/views.py", line 231, in form_valid
+    self.get_success_url())
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/utils.py", line 188, in complete_signup
+    signal_kwargs=signal_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/utils.py", line 148, in perform_login
+    send_email_confirmation(request, user, signup=signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/utils.py", line 319, in send_email_confirmation
+    signup=signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 60, in send_confirmation
+    confirmation.send(request, signup=signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/models.py", line 166, in send
+    get_adapter(request).send_confirmation_mail(request, self, signup)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 447, in send_confirmation_mail
+    ctx)
+  File "/usr/local/lib/python3.6/site-packages/allauth/account/adapter.py", line 140, in send_mail
+    msg.send()
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/message.py", line 348, in send
+    return self.get_connection(fail_silently).send_messages([self])
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 111, in send_messages
+    sent = self._send(message)
+  File "/usr/local/lib/python3.6/site-packages/django/core/mail/backends/smtp.py", line 127, in _send
+    self.connection.sendmail(from_email, recipients, message.as_bytes(linesep='\r\n'))
+  File "/usr/local/lib/python3.6/smtplib.py", line 881, in sendmail
+    raise SMTPRecipientsRefused(senderrs)
+smtplib.SMTPRecipientsRefused: {'asdfasfa@es.es': (454, b'4.7.1 <asdfasfa@es.es>: Relay access denied')}
+2018-02-22 19:35:25,361 ERROR exception 8 Internal Server Error: /groups/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+psycopg2.ProgrammingError: relation "user_groups_usergroups_users" does not exist
+LINE 1: ...__count" FROM "user_groups_usergroups" INNER JOIN "user_grou...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 68, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/code/user_groups/views.py", line 125, in dispatch
+    return super(UserGroupList, self).dispatch(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/base.py", line 88, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/list.py", line 175, in get
+    context = self.get_context_data()
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/list.py", line 135, in get_context_data
+    paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
+  File "/usr/local/lib/python3.6/site-packages/django/views/generic/list.py", line 79, in paginate_queryset
+    page = paginator.page(page_number)
+  File "/usr/local/lib/python3.6/site-packages/django/core/paginator.py", line 57, in page
+    number = self.validate_number(number)
+  File "/usr/local/lib/python3.6/site-packages/django/core/paginator.py", line 46, in validate_number
+    if number > self.num_pages:
+  File "/usr/local/lib/python3.6/site-packages/django/utils/functional.py", line 35, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/usr/local/lib/python3.6/site-packages/django/core/paginator.py", line 91, in num_pages
+    if self.count == 0 and not self.allow_empty_first_page:
+  File "/usr/local/lib/python3.6/site-packages/django/utils/functional.py", line 35, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/usr/local/lib/python3.6/site-packages/django/core/paginator.py", line 79, in count
+    return self.object_list.count()
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/query.py", line 364, in count
+    return self.query.get_count(using=self.db)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/sql/query.py", line 499, in get_count
+    number = obj.get_aggregation(using, ['__count'])['__count']
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/sql/query.py", line 480, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 894, in execute_sql
+    raise original_exception
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/sql/compiler.py", line 884, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/site-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python3.6/site-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python3.6/site-packages/django/utils/six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/site-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: relation "user_groups_usergroups_users" does not exist
+LINE 1: ...__count" FROM "user_groups_usergroups" INNER JOIN "user_grou...
+                                                             ^
+
+2018-02-22 21:00:46,688 ERROR exception 13 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/photologue/views.py", line 171, in upload_photo
+    obj = form.save(commit=False)
+  File "/code/photologue/forms.py", line 210, in save
+    instance.save()
+  File "/code/photologue/models.py", line 499, in save
+    super(Photo, self).save(*args, **kwargs)
+  File "/code/photologue/models.py", line 430, in save
+    super(ImageModel, self).save(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 848, in save_base
+    update_fields=update_fields, raw=raw, using=using,
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/haystack/signals.py", line 52, in handle_save
+    index.update_object(instance, using=using)
+  File "/usr/local/lib/python3.6/site-packages/haystack/indexes.py", line 284, in update_object
+    backend.update(self, [instance])
+  File "/usr/local/lib/python3.6/site-packages/haystack/backends/elasticsearch_backend.py", line 168, in update
+    prepped_data = index.full_prepare(obj)
+  File "/usr/local/lib/python3.6/site-packages/haystack/indexes.py", line 208, in full_prepare
+    self.prepared_data = self.prepare(obj)
+  File "/usr/local/lib/python3.6/site-packages/haystack/indexes.py", line 199, in prepare
+    self.prepared_data[field.index_fieldname] = field.prepare(obj)
+  File "/usr/local/lib/python3.6/site-packages/haystack/fields.py", line 205, in prepare
+    return self.convert(super(CharField, self).prepare(obj))
+  File "/usr/local/lib/python3.6/site-packages/haystack/fields.py", line 88, in prepare
+    values = self.resolve_attributes_lookup(current_objects, attrs)
+  File "/usr/local/lib/python3.6/site-packages/haystack/fields.py", line 127, in resolve_attributes_lookup
+    "a default or null value." % (repr(current_object), self.model_attr)
+haystack.exceptions.SearchFieldError: The model 'None' combined with model_attr 'owner' returned None, but doesn't allow a default or null value.
+2018-02-22 21:04:53,826 ERROR exception 8 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/photologue/views.py", line 171, in upload_photo
+    obj = form.save(commit=False)
+  File "/code/photologue/forms.py", line 210, in save
+    instance.save()
+  File "/code/photologue/models.py", line 499, in save
+    super(Photo, self).save(*args, **kwargs)
+  File "/code/photologue/models.py", line 430, in save
+    super(ImageModel, self).save(*args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 808, in save
+    force_update=force_update, update_fields=update_fields)
+  File "/usr/local/lib/python3.6/site-packages/django/db/models/base.py", line 848, in save_base
+    update_fields=update_fields, raw=raw, using=using,
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in send
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/django/dispatch/dispatcher.py", line 193, in <listcomp>
+    for receiver in self._live_receivers(sender)
+  File "/usr/local/lib/python3.6/site-packages/haystack/signals.py", line 52, in handle_save
+    index.update_object(instance, using=using)
+  File "/usr/local/lib/python3.6/site-packages/haystack/indexes.py", line 284, in update_object
+    backend.update(self, [instance])
+  File "/usr/local/lib/python3.6/site-packages/haystack/backends/elasticsearch_backend.py", line 168, in update
+    prepped_data = index.full_prepare(obj)
+  File "/usr/local/lib/python3.6/site-packages/haystack/indexes.py", line 208, in full_prepare
+    self.prepared_data = self.prepare(obj)
+  File "/usr/local/lib/python3.6/site-packages/haystack/indexes.py", line 199, in prepare
+    self.prepared_data[field.index_fieldname] = field.prepare(obj)
+  File "/usr/local/lib/python3.6/site-packages/haystack/fields.py", line 205, in prepare
+    return self.convert(super(CharField, self).prepare(obj))
+  File "/usr/local/lib/python3.6/site-packages/haystack/fields.py", line 88, in prepare
+    values = self.resolve_attributes_lookup(current_objects, attrs)
+  File "/usr/local/lib/python3.6/site-packages/haystack/fields.py", line 127, in resolve_attributes_lookup
+    "a default or null value." % (repr(current_object), self.model_attr)
+haystack.exceptions.SearchFieldError: The model 'None' combined with model_attr 'owner' returned None, but doesn't allow a default or null value.
+2018-02-22 21:17:22,666 ERROR exception 10 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/photologue/views.py", line 174, in upload_photo
+    crop_image(obj, request)
+  File "/code/photologue/views.py", line 263, in crop_image
+    raise ValueError("Backimage > 5MB!")
+ValueError: Backimage > 5MB!
+2018-02-22 21:17:38,613 ERROR exception 10 Internal Server Error: /submit_photo/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/views/decorators/http.py", line 40, in inner
+    return func(request, *args, **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/code/photologue/views.py", line 183, in upload_photo
+    context={'photo': obj})
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader.py", line 68, in render_to_string
+    return template.render(context, request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/usr/local/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/usr/local/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('lunasalsol', '')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-02-22 21:21:07,538 ERROR exception 10 Internal Server Error: /multimedia/lunasalsol/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/usr/local/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/usr/local/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with keyword arguments '{'username': 'lunasalsol', 'tag_slug': ''}' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-02-22 21:21:29,242 ERROR exception 10 Internal Server Error: /multimedia/lunasalsol/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/usr/local/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/usr/local/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with keyword arguments '{'username': 'lunasalsol', 'tag_slug': ''}' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-02-22 21:21:33,321 ERROR exception 10 Internal Server Error: /multimedia/lunasalsol/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 216, in render
+    return template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 209, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 322, in render
+    return nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/usr/local/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/usr/local/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with keyword arguments '{'username': 'lunasalsol', 'tag_slug': ''}' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-02-22 21:28:58,617 ERROR exception 8 Internal Server Error: /photo/2okkkkiiiii-1/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/usr/local/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/usr/local/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('lunasalsol', '')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-02-22 21:37:07,102 ERROR exception 8 Internal Server Error: /photo/2okkkkiiiii-1/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 217, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/usr/local/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/usr/local/lib/python3.6/site-packages/django/core/handlers/base.py", line 215, in _get_response
+    response = response.render()
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 107, in render
+    self.content = self.rendered_content
+  File "/usr/local/lib/python3.6/site-packages/django/template/response.py", line 84, in rendered_content
+    content = template.render(context, self._request)
+  File "/usr/local/lib/python3.6/site-packages/django/template/backends/django.py", line 66, in render
+    return self.template.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 207, in render
+    return self._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 177, in render
+    return compiled_parent._render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/test/utils.py", line 107, in instrumented_test_render
+    return self.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/loader_tags.py", line 72, in render
+    result = block.nodelist.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 990, in render
+    bit = node.render_annotated(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 216, in render
+    nodelist.append(node.render_annotated(context))
+  File "/usr/local/lib/python3.6/site-packages/django/template/base.py", line 957, in render_annotated
+    return self.render(context)
+  File "/usr/local/lib/python3.6/site-packages/django/template/defaulttags.py", line 458, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/usr/local/lib/python3.6/site-packages/django/urls/base.py", line 91, in reverse
+    return force_text(iri_to_uri(resolver._reverse_with_prefix(view, prefix, *args, **kwargs)))
+  File "/usr/local/lib/python3.6/site-packages/django/urls/resolvers.py", line 497, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'collection-list' with arguments '('lunasalsol', '')' not found. 1 pattern(s) tried: ['multimedia/collection/by(?P<username>[\\w-]+)/(?P<tag_slug>[\\w-]+)/$']
+2018-02-26 23:09:52,934 ERROR exception 9509 Internal Server Error: /request_friend/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
     m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
     return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
     clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
     return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
     clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
     clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
     allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
     condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
     self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
     self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
     return int(value)
 ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:01:35,486 ERROR exception 6640 Internal Server Error: /remove_relationship/
+2018-02-26 23:09:54,550 ERROR exception 9509 Internal Server Error: /remove_relationship/
 Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
     profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
     return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
     clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
     return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
     clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
     clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
     allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
     condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
     self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
     self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
     return int(value)
 ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:02:45,315 ERROR exception 6804 Internal Server Error: /request_friend/
+2018-02-26 23:19:51,013 ERROR exception 12437 Internal Server Error: /remove_relationship/
 Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
     response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
     response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
     response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:02:47,274 ERROR exception 6804 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
     return view_func(request, *args, **kwargs)
   File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
     profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
     return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
     clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
     return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
     clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
     clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
     allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
     condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
     self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
     self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:04:52,225 ERROR exception 6905 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:04:54,210 ERROR exception 6905 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:05:20,717 ERROR exception 6986 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:05:22,567 ERROR exception 6986 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:05:55,058 ERROR exception 7060 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:05:56,962 ERROR exception 7060 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:09:10,285 ERROR exception 7400 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:09:12,314 ERROR exception 7400 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:10:18,963 ERROR exception 7542 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:10:21,463 ERROR exception 7542 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:10:52,451 ERROR exception 7628 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:10:54,212 ERROR exception 7628 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:11:38,014 ERROR exception 7735 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:11:39,690 ERROR exception 7735 Internal Server Error: /remove_relationship/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 817, in remove_relationship
-    profile_user = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
-    return int(value)
-ValueError: invalid literal for int() with base 10: '1123fasf'
-2018-02-26 19:12:43,994 ERROR exception 7878 Internal Server Error: /request_friend/
-Traceback (most recent call last):
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
-    response = get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
-    response = self._get_response(request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
-    response = self.process_exception_by_middleware(e, request)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapped_view
-    return view_func(request, *args, **kwargs)
-  File "/home/adrian/skyfolk/user_profile/views.py", line 675, in request_friend
-    m = Profile.objects.get(user_id=slug)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/manager.py", line 85, in manager_method
-    return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 371, in get
-    clone = self.filter(*args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 784, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/query.py", line 802, in _filter_or_exclude
-    clone.query.add_q(Q(*args, **kwargs))
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1250, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1276, in _add_q
-    allow_joins=allow_joins, split_subq=split_subq,
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/sql/query.py", line 1206, in build_filter
-    condition = lookup_class(lhs, value)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/lookups.py", line 24, in __init__
-    self.rhs = self.get_prep_lookup()
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/related_lookups.py", line 112, in get_prep_lookup
-    self.rhs = target_field.get_prep_value(self.rhs)
-  File "/home/adrian/.virtualenvs/skyfolk-ekQwuX29/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 966, in get_prep_value
     return int(value)
 ValueError: invalid literal for int() with base 10: '1123fasf'
