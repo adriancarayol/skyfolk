@@ -1,9 +1,12 @@
+from ..views import remove_relationship
 from django.test import TestCase
 from neomodel import db, clear_neo4j_database
 from ..models import RelationShipProfile
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from ..node_models import NodeProfile
+from unittest import mock
+from django.test.client import RequestFactory
 
 
 class FollowUserTest(TestCase):
@@ -109,6 +112,23 @@ class FollowUserTest(TestCase):
         self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
                                                             from_profile=user_1.profile).count(), 1)
         self.assertTrue(node_1.follow.is_connected(node_2))
+
+    def test_remove_follow_user_exception(self):
+        self.test_follow_user()
+        user_1 = User.objects.get(username='user1')
+        user_2 = User.objects.get(username='user2')
+        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
+        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+
+        with mock.patch.object(RelationShipProfile.objects, 'filter') as mock_method:
+            mock_method.side_effect = Exception("test error")
+            r = RequestFactory().post(reverse('user_profile:remove_relationship'), {'slug': user_2.id})
+            r.user = user_1
+            remove_relationship(r)
+            self.assertTrue(node_1.follow.is_connected(node_2))
+
+        self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
+                                                            from_profile=user_1.profile).count(), 1)
 
     @classmethod
     def tearDownClass(cls):
