@@ -1,5 +1,5 @@
 from haystack import indexes
-
+from django.utils import timezone
 from .models import Profile
 
 
@@ -17,4 +17,4 @@ class ProfileIndex(indexes.SearchIndex, indexes.Indexable):
         return Profile
 
     def index_queryset(self, using=None):
-        return self.get_model().objects.all()
+        return self.get_model().objects.filter(user__date_joined__lte=timezone.now())
