@@ -454,9 +454,3 @@ try:
 except ImportError:
     raise ImportError("you should create a th_settings.py with "
                       "everything related to TriggerHappy, see th_settings_sample.py")
-
-# local settings management
-try:
-    from .local_settings import *
-except ImportError:
-    pass

@@ -1,5 +1,5 @@
 from haystack import indexes
-
+from django.utils import timezone
 from avatar.templatetags.avatar_tags import avatar_url
 from .models import Photo, Video
 
@@ -29,6 +29,9 @@ class PhotosIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_avatar(self, obj):
         return avatar_url(obj.owner)
 
+    def index_queryset(self, using=None):
+        return self.get_model().objects.filter(date_added__lte=timezone.now())
+
 
 class VideoIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(
@@ -53,3 +56,6 @@ class VideoIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_avatar(self, obj):
         return avatar_url(obj.owner)
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.filter(date_added__lte=timezone.now())

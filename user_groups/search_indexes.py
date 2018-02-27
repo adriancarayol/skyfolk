@@ -1,5 +1,5 @@
 from haystack import indexes
-
+from django.utils import timezone
 from .models import UserGroups
 
 
@@ -21,3 +21,6 @@ class GroupIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_tags(self, obj):
         return [tag.name for tag in obj.tags.all()]
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.filter(created__lte=timezone.now())

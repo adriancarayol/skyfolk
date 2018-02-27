@@ -59,7 +59,7 @@ Template para las busquedas
                     <li class="list-vertical" {% if s == 'groups' %}
                         style="border-bottom: 3px solid #1e88e5;" {% endif %}><a
                             href="{% url 'user_profile:category-search' 'groups' %}?q={{ q }}">Grupos</a></li>
-                {% comment %}
+                    {% comment %}
                     <li class="list-vertical">Más opciones<i class="material-icons">arrow_drop_down</i>
                         <div id="dropdown-search" class="dropdown-options">
                             <ul class="dropdown-ul">
@@ -126,7 +126,8 @@ Template para las busquedas
                                     <i class="material-icons like-him">group</i>
                                     <div class="bg-user">
                                         <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
-                                             class="profile-user-bg"><img src="{% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
+                                             class="profile-user-bg"><img src="
+                                                {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
                                                                           alt="Imagen de {{ item.name }}"
                                                                           title="Imagen de {{ item.name }}"/></div>
                                     </div>
@@ -152,7 +153,7 @@ Template para las busquedas
                                         <span><a href="/publication/{{ item.object.id }}" title="Ver publicación"><i
                                                 class="material-icons md-18 right"
                                                 aria-hidden="true">open_in_new</i></a></span>
-                                        <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
+                                        <p><i class="pub-date">{{ item.object.created|naturaltime }}</i></p>
                                     </div>
                                     <div class="row" style="word-wrap: break-word;">
                                         <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
@@ -180,7 +181,8 @@ Template para las busquedas
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/
+                                        {{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
                                          alt="{{ item.title }}" title="{{ item.title }}"
                                          onclick="location.href='/photo/{{ item.slug }}'">
                                 </div>
@@ -190,9 +192,10 @@ Template para las busquedas
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-photo" slug=item.slug %}" class="photo-title truncate">{{ item.title }}</a>
+                                        <a href="{% url "photologue:pl-photo" slug=item.slug %}"
+                                           class="photo-title truncate">{{ item.title }}</a>
                                         <i class="truncate photo-date"><i
-                                                class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}
+                                                class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
                                         </i>
                                     </div>
                                 </div>
@@ -215,11 +218,11 @@ Template para las busquedas
                                         <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
                                              alt="{{ item.name }}" title="{{ item.name }}"
                                              onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
-                                        {% else %}
-                                            <video controls style="width: 100%; height: 100%; outline: none;">
-                                                <source src="/media/{{ item.video }}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
+                                    {% else %}
+                                        <video controls style="width: 100%; height: 100%; outline: none;">
+                                            <source src="/media/{{ item.video }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
                                     {% endif %}
                                 </div>
                                 <div class="col s12 legend-content">
@@ -228,10 +231,11 @@ Template para las busquedas
                                     </div>
                                     <div class="col l8 m8 s8 legend-user-data">
                                         <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-video" slug=item.slug %}" class="photo-title truncate">
-                                        {{ item.name }}</a>
+                                        <a href="{% url "photologue:pl-video" slug=item.slug %}"
+                                           class="photo-title truncate">
+                                            {{ item.name }}</a>
                                         <i class="truncate photo-date"><i
-                                                class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}
+                                                class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
                                         </i>
                                     </div>
                                 </div>
@@ -271,32 +275,33 @@ Template para las busquedas
         {% endif %}
         {% if s == "groups" %}
             <div class="grid row">
-            {% for item in object_list %}
-            <div class="grid-item infinite-item">
-                <div class="personal-card">
-                    <div class="header">
-                        {% if item.object.back_image %}
-                            <img class="back-profile-user" src="{{ item.object.back_image.url }}">
-                        {% else %}
-                            <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
-                        {% endif %}
-                        <i class="material-icons like-him">group</i>
-                        <div class="bg-user">
-                            <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
-                                 class="profile-user-bg"><img src="{% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
-                                                              alt="Imagen de {{ item.name }}"
-                                                              title="Imagen de {{ item.name }}"/></div>
+                {% for item in object_list %}
+                    <div class="grid-item infinite-item">
+                        <div class="personal-card">
+                            <div class="header">
+                                {% if item.object.back_image %}
+                                    <img class="back-profile-user" src="{{ item.object.back_image.url }}">
+                                {% else %}
+                                    <img class="back-profile-user" src="{% static "img/nuevo_back.png" %}">
+                                {% endif %}
+                                <i class="material-icons like-him">group</i>
+                                <div class="bg-user">
+                                    <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
+                                         class="profile-user-bg"><img src="
+                                            {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
+                                                                      alt="Imagen de {{ item.name }}"
+                                                                      title="Imagen de {{ item.name }}"/></div>
+                                </div>
+                            </div>
+                            <div class="col s12">
+                                <div style="cursor: default" class="name-friend">
+                                    <a href="{% url "user_groups:group-profile" groupname=item.slug %}">{{ item.name }}</a>
+                                    <p class="truncate">{{ item.description|truncatechars:"100" }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col s12">
-                        <div style="cursor: default" class="name-friend">
-                            <a href="{% url "user_groups:group-profile" groupname=item.slug %}">{{ item.name }}</a>
-                            <p class="truncate">{{ item.description|truncatechars:"100" }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
             </div>
         {% endif %}
         {% if s == 'publications' %}
@@ -313,7 +318,7 @@ Template para las busquedas
                                             href="/profile/{{ item.author }}">@{{ item.author }}</a><i> {{ item.object.author.first_name }} {{ item.object.author.last_name }}</i></span>
                                     <span><a href="/publication/{{ item.object.id }}" title="Ver publicación"><i
                                             class="material-icons md-18 right">open_in_new</i></a></span>
-                                    <p><i class="pub-date">{{ item.pub_date|naturaltime }}</i></p>
+                                    <p><i class="pub-date">{{ item.object.created|naturaltime }}</i></p>
                                 </div>
                                 <div class="row" style="word-wrap: break-word;">
                                     <p>{{ item.content|truncatechars_html:"150"|safe }}</p>
@@ -346,7 +351,8 @@ Template para las busquedas
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
+                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/
+                                    {{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
                                      alt="{{ item.title }}" title="{{ item.title }}"
                                      onclick="location.href='/photo/{{ item.slug }}'">
                             </div>
@@ -358,7 +364,8 @@ Template para las busquedas
                                     <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
                                     <i class="photo-title truncate">{{ item.title }}</i>
                                     <i class="truncate photo-date"><i
-                                            class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}</i>
+                                            class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
+                                    </i>
                                 </div>
                             </div>
                         </div>
@@ -370,43 +377,44 @@ Template para las busquedas
             <div class="grid row">
                 {% for item in object_list %}
                     <div class="grid-item image-div tooltipped infinite-item" data-position="bottom" data-delay="50"
-                             data-tooltip="{{ item.description|truncatechars:"150" }}">
-                            <div class="container-image">
-                                <div class="principal-content">
-                                    {% if item.tags %}
-                                        <div class="tags-content">
-                                            {% for tag in item.tags %}
-                                                <blockquote
-                                                        onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                    {% if item.thumbnail %}
-                                        <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
-                                             alt="{{ item.name }}" title="{{ item.name }}"
-                                             onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
-                                        {% else %}
-                                            <video controls style="width: 100%; height: 100%; outline: none;">
-                                                <source src="/media/{{ item.video }}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
-                                    {% endif %}
+                         data-tooltip="{{ item.description|truncatechars:"150" }}">
+                        <div class="container-image">
+                            <div class="principal-content">
+                                {% if item.tags %}
+                                    <div class="tags-content">
+                                        {% for tag in item.tags %}
+                                            <blockquote
+                                                    onclick="location.href='{% url 'photologue:collection-list' item.author tag %}'">{{ tag }}</blockquote>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if item.thumbnail %}
+                                    <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
+                                         alt="{{ item.name }}" title="{{ item.name }}"
+                                         onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                {% else %}
+                                    <video controls style="width: 100%; height: 100%; outline: none;">
+                                        <source src="/media/{{ item.video }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                {% endif %}
+                            </div>
+                            <div class="col s12 legend-content">
+                                <div class="legend-user-image">
+                                    <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
                                 </div>
-                                <div class="col s12 legend-content">
-                                    <div class="legend-user-image">
-                                        <img src="{{ item.avatar }}" title="{{ item.author }}" alt="{{ item.author }}"/>
-                                    </div>
-                                    <div class="col l8 m8 s8 legend-user-data">
-                                        <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
-                                        <a href="{% url "photologue:pl-video" slug=item.slug %}" class="photo-title truncate">
+                                <div class="col l8 m8 s8 legend-user-data">
+                                    <a href="/profile/{{ item.author }}">@{{ item.author }}</a>
+                                    <a href="{% url "photologue:pl-video" slug=item.slug %}"
+                                       class="photo-title truncate">
                                         {{ item.name }}</a>
-                                        <i class="truncate photo-date"><i
-                                                class="material-icons md-18">access_time</i> {{ item.pub_date|naturaltime }}
-                                        </i>
-                                    </div>
+                                    <i class="truncate photo-date"><i
+                                            class="material-icons md-18">access_time</i> {{ item.object.date_added|naturaltime }}
+                                    </i>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 {% endfor %}
             </div>
         {% endif %}
