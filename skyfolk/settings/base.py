@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
 DEBUG = False
-ALLOWED_HOSTS = ['.skyfolk.net', 'www.skyfolk.net']
+ALLOWED_HOSTS = ['.skyfolk.net', 'www.skyfolk.net', '.skyfolk.es', 'www.skyfolk.es']
 INTERNAL_IPS = ['127.0.0.1']
 
 # Allowed html content.
@@ -101,7 +101,7 @@ THIRD_PARTY_APPS = (
 )
 
 FIRST_PARTY_APPS = (
-    'landing',  # p√°gina de inicio
+    'landing',  # p·gina de inicio
     'user_profile',  # perfil de usuario
     'publications',  # publicaciones en el perfil
     'publications_gallery',  # publicaciones en galeria
