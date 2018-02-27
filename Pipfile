@@ -92,7 +92,7 @@ defusedxml = "==0.4.1"
 django-compressor = "*"
 django-cors-headers = "*"
 sockjs-tornado = "==1.0.3"
-elasticsearch = "==5.4.0"
+elasticsearch = ">=2.0.0,<3.0.0"
 packaging = "==16.8"
 python-memcached = "*"
 unidecode = "==0.04.21"
@@ -128,7 +128,6 @@ django-localeurl = "*"
 pytumblr = "==0.0.7"
 instapush = "==0.1.2"
 python-magic = "*"
-
 
 [dev-packages]
 
