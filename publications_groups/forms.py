@@ -80,7 +80,7 @@ class PublicationThemeForm(forms.ModelForm):
         if content.isspace():  # Comprobamos si el comentario esta vacio
             raise forms.ValidationError('El comentario esta vacio')
 
-        return Emoji.replace(content)
+        return content
 
 
 class ThemePublicationEdit(forms.ModelForm):
