@@ -56,7 +56,7 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
 
         if form.instance.parent:
             if RelationShipProfile.objects.is_blocked(to_profile=user.profile,
-                                                      from_profile=form.instance.parent.profile):
+                                                      from_profile=form.instance.parent.author.profile):
                 form.add_error('parent',
                                'El autor de la publicación te ha bloqueado.'.format(group.name))
                 return super(PublicationThemeView, self).form_invalid(form)
@@ -87,6 +87,8 @@ class PublicationThemeView(AjaxableResponseMixin, CreateView):
                 form.instance.parse_content()
                 form.instance.parse_mentions()
                 form.instance.add_hashtag()
+                form.instance.content = Emoji.replace(form.instance.content)
+
                 if not have_video:
                     saved = super(PublicationThemeView, self).form_valid(form)
                 else:

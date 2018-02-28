@@ -551,19 +551,19 @@ def add_friend_by_username_or_pin(request):
 
             if RelationShipProfile.objects.is_follow(from_profile=user_profile, to_profile=friend):
                 data['response'] = 'its_your_friend'
-                data['friend'] = friend.title
+                data['friend'] = friend.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Me tienen bloqueado
             if RelationShipProfile.objects.is_blocked(from_profile=friend, to_profile=user_profile):
                 data['response'] = 'user_blocked'
-                data['friend'] = friend.title
+                data['friend'] = friend.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Yo tengo bloqueado al perfil
             if RelationShipProfile.objects.is_blocked(from_profile=user_profile, to_profile=friend):
                 data['response'] = 'blocked_profile'
-                data['friend'] = friend.title
+                data['friend'] = friend.username
                 return HttpResponse(json.dumps(data), content_type='application/javascript')
 
             # Comprobamos si el usuario necesita peticion de amistad
@@ -602,7 +602,7 @@ def add_friend_by_username_or_pin(request):
                 notification = notify.send(user_request, actor=User.objects.get(pk=user_request.pk).username,
                                            recipient=friend.user,
                                            verb=u'<a href="/profile/{0}/">@{0}</a> quiere seguirte.'.format(
-                                               user_request.title), level='friendrequest')
+                                               user_request.username), level='friendrequest')
                 # Enlazamos notificacion y peticion de amistad
                 try:
                     Request.objects.add_follow_request(user_profile.user_id, friend.user_id, notification[0][1])
@@ -857,7 +857,7 @@ def remove_blocked(request):
                                                            type=BLOCK).delete()
                 response = True
             else:
-                logging.info('%s no tiene bloqueado a %s' % (m.title, n.title))
+                logging.info('%s no tiene bloqueado a %s' % (m.username, n.username))
                 response = False
         except Exception as e:
             logging.info(e)

@@ -541,10 +541,13 @@ class BaseDashboardPlaceholder(object):
             if size_col < 1:
                 size_col = 1
 
+        middle_size = MAX_SIZE_COLS / size_col if MAX_SIZE_COLS > size_col else MAX_SIZE_COLS / 2
+        middle_size = int(middle_size)
+
         for col in range(1, total_cols + 1):
             if position not in positions:
                 empty_cells.append(
-                    ('col s{0} l{1}'.format(MAX_SIZE_COLS, size_col), position)
+                    ('col s{0} m{1} l{2}'.format(MAX_SIZE_COLS, middle_size, size_col), position)
                 )
             position += 1
 
@@ -585,9 +588,9 @@ class BaseDashboardPlaceholder(object):
     def widget_inner_width(self, cols):
         """The inner width of the widget to be rendered."""
         return (
-                (self.get_cell_width() * cols) -
-                self.cell_margin_left -
-                self.cell_margin_right
+            (self.get_cell_width() * cols) -
+            self.cell_margin_left -
+            self.cell_margin_right
         )
 
     def widget_inner_height(self, rows):
@@ -596,9 +599,9 @@ class BaseDashboardPlaceholder(object):
         :return int:
         """
         return (
-                (self.get_cell_height() * rows) -
-                self.cell_margin_top -
-                self.cell_margin_bottom
+            (self.get_cell_height() * rows) -
+            self.cell_margin_top -
+            self.cell_margin_bottom
         )
 
     @property
@@ -912,7 +915,10 @@ class BaseDashboardPlugin(object):
                 if size_col < 1:
                     size_col = 1
 
-            html_class.append('col s{0} l{1}'.format(MAX_SIZE_COLS, size_col))
+            middle_size = MAX_SIZE_COLS / size_col if MAX_SIZE_COLS > size_col else MAX_SIZE_COLS / 2
+            middle_size = int(middle_size)
+
+            html_class.append('col s{0} m{1} l{2}'.format(MAX_SIZE_COLS, middle_sizeno, size_col))
 
             return ' '.join(html_class)
         except Exception as err:
@@ -1381,14 +1387,14 @@ class BaseDashboardPluginWidget(object):
     def __init__(self, plugin):
         assert self.layout_uid and self.layout_uid == plugin.layout.uid
         assert (
-                self.placeholder_uid
-                and
-                self.placeholder_uid in plugin.layout.placeholder_uids
+            self.placeholder_uid
+            and
+            self.placeholder_uid in plugin.layout.placeholder_uids
         )
         assert (
-                self.plugin_uid
-                and
-                self.plugin_uid in get_registered_plugin_uids()
+            self.plugin_uid
+            and
+            self.plugin_uid in get_registered_plugin_uids()
         )
         assert hasattr(self, 'render') and callable(self.render)
         assert self.cols
@@ -1443,10 +1449,10 @@ class BaseDashboardPluginWidget(object):
         """
         return (
             (
-                    self.cols * self.plugin.placeholder.get_cell_width()
+                self.cols * self.plugin.placeholder.get_cell_width()
             ) + delta_width,
             (
-                    self.rows * self.plugin.placeholder.get_cell_height()
+                self.rows * self.plugin.placeholder.get_cell_height()
             ) + delta_height
         )
 
@@ -1638,9 +1644,9 @@ plugin_widget_registry = PluginWidgetRegistry()
 def ensure_autodiscover():
     """Ensure that plugins are auto-discovered."""
     if not (
-            plugin_registry._registry and
-            layout_registry._registry and
-            plugin_widget_registry._registry
+                    plugin_registry._registry and
+                    layout_registry._registry and
+                plugin_widget_registry._registry
     ):
         autodiscover()
 
