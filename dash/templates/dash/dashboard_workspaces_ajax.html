@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             {% for ws in workspaces %}
-                <div class="col s4">
+                <div class="col l4 m6 s12">
                     <div class="card z-depth-2">
                         <div class="row">
                             <a href="{% if edit_mode %}{% url 'dash.edit_dashboard' ws.slug %}{% else %}{% url 'dash.dashboard' ws.slug %}{% endif %}"
