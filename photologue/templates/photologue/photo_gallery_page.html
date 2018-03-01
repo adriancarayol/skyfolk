@@ -11,16 +11,17 @@
                 {% if photo.tags.all %}
                     <div class="tags-content">
                         {% for tag in photo.tags.all %}
-                        {% if tag.slug and tag.split %}
-                            <blockquote><a
-                                    href="{% url 'photologue:collection-list' username=photo.owner.username tag_slug=tag.slug %}">{{ tag.slug }}</a>
-                            </blockquote>
+                            {% if tag.slug %}
+                                <blockquote><a
+                                        href="{% url 'photologue:collection-list' username=photo.owner.username tag_slug=tag.slug %}">{{ tag.slug }}</a>
+                                </blockquote>
                             {% endif %}
                         {% endfor %}
                     </div>
                 {% endif %}
                 {% if photo|classname == 'Photo' %}
-                    <img class="lazyload" data-src="{% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}"
+                    <img class="lazyload" data-src="
+                            {% if photo.thumbnail %}{{ photo.thumbnail.url }}{% elif photo.image %}{{ photo.image.url }}{% else %}{{ photo.url_image }}{% endif %}"
                          alt="{{ photo.title }}" title="{{ photo.title }}"
                          onclick="location.href='{{ photo.get_absolute_url }}'">
                 {% else %}
