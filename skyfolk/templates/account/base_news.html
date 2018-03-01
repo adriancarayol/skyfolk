@@ -284,7 +284,7 @@
                                             {% if item.tags.all %}
                                             <div class="tags-content">
                                                 {% for tag in item.tags.all %}
-                                                    {% if tag and tag.split %}
+                                                    {% if tag %}
                                                 <blockquote
                                                 onclick="location.href='{% url 'photologue:collection-list' item.owner tag.slug %}'">{{ tag.slug }}</blockquote>
                                                     {% endif %}
@@ -315,7 +315,7 @@
                                             {% if item.tags.all %}
                                             <div class="tags-content">
                                                 {% for tag in item.tags.all %}
-                                                    {% if tag and tag.split %}
+                                                    {% if tag %}
                                                 <blockquote
                                                 onclick="location.href='{% url 'photologue:collection-list' item.owner tag.slug %}'">{{ tag.slug }}</blockquote>
                                                     {% endif %}
