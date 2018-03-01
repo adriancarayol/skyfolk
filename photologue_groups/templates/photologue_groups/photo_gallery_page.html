@@ -11,7 +11,7 @@
                 {% if photo.tags.all %}
                     <div class="tags-content">
                         {% for tag in photo.tags.all %}
-                            {% if tag and tag.split %}
+                            {% if tag %}
                             <blockquote><a
                                     href="{% url 'photologue_groups:collection-list' slug=photo.group.slug tag_slug=tag.slug %}">{{ tag.name }}</a>
                             </blockquote>
