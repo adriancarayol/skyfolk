@@ -8,7 +8,19 @@ services:
     restart: always
     networks:
       - webnet
-    
+  
+  #neo4j
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/1518
+    volumes:
+      - ./db/dbms:/data/dbms
+    networks:
+      - webnet
   # elasticsearch
   elasticsearch:
     image: elasticsearch:2.4.6
@@ -77,8 +89,7 @@ services:
     depends_on:
       - rabbit
     restart: always
-    extra_hosts:
-        - "cluster:172.17.0.1"
+
   # Django web server
   web:
     env_file:
@@ -100,8 +111,7 @@ services:
     networks:
       - webnet
     restart: always
-    extra_hosts:
-        - "cluster:172.17.0.1"
+
   # Celery worker
   celery_worker:
     env_file:
@@ -118,8 +128,7 @@ services:
     depends_on:
       - web
     restart: always
-    extra_hosts:
-        - "cluster:172.17.0.1"
+
   celery_beat:
     env_file:
       - web-variables.env
@@ -135,8 +144,6 @@ services:
     depends_on:
       - web
     restart: always
-    extra_hosts:
-        - "cluster:172.17.0.1"
 
 networks:
   webnet:
