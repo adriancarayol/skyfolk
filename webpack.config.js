@@ -3,7 +3,6 @@ var path = require('path');
 var webpack = require('webpack');
 var BundleTracker = require('webpack-bundle-tracker');
 var glob = require('glob');
-
 var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 
@@ -36,10 +35,11 @@ module.exports = {
     ],
 
     module: {
-        loaders: [
+        rules: [
             //a regexp that tells webpack use the following loaders on all
             //.js and .jsx files
-            {test: /\.jsx?$/,
+            {
+                test: /\.jsx?$/,
                 //we definitely don't want babel to transpile all the files in
                 //node_modules. That would take a long time.
                 exclude: /node_modules/,
@@ -47,8 +47,9 @@ module.exports = {
                 loader: 'babel-loader',
                 query: {
                     //specify that we will be dealing with React code
-                    presets: ['react']
-                }
+                    "presets": ['react']
+                },
+                enforce: 'pre'
             }
         ]
     },
