@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(
 DEBUG = False
 ALLOWED_HOSTS = ['.skyfolk.net', '158.69.59.134']
 INTERNAL_IPS = ['127.0.0.1']
-
+SESSION_COOKIE_DOMAIN = '.skyfolk.net'
 # Allowed html content.
 ALLOWED_TAGS = "p div br code pre h1 h2 h3 h4 hr span s sub " \
                "sup b i img strong strike em underline super " \
