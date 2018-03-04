@@ -1,26 +1,16 @@
-import tempfile
-from os.path import splitext
-from urllib.parse import urlparse
-
-import requests
-from PIL import Image
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.core.files.base import File
 from django.shortcuts import render, redirect
 from django.utils import six
 from django.utils.translation import ugettext as _
 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
 from avatar.conf import settings
 from avatar.forms import PrimaryAvatarForm, DeleteAvatarForm, UploadAvatarForm
 from avatar.models import Avatar
-from avatar.signals import avatar_updated
+from avatar.signals import avatar_updated, avatar_deleted
 from avatar.utils import (get_primary_avatar, get_default_avatar_url,
                           invalidate_cache)
-from photologue.validators import validate_file_extension, validate_video, validate_extension, image_exists, \
-    valid_image_mimetype, \
-    valid_image_size
-from photologue.utils.utils import split_url, get_url_tail, retrieve_image, pil_to_django
 
 
 def _get_next(request):
@@ -39,7 +29,7 @@ def _get_next(request):
        the view will redirect to that previous page.
     """
     next = request.POST.get('next', request.GET.get('next',
-                                                    request.META.get('HTTP_REFERER', None)))
+                            request.META.get('HTTP_REFERER', None)))
     if not next:
         next = request.path
     return next
@@ -65,95 +55,47 @@ def _get_avatars(user):
     return (avatar, avatars)
 
 
-@login_required(login_url='/')
+@login_required
 def add(request, extra_context=None, next_override=None,
         upload_form=UploadAvatarForm, *args, **kwargs):
-    user = request.user
-
     if extra_context is None:
         extra_context = {}
-
-    avatar, avatars = _get_avatars(user)
-
-    if request.method == "POST":
-        upload_avatar_form = upload_form(request.POST, request.FILES, user=request.user)
-    else:
-        upload_avatar_form = upload_form(user=request.user)
-
-    # Si el formulario contiene un archivo
+    avatar, avatars = _get_avatars(request.user)
+    upload_avatar_form = upload_form(request.POST or None,
+                                     request.FILES or None,
+                                     user=request.user)
     if request.method == "POST" and 'avatar' in request.FILES:
         if upload_avatar_form.is_valid():
-            avatar = upload_avatar_form.save(commit=False)
-            avatar.user = user
-            avatar.primary = True
-            image_file = upload_avatar_form.cleaned_data['avatar']
+            avatar = Avatar(user=request.user, primary=True)
+            image_file = request.FILES['avatar']
             avatar.avatar.save(image_file.name, image_file)
             avatar.save()
             messages.success(request, _("Successfully uploaded a new avatar."))
-            avatar_updated.send(sender=Avatar, user=user, avatar=avatar)
-            return redirect(next_override or _get_next(request))
-
-    if request.method == "POST" and 'avatar' not in request.FILES \
-            and 'url_image' in request.POST:
-        if upload_avatar_form.is_valid():
-            url_image = upload_avatar_form.cleaned_data['url_image']
-
-            avatar = upload_avatar_form.save(commit=False)
-            avatar.user = user
-            avatar.primary = True
-            avatar.url_image = url_image
-
-            domain, path = split_url(url_image)
-            filename = get_url_tail(path)
-
-            if not image_exists(url_image):
-                raise ValidationError(_("Couldn't retreive image. (There was an error reaching the server)"))
-
-            fobject = retrieve_image(url_image)
-
-            if not valid_image_mimetype(fobject):
-                raise ValidationError(_("Downloaded file was not a valid image"))
-
-            pil_image = Image.open(fobject)
-            pil_image.thumbnail((120, 120), Image.ANTIALIAS)
-
-            if not valid_image_size(pil_image)[0]:
-                raise ValidationError(_("Image is too large (> 5mb)"))
-
-            django_file = pil_to_django(pil_image)
-
-            avatar.avatar.save(filename, django_file)
-            avatar.save()
-            messages.success(request, _("Successfully uploaded a new avatar."))
             avatar_updated.send(sender=Avatar, user=request.user, avatar=avatar)
-
             return redirect(next_override or _get_next(request))
-
     context = {
         'avatar': avatar,
         'avatars': avatars,
         'upload_avatar_form': upload_avatar_form,
         'next': next_override or _get_next(request),
-        'showPerfilButtons': True,
     }
-
     context.update(extra_context)
-    return render(request, 'avatar/add.html', context)
+    template_name = settings.AVATAR_ADD_TEMPLATE or 'avatar/add.html'
+    return render(request, template_name, context)
 
 
-@login_required(login_url='/')
+@login_required
 def change(request, extra_context=None, next_override=None,
            upload_form=UploadAvatarForm, primary_form=PrimaryAvatarForm,
            *args, **kwargs):
-    user = request.user
     if extra_context is None:
         extra_context = {}
-    avatar, avatars = _get_avatars(user)
+    avatar, avatars = _get_avatars(request.user)
     if avatar:
         kwargs = {'initial': {'choice': avatar.id}}
     else:
         kwargs = {}
-    upload_avatar_form = upload_form(request.POST, request.FILES, user=request.user, **kwargs)
+    upload_avatar_form = upload_form(user=request.user, **kwargs)
     primary_avatar_form = primary_form(request.POST or None,
                                        user=request.user,
                                        avatars=avatars, **kwargs)
@@ -176,16 +118,15 @@ def change(request, extra_context=None, next_override=None,
         'avatars': avatars,
         'upload_avatar_form': upload_avatar_form,
         'primary_avatar_form': primary_avatar_form,
-        'next': next_override or _get_next(request),
-        'showPerfilButtons': True,
+        'next': next_override or _get_next(request)
     }
     context.update(extra_context)
-    return render(request, 'avatar/change.html', context)
+    template_name = settings.AVATAR_CHANGE_TEMPLATE or 'avatar/change.html'
+    return render(request, template_name, context)
 
 
-@login_required(login_url='/')
+@login_required
 def delete(request, extra_context=None, next_override=None, *args, **kwargs):
-    user = request.user
     if extra_context is None:
         extra_context = {}
     avatar, avatars = _get_avatars(request.user)
@@ -195,6 +136,10 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     if request.method == 'POST':
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data['choices']
+            for a in avatars:
+                if six.text_type(a.id) in ids:
+                    avatar_deleted.send(sender=Avatar, user=request.user,
+                                        avatar=a)
             if six.text_type(avatar.id) in ids and avatars.count() > len(ids):
                 # Find the next best avatar, and set it as the new primary
                 for a in avatars:
@@ -214,11 +159,10 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
         'avatars': avatars,
         'delete_avatar_form': delete_avatar_form,
         'next': next_override or _get_next(request),
-        'showPerfilButtons': True,
     }
     context.update(extra_context)
-
-    return render(request, 'avatar/confirm_delete.html', context)
+    template_name = settings.AVATAR_DELETE_TEMPLATE or 'avatar/confirm_delete.html'
+    return render(request, template_name, context)
 
 
 def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):
