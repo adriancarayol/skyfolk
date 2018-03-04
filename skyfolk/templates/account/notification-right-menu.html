@@ -6,55 +6,56 @@ Menu de notificaciones verticales
 {% load compress %}
 {% load static %}
 {% compress js %}
-<script src="{% static "js/reconnecting-websocket.min.js" %}"></script>
-<script src="{% static "js/socket_notifications.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/reconnecting-websocket.min.js" %}"></script>
+    <script src="{% static "js/socket_notifications.js" %}" type="text/javascript"></script>
 {% endcompress %}
 <script>
     UTILS_N.init([{{ user.pk }}]);
-UTILS_N.conn_socket();
+    UTILS_N.conn_socket();
 </script>
 <!-- MENU VERTICAL CON NOTIFICACIONES  -->
 <div id="notification-menu" class="side-nav nav-vertical-and-chat">
     <ul id="list-notify" class="collection">
         {% if user_notifications %}
-        {% for notification in user_notifications %}
-        <li class="collection-item avatar" data-id="{{ notification.id }}">
-            <a onclick="AJAX_mark_read(this)" class="remove-notification material-icons"
-                data-notification="{{ notification.slug }}">remove</a>
-            <div class="circle">
-                {% avatar notification.actor %}
-            </div>
-            <span class="title">{{ notification.verb|safe }} {% if notification.description %}
-                <br><br><small>{{ notification.description|safe }}</small> {% endif %}</span>
-            <p><i>{{ notification.timestamp|naturaltime }}</i></p>
-            {% if notification.level == "friendrequest" %}
-            <div class="notification-buttons">
-                <button data-notification="{{ notification.slug }}"
-                    class="accept-response waves-effect waves-light btn white-text green"
-                    onclick="AJAX_respondFriendRequest({{ notification.actor_object_id }}, 'accept', {{ notification.id }})">
-                    <i class="material-icons">done</i>
-                </button>
-                <button data-notification="{{ notification.slug }}"
-                    class="rejected-response waves-effect waves-light btn white-text red"
-                    onclick="AJAX_respondFriendRequest({{ notification.actor_object_id }}, 'rejected', {{ notification.id }})">
-                    <i class="material-icons">cancel</i>
-                </button>
-            </div>
-            {% elif notification.level == "grouprequest" %}
-            <div class="notification-buttons">
-                <button data-notification="{{ notification.slug }}"
-                    class="accept-response waves-effect waves-light btn white-text green"
-                    onclick="AJAX_respondGroupRequest({{ notification.action_object_object_id }}, 'accept', {{ notification.id }})">
-                    <i class="material-icons">done</i>
-                </button>
-                <button data-notification="{{ notification.slug }}"
-                    class="rejected-response waves-effect waves-light btn white-text red"
-                    onclick="AJAX_respondGroupRequest({{ notification.action_object_object_id }}, 'rejected', {{ notification.id }})">
-                    <i class="material-icons">cancel</i>
-                </button>
-            </div>
-            {% endif %}
-            {% comment %}
+            {% for notification in user_notifications %}
+                <li class="collection-item avatar" data-id="{{ notification.id }}">
+                    <a onclick="AJAX_mark_read(this)" class="remove-notification material-icons"
+                       data-notification="{{ notification.slug }}">remove</a>
+                    <div class="circle">
+                        {% avatar notification.actor %}
+                    </div>
+                    <span class="title">{{ notification.verb|safe }} {% if notification.description %}
+                        <br><br>
+                        <small>{{ notification.description|safe }}</small> {% endif %}</span>
+                    <p><i>{{ notification.timestamp|naturaltime }}</i></p>
+                    {% if notification.level == "friendrequest" %}
+                        <div class="notification-buttons">
+                            <button data-notification="{{ notification.slug }}"
+                                    class="accept-response waves-effect waves-light btn white-text green"
+                                    onclick="AJAX_respondFriendRequest({{ notification.actor_object_id }}, 'accept', {{ notification.id }})">
+                                <i class="material-icons">done</i>
+                            </button>
+                            <button data-notification="{{ notification.slug }}"
+                                    class="rejected-response waves-effect waves-light btn white-text red"
+                                    onclick="AJAX_respondFriendRequest({{ notification.actor_object_id }}, 'rejected', {{ notification.id }})">
+                                <i class="material-icons">cancel</i>
+                            </button>
+                        </div>
+                    {% elif notification.level == "grouprequest" %}
+                        <div class="notification-buttons">
+                            <button data-notification="{{ notification.slug }}"
+                                    class="accept-response waves-effect waves-light btn white-text green"
+                                    onclick="AJAX_respondGroupRequest({{ notification.action_object_object_id }}, 'accept', {{ notification.id }})">
+                                <i class="material-icons">done</i>
+                            </button>
+                            <button data-notification="{{ notification.slug }}"
+                                    class="rejected-response waves-effect waves-light btn white-text red"
+                                    onclick="AJAX_respondGroupRequest({{ notification.action_object_object_id }}, 'rejected', {{ notification.id }})">
+                                <i class="material-icons">cancel</i>
+                            </button>
+                        </div>
+                    {% endif %}
+                    {% comment %}
             {% if notification.level == "message" %}
             <a href="#!" class="secondary-content">
                 <i class="material-icons">email</i>
@@ -65,22 +66,17 @@ UTILS_N.conn_socket();
             </a>
             {% endif %}
             {% endcomment %}
-        </li>
-        {% endfor %}
+                </li>
+            {% endfor %}
         {% endif %}
     </ul>
-    {% if user_notifications|length < 5 %}
-    <div class="nav-vertical-controls" style="position: absolute !important;">
+    <div class="nav-vertical-controls">
         <div class="divider"></div>
-        <div class="controls-notifications" style="margin-top: 5% !important;">
-            {% endif %}
-            {% if user_notifications %}
+        <div class="controls-notifications">
             <a id="clear-notify"
-                class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
-
-            {% endif %}
+               class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Limpiar</a>
             <a href="/inbox/notifications/"
-                class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Todas</a>
+               class="waves-effect waves-light btn white-text blue darken-1 nav-button-notifications">Todas</a>
         </div>
     </div>
 </div>

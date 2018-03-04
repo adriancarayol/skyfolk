@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.template.loader import render_to_string
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
+from django.utils import six
+from django.template.loader import render_to_string
 
 from avatar.models import Avatar
 from avatar.signals import avatar_updated

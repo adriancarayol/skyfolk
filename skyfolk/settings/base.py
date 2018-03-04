@@ -3,12 +3,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 import os
-
+from django.conf import settings
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
 DEBUG = False
-ALLOWED_HOSTS = ['.skyfolk.net', 'www.skyfolk.net', '.skyfolk.es', 'www.skyfolk.es']
+ALLOWED_HOSTS = ['.skyfolk.net', '158.69.59.134']
 INTERNAL_IPS = ['127.0.0.1']
 
 # Allowed html content.
@@ -101,7 +101,7 @@ THIRD_PARTY_APPS = (
 )
 
 FIRST_PARTY_APPS = (
-    'landing',  # página de inicio
+    'landing',  # pï¿½gina de inicio
     'user_profile',  # perfil de usuario
     'publications',  # publicaciones en el perfil
     'publications_gallery',  # publicaciones en galeria
@@ -154,12 +154,16 @@ ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/accounts/login'
 EXTERNAL_LOGIN_URL = None
 EXTERNAL_SIGNUP_URL = None
 EXTERNAL_LOGOUT_URL = None
+
+# AVATAR CONFIGURATION
+AVATAR_GRAVATAR_DEFAULT = 'http://skyfolk.net/static/img/nuevo.png'
+
 # / DJANGO ALL AUTH CONFIG
 
 # CONFIG E-MAIL
-#EMAIL_HOST = 'mail'
+# EMAIL_HOST = 'mail'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
-#EMAIL_PORT = 587
+# EMAIL_PORT = 587
 EMAIL_PORT = 25
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
@@ -369,7 +373,7 @@ ADMINS = (
 )
 # Para emails al recibir nuevo feedback
 
-TELLME_FEEDBACK_EMAIL = 'adriancarayol@gmail.com'
+TELLME_FEEDBACK_EMAIL = 'lostcitizen@gmail.com'
 
 MANAGERS = ADMINS
 POSTMAN_AUTO_MODERATE_AS = True
