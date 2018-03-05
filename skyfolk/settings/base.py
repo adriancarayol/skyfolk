@@ -101,7 +101,6 @@ THIRD_PARTY_APPS = (
 )
 
 FIRST_PARTY_APPS = (
-    'landing',  # p�gina de inicio
     'user_profile',  # perfil de usuario
     'publications',  # publicaciones en el perfil
     'publications_gallery',  # publicaciones en galeria
@@ -114,6 +113,8 @@ FIRST_PARTY_APPS = (
     'user_groups',  # Para grupos de usuarios
     'support',  # modulo para ofrecer soporte al usuario
     'awards',  # logros
+    'api',
+    'api.user_profile_api',
 )
 
 INSTALLED_APPS = DEFAULT_APPS + FIRST_PARTY_APPS + THIRD_PARTY_APPS
@@ -177,7 +178,10 @@ SESSION_UPDATE_SECONDS = 10 * 60
 #                   http://www.django-rest-framework.org/
 REST_FRAMEWORK = {
     # hace la api solo accesible para admins
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated', ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
