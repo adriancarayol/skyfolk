@@ -3,7 +3,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static
 from django.views.generic import TemplateView
-
+from django_js_reverse.views import urls_js
 from dash_services.forms.wizard import DummyForm, ProviderForm, ConsumerForm, ServicesDescriptionForm
 
 from dash_services.views import TriggerListView
@@ -13,8 +13,7 @@ from dash_services.views_fbv import service_related_triggers_switch_to
 from dash_services.views_userservices import UserServiceListView, UserServiceCreateView, UserServiceUpdateView
 from dash_services.views_userservices import UserServiceDeleteView, renew_service
 from dash_services.views_wizard import UserServiceWizard, finalcallback
-
-from django_js_reverse.views import urls_js
+from allauth.account import views as allauth_views
 
 admin.autodiscover()
 
@@ -24,8 +23,8 @@ admin.autodiscover()
 # router.register(r'api/groups', views.GroupViewSet)
 
 urlpatterns = [
+    url(r'^$', allauth_views.login),
     # Importamos las URLS del resto de apps:
-    url(r'^', include('landing.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),  # django-allauth
     # urls support
@@ -158,6 +157,8 @@ urlpatterns = [
     url(r'^dash/contrib/plugins/rss-feed/',
                 include('dash.contrib.plugins.rss_feed.urls')),
     # url(r'^', include('dash.contrib.apps.public_dashboard.urls'))
+    # API_REST
+    url(r'^api/', include('api.urls')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
