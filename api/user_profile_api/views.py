@@ -5,7 +5,7 @@ from .serializers import UserSerializer, UserProfileSerializer, RelationShipSeri
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    queryset = User.objects.all(is_active=True)
+    queryset = User.objects.filter(is_active=True)
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
