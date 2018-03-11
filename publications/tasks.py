@@ -18,6 +18,7 @@ from django.db import IntegrityError
 
 logger = get_task_logger(__name__)
 
+
 @app.task(name='tasks.clean_deleted_publications')
 def clean_deleted_publications():
     logger.info('Finding deleted publications...')
@@ -57,6 +58,7 @@ def clean_deleted_publications():
             publication.extra_content.delete()
         publication.delete()
 
+
 @app.task(name='tasks.clean_deleted_photo_publications')
 def clean_deleted_photo_publications():
     logger.info('Finding deleted publications...')
@@ -87,109 +89,119 @@ def clean_deleted_photo_publications():
         publication.delete()
         logger.info("Publication safe deleted {}".format(pub.id))
 
+
 @app.task(ignore_result=True, name='tasks.process_video')
 def process_video_publication(file, publication_id, filename, user_id=None,
                               board_owner_id=None):
+    assert user_id is not None
+    assert publication_id is not None
+
+    user = User.objects.get(id=user_id)
+
     logger.info('ENTERING PROCESS VIDEO')
-    video_file, media_path = generate_path_video()
+    video_file, media_path = generate_path_video(user.username)
+
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
+
     convert_video_to_mp4(file, video_file)
     PublicationVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('VIDEO CONVERTED')
-    if user_id:
-        user = User.objects.get(id=user_id)
 
-        try:
-            notification = Notification.objects.create(actor=user, recipient=user,
+    try:
+        notification = Notification.objects.create(actor=user, recipient=user,
                                                    verb=u'¡Ya esta tu video %s!' % filename,
                                                    description='<a href="%s">Ver</a>' % (
                                                        '/publication/' + str(publication_id)))
-        except IntegrityError as e:
-            logger.info(e)
-            #TODO: Enviar mensaje al user con el error
-            return
+    except IntegrityError as e:
+        logger.info(e)
+        # TODO: Enviar mensaje al user con el error
+        return
 
-        content = render_to_string(template_name='channels/new_notification.html',
-                                   context={'notification': notification})
+    content = render_to_string(template_name='channels/new_notification.html',
+                               context={'notification': notification})
 
-        data = {
-            'type': "video",
-            'video': media_path,
-            'id': publication_id
-        }
+    data = {
+        'type': "video",
+        'video': media_path,
+        'id': publication_id
+    }
 
-        Channel_group(notification_channel(user.id)).send({
-            "text": json.dumps({'content': content})
-        }, immediately=True)
+    Channel_group(notification_channel(user.id)).send({
+        "text": json.dumps({'content': content})
+    }, immediately=True)
 
-        try:
-            publication = Publication.objects.get(id=publication_id)
-        except Publication.DoesNotExist:
-            return
+    try:
+        publication = Publication.objects.get(id=publication_id)
+    except Publication.DoesNotExist:
+        return
 
-        # Enviamos al blog de la publicacion
-        [Channel_group(get_channel_name(x)).send({
+    # Enviamos al blog de la publicacion
+    [Channel_group(get_channel_name(x)).send({
+        "text": json.dumps(data)
+    }) for x in publication.get_ancestors().values_list('id', flat=True)]
+
+    if board_owner_id:
+        Channel_group(group_name(board_owner_id)).send({
             "text": json.dumps(data)
-        }) for x in publication.get_ancestors().values_list('id', flat=True)]
-
-        if board_owner_id:
-            Channel_group(group_name(board_owner_id)).send({
-                "text": json.dumps(data)
-            }, immediately=True)
+        }, immediately=True)
 
 
 @app.task(ignore_result=True, name='tasks.process_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None,
                             board_owner_id=None):
+    assert user_id is not None
+    assert publication_id is not None
+
+    user = User.objects.get(id=user_id)
+
     logger.info('ENTERING PROCESS GIF')
     clip = mp.VideoFileClip(file)
-    video_file, media_path = generate_path_video()
+    video_file, media_path = generate_path_video(user.username)
+
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
+
     clip.write_videofile(video_file, threads=2)
     PublicationVideo.objects.create(publication_id=publication_id, video=media_path)
     os.remove(file)
     logger.info('GIF CONVERTED')
 
-    if user_id:
-        user = User.objects.get(id=user_id)
-
-        try:
-            notification = Notification.objects.create(actor=user, recipient=user,
+    try:
+        notification = Notification.objects.create(actor=user, recipient=user,
                                                    verb=u'¡Ya esta tu video %s!' % filename,
                                                    description='<a href="%s">Ver</a>' % (
                                                        '/publication/' + str(publication_id)))
-        except IntegrityError as e:
-            logger.info(e)
-            #TODO: Enviar mensaje al user con el error
-            return
+    except IntegrityError as e:
+        logger.info(e)
+        # TODO: Enviar mensaje al user con el error
+        return
 
-        content = render_to_string(template_name='channels/new_notification.html',
-                                   context={'notification': notification})
+    content = render_to_string(template_name='channels/new_notification.html',
+                               context={'notification': notification})
 
-        data = {
-            'type': "video",
-            'video': media_path,
-            'id': publication_id
-        }
+    data = {
+        'type': "video",
+        'video': media_path,
+        'id': publication_id
+    }
 
-        Channel_group(notification_channel(user.id)).send({
-            "text": json.dumps({'content': content})
-        }, immediately=True)
+    Channel_group(notification_channel(user.id)).send({
+        "text": json.dumps({'content': content})
+    }, immediately=True)
 
-        try:
-            publication = Publication.objects.get(id=publication_id)
-        except Publication.DoesNotExist:
-            return
+    try:
+        publication = Publication.objects.get(id=publication_id)
+    except Publication.DoesNotExist:
+        return
 
         # Enviamos al blog de la publicacion
-        [Channel_group(get_channel_name(x)).send({
-            "text": json.dumps(data)
-        }) for x in publication.get_ancestors().values_list('id', flat=True)]
+    [Channel_group(get_channel_name(x)).send({
+        "text": json.dumps(data)
+    }) for x in publication.get_ancestors().values_list('id', flat=True)]
 
-        if board_owner_id:
-            Channel_group(group_name(board_owner_id)).send({
-                "text": json.dumps(data)
-            }, immediately=True)
+    if board_owner_id:
+        Channel_group(group_name(board_owner_id)).send({
+            "text": json.dumps(data)
+        }, immediately=True)

@@ -37,7 +37,8 @@ def upload_image_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('publications/images', filename)
+    final_path = os.path.join('publications/images', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 def upload_video_publication(instance, filename):
@@ -48,7 +49,8 @@ def upload_video_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('publications/videos', filename)
+    final_path = os.path.join('publications/videos', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 class PublicationBase(MPTTModel):

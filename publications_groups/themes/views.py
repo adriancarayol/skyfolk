@@ -12,8 +12,8 @@ from emoji import Emoji
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
 from publications_groups.forms import PublicationThemeForm, ThemePublicationEdit
 from publications_groups.themes.models import PublicationTheme
-from publications_groups.themes.utils import optimize_publication_media, check_image_property
-from publications_groups.utils import check_num_images
+from publications_groups.themes.utils import optimize_publication_media
+from publications_groups.utils import check_num_images, check_image_property
 from user_groups.models import GroupTheme, UserGroups
 from user_profile.models import RelationShipProfile
 from utils.ajaxable_reponse_mixin import AjaxableResponseMixin

@@ -7,7 +7,6 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from publications.exceptions import CantOpenMedia, MediaNotSupported
 from publications_groups.themes.models import PublicationThemeVideo, PublicationThemeImage
-from publications_groups.utils import check_image_property
 from .tasks import process_gif_publication, process_video_publication
 
 
