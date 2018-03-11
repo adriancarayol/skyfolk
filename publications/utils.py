@@ -1,7 +1,8 @@
 import os
 import subprocess
 import uuid
-
+import magic
+import mimetypes
 import bleach
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -45,14 +46,17 @@ def remove_duplicates_in_list(seq):
     return [x for x in seq if not (x in seen or seen_add(x))]
 
 
-def generate_path_video(ext='mp4'):
+def generate_path_video(username, ext='mp4'):
     """
     Funcion para calcular la ruta
     donde se almacenaran las imagenes
     de una publicacion
     """
+    full_path = os.path.join('skyfolk/media/publications/videos', username)
+    rel_path = os.path.join('publications/videos', username)
+
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return [os.path.join('skyfolk/media/publications/videos', filename), os.path.join('publications/videos', filename)]
+    return [os.path.join(full_path, filename), os.path.join(rel_path, filename)]
 
 
 def convert_video_to_mp4(avi_file_path, output_name):
@@ -62,11 +66,21 @@ def convert_video_to_mp4(avi_file_path, output_name):
 
 
 def validate_video(value):
-    ''' if value.file is an instance of InMemoryUploadedFile, it means that the
-    file was just uploaded with this request (i.e., it's a creation process,
-    not an editing process. '''
-    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/').lower()[
-        1] not in settings.VIDEO_EXTENTIONS:
+    """
+    Check if video is valid and
+    have valid format
+    :param value:
+    :return:
+    """
+    is_valid = False
+    filetype = magic.from_buffer(value.file.read())
+
+    for extension in settings.VIDEO_EXTENTIONS:
+        if extension.upper() in filetype:
+            is_valid = True
+            break
+
+    if not is_valid:
         raise ValueError('Please upload a valid video file')
 
 

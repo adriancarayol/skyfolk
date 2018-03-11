@@ -71,7 +71,7 @@
                                     <div class="row">
                                         {% for image in images %}
                                         <div class="col s4">
-                                            <img class="lazyload responsive-img z-depth-2" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                            <img class="lazyload materialboxed responsive-img z-depth-2" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                         </div>
                                         {% endfor %}
                                     </div>
@@ -124,7 +124,7 @@
                                 <div class="row images">
                                     {% for image in images %}
                                     <div class="col s4 z-depth-2 center">
-                                        <img class="lazyload responsive-img" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
+                                        <img class="lazyload materialboxed responsive-img" data-src="{{image.image.url}}" alt="Imagen de: {{ node.author }}" title="Imagen de: {{ node.author }}">
                                     </div>
                                     {% endfor %}
                                 </div>
@@ -240,3 +240,8 @@
 </div>
 </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('.materialboxed').materialbox();
+    });
+</script>

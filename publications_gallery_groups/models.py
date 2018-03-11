@@ -32,7 +32,8 @@ class ExtraContentPubPhoto(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('PublicationGroupMediaPhoto', related_name='publication_group_multimedia_photo_extra_content',
+    publication = models.OneToOneField('PublicationGroupMediaPhoto',
+                                       related_name='publication_group_multimedia_photo_extra_content',
                                        on_delete=models.CASCADE)
 
 
@@ -44,7 +45,8 @@ def upload_image_photo_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('photo_publications/groups/images', filename)
+    final_path = os.path.join('photo_publications/groups/images', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 def upload_video_photo_publication(instance, filename):
@@ -55,7 +57,8 @@ def upload_video_photo_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('photo_publications/groups/videos', filename)
+    final_path = os.path.join('photo_publications/groups/videos', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 class PublicationPhotoVideo(models.Model):
@@ -122,7 +125,8 @@ class PublicationGroupMediaPhoto(PublicationBase):
             "text": json.dumps(data)
         })
 
-        data['content'] = render_to_string(request=request, template_name='channels/new_photo_group_publication_detail.html',
+        data['content'] = render_to_string(request=request,
+                                           template_name='channels/new_photo_group_publication_detail.html',
                                            context={'node': self, 'object': self.board_photo})
 
         if is_edited:
@@ -134,6 +138,7 @@ class PublicationGroupMediaPhoto(PublicationBase):
         [channel_group(x.get_channel_name).send({
             "text": json.dumps(data)
         }) for x in self.get_ancestors().only('id')]
+
 
 # Video publications
 
@@ -147,7 +152,8 @@ class ExtraContentPubVideo(models.Model):
     image = models.URLField(null=True, blank=True)
     url = models.URLField()
     video = EmbedVideoField(null=True, blank=True)
-    publication = models.OneToOneField('PublicationGroupMediaVideo', related_name='publication_group_multimedia_video_extra_content',
+    publication = models.OneToOneField('PublicationGroupMediaVideo',
+                                       related_name='publication_group_multimedia_video_extra_content',
                                        on_delete=models.CASCADE)
 
 
@@ -213,11 +219,9 @@ class PublicationGroupMediaVideo(PublicationBase):
     def total_hates(self):
         return self.user_give_me_hate.count()
 
-
     @property
     def get_channel_name(self):
         return "group-video-pub-%s" % self.id
-
 
     def send_notification(self, request, type="pub", is_edited=False):
         """
@@ -232,7 +236,7 @@ class PublicationGroupMediaVideo(PublicationBase):
             'level': self.level,
             'content': render_to_string(request=request,
                                         template_name='channels/new_video_publication.html',
-                                        context={'node': self, 'object': self.board_video })
+                                        context={'node': self, 'object': self.board_video})
         }
 
         # Enviamos a todos los usuarios que visitan la foto
@@ -241,7 +245,7 @@ class PublicationGroupMediaVideo(PublicationBase):
         })
 
         data['content'] = render_to_string(request=request, template_name='channels/new_video_publication_detail.html',
-                                           context={'node': self, 'object': self.board_video })
+                                           context={'node': self, 'object': self.board_video})
 
         if is_edited:
             channel_group(self.get_channel_name).send({

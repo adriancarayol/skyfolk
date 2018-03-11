@@ -11,8 +11,9 @@ $(document).ready(function () {
     var tab_comentarios = $('#tab-comentarios');
 
     $('select').material_select();
-
+    $('.materialboxed').materialbox();
     $('textarea#message2, textarea#message3').characterCounter();
+
     var Autocomplete = function (options) {
         this.form_selector = options.form_selector;
         this.url = options.url || '/search/autocomplete/';

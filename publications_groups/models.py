@@ -22,7 +22,8 @@ def upload_image_group_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('group_publications/images', filename)
+    final_path = os.path.join('group_publications/images', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 def upload_video_group_publication(instance, filename):
@@ -33,7 +34,8 @@ def upload_video_group_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('group_publications/videos', filename)
+    final_path = os.path.join('group_publications/videos', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 class PublicationGroupVideo(models.Model):

@@ -21,19 +21,25 @@ from .models import PublicationThemeVideo, PublicationTheme
 logger = get_task_logger(__name__)
 
 
-def generate_path_video(ext='mp4'):
+def generate_path_video(username, ext='mp4'):
     """
     Funcion para calcular la ruta
     donde se almacenaran las imagenes
     de una publicacion
     """
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return [os.path.join('skyfolk/media/theme_publications/videos', filename),
-            os.path.join('theme_publications/videos', filename)]
+    full_path = os.path.join('skyfolk/media/theme_publications/videos', username)
+    rel_path = os.path.join('theme_publications/videos', username)
+    return [os.path.join(full_path, filename),
+            os.path.join(rel_path, filename)]
 
 
 @app.task(name='tasks.process_theme_pub_video')
 def process_video_publication(file, publication_id, filename, user_id=None):
+    assert user_id is not None
+    assert publication_id is not None
+    user = User.objects.get(id=user_id)
+
     try:
         publication = PublicationTheme.objects.select_related('board_theme').get(id=publication_id)
         theme = publication.board_theme
@@ -41,7 +47,7 @@ def process_video_publication(file, publication_id, filename, user_id=None):
         logger.info('Publication does not exist')
         return
 
-    video_file, media_path = generate_path_video()
+    video_file, media_path = generate_path_video(user.username)
 
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
@@ -52,39 +58,41 @@ def process_video_publication(file, publication_id, filename, user_id=None):
 
     logger.info('VIDEO CONVERTED')
 
-    if user_id:
-        user = User.objects.get(id=user_id)
-        try:
-            notification = Notification.objects.create(actor=user, recipient=user,
+    try:
+        notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="{0}">Ver</a>'.format(
                                                            reverse_lazy('user_groups:group_theme',
                                                                         kwargs={'slug': theme.slug})))
-        except IntegrityError as e:
-            logger.info(e)
-            # TODO: Enviar mensaje al user con el error
-            return
+    except IntegrityError as e:
+        logger.info(e)
+        # TODO: Enviar mensaje al user con el error
+        return
 
-        content = render_to_string(template_name='channels/new_notification.html',
+    content = render_to_string(template_name='channels/new_notification.html',
                                    context={'notification': notification})
 
-        data = {
+    data = {
             'type': "video",
             'video': media_path,
             'id': publication_id
         }
 
-        Channel_group(notification_channel(user.id)).send({
+    Channel_group(notification_channel(user.id)).send({
             "text": json.dumps({'content': content})
         }, immediately=True)
 
-        Channel_group(theme.theme_channel).send({
+    Channel_group(theme.theme_channel).send({
             "text": json.dumps(data)
         }, immediately=True)
 
 
 @app.task(name='tasks.process_theme_pub_gif')
 def process_gif_publication(file, publication_id, filename, user_id=None):
+    assert user_id is not None
+    assert publication_id is not None
+    user = User.objects.get(id=user_id)
+
     try:
         publication = PublicationTheme.objects.select_related('board_theme').get(id=publication_id)
         theme = publication.board_theme
@@ -93,7 +101,7 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
         return
 
     clip = mp.VideoFileClip(file)
-    video_file, media_path = generate_path_video()
+    video_file, media_path = generate_path_video(user.username)
 
     if not os.path.exists(os.path.dirname(video_file)):
         os.makedirs(os.path.dirname(video_file))
@@ -104,32 +112,32 @@ def process_gif_publication(file, publication_id, filename, user_id=None):
 
     logger.info('GIF CONVERTED')
 
-    if user_id:
-        user = User.objects.get(id=user_id)
-        try:
-            notification = Notification.objects.create(actor=user, recipient=user,
+
+
+    try:
+        notification = Notification.objects.create(actor=user, recipient=user,
                                                        verb=u'¡Ya esta tu video %s!' % filename,
                                                        description='<a href="{0}">Ver</a>'.format(
                                                            reverse_lazy('user_groups:group_theme',
                                                                         kwargs={'slug': theme.slug})))
-        except IntegrityError as e:
-            logger.info(e)
-            # TODO: Enviar mensaje al user con el error
-            return
+    except IntegrityError as e:
+        logger.info(e)
+        # TODO: Enviar mensaje al user con el error
+        return
 
-        content = render_to_string(template_name='channels/new_notification.html',
+    content = render_to_string(template_name='channels/new_notification.html',
                                    context={'notification': notification})
 
-        data = {
+    data = {
             'type': "video",
             'video': media_path,
             'id': publication_id
         }
 
-        Channel_group(notification_channel(user.id)).send({
+    Channel_group(notification_channel(user.id)).send({
             "text": json.dumps({'content': content})
         }, immediately=True)
 
-        Channel_group(theme.theme_channel).send({
+    Channel_group(theme.theme_channel).send({
             "text": json.dumps(data)
         }, immediately=True)

@@ -23,7 +23,8 @@ def upload_image_theme_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('theme_publications/images', filename)
+    final_path = os.path.join('theme_publications/images', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 def upload_video_theme_publication(instance, filename):
@@ -34,7 +35,8 @@ def upload_video_theme_publication(instance, filename):
     """
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('theme_publications/videos', filename)
+    final_path = os.path.join('theme_publications/videos', instance.publication.author.username)
+    return os.path.join(final_path, filename)
 
 
 class PublicationThemeVideo(models.Model):
