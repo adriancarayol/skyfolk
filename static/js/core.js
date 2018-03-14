@@ -10,10 +10,11 @@ $(document).ready(function () {
     var self_page_wrapper = $('#self-page-wrapper');
     var tab_comentarios = $('#tab-comentarios');
 
-    $('select').material_select(); 
-
+    $('select').material_select();
+    $('.materialboxed').materialbox();
     $('textarea#message2, textarea#message3').characterCounter();
-    var Autocomplete = function(options) {
+
+    var Autocomplete = function (options) {
         this.form_selector = options.form_selector;
         this.url = options.url || '/search/autocomplete/';
         this.delay = parseInt(options.delay || 300);
@@ -22,17 +23,17 @@ $(document).ready(function () {
         this.query_box = null;
     }
 
-    Autocomplete.prototype.setup = function() {
+    Autocomplete.prototype.setup = function () {
         var self = this;
 
         this.form_elem = $(this.form_selector);
         this.query_box = this.form_elem.find('input[name=q]');
 
         // Watch the input box.
-        this.query_box.on('keyup', function() {
+        this.query_box.on('keyup', function () {
             var query = self.query_box.val();
 
-            if(query.length < self.minimum_length) {
+            if (query.length < self.minimum_length) {
                 return false;
             }
 
@@ -40,7 +41,7 @@ $(document).ready(function () {
         })
     }
 
-    Autocomplete.prototype.fetch = function(query) {
+    Autocomplete.prototype.fetch = function (query) {
         var self = this
 
         $.ajax({
@@ -48,13 +49,13 @@ $(document).ready(function () {
             , data: {
                 'q': query
             }
-            , success: function(data) {
+            , success: function (data) {
                 self.show_results(data);
             }
         })
     }
 
-    Autocomplete.prototype.show_results = function(data) {
+    Autocomplete.prototype.show_results = function (data) {
         // Remove any existing results.
         $('.ac-results').remove();
 
@@ -62,8 +63,8 @@ $(document).ready(function () {
         var results_wrapper = $('<div class="ac-results"></div>');
         var base_elem = $('<div class="result-wrapper"><a href="#" class="ac-result"></a></div>');
 
-        if(results.length > 0) {
-            for(var res_offset in results) {
+        if (results.length > 0) {
+            for (var res_offset in results) {
                 var elem = base_elem.clone();
                 var result = elem.find('.ac-result');
                 result.attr('href', '/profile/' + results[res_offset].username);
@@ -187,7 +188,7 @@ $(document).ready(function () {
 
     /* Submit creacion de grupo */
     $('button#btn_new_group').on('click', function (event) {
-        event.preventDefault(); 
+        event.preventDefault();
         AJAX_submit_group();
     });
     /**** ATAJOS DE TECLADO ****/
@@ -200,7 +201,7 @@ $(document).ready(function () {
     /* Atajo para enviar comentarios mas rapido */
     $(page_wrapper).find('#message3').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
             $('#sendformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
             $(this).blur(); // OFF FOCUS
@@ -209,7 +210,7 @@ $(document).ready(function () {
     /* Atajo para enviar comentarios mas rapido a mi perfil. */
     $(self_page_wrapper).find('#message2').keypress(function (e) {
         //tecla ENTER presinada + Shift
-        if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10) && $(this).is(":visible")) {
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10) && $(this).is(":visible")) {
             $('#sendselfformpubli').click();
             $(this).val(''); // CLEAR TEXTAREA
             $(this).blur(); // OFF FOCUS
@@ -225,7 +226,7 @@ $(document).ready(function () {
     /* Abre nuevo mensaje "m" */
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
-        if (key == 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 109 && ($(page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(page_wrapper).toggle();
             $(page_wrapper).find('#message3').focus();
@@ -235,7 +236,7 @@ $(document).ready(function () {
     /* Abre nuevo mensaje (propio) "m" */
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
-        if (key == 77 && ($(self_page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 77 && ($(self_page_wrapper).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(self_page_wrapper).toggle();
             $(self_page_wrapper).find('#message2').focus();
@@ -247,7 +248,7 @@ $(document).ready(function () {
     $(this).keypress(function (e) {
         var key = e.keyCode || e.which;
         var cheat = document.getElementById('atajos-keyboard-profile');
-        if (key == 97 && ($(cheat).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
+        if (key === 65 && ($(cheat).is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // Si la tecla pulsada es la m y el div esta oculto, lo mostramos.
             // Si presionas el char 'm' mostará el div para escribir un mensaje.
             $(cheat).show();
         }
@@ -282,7 +283,7 @@ $(document).ready(function () {
         }
     });
 
-    /* REMOVE suggestion results */ 
+    /* REMOVE suggestion results */
     $(this).click(function (event) {
         if (!$(event.target).closest('.ac-results').length) {
             $('.ac-results').remove();
@@ -292,7 +293,7 @@ $(document).ready(function () {
     /* Focus on input search */
     $(this).on('keydown', function (e) {
         if (e.keyCode === 111 && ($('#atajos-keyboard-profile').is(':hidden')) && !($('input').is(":focus")) && !($('textarea').is(":focus"))) { // escape
-            $('#id_searchText').focus(); // Focus del textarea off.
+            $('#id_q').focus(); // Focus del textarea off.
             return false;
         }
     });
@@ -307,7 +308,7 @@ $(document).ready(function () {
         swal({
             title: "Add new friend!",
             customClass: "default-div",
-            text: "Insert the friend's username or PIN",
+            text: "Insert the friend's username",
             type: "input",
             animation: "slide-from-top",
             showConfirmButton: true,
@@ -325,45 +326,45 @@ $(document).ready(function () {
             }
             AJAX_addNewFriendByUsernameOrPin(inputValue);
         });
-    }); 
+    });
 
     // Search users
     $('#id_searchText').on("keydown", function (event) {
         clearTimeout(keyPressTimeout);
         keyPressTimeout = setTimeout(function () {
-            var data = {
-                'value': $('#id_searchText').val()
-            };
-            $.ajax({
-                url: '/pre_search/users/',
-                type: "GET",
-                dataType: "json",
-                data: data,
-                success: function (result) {
-                    $('#id_searchText').atwho({
-                        at: '',
-                        searchKey: "username",
-                        insertTpl: "${username}",
-                        displayTpl: "<li class='search-live-item' data-value='${username}'><img src='${avatar}' width='30px' height='30px'>${username} <small>${first_name} ${last_name}</small></li>",
-                        data: result.result,
-                        displayTimeout: 100,
-                        callback: {
-                            filter: function (query, data, searchKey) {
-                                return $.map(data, function (item, i) {
-                                    if (item[searchKey].toLowerCase().indexOf(query) < 0 ||
-                                        item['first_name'].toLowerCase().indexOf(query) < 0 ||
-                                        item['last_name'].toLowerCase().indexOf(query) < 0) {
-                                        return item;
-                                    } else {
-                                        return null;
-                                    }
-                                })
+                var data = {
+                    'value': $('#id_searchText').val()
+                };
+                $.ajax({
+                    url: '/pre_search/users/',
+                    type: "GET",
+                    dataType: "json",
+                    data: data,
+                    success: function (result) {
+                        $('#id_searchText').atwho({
+                            at: '',
+                            searchKey: "username",
+                            insertTpl: "${username}",
+                            displayTpl: "<li class='search-live-item' data-value='${username}'><img src='${avatar}' width='30px' height='30px'>${username} <small>${first_name} ${last_name}</small></li>",
+                            data: result.result,
+                            displayTimeout: 100,
+                            callback: {
+                                filter: function (query, data, searchKey) {
+                                    return $.map(data, function (item, i) {
+                                        if (item[searchKey].toLowerCase().indexOf(query) < 0 ||
+                                            item['first_name'].toLowerCase().indexOf(query) < 0 ||
+                                            item['last_name'].toLowerCase().indexOf(query) < 0) {
+                                            return item;
+                                        } else {
+                                            return null;
+                                        }
+                                    })
+                                }
                             }
-                        }
-                    });
-                }
-            });
-        },
+                        });
+                    }
+                });
+            },
             250
         );
     });
@@ -420,6 +421,7 @@ function AJAX_mark_all_read() {
         }
     });
 }
+
 /* Para marcar una notificacion como leida */
 function AJAX_mark_read(obj) {
     var slug = obj.getAttribute('data-notification');
@@ -441,6 +443,7 @@ function AJAX_mark_read(obj) {
         }
     });
 }
+
 /* Para eliminar una notificacion */
 function AJAX_delete_notification(slug, id) {
     var url_ = '/inbox/notifications/delete/' + slug + '/';
@@ -477,7 +480,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
             console.log(data);
             var response = data.response;
 
-            if (response == "added_friend") {
+            if (response === "added_friend") {
                 swal({
                     title: "Success!",
                     text: "You have added a friend!",
@@ -490,15 +493,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                         if (typeof addItemToFriendList === "function")
                             addItemToFriendList(data.friend_first_name, data.friend_last_name, data.friend_username, data.friend_avatar);
                 });
-            } else if (response == 'your_own_pin') {
-                swal({
-                    title: "Wait a moment!",
-                    text: "It's your own pin!",
-                    customClass: 'default-div',
-                    timer: 4000,
-                    showConfirmButton: true
-                });
-            } else if (response == 'your_own_username') {
+            } else if (response === 'your_own_username') {
                 swal({
                     title: "Wait a moment!",
                     text: "It's your own username!",
@@ -506,7 +501,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'its_your_friend') {
+            } else if (response === 'its_your_friend') {
                 swal({
                     title: "Wait a moment!",
                     text: "It's already your friend!",
@@ -514,7 +509,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'its_blocked') {
+            } else if (response === 'its_blocked') {
                 swal({
                     title: "Espera un momento!",
                     text: "Tienes bloqueado este perfil!",
@@ -522,7 +517,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'no_added_friend') {
+            } else if (response === 'no_added_friend') {
                 swal({
                     title: "We have a problem",
                     text: "Friend no added",
@@ -530,15 +525,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'no_match') {
-                swal({
-                    title: "We have a problem",
-                    text: "This username or pin no exists.",
-                    customClass: 'default-div',
-                    timer: 4000,
-                    showConfirmButton: true
-                });
-            } else if (response == 'in_progress') {
+            } else if (response === 'in_progress') {
                 swal({
                     title: "Request in progress",
                     text: "Your request is to confirm!.",
@@ -546,7 +533,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'new_petition') {
+            } else if (response === 'new_petition') {
                 swal({
                     title: "New petition sent!",
                     text: "Wait to confirm!.",
@@ -554,7 +541,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     timer: 4000,
                     showConfirmButton: true
                 });
-            } else if (response == 'user_blocked') {
+            } else if (response === 'user_blocked') {
                 swal({
                     title: "Petición denegada.",
                     text: "El usuario te ha bloqueado.",
@@ -564,7 +551,7 @@ function AJAX_addNewFriendByUsernameOrPin(valor) {
                     animation: "slide-from-top",
                     showConfirmButton: false
                 });
-            } else if (response == 'blocked_profile') {
+            } else if (response === 'blocked_profile') {
                 swal({
                     title: "Petición denegada.",
                     text: "Tienes bloqueado a este perfil.",
@@ -646,6 +633,7 @@ function AJAX_respondGroupRequest(id_object, status, obj_data) {
 
 
 }
+
 /*
  function addNewPublication(type, user_pk, board_owner_pk, parent) {
  if (type == "reply") {
@@ -679,24 +667,13 @@ function AJAX_submit_publication(obj_form, type, pks) {
         enctype: 'multipart/form-data',
         processData: false,
         success: function (data) {
-            var response = data.response;
             var msg = data.msg;
-
-            if (response === true && (typeof(msg) !== 'undefined' && msg !== null)) {
+            if (typeof(msg) !== 'undefined' && msg !== null) {
                 swal({
                     title: "",
                     text: msg,
                     customClass: 'default-div',
                     type: "success"
-                });
-            } else if (response === true) {
-
-            } else {
-                swal({
-                    title: "",
-                    text: "Failed to publish",
-                    customClass: 'default-div',
-                    type: "error"
                 });
             }
             if (type === "reply") {
@@ -706,27 +683,18 @@ function AJAX_submit_publication(obj_form, type, pks) {
             } else if (type === "publication") {
                 $('#page-wrapper, #self-page-wrapper').fadeOut("fast"); // Ocultamos el DIV al publicar un mensaje.
             }
-        },
-        error: function (data, textStatus) {
-            var response = $.parseJSON(data.responseText);
-            var error_msg = response.error[0];
-            var type_error = response.type_error;
-
-            if (type_error === 'incorrent_data') {
-                swal({
-                    title: '¡Ups!',
-                    text: error_msg, // rs.responseText,
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            } else {
-                swal({
-                    title: '¡Ups!',
-                    text: 'Revisa el contenido de tu mensaje', // rs.responseText,
-                    customClass: 'default-div',
-                    type: "error"
-                });
-            }
+        }, error: function (data, textStatus, jqXHR) {
+            var errors = [];
+            $.each(data.responseJSON, function (i, val) {
+                errors.push(val);
+            });
+            swal({
+                title: "Tenemos un problema...",
+                customClass: 'default-div',
+                text: errors.join(),
+                timer: 4000,
+                showConfirmButton: true
+            });
         }
     }).done(function () {
 
@@ -735,7 +703,8 @@ function AJAX_submit_publication(obj_form, type, pks) {
 
 
 function AJAX_submit_group() {
-    var form = new FormData($('#from_new_group').get(0));
+    var f = $('#from_new_group');
+    var form = new FormData(f.get(0));
     form.append('csrfmiddlewaretoken', getCookie('csrftoken'));
     $.ajax({
         url: '/create_group/',
@@ -747,18 +716,13 @@ function AJAX_submit_group() {
         enctype: 'multipart/form-data',
         data: form,
         success: function (data) {
-            var response = data.response;
-            if (response == true) {
-                var create_group = $('#create_group');
-                create_group.hide();
-                create_group.find('input').val('');
-            } else {
-                swal({
-                    title: "¡Ups!",
-                    text: "Fallo al crear el grupo.",
-                    customClass: 'default-div',
-                    type: "error"
-                });
+            var msg = data.msg;
+            if (typeof(msg) !== 'undefined' && msg !== null) {
+                Materialize.toast(msg, 4000);
+            }
+            if (typeof data.pk !== 'undefined' && data.pk !== null) {
+                f.trigger("reset");
+                $('#create_group').hide();
             }
         },
         error: function (rs, e) {
@@ -791,17 +755,17 @@ function AJAX_requestfriend(status) {
             success: function (response) {
                 if (response == "isfriend") {
                     swal({
-                        title: "¡Ya es tu amigo!",
-                        type: "warning",
-                        customClass: 'default-div',
-                        animation: "slide-from-top",
-                        showConfirmButton: true,
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Unfollow",
-                        cancelButtonText: "Ok, fine!",
-                        closeOnConfirm: true
-                    },
+                            title: "¡Ya es tu amigo!",
+                            type: "warning",
+                            customClass: 'default-div',
+                            animation: "slide-from-top",
+                            showConfirmButton: true,
+                            showCancelButton: true,
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Unfollow",
+                            cancelButtonText: "Ok, fine!",
+                            closeOnConfirm: true
+                        },
                         function (isConfirm) {
                             if (isConfirm) {
                                 AJAX_remove_relationship(slug);
@@ -836,6 +800,7 @@ function AJAX_requestfriend(status) {
         alert("Debe estar registrado");
     }
 }
+
 /* Eliminar relacion entre dos usuarios */
 function AJAX_remove_relationship(slug) {
     $.ajax({
@@ -879,7 +844,7 @@ function AJAX_remove_request_friend() {
         dataType: 'json',
         success: function (response) {
             if (response == true) {
-                $('#follow_request').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" onclick=AJAX_requestfriend("noabort");>'+'add'+'</span>');
+                $('#follow_request').replaceWith('<span id="addfriend" class="material-icons follow-profile" title="Seguir" onclick=AJAX_requestfriend("noabort");>' + 'add' + '</span>');
             } else if (response == false) {
                 swal({
                     title: "¡Ups!",
@@ -920,8 +885,10 @@ function AJAX_remove_bloq_from_config(obj) {
         }
     });
 }
+
 /*****************************************************/
 /**********              UTIL                *********/
+
 /*****************************************************/
 
 function is_numeric(value) {

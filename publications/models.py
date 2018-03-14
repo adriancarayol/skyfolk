@@ -15,12 +15,12 @@ from django.utils.translation import gettext as _
 from embed_video.fields import EmbedVideoField
 from mptt.models import MPTTModel, TreeForeignKey
 from taggit.managers import TaggableManager
-
 from notifications.signals import notify
 from photologue.models import Photo
 from publications.utils import validate_video, set_link_class
 from user_profile.utils import group_name
 from .utils import get_channel_name
+from .managers import PublicationManager
 
 # Los tags HTML que permitimos en los comentarios
 ALLOWED_TAGS = bleach.ALLOWED_TAGS + settings.ALLOWED_TAGS
@@ -159,6 +159,7 @@ class Publication(PublicationBase):
     shared_group_publication = models.ForeignKey('publications_groups.PublicationGroup', blank=True, null=True)
     parent = TreeForeignKey('self', blank=True, null=True,
                             related_name='reply', db_index=True)
+    objects = PublicationManager()
 
     # objects = PublicationManager()
 

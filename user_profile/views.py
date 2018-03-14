@@ -250,7 +250,7 @@ def profile_view(request, username,
     # Recuperamos el numero total de likes
     total_likes = 0
     try:
-        total_likes = LikeProfile.objects.filter(to_profile__user__username=user.username).count()
+        total_likes = LikeProfile.objects.filter(to_profile__user__username=username).count()
     except Exception as e:
         logging.info(e)
 
