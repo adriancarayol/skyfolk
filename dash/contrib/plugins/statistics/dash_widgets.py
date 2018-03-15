@@ -46,4 +46,5 @@ class Statistics2x2Widget(BaseStatisticsWidget):
     """Statistics plugin 2x2 widget."""
 
     plugin_uid = 'statistics_2x2'
-    cols likes2
+    cols = 2
+    rows = 2
