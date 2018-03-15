@@ -23,7 +23,7 @@ class ProfileShortcutsPlaceholder(BaseDashboardPlaceholder):
 
 
 class ProfileLayout(BaseDashboardLayout):
-    """Android layout."""
+    """Profile layout."""
 
     uid = 'profile'
     name = 'Profile'
