@@ -1,6 +1,5 @@
 from ....base import plugin_widget_registry
 from ....factory import plugin_widget_factory
-from ....contrib.plugins.dummy.dash_widgets import BaseDummyWidget
 from ....contrib.plugins.image.dash_widgets import BaseImageWidget
 from ....contrib.plugins.memo.dash_widgets import (
     BaseMemoWidget,
@@ -10,6 +9,7 @@ from ....contrib.plugins.rss_feed.dash_widgets import BaseReadRSSFeedWidget
 from ....contrib.plugins.video.dash_widgets import BaseVideoWidget
 from ....contrib.plugins.service.dash_widgets import BaseTriggerWidget
 from ....contrib.plugins.poll.dash_widgets import BasePollWidget
+from ....contrib.plugins.statistics.dash_widgets import BaseStatisticsWidget
 
 from .dash_widgets import (
     URL1x1ProfileMainWidget,
@@ -129,3 +129,16 @@ plugin_widget_factory(BasePollWidget,
                       'main',
                       'poll',
                       main_sizes)
+
+# *************************************************************************
+# ************** Registering the widgets for Statistics plugin ***********
+# ***********************************************************************
+main_sizes = (
+        (1, 1),
+)
+
+plugin_widget_factory(BaseStatisticsWidget,
+        'profile',
+        'main',
+        'statistics',
+        main_sizes)

@@ -7,7 +7,9 @@
                         <h4 class="flow-text">{{ plugin.data.title }} // <a class="white-text" href="{% url "user_profile:profile" plugin.user %}">@{{ plugin.user }}</a></h4>
                     </div>
                 </div>
-                <p>{{ plugin.data.text }}</p>
+                <div class="row center">
+                    <p class="flow-text">{{ plugin.data.text }}</p>
+                </div>
             </div>
         </div>
     </div>
