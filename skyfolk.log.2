@@ -1,0 +1,714 @@
+2018-03-11 19:39:50,629 ERROR exception 14500 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 71, in validate_video
+    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/').lower()[
+AttributeError: 'FieldFile' object has no attribute 'video'
+2018-03-11 19:40:05,943 ERROR exception 14500 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 71, in validate_video
+    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/').lower()[
+AttributeError: 'FieldFile' object has no attribute 'video'
+2018-03-11 19:40:51,293 ERROR exception 14500 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 71, in validate_video
+    if isinstance(value.video, InMemoryUploadedFile) and value.file.content_type.split('/').lower()[
+AttributeError: 'FieldFile' object has no attribute 'video'
+2018-03-11 19:41:40,821 ERROR exception 15294 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 71, in validate_video
+    if isinstance(value.file, InMemoryUploadedFile) and value.file.content_type.split('/').lower()[
+AttributeError: 'list' object has no attribute 'lower'
+2018-03-11 19:42:18,920 ERROR exception 15521 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 71, in validate_video
+    if isinstance(value.file, InMemoryUploadedFile) and value.content_type.split('/').lower()[
+AttributeError: 'FieldFile' object has no attribute 'content_type'
+2018-03-11 19:42:35,109 ERROR exception 15687 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 71, in validate_video
+    if isinstance(value.file, InMemoryUploadedFile) and value.file.content_type.split('/').lower()[
+AttributeError: 'list' object has no attribute 'lower'
+2018-03-11 19:46:48,189 ERROR exception 16990 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 77, in validate_video
+    raise ValueError('Please upload a valid video file')
+ValueError: Please upload a valid video file
+2018-03-11 19:47:21,425 ERROR exception 17173 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 78, in validate_video
+    raise ValueError('Please upload a valid video file')
+ValueError: Please upload a valid video file
+2018-03-11 19:49:57,589 ERROR exception 18007 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 78, in validate_video
+    raise ValueError('Please upload a valid video file')
+ValueError: Please upload a valid video file
+2018-03-11 19:50:04,519 ERROR exception 18007 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 78, in validate_video
+    raise ValueError('Please upload a valid video file')
+ValueError: Please upload a valid video file
+2018-03-11 19:51:29,525 ERROR exception 18396 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 76, in validate_video
+    if not settings.VIDEO_EXTENTIONS in filetype:
+TypeError: 'in <string>' requires string as left operand, not list
+2018-03-11 19:52:16,043 ERROR exception 18768 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 77, in validate_video
+    raise ValueError('Please upload a valid video file')
+ValueError: Please upload a valid video file
+2018-03-11 19:53:42,364 ERROR exception 19268 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 78, in validate_video
+    raise ValueError('Please upload a valid video file')
+ValueError: Please upload a valid video file
+2018-03-11 19:55:40,823 ERROR exception 19957 Internal Server Error: /admin/publications/publicationvideo/add/
+Traceback (most recent call last):
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/exception.py", line 41, in inner
+    response = get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 249, in _legacy_get_response
+    response = self._get_response(request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 187, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/channels/handler.py", line 243, in process_exception_by_middleware
+    return super(AsgiHandler, self).process_exception_by_middleware(exception, request)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/core/handlers/base.py", line 185, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 551, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/views/decorators/cache.py", line 57, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/sites.py", line 224, in inner
+    return view(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1508, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 67, in _wrapper
+    return bound_func(*args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 149, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/utils/decorators.py", line 63, in bound_func
+    return func.__get__(self, type(self))(*args2, **kwargs2)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1408, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/contrib/admin/options.py", line 1440, in _changeform_view
+    if form.is_valid():
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 183, in is_valid
+    return self.is_bound and not self.errors
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 175, in errors
+    self.full_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/forms.py", line 386, in full_clean
+    self._post_clean()
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/forms/models.py", line 413, in _post_clean
+    self.instance.full_clean(exclude=exclude, validate_unique=False)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1228, in full_clean
+    self.clean_fields(exclude=exclude)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/base.py", line 1270, in clean_fields
+    setattr(self, f.attname, f.clean(raw_value, self))
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 607, in clean
+    self.run_validators(value)
+  File "/home/adrian/skyfolk/venv/lib/python3.6/site-packages/django/db/models/fields/__init__.py", line 559, in run_validators
+    v(value)
+  File "/home/adrian/skyfolk/publications/utils.py", line 84, in validate_video
+    raise ValueError('Please upload a valid video file')
+ValueError: Please upload a valid video file

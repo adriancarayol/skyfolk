@@ -632,7 +632,7 @@ def like_profile(request):
         try:
             n = Profile.objects.get(user_id=user.id)
             m = Profile.objects.get(user_id=slug)
-        except Profile.DoesNotExist:
+        except (Profile.DoesNotExist, ValueError) as e:
             raise Http404
 
         if LikeProfile.objects.filter(to_profile=m, from_profile=n).exists():
