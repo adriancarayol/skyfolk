@@ -108,7 +108,7 @@
                             <div class="options_comentarios" data-id="{{ node.id }}"
                                  data-board="{{ node.board_group.id }}">
                                 <ul class="opciones">
-                                    {% if user.id == node.author.id or enable_control_pubs_btn %}
+                                    {% if user.id == node.author.id or group_profile.owner_id == user.id %}
                                         {% comment %} Si estamos visitando un perfil que no es el nuestro {% endcomment %}
                                         <li class="trash-comment" title="Borrar comentario"><i
                                                 class="material-icons md-18">delete_forever</i>

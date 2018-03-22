@@ -126,10 +126,7 @@ Template para las busquedas
                                     <i class="material-icons like-him">group</i>
                                     <div class="bg-user">
                                         <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
-                                             class="profile-user-bg"><img src="
-                                                {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
-                                                                          alt="Imagen de {{ item.name }}"
-                                                                          title="Imagen de {{ item.name }}"/></div>
+                                             class="profile-user-bg"><img src="{% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}" alt="Imagen de {{ item.name }}" title="Imagen de {{ item.name }}"/></div>
                                     </div>
                                 </div>
                                 <div class="col s12">
@@ -181,10 +178,7 @@ Template para las busquedas
                                             {% endfor %}
                                         </div>
                                     {% endif %}
-                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/
-                                        {{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
-                                         alt="{{ item.title }}" title="{{ item.title }}"
-                                         onclick="location.href='/photo/{{ item.slug }}'">
+                                    <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='/photo/{{ item.slug }}'">
                                 </div>
                                 <div class="col s12 legend-content">
                                     <div class="legend-user-image">
@@ -215,9 +209,7 @@ Template para las busquedas
                                         </div>
                                     {% endif %}
                                     {% if item.thumbnail %}
-                                        <img class="lazyload" data-src="/media/{{ item.thumbnail }}"
-                                             alt="{{ item.name }}" title="{{ item.name }}"
-                                             onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
+                                        <img class="lazyload" data-src="/media/{{ item.thumbnail }}" alt="{{ item.name }}" title="{{ item.name }}" onclick="location.href='{% url "photologue:pl-video" slug=item.slug %}'">
                                     {% else %}
                                         <video controls style="width: 100%; height: 100%; outline: none;">
                                             <source src="/media/{{ item.video }}" type="video/mp4">
@@ -287,10 +279,7 @@ Template para las busquedas
                                 <i class="material-icons like-him">group</i>
                                 <div class="bg-user">
                                     <div onclick="location.href='{% url "user_groups:group-profile" groupname=item.slug %}'"
-                                         class="profile-user-bg"><img src="
-                                            {% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}"
-                                                                      alt="Imagen de {{ item.name }}"
-                                                                      title="Imagen de {{ item.name }}"/></div>
+                                         class="profile-user-bg"><img src="{% if item.object.avatar %}{{ item.object.avatar.url }}{% else %}{% static "img/nuevo.png" %}{% endif %}" alt="Imagen de {{ item.name }}" title="Imagen de {{ item.name }}"/></div>
                                 </div>
                             </div>
                             <div class="col s12">
@@ -351,10 +340,7 @@ Template para las busquedas
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/
-                                    {{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}"
-                                     alt="{{ item.title }}" title="{{ item.title }}"
-                                     onclick="location.href='/photo/{{ item.slug }}'">
+                                <img class="lazyload" data-src="{% if item.thumbnail %}/media/{{ item.thumbnail }}{% elif item.url_image %}/media/{{ item.url_image }}{% else %}{{ item.external_image }}{% endif %}" alt="{{ item.title }}" title="{{ item.title }}" onclick="location.href='/photo/{{ item.slug }}'">
                             </div>
                             <div class="col s12 legend-content">
                                 <div class="legend-user-image">
