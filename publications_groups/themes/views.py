@@ -238,6 +238,7 @@ class DeletePublicationTheme(UpdateView):
         self.object.deleted = True
         try:
             self.object.save(update_fields=['deleted'])
+            self.object.get_descendants().update(deleted=True)
             response = True
         except IntegrityError:
             pass

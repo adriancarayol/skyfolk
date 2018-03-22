@@ -3,6 +3,7 @@ Nueva respuesta a una publicacion
 {% endcomment %}
 <div class="hidden" id="caja-comentario-{{ pub.pk }}" style="display: none;">
     <form class="reply-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ csrf_token }}
         <input name="author" type="hidden" value="{{ request.user.id }}">
         <input name="board_theme" type="hidden" value="{{ object.id }}">
         <input name="parent" type="hidden" value="{{ pub.id }}">

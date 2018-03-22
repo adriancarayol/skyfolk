@@ -104,7 +104,8 @@ class PublicationTheme(PublicationBase):
             'parent_id': self.parent_id,
             'level': self.level,
             'content': render_to_string(request=request, template_name='groups/board_theme_publications.html',
-                                        context={'publications': [self, ], 'object': self.board_theme, 'group_owner_id': group_owner_id})
+                                        context={'publications': [self, ], 'object': self.board_theme,
+                                                 'group_owner_id': group_owner_id})
         }
 
         # Enviamos a todos los usuarios que visitan el perfil

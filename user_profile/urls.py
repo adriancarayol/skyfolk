@@ -48,7 +48,7 @@ urlpatterns = [
         user_profile_views.remove_request_follow),
     url(r'^add_friend_by_pin/$',
         user_profile_views.add_friend_by_username_or_pin),
-    url(r'^bloq_user/$', user_profile_views.bloq_user),
+    url(r'^bloq_user/$', user_profile_views.bloq_user, name='bloq_user'),
     url(r'^accounts/password/change/confirmation',
         user_profile_views.changepass_confirmation),
     # URL CHANGE PASSWORD

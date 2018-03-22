@@ -1,7 +1,7 @@
 from ..views import remove_relationship
 from django.test import TestCase
 from neomodel import db, clear_neo4j_database
-from ..models import RelationShipProfile
+from ..models import RelationShipProfile, LikeProfile
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from ..node_models import NodeProfile
@@ -129,6 +129,63 @@ class FollowUserTest(TestCase):
 
         self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
                                                             from_profile=user_1.profile).count(), 1)
+    def test_block_user(self):
+        user_1 = User.objects.get(username='user1')
+        user_2 = User.objects.get(username='user2')
+        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
+        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        self.assertIsNotNone(user_1)
+        self.assertIsNotNone(user_2)
+        self.assertIsNotNone(node_1)
+        self.assertIsNotNone(node_2)
+
+        self.client.login(username='user1', password='password')
+        request = self.client.post(reverse('user_profile:bloq_user'), {'id_user': user_2.id})
+        self.assertEqual(request.status_code, 200)
+
+        self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
+                                                            from_profile=user_1.profile, type=3).count(), 1)
+        self.assertTrue(node_1.bloq.is_connected(node_2))
+
+
+    def test_block_follow(self):
+        self.test_follow_user()
+        user_1 = User.objects.get(username='user1')
+        user_2 = User.objects.get(username='user2')
+        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
+        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+
+        request = self.client.post(reverse('user_profile:bloq_user'), {'id_user': user_2.id})
+        self.assertEqual(request.status_code, 200)
+
+        self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
+                                                            from_profile=user_1.profile, type=3).count(), 1)
+        self.assertTrue(node_1.bloq.is_connected(node_2))
+
+
+    def test_block_user_liked(self):
+        user_1 = User.objects.get(username='user1')
+        user_2 = User.objects.get(username='user2')
+        node_1 = NodeProfile.nodes.get(user_id=user_1.id)
+        node_2 = NodeProfile.nodes.get(user_id=user_2.id)
+        self.assertIsNotNone(user_1)
+        self.assertIsNotNone(user_2)
+        self.assertIsNotNone(node_1)
+        self.assertIsNotNone(node_2)
+        self.client.login(username='user1', password='password')
+
+        request = self.client.post(reverse('user_profile:like_profile'), {'slug': user_2.id})
+        self.assertEqual(request.status_code, 200)
+        self.assertIsNotNone(LikeProfile.objects.get(to_profile=user_2.profile, from_profile=user_1.profile))
+
+        request = self.client.post(reverse('user_profile:bloq_user'), {'id_user': user_2.id})
+        self.assertEqual(request.status_code, 200)
+
+        self.assertEqual(RelationShipProfile.objects.filter(to_profile=user_2.profile,
+                                                            from_profile=user_1.profile, type=3).count(), 1)
+        self.assertEqual(LikeProfile.objects.filter(to_profile=user_2.profile, from_profile=user_1.profile).count(), 0)
+        self.assertTrue(node_1.bloq.is_connected(node_2))
+
 
     @classmethod
     def tearDownClass(cls):
