@@ -6,10 +6,11 @@ from publications_gallery_groups.models import PublicationGroupMediaVideo, Publi
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class PublicationPhotoForm(forms.ModelForm):
     class Meta:
         model = PublicationGroupMediaPhoto
-        exclude = ['image', 'created', 'user_give_me_like',
+        exclude = ['image', 'created', 'user_give_me_like', 'author',
                    'user_give_me_hate', 'tags', 'deleted', 'event_type']
 
     def __init__(self, *args, **kwargs):
@@ -21,7 +22,6 @@ class PublicationPhotoForm(forms.ModelForm):
             'required': 'required',
         })
         self.fields['content'].label = ''
-        self.fields['author'].widget = forms.HiddenInput()
         self.fields['board_photo'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
 
@@ -68,12 +68,13 @@ class PublicationPhotoEdit(forms.ModelForm):
             raise forms.ValidationError('No existe la publicación solicitada.')
         return pk
 
+
 # Video form
 
 class PublicationVideoForm(forms.ModelForm):
     class Meta:
         model = PublicationGroupMediaVideo
-        exclude = ['image', 'created', 'user_give_me_like',
+        exclude = ['image', 'created', 'user_give_me_like', 'author',
                    'user_give_me_hate', 'tags', 'deleted', 'event_type']
 
     def __init__(self, *args, **kwargs):
@@ -85,7 +86,6 @@ class PublicationVideoForm(forms.ModelForm):
             'required': 'required',
         })
         self.fields['content'].label = ''
-        self.fields['author'].widget = forms.HiddenInput()
         self.fields['board_video'].widget = forms.HiddenInput()
         self.fields['parent'].widget = forms.HiddenInput()
 

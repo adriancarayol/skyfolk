@@ -1,7 +1,6 @@
 <div class="hidden" id="caja-comentario-{{ node.pk }}">
     <!-- REPLY FORM -->
-    <form class="reply-form" method="post">{% csrf_token %}
-        <input name="p_author" type="hidden" value="{{ request.user.id }}">
+    <form class="reply-form" method="post">
         <input name="board_photo" type="hidden" value="{{ photo.id }}">
         <input name="parent" type="hidden" value="{{ node.id }}">
         <div class="row">

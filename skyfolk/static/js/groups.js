@@ -168,6 +168,7 @@ $(function () {
     $wrapper_shared_pub.find('#share_publication_form').on('submit', function (event) {
         event.preventDefault();
         var content = $(this).serialize();
+        content += '&csrfmiddlewaretoken=' + csrftoken;
         var pub_id = $wrapper_shared_pub.find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
         AJAX_add_publication_to_skyline(pub_id, tag, content);
@@ -359,7 +360,8 @@ $(function () {
             url: '/publication/group/theme/like/',
             type: 'POST',
             data: {
-                'pk': pub_box.data('id')
+                'pk': pub_box.data('id'),
+                'csrfmiddlewaretoken': csrftoken
             },
             async: true,
             dataType: "json",
@@ -1020,7 +1022,7 @@ function AJAX_add_hate_group_publication(caja_publicacion, heart, type) {
             var status = data.statuslike;
             var numHates = $(heart).find(".hate-value");
             var countHates = numHates.text();
-            if (response == true) {
+            if (response === true) {
                 if (!countHates || (Math.floor(countHates) == countHates && $.isNumeric(countHates))) {
                     if (status === statusOk) {
                         $(heart).css('color', '#ba68c8');
@@ -1209,7 +1211,8 @@ function AJAX_remove_publication_from_skyline(pub_id, tag) {
         type: 'POST',
         dataType: 'json',
         data: {
-            'pk': pub_id
+            'pk': pub_id,
+            'csrfmiddlewaretoken': csrftoken
         },
         success: function (data) {
             var response = data.response;
@@ -1241,6 +1244,8 @@ function AJAX_remove_publication_from_skyline(pub_id, tag) {
 
 function AJAX_submit_theme_publication(form) {
     var form_data = new FormData(form.get(0));
+    form_data.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
     $.ajax({
         url: '/publication/group/theme/reply/',
         type: 'POST',

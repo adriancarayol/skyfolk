@@ -10,14 +10,11 @@ from django.db.models import Count, When, Value, Case, IntegerField, OuterRef, S
 from django.db.models import Q
 from django.http import Http404, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
-from django.utils.decorators import method_decorator
-from django.views import View
 from django.views.generic import CreateView
 
 from emoji.models import Emoji
 from photologue.models import Video
 from publications.exceptions import MaxFilesReached, SizeIncorrect, MediaNotSupported, CantOpenMedia
-from publications.models import Publication
 from publications.views import logger
 from publications_gallery.forms import PublicationVideoForm, PublicationVideoEdit
 from publications.forms import SharedPublicationForm
@@ -121,6 +118,7 @@ class PublicationVideoView(AjaxableResponseMixin, CreateView):
                                            msg=u"Estamos procesando tus videos, te avisamos "
                                                u"cuando la publicación esté lista.")
             except Exception as e:
+                print(e)
                 form.add_error('content', str(e))
                 logger.info("Publication not created -> {}".format(e))
 
@@ -529,7 +527,7 @@ def load_more_video_descendants(request):
         context = {
             'pub_id': pub_id,
             'publications': publications,
-            'video': publication.board_video
+            'object': publication.board_video
         }
         return render(request, 'photologue/videos/ajax_load_replies.html', context=context)
     return HttpResponseForbidden()

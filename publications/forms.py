@@ -7,6 +7,7 @@ from publications.models import Publication
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class PublicationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(PublicationForm, self).__init__(*args, **kwargs)
@@ -14,13 +15,12 @@ class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
         # Excluir atributos en el formulario.
-        exclude = ['created', 'likes', 'user_give_me_like', 'hates',
+        exclude = ['created', 'likes', 'user_give_me_like', 'hates', 'author',
                    'user_give_me_hate', 'shared_publication', 'tags', 'deleted',
                    'event_type', 'liked', 'hated', 'shared', 'extra_content', ]
 
     def clean_content(self):
         content = self.cleaned_data['content']
-
 
         if content.isspace():  # Comprobamos si el comentario esta vacio
             raise forms.ValidationError('¡Comprueba el texto del comentario!')
@@ -88,7 +88,6 @@ class SharedPublicationForm(forms.ModelForm):
 
         if not content:
             return content
-
 
         if content.isspace():  # Comprobamos si el comentario esta vacio
             raise forms.ValidationError('El comentario esta vacio')

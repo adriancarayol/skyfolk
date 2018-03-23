@@ -193,7 +193,6 @@ class Publication(PublicationBase):
          Enviamos a través del socket a todos aquellos usuarios
          que esten visitando el perfil donde se publica el comentario.
         """
-
         data = {
             'type': 'pub',
             'id': self.id,

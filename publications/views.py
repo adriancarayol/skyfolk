@@ -320,7 +320,7 @@ def delete_publication(request):
         # Comprobamos si existe publicacion y que sea de nuestra propiedad
         try:
             publication = Publication.objects.prefetch_related('extra_content').select_related(
-                'shared_publication').defer('content').get(id=publication_id)
+                'shared_publication').get(id=publication_id)
         except ObjectDoesNotExist:
             return HttpResponse(json.dumps(data),
                                 content_type='application/json'
@@ -543,7 +543,7 @@ def add_hate(request):
     data = json.dumps({'response': response, 'statuslike': statuslike})
     return HttpResponse(data, content_type='application/json')
 
-
+@login_required()
 def edit_publication(request):
     """
     Permite al creador de la publicacion

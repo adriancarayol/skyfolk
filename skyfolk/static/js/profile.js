@@ -104,6 +104,7 @@ $(document).ready(function () {
     $(tab_comentarios).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
+        edit += '&csrfmiddlewaretoken=' + csrftoken;
         AJAX_edit_publication(edit);
     });
 
@@ -185,6 +186,7 @@ $(document).ready(function () {
     $(wrapper_shared_pub).find('#share_publication_form').on('submit', function (event) {
         event.preventDefault();
         var content = $(this).serialize();
+        content += '&csrfmiddlewaretoken=' + csrftoken;
         var pub_id = $(wrapper_shared_pub).find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
         AJAX_add_timeline(pub_id, tag, content);
@@ -296,7 +298,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.widget-controls').on('click', '.update-plugin', function(e) {
+    $('.widget-controls').on('click', '.update-plugin', function (e) {
         e.preventDefault();
         var plugin_uid = $(this).data('id');
         AJAX_update_entry_info(plugin_uid);
@@ -382,6 +384,7 @@ function AJAX_load_publications(pub, loader, page, btn) {
 
 /* EDIT PUBLICATION */
 function AJAX_edit_publication(data) {
+    console.log(data);
     $.ajax({
         url: '/publication/edit/',
         type: 'POST',
@@ -781,7 +784,7 @@ function AJAX_update_entry_info(plugin_uid) {
         dataType: 'json',
         success: function (data) {
             alert(data.plugin_uid);
-        }, error: function(rs , e) {
+        }, error: function (rs, e) {
             alert('ERROR');
         }
     })
