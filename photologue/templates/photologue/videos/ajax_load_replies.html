@@ -70,7 +70,7 @@
                            {% for video in videos %}
                            <div class="col s4 z-depth-2 center">
                             <video class="responsive-video" controls loop>
-                                <source src="{{ video.video.url }}" type="video/mp4">
+                                <source src="{{ object.video.url }}" type="video/mp4">
                                 </video>
                             </div>
                             {% endfor %}
@@ -132,7 +132,7 @@
      class="p_author-controls">
      <div class="row">
         <div class="col s12">
-            <form method="post" accept-charset="utf-8">{% csrf_token %}
+            <form method="post" accept-charset="utf-8">
                 <div class="row">
                     <div class="input-field col s12">
                         <input type="number" name="pk" required value="{{ node.pk }}" hidden>

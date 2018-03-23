@@ -33,6 +33,7 @@ $(document).ready(function () {
         var content = $(this).serialize();
         var pub_id = $wrapper_shared_pub.find('#id_pk').val();
         var tag = $('#pub-' + pub_id).find('.add-timeline').first();
+        content += '&csrfmiddlewaretoken=' + csrftoken;
         AJAX_add_timeline_detail(pub_id, tag, content);
     });
 
@@ -92,6 +93,7 @@ $(document).ready(function () {
     $(thread).on('click', '.edit-comment-btn', function (event) {
         event.preventDefault();
         var edit = $(this).closest('form').serialize();
+        edit += "&csrfmiddlewaretoken=" + csrftoken;
         AJAX_edit_publication_detail(edit);
     });
 }); // END DOCUMENT
@@ -103,7 +105,7 @@ function AJAX_delete_publication_detail(caja_publicacion) {
     var data = {
         userprofile_id: id_user,
         publication_id: id_pub,
-        'csrfmiddlewaretoken': csrftoken
+        "csrfmiddlewaretoken": csrftoken
     };
 
     $.ajax({
@@ -343,7 +345,8 @@ function AJAX_remove_timeline_detail(pub_id, tag) {
         type: 'POST',
         dataType: 'json',
         data: {
-            'pk': pub_id
+            'pk': pub_id,
+            'csrfmiddlewaretoken' : csrftoken
         },
         success: function (data) {
             var response = data.response;

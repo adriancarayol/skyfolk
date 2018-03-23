@@ -535,7 +535,7 @@ def load_more_video_descendants(request):
         context = {
             'pub_id': pub_id,
             'publications': publications,
-            'video': publication.board_video
+            'object': publication.board_video
         }
         return render(request, 'photologue_groups/videos/ajax_load_replies.html', context=context)
     return HttpResponseForbidden()

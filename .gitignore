@@ -30,6 +30,5 @@ esdata/
 db/
 kibana/
 tmp/
-static/
 *.log
 config/config

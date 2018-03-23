@@ -58,7 +58,7 @@
                                                class="waves-effect waves-light btn right red">Eliminar</a>
                                             <div class="edit-form" id="wrapper-edit-form">
                                                 <form method="post" accept-charset="utf-8"
-                                                      action="{% url "photologue:edit-video" video_id=object.pk %}">{% csrf_token %}
+                                                      action="{% url "photologue:edit-video" video_id=object.pk %}">
                                                     <div class="row">
                                                         {{ form.name.errors }}
                                                         <div class="input-field col s12">
@@ -132,8 +132,7 @@
                                 </div>
                             {% endif %}
                             <div class="row form-wrapper">
-                                <form id="message-photo-form" action="" method="post">{% csrf_token %}
-                                    {{ publication_video.csrftoken }}
+                                <form id="message-photo-form" action="" method="post">
                                     {{ publication_video }}
                                     <div class="file-field input-field">
                                         <div class="btn">

@@ -256,7 +256,6 @@ body > .container {
     position: relative;
     list-style-type: none;
     text-align: center;
-    margin-top: 20%;
     display: block; }
     .nav-vertical-and-chat .nav-vertical-controls .controls-notifications .nav-button-notifications, .nav-vertical-and-chat .nav-vertical-controls .controls-notifications .nav-button-notifications:visited {
       display: inline-block;
