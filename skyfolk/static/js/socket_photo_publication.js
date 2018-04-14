@@ -28,7 +28,9 @@ var UTILS = UTILS || (function () {
                         var parent = $('#pub-' + data.parent_id);
                         if (parent.length) {
                             parent.closest('.row-pub').after(data.content);
-                        } else $("#publication-thread").append(data.content);
+                        } else if (data.parent_id == null) {
+                            $("#publication-thread").append(data.content);
+                        }
                     }
                     /* Comprobamos la longitud del nuevo comentario */
                 } else if (data.type === "video") {
