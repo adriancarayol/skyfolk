@@ -39,7 +39,9 @@ var UTILS = UTILS || (function () {
                             } else {
                                 $parent.closest('.row').after(data.content);
                             }
-                        } else $("#messages-wrapper").prepend(data.content);
+                        } else if (data.parent_id == null) {
+                            $("#messages-wrapper").prepend(data.content);
+                        }
                     }
 
                 }   else if (data.type === "video") {

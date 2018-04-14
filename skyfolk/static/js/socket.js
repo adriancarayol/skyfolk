@@ -37,7 +37,9 @@ var UTILS = UTILS || (function () {
                             } else {
                                 $parent.closest('.row').after(data.content);
                             }
-                        } else $("#tab-comentarios .btn-filters").after(data.content);
+                        } else if (data.parent_id == null) {
+                            $("#tab-comentarios .btn-filters").after(data.content);
+                        }
                     }
                     /* Eliminamos el div de "Este perfil no tiene comentarios" */
                     if ($(no_comments).is(':visible')) {

@@ -21,7 +21,9 @@ socket.onmessage = function (message) {
             var parent = $('#pub-' + data.parent_id);
             if (parent.length) {
                 parent.closest('.row-pub').after(data.content);
-            } else $("#publication-thread").append(data.content);
+            } else if (data.parent_id == null) {
+                $("#publication-thread").append(data.content);
+            }
         }
         /* Eliminamos el div de "Este perfil no tiene comentarios" */
         if ($(no_comments).is(':visible')) {

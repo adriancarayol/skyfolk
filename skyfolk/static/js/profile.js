@@ -368,10 +368,12 @@ function AJAX_load_publications(pub, loader, page, btn) {
             $children_list.append(data);
             var $child_count = $(btn).find('.child_count');
             var $result_child_count = parseInt($child_count.html(), 10) - $('.childs_for_' + pub).last().val();
-            if ($result_child_count > 0)
+            if ($result_child_count > 0) {
                 $($child_count).html($result_child_count);
-            else
+            }
+            else {
                 $(btn).remove();
+            }
         },
         complete: function () {
             $(loader).fadeOut();

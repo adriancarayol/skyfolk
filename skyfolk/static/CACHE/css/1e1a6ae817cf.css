@@ -1,0 +1,240 @@
+.logged-in {
+  background: gainsboro url("/static/img/index_bg.png") no-repeat center 80px; }
+
+.logged-out {
+  background: gainsboro url("/static/img/index_bg.png") no-repeat center 30px;
+  background-size: 90%; }
+
+.pull-right {
+  float: right; }
+
+/*# sourceMappingURL=style.css.map */
+
+@charset "UTF-8";
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/static/fonts/Open-Sans-regular/Open-Sans-regular.eot?63207f274d3d");
+  src: url("/static/fonts/Open-Sans-regular/Open-Sans-regular.eot?&63207f274d3d#iefix") format("embedded-opentype"), local("Open Sans"), local("Open-Sans-regular"), url("/static/fonts/Open-Sans-regular/Open-Sans-regular.woff2?63207f274d3d") format("woff2"), url("/static/fonts/Open-Sans-regular/Open-Sans-regular.woff?63207f274d3d") format("woff"), url("/static/fonts/Open-Sans-regular/Open-Sans-regular.ttf?63207f274d3d") format("truetype"), url("/static/fonts/Open-Sans-regular/Open-Sans-regular.svg?63207f274d3d#OpenSans") format("svg"); }
+@font-face {
+  font-family: "Pacifico";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/static/fonts/Pacifico-regular/Pacifico-regular.eot?63207f274d3d");
+  src: url("/static/fonts/Pacifico-regular/Pacifico-regular.eot?&63207f274d3d#iefix") format("embedded-opentype"), local("Pacifico Regular"), local("Pacifico-regular"), url("/static/fonts/Pacifico-regular/Pacifico-regular.woff2?63207f274d3d") format("woff2"), url("/static/fonts/Pacifico-regular/Pacifico-regular.woff?63207f274d3d") format("woff"), url("/static/fonts/Pacifico-regular/Pacifico-regular.ttf?63207f274d3d") format("truetype"), url("/static/fonts/Pacifico-regular/Pacifico-regular.svg?63207f274d3d#Pacifico") format("svg"); }
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column; }
+
+main {
+  flex: 1 0 auto; }
+
+.page-footer {
+  padding-top: 0 !important; }
+  .page-footer > .row {
+    margin-bottom: 0 !important;
+    text-align: center; }
+    .page-footer > .row > ul li {
+      display: inline-block; }
+
+.skyfolk-logo {
+  position: fixed;
+  font-family: "Pacifico", cursive !important;
+  margin: auto;
+  left: 50%;
+  cursor: pointer;
+  color: #555 !important;
+  font-size: 1.7em;
+  letter-spacing: 0.2px;
+  color: #555; }
+  .skyfolk-logo > span {
+    color: #1e88e5;
+    text-shadow: 1px 1px 1px #ccc; }
+
+.signup {
+  padding: 10px; }
+
+.login {
+  padding-right: 10px;
+  padding-left: 10px; }
+
+.active-img {
+  min-height: 100%;
+  min-width: 1024px;
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1; }
+
+@media screen and (max-width: 1024px) {
+  .active-img {
+    left: 50%;
+    margin-left: -512px; } }
+/* LOGO */
+.namesn {
+  position: relative;
+  display: block;
+  width: 200px;
+  height: 120px;
+  margin: auto auto 10px; }
+  .namesn i {
+    color: #1e88e5;
+    text-shadow: 1px 1px 1px #ccc; }
+  .namesn h5 {
+    position: relative;
+    left: 87px;
+    font-size: 5em;
+    text-decoration: none;
+    color: #555;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    font-family: "Pacifico", cursive;
+    top: 0;
+    text-shadow: 1px 1px 1px #1e88e5; }
+
+.logo {
+  position: relative;
+  margin: auto;
+  left: -120px;
+  top: 110px;
+  width: 150px;
+  height: 100px;
+  cursor: pointer; }
+  .logo img {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: 12px;
+    left: 0; }
+
+#login {
+  width: 370px;
+  margin: auto;
+  position: relative;
+  display: block;
+  margin-top: 99px;
+  border-radius: 7px;
+  font-family: "Open Sans", sans-serif;
+  z-index: 9999;
+  color: black; }
+
+/* Estilos para el botón ¿olvido su contraseña? */
+.forgot-pass {
+  text-align: center;
+  border-top: 3px solid #eee;
+  margin-bottom: 0 !important;
+  height: 40px; }
+  .forgot-pass > a {
+    display: block;
+    margin-top: 1.5%; }
+
+.remember-check {
+  text-align: center; }
+
+div#login h5 {
+  text-align: center;
+  color: #757575;
+  border-bottom: 1px solid #bdbdbd;
+  margin: auto auto 10px;
+  font-weight: 100;
+  font-family: "Open Sans", sans-serif; }
+
+/* Muestra los mensajes de error, por ejemplo -> "Contraseña incorrecta en los forms" */
+.errorlist li {
+  color: #f44336;
+  display: inline-block;
+  position: relative; }
+
+.block-formregister {
+  background-color: #fff;
+  position: relative;
+  float: right;
+  margin-right: 130px;
+  font-family: "Open Sans", sans-serif;
+  border-radius: 7px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+  padding: 0 0 30px;
+  margin-bottom: 5%;
+  max-width: 370px; }
+  .block-formregister .reco-passwd {
+    position: absolute;
+    right: 0;
+    margin: 5px 7px 0 0;
+    cursor: pointer;
+    color: #1e88e5; }
+    .block-formregister .reco-passwd:hover {
+      text-shadow: 1px 1px 1px #ccc;
+      transform: scale(1.1);
+      -webkit-transform: scale(1.1);
+      -moz-transform: scale(1.1);
+      -o-transform: scale(1.1);
+      -ms-transform: scale(1.1); }
+
+/* Adaptamos el background del login dependiendo de la altura de la pagina */
+@media screen and (min-width: 700px) and (orientation: landscape) {
+  .register {
+    left: 120px; } }
+@media screen and (min-width: 1200px) {
+  .register {
+    left: 150px; } }
+@media screen and (max-width: 600px) {
+  .block-formregister {
+    margin: auto;
+    float: none; }
+
+  #background_cycler {
+    height: 100%; }
+
+  #login, .block-formregister {
+    width: 350px; } }
+.form-3 .form-group {
+  margin-top: 1.25%; }
+
+/* WebKit, Blink, Edge */
+::-webkit-input-placeholder {
+  color: #212121; }
+
+/* Mozilla Firefox 4 to 18 */
+:-moz-placeholder {
+  color: #212121;
+  opacity: 1; }
+
+/* Mozilla Firefox 19+ */
+::-moz-placeholder {
+  color: #212121;
+  opacity: 1; }
+
+/* Internet Explorer 10-11 */
+:-ms-input-placeholder {
+  color: #212121; }
+
+/* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+::-placeholder-shown {
+  color: #212121; }
+
+/* INPUT COLOR FOCUS */
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
+  border-bottom: 1px solid #64B5F6 !important;
+  box-shadow: 0 1px 0 0 #64B5F6 !important; }
+
+.input-field .prefix.active {
+  color: #64B5F6 !important; }
+
+label.active {
+  color: #64B5F6 !important; }
+
+/* LOADER COLOR */
+.progress {
+  background-color: white !important;
+  margin-top: 0 !important; }
+  .progress .indeterminate {
+    background-color: #64B5F6 !important; }
+
+.active {
+  color: #1e88e5 !important; }
+
+/*# sourceMappingURL=login-signup.css.map */

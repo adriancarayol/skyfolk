@@ -20,7 +20,9 @@ socket.onmessage = function (message) {
             var parent = $('#pub-' + data.parent_id);
             if (parent.length) {
                 parent.after(data.content);
-            } else $(".theme-publications").prepend(data.content);
+            } else if (data.parent_id == null) {
+                $(".theme-publications").prepend(data.content);
+            }
         }
     } else if (data.type === "video") {
         var existing_pub = $('#pub-' + data.id);
