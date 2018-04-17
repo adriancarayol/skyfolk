@@ -21,6 +21,24 @@ SESSION_COOKIE_DOMAIN = '.skyfolk.net'
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 
+# S3 + CDN
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_S3_CUSTOM_DOMAIN = 'd32rim3h420riw.cloudfront.net'
+AWS_ACCESS_KEY_ID = 'AKIAJYNH343VWWRAP2EA'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'skyfolk'
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# COMPRESS_ROOT = STATIC_ROOT
+STATICFILES_LOCATION = 'static'
+# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
+
+MEDIAFILES_LOCATION = 'media'
+MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+DEFAULT_FILE_STORAGE = 'custom_storages.custom_storages.MediaStorage'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -38,11 +56,11 @@ NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@lo
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-STATIC_URL = '/static/'
-STATIC_ROOT = "/var/www/skyfolk.net/run/static/static/"
+#STATIC_URL = '/static/'
+#STATIC_ROOT = "/var/www/skyfolk.net/run/static/static/"
 # STATIC_ROOT = '/var/www/skyfolk/static/pre/static'
-MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media/"
-MEDIA_URL = '/media/'
+#MEDIA_ROOT = "/var/www/skyfolk.net/run/static/media/"
+#MEDIA_URL = '/media/'
 # MEDIA_ROOT = '/var/www/skyfolk/static/pre/media'
 # INVITATIONS ONLY EMAIL
 INVITATIONS_INVITATION_ONLY = True
