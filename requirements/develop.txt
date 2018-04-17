@@ -101,7 +101,6 @@ urllib3==1.22
 Whoosh==2.7.4
 Twisted[tls,http2]
 django-celery-beat>=1.0.1
-django-invitations
 django-webpack-loader
 todoist-python==7.0.17
 wallabag_api==1.1.0
