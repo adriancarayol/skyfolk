@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'rest_framework',  # REST framework
     'emoji',
     'avatar',  # Avatares para usuarios.
