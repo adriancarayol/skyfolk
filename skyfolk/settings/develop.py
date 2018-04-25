@@ -18,7 +18,7 @@ DATABASES = {
 # NEO4j config
 NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:1518@localhost:7687')
 
-
+INVITATIONS_INVITATION_ONLY = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
